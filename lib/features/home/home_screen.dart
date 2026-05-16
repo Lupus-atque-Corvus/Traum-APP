@@ -3,6 +3,7 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../core/components/components.dart';
 import '../../core/navigation/routes.dart';
 import '../../core/providers/database_provider.dart';
@@ -29,12 +30,69 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  static bool _permissionCheckDone = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       UpdateService.checkAndPrompt(context);
+      if (!_permissionCheckDone) {
+        _permissionCheckDone = true;
+        _checkPermissions();
+      }
     });
+  }
+
+  Future<void> _checkPermissions() async {
+    final missing = <String>[];
+
+    final notif = await Permission.notification.status;
+    if (!notif.isGranted) missing.add('Benachrichtigungen');
+
+    final loc = await Permission.locationWhenInUse.status;
+    if (!loc.isGranted) missing.add('Standort (Wetter)');
+
+    if (missing.isEmpty || !mounted) return;
+
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: TraumColors.surfaceElevated,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text(
+          'Fehlende Berechtigungen',
+          style: TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w700),
+        ),
+        content: Text(
+          'Folgende Berechtigungen wurden noch nicht erteilt:\n\n'
+          '• ${missing.join('\n• ')}\n\n'
+          'Gehe zu Einstellungen › TRAUM, um sie zu aktivieren.',
+          style: const TextStyle(
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              height: 1.5),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Später',
+                style: TextStyle(color: TraumColors.onBackgroundMuted)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              openAppSettings();
+            },
+            child: const Text('Einstellungen öffnen',
+                style: TextStyle(color: TraumColors.coralOrange)),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
