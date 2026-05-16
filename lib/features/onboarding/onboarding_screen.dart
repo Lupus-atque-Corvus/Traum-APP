@@ -4,10 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:health/health.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../core/navigation/routes.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
+import '../../core/security/pin_service.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../core/components/components.dart';
@@ -153,6 +155,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       _WeatherPage(onNext: _next),
       _NotificationsPage(onNext: _next),
       _HealthPage(onNext: _next),
+      _SecurityPage(onNext: _next),
       _DonePage(
         name: _nameController.text,
         kcalGoal: _kcalGoal,
@@ -1633,6 +1636,486 @@ class _DonePage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ── Security / Lock setup ─────────────────────────────────────────────────────
+
+enum _SecurityMode { choose, enterPin, confirmPin }
+
+class _SecurityPage extends ConsumerStatefulWidget {
+  final VoidCallback onNext;
+  const _SecurityPage({required this.onNext});
+
+  @override
+  ConsumerState<_SecurityPage> createState() => _SecurityPageState();
+}
+
+class _SecurityPageState extends ConsumerState<_SecurityPage> {
+  final _auth = LocalAuthentication();
+  bool _biometricAvailable = false;
+  List<BiometricType> _biometricTypes = [];
+  _SecurityMode _mode = _SecurityMode.choose;
+  String _pin = '';
+  String _pinToConfirm = '';
+  bool _loading = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkBiometric();
+  }
+
+  Future<void> _checkBiometric() async {
+    try {
+      final canCheck = await _auth.canCheckBiometrics;
+      final isSupported = await _auth.isDeviceSupported();
+      if (mounted && canCheck && isSupported) {
+        final types = await _auth.getAvailableBiometrics();
+        setState(() {
+          _biometricAvailable = true;
+          _biometricTypes = types;
+        });
+      }
+    } catch (_) {}
+  }
+
+  IconData get _biometricIcon =>
+      _biometricTypes.contains(BiometricType.face)
+          ? Icons.face_rounded
+          : Icons.fingerprint_rounded;
+
+  String get _biometricLabel =>
+      _biometricTypes.contains(BiometricType.face)
+          ? 'Face ID aktivieren'
+          : 'Fingerabdruck aktivieren';
+
+  Future<void> _enableBiometric() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final ok = await _auth.authenticate(
+        localizedReason: 'Biometrische App-Sperre einrichten',
+        options: const AuthenticationOptions(
+          biometricOnly: false,
+          stickyAuth: true,
+        ),
+      );
+      if (!mounted) return;
+      if (ok) {
+        await ref.read(biometricLockProvider.notifier).set(true);
+        widget.onNext();
+      } else {
+        setState(() => _error = 'Authentifizierung fehlgeschlagen.');
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _error = 'Biometrie konnte nicht eingerichtet werden.');
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  void _addDigit(String d) {
+    final current = _mode == _SecurityMode.enterPin ? _pin : _pinToConfirm;
+    if (current.length >= 4) return;
+    if (_mode == _SecurityMode.enterPin) {
+      setState(() => _pin += d);
+      if (_pin.length == 4) {
+        setState(() {
+          _mode = _SecurityMode.confirmPin;
+          _pinToConfirm = '';
+          _error = null;
+        });
+      }
+    } else {
+      setState(() => _pinToConfirm += d);
+      if (_pinToConfirm.length == 4) _savePin();
+    }
+  }
+
+  void _removeDigit() {
+    if (_mode == _SecurityMode.enterPin && _pin.isNotEmpty) {
+      setState(() => _pin = _pin.substring(0, _pin.length - 1));
+    } else if (_mode == _SecurityMode.confirmPin && _pinToConfirm.isNotEmpty) {
+      setState(() =>
+          _pinToConfirm = _pinToConfirm.substring(0, _pinToConfirm.length - 1));
+    }
+  }
+
+  Future<void> _savePin() async {
+    if (_pin != _pinToConfirm) {
+      HapticFeedback.heavyImpact();
+      setState(() {
+        _error = 'PINs stimmen nicht überein. Bitte erneut eingeben.';
+        _mode = _SecurityMode.enterPin;
+        _pin = '';
+        _pinToConfirm = '';
+      });
+      return;
+    }
+    await PinService.save(_pin);
+    await ref.read(pinLockProvider.notifier).set(true);
+    widget.onNext();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _mode == _SecurityMode.choose
+        ? _buildChoosePage()
+        : _buildPinPage();
+  }
+
+  Widget _buildChoosePage() {
+    return _OnboardingPage(
+      title: 'App-Sicherheit',
+      buttonLabel: null,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Schütze deine Daten mit einer Sperre. Die App sperrt sich automatisch nach 5 Minuten Inaktivität.',
+            style: TextStyle(
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontSize: 14,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 24),
+          if (_biometricAvailable) ...[
+            _SecurityOptionCard(
+              icon: _biometricIcon,
+              title: _biometricLabel,
+              subtitle: 'Entsperre die App schnell und sicher',
+              color: TraumColors.indigoBlue,
+              loading: _loading,
+              onTap: _loading ? null : _enableBiometric,
+            ),
+            const SizedBox(height: 12),
+          ],
+          _SecurityOptionCard(
+            icon: Icons.pin_rounded,
+            title: 'PIN festlegen',
+            subtitle: '4-stellige Sicherheits-PIN',
+            color: TraumColors.coralOrange,
+            onTap: _loading
+                ? null
+                : () => setState(() {
+                      _mode = _SecurityMode.enterPin;
+                      _pin = '';
+                      _error = null;
+                    }),
+          ),
+          if (_error != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              _error!,
+              style: const TextStyle(
+                color: TraumColors.roseRed,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+            ),
+          ],
+          const SizedBox(height: 24),
+          Center(
+            child: TextButton(
+              onPressed: _loading ? null : widget.onNext,
+              child: const Text(
+                'Ohne Sperre fortfahren',
+                style:
+                    TextStyle(color: TraumColors.onBackgroundMuted),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPinPage() {
+    final current =
+        _mode == _SecurityMode.enterPin ? _pin : _pinToConfirm;
+    final title = _mode == _SecurityMode.enterPin
+        ? 'PIN festlegen'
+        : 'PIN bestätigen';
+    final subtitle = _mode == _SecurityMode.enterPin
+        ? 'Gib eine 4-stellige PIN ein'
+        : 'Gib die PIN zur Bestätigung nochmal ein';
+
+    return _OnboardingPage(
+      title: title,
+      content: Column(
+        children: [
+          Text(
+            subtitle,
+            style: const TextStyle(
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontSize: 14,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 32),
+          // PIN dots
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              4,
+              (i) => AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                width: 18,
+                height: 18,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: i < current.length
+                      ? TraumColors.indigoBlue
+                      : Colors.transparent,
+                  border: Border.all(
+                    color: i < current.length
+                        ? TraumColors.indigoBlue
+                        : TraumColors.onBackgroundSubtle,
+                    width: 2,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          if (_error != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              _error!,
+              style: const TextStyle(
+                color: TraumColors.roseRed,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+          const SizedBox(height: 32),
+          // Numpad
+          _OnboardingNumpad(onDigit: _addDigit, onDelete: _removeDigit),
+          const SizedBox(height: 16),
+          TextButton(
+            onPressed: () => setState(() {
+              _mode = _SecurityMode.choose;
+              _pin = '';
+              _pinToConfirm = '';
+              _error = null;
+            }),
+            child: const Text(
+              'Zurück zur Auswahl',
+              style: TextStyle(
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                  fontSize: 13),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SecurityOptionCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Color color;
+  final VoidCallback? onTap;
+  final bool loading;
+
+  const _SecurityOptionCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    this.onTap,
+    this.loading = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: TraumColors.surface,
+          borderRadius: BorderRadius.circular(TraumRadius.card),
+          border: Border.all(color: color.withValues(alpha: 0.4)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: loading
+                  ? Center(
+                      child: SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: color,
+                        ),
+                      ),
+                    )
+                  : Icon(icon, color: color, size: 26),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: onTap != null
+                          ? TraumColors.onBackground
+                          : TraumColors.onBackgroundSubtle,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: color.withValues(alpha: 0.7),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OnboardingNumpad extends StatelessWidget {
+  final void Function(String) onDigit;
+  final VoidCallback onDelete;
+
+  const _OnboardingNumpad({required this.onDigit, required this.onDelete});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _buildRow(['1', '2', '3']),
+        const SizedBox(height: 10),
+        _buildRow(['4', '5', '6']),
+        const SizedBox(height: 10),
+        _buildRow(['7', '8', '9']),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(width: 64),
+            const SizedBox(width: 12),
+            _NumKey(label: '0', onTap: () => onDigit('0')),
+            const SizedBox(width: 12),
+            _DelKey(onTap: onDelete),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRow(List<String> digits) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: digits.asMap().entries.map((e) {
+        return Padding(
+          padding: EdgeInsets.only(left: e.key > 0 ? 12 : 0),
+          child: _NumKey(label: e.value, onTap: () => onDigit(e.value)),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _NumKey extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _NumKey({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 64,
+        height: 64,
+        decoration: BoxDecoration(
+          color: TraumColors.surface,
+          shape: BoxShape.circle,
+          border: Border.all(color: TraumColors.surfaceVariant),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: const TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontSize: 22,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DelKey extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _DelKey({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 64,
+        height: 64,
+        decoration: BoxDecoration(
+          color: TraumColors.surface,
+          shape: BoxShape.circle,
+          border: Border.all(color: TraumColors.surfaceVariant),
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.backspace_outlined,
+            color: TraumColors.onBackgroundMuted,
+            size: 22,
+          ),
+        ),
       ),
     );
   }

@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import '../../core/navigation/routes.dart';
 import '../../core/notifications/notification_service.dart';
 import '../../core/providers/preferences_provider.dart';
+import '../../core/security/pin_service.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 
@@ -630,6 +631,7 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
   @override
   Widget build(BuildContext context) {
     final biometricLock = ref.watch(biometricLockProvider);
+    final pinLock = ref.watch(pinLockProvider);
 
     return _Section(
       title: 'Privatsphäre & Sicherheit',
@@ -656,6 +658,30 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
               ? (v) => _toggleBiometric(v)
               : null,
         ),
+        SwitchListTile(
+          title: const Row(children: [
+            Icon(Icons.pin_rounded, color: TraumColors.coralOrange, size: 20),
+            SizedBox(width: 8),
+            Text('PIN-Sperre',
+                style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+          ]),
+          subtitle: const Text(
+            'App mit 4-stelligem PIN sperren',
+            style: TextStyle(
+                color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12),
+          ),
+          value: pinLock,
+          activeThumbColor: TraumColors.coralOrange,
+          onChanged: (v) => _togglePin(context, v),
+        ),
+        if (pinLock)
+          ListTile(
+            leading: const Icon(Icons.edit_rounded, color: TraumColors.indigoBlue, size: 20),
+            title: const Text('PIN ändern',
+                style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+            trailing: const Icon(Icons.chevron_right, color: TraumColors.onBackgroundMuted),
+            onTap: () => _changePinDialog(context),
+          ),
         ListTile(
           leading: const Icon(Icons.download_rounded, color: TraumColors.cyanBlue),
           title: const Text('Daten exportieren',
@@ -692,6 +718,32 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
     } else {
       await ref.read(biometricLockProvider.notifier).set(false);
     }
+  }
+
+  Future<void> _togglePin(BuildContext context, bool enable) async {
+    if (enable) {
+      _changePinDialog(context, initial: true);
+    } else {
+      await PinService.clear();
+      await ref.read(pinLockProvider.notifier).set(false);
+    }
+  }
+
+  void _changePinDialog(BuildContext context, {bool initial = false}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: TraumColors.surfaceElevated,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => _PinSetupSheet(
+        onSave: (pin) async {
+          await PinService.save(pin);
+          await ref.read(pinLockProvider.notifier).set(true);
+        },
+      ),
+    );
   }
 
   void _showExportSheet(BuildContext context) {
@@ -1097,4 +1149,169 @@ class _Section extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── PIN setup sheet used in Settings ─────────────────────────────────────────
+
+class _PinSetupSheet extends StatefulWidget {
+  final Future<void> Function(String pin) onSave;
+  const _PinSetupSheet({required this.onSave});
+
+  @override
+  State<_PinSetupSheet> createState() => _PinSetupSheetState();
+}
+
+class _PinSetupSheetState extends State<_PinSetupSheet> {
+  String _pin = '';
+  String _confirm = '';
+  bool _confirming = false;
+  String? _error;
+  bool _saving = false;
+
+  void _addDigit(String d) {
+    if (_saving) return;
+    if (!_confirming) {
+      if (_pin.length >= 4) return;
+      setState(() { _pin += d; _error = null; });
+      if (_pin.length == 4) {
+        setState(() { _confirming = true; _confirm = ''; });
+      }
+    } else {
+      if (_confirm.length >= 4) return;
+      setState(() { _confirm += d; _error = null; });
+      if (_confirm.length == 4) _save();
+    }
+  }
+
+  void _removeDigit() {
+    if (_saving) return;
+    if (!_confirming && _pin.isNotEmpty) {
+      setState(() => _pin = _pin.substring(0, _pin.length - 1));
+    } else if (_confirming && _confirm.isNotEmpty) {
+      setState(() => _confirm = _confirm.substring(0, _confirm.length - 1));
+    }
+  }
+
+  Future<void> _save() async {
+    if (_pin != _confirm) {
+      setState(() {
+        _error = 'PINs stimmen nicht überein.';
+        _confirming = false;
+        _pin = '';
+        _confirm = '';
+      });
+      return;
+    }
+    setState(() => _saving = true);
+    await widget.onSave(_pin);
+    if (mounted) Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final current = _confirming ? _confirm : _pin;
+    final title = _confirming ? 'PIN bestätigen' : 'PIN festlegen';
+
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 24, right: 24, top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Center(child: Container(
+            width: 40, height: 4,
+            decoration: BoxDecoration(
+              color: TraumColors.onBackgroundSubtle,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          )),
+          const SizedBox(height: 20),
+          Text(title, style: const TextStyle(
+            color: TraumColors.onBackground, fontFamily: 'DMSans',
+            fontWeight: FontWeight.w700, fontSize: 18)),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(4, (i) => AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              width: 16, height: 16,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: i < current.length ? TraumColors.indigoBlue : Colors.transparent,
+                border: Border.all(
+                  color: i < current.length
+                      ? TraumColors.indigoBlue
+                      : TraumColors.onBackgroundSubtle,
+                  width: 2,
+                ),
+              ),
+            )),
+          ),
+          if (_error != null) ...[
+            const SizedBox(height: 8),
+            Text(_error!, style: const TextStyle(
+                color: TraumColors.roseRed, fontFamily: 'DMSans', fontSize: 13)),
+          ],
+          const SizedBox(height: 24),
+          _buildNumpad(),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNumpad() {
+    return Column(children: [
+      _buildRow(['1', '2', '3']),
+      const SizedBox(height: 10),
+      _buildRow(['4', '5', '6']),
+      const SizedBox(height: 10),
+      _buildRow(['7', '8', '9']),
+      const SizedBox(height: 10),
+      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        const SizedBox(width: 60),
+        const SizedBox(width: 10),
+        _key('0'),
+        const SizedBox(width: 10),
+        GestureDetector(
+          onTap: _removeDigit,
+          child: Container(
+            width: 60, height: 60,
+            decoration: BoxDecoration(
+              color: TraumColors.surface, shape: BoxShape.circle,
+              border: Border.all(color: TraumColors.surfaceVariant),
+            ),
+            child: const Center(child: Icon(
+              Icons.backspace_outlined,
+              color: TraumColors.onBackgroundMuted, size: 20)),
+          ),
+        ),
+      ]),
+    ]);
+  }
+
+  Widget _buildRow(List<String> digits) => Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: digits.asMap().entries.map((e) => Padding(
+      padding: EdgeInsets.only(left: e.key > 0 ? 10 : 0),
+      child: _key(e.value),
+    )).toList(),
+  );
+
+  Widget _key(String d) => GestureDetector(
+    onTap: () => _addDigit(d),
+    child: Container(
+      width: 60, height: 60,
+      decoration: BoxDecoration(
+        color: TraumColors.surface, shape: BoxShape.circle,
+        border: Border.all(color: TraumColors.surfaceVariant),
+      ),
+      child: Center(child: Text(d, style: const TextStyle(
+        color: TraumColors.onBackground, fontFamily: 'DMSans',
+        fontSize: 20, fontWeight: FontWeight.w500))),
+    ),
+  );
 }

@@ -91,6 +91,9 @@ class PreferencesRepository {
   bool get biometricLock => _prefs.getBool('biometric_lock') ?? false;
   Future<void> setBiometricLock(bool v) => _prefs.setBool('biometric_lock', v);
 
+  bool get pinLock => _prefs.getBool('pin_lock') ?? false;
+  Future<void> setPinLock(bool v) => _prefs.setBool('pin_lock', v);
+
   // Budget
   String get currencySymbol => _prefs.getString('currency_symbol') ?? '€';
   Future<void> setCurrencySymbol(String v) =>
