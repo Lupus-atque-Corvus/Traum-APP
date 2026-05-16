@@ -40,13 +40,18 @@ class _TraumAppState extends ConsumerState<TraumApp> {
 
   void _onResume() {
     final biometricEnabled = ref.read(biometricLockProvider);
-    if (!biometricEnabled) return;
+    final pinEnabled = ref.read(pinLockProvider);
+    if (!biometricEnabled && !pinEnabled) return;
 
     final prefs = ref.read(sharedPreferencesProvider);
     final ts = prefs.getInt('lock_timestamp') ?? 0;
     final elapsed = DateTime.now().millisecondsSinceEpoch - ts;
     if (elapsed > 5 * 60 * 1000) {
-      ref.read(routerProvider).go(Routes.biometricLock);
+      if (biometricEnabled) {
+        ref.read(routerProvider).go(Routes.biometricLock);
+      } else {
+        ref.read(routerProvider).go(Routes.pinEntry);
+      }
     }
   }
 

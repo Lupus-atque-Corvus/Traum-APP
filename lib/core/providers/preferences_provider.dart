@@ -90,6 +90,23 @@ final biometricLockProvider = NotifierProvider<BiometricLockNotifier, bool>(
   BiometricLockNotifier.new,
 );
 
+// PIN lock
+class PinLockNotifier extends Notifier<bool> {
+  @override
+  bool build() {
+    return ref.watch(preferencesRepositoryProvider).pinLock;
+  }
+
+  Future<void> set(bool value) async {
+    await ref.read(preferencesRepositoryProvider).setPinLock(value);
+    state = value;
+  }
+}
+
+final pinLockProvider = NotifierProvider<PinLockNotifier, bool>(
+  PinLockNotifier.new,
+);
+
 // Period tracking
 class PeriodTrackingNotifier extends Notifier<bool> {
   @override

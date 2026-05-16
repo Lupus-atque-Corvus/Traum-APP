@@ -1,13 +1,29 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:health/health.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../core/navigation/routes.dart';
+import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
+import '../../core/security/pin_service.dart';
 import '../../core/theme/colors.dart';
+import '../../core/theme/radius.dart';
 import '../../core/components/components.dart';
 import '../../core/utils/water_calculator.dart';
+import '../../data/database/traum_database.dart';
+
+// File-level stream providers used by the onboarding supplement/medication pages
+final _onboardingSuppsProvider = StreamProvider.autoDispose<List<Supplement>>(
+  (ref) => ref.watch(supplementDaoProvider).watchAllSupplements(),
+);
+
+final _onboardingMedsProvider = StreamProvider.autoDispose<List<Medication>>(
+  (ref) => ref.watch(medicationDaoProvider).watchAllMedications(),
+);
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -22,8 +38,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   // Form state
   final _nameController = TextEditingController();
-  String _sex = 'male';
-  String _unitSystem = 'metric';
+  String? _sex;
+  String? _unitSystem;
   DateTime? _birthDate;
   double _heightCm = 175;
   double _weightKg = 75;
@@ -51,6 +67,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       _consentTerms &&
       _consentDisclaimer &&
       _consentAge;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController.addListener(() => setState(() {}));
+  }
 
   List<Widget> get _pages {
     final pages = <Widget>[
@@ -86,8 +108,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         weightKg: _weightKg,
         weightGoalKg: _weightGoalKg,
         stepsGoal: _stepsGoal,
-        unitSystem: _unitSystem,
-        sex: _sex,
+        unitSystem: _unitSystem ?? 'metric',
+        sex: _sex ?? 'male',
         birthDate: _birthDate,
         onHeightChanged: (v) => setState(() => _heightCm = v),
         onWeightChanged: (v) => setState(() => _weightKg = v),
@@ -102,8 +124,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         onProteinChanged: (v) => setState(() => _proteinGoal = v),
         onNext: _next,
       ),
-      _SupplementsPage(onNext: _next, onSkip: _next),
-      _MedicationPage(onNext: _next, onSkip: _next),
+      _SupplementsPage(onNext: _next),
+      _MedicationPage(onNext: _next),
       _BudgetPage(
         currencySymbol: _currencySymbol,
         monthlyBudget: _monthlyBudget,
@@ -120,7 +142,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           onCycleLengthChanged: (v) => setState(() => _avgCycleLength = v),
           onPeriodLengthChanged: (v) => setState(() => _avgPeriodLength = v),
           onLastPeriodChanged: (v) => setState(() => _lastPeriodStart = v),
-          onNext: _next,
+          onNext: () {
+            setState(() => _periodTrackingEnabled = true);
+            _next();
+          },
           onSkip: () {
             setState(() => _periodTrackingEnabled = false);
             _next();
@@ -130,6 +155,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       _WeatherPage(onNext: _next),
       _NotificationsPage(onNext: _next),
       _HealthPage(onNext: _next),
+      _SecurityPage(onNext: _next),
       _DonePage(
         name: _nameController.text,
         kcalGoal: _kcalGoal,
@@ -142,9 +168,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   int _computeWaterGoal() {
     if (_birthDate == null) return 2500;
-    final age =
-        DateTime.now().difference(_birthDate!).inDays ~/ 365;
-    return WaterCalculator.recommendedMl(_weightKg, age, _sex);
+    final age = DateTime.now().difference(_birthDate!).inDays ~/ 365;
+    return WaterCalculator.recommendedMl(_weightKg, age, _sex ?? 'male');
   }
 
   void _next() {
@@ -172,14 +197,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final age = _birthDate != null
         ? DateTime.now().difference(_birthDate!).inDays ~/ 365
         : 25;
-    final waterGoal = WaterCalculator.recommendedMl(_weightKg, age, _sex);
-    final waterMin = WaterCalculator.minimumMl(_weightKg, _sex);
+    final sex = _sex ?? 'male';
+    final unitSystem = _unitSystem ?? 'metric';
+    final waterGoal = WaterCalculator.recommendedMl(_weightKg, age, sex);
+    final waterMin = WaterCalculator.minimumMl(_weightKg, sex);
     final waterMax = WaterCalculator.maximumMl(_weightKg);
 
     await Future.wait([
       prefs.setUserName(_nameController.text.trim()),
-      prefs.setUserBiologicalSex(_sex),
-      prefs.setUnitSystem(_unitSystem),
+      prefs.setUserBiologicalSex(sex),
+      prefs.setUnitSystem(unitSystem),
       prefs.setHeightCm(_heightCm),
       prefs.setWeightGoalKg(_weightGoalKg),
       prefs.setStepsGoal(_stepsGoal),
@@ -192,7 +219,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       prefs.setMonthlyBudget(_monthlyBudget),
       prefs.setAvgCycleLength(_avgCycleLength),
       prefs.setAvgPeriodLength(_avgPeriodLength),
-      prefs.setPeriodTrackingEnabled(_sex == 'female' && _periodTrackingEnabled),
+      prefs.setPeriodTrackingEnabled(sex == 'female' && _periodTrackingEnabled),
       prefs.setOnboardingComplete(true),
     ]);
     if (_birthDate != null) {
@@ -218,6 +245,22 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         body: SafeArea(
           child: Column(
             children: [
+              // Back button row – always takes the same height so layout is stable
+              SizedBox(
+                height: 48,
+                child: _currentPage > 0
+                    ? Align(
+                        alignment: Alignment.centerLeft,
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back_ios_rounded,
+                            color: TraumColors.onBackground,
+                          ),
+                          onPressed: _prev,
+                        ),
+                      )
+                    : null,
+              ),
               Expanded(
                 child: PageView(
                   controller: _pageController,
@@ -299,7 +342,7 @@ class _OnboardingPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 24),
+          const SizedBox(height: 8),
           Text(
             title,
             style: const TextStyle(
@@ -327,7 +370,8 @@ class _OnboardingPage extends StatelessWidget {
   }
 }
 
-// Welcome
+// ── Welcome ───────────────────────────────────────────────────────────────────
+
 class _WelcomePage extends StatelessWidget {
   final VoidCallback onNext;
   const _WelcomePage({required this.onNext});
@@ -378,7 +422,8 @@ class _WelcomePage extends StatelessWidget {
   }
 }
 
-// Consent
+// ── Consent ───────────────────────────────────────────────────────────────────
+
 class _ConsentPage extends StatelessWidget {
   final bool consentPrivacy, consentHealth, consentTerms, consentDisclaimer, consentAge;
   final void Function(bool, bool, bool, bool, bool) onChanged;
@@ -409,31 +454,31 @@ class _ConsentPage extends StatelessWidget {
             label: 'Ich habe die Datenschutzerklärung gelesen und stimme zu.',
             value: consentPrivacy,
             onChanged: (v) => onChanged(
-              v ?? false, consentHealth, consentTerms, consentDisclaimer, consentAge),
+                v ?? false, consentHealth, consentTerms, consentDisclaimer, consentAge),
           ),
           _ConsentTile(
             label: 'Ich willige in die Verarbeitung von Gesundheitsdaten ein (DSGVO Art. 9).',
             value: consentHealth,
             onChanged: (v) => onChanged(
-              consentPrivacy, v ?? false, consentTerms, consentDisclaimer, consentAge),
+                consentPrivacy, v ?? false, consentTerms, consentDisclaimer, consentAge),
           ),
           _ConsentTile(
             label: 'Ich akzeptiere die Nutzungsbedingungen.',
             value: consentTerms,
             onChanged: (v) => onChanged(
-              consentPrivacy, consentHealth, v ?? false, consentDisclaimer, consentAge),
+                consentPrivacy, consentHealth, v ?? false, consentDisclaimer, consentAge),
           ),
           _ConsentTile(
             label: 'Ich bestätige den medizinischen Haftungsausschluss.',
             value: consentDisclaimer,
             onChanged: (v) => onChanged(
-              consentPrivacy, consentHealth, consentTerms, v ?? false, consentAge),
+                consentPrivacy, consentHealth, consentTerms, v ?? false, consentAge),
           ),
           _ConsentTile(
             label: 'Ich bestätige, dass ich mindestens 16 Jahre alt bin.',
             value: consentAge,
             onChanged: (v) => onChanged(
-              consentPrivacy, consentHealth, consentTerms, consentDisclaimer, v ?? false),
+                consentPrivacy, consentHealth, consentTerms, consentDisclaimer, v ?? false),
           ),
         ],
       ),
@@ -471,12 +516,13 @@ class _ConsentTile extends StatelessWidget {
   }
 }
 
-// Profile
+// ── Profile ───────────────────────────────────────────────────────────────────
+
 class _ProfilePage extends StatelessWidget {
   final TextEditingController nameController;
-  final String sex;
+  final String? sex;
   final DateTime? birthDate;
-  final String unitSystem;
+  final String? unitSystem;
   final ValueChanged<String> onSexChanged;
   final ValueChanged<String> onUnitChanged;
   final ValueChanged<DateTime> onBirthDateChanged;
@@ -493,12 +539,15 @@ class _ProfilePage extends StatelessWidget {
     required this.onNext,
   });
 
+  bool get _canProceed =>
+      nameController.text.trim().isNotEmpty && sex != null && unitSystem != null;
+
   @override
   Widget build(BuildContext context) {
     return _OnboardingPage(
       title: 'Dein Profil',
       buttonLabel: 'Weiter',
-      onButton: nameController.text.trim().isNotEmpty ? onNext : null,
+      onButton: _canProceed ? onNext : null,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -526,8 +575,11 @@ class _ProfilePage extends StatelessWidget {
               ButtonSegment(value: 'male', label: Text('Männlich')),
               ButtonSegment(value: 'female', label: Text('Weiblich')),
             ],
-            selected: {sex},
-            onSelectionChanged: (s) => onSexChanged(s.first),
+            selected: sex != null ? {sex!} : const <String>{},
+            emptySelectionAllowed: true,
+            onSelectionChanged: (s) {
+              if (s.isNotEmpty) onSexChanged(s.first);
+            },
           ),
           const SizedBox(height: 16),
           const Text(
@@ -544,16 +596,31 @@ class _ProfilePage extends StatelessWidget {
               ButtonSegment(value: 'metric', label: Text('Metrisch')),
               ButtonSegment(value: 'imperial', label: Text('Imperial')),
             ],
-            selected: {unitSystem},
-            onSelectionChanged: (s) => onUnitChanged(s.first),
+            selected: unitSystem != null ? {unitSystem!} : const <String>{},
+            emptySelectionAllowed: true,
+            onSelectionChanged: (s) {
+              if (s.isNotEmpty) onUnitChanged(s.first);
+            },
           ),
+          if (!_canProceed) ...[
+            const SizedBox(height: 12),
+            const Text(
+              'Bitte gib deinen Namen ein und wähle Geschlecht und Einheiten.',
+              style: TextStyle(
+                fontSize: 12,
+                color: TraumColors.onBackgroundSubtle,
+                fontFamily: 'DMSans',
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
 }
 
-// Body
+// ── Body ──────────────────────────────────────────────────────────────────────
+
 class _BodyPage extends StatelessWidget {
   final double heightCm, weightKg, weightGoalKg;
   final int stepsGoal;
@@ -740,7 +807,8 @@ class _SliderField extends StatelessWidget {
   }
 }
 
-// Nutrition
+// ── Nutrition ─────────────────────────────────────────────────────────────────
+
 class _NutritionPage extends StatelessWidget {
   final int kcalGoal, proteinGoal;
   final ValueChanged<int> onKcalChanged, onProteinChanged;
@@ -784,45 +852,163 @@ class _NutritionPage extends StatelessWidget {
   }
 }
 
-// Supplements (simplified)
-class _SupplementsPage extends StatelessWidget {
-  final VoidCallback onNext, onSkip;
-  const _SupplementsPage({required this.onNext, required this.onSkip});
+// ── Supplements ───────────────────────────────────────────────────────────────
+
+class _SupplementsPage extends ConsumerWidget {
+  final VoidCallback onNext;
+  const _SupplementsPage({required this.onNext});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final suppsAsync = ref.watch(_onboardingSuppsProvider);
+
     return _OnboardingPage(
       title: 'Supplements',
+      buttonLabel: 'Weiter',
+      onButton: onNext,
       content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Nimmst du Supplements? Du kannst diese später in der App hinzufügen.',
+            'Nimmst du regelmäßig Supplements? Füge sie direkt hier hinzu.',
             style: TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14,
             ),
           ),
-          const SizedBox(height: 24),
-          GradientButton(label: 'Weiter', onPressed: onNext),
-          const SizedBox(height: 8),
-          TextButton(onPressed: onSkip, child: const Text('Überspringen')),
+          const SizedBox(height: 16),
+          OutlinedButton.icon(
+            onPressed: () => _showAddSheet(context, ref),
+            icon: const Icon(Icons.add_rounded, size: 18),
+            label: const Text('Supplement hinzufügen',
+                style: TextStyle(fontFamily: 'DMSans')),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: TraumColors.indigoBlue,
+              side: const BorderSide(color: TraumColors.indigoBlue),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(TraumRadius.chip)),
+            ),
+          ),
+          const SizedBox(height: 12),
+          suppsAsync.when(
+            data: (supps) => supps.isEmpty
+                ? const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      'Noch keine Supplements hinzugefügt.',
+                      style: TextStyle(
+                          color: TraumColors.onBackgroundSubtle,
+                          fontFamily: 'DMSans',
+                          fontSize: 13),
+                    ),
+                  )
+                : Column(
+                    children: supps
+                        .map((s) => _SupplementChip(
+                              name: s.name,
+                              dosage:
+                                  '${s.dosageAmount ?? ''} ${s.dosageUnit ?? ''}'.trim(),
+                              onDelete: () => ref
+                                  .read(supplementDaoProvider)
+                                  .deleteSupplement(s.id),
+                            ))
+                        .toList(),
+                  ),
+            loading: () => const SizedBox.shrink(),
+            error: (_, __) => const SizedBox.shrink(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddSheet(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: TraumColors.surfaceElevated,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+            top: Radius.circular(TraumRadius.card)),
+      ),
+      builder: (_) => _OnboardingAddSupplementSheet(
+        onAdd: (c) => ref.read(supplementDaoProvider).insertSupplement(c),
+      ),
+    );
+  }
+}
+
+class _SupplementChip extends StatelessWidget {
+  final String name;
+  final String dosage;
+  final VoidCallback onDelete;
+
+  const _SupplementChip(
+      {required this.name, required this.dosage, required this.onDelete});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: TraumColors.surface,
+        borderRadius: BorderRadius.circular(TraumRadius.card),
+        border: Border.all(
+            color: TraumColors.indigoBlue.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.science_rounded,
+              color: TraumColors.indigoBlue, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name,
+                    style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14)),
+                if (dosage.isNotEmpty)
+                  Text(dosage,
+                      style: const TextStyle(
+                          color: TraumColors.onBackgroundMuted,
+                          fontFamily: 'DMSans',
+                          fontSize: 12)),
+              ],
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close,
+                size: 18, color: TraumColors.onBackgroundSubtle),
+            onPressed: onDelete,
+          ),
         ],
       ),
     );
   }
 }
 
-// Medication (simplified)
-class _MedicationPage extends StatelessWidget {
-  final VoidCallback onNext, onSkip;
-  const _MedicationPage({required this.onNext, required this.onSkip});
+// ── Medication ────────────────────────────────────────────────────────────────
+
+class _MedicationPage extends ConsumerWidget {
+  final VoidCallback onNext;
+  const _MedicationPage({required this.onNext});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final medsAsync = ref.watch(_onboardingMedsProvider);
+
     return _OnboardingPage(
       title: 'Medikamente',
+      buttonLabel: 'Weiter',
+      onButton: onNext,
       content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             padding: const EdgeInsets.all(12),
@@ -841,24 +1027,135 @@ class _MedicationPage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           const Text(
-            'Du kannst deine Medikamente später in der App hinzufügen.',
+            'Nimmst du regelmäßig Medikamente? Füge sie direkt hier hinzu.',
             style: TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14,
             ),
           ),
-          const SizedBox(height: 24),
-          GradientButton(label: 'Weiter', onPressed: onNext),
-          const SizedBox(height: 8),
-          TextButton(onPressed: onSkip, child: const Text('Überspringen')),
+          const SizedBox(height: 16),
+          OutlinedButton.icon(
+            onPressed: () => _showAddSheet(context, ref),
+            icon: const Icon(Icons.add_rounded, size: 18),
+            label: const Text('Medikament hinzufügen',
+                style: TextStyle(fontFamily: 'DMSans')),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: TraumColors.roseRed,
+              side: const BorderSide(color: TraumColors.roseRed),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(TraumRadius.chip)),
+            ),
+          ),
+          const SizedBox(height: 12),
+          medsAsync.when(
+            data: (meds) => meds.isEmpty
+                ? const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      'Noch keine Medikamente hinzugefügt.',
+                      style: TextStyle(
+                          color: TraumColors.onBackgroundSubtle,
+                          fontFamily: 'DMSans',
+                          fontSize: 13),
+                    ),
+                  )
+                : Column(
+                    children: meds
+                        .map((m) => _MedicationChip(
+                              name: m.name,
+                              dosage: m.dosage ?? '',
+                              form: m.form ?? '',
+                              onDelete: () => ref
+                                  .read(medicationDaoProvider)
+                                  .deleteMedication(m.id),
+                            ))
+                        .toList(),
+                  ),
+            loading: () => const SizedBox.shrink(),
+            error: (_, __) => const SizedBox.shrink(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddSheet(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: TraumColors.surfaceElevated,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+            top: Radius.circular(TraumRadius.card)),
+      ),
+      builder: (_) => _OnboardingAddMedicationSheet(
+        onAdd: (c) => ref.read(medicationDaoProvider).insertMedication(c),
+      ),
+    );
+  }
+}
+
+class _MedicationChip extends StatelessWidget {
+  final String name, dosage, form;
+  final VoidCallback onDelete;
+
+  const _MedicationChip(
+      {required this.name,
+      required this.dosage,
+      required this.form,
+      required this.onDelete});
+
+  @override
+  Widget build(BuildContext context) {
+    final subtitle =
+        [dosage, form].where((s) => s.isNotEmpty).join(' · ');
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: TraumColors.surface,
+        borderRadius: BorderRadius.circular(TraumRadius.card),
+        border: Border.all(
+            color: TraumColors.roseRed.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.medication_rounded,
+              color: TraumColors.roseRed, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name,
+                    style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14)),
+                if (subtitle.isNotEmpty)
+                  Text(subtitle,
+                      style: const TextStyle(
+                          color: TraumColors.onBackgroundMuted,
+                          fontFamily: 'DMSans',
+                          fontSize: 12)),
+              ],
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close,
+                size: 18, color: TraumColors.onBackgroundSubtle),
+            onPressed: onDelete,
+          ),
         ],
       ),
     );
   }
 }
 
-// Budget
+// ── Budget ────────────────────────────────────────────────────────────────────
+
 class _BudgetPage extends StatelessWidget {
   final String currencySymbol;
   final double monthlyBudget;
@@ -909,7 +1206,8 @@ class _BudgetPage extends StatelessWidget {
   }
 }
 
-// Cycle
+// ── Cycle ─────────────────────────────────────────────────────────────────────
+
 class _CyclePage extends StatelessWidget {
   final int avgCycleLength, avgPeriodLength;
   final DateTime? lastPeriodStart;
@@ -960,37 +1258,189 @@ class _CyclePage extends StatelessWidget {
   }
 }
 
-// Navigation
-class _NavPage extends StatelessWidget {
-  final String sex;
+// ── Navigation customization ──────────────────────────────────────────────────
+
+class _NavPage extends ConsumerStatefulWidget {
+  final String? sex;
   final VoidCallback onNext;
 
   const _NavPage({required this.sex, required this.onNext});
+
+  @override
+  ConsumerState<_NavPage> createState() => _NavPageState();
+}
+
+class _NavPageState extends ConsumerState<_NavPage> {
+  late List<String> _selectedSlots;
+
+  static const _allModules = [
+    'training', 'health', 'nutrition', 'supplements',
+    'planning', 'medication', 'abstinence', 'budget',
+    'period', 'profile', 'settings',
+  ];
+
+  static const _labels = {
+    'training': 'Training',
+    'health': 'Gesundheit',
+    'nutrition': 'Ernährung',
+    'supplements': 'Supplements',
+    'planning': 'Planung',
+    'medication': 'Medikamente',
+    'abstinence': 'Abstinenz',
+    'budget': 'Budget',
+    'period': 'Zyklus',
+    'profile': 'Profil',
+    'settings': 'Einstellungen',
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    // Start with current provider value as default selection
+    final current = ref.read(navSlotsProvider);
+    _selectedSlots = List.from(current);
+  }
+
+  List<String> get _visibleModules {
+    if (widget.sex != 'female') {
+      return _allModules.where((m) => m != 'period').toList();
+    }
+    return _allModules;
+  }
+
+  void _toggle(String module) {
+    setState(() {
+      if (_selectedSlots.contains(module)) {
+        _selectedSlots.remove(module);
+      } else if (_selectedSlots.length < 4) {
+        _selectedSlots.add(module);
+      }
+    });
+  }
+
+  Future<void> _proceed() async {
+    await ref.read(navSlotsProvider.notifier).setSlots(_selectedSlots);
+    widget.onNext();
+  }
 
   @override
   Widget build(BuildContext context) {
     return _OnboardingPage(
       title: 'Navigation anpassen',
       buttonLabel: 'Weiter',
-      onButton: onNext,
-      content: const Text(
-        'Home ist immer links fest. Du kannst 1–4 weitere Module in die Navigation legen. '
-        'Du kannst die Navigation jederzeit im "Mehr"-Menü anpassen.',
-        style: TextStyle(
-          color: TraumColors.onBackgroundMuted,
-          fontFamily: 'DMSans',
-          fontSize: 14,
-          height: 1.6,
-        ),
+      onButton: _proceed,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Home ist immer links fest. Wähle bis zu 4 weitere Module für deine Navigation.',
+            style: TextStyle(
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontSize: 14,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '${_selectedSlots.length}/4 ausgewählt',
+            style: const TextStyle(
+              color: TraumColors.onBackgroundSubtle,
+              fontFamily: 'DMSans',
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: _visibleModules.map((module) {
+              final selected = _selectedSlots.contains(module);
+              final color = TraumColors.moduleColor(module);
+              final canAdd = _selectedSlots.length < 4;
+              return GestureDetector(
+                onTap: () {
+                  if (selected || canAdd) _toggle(module);
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: selected
+                        ? color.withValues(alpha: 0.15)
+                        : TraumColors.surface,
+                    borderRadius:
+                        BorderRadius.circular(TraumRadius.chip),
+                    border: Border.all(
+                      color: selected
+                          ? color
+                          : TraumColors.surfaceVariant,
+                    ),
+                  ),
+                  child: Text(
+                    _labels[module] ?? module,
+                    style: TextStyle(
+                      color: selected
+                          ? color
+                          : (canAdd || selected)
+                              ? TraumColors.onBackgroundMuted
+                              : TraumColors.onBackgroundSubtle,
+                      fontFamily: 'DMSans',
+                      fontSize: 13,
+                      fontWeight: selected
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: TraumColors.surfaceVariant.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Text(
+              'Du kannst die Navigation jederzeit über das „Mehr"-Menü anpassen.',
+              style: TextStyle(
+                color: TraumColors.onBackgroundSubtle,
+                fontFamily: 'DMSans',
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-// Weather
-class _WeatherPage extends StatelessWidget {
+// ── Weather ───────────────────────────────────────────────────────────────────
+
+class _WeatherPage extends StatefulWidget {
   final VoidCallback onNext;
   const _WeatherPage({required this.onNext});
+
+  @override
+  State<_WeatherPage> createState() => _WeatherPageState();
+}
+
+class _WeatherPageState extends State<_WeatherPage> {
+  bool _requesting = false;
+
+  Future<void> _requestLocation() async {
+    setState(() => _requesting = true);
+    try {
+      await Permission.locationWhenInUse.request();
+    } finally {
+      if (mounted) setState(() => _requesting = false);
+    }
+    widget.onNext();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -999,28 +1449,33 @@ class _WeatherPage extends StatelessWidget {
       content: Column(
         children: [
           const Text(
-            'TRAUM kann das aktuelle Wetter auf der Startseite anzeigen.',
+            'TRAUM kann das aktuelle Wetter auf der Startseite anzeigen. '
+            'Dazu wird der Standort benötigt.',
             style: TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14,
+              height: 1.5,
             ),
           ),
           const SizedBox(height: 24),
           GradientButton(
-            label: 'Standort automatisch',
-            onPressed: onNext,
+            label: _requesting ? 'Anfrage läuft…' : 'Standort erlauben',
+            onPressed: _requesting ? null : _requestLocation,
             icon: const Icon(Icons.location_on, color: Colors.white, size: 18),
           ),
           const SizedBox(height: 8),
-          TextButton(onPressed: onNext, child: const Text('Überspringen')),
+          TextButton(
+              onPressed: _requesting ? null : widget.onNext,
+              child: const Text('Überspringen')),
         ],
       ),
     );
   }
 }
 
-// Notifications
+// ── Notifications ─────────────────────────────────────────────────────────────
+
 class _NotificationsPage extends StatelessWidget {
   final VoidCallback onNext;
   const _NotificationsPage({required this.onNext});
@@ -1056,10 +1511,36 @@ class _NotificationsPage extends StatelessWidget {
   }
 }
 
-// Health Connect
-class _HealthPage extends StatelessWidget {
+// ── Health Connect ────────────────────────────────────────────────────────────
+
+class _HealthPage extends StatefulWidget {
   final VoidCallback onNext;
   const _HealthPage({required this.onNext});
+
+  @override
+  State<_HealthPage> createState() => _HealthPageState();
+}
+
+class _HealthPageState extends State<_HealthPage> {
+  bool _requesting = false;
+
+  Future<void> _requestHealth() async {
+    setState(() => _requesting = true);
+    try {
+      final health = Health();
+      await health.configure(useHealthConnectIfAvailable: true);
+      await health.requestAuthorization([
+        HealthDataType.STEPS,
+        HealthDataType.HEART_RATE,
+        HealthDataType.SLEEP_ASLEEP,
+      ]);
+    } catch (_) {
+      // Ignore errors – health connect may not be available on all devices
+    } finally {
+      if (mounted) setState(() => _requesting = false);
+    }
+    widget.onNext();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1079,19 +1560,22 @@ class _HealthPage extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           GradientButton(
-            label: 'Zugriff erlauben & importieren',
+            label: _requesting ? 'Verbinde…' : 'Zugriff erlauben & importieren',
             gradient: TraumColors.gradientCool,
-            onPressed: onNext,
+            onPressed: _requesting ? null : _requestHealth,
           ),
           const SizedBox(height: 8),
-          TextButton(onPressed: onNext, child: const Text('Überspringen')),
+          TextButton(
+              onPressed: _requesting ? null : widget.onNext,
+              child: const Text('Überspringen')),
         ],
       ),
     );
   }
 }
 
-// Done
+// ── Done ──────────────────────────────────────────────────────────────────────
+
 class _DonePage extends StatelessWidget {
   final String name;
   final int kcalGoal, waterGoal;
@@ -1108,7 +1592,7 @@ class _DonePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return _OnboardingPage(
       title: 'Alles bereit!',
-      buttonLabel: 'Los geht\'s',
+      buttonLabel: "Los geht's",
       onButton: onFinish,
       content: Column(
         children: [
@@ -1154,5 +1638,830 @@ class _DonePage extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+// ── Security / Lock setup ─────────────────────────────────────────────────────
+
+enum _SecurityMode { choose, enterPin, confirmPin }
+
+class _SecurityPage extends ConsumerStatefulWidget {
+  final VoidCallback onNext;
+  const _SecurityPage({required this.onNext});
+
+  @override
+  ConsumerState<_SecurityPage> createState() => _SecurityPageState();
+}
+
+class _SecurityPageState extends ConsumerState<_SecurityPage> {
+  final _auth = LocalAuthentication();
+  bool _biometricAvailable = false;
+  List<BiometricType> _biometricTypes = [];
+  _SecurityMode _mode = _SecurityMode.choose;
+  String _pin = '';
+  String _pinToConfirm = '';
+  bool _loading = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkBiometric();
+  }
+
+  Future<void> _checkBiometric() async {
+    try {
+      final canCheck = await _auth.canCheckBiometrics;
+      final isSupported = await _auth.isDeviceSupported();
+      if (mounted && canCheck && isSupported) {
+        final types = await _auth.getAvailableBiometrics();
+        setState(() {
+          _biometricAvailable = true;
+          _biometricTypes = types;
+        });
+      }
+    } catch (_) {}
+  }
+
+  IconData get _biometricIcon =>
+      _biometricTypes.contains(BiometricType.face)
+          ? Icons.face_rounded
+          : Icons.fingerprint_rounded;
+
+  String get _biometricLabel =>
+      _biometricTypes.contains(BiometricType.face)
+          ? 'Face ID aktivieren'
+          : 'Fingerabdruck aktivieren';
+
+  Future<void> _enableBiometric() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final ok = await _auth.authenticate(
+        localizedReason: 'Biometrische App-Sperre einrichten',
+        options: const AuthenticationOptions(
+          biometricOnly: false,
+          stickyAuth: true,
+        ),
+      );
+      if (!mounted) return;
+      if (ok) {
+        await ref.read(biometricLockProvider.notifier).set(true);
+        widget.onNext();
+      } else {
+        setState(() => _error = 'Authentifizierung fehlgeschlagen.');
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _error = 'Biometrie konnte nicht eingerichtet werden.');
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  void _addDigit(String d) {
+    final current = _mode == _SecurityMode.enterPin ? _pin : _pinToConfirm;
+    if (current.length >= 4) return;
+    if (_mode == _SecurityMode.enterPin) {
+      setState(() => _pin += d);
+      if (_pin.length == 4) {
+        setState(() {
+          _mode = _SecurityMode.confirmPin;
+          _pinToConfirm = '';
+          _error = null;
+        });
+      }
+    } else {
+      setState(() => _pinToConfirm += d);
+      if (_pinToConfirm.length == 4) _savePin();
+    }
+  }
+
+  void _removeDigit() {
+    if (_mode == _SecurityMode.enterPin && _pin.isNotEmpty) {
+      setState(() => _pin = _pin.substring(0, _pin.length - 1));
+    } else if (_mode == _SecurityMode.confirmPin && _pinToConfirm.isNotEmpty) {
+      setState(() =>
+          _pinToConfirm = _pinToConfirm.substring(0, _pinToConfirm.length - 1));
+    }
+  }
+
+  Future<void> _savePin() async {
+    if (_pin != _pinToConfirm) {
+      HapticFeedback.heavyImpact();
+      setState(() {
+        _error = 'PINs stimmen nicht überein. Bitte erneut eingeben.';
+        _mode = _SecurityMode.enterPin;
+        _pin = '';
+        _pinToConfirm = '';
+      });
+      return;
+    }
+    await PinService.save(_pin);
+    await ref.read(pinLockProvider.notifier).set(true);
+    widget.onNext();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _mode == _SecurityMode.choose
+        ? _buildChoosePage()
+        : _buildPinPage();
+  }
+
+  Widget _buildChoosePage() {
+    return _OnboardingPage(
+      title: 'App-Sicherheit',
+      buttonLabel: null,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Schütze deine Daten mit einer Sperre. Die App sperrt sich automatisch nach 5 Minuten Inaktivität.',
+            style: TextStyle(
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontSize: 14,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 24),
+          if (_biometricAvailable) ...[
+            _SecurityOptionCard(
+              icon: _biometricIcon,
+              title: _biometricLabel,
+              subtitle: 'Entsperre die App schnell und sicher',
+              color: TraumColors.indigoBlue,
+              loading: _loading,
+              onTap: _loading ? null : _enableBiometric,
+            ),
+            const SizedBox(height: 12),
+          ],
+          _SecurityOptionCard(
+            icon: Icons.pin_rounded,
+            title: 'PIN festlegen',
+            subtitle: '4-stellige Sicherheits-PIN',
+            color: TraumColors.coralOrange,
+            onTap: _loading
+                ? null
+                : () => setState(() {
+                      _mode = _SecurityMode.enterPin;
+                      _pin = '';
+                      _error = null;
+                    }),
+          ),
+          if (_error != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              _error!,
+              style: const TextStyle(
+                color: TraumColors.roseRed,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+            ),
+          ],
+          const SizedBox(height: 24),
+          Center(
+            child: TextButton(
+              onPressed: _loading ? null : widget.onNext,
+              child: const Text(
+                'Ohne Sperre fortfahren',
+                style:
+                    TextStyle(color: TraumColors.onBackgroundMuted),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPinPage() {
+    final current =
+        _mode == _SecurityMode.enterPin ? _pin : _pinToConfirm;
+    final title = _mode == _SecurityMode.enterPin
+        ? 'PIN festlegen'
+        : 'PIN bestätigen';
+    final subtitle = _mode == _SecurityMode.enterPin
+        ? 'Gib eine 4-stellige PIN ein'
+        : 'Gib die PIN zur Bestätigung nochmal ein';
+
+    return _OnboardingPage(
+      title: title,
+      content: Column(
+        children: [
+          Text(
+            subtitle,
+            style: const TextStyle(
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontSize: 14,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 32),
+          // PIN dots
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              4,
+              (i) => AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                width: 18,
+                height: 18,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: i < current.length
+                      ? TraumColors.indigoBlue
+                      : Colors.transparent,
+                  border: Border.all(
+                    color: i < current.length
+                        ? TraumColors.indigoBlue
+                        : TraumColors.onBackgroundSubtle,
+                    width: 2,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          if (_error != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              _error!,
+              style: const TextStyle(
+                color: TraumColors.roseRed,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+          const SizedBox(height: 32),
+          // Numpad
+          _OnboardingNumpad(onDigit: _addDigit, onDelete: _removeDigit),
+          const SizedBox(height: 16),
+          TextButton(
+            onPressed: () => setState(() {
+              _mode = _SecurityMode.choose;
+              _pin = '';
+              _pinToConfirm = '';
+              _error = null;
+            }),
+            child: const Text(
+              'Zurück zur Auswahl',
+              style: TextStyle(
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                  fontSize: 13),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SecurityOptionCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Color color;
+  final VoidCallback? onTap;
+  final bool loading;
+
+  const _SecurityOptionCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    this.onTap,
+    this.loading = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: TraumColors.surface,
+          borderRadius: BorderRadius.circular(TraumRadius.card),
+          border: Border.all(color: color.withValues(alpha: 0.4)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: loading
+                  ? Center(
+                      child: SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: color,
+                        ),
+                      ),
+                    )
+                  : Icon(icon, color: color, size: 26),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: onTap != null
+                          ? TraumColors.onBackground
+                          : TraumColors.onBackgroundSubtle,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: color.withValues(alpha: 0.7),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OnboardingNumpad extends StatelessWidget {
+  final void Function(String) onDigit;
+  final VoidCallback onDelete;
+
+  const _OnboardingNumpad({required this.onDigit, required this.onDelete});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _buildRow(['1', '2', '3']),
+        const SizedBox(height: 10),
+        _buildRow(['4', '5', '6']),
+        const SizedBox(height: 10),
+        _buildRow(['7', '8', '9']),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(width: 64),
+            const SizedBox(width: 12),
+            _NumKey(label: '0', onTap: () => onDigit('0')),
+            const SizedBox(width: 12),
+            _DelKey(onTap: onDelete),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRow(List<String> digits) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: digits.asMap().entries.map((e) {
+        return Padding(
+          padding: EdgeInsets.only(left: e.key > 0 ? 12 : 0),
+          child: _NumKey(label: e.value, onTap: () => onDigit(e.value)),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _NumKey extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _NumKey({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 64,
+        height: 64,
+        decoration: BoxDecoration(
+          color: TraumColors.surface,
+          shape: BoxShape.circle,
+          border: Border.all(color: TraumColors.surfaceVariant),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: const TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontSize: 22,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DelKey extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _DelKey({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 64,
+        height: 64,
+        decoration: BoxDecoration(
+          color: TraumColors.surface,
+          shape: BoxShape.circle,
+          border: Border.all(color: TraumColors.surfaceVariant),
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.backspace_outlined,
+            color: TraumColors.onBackgroundMuted,
+            size: 22,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Inline add forms ──────────────────────────────────────────────────────────
+
+class _OnboardingAddSupplementSheet extends StatefulWidget {
+  final Future<void> Function(SupplementsCompanion) onAdd;
+  const _OnboardingAddSupplementSheet({required this.onAdd});
+
+  @override
+  State<_OnboardingAddSupplementSheet> createState() =>
+      _OnboardingAddSupplementSheetState();
+}
+
+class _OnboardingAddSupplementSheetState
+    extends State<_OnboardingAddSupplementSheet> {
+  final _nameCtrl = TextEditingController();
+  final _amountCtrl = TextEditingController();
+  String _category = 'Vitamine';
+  String _unit = 'mg';
+  bool _saving = false;
+
+  static const _categories = [
+    'Vitamine', 'Mineralien', 'Aminosäuren', 'Protein', 'Omega-3',
+    'Adaptogene', 'Pre-Workout', 'Darmgesundheit', 'Kreatin', 'Sonstige',
+  ];
+  static const _units = [
+    'mg', 'g', 'µg', 'IU', 'ml', 'Kapsel(n)', 'Tablette(n)', 'Messbecher',
+  ];
+
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    _amountCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 20, right: 20, top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40, height: 4,
+                decoration: BoxDecoration(
+                    color: TraumColors.onBackgroundSubtle,
+                    borderRadius: BorderRadius.circular(2)),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text('Supplement hinzufügen',
+                style: TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18)),
+            const SizedBox(height: 16),
+            _buildField('Name', _nameCtrl, hint: 'z.B. Vitamin D3'),
+            const SizedBox(height: 12),
+            const Text('Kategorie',
+                style: TextStyle(
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                    fontSize: 13)),
+            const SizedBox(height: 6),
+            DropdownButton<String>(
+              value: _category,
+              dropdownColor: TraumColors.surfaceElevated,
+              isExpanded: true,
+              style: const TextStyle(
+                  color: TraumColors.onBackground, fontFamily: 'DMSans'),
+              underline:
+                  Container(height: 1, color: TraumColors.surfaceVariant),
+              items: _categories
+                  .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                  .toList(),
+              onChanged: (v) => setState(() => _category = v!),
+            ),
+            const SizedBox(height: 12),
+            Row(children: [
+              Expanded(
+                child: _buildField('Menge', _amountCtrl,
+                    hint: '1000',
+                    keyboardType: TextInputType.number),
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Einheit',
+                      style: TextStyle(
+                          color: TraumColors.onBackgroundMuted,
+                          fontFamily: 'DMSans',
+                          fontSize: 13)),
+                  const SizedBox(height: 6),
+                  DropdownButton<String>(
+                    value: _unit,
+                    dropdownColor: TraumColors.surfaceElevated,
+                    style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans'),
+                    underline: Container(
+                        height: 1, color: TraumColors.surfaceVariant),
+                    items: _units
+                        .map((u) =>
+                            DropdownMenuItem(value: u, child: Text(u)))
+                        .toList(),
+                    onChanged: (v) => setState(() => _unit = v!),
+                  ),
+                ],
+              ),
+            ]),
+            const SizedBox(height: 20),
+            GradientButton(
+              label: _saving ? 'Speichern…' : 'Speichern',
+              onPressed: _saving ? null : _save,
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildField(String label, TextEditingController ctrl,
+      {String? hint, TextInputType? keyboardType}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style: const TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 13)),
+        const SizedBox(height: 6),
+        TextField(
+          controller: ctrl,
+          keyboardType: keyboardType,
+          style: const TextStyle(
+              color: TraumColors.onBackground, fontFamily: 'DMSans'),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(
+                color: TraumColors.onBackgroundSubtle,
+                fontFamily: 'DMSans'),
+            filled: true,
+            fillColor: TraumColors.surface,
+            border: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(TraumRadius.card),
+                borderSide: BorderSide.none),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _save() async {
+    if (_nameCtrl.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Name ist ein Pflichtfeld')));
+      return;
+    }
+    setState(() => _saving = true);
+    await widget.onAdd(SupplementsCompanion.insert(
+      name: _nameCtrl.text.trim(),
+      category: Value(_category),
+      dosageAmount: Value(
+          _amountCtrl.text.trim().isEmpty ? null : _amountCtrl.text.trim()),
+      dosageUnit: Value(_unit),
+    ));
+    if (mounted) Navigator.pop(context);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _OnboardingAddMedicationSheet extends StatefulWidget {
+  final Future<void> Function(MedicationsCompanion) onAdd;
+  const _OnboardingAddMedicationSheet({required this.onAdd});
+
+  @override
+  State<_OnboardingAddMedicationSheet> createState() =>
+      _OnboardingAddMedicationSheetState();
+}
+
+class _OnboardingAddMedicationSheetState
+    extends State<_OnboardingAddMedicationSheet> {
+  final _nameCtrl = TextEditingController();
+  final _dosageCtrl = TextEditingController();
+  String _form = 'Tablette';
+  bool _saving = false;
+
+  static const _forms = [
+    'Tablette', 'Kapsel', 'Tropfen', 'Injektion', 'Salbe', 'Spray', 'Sonstige',
+  ];
+
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    _dosageCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 20, right: 20, top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40, height: 4,
+                decoration: BoxDecoration(
+                    color: TraumColors.onBackgroundSubtle,
+                    borderRadius: BorderRadius.circular(2)),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text('Medikament hinzufügen',
+                style: TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18)),
+            const SizedBox(height: 16),
+            _buildField('Name', _nameCtrl, hint: 'z.B. Aspirin'),
+            const SizedBox(height: 12),
+            _buildField('Dosierung', _dosageCtrl, hint: 'z.B. 100 mg'),
+            const SizedBox(height: 12),
+            const Text('Darreichungsform',
+                style: TextStyle(
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                    fontSize: 13)),
+            const SizedBox(height: 6),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _forms.map((f) {
+                final selected = f == _form;
+                return GestureDetector(
+                  onTap: () => setState(() => _form = f),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? TraumColors.roseRedDim
+                          : TraumColors.surfaceVariant,
+                      borderRadius:
+                          BorderRadius.circular(TraumRadius.chip),
+                      border: Border.all(
+                          color: selected
+                              ? TraumColors.roseRed
+                              : Colors.transparent),
+                    ),
+                    child: Text(f,
+                        style: TextStyle(
+                            color: selected
+                                ? TraumColors.roseRed
+                                : TraumColors.onBackgroundMuted,
+                            fontFamily: 'DMSans',
+                            fontSize: 13)),
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+            GradientButton(
+              label: _saving ? 'Speichern…' : 'Speichern',
+              onPressed: _saving ? null : _save,
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildField(String label, TextEditingController ctrl,
+      {String? hint}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style: const TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 13)),
+        const SizedBox(height: 6),
+        TextField(
+          controller: ctrl,
+          style: const TextStyle(
+              color: TraumColors.onBackground, fontFamily: 'DMSans'),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(
+                color: TraumColors.onBackgroundSubtle,
+                fontFamily: 'DMSans'),
+            filled: true,
+            fillColor: TraumColors.surface,
+            border: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(TraumRadius.card),
+                borderSide: BorderSide.none),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _save() async {
+    if (_nameCtrl.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Name ist ein Pflichtfeld')));
+      return;
+    }
+    setState(() => _saving = true);
+    await widget.onAdd(MedicationsCompanion.insert(
+      name: _nameCtrl.text.trim(),
+      dosage:
+          Value(_dosageCtrl.text.trim().isEmpty ? null : _dosageCtrl.text.trim()),
+      form: Value(_form),
+      timings: const Value('[]'),
+    ));
+    if (mounted) Navigator.pop(context);
   }
 }

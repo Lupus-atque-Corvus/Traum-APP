@@ -35,6 +35,7 @@ import '../../features/period_tracking/cycle_history_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../features/profile/profile_screen.dart';
 import '../../features/lock/biometric_lock_screen.dart';
+import '../../features/lock/pin_lock_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final prefs = ref.watch(preferencesRepositoryProvider);
@@ -57,6 +58,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.biometricLock,
         builder: (_, __) => const BiometricLockScreen(),
+      ),
+      GoRoute(
+        path: Routes.pinEntry,
+        builder: (_, __) => const PinLockScreen(),
       ),
       ShellRoute(
         builder: (context, state, child) => TraumScaffold(child: child),
