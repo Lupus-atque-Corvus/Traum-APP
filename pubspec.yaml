@@ -1,0 +1,151 @@
+name: traum
+description: "TRAUM — Dein persönliches Dashboard"
+publish_to: 'none'
+
+version: 0.0.1+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+
+  # Navigation
+  go_router: ^14.0.0
+
+  # Datenbank
+  drift: ^2.20.0
+  sqlite3_flutter_libs: ^0.5.0
+  path_provider: ^2.1.0
+  path: ^1.9.0
+
+  # Preferences
+  shared_preferences: ^2.3.2
+  flutter_secure_storage: ^9.2.2
+
+  # Gesundheit
+  health: ^13.1.4
+
+  # Charts
+  fl_chart: ^0.69.0
+
+  # Benachrichtigungen
+  flutter_local_notifications: ^17.2.3
+  timezone: ^0.9.4
+  flutter_timezone: ^3.0.0
+
+  # Background Tasks
+  workmanager: ^0.9.0
+
+  # Homescreen Widgets
+  home_widget: ^0.6.0
+
+  # Biometrie
+  local_auth: ^2.3.0
+
+  # HTTP
+  http: ^1.2.2
+
+  # Animationen
+  lottie: ^3.1.2
+
+  # GPS
+  geolocator: ^12.0.0
+
+  # Teilen
+  share_plus: ^10.0.0
+
+  # Archiv
+  archive: ^3.6.0
+
+  # Links
+  url_launcher: ^6.3.0
+
+  # App-Info
+  package_info_plus: ^8.0.0
+
+  # Bilder
+  image_picker: ^1.1.2
+
+  # Datei öffnen
+  open_file: ^3.3.2
+
+  # Kalender UI
+  table_calendar: ^3.1.2
+
+  # SVG
+  flutter_svg: ^2.0.10+1
+
+  # Gerätinfos
+  device_info_plus: ^10.1.0
+
+  # Verbindung
+  connectivity_plus: ^6.1.0
+
+  # Markdown
+  flutter_markdown: ^0.7.4+1
+
+  # i18n
+  intl: ^0.20.0
+
+  # Permissions
+  permission_handler: ^11.3.1
+
+  # Icons
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.0
+  drift_dev: ^2.20.0
+  riverpod_generator: ^2.4.0
+  flutter_launcher_icons: ^0.14.1
+  flutter_native_splash: ^2.4.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+
+flutter_native_splash:
+  color: "#0D0D1A"
+  android: true
+  ios: true
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  assets:
+    - assets/exercises/
+    - assets/supplements/
+    - assets/svg/
+    - assets/legal/
+    - assets/lottie/
+
+  fonts:
+    - family: DMSans
+      fonts:
+        - asset: assets/fonts/DMSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/DMSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/DMSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/DMSans-Bold.ttf
+          weight: 700
+    - family: NotoSansArabic
+      fonts:
+        - asset: assets/fonts/NotoSansArabic-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSansArabic-Bold.ttf
+          weight: 700
