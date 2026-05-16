@@ -83,12 +83,8 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
 
   @override
   Widget build(BuildContext context) {
-    final apptAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(planningDaoProvider).watchAllAppointments()),
-    );
-    final dayApptAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(planningDaoProvider).watchAppointmentsForDate(_selectedDay)),
-    );
+    final apptAsync = ref.watch(allAppointmentsStreamProvider);
+    final dayApptAsync = ref.watch(appointmentsForDateProvider(_selectedDay));
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -382,9 +378,7 @@ class _TodosTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final todosAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(planningDaoProvider).watchAllTodos()),
-    );
+    final todosAsync = ref.watch(allTodosStreamProvider);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -652,9 +646,7 @@ class _GoalsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final goalsAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(planningDaoProvider).watchAllGoals()),
-    );
+    final goalsAsync = ref.watch(allGoalsStreamProvider);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -851,13 +843,10 @@ class _HabitsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final habitsAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(planningDaoProvider).watchAllHabits()),
-    );
-    final today = DateTime.now();
-    final logsAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(planningDaoProvider).watchHabitLogsForDate(today)),
-    );
+    final habitsAsync = ref.watch(allHabitsStreamProvider);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final logsAsync = ref.watch(habitLogsForDateProvider(today));
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -932,10 +921,7 @@ class _HabitTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final last7Async = ref.watch(
-      FutureProvider.family<List<HabitLog>, int>((ref, id) =>
-          ref.watch(planningDaoProvider).getHabitLogsForLast7Days(id))(habit.id),
-    );
+    final last7Async = ref.watch(habitLogsLast7DaysProvider(habit.id));
 
     return Dismissible(
       key: ValueKey(habit.id),

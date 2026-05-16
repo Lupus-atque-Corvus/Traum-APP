@@ -57,9 +57,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final exercisesAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(trainingDaoProvider).watchAllExercises()),
-    );
+    final exercisesAsync = ref.watch(allExercisesStreamProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,

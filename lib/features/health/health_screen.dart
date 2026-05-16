@@ -706,15 +706,9 @@ class _OverviewTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sleepAsync = ref.watch(
-      FutureProvider((ref) => ref.watch(healthDaoProvider).getRecentSleepLogs(7)),
-    );
-    final moodAsync = ref.watch(
-      FutureProvider((ref) => ref.watch(healthDaoProvider).getLatestMood()),
-    );
-    final weightAsync = ref.watch(
-      FutureProvider((ref) => ref.watch(healthDaoProvider).getLatestWeight()),
-    );
+    final sleepAsync = ref.watch(recentSleepLogsProvider(7));
+    final moodAsync = ref.watch(latestMoodProvider);
+    final weightAsync = ref.watch(latestWeightProvider);
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -846,9 +840,7 @@ class _SleepTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final logsAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(healthDaoProvider).watchAllSleepLogs()),
-    );
+    final logsAsync = ref.watch(allSleepLogsStreamProvider);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -1047,9 +1039,7 @@ class _WeightTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final logsAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(healthDaoProvider).watchAllWeightLogs()),
-    );
+    final logsAsync = ref.watch(allWeightLogsStreamProvider);
     final unitSystem = ref.watch(unitSystemProvider);
 
     return Scaffold(
@@ -1168,9 +1158,7 @@ class _MeasurementsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final latestAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(healthDaoProvider).watchAllMeasurements()),
-    );
+    final latestAsync = ref.watch(allMeasurementsStreamProvider);
 
     return latestAsync.when(
       data: (entries) {

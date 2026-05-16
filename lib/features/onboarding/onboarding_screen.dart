@@ -1528,7 +1528,7 @@ class _HealthPageState extends State<_HealthPage> {
     setState(() => _requesting = true);
     try {
       final health = Health();
-      await health.configure(useHealthConnectIfAvailable: true);
+      await health.configure();
       await health.requestAuthorization([
         HealthDataType.STEPS,
         HealthDataType.HEART_RATE,

@@ -18,23 +18,11 @@ class ProfileScreen extends ConsumerWidget {
     final stepsGoal = ref.watch(stepsGoalNotifierProvider);
     final unitSystem = ref.watch(unitSystemProvider);
 
-    final weightAsync = ref.watch(
-      FutureProvider((ref) => ref.watch(healthDaoProvider).getLatestWeight()),
-    );
-    final sleepAsync = ref.watch(
-      FutureProvider((ref) => ref.watch(healthDaoProvider).getRecentSleepLogs(30)),
-    );
-    final moodAsync = ref.watch(
-      FutureProvider((ref) => ref.watch(healthDaoProvider).getLatestMood()),
-    );
-    final trainingSetsAsync = ref.watch(
-      FutureProvider((ref) =>
-          ref.watch(trainingDaoProvider).getRecentSets(const Duration(days: 30))),
-    );
-    final trainingSessionsAsync = ref.watch(
-      FutureProvider((ref) =>
-          ref.watch(trainingDaoProvider).getSessionsThisWeek()),
-    );
+    final weightAsync = ref.watch(latestWeightProvider);
+    final sleepAsync = ref.watch(recentSleepLogsProvider(30));
+    final moodAsync = ref.watch(latestMoodProvider);
+    final trainingSetsAsync = ref.watch(recentTrainingSetsProvider(30));
+    final trainingSessionsAsync = ref.watch(trainingSessionsThisWeekProvider);
     return Scaffold(
       backgroundColor: TraumColors.background,
       appBar: AppBar(

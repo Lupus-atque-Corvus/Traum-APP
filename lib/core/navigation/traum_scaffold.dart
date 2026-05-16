@@ -83,9 +83,7 @@ class _TraumScaffoldState extends ConsumerState<TraumScaffold> {
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
-        if (currentModule == 'home') {
-          SystemNavigator.pop();
-        } else {
+        if (currentModule != 'home') {
           context.go(Routes.home);
         }
       },

@@ -14,12 +14,8 @@ class PeriodScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final entriesAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(periodDaoProvider).watchAllPeriodEntries()),
-    );
-    final symptomsAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(periodDaoProvider).watchAllSymptoms()),
-    );
+    final entriesAsync = ref.watch(allPeriodEntriesStreamProvider);
+    final symptomsAsync = ref.watch(allPeriodSymptomsStreamProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,

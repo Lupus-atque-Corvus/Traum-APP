@@ -12,12 +12,8 @@ class WorkoutSessionDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final setsAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(trainingDaoProvider).watchSetsForSession(sessionId)),
-    );
-    final exercisesAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(trainingDaoProvider).watchAllExercises()),
-    );
+    final setsAsync = ref.watch(setsForSessionProvider(sessionId));
+    final exercisesAsync = ref.watch(allExercisesStreamProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,

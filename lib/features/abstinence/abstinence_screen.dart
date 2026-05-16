@@ -13,9 +13,7 @@ class AbstinenceScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final trackersAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(abstinenceDaoProvider).watchAllTrackers()),
-    );
+    final trackersAsync = ref.watch(abstinenceTrackersStreamProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,

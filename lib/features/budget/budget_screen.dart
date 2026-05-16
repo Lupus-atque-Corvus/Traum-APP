@@ -33,13 +33,9 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
   Widget build(BuildContext context) {
     final currency = ref.watch(currencySymbolProvider);
     final txAsync = ref.watch(
-      StreamProvider((ref) => ref
-          .watch(budgetDaoProvider)
-          .watchTransactionsForMonth(_selectedMonth.year, _selectedMonth.month)),
+      transactionsForMonthProvider((_selectedMonth.year, _selectedMonth.month)),
     );
-    final categoriesAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(budgetDaoProvider).watchAllCategories()),
-    );
+    final categoriesAsync = ref.watch(allBudgetCategoriesStreamProvider);
 
     const monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
       'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];

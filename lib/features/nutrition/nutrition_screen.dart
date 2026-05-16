@@ -24,14 +24,8 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
     final kcalGoal = ref.watch(kcalGoalNotifierProvider);
     final proteinGoal = ref.watch(proteinGoalNotifierProvider);
 
-    final logsAsync = ref.watch(
-      StreamProvider((ref) =>
-          ref.watch(nutritionDaoProvider).watchLogsForDate(_selectedDate)),
-    );
-    final waterAsync = ref.watch(
-      StreamProvider((ref) =>
-          ref.watch(nutritionDaoProvider).watchWaterForDate(_selectedDate)),
-    );
+    final logsAsync = ref.watch(nutritionLogsForDateProvider(_selectedDate));
+    final waterAsync = ref.watch(waterForDateProvider(_selectedDate));
 
     return Scaffold(
       backgroundColor: TraumColors.background,

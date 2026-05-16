@@ -14,13 +14,10 @@ class MedicationScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final medsAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(medicationDaoProvider).watchAllMedications()),
-    );
-    final today = DateTime.now();
-    final logsAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(medicationDaoProvider).watchLogsForDate(today)),
-    );
+    final medsAsync = ref.watch(allMedicationsStreamProvider);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final logsAsync = ref.watch(medicationLogsForDateProvider(today));
 
     return Scaffold(
       backgroundColor: TraumColors.background,
