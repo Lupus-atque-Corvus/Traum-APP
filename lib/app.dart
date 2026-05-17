@@ -25,6 +25,22 @@ class _TraumAppState extends ConsumerState<TraumApp> {
       onPause: _onPause,
       onResume: _onResume,
     );
+    // Always lock on cold start if lock is configured
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkStartupLock());
+  }
+
+  void _checkStartupLock() {
+    final biometricEnabled = ref.read(biometricLockProvider);
+    final pinEnabled = ref.read(pinLockProvider);
+    final onboarded = ref.read(preferencesRepositoryProvider).onboardingComplete;
+    if (!onboarded || (!biometricEnabled && !pinEnabled)) return;
+
+    final router = ref.read(routerProvider);
+    if (biometricEnabled) {
+      router.go(Routes.biometricLock);
+    } else {
+      router.go(Routes.pinEntry);
+    }
   }
 
   @override

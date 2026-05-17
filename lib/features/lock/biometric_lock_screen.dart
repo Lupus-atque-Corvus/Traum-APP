@@ -53,7 +53,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
       );
       if (!mounted) return;
       if (authenticated) {
-        context.go('/');
+        context.go(Routes.home);
       } else {
         setState(() {
           _errorMessage = 'Authentifizierung fehlgeschlagen';

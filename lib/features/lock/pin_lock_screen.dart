@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/navigation/routes.dart';
 import '../../core/security/pin_service.dart';
 import '../../core/theme/colors.dart';
 
@@ -60,7 +61,7 @@ class _PinLockScreenState extends State<PinLockScreen>
     final ok = await PinService.verify(_pin);
     if (!mounted) return;
     if (ok) {
-      context.go('/');
+      context.go(Routes.home);
     } else {
       HapticFeedback.heavyImpact();
       await _shakeController.forward(from: 0);
