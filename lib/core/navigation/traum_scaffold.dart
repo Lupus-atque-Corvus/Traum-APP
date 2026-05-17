@@ -225,6 +225,7 @@ class _NavItem extends StatelessWidget {
 
     if (isActive) {
       return GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
@@ -270,6 +271,7 @@ class _NavItem extends StatelessWidget {
     }
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -290,6 +292,7 @@ class _MoreButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
         width: 40,
