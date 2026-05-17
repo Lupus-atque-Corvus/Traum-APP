@@ -7,6 +7,57 @@ import '../theme/colors.dart';
 import '../theme/radius.dart';
 import 'routes.dart';
 
+Future<bool> _showExitDialog(BuildContext context) async {
+  final result = await showDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: TraumColors.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: const Text(
+        'App beenden?',
+        style: TextStyle(
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackground,
+          fontWeight: FontWeight.w700,
+          fontSize: 18,
+        ),
+      ),
+      content: const Text(
+        'Möchtest du TRAUM wirklich beenden?',
+        style: TextStyle(
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackgroundMuted,
+          fontSize: 14,
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx, false),
+          child: const Text(
+            'Abbrechen',
+            style: TextStyle(
+              fontFamily: 'DMSans',
+              color: TraumColors.onBackgroundMuted,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(ctx, true),
+          child: const Text(
+            'Beenden',
+            style: TextStyle(
+              fontFamily: 'DMSans',
+              color: TraumColors.coralOrange,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+  return result ?? false;
+}
+
 class TraumScaffold extends ConsumerStatefulWidget {
   final Widget child;
   const TraumScaffold({super.key, required this.child});
@@ -81,10 +132,13 @@ class _TraumScaffoldState extends ConsumerState<TraumScaffold> {
 
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (didPop, _) {
+      onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
         if (currentModule != 'home') {
           context.go(Routes.home);
+        } else {
+          final shouldExit = await _showExitDialog(context);
+          if (shouldExit) SystemNavigator.pop();
         }
       },
       child: Scaffold(
@@ -324,6 +378,10 @@ class _MoreMenuSheet extends ConsumerStatefulWidget {
 }
 
 class _MoreMenuSheetState extends ConsumerState<_MoreMenuSheet> {
+  static const _allModules = [
+    'training', 'health', 'nutrition', 'supplements', 'planning',
+    'medication', 'abstinence', 'budget', 'period', 'profile', 'settings',
+  ];
 
   IconData _iconFor(String module) {
     switch (module) {
@@ -356,40 +414,172 @@ class _MoreMenuSheetState extends ConsumerState<_MoreMenuSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final activeSlots = widget.navSlots;
+    final inNav = {'home', ...activeSlots};
+    final isPeriodEnabled = ref.watch(isPeriodTrackingEnabledProvider);
+    final availableToAdd = _allModules
+        .where((m) => !inNav.contains(m))
+        .where((m) => m != 'period' || isPeriodEnabled)
+        .toList();
+
     return DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      maxChildSize: 0.9,
+      initialChildSize: 0.7,
+      maxChildSize: 0.95,
       minChildSize: 0.4,
       expand: false,
       builder: (_, controller) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 8),
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: TraumColors.onBackgroundSubtle,
-              borderRadius: BorderRadius.circular(2),
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: TraumColors.onBackgroundSubtle,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
           ),
-          const SizedBox(height: 16),
+          // Sektion: Leiste anpassen
           const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                Text(
-                  'Mehr',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: TraumColors.onBackground,
-                    fontFamily: 'DMSans',
-                  ),
-                ),
-              ],
+            padding: EdgeInsets.fromLTRB(20, 16, 20, 6),
+            child: Text(
+              'LEISTE ANPASSEN',
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackgroundMuted,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.8,
+              ),
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(
+            height: 72,
+            child: ReorderableListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: activeSlots.length,
+              onReorder: (oldIdx, newIdx) {
+                HapticFeedback.mediumImpact();
+                ref.read(navSlotsProvider.notifier).reorder(oldIdx, newIdx);
+              },
+              itemBuilder: (_, i) {
+                final module = activeSlots[i];
+                final color = TraumColors.moduleColor(module);
+                final label = Routes.moduleLabels[module] ?? module;
+                return Container(
+                  key: ValueKey(module),
+                  margin: const EdgeInsets.only(right: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(TraumRadius.chip),
+                    border: Border.all(color: color.withValues(alpha: 0.5)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(_iconFor(module), color: color, size: 16),
+                      const SizedBox(width: 6),
+                      Text(
+                        label,
+                        style: TextStyle(
+                          color: color,
+                          fontFamily: 'DMSans',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      GestureDetector(
+                        onTap: () => ref
+                            .read(navSlotsProvider.notifier)
+                            .remove(module),
+                        child: Icon(
+                          Icons.close,
+                          size: 14,
+                          color: color.withValues(alpha: 0.7),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          if (activeSlots.length < 4 && availableToAdd.isNotEmpty) ...[
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 12, 20, 6),
+              child: Text(
+                'HINZUFÜGEN',
+                style: TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundMuted,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.8,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: availableToAdd.map((m) {
+                  final color = TraumColors.moduleColor(m);
+                  final label = Routes.moduleLabels[m] ?? m;
+                  return GestureDetector(
+                    onTap: () =>
+                        ref.read(navSlotsProvider.notifier).add(m),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: TraumColors.surface,
+                        borderRadius:
+                            BorderRadius.circular(TraumRadius.chip),
+                        border: Border.all(
+                            color: color.withValues(alpha: 0.4)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.add, size: 14, color: color),
+                          const SizedBox(width: 4),
+                          Text(
+                            label,
+                            style: TextStyle(
+                              color: color,
+                              fontFamily: 'DMSans',
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+          const Divider(color: Colors.white12, height: 24),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+            child: Text(
+              'MEHR',
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackgroundMuted,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.8,
+              ),
+            ),
+          ),
           Expanded(
             child: GridView.builder(
               controller: controller,

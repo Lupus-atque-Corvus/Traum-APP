@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:local_auth/error_codes.dart' as auth_error;
 import '../../core/navigation/routes.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
@@ -49,6 +51,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
         options: const AuthenticationOptions(
           biometricOnly: false,
           stickyAuth: true,
+          useErrorDialogs: true,
         ),
       );
       if (!mounted) return;
@@ -56,14 +59,35 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
         context.go('/');
       } else {
         setState(() {
-          _errorMessage = 'Authentifizierung fehlgeschlagen';
+          _errorMessage = 'Authentifizierung fehlgeschlagen. Bitte erneut versuchen.';
           _authenticating = false;
         });
       }
+    } on PlatformException catch (e) {
+      if (!mounted) return;
+      String message;
+      switch (e.code) {
+        case auth_error.notAvailable:
+          message = 'Biometrie ist auf diesem Gerät nicht verfügbar.';
+          break;
+        case auth_error.notEnrolled:
+          message = 'Kein Fingerabdruck/Gesicht hinterlegt. Bitte PIN verwenden.';
+          break;
+        case auth_error.lockedOut:
+        case auth_error.permanentlyLockedOut:
+          message = 'Zu viele Fehlversuche. Bitte PIN verwenden.';
+          break;
+        default:
+          message = 'Biometrie-Fehler: ${e.message ?? e.code}';
+      }
+      setState(() {
+        _errorMessage = message;
+        _authenticating = false;
+      });
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = 'Biometrie nicht verfügbar';
+          _errorMessage = 'Biometrie nicht verfügbar. Bitte PIN verwenden.';
           _authenticating = false;
         });
       }

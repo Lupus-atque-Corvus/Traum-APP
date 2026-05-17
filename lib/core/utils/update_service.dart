@@ -94,7 +94,7 @@ class _UpdateDialogState extends State<_UpdateDialog> {
   Future<void> _download() async {
     setState(() { _downloading = true; _errorMsg = null; });
     try {
-      final dir = await getExternalStorageDirectory() ?? await getApplicationDocumentsDirectory();
+      final dir = await getTemporaryDirectory();
       final file = File('${dir.path}/traum-update.apk');
 
       final client = http.Client();
