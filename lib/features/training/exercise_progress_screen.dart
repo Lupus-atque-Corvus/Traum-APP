@@ -11,13 +11,8 @@ class ExerciseProgressScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final setsAsync = ref.watch(
-      FutureProvider((ref) =>
-          ref.watch(trainingDaoProvider).getRecentSets(const Duration(days: 90))),
-    );
-    final exercisesAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(trainingDaoProvider).watchAllExercises()),
-    );
+    final setsAsync = ref.watch(recentTrainingSetsProvider(90));
+    final exercisesAsync = ref.watch(allExercisesStreamProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,

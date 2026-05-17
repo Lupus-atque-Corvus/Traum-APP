@@ -12,9 +12,7 @@ class RoutinesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final plansAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(trainingDaoProvider).watchAllPlans()),
-    );
+    final plansAsync = ref.watch(allWorkoutPlansStreamProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,

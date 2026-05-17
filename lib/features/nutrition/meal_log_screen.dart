@@ -45,9 +45,7 @@ class _MealLogScreenState extends ConsumerState<MealLogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final templatesAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(nutritionDaoProvider).watchAllTemplates()),
-    );
+    final templatesAsync = ref.watch(allMealTemplatesStreamProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,

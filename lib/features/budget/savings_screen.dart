@@ -14,9 +14,7 @@ class SavingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currency = ref.watch(currencySymbolProvider);
-    final goalsAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(budgetDaoProvider).watchAllSavingsGoals()),
-    );
+    final goalsAsync = ref.watch(allSavingsGoalsStreamProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,

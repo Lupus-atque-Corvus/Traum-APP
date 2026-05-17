@@ -12,9 +12,7 @@ class CycleHistoryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final entriesAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(periodDaoProvider).watchAllPeriodEntries()),
-    );
+    final entriesAsync = ref.watch(allPeriodEntriesStreamProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,

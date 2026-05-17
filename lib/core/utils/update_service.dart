@@ -110,7 +110,7 @@ class _UpdateDialogState extends State<_UpdateDialog> {
 
     setState(() { _downloading = true; _errorMsg = null; _progress = null; });
     try {
-      final dir = await getExternalStorageDirectory() ?? await getApplicationDocumentsDirectory();
+      final dir = await getTemporaryDirectory();
       final file = File('${dir.path}/traum-update.apk');
 
       final client = http.Client();

@@ -8,6 +8,57 @@ import '../theme/radius.dart';
 import 'nav_customization_sheet.dart';
 import 'routes.dart';
 
+Future<bool> _showExitDialog(BuildContext context) async {
+  final result = await showDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: TraumColors.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: const Text(
+        'App beenden?',
+        style: TextStyle(
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackground,
+          fontWeight: FontWeight.w700,
+          fontSize: 18,
+        ),
+      ),
+      content: const Text(
+        'Möchtest du TRAUM wirklich beenden?',
+        style: TextStyle(
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackgroundMuted,
+          fontSize: 14,
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx, false),
+          child: const Text(
+            'Abbrechen',
+            style: TextStyle(
+              fontFamily: 'DMSans',
+              color: TraumColors.onBackgroundMuted,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(ctx, true),
+          child: const Text(
+            'Beenden',
+            style: TextStyle(
+              fontFamily: 'DMSans',
+              color: TraumColors.coralOrange,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+  return result ?? false;
+}
+
 class TraumScaffold extends ConsumerStatefulWidget {
   final Widget child;
   const TraumScaffold({super.key, required this.child});
@@ -82,12 +133,13 @@ class _TraumScaffoldState extends ConsumerState<TraumScaffold> {
 
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (didPop, _) {
+      onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
-        if (currentModule == 'home') {
-          SystemNavigator.pop();
-        } else {
+        if (currentModule != 'home') {
           context.go(Routes.home);
+        } else {
+          final shouldExit = await _showExitDialog(context);
+          if (shouldExit) SystemNavigator.pop();
         }
       },
       child: Scaffold(
@@ -342,20 +394,31 @@ class _MoreMenuSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final activeSlots = widget.navSlots;
+    final inNav = {'home', ...activeSlots};
+    final isPeriodEnabled = ref.watch(isPeriodTrackingEnabledProvider);
+    final availableToAdd = _allModules
+        .where((m) => !inNav.contains(m))
+        .where((m) => m != 'period' || isPeriodEnabled)
+        .toList();
+
     return DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      maxChildSize: 0.9,
+      initialChildSize: 0.7,
+      maxChildSize: 0.95,
       minChildSize: 0.4,
       expand: false,
       builder: (_, controller) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 8),
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: TraumColors.onBackgroundSubtle,
-              borderRadius: BorderRadius.circular(2),
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: TraumColors.onBackgroundSubtle,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -404,7 +467,6 @@ class _MoreMenuSheet extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 12),
           Expanded(
             child: moreModules.isEmpty
                 ? const Center(

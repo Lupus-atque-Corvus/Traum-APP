@@ -19,9 +19,7 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final entriesAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(periodDaoProvider).watchAllPeriodEntries()),
-    );
+    final entriesAsync = ref.watch(allPeriodEntriesStreamProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,

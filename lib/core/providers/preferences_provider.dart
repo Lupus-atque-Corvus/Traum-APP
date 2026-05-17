@@ -50,6 +50,24 @@ class NavSlotsNotifier extends Notifier<List<String>> {
     await repo.setNavSlots(jsonEncode(slots));
     state = slots;
   }
+
+  Future<void> reorder(int oldIndex, int newIndex) async {
+    final list = List<String>.from(state);
+    if (newIndex > oldIndex) newIndex--;
+    final item = list.removeAt(oldIndex);
+    list.insert(newIndex, item);
+    await setSlots(list);
+  }
+
+  Future<void> add(String module) async {
+    if (state.length >= 4 || state.contains(module)) return;
+    await setSlots([...state, module]);
+  }
+
+  Future<void> remove(String module) async {
+    if (state.length <= 1) return;
+    await setSlots(state.where((m) => m != module).toList());
+  }
 }
 
 final navSlotsProvider = NotifierProvider<NavSlotsNotifier, List<String>>(

@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart' show Value;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +16,7 @@ import '../../core/theme/radius.dart';
 import '../../core/components/components.dart';
 import '../../core/utils/water_calculator.dart';
 import '../../data/database/traum_database.dart';
+import '../legal/legal_document_screen.dart';
 
 // File-level stream providers used by the onboarding supplement/medication pages
 final _onboardingSuppsProvider = StreamProvider.autoDispose<List<Supplement>>(
@@ -441,6 +443,15 @@ class _ConsentPage extends StatelessWidget {
     required this.onNext,
   });
 
+  void _openLegal(BuildContext context, String assetPath, String title) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => LegalDocumentScreen(assetPath: assetPath, title: title),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return _OnboardingPage(
@@ -450,11 +461,18 @@ class _ConsentPage extends StatelessWidget {
       buttonEnabled: canContinue,
       content: Column(
         children: [
-          _ConsentTile(
-            label: 'Ich habe die Datenschutzerklärung gelesen und stimme zu.',
+          _LinkedConsentTile(
             value: consentPrivacy,
             onChanged: (v) => onChanged(
                 v ?? false, consentHealth, consentTerms, consentDisclaimer, consentAge),
+            leading: 'Ich habe die ',
+            linkText: 'Datenschutzerklärung',
+            trailing: ' gelesen und stimme zu.',
+            onLinkTap: () => _openLegal(
+              context,
+              'assets/legal/privacy_policy_de.md',
+              'Datenschutzerklärung',
+            ),
           ),
           _ConsentTile(
             label: 'Ich willige in die Verarbeitung von Gesundheitsdaten ein (DSGVO Art. 9).',
@@ -462,17 +480,31 @@ class _ConsentPage extends StatelessWidget {
             onChanged: (v) => onChanged(
                 consentPrivacy, v ?? false, consentTerms, consentDisclaimer, consentAge),
           ),
-          _ConsentTile(
-            label: 'Ich akzeptiere die Nutzungsbedingungen.',
+          _LinkedConsentTile(
             value: consentTerms,
             onChanged: (v) => onChanged(
                 consentPrivacy, consentHealth, v ?? false, consentDisclaimer, consentAge),
+            leading: 'Ich akzeptiere die ',
+            linkText: 'Nutzungsbedingungen',
+            trailing: '.',
+            onLinkTap: () => _openLegal(
+              context,
+              'assets/legal/terms_de.md',
+              'Nutzungsbedingungen',
+            ),
           ),
-          _ConsentTile(
-            label: 'Ich bestätige den medizinischen Haftungsausschluss.',
+          _LinkedConsentTile(
             value: consentDisclaimer,
             onChanged: (v) => onChanged(
                 consentPrivacy, consentHealth, consentTerms, v ?? false, consentAge),
+            leading: 'Ich bestätige den ',
+            linkText: 'Medizinischen Haftungsausschluss',
+            trailing: '.',
+            onLinkTap: () => _openLegal(
+              context,
+              'assets/legal/medical_disclaimer_de.md',
+              'Medizinischer Haftungsausschluss',
+            ),
           ),
           _ConsentTile(
             label: 'Ich bestätige, dass ich mindestens 16 Jahre alt bin.',
@@ -508,6 +540,56 @@ class _ConsentTile extends StatelessWidget {
           fontSize: 13,
           color: TraumColors.onBackground,
           fontFamily: 'DMSans',
+        ),
+      ),
+      contentPadding: EdgeInsets.zero,
+      controlAffinity: ListTileControlAffinity.leading,
+    );
+  }
+}
+
+class _LinkedConsentTile extends StatelessWidget {
+  final bool value;
+  final ValueChanged<bool?> onChanged;
+  final String leading;
+  final String linkText;
+  final String trailing;
+  final VoidCallback onLinkTap;
+
+  const _LinkedConsentTile({
+    required this.value,
+    required this.onChanged,
+    required this.leading,
+    required this.linkText,
+    required this.trailing,
+    required this.onLinkTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CheckboxListTile(
+      value: value,
+      onChanged: onChanged,
+      title: RichText(
+        text: TextSpan(
+          style: const TextStyle(
+            fontSize: 13,
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+          ),
+          children: [
+            TextSpan(text: leading),
+            TextSpan(
+              text: linkText,
+              style: const TextStyle(
+                color: TraumColors.cyanBlue,
+                decoration: TextDecoration.underline,
+                decorationColor: TraumColors.cyanBlue,
+              ),
+              recognizer: TapGestureRecognizer()..onTap = onLinkTap,
+            ),
+            TextSpan(text: trailing),
+          ],
         ),
       ),
       contentPadding: EdgeInsets.zero,
@@ -1528,7 +1610,7 @@ class _HealthPageState extends State<_HealthPage> {
     setState(() => _requesting = true);
     try {
       final health = Health();
-      await health.configure(useHealthConnectIfAvailable: true);
+      await health.configure();
       await health.requestAuthorization([
         HealthDataType.STEPS,
         HealthDataType.HEART_RATE,

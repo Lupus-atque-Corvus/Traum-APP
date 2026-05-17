@@ -36,9 +36,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   @override
   Widget build(BuildContext context) {
     final currency = ref.watch(currencySymbolProvider);
-    final categoriesAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(budgetDaoProvider).watchAllCategories()),
-    );
+    final categoriesAsync = ref.watch(allBudgetCategoriesStreamProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,

@@ -12,9 +12,7 @@ class SupplementScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final suppsAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(supplementDaoProvider).watchAllSupplements()),
-    );
+    final suppsAsync = ref.watch(supplementsStreamProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,

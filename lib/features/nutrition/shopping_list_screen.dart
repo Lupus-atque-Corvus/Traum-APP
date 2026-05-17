@@ -12,9 +12,7 @@ class ShoppingListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final itemsAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(nutritionDaoProvider).watchAllShoppingItems()),
-    );
+    final itemsAsync = ref.watch(allShoppingItemsStreamProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,

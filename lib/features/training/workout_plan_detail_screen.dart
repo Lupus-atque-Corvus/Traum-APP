@@ -13,12 +13,8 @@ class WorkoutPlanDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final plansAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(trainingDaoProvider).watchAllPlans()),
-    );
-    final daysAsync = ref.watch(
-      StreamProvider((ref) => ref.watch(trainingDaoProvider).watchDaysForPlan(planId)),
-    );
+    final plansAsync = ref.watch(allWorkoutPlansStreamProvider);
+    final daysAsync = ref.watch(workoutDaysForPlanProvider(planId));
 
     return Scaffold(
       backgroundColor: TraumColors.background,
