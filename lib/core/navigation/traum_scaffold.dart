@@ -394,14 +394,6 @@ class _MoreMenuSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeSlots = widget.navSlots;
-    final inNav = {'home', ...activeSlots};
-    final isPeriodEnabled = ref.watch(isPeriodTrackingEnabledProvider);
-    final availableToAdd = _allModules
-        .where((m) => !inNav.contains(m))
-        .where((m) => m != 'period' || isPeriodEnabled)
-        .toList();
-
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
       maxChildSize: 0.95,
