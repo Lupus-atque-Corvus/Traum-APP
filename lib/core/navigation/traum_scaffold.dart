@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../providers/preferences_provider.dart';
 import '../theme/colors.dart';
 import '../theme/radius.dart';
+import 'nav_customization_sheet.dart';
 import 'routes.dart';
 
 Future<bool> _showExitDialog(BuildContext context) async {
@@ -106,13 +107,13 @@ class _TraumScaffoldState extends ConsumerState<TraumScaffold> {
       ),
       builder: (ctx) => _MoreMenuSheet(
         moreModules: moreModules,
-        navSlots: navSlots,
         onNavigate: (module) {
           Navigator.pop(ctx);
           _navigate(context, module);
         },
-        onSlotsChanged: (newSlots) {
-          ref.read(navSlotsProvider.notifier).setSlots(newSlots);
+        onCustomize: () {
+          Navigator.pop(ctx);
+          showNavCustomizationSheet(context, ref);
         },
       ),
     );
@@ -277,6 +278,7 @@ class _NavItem extends StatelessWidget {
 
     if (isActive) {
       return GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
@@ -322,6 +324,7 @@ class _NavItem extends StatelessWidget {
     }
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -342,6 +345,7 @@ class _MoreButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
         width: 40,
@@ -360,55 +364,31 @@ class _MoreButton extends StatelessWidget {
   }
 }
 
-class _MoreMenuSheet extends ConsumerStatefulWidget {
+class _MoreMenuSheet extends StatelessWidget {
   final List<String> moreModules;
-  final List<String> navSlots;
   final void Function(String) onNavigate;
-  final void Function(List<String>) onSlotsChanged;
+  final VoidCallback onCustomize;
 
   const _MoreMenuSheet({
     required this.moreModules,
-    required this.navSlots,
     required this.onNavigate,
-    required this.onSlotsChanged,
+    required this.onCustomize,
   });
 
-  @override
-  ConsumerState<_MoreMenuSheet> createState() => _MoreMenuSheetState();
-}
-
-class _MoreMenuSheetState extends ConsumerState<_MoreMenuSheet> {
-  static const _allModules = [
-    'training', 'health', 'nutrition', 'supplements', 'planning',
-    'medication', 'abstinence', 'budget', 'period', 'profile', 'settings',
-  ];
-
-  IconData _iconFor(String module) {
+  static IconData _iconFor(String module) {
     switch (module) {
-      case 'training':
-        return Icons.fitness_center_rounded;
-      case 'health':
-        return Icons.favorite_rounded;
-      case 'nutrition':
-        return Icons.restaurant_rounded;
-      case 'supplements':
-        return Icons.science_rounded;
-      case 'planning':
-        return Icons.calendar_today_rounded;
-      case 'medication':
-        return Icons.medication_rounded;
-      case 'abstinence':
-        return Icons.block_rounded;
-      case 'budget':
-        return Icons.account_balance_wallet_rounded;
-      case 'period':
-        return Icons.water_drop_rounded;
-      case 'profile':
-        return Icons.person_rounded;
-      case 'settings':
-        return Icons.settings_rounded;
-      default:
-        return Icons.circle;
+      case 'training':    return Icons.fitness_center_rounded;
+      case 'health':      return Icons.favorite_rounded;
+      case 'nutrition':   return Icons.restaurant_rounded;
+      case 'supplements': return Icons.science_rounded;
+      case 'planning':    return Icons.calendar_today_rounded;
+      case 'medication':  return Icons.medication_rounded;
+      case 'abstinence':  return Icons.block_rounded;
+      case 'budget':      return Icons.account_balance_wallet_rounded;
+      case 'period':      return Icons.water_drop_rounded;
+      case 'profile':     return Icons.person_rounded;
+      case 'settings':    return Icons.settings_rounded;
+      default:            return Icons.circle;
     }
   }
 
@@ -441,192 +421,114 @@ class _MoreMenuSheetState extends ConsumerState<_MoreMenuSheet> {
               ),
             ),
           ),
-          // Sektion: Leiste anpassen
-          const Padding(
-            padding: EdgeInsets.fromLTRB(20, 16, 20, 6),
-            child: Text(
-              'LEISTE ANPASSEN',
-              style: TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackgroundMuted,
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.8,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 72,
-            child: ReorderableListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: activeSlots.length,
-              onReorder: (oldIdx, newIdx) {
-                HapticFeedback.mediumImpact();
-                ref.read(navSlotsProvider.notifier).reorder(oldIdx, newIdx);
-              },
-              itemBuilder: (_, i) {
-                final module = activeSlots[i];
-                final color = TraumColors.moduleColor(module);
-                final label = Routes.moduleLabels[module] ?? module;
-                return Container(
-                  key: ValueKey(module),
-                  margin: const EdgeInsets.only(right: 8),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(TraumRadius.chip),
-                    border: Border.all(color: color.withValues(alpha: 0.5)),
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                const Text(
+                  'Mehr',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(_iconFor(module), color: color, size: 16),
-                      const SizedBox(width: 6),
-                      Text(
-                        label,
-                        style: TextStyle(
-                          color: color,
-                          fontFamily: 'DMSans',
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      GestureDetector(
-                        onTap: () => ref
-                            .read(navSlotsProvider.notifier)
-                            .remove(module),
-                        child: Icon(
-                          Icons.close,
-                          size: 14,
-                          color: color.withValues(alpha: 0.7),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-          if (activeSlots.length < 4 && availableToAdd.isNotEmpty) ...[
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 12, 20, 6),
-              child: Text(
-                'HINZUFÜGEN',
-                style: TextStyle(
-                  fontFamily: 'DMSans',
-                  color: TraumColors.onBackgroundMuted,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.8,
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: availableToAdd.map((m) {
-                  final color = TraumColors.moduleColor(m);
-                  final label = Routes.moduleLabels[m] ?? m;
-                  return GestureDetector(
-                    onTap: () =>
-                        ref.read(navSlotsProvider.notifier).add(m),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: TraumColors.surface,
-                        borderRadius:
-                            BorderRadius.circular(TraumRadius.chip),
-                        border: Border.all(
-                            color: color.withValues(alpha: 0.4)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.add, size: 14, color: color),
-                          const SizedBox(width: 4),
-                          Text(
-                            label,
-                            style: TextStyle(
-                              color: color,
-                              fontFamily: 'DMSans',
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-          ],
-          const Divider(color: Colors.white12, height: 24),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
-            child: Text(
-              'MEHR',
-              style: TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackgroundMuted,
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.8,
-              ),
-            ),
-          ),
-          Expanded(
-            child: GridView.builder(
-              controller: controller,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 1.0,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-              ),
-              itemCount: widget.moreModules.length,
-              itemBuilder: (_, i) {
-                final module = widget.moreModules[i];
-                final color = TraumColors.moduleColor(module);
-                final label = Routes.moduleLabels[module] ?? module;
-                return GestureDetector(
-                  onTap: () => widget.onNavigate(module),
+                const Spacer(),
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onCustomize,
                   child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: TraumColors.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: color.withValues(alpha: 0.3),
-                        width: 1,
-                      ),
+                      borderRadius: BorderRadius.circular(TraumRadius.chip),
+                      border: Border.all(color: TraumColors.surfaceVariant),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(_iconFor(module), color: color, size: 28),
-                        const SizedBox(height: 8),
+                        Icon(Icons.tune_rounded, color: TraumColors.onBackgroundMuted, size: 15),
+                        SizedBox(width: 6),
                         Text(
-                          label,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: TraumColors.onBackground,
+                          'Anpassen',
+                          style: TextStyle(
+                            color: TraumColors.onBackgroundMuted,
                             fontFamily: 'DMSans',
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ],
                     ),
                   ),
-                );
-              },
+                ),
+              ],
             ),
+          ),
+          Expanded(
+            child: moreModules.isEmpty
+                ? const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(24),
+                      child: Text(
+                        'Alle Module sind bereits in deiner Navigation.',
+                        style: TextStyle(
+                          color: TraumColors.onBackgroundSubtle,
+                          fontFamily: 'DMSans',
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )
+                : GridView.builder(
+                    controller: controller,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 1.0,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                    ),
+                    itemCount: moreModules.length,
+                    itemBuilder: (_, i) {
+                      final module = moreModules[i];
+                      final color = TraumColors.moduleColor(module);
+                      final label = Routes.moduleLabels[module] ?? module;
+                      return GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => onNavigate(module),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: TraumColors.surface,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: color.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(_iconFor(module), color: color, size: 28),
+                              const SizedBox(height: 8),
+                              Text(
+                                label,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: TraumColors.onBackground,
+                                  fontFamily: 'DMSans',
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
           ),
         ],
       ),

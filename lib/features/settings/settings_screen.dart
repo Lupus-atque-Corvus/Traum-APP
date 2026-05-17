@@ -9,6 +9,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
+import '../../core/navigation/nav_customization_sheet.dart';
 import '../../core/navigation/routes.dart';
 import '../../core/notifications/notification_service.dart';
 import '../../core/providers/preferences_provider.dart';
@@ -40,6 +41,7 @@ class SettingsScreen extends ConsumerWidget {
         padding: const EdgeInsets.only(bottom: 32),
         children: [
           _LanguageSection(),
+          _NavSection(),
           _UnitsSection(),
           _NotificationsSection(),
           _GoalsSection(),
@@ -113,6 +115,38 @@ class _LanguageSection extends ConsumerWidget {
             ]),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ─── Navigation ──────────────────────────────────────────────────────────────
+
+class _NavSection extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _Section(
+      title: 'Navigation',
+      child: ListTile(
+        leading: Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: TraumColors.indigoBlue.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Icon(Icons.tune_rounded, color: TraumColors.indigoBlue, size: 18),
+        ),
+        title: const Text(
+          'Navigation anpassen',
+          style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
+        ),
+        subtitle: const Text(
+          'Module auswählen und per Drag & Drop sortieren',
+          style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12),
+        ),
+        trailing: const Icon(Icons.chevron_right, color: TraumColors.onBackgroundMuted),
+        onTap: () => showNavCustomizationSheet(context, ref),
       ),
     );
   }

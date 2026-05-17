@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:open_file/open_file.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../theme/colors.dart';
 import '../theme/radius.dart';
 
@@ -92,7 +93,22 @@ class _UpdateDialogState extends State<_UpdateDialog> {
   String? _errorMsg;
 
   Future<void> _download() async {
-    setState(() { _downloading = true; _errorMsg = null; });
+    // On Android 8+, the user must explicitly allow installing from unknown sources.
+    // Permission.requestInstallPackages.request() opens that settings screen directly.
+    if (Platform.isAndroid) {
+      final granted = await Permission.requestInstallPackages.isGranted;
+      if (!granted) {
+        await Permission.requestInstallPackages.request();
+        if (!mounted) return;
+        final nowGranted = await Permission.requestInstallPackages.isGranted;
+        if (!nowGranted) {
+          setState(() => _errorMsg = 'Berechtigung fehlt. Aktiviere "Unbekannte Apps" in den Einstellungen und versuche es erneut.');
+          return;
+        }
+      }
+    }
+
+    setState(() { _downloading = true; _errorMsg = null; _progress = null; });
     try {
       final dir = await getTemporaryDirectory();
       final file = File('${dir.path}/traum-update.apk');
