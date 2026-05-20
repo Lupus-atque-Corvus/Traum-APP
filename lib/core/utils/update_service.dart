@@ -23,7 +23,9 @@ class UpdateService {
       if (response.statusCode != 200) return;
 
       final data = jsonDecode(response.body) as Map<String, dynamic>;
-      final tagName = (data['tag_name'] as String?)?.replaceFirst('v', '') ?? '';
+      final tagName = (data['tag_name'] as String?)
+          ?.replaceFirst('v', '')
+          .split('+')[0] ?? '';
       final releaseNotes = (data['body'] as String?) ?? '';
       final assets = data['assets'] as List<dynamic>? ?? [];
       final apkAsset = assets.firstWhere(
