@@ -1,5 +1,7 @@
 import 'package:intl/intl.dart';
 
+import '../../l10n/app_localizations.dart';
+
 String formatDate(DateTime date, {String format = 'dd.MM.yyyy'}) {
   return DateFormat(format, 'de').format(date);
 }
@@ -12,17 +14,17 @@ String formatTime(DateTime date) {
   return DateFormat('HH:mm', 'de').format(date);
 }
 
-String greeting(String name) {
+String greeting(String name, [AppLocalizations? l10n]) {
   final hour = DateTime.now().hour;
   String salutation;
   if (hour >= 5 && hour < 12) {
-    salutation = 'Guten Morgen';
+    salutation = l10n?.greetingMorning ?? 'Guten Morgen';
   } else if (hour >= 12 && hour < 18) {
-    salutation = 'Guten Tag';
+    salutation = l10n?.greetingDay ?? 'Guten Tag';
   } else if (hour >= 18 && hour < 22) {
-    salutation = 'Guten Abend';
+    salutation = l10n?.greetingEvening ?? 'Guten Abend';
   } else {
-    salutation = 'Gute Nacht';
+    salutation = l10n?.greetingNight ?? 'Gute Nacht';
   }
   if (name.isEmpty) return salutation;
   return '$salutation, $name';

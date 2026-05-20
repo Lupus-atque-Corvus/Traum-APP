@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
+import '../../../l10n/app_localizations.dart';
 import '../health_score_result.dart';
 
 class FaktorRow extends StatelessWidget {
@@ -10,9 +11,10 @@ class FaktorRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final color = faktorModulFarbe(faktor.name);
     final icon = faktorIcon(faktor.name);
-    final bewertung = faktorBewertung(faktor.score);
+    final bewertung = faktorBewertung(faktor.score, l10n);
     final farbe = faktorFarbe(faktor.score);
     final fraction = (faktor.score / 100).clamp(0.0, 1.0);
 

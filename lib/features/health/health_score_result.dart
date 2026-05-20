@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 
 class HealthScoreResult {
   final int gesamtScore;
@@ -29,12 +30,12 @@ class FaktorScore {
   });
 }
 
-String scoreLabel(int score) {
-  if (score >= 85) return 'Sehr gut';
-  if (score >= 70) return 'Gut';
-  if (score >= 55) return 'Mittel';
-  if (score >= 40) return 'Verbesserungsbedarf';
-  return 'Kritisch';
+String scoreLabel(int score, [AppLocalizations? l10n]) {
+  if (score >= 85) return l10n?.healthScoreLabelSehrGut ?? 'Sehr gut';
+  if (score >= 70) return l10n?.healthScoreLabelGut ?? 'Gut';
+  if (score >= 55) return l10n?.healthScoreLabelMittel ?? 'Mittel';
+  if (score >= 40) return l10n?.healthScoreLabelVerbesserung ?? 'Verbesserungsbedarf';
+  return l10n?.healthScoreLabelKritisch ?? 'Kritisch';
 }
 
 Color scoreLabelColor(int score) {
@@ -44,11 +45,11 @@ Color scoreLabelColor(int score) {
   return TraumColors.roseRed;
 }
 
-String faktorBewertung(int score) {
-  if (score >= 85) return 'Optimal';
-  if (score >= 70) return 'Gut';
-  if (score >= 55) return 'Mittel';
-  return 'Schwach';
+String faktorBewertung(int score, [AppLocalizations? l10n]) {
+  if (score >= 85) return l10n?.healthScoreBewertungOptimal ?? 'Optimal';
+  if (score >= 70) return l10n?.healthScoreBewertungGut ?? 'Gut';
+  if (score >= 55) return l10n?.healthScoreBewertungMittel ?? 'Mittel';
+  return l10n?.healthScoreBewertungSchwach ?? 'Schwach';
 }
 
 Color faktorFarbe(int score) {
@@ -58,12 +59,12 @@ Color faktorFarbe(int score) {
   return TraumColors.roseRed;
 }
 
-String motivationstext(int score) {
-  if (score >= 85) return 'Ausgezeichnet! Dein Koerper ist in Topform.';
-  if (score >= 70) return 'Gut unterwegs! Kleine Optimierungen bringen dich weiter.';
-  if (score >= 55) return 'Solide Basis. Fokussiere dich auf deine schwaechsten Bereiche.';
-  if (score >= 40) return 'Es gibt Verbesserungspotenzial. Schau dir die Empfehlungen an.';
-  return 'Dein Koerper braucht Aufmerksamkeit. Starte mit kleinen Schritten.';
+String motivationstext(int score, [AppLocalizations? l10n]) {
+  if (score >= 85) return l10n?.motivationExcellent ?? 'Ausgezeichnet! Dein Körper ist in Topform.';
+  if (score >= 70) return l10n?.motivationGood ?? 'Gut unterwegs! Kleine Optimierungen bringen dich weiter.';
+  if (score >= 55) return l10n?.motivationSolid ?? 'Solide Basis. Fokussiere dich auf deine schwächsten Bereiche.';
+  if (score >= 40) return l10n?.motivationImprove ?? 'Es gibt Verbesserungspotenzial. Schau dir die Empfehlungen an.';
+  return l10n?.motivationAttention ?? 'Dein Körper braucht Aufmerksamkeit. Starte mit kleinen Schritten.';
 }
 
 IconData faktorIcon(String name) {
@@ -90,14 +91,14 @@ Color faktorModulFarbe(String name) {
   }
 }
 
-String faktorHinweis(String name) {
+String faktorHinweis(String name, [AppLocalizations? l10n]) {
   switch (name) {
-    case 'Training':        return 'Plane dein naechstes Workout und bleib aktiv.';
-    case 'Ernährung':       return 'Tracke deine Mahlzeiten und triff dein Kalorienziel.';
-    case 'Regeneration':    return 'Achte auf 7-9 Stunden Schlaf pro Nacht.';
-    case 'Supplemente':     return 'Nimm deine heutigen Supplemente ein.';
-    case 'Medikamente':     return 'Vergiss nicht, deine Medikamente zu nehmen.';
-    case 'Stress & Mental': return 'Notiere deine heutige Stimmung und mach eine Pause.';
-    default:                return 'Schaue dir die Details an.';
+    case 'Training':        return l10n?.hintTraining ?? 'Plane dein nächstes Workout und bleib aktiv.';
+    case 'Ernährung':       return l10n?.hintNutrition ?? 'Tracke deine Mahlzeiten und triff dein Kalorienziel.';
+    case 'Regeneration':    return l10n?.hintRegeneration ?? 'Achte auf 7–9 Stunden Schlaf pro Nacht.';
+    case 'Supplemente':     return l10n?.hintSupplements ?? 'Nimm deine heutigen Supplemente ein.';
+    case 'Medikamente':     return l10n?.hintMedication ?? 'Vergiss nicht, deine Medikamente zu nehmen.';
+    case 'Stress & Mental': return l10n?.hintMentalStress ?? 'Notiere deine heutige Stimmung und mach eine Pause.';
+    default:                return l10n?.hintDefault ?? 'Schau dir die Details an.';
   }
 }

@@ -7,6 +7,7 @@ import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class SavingsScreen extends ConsumerWidget {
   const SavingsScreen({super.key});
@@ -20,8 +21,8 @@ class SavingsScreen extends ConsumerWidget {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Sparziele',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.savingsGoals,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -42,15 +43,15 @@ class SavingsScreen extends ConsumerWidget {
                     size: 64,
                     color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
                 const SizedBox(height: 16),
-                const Text('Noch keine Sparziele',
-                    style: TextStyle(
+                Text(AppLocalizations.of(context)!.noSavingsGoals,
+                    style: const TextStyle(
                         color: TraumColors.onBackgroundMuted,
                         fontFamily: 'DMSans',
                         fontWeight: FontWeight.w600,
                         fontSize: 16)),
                 const SizedBox(height: 8),
-                const Text('Tippe auf + um ein Sparziel zu erstellen',
-                    style: TextStyle(
+                Text(AppLocalizations.of(context)!.tapToCreateSavingsGoal,
+                    style: const TextStyle(
                         color: TraumColors.onBackgroundSubtle,
                         fontFamily: 'DMSans',
                         fontSize: 13),
@@ -72,7 +73,7 @@ class SavingsScreen extends ConsumerWidget {
         loading: () =>
             const Center(child: CircularProgressIndicator(color: TraumColors.mintGreen)),
         error: (e, _) => Center(
-            child: Text('Fehler: $e',
+            child: Text('${AppLocalizations.of(context)!.error}: $e',
                 style: const TextStyle(color: TraumColors.roseRed))),
       ),
     );
@@ -172,8 +173,8 @@ class _SavingsGoalCard extends StatelessWidget {
                       color: TraumColors.mintGreenDim,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Text('Erreicht',
-                        style: TextStyle(
+                    child: Text(AppLocalizations.of(context)!.reached,
+                        style: const TextStyle(
                             color: TraumColors.mintGreen,
                             fontFamily: 'DMSans',
                             fontWeight: FontWeight.w600,
@@ -196,7 +197,7 @@ class _SavingsGoalCard extends StatelessWidget {
                           fontFamily: 'DMSans',
                           fontWeight: FontWeight.w600,
                           fontSize: 14)),
-                  Text('Ziel: ${goal.targetAmount.toStringAsFixed(2)} $currency',
+                  Text('${AppLocalizations.of(context)!.goal}: ${goal.targetAmount.toStringAsFixed(2)} $currency',
                       style: const TextStyle(
                           color: TraumColors.onBackgroundMuted,
                           fontFamily: 'DMSans',
@@ -205,7 +206,7 @@ class _SavingsGoalCard extends StatelessWidget {
               ),
               if (!goal.isCompleted) ...[
                 const SizedBox(height: 4),
-                Text('Noch ${remaining.toStringAsFixed(2)} $currency',
+                Text(AppLocalizations.of(context)!.remainingAmount(remaining.toStringAsFixed(2), currency),
                     style: const TextStyle(
                         color: TraumColors.onBackgroundSubtle,
                         fontFamily: 'DMSans',
@@ -214,7 +215,7 @@ class _SavingsGoalCard extends StatelessWidget {
               if (goal.targetDate != null) ...[
                 const SizedBox(height: 4),
                 Text(
-                    'Zieldatum: ${goal.targetDate!.day}.${goal.targetDate!.month}.${goal.targetDate!.year}',
+                    AppLocalizations.of(context)!.targetDate('${goal.targetDate!.day}.${goal.targetDate!.month}.${goal.targetDate!.year}'),
                     style: const TextStyle(
                         color: TraumColors.onBackgroundSubtle,
                         fontFamily: 'DMSans',
@@ -230,8 +231,8 @@ class _SavingsGoalCard extends StatelessWidget {
                         foregroundColor: TraumColors.mintGreen,
                         side: const BorderSide(color: TraumColors.mintGreen),
                       ),
-                      child: const Text('Einzahlen',
-                          style: TextStyle(fontFamily: 'DMSans')),
+                      child: Text(AppLocalizations.of(context)!.deposit,
+                          style: const TextStyle(fontFamily: 'DMSans')),
                     ),
                   ),
                 ]),
@@ -249,8 +250,8 @@ class _SavingsGoalCard extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surfaceElevated,
-        title: const Text('Betrag einzahlen',
-            style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+        title: Text(AppLocalizations.of(ctx)!.depositAmount,
+            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
         content: TextField(
           controller: ctrl,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -270,8 +271,8 @@ class _SavingsGoalCard extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Abbrechen',
-                style: TextStyle(color: TraumColors.onBackgroundMuted)),
+            child: Text(AppLocalizations.of(ctx)!.cancel,
+                style: const TextStyle(color: TraumColors.onBackgroundMuted)),
           ),
           TextButton(
             onPressed: () async {
@@ -281,8 +282,8 @@ class _SavingsGoalCard extends StatelessWidget {
                 await onAddAmount(v);
               }
             },
-            child: const Text('Einzahlen',
-                style: TextStyle(color: TraumColors.mintGreen, fontWeight: FontWeight.w700)),
+            child: Text(AppLocalizations.of(ctx)!.deposit,
+                style: const TextStyle(color: TraumColors.mintGreen, fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -337,32 +338,32 @@ class _AddGoalSheetState extends State<_AddGoalSheet> {
                       borderRadius: BorderRadius.circular(2))),
             ),
             const SizedBox(height: 16),
-            const Text('Sparziel erstellen',
-                style: TextStyle(
+            Text(AppLocalizations.of(context)!.createSavingsGoal,
+                style: const TextStyle(
                     color: TraumColors.onBackground,
                     fontFamily: 'DMSans',
                     fontWeight: FontWeight.w700,
                     fontSize: 18)),
             const SizedBox(height: 16),
-            _buildTextField('Name', _nameCtrl, hint: 'z.B. Urlaub'),
+            _buildTextField(AppLocalizations.of(context)!.fieldName, _nameCtrl, hint: AppLocalizations.of(context)!.savingsGoalNameHint),
             const SizedBox(height: 12),
-            _buildTextField('Zielbetrag (${widget.currency})', _targetCtrl,
+            _buildTextField('${AppLocalizations.of(context)!.targetAmountLabel} (${widget.currency})', _targetCtrl,
                 hint: '1000.00', numeric: true),
             const SizedBox(height: 12),
-            _buildTextField('Bereits gespart (${widget.currency})', _currentCtrl,
+            _buildTextField('${AppLocalizations.of(context)!.alreadySaved} (${widget.currency})', _currentCtrl,
                 hint: '0.00', numeric: true),
             const SizedBox(height: 12),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('Zieldatum (optional)',
-                  style: TextStyle(
+              title: Text(AppLocalizations.of(context)!.targetDateOptional,
+                  style: const TextStyle(
                       color: TraumColors.onBackgroundMuted,
                       fontFamily: 'DMSans',
                       fontSize: 13)),
               trailing: Text(
                 _targetDate != null
                     ? '${_targetDate!.day}.${_targetDate!.month}.${_targetDate!.year}'
-                    : 'Kein Datum',
+                    : AppLocalizations.of(context)!.noDate,
                 style: const TextStyle(
                     color: TraumColors.mintGreen,
                     fontFamily: 'DMSans',
@@ -384,10 +385,10 @@ class _AddGoalSheetState extends State<_AddGoalSheet> {
                 if (picked != null) setState(() => _targetDate = picked);
               },
             ),
-            _buildTextField('Notiz (optional)', _noteCtrl, hint: 'Woofür sparst du?'),
+            _buildTextField(AppLocalizations.of(context)!.fieldNoteOptional, _noteCtrl, hint: AppLocalizations.of(context)!.whatSavingFor),
             const SizedBox(height: 20),
             GradientButton(
-              label: _saving ? 'Speichern…' : 'Sparziel erstellen',
+              label: _saving ? AppLocalizations.of(context)!.saving : AppLocalizations.of(context)!.createSavingsGoal,
               onPressed: _saving ? null : _save,
             ),
             const SizedBox(height: 8),
@@ -434,13 +435,13 @@ class _AddGoalSheetState extends State<_AddGoalSheet> {
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Name ist ein Pflichtfeld')));
+          .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
       return;
     }
     final target = double.tryParse(_targetCtrl.text.replaceAll(',', '.'));
     if (target == null || target <= 0) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Bitte gültigen Zielbetrag eingeben')));
+          .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.pleaseEnterValidTargetAmount)));
       return;
     }
     final current = double.tryParse(_currentCtrl.text.replaceAll(',', '.')) ?? 0;

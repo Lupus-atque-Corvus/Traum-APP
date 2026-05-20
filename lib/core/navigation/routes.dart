@@ -1,3 +1,5 @@
+import '../../l10n/app_localizations.dart';
+
 class Routes {
   Routes._();
 
@@ -54,18 +56,34 @@ class Routes {
     'settings': settings,
   };
 
-  static const Map<String, String> moduleLabels = {
-    'home': 'Home',
-    'training': 'Training',
-    'health': 'Gesundheit',
-    'nutrition': 'Ernährung',
-    'supplements': 'Supplements',
-    'planning': 'Planung',
-    'medication': 'Medikamente',
-    'abstinence': 'Abstinenz',
-    'budget': 'Budget',
-    'period': 'Zyklus',
-    'profile': 'Profil',
-    'settings': 'Einstellungen',
-  };
+  static String labelFor(String module, AppLocalizations l10n) {
+    switch (module) {
+      case 'home':
+        return l10n.home;
+      case 'training':
+        return l10n.training;
+      case 'health':
+        return l10n.health;
+      case 'nutrition':
+        return l10n.nutrition;
+      case 'supplements':
+        return l10n.supplements;
+      case 'planning':
+        return l10n.planning;
+      case 'medication':
+        return l10n.medication;
+      case 'abstinence':
+        return l10n.abstinence;
+      case 'budget':
+        return l10n.budget;
+      case 'period':
+        return l10n.period;
+      case 'profile':
+        return l10n.profile;
+      case 'settings':
+        return l10n.settings;
+      default:
+        return module;
+    }
+  }
 }

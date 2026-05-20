@@ -7,6 +7,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 import 'cycle_calculator.dart';
 
 class PeriodScreen extends ConsumerWidget {
@@ -21,8 +22,8 @@ class PeriodScreen extends ConsumerWidget {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Zyklus',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.cycle,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -31,12 +32,12 @@ class PeriodScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.calendar_month_rounded, color: TraumColors.periodRose),
-            tooltip: 'Kalender',
+            tooltip: AppLocalizations.of(context)!.calendarTooltip,
             onPressed: () => context.go('/period/calendar'),
           ),
           IconButton(
             icon: const Icon(Icons.history_rounded, color: TraumColors.onBackgroundMuted),
-            tooltip: 'Historie',
+            tooltip: AppLocalizations.of(context)!.historyTooltip,
             onPressed: () => context.go('/period/history'),
           ),
         ],
@@ -70,7 +71,7 @@ class PeriodScreen extends ConsumerWidget {
         loading: () =>
             const Center(child: CircularProgressIndicator(color: TraumColors.periodRose)),
         error: (e, _) => Center(
-            child: Text('Fehler: $e',
+            child: Text('${AppLocalizations.of(context)!.error}: $e',
                 style: const TextStyle(color: TraumColors.roseRed))),
       ),
     );
@@ -166,8 +167,8 @@ class _PeriodBody extends StatelessWidget {
         ],
         // Symptoms section
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          const Text('Symptome heute',
-              style: TextStyle(
+          Text(AppLocalizations.of(context)!.symptomsToday,
+              style: const TextStyle(
                   color: TraumColors.onBackground,
                   fontFamily: 'DMSans',
                   fontWeight: FontWeight.w700,
@@ -175,8 +176,8 @@ class _PeriodBody extends StatelessWidget {
           TextButton.icon(
             onPressed: onAddSymptom,
             icon: const Icon(Icons.add, size: 16, color: TraumColors.periodRose),
-            label: const Text('Hinzufügen',
-                style: TextStyle(color: TraumColors.periodRose, fontFamily: 'DMSans', fontSize: 12)),
+            label: Text(AppLocalizations.of(context)!.add,
+                style: const TextStyle(color: TraumColors.periodRose, fontFamily: 'DMSans', fontSize: 12)),
           ),
         ]),
         const SizedBox(height: 8),
@@ -184,8 +185,8 @@ class _PeriodBody extends StatelessWidget {
         const SizedBox(height: 16),
         // Period entries
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          const Text('Periode-Einträge',
-              style: TextStyle(
+          Text(AppLocalizations.of(context)!.periodEntries,
+              style: const TextStyle(
                   color: TraumColors.onBackground,
                   fontFamily: 'DMSans',
                   fontWeight: FontWeight.w700,
@@ -199,14 +200,14 @@ class _PeriodBody extends StatelessWidget {
                   size: 48,
                   color: TraumColors.periodRose.withValues(alpha: 0.4)),
               const SizedBox(height: 12),
-              const Text('Noch keine Einträge',
-                  style: TextStyle(
+              Text(AppLocalizations.of(context)!.noEntriesYet,
+                  style: const TextStyle(
                       color: TraumColors.onBackgroundMuted,
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w600)),
               const SizedBox(height: 4),
-              const Text('Tippe auf + um die Periode zu starten',
-                  style: TextStyle(
+              Text(AppLocalizations.of(context)!.tapToStartPeriod,
+                  style: const TextStyle(
                       color: TraumColors.onBackgroundSubtle,
                       fontFamily: 'DMSans',
                       fontSize: 12)),
@@ -246,13 +247,14 @@ class _CycleStatusCard extends StatelessWidget {
       isOvulation = ovDay == today;
     }
 
-    String phase = 'Follikelphase';
+    final l10n = AppLocalizations.of(context)!;
+    String phase = l10n.follicularPhase;
     Color phaseColor = TraumColors.periodRose;
     if (isOvulation) {
-      phase = 'Eisprung';
+      phase = l10n.ovulationPhase;
       phaseColor = TraumColors.ovulationCyan;
     } else if (isFertile) {
-      phase = 'Fruchtbares Fenster';
+      phase = l10n.fertileWindowPhase;
       phaseColor = TraumColors.fertileCyan;
     }
 
@@ -281,7 +283,7 @@ class _CycleStatusCard extends StatelessWidget {
                       fontSize: 12)),
             ),
             const Spacer(),
-            Text('Ø $avgCycleLength Tage',
+            Text(l10n.avgCycleDaysShort(avgCycleLength),
                 style: const TextStyle(
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans',
@@ -290,21 +292,21 @@ class _CycleStatusCard extends StatelessWidget {
           const SizedBox(height: 12),
           Row(children: [
             Expanded(child: _InfoTile(
-              label: 'Nächste Periode',
+              label: l10n.nextPeriodLabel,
               value: result.nextPeriodPredicted != null
                   ? '${result.nextPeriodPredicted!.day}.${result.nextPeriodPredicted!.month}.'
                   : '–',
               color: TraumColors.periodRose,
             )),
             Expanded(child: _InfoTile(
-              label: 'Eisprung',
+              label: l10n.ovulationLabel,
               value: result.ovulationDate != null
                   ? '${result.ovulationDate!.day}.${result.ovulationDate!.month}.'
                   : '–',
               color: TraumColors.ovulationCyan,
             )),
             Expanded(child: _InfoTile(
-              label: 'Fruchtbar',
+              label: l10n.fertileLabel,
               value: (result.fertileStart != null && result.fertileEnd != null)
                   ? '${result.fertileStart!.day}.–${result.fertileEnd!.day}.${result.fertileEnd!.month}.'
                   : '–',
@@ -313,7 +315,7 @@ class _CycleStatusCard extends StatelessWidget {
           ]),
           if (result.pregnancyProbability > 0) ...[
             const SizedBox(height: 10),
-            Text('Schwangerschaftswahrscheinlichkeit heute: ${result.pregnancyProbability}%',
+            Text(l10n.pregnancyProbabilityToday(result.pregnancyProbability),
                 style: const TextStyle(
                     color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 11)),
           ],
@@ -367,8 +369,8 @@ class _TodaySymptoms extends StatelessWidget {
           color: TraumColors.surface,
           borderRadius: BorderRadius.circular(TraumRadius.card),
         ),
-        child: const Text('Keine Symptome heute',
-            style: TextStyle(
+        child: Text(AppLocalizations.of(context)!.noSymptomsToday,
+            style: const TextStyle(
                 color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
       );
     }
@@ -412,7 +414,8 @@ class _PeriodEntryCard extends StatelessWidget {
         ? entry.endDate!.difference(entry.startDate).inDays
         : DateTime.now().difference(entry.startDate).inDays;
 
-    final flowLabels = ['', 'Leicht', 'Mittel', 'Stark', 'Sehr stark'];
+    final l10n = AppLocalizations.of(context)!;
+    final flowLabels = ['', l10n.flowLight, l10n.flowMedium, l10n.flowStrong, l10n.flowVeryStrong];
     final flowColors = [
       Colors.transparent,
       TraumColors.periodRose.withValues(alpha: 0.5),
@@ -462,14 +465,14 @@ class _PeriodEntryCard extends StatelessWidget {
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(
                   '${entry.startDate.day}.${entry.startDate.month}.${entry.startDate.year}'
-                  '${entry.endDate != null ? ' – ${entry.endDate!.day}.${entry.endDate!.month}.${entry.endDate!.year}' : ' – heute'}',
+                  '${entry.endDate != null ? ' – ${entry.endDate!.day}.${entry.endDate!.month}.${entry.endDate!.year}' : ' – ${l10n.today}'}',
                   style: const TextStyle(
                       color: TraumColors.onBackground,
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w600),
                 ),
                 Text(
-                  '$duration Tage  •  ${flowLabels[intensity]}',
+                  '$duration ${l10n.daysShort}  •  ${flowLabels[intensity]}',
                   style: const TextStyle(
                       color: TraumColors.onBackgroundMuted,
                       fontFamily: 'DMSans',
@@ -487,7 +490,7 @@ class _PeriodEntryCard extends StatelessWidget {
               TextButton(
                 onPressed: onEnd,
                 style: TextButton.styleFrom(foregroundColor: TraumColors.periodRose),
-                child: const Text('Beenden', style: TextStyle(fontFamily: 'DMSans', fontSize: 12)),
+                child: Text(l10n.endPeriod, style: const TextStyle(fontFamily: 'DMSans', fontSize: 12)),
               ),
             if (isActive)
               Container(
@@ -496,8 +499,8 @@ class _PeriodEntryCard extends StatelessWidget {
                   color: TraumColors.periodRose.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Text('Aktiv',
-                    style: TextStyle(
+                child: Text(l10n.activeLabel,
+                    style: const TextStyle(
                         color: TraumColors.periodRose,
                         fontFamily: 'DMSans',
                         fontWeight: FontWeight.w600,
@@ -532,6 +535,7 @@ class _LogPeriodSheetState extends State<_LogPeriodSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.only(
         left: 20, right: 20, top: 16,
@@ -550,8 +554,8 @@ class _LogPeriodSheetState extends State<_LogPeriodSheet> {
                       borderRadius: BorderRadius.circular(2))),
             ),
             const SizedBox(height: 16),
-            const Text('Periode starten',
-                style: TextStyle(
+            Text(l10n.startPeriod,
+                style: const TextStyle(
                     color: TraumColors.onBackground,
                     fontFamily: 'DMSans',
                     fontWeight: FontWeight.w700,
@@ -559,8 +563,8 @@ class _LogPeriodSheetState extends State<_LogPeriodSheet> {
             const SizedBox(height: 16),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('Startdatum',
-                  style: TextStyle(
+              title: Text(l10n.startDate,
+                  style: const TextStyle(
                       color: TraumColors.onBackgroundMuted,
                       fontFamily: 'DMSans',
                       fontSize: 13)),
@@ -588,8 +592,8 @@ class _LogPeriodSheetState extends State<_LogPeriodSheet> {
               },
             ),
             const SizedBox(height: 8),
-            const Text('Stärke',
-                style: TextStyle(
+            Text(l10n.flowIntensity,
+                style: const TextStyle(
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans',
                     fontSize: 13)),
@@ -598,7 +602,7 @@ class _LogPeriodSheetState extends State<_LogPeriodSheet> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(4, (i) {
                 final intensity = i + 1;
-                final labels = ['Leicht', 'Mittel', 'Stark', 'Sehr stark'];
+                final labels = [l10n.flowLight, l10n.flowMedium, l10n.flowStrong, l10n.flowVeryStrong];
                 final selected = intensity == _flowIntensity;
                 return GestureDetector(
                   onTap: () => setState(() => _flowIntensity = intensity),
@@ -638,7 +642,7 @@ class _LogPeriodSheetState extends State<_LogPeriodSheet> {
               maxLines: 2,
               style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
               decoration: InputDecoration(
-                labelText: 'Notiz (optional)',
+                labelText: l10n.noteOptional,
                 labelStyle: const TextStyle(
                     color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
                 filled: true,
@@ -652,7 +656,7 @@ class _LogPeriodSheetState extends State<_LogPeriodSheet> {
             ),
             const SizedBox(height: 20),
             GradientButton(
-              label: _saving ? 'Speichern…' : 'Periode starten',
+              label: _saving ? l10n.savingPeriod : l10n.startPeriodButton,
               onPressed: _saving ? null : _save,
             ),
             const SizedBox(height: 8),
@@ -687,11 +691,6 @@ class _AddSymptomSheetState extends State<_AddSymptomSheet> {
   int _intensity = 2;
   bool _saving = false;
 
-  static const _presets = [
-    'Krämpfe', 'Kopfschmerzen', 'Rückenschmerzen', 'Brust­spannen',
-    'Blähungen', 'Übelkeit', 'Stimmungsschwankungen', 'Müdigkeit',
-    'Akne', 'Schlafprobleme',
-  ];
 
   @override
   void dispose() {
@@ -701,6 +700,12 @@ class _AddSymptomSheetState extends State<_AddSymptomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final presets = [
+      l10n.symptomCramps, l10n.symptomHeadache, l10n.symptomBackPain, l10n.symptomBreastTension,
+      l10n.symptomBloating, l10n.symptomNausea, l10n.symptomMoodSwings, l10n.symptomTiredness,
+      l10n.symptomAcne, l10n.symptomSleepIssues,
+    ];
     return Padding(
       padding: EdgeInsets.only(
         left: 20, right: 20, top: 16,
@@ -719,8 +724,8 @@ class _AddSymptomSheetState extends State<_AddSymptomSheet> {
                       borderRadius: BorderRadius.circular(2))),
             ),
             const SizedBox(height: 16),
-            const Text('Symptom hinzufügen',
-                style: TextStyle(
+            Text(l10n.addSymptom,
+                style: const TextStyle(
                     color: TraumColors.onBackground,
                     fontFamily: 'DMSans',
                     fontWeight: FontWeight.w700,
@@ -728,7 +733,7 @@ class _AddSymptomSheetState extends State<_AddSymptomSheet> {
             const SizedBox(height: 12),
             Wrap(
               spacing: 8, runSpacing: 8,
-              children: _presets.map((s) {
+              children: presets.map((s) {
                 final selected = s == _selectedSymptom;
                 return GestureDetector(
                   onTap: () => setState(() {
@@ -762,7 +767,7 @@ class _AddSymptomSheetState extends State<_AddSymptomSheet> {
               controller: _customCtrl,
               style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
               decoration: InputDecoration(
-                labelText: 'Oder eigenes Symptom',
+                labelText: l10n.orCustomSymptom,
                 labelStyle: const TextStyle(
                     color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
                 filled: true,
@@ -776,20 +781,20 @@ class _AddSymptomSheetState extends State<_AddSymptomSheet> {
               onChanged: (_) => setState(() => _selectedSymptom = null),
             ),
             const SizedBox(height: 12),
-            const Text('Intensität',
-                style: TextStyle(
+            Text(l10n.intensityLabel,
+                style: const TextStyle(
                     color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
             Slider(
               value: _intensity.toDouble(),
               min: 1, max: 3,
               divisions: 2,
               activeColor: TraumColors.periodRose,
-              label: ['Leicht', 'Mittel', 'Stark'][_intensity - 1],
+              label: [l10n.intensityLight, l10n.intensityMedium, l10n.intensityStrong][_intensity - 1],
               onChanged: (v) => setState(() => _intensity = v.round()),
             ),
             const SizedBox(height: 12),
             GradientButton(
-              label: _saving ? 'Speichern…' : 'Symptom speichern',
+              label: _saving ? l10n.saving : l10n.saveSymptom,
               onPressed: _saving ? null : _save,
             ),
             const SizedBox(height: 8),
@@ -803,7 +808,7 @@ class _AddSymptomSheetState extends State<_AddSymptomSheet> {
     final symptom = _selectedSymptom ?? _customCtrl.text.trim();
     if (symptom.isEmpty) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Bitte Symptom auswählen oder eingeben')));
+          .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.selectOrEnterSymptom)));
       return;
     }
     setState(() => _saving = true);

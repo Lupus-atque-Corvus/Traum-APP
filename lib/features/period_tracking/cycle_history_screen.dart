@@ -5,6 +5,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 import 'cycle_calculator.dart';
 
 class CycleHistoryScreen extends ConsumerWidget {
@@ -18,8 +19,8 @@ class CycleHistoryScreen extends ConsumerWidget {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Zyklushistorie',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.cycleHistory,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -28,6 +29,7 @@ class CycleHistoryScreen extends ConsumerWidget {
       ),
       body: entriesAsync.when(
         data: (entries) {
+          final l10n = AppLocalizations.of(context)!;
           if (entries.isEmpty) {
             return Center(
               child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -35,15 +37,15 @@ class CycleHistoryScreen extends ConsumerWidget {
                     size: 64,
                     color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
                 const SizedBox(height: 16),
-                const Text('Noch keine Historie',
-                    style: TextStyle(
+                Text(AppLocalizations.of(context)!.noHistory,
+                    style: const TextStyle(
                         color: TraumColors.onBackgroundMuted,
                         fontFamily: 'DMSans',
                         fontWeight: FontWeight.w600,
                         fontSize: 16)),
                 const SizedBox(height: 8),
-                const Text('Trage deine Perioden ein, um Statistiken zu sehen',
-                    style: TextStyle(
+                Text(AppLocalizations.of(context)!.logPeriodsToSeeStats,
+                    style: const TextStyle(
                         color: TraumColors.onBackgroundSubtle,
                         fontFamily: 'DMSans',
                         fontSize: 13),
@@ -93,21 +95,21 @@ class CycleHistoryScreen extends ConsumerWidget {
                     Row(children: [
                       Expanded(
                         child: _StatTile(
-                          label: 'Ø Zyklus',
-                          value: '$avgCycle Tage',
+                          label: l10n.cycle_length,
+                          value: l10n.avgCycleDays(avgCycle),
                           color: TraumColors.periodRose,
                         ),
                       ),
                       Expanded(
                         child: _StatTile(
-                          label: 'Ø Dauer',
-                          value: '$avgPeriod Tage',
+                          label: l10n.period_length,
+                          value: l10n.avgDurationDays(avgPeriod),
                           color: TraumColors.ovulationCyan,
                         ),
                       ),
                       Expanded(
                         child: _StatTile(
-                          label: 'Einträge',
+                          label: l10n.entriesLabel,
                           value: '${entries.length}',
                           color: TraumColors.lavender,
                         ),
@@ -125,10 +127,10 @@ class CycleHistoryScreen extends ConsumerWidget {
                           const Icon(Icons.warning_rounded,
                               color: TraumColors.amberGold, size: 16),
                           const SizedBox(width: 8),
-                          const Expanded(
+                          Expanded(
                             child: Text(
-                              'Unregelmäßiger Zyklus (Schwankung > 7 Tage)',
-                              style: TextStyle(
+                              l10n.irregularCycle,
+                              style: const TextStyle(
                                   color: TraumColors.amberGold,
                                   fontFamily: 'DMSans',
                                   fontSize: 12),
@@ -152,8 +154,8 @@ class CycleHistoryScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Zykluslängen',
-                          style: TextStyle(
+                      Text(l10n.cycleLengths,
+                          style: const TextStyle(
                               color: TraumColors.onBackground,
                               fontFamily: 'DMSans',
                               fontWeight: FontWeight.w700,
@@ -166,8 +168,8 @@ class CycleHistoryScreen extends ConsumerWidget {
                 const SizedBox(height: 16),
               ],
               // Period list
-              const Text('Perioden',
-                  style: TextStyle(
+              Text(l10n.periods,
+                  style: const TextStyle(
                       color: TraumColors.onBackground,
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w700,
@@ -183,7 +185,7 @@ class CycleHistoryScreen extends ConsumerWidget {
         loading: () =>
             const Center(child: CircularProgressIndicator(color: TraumColors.periodRose)),
         error: (e, _) => Center(
-            child: Text('Fehler: $e',
+            child: Text('${AppLocalizations.of(context)!.error}: $e',
                 style: const TextStyle(color: TraumColors.roseRed))),
       ),
     );
@@ -272,8 +274,9 @@ class _PeriodHistoryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final duration = entry.endDate?.difference(entry.startDate).inDays;
-    final flowLabels = ['', 'Leicht', 'Mittel', 'Stark', 'Sehr stark'];
+    final flowLabels = ['', l10n.flowLight, l10n.flowMedium, l10n.flowStrong, l10n.flowVeryStrong];
     final intensity = entry.flowIntensity.clamp(1, 4);
 
     return Container(
@@ -305,9 +308,9 @@ class _PeriodHistoryTile extends StatelessWidget {
             ),
             Text(
               [
-                if (duration != null) '$duration Tage',
+                if (duration != null) '$duration ${l10n.daysShort}',
                 flowLabels[intensity],
-                if (cycleLength != null) 'Zyklus: $cycleLength d',
+                if (cycleLength != null) '${l10n.cycle}: $cycleLength ${l10n.tDayUnit}',
               ].join('  •  '),
               style: const TextStyle(
                   color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 11),

@@ -7,6 +7,23 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
+
+String _muscleLabel(String key, AppLocalizations l10n) {
+  switch (key) {
+    case 'Brust': return l10n.muscleBrust;
+    case 'Rücken': return l10n.muscleRuecken;
+    case 'Schulter': return l10n.muscleSchulter;
+    case 'Bizeps': return l10n.muscleBizeps;
+    case 'Trizeps': return l10n.muscleTrizeps;
+    case 'Bauch': return l10n.muscleBauch;
+    case 'Beine': return l10n.muscleBeine;
+    case 'Gesäß': return l10n.muscleGesaess;
+    case 'Waden': return l10n.muscleWaden;
+    case 'Ganzkörper': return l10n.muscleGanzkoerper;
+    default: return key;
+  }
+}
 
 class ExerciseLibraryScreen extends ConsumerStatefulWidget {
   const ExerciseLibraryScreen({super.key});
@@ -32,8 +49,8 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Übungsbibliothek',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.exerciseLibrary,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -52,7 +69,7 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
             child: TextField(
               style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
               decoration: InputDecoration(
-                hintText: 'Suche…',
+                hintText: AppLocalizations.of(context)!.search,
                 hintStyle: const TextStyle(
                     color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
                 prefixIcon: const Icon(Icons.search_rounded,
@@ -76,10 +93,10 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
                 _MuscleChip(
-                    label: 'Alle', selected: _muscleFilter == null,
+                    label: AppLocalizations.of(context)!.all, selected: _muscleFilter == null,
                     onTap: () => setState(() => _muscleFilter = null)),
                 ..._muscleGroups.map((m) => _MuscleChip(
-                      label: m,
+                      label: _muscleLabel(m, AppLocalizations.of(context)!),
                       selected: _muscleFilter == m,
                       onTap: () => setState(
                           () => _muscleFilter = _muscleFilter == m ? null : m),
@@ -108,7 +125,7 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
                       const Icon(Icons.fitness_center_rounded,
                           size: 48, color: TraumColors.onBackgroundSubtle),
                       const SizedBox(height: 12),
-                      Text(exercises.isEmpty ? 'Noch keine Übungen' : 'Keine Treffer',
+                      Text(exercises.isEmpty ? AppLocalizations.of(context)!.noExercisesYet : AppLocalizations.of(context)!.noResults,
                           style: const TextStyle(
                               color: TraumColors.onBackgroundMuted,
                               fontFamily: 'DMSans',
@@ -129,7 +146,7 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(top: 12, bottom: 6),
-                        child: Text(entry.key,
+                        child: Text(_muscleLabel(entry.key, AppLocalizations.of(context)!),
                             style: const TextStyle(
                                 color: TraumColors.coralOrange,
                                 fontFamily: 'DMSans',
@@ -309,17 +326,17 @@ class _AddExerciseSheetState extends State<_AddExerciseSheet> {
                       borderRadius: BorderRadius.circular(2))),
             ),
             const SizedBox(height: 16),
-            const Text('Übung erstellen',
-                style: TextStyle(
+            Text(AppLocalizations.of(context)!.createExercise,
+                style: const TextStyle(
                     color: TraumColors.onBackground,
                     fontFamily: 'DMSans',
                     fontWeight: FontWeight.w700,
                     fontSize: 18)),
             const SizedBox(height: 16),
-            _buildField('Name', _nameCtrl, hint: 'z.B. Bankdrücken'),
+            _buildField(AppLocalizations.of(context)!.fieldName, _nameCtrl, hint: AppLocalizations.of(context)!.exerciseHint),
             const SizedBox(height: 12),
-            const Text('Muskelgruppe',
-                style: TextStyle(
+            Text(AppLocalizations.of(context)!.muscleGroup,
+                style: const TextStyle(
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans',
                     fontSize: 13)),
@@ -331,17 +348,17 @@ class _AddExerciseSheetState extends State<_AddExerciseSheet> {
               style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
               underline: Container(height: 1, color: TraumColors.surfaceVariant),
               items: _muscleGroups
-                  .map((m) => DropdownMenuItem(value: m, child: Text(m)))
+                  .map((m) => DropdownMenuItem(value: m, child: Text(_muscleLabel(m, AppLocalizations.of(context)!))))
                   .toList(),
               onChanged: (v) => setState(() => _muscleGroup = v!),
             ),
             const SizedBox(height: 12),
-            _buildField('Equipment (optional)', _equipCtrl, hint: 'z.B. Langhantel'),
+            _buildField(AppLocalizations.of(context)!.equipmentOptional, _equipCtrl, hint: AppLocalizations.of(context)!.equipmentHint),
             const SizedBox(height: 12),
-            _buildField('Anleitung (optional)', _instrCtrl, hint: 'Ausführung…', lines: 3),
+            _buildField(AppLocalizations.of(context)!.instructionsOptional, _instrCtrl, hint: AppLocalizations.of(context)!.instructionExecution, lines: 3),
             const SizedBox(height: 20),
             GradientButton(
-              label: _saving ? 'Speichern…' : 'Übung erstellen',
+              label: _saving ? AppLocalizations.of(context)!.saving : AppLocalizations.of(context)!.createExercise,
               onPressed: _saving ? null : _save,
             ),
             const SizedBox(height: 8),
@@ -380,7 +397,7 @@ class _AddExerciseSheetState extends State<_AddExerciseSheet> {
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Name ist ein Pflichtfeld')));
+          .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
       return;
     }
     setState(() => _saving = true);

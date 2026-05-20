@@ -4,6 +4,23 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
+
+String _muscleLabel(String key, AppLocalizations l10n) {
+  switch (key) {
+    case 'Brust': return l10n.muscleBrust;
+    case 'Rücken': return l10n.muscleRuecken;
+    case 'Schulter': return l10n.muscleSchulter;
+    case 'Bizeps': return l10n.muscleBizeps;
+    case 'Trizeps': return l10n.muscleTrizeps;
+    case 'Bauch': return l10n.muscleBauch;
+    case 'Beine': return l10n.muscleBeine;
+    case 'Gesäß': return l10n.muscleGesaess;
+    case 'Waden': return l10n.muscleWaden;
+    case 'Ganzkörper': return l10n.muscleGanzkoerper;
+    default: return key;
+  }
+}
 
 class MuscleHeatmapScreen extends ConsumerWidget {
   const MuscleHeatmapScreen({super.key});
@@ -22,8 +39,8 @@ class MuscleHeatmapScreen extends ConsumerWidget {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Muskel-Heatmap',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.muscleHeatmapTitle,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -50,7 +67,7 @@ class MuscleHeatmapScreen extends ConsumerWidget {
             return ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                const Text('Trainingsvolumen (letzte 7 Tage)',
+                Text(AppLocalizations.of(context)!.trainingVolumeLast7Days,
                     style: TextStyle(
                         color: TraumColors.onBackground,
                         fontFamily: 'DMSans',
@@ -84,14 +101,14 @@ class MuscleHeatmapScreen extends ConsumerWidget {
                       const SizedBox(width: 14),
                       Expanded(
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text(muscle,
+                          Text(_muscleLabel(muscle, AppLocalizations.of(context)!),
                               style: const TextStyle(
                                   color: TraumColors.onBackground,
                                   fontFamily: 'DMSans',
                                   fontWeight: FontWeight.w600)),
                           Text(count == 0
-                              ? 'Nicht trainiert'
-                              : '$count ${count == 1 ? 'Satz' : 'Sätze'}',
+                              ? AppLocalizations.of(context)!.notTrained
+                              : AppLocalizations.of(context)!.setCount(count),
                               style: TextStyle(
                                   color: count > 0
                                       ? heatColor
@@ -122,13 +139,13 @@ class MuscleHeatmapScreen extends ConsumerWidget {
                     color: TraumColors.surface,
                     borderRadius: BorderRadius.circular(TraumRadius.card),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _LegendItem(color: TraumColors.onBackgroundSubtle, label: 'Kein Training'),
-                      _LegendItem(color: TraumColors.amberGold, label: 'Wenig'),
-                      _LegendItem(color: TraumColors.coralOrange, label: 'Mittel'),
-                      _LegendItem(color: TraumColors.roseRed, label: 'Viel'),
+                      _LegendItem(color: TraumColors.onBackgroundSubtle, label: AppLocalizations.of(context)!.noTraining),
+                      _LegendItem(color: TraumColors.amberGold, label: AppLocalizations.of(context)!.little),
+                      _LegendItem(color: TraumColors.coralOrange, label: AppLocalizations.of(context)!.medium),
+                      _LegendItem(color: TraumColors.roseRed, label: AppLocalizations.of(context)!.much),
                     ],
                   ),
                 ),
@@ -142,7 +159,7 @@ class MuscleHeatmapScreen extends ConsumerWidget {
         loading: () =>
             const Center(child: CircularProgressIndicator(color: TraumColors.coralOrange)),
         error: (e, _) => Center(
-            child: Text('Fehler: $e',
+            child: Text('${AppLocalizations.of(context)!.error}: $e',
                 style: const TextStyle(color: TraumColors.roseRed))),
       ),
     );

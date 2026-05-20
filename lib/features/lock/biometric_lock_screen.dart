@@ -7,6 +7,7 @@ import 'package:local_auth/error_codes.dart' as auth_error;
 import '../../core/navigation/routes.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 
 class BiometricLockScreen extends ConsumerStatefulWidget {
   const BiometricLockScreen({super.key});
@@ -40,6 +41,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
 
   Future<void> _authenticate() async {
     if (_authenticating) return;
+    final l10n = AppLocalizations.of(context)!;
     setState(() {
       _authenticating = true;
       _errorMessage = null;
@@ -47,7 +49,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
 
     try {
       final authenticated = await _auth.authenticate(
-        localizedReason: 'TRAUM entsperren',
+        localizedReason: l10n.unlockReason,
         options: const AuthenticationOptions(
           biometricOnly: false,
           stickyAuth: true,
@@ -59,7 +61,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
         context.go(Routes.home);
       } else {
         setState(() {
-          _errorMessage = 'Authentifizierung fehlgeschlagen. Bitte erneut versuchen.';
+          _errorMessage = l10n.authFailedTryAgain;
           _authenticating = false;
         });
       }
@@ -68,17 +70,17 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
       String message;
       switch (e.code) {
         case auth_error.notAvailable:
-          message = 'Biometrie ist auf diesem Gerät nicht verfügbar.';
+          message = l10n.biometricNotAvailable;
           break;
         case auth_error.notEnrolled:
-          message = 'Kein Fingerabdruck/Gesicht hinterlegt. Bitte PIN verwenden.';
+          message = l10n.biometricNotEnrolled;
           break;
         case auth_error.lockedOut:
         case auth_error.permanentlyLockedOut:
-          message = 'Zu viele Fehlversuche. Bitte PIN verwenden.';
+          message = l10n.biometricLockedOut;
           break;
         default:
-          message = 'Biometrie-Fehler: ${e.message ?? e.code}';
+          message = l10n.biometricError(e.message ?? e.code);
       }
       setState(() {
         _errorMessage = message;
@@ -87,7 +89,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = 'Biometrie nicht verfügbar. Bitte PIN verwenden.';
+          _errorMessage = l10n.biometricNotAvailableUsePin;
           _authenticating = false;
         });
       }
@@ -103,6 +105,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final pinEnabled = ref.watch(pinLockProvider);
 
     return Scaffold(
@@ -135,9 +138,9 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'App ist gesperrt',
-                  style: TextStyle(
+                Text(
+                  l10n.appIsLocked,
+                  style: const TextStyle(
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans',
                     fontSize: 14,
@@ -172,9 +175,9 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
                           borderRadius: BorderRadius.circular(12)),
                     ),
                     icon: Icon(_icon),
-                    label: const Text(
-                      'Entsperren',
-                      style: TextStyle(
+                    label: Text(
+                      l10n.unlock,
+                      style: const TextStyle(
                           fontFamily: 'DMSans', fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -183,9 +186,9 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
                     const SizedBox(height: 12),
                     TextButton(
                       onPressed: () => context.go(Routes.pinEntry),
-                      child: const Text(
-                        'Stattdessen PIN verwenden',
-                        style: TextStyle(
+                      child: Text(
+                        l10n.usePin,
+                        style: const TextStyle(
                           color: TraumColors.onBackgroundMuted,
                           fontFamily: 'DMSans',
                           fontSize: 13,

@@ -7,6 +7,7 @@ import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class NutritionScreen extends ConsumerStatefulWidget {
   const NutritionScreen({super.key});
@@ -31,8 +32,8 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Ernährung',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.nutrition,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -41,12 +42,12 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.search_rounded, color: TraumColors.mintGreen),
-            tooltip: 'Lebensmittel suchen',
+            tooltip: AppLocalizations.of(context)!.searchFood,
             onPressed: () => context.go('/nutrition/search'),
           ),
           IconButton(
             icon: const Icon(Icons.shopping_cart_rounded, color: TraumColors.amberGold),
-            tooltip: 'Einkaufsliste',
+            tooltip: AppLocalizations.of(context)!.shoppingListTooltip,
             onPressed: () => context.go('/nutrition/shopping'),
           ),
         ],
@@ -88,7 +89,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                   },
                   child: Text(
                     _isToday(_selectedDate)
-                        ? 'Heute'
+                        ? AppLocalizations.of(context)!.today
                         : '${_selectedDate.day.toString().padLeft(2, '0')}.${_selectedDate.month.toString().padLeft(2, '0')}.${_selectedDate.year}',
                     style: const TextStyle(
                         color: TraumColors.onBackground,
@@ -159,7 +160,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
               loading: () => const Center(
                   child: CircularProgressIndicator(color: TraumColors.mintGreen)),
               error: (e, _) => Center(
-                  child: Text('Fehler: $e',
+                  child: Text('${AppLocalizations.of(context)!.error}: $e',
                       style: const TextStyle(color: TraumColors.roseRed))),
             ),
           ),
@@ -181,8 +182,8 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
         return StatefulBuilder(
           builder: (ctx, setState) => AlertDialog(
             backgroundColor: TraumColors.surfaceElevated,
-            title: const Text('Wasser hinzufügen',
-                style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+            title: Text(AppLocalizations.of(ctx)!.addWater,
+                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
             content: Column(mainAxisSize: MainAxisSize.min, children: [
               Text('$amount ml',
                   style: const TextStyle(
@@ -202,8 +203,8 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text('Abbrechen',
-                    style: TextStyle(color: TraumColors.onBackgroundMuted)),
+                child: Text(AppLocalizations.of(ctx)!.cancel,
+                    style: const TextStyle(color: TraumColors.onBackgroundMuted)),
               ),
               TextButton(
                 onPressed: () async {
@@ -213,8 +214,8 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                             logDate: DateTime.now(), amountMl: amount),
                       );
                 },
-                child: const Text('Hinzufügen',
-                    style: TextStyle(
+                child: Text(AppLocalizations.of(ctx)!.add,
+                    style: const TextStyle(
                         color: TraumColors.cyanBlue, fontWeight: FontWeight.w700)),
               ),
             ],
@@ -265,7 +266,7 @@ class _MacroSummaryCard extends StatelessWidget {
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w700,
                       fontSize: 24)),
-              Text('Ziel: ${kcalGoal.toStringAsFixed(0)} kcal',
+              Text('${AppLocalizations.of(context)!.goal}: ${kcalGoal.toStringAsFixed(0)} kcal',
                   style: const TextStyle(
                       color: TraumColors.onBackgroundMuted,
                       fontFamily: 'DMSans',
@@ -288,8 +289,8 @@ class _MacroSummaryCard extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          const Text('Protein',
-              style: TextStyle(
+          Text(AppLocalizations.of(context)!.protein,
+              style: const TextStyle(
                   color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12)),
           Text('${protein.toStringAsFixed(0)} / ${proteinGoal.toStringAsFixed(0)} g',
               style: const TextStyle(
@@ -354,7 +355,7 @@ class _WaterCard extends StatelessWidget {
                       color: TraumColors.cyanBlue,
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w600)),
-              const Text('Ziel: 2000 ml',
+              Text(AppLocalizations.of(context)!.waterGoal2000,
                   style: TextStyle(
                       color: TraumColors.onBackgroundSubtle,
                       fontFamily: 'DMSans',
@@ -390,12 +391,14 @@ class _MealSection extends StatelessWidget {
     required this.onDelete,
   });
 
-  static const _mealLabels = {
-    'breakfast': 'Frühstück',
-    'lunch': 'Mittagessen',
-    'dinner': 'Abendessen',
-    'snack': 'Snacks',
-  };
+  static String _mealLabel(String mealType, AppLocalizations l10n) {
+    switch (mealType) {
+      case 'breakfast': return l10n.breakfast;
+      case 'lunch': return l10n.lunch;
+      case 'dinner': return l10n.dinner;
+      default: return l10n.snack;
+    }
+  }
 
   static const _mealIcons = {
     'breakfast': Icons.free_breakfast_rounded,
@@ -420,7 +423,7 @@ class _MealSection extends StatelessWidget {
             child: Row(children: [
               Icon(_mealIcons[mealType]!, color: TraumColors.mintGreen, size: 18),
               const SizedBox(width: 8),
-              Text(_mealLabels[mealType]!,
+              Text(_mealLabel(mealType, AppLocalizations.of(context)!),
                   style: const TextStyle(
                       color: TraumColors.onBackground,
                       fontFamily: 'DMSans',
@@ -480,7 +483,7 @@ class _MealSection extends StatelessWidget {
           ] else ...[
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
-              child: Text('Nichts eingetragen',
+              child: Text(AppLocalizations.of(context)!.nothingLogged,
                   style: const TextStyle(
                       color: TraumColors.onBackgroundSubtle,
                       fontFamily: 'DMSans',

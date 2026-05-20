@@ -6,6 +6,7 @@ import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class TransactionListScreen extends ConsumerStatefulWidget {
   const TransactionListScreen({super.key});
@@ -27,8 +28,8 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Alle Transaktionen',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.allTransactions,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -46,13 +47,13 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(children: [
-              _FilterChip(label: 'Alle', value: 'all', current: _filter,
+              _FilterChip(label: AppLocalizations.of(context)!.all, value: 'all', current: _filter,
                   onTap: () => setState(() => _filter = 'all')),
               const SizedBox(width: 8),
-              _FilterChip(label: 'Ausgaben', value: 'expense', current: _filter,
+              _FilterChip(label: AppLocalizations.of(context)!.expense, value: 'expense', current: _filter,
                   onTap: () => setState(() => _filter = 'expense')),
               const SizedBox(width: 8),
-              _FilterChip(label: 'Einnahmen', value: 'income', current: _filter,
+              _FilterChip(label: AppLocalizations.of(context)!.income, value: 'income', current: _filter,
                   onTap: () => setState(() => _filter = 'income')),
             ]),
           ),
@@ -66,13 +67,13 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                 return categoriesAsync.when(
                   data: (categories) {
                     if (filtered.isEmpty) {
-                      return const Center(
+                      return Center(
                         child: Column(mainAxisSize: MainAxisSize.min, children: [
-                          Icon(Icons.receipt_long_rounded,
+                          const Icon(Icons.receipt_long_rounded,
                               size: 48, color: TraumColors.onBackgroundSubtle),
-                          SizedBox(height: 12),
-                          Text('Keine Transaktionen',
-                              style: TextStyle(
+                          const SizedBox(height: 12),
+                          Text(AppLocalizations.of(context)!.noTransactions,
+                              style: const TextStyle(
                                   color: TraumColors.onBackgroundMuted,
                                   fontFamily: 'DMSans',
                                   fontWeight: FontWeight.w600)),
@@ -93,9 +94,11 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                         final parts = entry.key.split('-');
                         final year = int.parse(parts[0]);
                         final month = int.parse(parts[1]);
-                        const monthNames = [
-                          'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
-                          'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'
+                        final l10n = AppLocalizations.of(context)!;
+                        final monthNames = [
+                          l10n.monthJan, l10n.monthFeb, l10n.monthMar, l10n.monthApr,
+                          l10n.monthMay, l10n.monthJun, l10n.monthJul, l10n.monthAug,
+                          l10n.monthSep, l10n.monthOct, l10n.monthNov, l10n.monthDec,
                         ];
                         final monthTotal = entry.value
                             .where((t) => t.type == 'expense')
@@ -142,7 +145,7 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
               loading: () =>
                   const Center(child: CircularProgressIndicator(color: TraumColors.amberGold)),
               error: (e, _) => Center(
-                  child: Text('Fehler: $e',
+                  child: Text('${AppLocalizations.of(context)!.error}: $e',
                       style: const TextStyle(color: TraumColors.roseRed))),
             ),
           ),

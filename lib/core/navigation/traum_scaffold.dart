@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../l10n/app_localizations.dart';
 import '../providers/preferences_provider.dart';
 import '../theme/colors.dart';
 import '../theme/radius.dart';
@@ -9,23 +10,24 @@ import 'nav_customization_sheet.dart';
 import 'routes.dart';
 
 Future<bool> _showExitDialog(BuildContext context) async {
+  final l10n = AppLocalizations.of(context)!;
   final result = await showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
       backgroundColor: TraumColors.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: const Text(
-        'App beenden?',
-        style: TextStyle(
+      title: Text(
+        l10n.exitDialogTitle,
+        style: const TextStyle(
           fontFamily: 'DMSans',
           color: TraumColors.onBackground,
           fontWeight: FontWeight.w700,
           fontSize: 18,
         ),
       ),
-      content: const Text(
-        'Möchtest du TRAUM wirklich beenden?',
-        style: TextStyle(
+      content: Text(
+        l10n.exitDialogContent,
+        style: const TextStyle(
           fontFamily: 'DMSans',
           color: TraumColors.onBackgroundMuted,
           fontSize: 14,
@@ -34,9 +36,9 @@ Future<bool> _showExitDialog(BuildContext context) async {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(ctx, false),
-          child: const Text(
-            'Abbrechen',
-            style: TextStyle(
+          child: Text(
+            l10n.cancel,
+            style: const TextStyle(
               fontFamily: 'DMSans',
               color: TraumColors.onBackgroundMuted,
             ),
@@ -44,9 +46,9 @@ Future<bool> _showExitDialog(BuildContext context) async {
         ),
         TextButton(
           onPressed: () => Navigator.pop(ctx, true),
-          child: const Text(
-            'Beenden',
-            style: TextStyle(
+          child: Text(
+            l10n.exit,
+            style: const TextStyle(
               fontFamily: 'DMSans',
               color: TraumColors.coralOrange,
               fontWeight: FontWeight.w600,
@@ -274,7 +276,7 @@ class _NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = TraumColors.moduleColor(module);
-    final label = Routes.moduleLabels[module] ?? module;
+    final label = Routes.labelFor(module, AppLocalizations.of(context)!);
 
     if (isActive) {
       return GestureDetector(
@@ -394,6 +396,7 @@ class _MoreMenuSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
       maxChildSize: 0.95,
@@ -418,9 +421,9 @@ class _MoreMenuSheet extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
-                const Text(
-                  'Mehr',
-                  style: TextStyle(
+                Text(
+                  l10n.more,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: TraumColors.onBackground,
@@ -438,14 +441,14 @@ class _MoreMenuSheet extends StatelessWidget {
                       borderRadius: BorderRadius.circular(TraumRadius.chip),
                       border: Border.all(color: TraumColors.surfaceVariant),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.tune_rounded, color: TraumColors.onBackgroundMuted, size: 15),
-                        SizedBox(width: 6),
+                        const Icon(Icons.tune_rounded, color: TraumColors.onBackgroundMuted, size: 15),
+                        const SizedBox(width: 6),
                         Text(
-                          'Anpassen',
-                          style: TextStyle(
+                          l10n.customize,
+                          style: const TextStyle(
                             color: TraumColors.onBackgroundMuted,
                             fontFamily: 'DMSans',
                             fontSize: 13,
@@ -461,12 +464,12 @@ class _MoreMenuSheet extends StatelessWidget {
           ),
           Expanded(
             child: moreModules.isEmpty
-                ? const Center(
+                ? Center(
                     child: Padding(
-                      padding: EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(24),
                       child: Text(
-                        'Alle Module sind bereits in deiner Navigation.',
-                        style: TextStyle(
+                        l10n.allModulesInNav,
+                        style: const TextStyle(
                           color: TraumColors.onBackgroundSubtle,
                           fontFamily: 'DMSans',
                           fontSize: 14,
@@ -488,7 +491,7 @@ class _MoreMenuSheet extends StatelessWidget {
                     itemBuilder: (_, i) {
                       final module = moreModules[i];
                       final color = TraumColors.moduleColor(module);
-                      final label = Routes.moduleLabels[module] ?? module;
+                      final label = Routes.labelFor(module, l10n);
                       return GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () => onNavigate(module),

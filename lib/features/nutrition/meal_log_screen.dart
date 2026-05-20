@@ -7,6 +7,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class MealLogScreen extends ConsumerStatefulWidget {
   const MealLogScreen({super.key});
@@ -25,11 +26,11 @@ class _MealLogScreenState extends ConsumerState<MealLogScreen> {
   String _mealType = 'snack';
   bool _saving = false;
 
-  static const _mealTypes = [
-    ('breakfast', 'Frühstück'),
-    ('lunch', 'Mittagessen'),
-    ('dinner', 'Abendessen'),
-    ('snack', 'Snack'),
+  List<(String, String)> _mealTypes(AppLocalizations l10n) => [
+    ('breakfast', l10n.breakfast),
+    ('lunch', l10n.lunch),
+    ('dinner', l10n.dinner),
+    ('snack', l10n.snack),
   ];
 
   @override
@@ -51,8 +52,8 @@ class _MealLogScreenState extends ConsumerState<MealLogScreen> {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Mahlzeit eintragen',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.logMeal,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -71,7 +72,7 @@ class _MealLogScreenState extends ConsumerState<MealLogScreen> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Schnellauswahl',
+                    Text(AppLocalizations.of(context)!.quickSelect,
                         style: TextStyle(
                             color: TraumColors.onBackgroundMuted,
                             fontFamily: 'DMSans',
@@ -110,11 +111,11 @@ class _MealLogScreenState extends ConsumerState<MealLogScreen> {
               error: (_, __) => const SizedBox.shrink(),
             ),
             // Meal type
-            const Text('Mahlzeit',
-                style: TextStyle(
+            Text(AppLocalizations.of(context)!.mealType,
+                style: const TextStyle(
                     color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
             const SizedBox(height: 8),
-            Row(children: _mealTypes.map((mt) {
+            Row(children: _mealTypes(AppLocalizations.of(context)!).map((mt) {
               final selected = mt.$1 == _mealType;
               return Expanded(
                 child: Padding(
@@ -152,24 +153,24 @@ class _MealLogScreenState extends ConsumerState<MealLogScreen> {
               );
             }).toList()),
             const SizedBox(height: 16),
-            _buildField('Lebensmittel', _nameCtrl, hint: 'z.B. Haferflocken'),
+            _buildField(AppLocalizations.of(context)!.foodLabel, _nameCtrl, hint: AppLocalizations.of(context)!.foodHint),
             const SizedBox(height: 12),
             Row(children: [
-              Expanded(child: _buildField('Menge (g)', _amountCtrl, hint: '100', numeric: true)),
+              Expanded(child: _buildField(AppLocalizations.of(context)!.amountGrams, _amountCtrl, hint: '100', numeric: true)),
               const SizedBox(width: 12),
-              Expanded(child: _buildField('Kalorien (kcal)', _kcalCtrl, hint: '350', numeric: true)),
+              Expanded(child: _buildField(AppLocalizations.of(context)!.caloriesKcal, _kcalCtrl, hint: '350', numeric: true)),
             ]),
             const SizedBox(height: 12),
             Row(children: [
-              Expanded(child: _buildField('Protein (g)', _proteinCtrl, hint: '12', numeric: true)),
+              Expanded(child: _buildField(AppLocalizations.of(context)!.proteinG, _proteinCtrl, hint: '12', numeric: true)),
               const SizedBox(width: 8),
-              Expanded(child: _buildField('Kohlenhydrate (g)', _carbsCtrl, hint: '50', numeric: true)),
+              Expanded(child: _buildField(AppLocalizations.of(context)!.carbsG, _carbsCtrl, hint: '50', numeric: true)),
               const SizedBox(width: 8),
-              Expanded(child: _buildField('Fett (g)', _fatCtrl, hint: '8', numeric: true)),
+              Expanded(child: _buildField(AppLocalizations.of(context)!.fatG, _fatCtrl, hint: '8', numeric: true)),
             ]),
             const SizedBox(height: 28),
             GradientButton(
-              label: _saving ? 'Speichern…' : 'Eintragen',
+              label: _saving ? AppLocalizations.of(context)!.saving : AppLocalizations.of(context)!.logEntry,
               onPressed: _saving ? null : _save,
             ),
           ],
@@ -223,7 +224,7 @@ class _MealLogScreenState extends ConsumerState<MealLogScreen> {
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Name ist ein Pflichtfeld')));
+          .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
       return;
     }
     final amount = double.tryParse(_amountCtrl.text.replaceAll(',', '.')) ?? 0;

@@ -7,6 +7,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class FoodSearchScreen extends ConsumerStatefulWidget {
   const FoodSearchScreen({super.key});
@@ -50,8 +51,8 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Lebensmittel suchen',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.searchFood,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -60,8 +61,8 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
         actions: [
           TextButton(
             onPressed: () => _showCreateTemplateSheet(context),
-            child: const Text('+ Neu',
-                style: TextStyle(color: TraumColors.mintGreen, fontFamily: 'DMSans')),
+            child: Text(AppLocalizations.of(context)!.plusNew,
+                style: const TextStyle(color: TraumColors.mintGreen, fontFamily: 'DMSans')),
           ),
         ],
       ),
@@ -74,7 +75,7 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
               autofocus: true,
               style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
               decoration: InputDecoration(
-                hintText: 'z.B. Haferflocken, Hühnerbrust…',
+                hintText: AppLocalizations.of(context)!.searchHint,
                 hintStyle: const TextStyle(
                     color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
                 prefixIcon: const Icon(Icons.search_rounded,
@@ -103,9 +104,9 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
           ),
           Expanded(
             child: !_searched
-                ? const Center(
-                    child: Text('Lebensmittel suchen oder neu erstellen',
-                        style: TextStyle(
+                ? Center(
+                    child: Text(AppLocalizations.of(context)!.searchOrCreate,
+                        style: const TextStyle(
                             color: TraumColors.onBackgroundSubtle,
                             fontFamily: 'DMSans',
                             fontSize: 13),
@@ -117,8 +118,8 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
                           const Icon(Icons.search_off_rounded,
                               size: 48, color: TraumColors.onBackgroundSubtle),
                           const SizedBox(height: 12),
-                          const Text('Keine Ergebnisse',
-                              style: TextStyle(
+                          Text(AppLocalizations.of(context)!.noResultsLabel,
+                              style: const TextStyle(
                                   color: TraumColors.onBackgroundMuted,
                                   fontFamily: 'DMSans',
                                   fontWeight: FontWeight.w600)),
@@ -126,7 +127,7 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
                           TextButton(
                             onPressed: () => _showCreateTemplateSheet(context,
                                 initialName: _searchCtrl.text.trim()),
-                            child: const Text('Lebensmittel erstellen',
+                            child: Text(AppLocalizations.of(context)!.createFood,
                                 style: TextStyle(
                                     color: TraumColors.mintGreen, fontFamily: 'DMSans')),
                           ),
@@ -184,9 +185,9 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   style: const TextStyle(
                       color: TraumColors.onBackground, fontFamily: 'DMSans'),
-                  decoration: const InputDecoration(
-                    labelText: 'Menge (g)',
-                    labelStyle: TextStyle(
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(ctx)!.amountG,
+                    labelStyle: const TextStyle(
                         color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
                   ),
                   onChanged: (_) => setState(() {}),
@@ -199,11 +200,11 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
                   style: const TextStyle(
                       color: TraumColors.onBackground, fontFamily: 'DMSans'),
                   underline: Container(height: 1, color: TraumColors.surfaceVariant),
-                  items: const [
-                    DropdownMenuItem(value: 'breakfast', child: Text('Frühstück')),
-                    DropdownMenuItem(value: 'lunch', child: Text('Mittagessen')),
-                    DropdownMenuItem(value: 'dinner', child: Text('Abendessen')),
-                    DropdownMenuItem(value: 'snack', child: Text('Snack')),
+                  items: [
+                    DropdownMenuItem(value: 'breakfast', child: Text(AppLocalizations.of(ctx)!.breakfast)),
+                    DropdownMenuItem(value: 'lunch', child: Text(AppLocalizations.of(ctx)!.lunch)),
+                    DropdownMenuItem(value: 'dinner', child: Text(AppLocalizations.of(ctx)!.dinner)),
+                    DropdownMenuItem(value: 'snack', child: Text(AppLocalizations.of(ctx)!.snack)),
                   ],
                   onChanged: (v) => setState(() => mealType = v!),
                 ),
@@ -212,8 +213,8 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text('Abbrechen',
-                    style: TextStyle(color: TraumColors.onBackgroundMuted)),
+                child: Text(AppLocalizations.of(ctx)!.cancel,
+                    style: const TextStyle(color: TraumColors.onBackgroundMuted)),
               ),
               TextButton(
                 onPressed: () async {
@@ -236,8 +237,8 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
                       );
                   if (context.mounted) context.go('/nutrition');
                 },
-                child: const Text('Eintragen',
-                    style: TextStyle(
+                child: Text(AppLocalizations.of(ctx)!.logEntry,
+                    style: const TextStyle(
                         color: TraumColors.mintGreen, fontWeight: FontWeight.w700)),
               ),
             ],
@@ -379,31 +380,31 @@ class _CreateTemplateSheetState extends State<_CreateTemplateSheet> {
                       borderRadius: BorderRadius.circular(2))),
             ),
             const SizedBox(height: 16),
-            const Text('Lebensmittel erstellen',
-                style: TextStyle(
+            Text(AppLocalizations.of(context)!.createFood,
+                style: const TextStyle(
                     color: TraumColors.onBackground,
                     fontFamily: 'DMSans',
                     fontWeight: FontWeight.w700,
                     fontSize: 18)),
             const SizedBox(height: 16),
-            _buildField('Name', _nameCtrl, hint: 'z.B. Haferflocken'),
+            _buildField(AppLocalizations.of(context)!.fieldName, _nameCtrl, hint: AppLocalizations.of(context)!.foodHint),
             const SizedBox(height: 10),
             Row(children: [
-              Expanded(child: _buildField('Portionsgröße (g)', _servingCtrl, hint: '100', numeric: true)),
+              Expanded(child: _buildField(AppLocalizations.of(context)!.servingSize, _servingCtrl, hint: '100', numeric: true)),
               const SizedBox(width: 10),
-              Expanded(child: _buildField('Kalorien/100g', _kcalCtrl, hint: '370', numeric: true)),
+              Expanded(child: _buildField(AppLocalizations.of(context)!.kcalPer100g, _kcalCtrl, hint: '370', numeric: true)),
             ]),
             const SizedBox(height: 10),
             Row(children: [
-              Expanded(child: _buildField('Protein/100g', _proteinCtrl, hint: '13', numeric: true)),
+              Expanded(child: _buildField(AppLocalizations.of(context)!.proteinPer100g, _proteinCtrl, hint: '13', numeric: true)),
               const SizedBox(width: 8),
-              Expanded(child: _buildField('Kohlenhydrate/100g', _carbsCtrl, hint: '60', numeric: true)),
+              Expanded(child: _buildField(AppLocalizations.of(context)!.carbsPer100g, _carbsCtrl, hint: '60', numeric: true)),
               const SizedBox(width: 8),
-              Expanded(child: _buildField('Fett/100g', _fatCtrl, hint: '7', numeric: true)),
+              Expanded(child: _buildField(AppLocalizations.of(context)!.fatPer100g, _fatCtrl, hint: '7', numeric: true)),
             ]),
             const SizedBox(height: 20),
             GradientButton(
-              label: _saving ? 'Speichern…' : 'Erstellen',
+              label: _saving ? AppLocalizations.of(context)!.saving : AppLocalizations.of(context)!.createButton,
               onPressed: _saving ? null : _save,
             ),
             const SizedBox(height: 8),
@@ -445,13 +446,13 @@ class _CreateTemplateSheetState extends State<_CreateTemplateSheet> {
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Name ist ein Pflichtfeld')));
+          .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
       return;
     }
     final kcal = double.tryParse(_kcalCtrl.text.replaceAll(',', '.'));
     if (kcal == null) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Kalorien eingeben')));
+          .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.caloriesRequired)));
       return;
     }
     final serving = double.tryParse(_servingCtrl.text.replaceAll(',', '.')) ?? 100;

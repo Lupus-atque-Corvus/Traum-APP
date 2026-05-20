@@ -8,6 +8,7 @@ import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
   const AddTransactionScreen({super.key});
@@ -42,8 +43,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Transaktion hinzufügen',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.addTransaction,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -77,7 +78,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                       ),
                     ),
                     child: Center(
-                      child: Text('Ausgabe',
+                      child: Text(AppLocalizations.of(context)!.expenseLabel,
                           style: TextStyle(
                               color: _type == 'expense'
                                   ? TraumColors.roseRed
@@ -108,7 +109,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                       ),
                     ),
                     child: Center(
-                      child: Text('Einnahme',
+                      child: Text(AppLocalizations.of(context)!.incomeLabel,
                           style: TextStyle(
                               color: _type == 'income'
                                   ? TraumColors.mintGreen
@@ -121,7 +122,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               ),
             ]),
             const SizedBox(height: 20),
-            _buildLabel('Betrag ($currency)'),
+            _buildLabel(AppLocalizations.of(context)!.amountWithCurrency(currency)),
             const SizedBox(height: 6),
             TextField(
               controller: _amountCtrl,
@@ -141,11 +142,11 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            _buildLabel('Beschreibung'),
+            _buildLabel(AppLocalizations.of(context)!.fieldDescription),
             const SizedBox(height: 6),
-            _buildTextField(_descCtrl, hint: 'z.B. Lebensmittel'),
+            _buildTextField(_descCtrl, hint: AppLocalizations.of(context)!.transactionDescriptionHint),
             const SizedBox(height: 16),
-            _buildLabel('Datum'),
+            _buildLabel(AppLocalizations.of(context)!.dateLabel),
             const SizedBox(height: 6),
             GestureDetector(
               onTap: () async {
@@ -183,15 +184,15 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            _buildLabel('Kategorie (optional)'),
+            _buildLabel(AppLocalizations.of(context)!.categoryOptional),
             const SizedBox(height: 6),
             categoriesAsync.when(
               data: (categories) {
                 final filtered =
                     categories.where((c) => c.isExpense == (_type == 'expense')).toList();
                 if (filtered.isEmpty) {
-                  return const Text('Keine Kategorien',
-                      style: TextStyle(
+                  return Text(AppLocalizations.of(context)!.noCategories,
+                      style: const TextStyle(
                           color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'));
                 }
                 return DropdownButtonFormField<int?>(
@@ -207,7 +208,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   ),
                   items: [
-                    const DropdownMenuItem(value: null, child: Text('Keine Kategorie')),
+                    DropdownMenuItem(value: null, child: Text(AppLocalizations.of(context)!.noCategory)),
                     ...filtered.map((c) => DropdownMenuItem(
                           value: c.id,
                           child: Text('${c.emoji ?? ''} ${c.name}'.trim()),
@@ -220,14 +221,14 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               error: (_, __) => const SizedBox.shrink(),
             ),
             const SizedBox(height: 16),
-            _buildLabel('Notiz (optional)'),
+            _buildLabel(AppLocalizations.of(context)!.fieldNoteOptional),
             const SizedBox(height: 6),
             TextField(
               controller: _noteCtrl,
               maxLines: 2,
               style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
               decoration: InputDecoration(
-                hintText: 'Zusätzliche Notiz…',
+                hintText: AppLocalizations.of(context)!.noteHint,
                 hintStyle: const TextStyle(
                     color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
                 filled: true,
@@ -240,7 +241,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
             ),
             const SizedBox(height: 28),
             GradientButton(
-              label: _saving ? 'Speichern…' : 'Speichern',
+              label: _saving ? AppLocalizations.of(context)!.saving : AppLocalizations.of(context)!.save,
               onPressed: _saving ? null : _save,
             ),
           ],
@@ -274,12 +275,12 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     final amount = double.tryParse(amountText);
     if (amount == null || amount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Bitte gültigen Betrag eingeben')));
+          SnackBar(content: Text(AppLocalizations.of(context)!.pleaseEnterValidAmount)));
       return;
     }
     if (_descCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Beschreibung ist ein Pflichtfeld')));
+          .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.descriptionRequired)));
       return;
     }
     setState(() => _saving = true);

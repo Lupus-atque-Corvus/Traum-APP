@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/radius.dart';
+import '../../../l10n/app_localizations.dart';
 import '../health_score_result.dart';
 
 class FaktorDetailCard extends StatelessWidget {
@@ -15,9 +16,10 @@ class FaktorDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final color = faktorModulFarbe(faktor.name);
     final icon = faktorIcon(faktor.name);
-    final bewertung = faktorBewertung(faktor.score);
+    final bewertung = faktorBewertung(faktor.score, l10n);
     final farbe = faktorFarbe(faktor.score);
 
     return Container(
@@ -91,7 +93,7 @@ class FaktorDetailCard extends StatelessWidget {
           if (history.isNotEmpty) _MiniBarChart(history: history),
           const SizedBox(height: 10),
           Text(
-            faktorHinweis(faktor.name),
+            faktorHinweis(faktor.name, l10n),
             style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',

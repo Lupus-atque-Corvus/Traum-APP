@@ -18,6 +18,10 @@ class TraumApp extends ConsumerStatefulWidget {
 class _TraumAppState extends ConsumerState<TraumApp> {
   late final AppLifecycleListener _lifecycleListener;
 
+  // Set to true when app is truly backgrounded (paused state).
+  // Cleared after lock screen is shown on resume.
+  bool _pausedForLock = false;
+
   @override
   void initState() {
     super.initState();
@@ -25,22 +29,8 @@ class _TraumAppState extends ConsumerState<TraumApp> {
       onPause: _onPause,
       onResume: _onResume,
     );
-    // Always lock on cold start if lock is configured
+    // Always lock on cold start if lock is configured.
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkStartupLock());
-  }
-
-  void _checkStartupLock() {
-    final biometricEnabled = ref.read(biometricLockProvider);
-    final pinEnabled = ref.read(pinLockProvider);
-    final onboarded = ref.read(preferencesRepositoryProvider).onboardingComplete;
-    if (!onboarded || (!biometricEnabled && !pinEnabled)) return;
-
-    final router = ref.read(routerProvider);
-    if (biometricEnabled) {
-      router.go(Routes.biometricLock);
-    } else {
-      router.go(Routes.pinEntry);
-    }
   }
 
   @override
@@ -49,25 +39,45 @@ class _TraumAppState extends ConsumerState<TraumApp> {
     super.dispose();
   }
 
+  void _checkStartupLock() {
+    final prefs = ref.read(preferencesRepositoryProvider);
+    if (!prefs.onboardingComplete) return;
+
+    final biometric = ref.read(biometricLockProvider);
+    final pin = ref.read(pinLockProvider);
+    if (!biometric && !pin) return;
+
+    _goToLock(biometric);
+  }
+
   void _onPause() {
-    final prefs = ref.read(sharedPreferencesProvider);
-    prefs.setInt('lock_timestamp', DateTime.now().millisecondsSinceEpoch);
+    final prefs = ref.read(preferencesRepositoryProvider);
+    if (!prefs.onboardingComplete) return;
+
+    final biometric = ref.read(biometricLockProvider);
+    final pin = ref.read(pinLockProvider);
+    if (biometric || pin) {
+      _pausedForLock = true;
+    }
   }
 
   void _onResume() {
-    final biometricEnabled = ref.read(biometricLockProvider);
-    final pinEnabled = ref.read(pinLockProvider);
-    if (!biometricEnabled && !pinEnabled) return;
+    if (!_pausedForLock) return;
+    _pausedForLock = false;
 
-    final prefs = ref.read(sharedPreferencesProvider);
-    final ts = prefs.getInt('lock_timestamp') ?? 0;
-    final elapsed = DateTime.now().millisecondsSinceEpoch - ts;
-    if (elapsed > 5 * 60 * 1000) {
-      if (biometricEnabled) {
-        ref.read(routerProvider).go(Routes.biometricLock);
-      } else {
-        ref.read(routerProvider).go(Routes.pinEntry);
-      }
+    final biometric = ref.read(biometricLockProvider);
+    final pin = ref.read(pinLockProvider);
+    if (!biometric && !pin) return;
+
+    _goToLock(biometric);
+  }
+
+  void _goToLock(bool biometric) {
+    final router = ref.read(routerProvider);
+    if (biometric) {
+      router.go(Routes.biometricLock);
+    } else {
+      router.go(Routes.pinEntry);
     }
   }
 

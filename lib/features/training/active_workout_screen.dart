@@ -8,6 +8,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class ActiveWorkoutScreen extends ConsumerStatefulWidget {
   const ActiveWorkoutScreen({super.key});
@@ -74,7 +75,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
         actions: [
           TextButton(
             onPressed: _finishing ? null : _finishWorkout,
-            child: Text(_finishing ? 'Beenden…' : 'Fertig',
+            child: Text(_finishing ? AppLocalizations.of(context)!.finishing : AppLocalizations.of(context)!.done,
                 style: const TextStyle(
                     color: TraumColors.mintGreen,
                     fontFamily: 'DMSans',
@@ -93,8 +94,8 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
                       const Icon(Icons.add_circle_outline_rounded,
                           size: 64, color: TraumColors.coralOrange),
                       const SizedBox(height: 16),
-                      const Text('Füge eine Übung hinzu',
-                          style: TextStyle(
+                      Text(AppLocalizations.of(context)!.addExercise,
+                          style: const TextStyle(
                               color: TraumColors.onBackgroundMuted,
                               fontFamily: 'DMSans',
                               fontWeight: FontWeight.w600)),
@@ -107,8 +108,9 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
                     final entry = e.value;
                     final ex = exercises.cast<Exercise?>().firstWhere(
                         (ex) => ex?.id == entry.exerciseId, orElse: () => null);
+                    final l10n = AppLocalizations.of(context)!;
                     return _SetCard(
-                      exerciseName: ex?.name ?? 'Übung',
+                      exerciseName: ex?.name ?? l10n.exercise,
                       entry: entry,
                       onRemove: () => setState(() => _sets.removeAt(e.key)),
                     );
@@ -124,7 +126,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
             padding: const EdgeInsets.all(16),
             child: exercisesAsync.when(
               data: (exercises) => GradientButton(
-                label: 'Übung hinzufügen',
+                label: AppLocalizations.of(context)!.addExercise,
                 onPressed: () => _showAddSetDialog(context, exercises),
               ),
               loading: () => const SizedBox.shrink(),
@@ -138,8 +140,8 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
 
   void _showAddSetDialog(BuildContext context, List<Exercise> exercises) {
     if (exercises.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Keine Übungen in der Bibliothek. Zuerst Übungen anlegen.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context)!.noExercisesInLibrary)));
       return;
     }
     int? selectedExerciseId = exercises.first.id;
@@ -150,8 +152,8 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surfaceElevated,
-        title: const Text('Satz hinzufügen',
-            style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+        title: Text(AppLocalizations.of(context)!.addSet,
+            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
         content: SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             DropdownButtonFormField<int>(
@@ -159,7 +161,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
               dropdownColor: TraumColors.surfaceElevated,
               style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
               decoration: InputDecoration(
-                labelText: 'Übung',
+                labelText: AppLocalizations.of(context)!.exercise,
                 labelStyle: const TextStyle(
                     color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
                 filled: true,
@@ -178,9 +180,9 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
               controller: weightCtrl,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
-              decoration: const InputDecoration(
-                labelText: 'Gewicht (kg)',
-                labelStyle: TextStyle(
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.weightKg,
+                labelStyle: const TextStyle(
                     color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
               ),
             ),
@@ -189,9 +191,9 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
               controller: repsCtrl,
               keyboardType: TextInputType.number,
               style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
-              decoration: const InputDecoration(
-                labelText: 'Wiederholungen',
-                labelStyle: TextStyle(
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.reps,
+                labelStyle: const TextStyle(
                     color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
               ),
             ),
@@ -200,8 +202,8 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Abbrechen',
-                style: TextStyle(color: TraumColors.onBackgroundMuted)),
+            child: Text(AppLocalizations.of(ctx)!.cancel,
+                style: const TextStyle(color: TraumColors.onBackgroundMuted)),
           ),
           TextButton(
             onPressed: () {
@@ -216,8 +218,8 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
               });
               Navigator.pop(ctx);
             },
-            child: const Text('Hinzufügen',
-                style: TextStyle(
+            child: Text(AppLocalizations.of(ctx)!.add,
+                style: const TextStyle(
                     color: TraumColors.coralOrange, fontWeight: FontWeight.w700)),
           ),
         ],
@@ -306,7 +308,7 @@ class _SetCard extends StatelessWidget {
             Text(
               [
                 if (entry.weightKg != null) '${entry.weightKg} kg',
-                if (entry.reps != null) '${entry.reps} Wdh.',
+                if (entry.reps != null) AppLocalizations.of(context)!.repsCount(entry.reps!),
               ].join('  ×  '),
               style: const TextStyle(
                   color: TraumColors.onBackgroundMuted,

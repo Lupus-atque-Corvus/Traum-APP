@@ -7,6 +7,7 @@ import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class BudgetScreen extends ConsumerStatefulWidget {
   const BudgetScreen({super.key});
@@ -37,15 +38,17 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
     );
     final categoriesAsync = ref.watch(allBudgetCategoriesStreamProvider);
 
-    const monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
-      'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+    final l10n = AppLocalizations.of(context)!;
+    final monthNames = [l10n.monthJan, l10n.monthFeb, l10n.monthMar, l10n.monthApr,
+      l10n.monthMay, l10n.monthJun, l10n.monthJul, l10n.monthAug,
+      l10n.monthSep, l10n.monthOct, l10n.monthNov, l10n.monthDec];
 
     return Scaffold(
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Budget',
-            style: TextStyle(
+        title: Text(l10n.budget,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -54,12 +57,12 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.bar_chart_rounded, color: TraumColors.amberGold),
-            tooltip: 'Statistiken',
+            tooltip: l10n.statistics,
             onPressed: () => context.go('/budget/stats'),
           ),
           IconButton(
             icon: const Icon(Icons.savings_rounded, color: TraumColors.mintGreen),
-            tooltip: 'Sparziele',
+            tooltip: l10n.savingsGoals,
             onPressed: () => context.go('/budget/savings'),
           ),
         ],
@@ -134,16 +137,16 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Letzte Transaktionen',
-                              style: TextStyle(
+                          Text(l10n.latestTransactions,
+                              style: const TextStyle(
                                   color: TraumColors.onBackground,
                                   fontFamily: 'DMSans',
                                   fontWeight: FontWeight.w700,
                                   fontSize: 15)),
                           TextButton(
                             onPressed: () => context.go('/budget/transactions'),
-                            child: const Text('Alle',
-                                style: TextStyle(color: TraumColors.amberGold, fontFamily: 'DMSans')),
+                            child: Text(l10n.all,
+                                style: const TextStyle(color: TraumColors.amberGold, fontFamily: 'DMSans')),
                           ),
                         ],
                       ),
@@ -164,7 +167,7 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
               },
               loading: () => const Center(child: CircularProgressIndicator(color: TraumColors.amberGold)),
               error: (e, _) => Center(
-                  child: Text('Fehler: $e', style: const TextStyle(color: TraumColors.roseRed))),
+                  child: Text('${l10n.error}: $e', style: const TextStyle(color: TraumColors.roseRed))),
             ),
           ),
         ],
@@ -211,8 +214,8 @@ class _BalanceCard extends StatelessWidget {
                 fontSize: 32),
           ),
           const SizedBox(height: 4),
-          const Text('Saldo diesen Monat',
-              style: TextStyle(
+          Text(AppLocalizations.of(context)!.balanceThisMonth,
+              style: const TextStyle(
                   color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12)),
           const SizedBox(height: 16),
           Row(
@@ -220,7 +223,7 @@ class _BalanceCard extends StatelessWidget {
               Expanded(
                 child: _StatItem(
                   icon: Icons.arrow_downward_rounded,
-                  label: 'Einnahmen',
+                  label: AppLocalizations.of(context)!.income,
                   amount: income,
                   currency: currency,
                   color: TraumColors.mintGreen,
@@ -230,7 +233,7 @@ class _BalanceCard extends StatelessWidget {
               Expanded(
                 child: _StatItem(
                   icon: Icons.arrow_upward_rounded,
-                  label: 'Ausgaben',
+                  label: AppLocalizations.of(context)!.expense,
                   amount: expense,
                   currency: currency,
                   color: TraumColors.roseRed,
@@ -313,7 +316,7 @@ class _CategoryDonut extends StatelessWidget {
     for (final entry in spendingByCategory.entries) {
       final cat = categories.firstWhere((c) => c.id == entry.key,
           orElse: () => BudgetCategory(
-              id: 0, name: 'Sonstige', emoji: null, monthlyLimit: null, color: null, isExpense: true));
+              id: 0, name: AppLocalizations.of(context)!.categoryOther, emoji: null, monthlyLimit: null, color: null, isExpense: true));
       final color = categoryColors[colorIdx % categoryColors.length];
       sections.add(DonutSection(value: entry.value, color: color, label: cat.name));
       legend.add(_LegendItem(label: cat.name, amount: entry.value, color: color, currency: currency));
@@ -409,8 +412,8 @@ class _CategoryBars extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Budgets',
-              style: TextStyle(
+          Text(AppLocalizations.of(context)!.budgetsLabel,
+              style: const TextStyle(
                   color: TraumColors.onBackground,
                   fontFamily: 'DMSans',
                   fontWeight: FontWeight.w700,
@@ -522,20 +525,21 @@ class _EmptyTransactions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 32),
+    final l10n = AppLocalizations.of(context)!;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 32),
       child: Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Icons.receipt_long_rounded, size: 48, color: TraumColors.onBackgroundSubtle),
-          SizedBox(height: 12),
-          Text('Noch keine Transaktionen',
-              style: TextStyle(
+          const Icon(Icons.receipt_long_rounded, size: 48, color: TraumColors.onBackgroundSubtle),
+          const SizedBox(height: 12),
+          Text(l10n.noTransactions,
+              style: const TextStyle(
                   color: TraumColors.onBackgroundMuted,
                   fontFamily: 'DMSans',
                   fontWeight: FontWeight.w600)),
-          SizedBox(height: 4),
-          Text('Tippe auf + um eine hinzuzufügen',
-              style: TextStyle(
+          const SizedBox(height: 4),
+          Text(l10n.tapPlusToAdd,
+              style: const TextStyle(
                   color: TraumColors.onBackgroundSubtle,
                   fontFamily: 'DMSans',
                   fontSize: 12)),

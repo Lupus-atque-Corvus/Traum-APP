@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/navigation/routes.dart';
 import '../../core/security/pin_service.dart';
 import '../../core/theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 
 class PinLockScreen extends StatefulWidget {
   const PinLockScreen({super.key});
@@ -60,6 +61,7 @@ class _PinLockScreenState extends State<PinLockScreen>
     setState(() => _verifying = true);
     final ok = await PinService.verify(_pin);
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
     if (ok) {
       context.go(Routes.home);
     } else {
@@ -67,7 +69,7 @@ class _PinLockScreenState extends State<PinLockScreen>
       await _shakeController.forward(from: 0);
       setState(() {
         _pin = '';
-        _error = 'Falscher PIN. Bitte erneut versuchen.';
+        _error = l10n.wrongPin;
         _verifying = false;
       });
     }
@@ -75,6 +77,7 @@ class _PinLockScreenState extends State<PinLockScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: TraumColors.background,
       body: SafeArea(
@@ -105,9 +108,9 @@ class _PinLockScreenState extends State<PinLockScreen>
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'PIN eingeben',
-                  style: TextStyle(
+                Text(
+                  l10n.enterPin,
+                  style: const TextStyle(
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans',
                     fontSize: 14,

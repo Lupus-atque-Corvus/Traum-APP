@@ -13,6 +13,7 @@ import '../../core/theme/colors.dart';
 import '../../core/utils/date_utils.dart' as traum_dates;
 import '../../core/utils/update_service.dart';
 import '../../data/database/traum_database.dart' show WaterLogsCompanion;
+import '../../l10n/app_localizations.dart';
 
 final waterTodayProvider = StreamProvider.autoDispose<int>((ref) {
   final today = DateTime.now();
@@ -45,13 +46,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> _checkPermissions() async {
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
     final missing = <String>[];
 
     final notif = await Permission.notification.status;
-    if (!notif.isGranted) missing.add('Benachrichtigungen');
+    if (!notif.isGranted) missing.add(l10n.permissionNotifications);
 
     final loc = await Permission.locationWhenInUse.status;
-    if (!loc.isGranted) missing.add('Standort (Wetter)');
+    if (!loc.isGranted) missing.add(l10n.permissionLocation);
 
     if (missing.isEmpty || !mounted) return;
 
@@ -60,17 +63,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surfaceElevated,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(
-          'Fehlende Berechtigungen',
-          style: TextStyle(
+        title: Text(
+          l10n.missingPermissions,
+          style: const TextStyle(
               color: TraumColors.onBackground,
               fontFamily: 'DMSans',
               fontWeight: FontWeight.w700),
         ),
         content: Text(
-          'Folgende Berechtigungen wurden noch nicht erteilt:\n\n'
-          '• ${missing.join('\n• ')}\n\n'
-          'Gehe zu Einstellungen › TRAUM, um sie zu aktivieren.',
+          l10n.permissionsContent(missing.join('\n• ')),
           style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
@@ -79,16 +80,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Später',
-                style: TextStyle(color: TraumColors.onBackgroundMuted)),
+            child: Text(l10n.later,
+                style: const TextStyle(color: TraumColors.onBackgroundMuted)),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
               openAppSettings();
             },
-            child: const Text('Einstellungen öffnen',
-                style: TextStyle(color: TraumColors.coralOrange)),
+            child: Text(l10n.openSettings,
+                style: const TextStyle(color: TraumColors.coralOrange)),
           ),
         ],
       ),
@@ -97,6 +98,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final userName = ref.watch(userNameProvider);
     final stepsGoal = ref.watch(stepsGoalProvider);
     final kcalGoal = ref.watch(kcalGoalProvider);
@@ -114,7 +116,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             backgroundColor: TraumColors.background,
             expandedHeight: 0,
             title: Text(
-              traum_dates.greeting(userName),
+              traum_dates.greeting(userName, l10n),
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -229,6 +231,7 @@ class _ClockWeatherCardState extends ConsumerState<_ClockWeatherCard> {
     final cache = prefs.getString('weather_cache') as String?;
     if (cache == null) return;
     try {
+      final l10n = AppLocalizations.of(context)!;
       final data = jsonDecode(cache) as Map<String, dynamic>;
       final current = data['current'] as Map<String, dynamic>?;
       if (current == null) return;
@@ -238,7 +241,7 @@ class _ClockWeatherCardState extends ConsumerState<_ClockWeatherCard> {
         setState(() {
           _tempStr = temp != null ? '${temp.toStringAsFixed(0)}°C' : null;
           _weatherIcon = _iconForCode(code);
-          _condition = _conditionForCode(code);
+          _condition = _conditionForCode(code, l10n);
         });
       }
     } catch (_) {}
@@ -254,14 +257,14 @@ class _ClockWeatherCardState extends ConsumerState<_ClockWeatherCard> {
     return Icons.thunderstorm_rounded;
   }
 
-  String _conditionForCode(int code) {
-    if (code == 0) return 'Klar';
-    if (code <= 3) return 'Bewölkt';
-    if (code <= 48) return 'Neblig';
-    if (code <= 67) return 'Regen';
-    if (code <= 77) return 'Schnee';
-    if (code <= 82) return 'Schauer';
-    return 'Gewitter';
+  String _conditionForCode(int code, AppLocalizations l10n) {
+    if (code == 0) return l10n.weatherClear;
+    if (code <= 3) return l10n.weatherCloudy;
+    if (code <= 48) return l10n.weatherFoggy;
+    if (code <= 67) return l10n.weatherRain;
+    if (code <= 77) return l10n.weatherSnow;
+    if (code <= 82) return l10n.weatherShowers;
+    return l10n.weatherThunderstorm;
   }
 
   @override
@@ -339,11 +342,12 @@ class _ActivityGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return TraumCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionHeader(title: 'Heute'),
+          SectionHeader(title: l10n.today),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -366,9 +370,9 @@ class _ActivityGrid extends StatelessWidget {
                               fontFamily: 'DMSans',
                             ),
                           ),
-                          const Text(
-                            'Ziel',
-                            style: TextStyle(
+                          Text(
+                            l10n.goalShort,
+                            style: const TextStyle(
                               fontSize: 9,
                               color: TraumColors.onBackgroundMuted,
                               fontFamily: 'DMSans',
@@ -379,16 +383,16 @@ class _ActivityGrid extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      '0 / $stepsGoal',
+                      l10n.stepsProgress(0, stepsGoal),
                       style: const TextStyle(
                         fontSize: 11,
                         color: TraumColors.onBackgroundMuted,
                         fontFamily: 'DMSans',
                       ),
                     ),
-                    const Text(
-                      'Schritte',
-                      style: TextStyle(
+                    Text(
+                      l10n.steps,
+                      style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                         color: TraumColors.onBackground,
@@ -403,7 +407,7 @@ class _ActivityGrid extends StatelessWidget {
                 child: Column(
                   children: [
                     _MacroRow(
-                      label: 'Kalorien',
+                      label: l10n.calories,
                       value: 0,
                       goal: kcalGoal,
                       unit: 'kcal',
@@ -411,7 +415,7 @@ class _ActivityGrid extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     _MacroRow(
-                      label: 'Protein',
+                      label: l10n.protein,
                       value: 0,
                       goal: 150,
                       unit: 'g',
@@ -445,6 +449,7 @@ class _MacroRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -460,7 +465,7 @@ class _MacroRow extends StatelessWidget {
               ),
             ),
             Text(
-              '${value.toStringAsFixed(0)} / $goal $unit',
+              l10n.macroProgress(value.toStringAsFixed(0), goal, unit),
               style: const TextStyle(
                 fontSize: 11,
                 color: TraumColors.onBackgroundMuted,
@@ -489,10 +494,11 @@ class _WaterCard extends ConsumerWidget {
   });
 
   Future<void> _addWater(BuildContext context, WidgetRef ref, int ml, int currentTotal) async {
+    final l10n = AppLocalizations.of(context)!;
     final newTotal = currentTotal + ml;
     if (newTotal > waterMax) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Tageslimit erreicht')),
+        SnackBar(content: Text(l10n.dailyLimitReached)),
       );
       return;
     }
@@ -506,6 +512,7 @@ class _WaterCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final totalMl = ref.watch(waterTodayProvider).value ?? 0;
     final ratio = waterGoal > 0 ? totalMl / waterGoal : 0.0;
     final underMin = totalMl < waterMin;
@@ -516,10 +523,10 @@ class _WaterCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionHeader(title: 'Wasser'),
+          SectionHeader(title: l10n.water),
           const SizedBox(height: 10),
           Text(
-            'Minimum: $waterMin ml',
+            l10n.waterMin(waterMin),
             style: const TextStyle(
               fontSize: 11,
               color: TraumColors.onBackgroundMuted,
@@ -540,7 +547,7 @@ class _WaterCard extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '$totalMl ml',
+                l10n.waterTotal(totalMl),
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
@@ -549,7 +556,7 @@ class _WaterCard extends ConsumerWidget {
                 ),
               ),
               Text(
-                'Ziel: $waterGoal ml · Max: $waterMax ml',
+                l10n.waterGoalAndMax(waterGoal, waterMax),
                 style: const TextStyle(
                   fontSize: 11,
                   color: TraumColors.onBackgroundMuted,
@@ -583,6 +590,7 @@ class _WaterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Expanded(
       child: GestureDetector(
         onTap: enabled ? onTap : null,
@@ -593,7 +601,7 @@ class _WaterButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Text(
-            '+$ml ml',
+            l10n.waterButton(ml),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 12,
@@ -614,19 +622,20 @@ class _TodoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return TraumCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SectionHeader(
-            title: 'Todos',
-            actionLabel: 'Alle ›',
+            title: l10n.todos,
+            actionLabel: '${l10n.allLabel} ›',
             onAction: onViewAll,
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Keine offenen Todos',
-            style: TextStyle(
+          Text(
+            l10n.noOpenTodos,
+            style: const TextStyle(
               fontSize: 12,
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
@@ -644,19 +653,20 @@ class _MedicationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return TraumCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SectionHeader(
-            title: 'Medikamente',
+            title: l10n.medicationsTitle,
             actionLabel: '+',
             onAction: onAdd,
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Keine Medikamente',
-            style: TextStyle(
+          Text(
+            l10n.noMedications,
+            style: const TextStyle(
               fontSize: 12,
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
@@ -674,17 +684,18 @@ class _HabitsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return TraumCard(
       onTap: onTap,
       borderColor: TraumColors.mintGreen,
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SectionHeader(title: 'Gewohnheiten'),
-          SizedBox(height: 8),
+          SectionHeader(title: l10n.habits),
+          const SizedBox(height: 8),
           Text(
-            'Noch keine Gewohnheiten. Tippe um welche anzulegen.',
-            style: TextStyle(
+            l10n.noHabitsTapToAdd,
+            style: const TextStyle(
               fontSize: 12,
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
@@ -702,17 +713,18 @@ class _BudgetCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return TraumCard(
       onTap: onTap,
       borderColor: TraumColors.amberGold,
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SectionHeader(title: 'Budget'),
-          SizedBox(height: 8),
+          SectionHeader(title: l10n.budget),
+          const SizedBox(height: 8),
           Text(
-            'Keine Transaktionen diesen Monat.',
-            style: TextStyle(
+            l10n.noTransactionsThisMonth,
+            style: const TextStyle(
               fontSize: 12,
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
@@ -730,17 +742,18 @@ class _PeriodCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return TraumCard(
       onTap: onTap,
       borderColor: TraumColors.periodRose,
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SectionHeader(title: 'Zyklus'),
-          SizedBox(height: 8),
+          SectionHeader(title: l10n.cycle),
+          const SizedBox(height: 8),
           Text(
-            'Tippe für Zyklusinfos.',
-            style: TextStyle(
+            l10n.tapForCycleInfo,
+            style: const TextStyle(
               fontSize: 12,
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
@@ -755,33 +768,34 @@ class _PeriodCard extends StatelessWidget {
 class _HealthSnapshotCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return TraumCard(
       borderColor: TraumColors.cyanBlue,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionHeader(title: 'Gesundheit'),
+          SectionHeader(title: l10n.healthLabel),
           const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _HealthMetric(
                 icon: Icons.bedtime_rounded,
-                label: 'Schlaf',
+                label: l10n.sleep,
                 value: '—',
                 unit: 'h',
                 color: TraumColors.lavender,
               ),
               _HealthMetric(
                 icon: Icons.favorite_rounded,
-                label: 'Herzrate',
+                label: l10n.heartRate,
                 value: '—',
                 unit: 'bpm',
                 color: TraumColors.roseRed,
               ),
               _HealthMetric(
                 icon: Icons.mood_rounded,
-                label: 'Stimmung',
+                label: l10n.mood,
                 value: '—',
                 unit: '/5',
                 color: TraumColors.amberGold,

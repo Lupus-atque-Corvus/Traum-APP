@@ -16,19 +16,21 @@ import '../../core/providers/preferences_provider.dart';
 import '../../core/security/pin_service.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
+import '../../l10n/app_localizations.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text(
-          'Einstellungen',
-          style: TextStyle(
+        title: Text(
+          l10n.settings,
+          style: const TextStyle(
             color: TraumColors.onBackground,
             fontFamily: 'DMSans',
             fontWeight: FontWeight.w700,
@@ -64,14 +66,15 @@ class SettingsScreen extends ConsumerWidget {
 class _LanguageSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final locale = ref.watch(localeProvider);
     final langName = locale?.languageCode == 'en' ? 'English 🇬🇧' : 'Deutsch 🇩🇪';
 
     return _Section(
-      title: 'Sprache',
+      title: l10n.languageSection,
       child: ListTile(
-        title: const Text('App-Sprache',
-            style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+        title: Text(l10n.appLanguage,
+            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
         subtitle: Text(langName,
             style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
         trailing: const Icon(Icons.chevron_right, color: TraumColors.onBackgroundMuted),
@@ -81,12 +84,13 @@ class _LanguageSection extends ConsumerWidget {
   }
 
   void _showLanguageDialog(BuildContext context, WidgetRef ref, Locale? current) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (ctx) => SimpleDialog(
         backgroundColor: TraumColors.surfaceElevated,
-        title: const Text('Sprache wählen',
-            style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+        title: Text(l10n.chooseLanguage,
+            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
         children: [
           SimpleDialogOption(
             onPressed: () {
@@ -125,8 +129,9 @@ class _LanguageSection extends ConsumerWidget {
 class _NavSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return _Section(
-      title: 'Navigation',
+      title: l10n.navigationSection,
       child: ListTile(
         leading: Container(
           width: 36,
@@ -137,13 +142,13 @@ class _NavSection extends ConsumerWidget {
           ),
           child: const Icon(Icons.tune_rounded, color: TraumColors.indigoBlue, size: 18),
         ),
-        title: const Text(
-          'Navigation anpassen',
-          style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
+        title: Text(
+          l10n.adjustNav,
+          style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
         ),
-        subtitle: const Text(
-          'Module auswählen und per Drag & Drop sortieren',
-          style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12),
+        subtitle: Text(
+          l10n.adjustNavSubtitle,
+          style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12),
         ),
         trailing: const Icon(Icons.chevron_right, color: TraumColors.onBackgroundMuted),
         onTap: () => showNavCustomizationSheet(context, ref),
@@ -157,15 +162,16 @@ class _NavSection extends ConsumerWidget {
 class _UnitsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final unit = ref.watch(unitSystemProvider);
     return _Section(
-      title: 'Einheiten',
+      title: l10n.units,
       child: Column(children: [
         SwitchListTile(
-          title: const Text('Metrisch (kg / cm / ml)',
-              style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
-          subtitle: const Text('Alternativ: imperial (lb / in / fl oz)',
-              style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12)),
+          title: Text(l10n.metricSwitch,
+              style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+          subtitle: Text(l10n.metricSwitchSubtitle,
+              style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12)),
           value: unit == 'metric',
           activeThumbColor: TraumColors.coralOrange,
           onChanged: (v) =>
@@ -181,6 +187,7 @@ class _UnitsSection extends ConsumerWidget {
 class _NotificationsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final repo = ref.read(preferencesRepositoryProvider);
     final medication = ref.watch(notifMedicationProvider);
     final supplement = ref.watch(notifSupplementProvider);
@@ -192,10 +199,10 @@ class _NotificationsSection extends ConsumerWidget {
     final periodEnabled = ref.watch(isPeriodTrackingEnabledProvider);
 
     return _Section(
-      title: 'Benachrichtigungen',
+      title: l10n.notificationsSection,
       child: Column(children: [
         _NotifTile(
-          title: 'Medikamente',
+          title: l10n.notifMedication,
           value: medication,
           time: repo.notifMedicationTime,
           onChanged: (v) async {
@@ -206,7 +213,7 @@ class _NotificationsSection extends ConsumerWidget {
               (t) async { await repo.setNotifMedicationTime(t); await _reschedule(ref); }),
         ),
         _NotifTile(
-          title: 'Supplements',
+          title: l10n.notifSupplements,
           value: supplement,
           time: repo.notifSupplementTime,
           onChanged: (v) async {
@@ -217,7 +224,7 @@ class _NotificationsSection extends ConsumerWidget {
               (t) async { await repo.setNotifSupplementTime(t); await _reschedule(ref); }),
         ),
         _NotifTile(
-          title: 'Training',
+          title: l10n.notifTraining,
           value: workout,
           time: repo.notifWorkoutTime,
           onChanged: (v) async {
@@ -228,7 +235,7 @@ class _NotificationsSection extends ConsumerWidget {
               (t) async { await repo.setNotifWorkoutTime(t); await _reschedule(ref); }),
         ),
         _NotifTile(
-          title: 'Wasser-Erinnerung',
+          title: l10n.notifWater,
           value: water,
           time: null,
           onChanged: (v) async {
@@ -238,7 +245,7 @@ class _NotificationsSection extends ConsumerWidget {
           onTimeTap: null,
         ),
         _NotifTile(
-          title: 'Gewohnheiten',
+          title: l10n.notifHabits,
           value: habit,
           time: repo.notifHabitTime,
           onChanged: (v) async {
@@ -249,7 +256,7 @@ class _NotificationsSection extends ConsumerWidget {
               (t) async { await repo.setNotifHabitTime(t); await _reschedule(ref); }),
         ),
         _NotifTile(
-          title: 'Aufgaben (fällig heute)',
+          title: l10n.notifTodos,
           value: todo,
           time: repo.notifTodoTime,
           onChanged: (v) async {
@@ -261,7 +268,7 @@ class _NotificationsSection extends ConsumerWidget {
         ),
         if (periodEnabled)
           _NotifTile(
-            title: 'Zykluserinnerung',
+            title: l10n.notifCycle,
             value: period,
             time: null,
             onChanged: (v) async {
@@ -328,6 +335,7 @@ class _NotifTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SwitchListTile(
       title: Text(title,
           style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
@@ -335,7 +343,7 @@ class _NotifTile extends StatelessWidget {
           ? GestureDetector(
               onTap: onTimeTap,
               child: Text(
-                'Täglich um $time',
+                l10n.notifDailyAt(time!),
                 style: const TextStyle(
                   color: TraumColors.coralOrange,
                   fontFamily: 'DMSans',
@@ -356,6 +364,7 @@ class _NotifTile extends StatelessWidget {
 class _GoalsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final kcal = ref.watch(kcalGoalNotifierProvider);
     final protein = ref.watch(proteinGoalNotifierProvider);
     final steps = ref.watch(stepsGoalNotifierProvider);
@@ -365,52 +374,52 @@ class _GoalsSection extends ConsumerWidget {
     final unit = ref.watch(unitSystemProvider);
 
     return _Section(
-      title: 'Ziele',
+      title: l10n.goals,
       child: Column(children: [
         _GoalTile(
-          title: 'Kalorien-Ziel',
+          title: l10n.kcalGoalLabel,
           value: '$kcal kcal',
-          onTap: () => _editIntDialog(context, 'Kalorien-Ziel', kcal, 'kcal', (v) {
+          onTap: () => _editIntDialog(context, l10n.kcalGoalLabel, kcal, 'kcal', (v) {
             ref.read(kcalGoalNotifierProvider.notifier).set(v);
           }),
         ),
         _GoalTile(
-          title: 'Protein-Ziel',
+          title: l10n.proteinGoalLabel,
           value: '$protein g',
-          onTap: () => _editIntDialog(context, 'Protein-Ziel', protein, 'g', (v) {
+          onTap: () => _editIntDialog(context, l10n.proteinGoalLabel, protein, 'g', (v) {
             ref.read(proteinGoalNotifierProvider.notifier).set(v);
           }),
         ),
         _GoalTile(
-          title: 'Schritte-Ziel',
-          value: '$steps Schritte',
-          onTap: () => _editIntDialog(context, 'Schritte-Ziel', steps, 'Schritte', (v) {
+          title: l10n.stepsGoalLabel,
+          value: '$steps ${l10n.stepsGoalSuffix}',
+          onTap: () => _editIntDialog(context, l10n.stepsGoalLabel, steps, l10n.stepsGoalSuffix, (v) {
             ref.read(stepsGoalNotifierProvider.notifier).set(v);
           }),
         ),
         _GoalTile(
-          title: 'Körpergröße',
+          title: l10n.heightLabel,
           value: unit == 'metric'
               ? '${height.toStringAsFixed(0)} cm'
               : '${(height / 2.54).toStringAsFixed(1)} in',
-          onTap: () => _editDoubleDialog(context, 'Körpergröße (cm)', height, (v) {
+          onTap: () => _editDoubleDialog(context, l10n.heightCm, height, (v) {
             ref.read(heightCmNotifierProvider.notifier).set(v);
           }),
         ),
         _GoalTile(
-          title: 'Gewichtsziel',
+          title: l10n.weightGoalLabel,
           value: unit == 'metric'
               ? '${weightGoal.toStringAsFixed(1)} kg'
               : '${(weightGoal * 2.20462).toStringAsFixed(1)} lb',
-          onTap: () => _editDoubleDialog(context, 'Gewichtsziel (kg)', weightGoal, (v) {
+          onTap: () => _editDoubleDialog(context, l10n.weightGoalCm, weightGoal, (v) {
             ref.read(weightGoalNotifierProvider.notifier).set(v);
           }),
         ),
         ListTile(
-          title: const Text('Wasserziel',
-              style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+          title: Text(l10n.waterGoal,
+              style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
           subtitle: Text(
-            '$waterGoal ml (automatisch berechnet)',
+            l10n.waterGoalAutomatic(waterGoal),
             style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12),
           ),
           trailing: const Icon(Icons.info_outline, color: TraumColors.onBackgroundSubtle, size: 18),
@@ -421,6 +430,7 @@ class _GoalsSection extends ConsumerWidget {
 
   void _editIntDialog(BuildContext context, String label, int current, String unit,
       void Function(int) onSave) {
+    final l10n = AppLocalizations.of(context)!;
     final ctrl = TextEditingController(text: current.toString());
     showDialog(
       context: context,
@@ -442,8 +452,8 @@ class _GoalsSection extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Abbrechen',
-                style: TextStyle(color: TraumColors.onBackgroundMuted)),
+            child: Text(l10n.cancel,
+                style: const TextStyle(color: TraumColors.onBackgroundMuted)),
           ),
           TextButton(
             onPressed: () {
@@ -451,8 +461,8 @@ class _GoalsSection extends ConsumerWidget {
               if (v != null && v > 0) onSave(v);
               Navigator.pop(ctx);
             },
-            child: const Text('Speichern',
-                style: TextStyle(color: TraumColors.coralOrange)),
+            child: Text(l10n.save,
+                style: const TextStyle(color: TraumColors.coralOrange)),
           ),
         ],
       ),
@@ -461,6 +471,7 @@ class _GoalsSection extends ConsumerWidget {
 
   void _editDoubleDialog(BuildContext context, String label, double current,
       void Function(double) onSave) {
+    final l10n = AppLocalizations.of(context)!;
     final ctrl = TextEditingController(text: current.toStringAsFixed(1));
     showDialog(
       context: context,
@@ -477,8 +488,8 @@ class _GoalsSection extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Abbrechen',
-                style: TextStyle(color: TraumColors.onBackgroundMuted)),
+            child: Text(l10n.cancel,
+                style: const TextStyle(color: TraumColors.onBackgroundMuted)),
           ),
           TextButton(
             onPressed: () {
@@ -486,8 +497,8 @@ class _GoalsSection extends ConsumerWidget {
               if (v != null && v > 0) onSave(v);
               Navigator.pop(ctx);
             },
-            child: const Text('Speichern',
-                style: TextStyle(color: TraumColors.coralOrange)),
+            child: Text(l10n.save,
+                style: const TextStyle(color: TraumColors.coralOrange)),
           ),
         ],
       ),
@@ -531,12 +542,13 @@ class _CurrencySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final currency = ref.watch(currencySymbolProvider);
     return _Section(
-      title: 'Währung',
+      title: l10n.currency,
       child: ListTile(
-        title: const Text('Währungssymbol',
-            style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+        title: Text(l10n.currencySymbol,
+            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -556,12 +568,13 @@ class _CurrencySection extends ConsumerWidget {
   }
 
   void _showCurrencyPicker(BuildContext context, WidgetRef ref, String current) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surfaceElevated,
-        title: const Text('Währung wählen',
-            style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+        title: Text(l10n.chooseCurrency,
+            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
         content: Wrap(
           spacing: 8,
           runSpacing: 8,
@@ -593,8 +606,8 @@ class _CurrencySection extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Abbrechen',
-                style: TextStyle(color: TraumColors.onBackgroundMuted)),
+            child: Text(l10n.cancel,
+                style: const TextStyle(color: TraumColors.onBackgroundMuted)),
           ),
         ],
       ),
@@ -607,14 +620,15 @@ class _CurrencySection extends ConsumerWidget {
 class _PeriodSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final enabled = ref.watch(isPeriodTrackingEnabledProvider);
     return _Section(
-      title: 'Zyklustracking',
+      title: l10n.periodTracking,
       child: SwitchListTile(
-        title: const Text('Periodentracking aktivieren',
-            style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
-        subtitle: const Text('Zeigt das Zyklusmodul in der Navigation an',
-            style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12)),
+        title: Text(l10n.enablePeriodTracking,
+            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+        subtitle: Text(l10n.periodTrackingSubtitle,
+            style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12)),
         value: enabled,
         activeThumbColor: TraumColors.periodRose,
         onChanged: (v) => ref.read(isPeriodTrackingEnabledProvider.notifier).set(v),
@@ -643,9 +657,8 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
 
   Future<void> _checkBiometric() async {
     try {
-      final canCheck = await _auth.canCheckBiometrics;
       final isSupported = await _auth.isDeviceSupported();
-      if (canCheck && isSupported) {
+      if (isSupported) {
         final types = await _auth.getAvailableBiometrics();
         if (mounted) {
           setState(() {
@@ -664,23 +677,24 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final biometricLock = ref.watch(biometricLockProvider);
     final pinLock = ref.watch(pinLockProvider);
 
     return _Section(
-      title: 'Privatsphäre & Sicherheit',
+      title: l10n.privacySecurity,
       child: Column(children: [
         SwitchListTile(
           title: Row(children: [
             Icon(_biometricIcon, color: TraumColors.coralOrange, size: 20),
             const SizedBox(width: 8),
-            const Text('Biometrische Sperre',
-                style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+            Text(l10n.biometric_lock,
+                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
           ]),
           subtitle: Text(
             _biometricAvailable
-                ? 'App sperren nach 5 Minuten Inaktivität'
-                : 'Kein Fingerabdruck/Face ID eingerichtet',
+                ? l10n.biometricLockSubtitle
+                : l10n.biometricLockUnavailable,
             style: const TextStyle(
                 color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12),
           ),
@@ -693,15 +707,15 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
               : null,
         ),
         SwitchListTile(
-          title: const Row(children: [
-            Icon(Icons.pin_rounded, color: TraumColors.coralOrange, size: 20),
-            SizedBox(width: 8),
-            Text('PIN-Sperre',
-                style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+          title: Row(children: [
+            const Icon(Icons.pin_rounded, color: TraumColors.coralOrange, size: 20),
+            const SizedBox(width: 8),
+            Text(l10n.pinLock,
+                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
           ]),
-          subtitle: const Text(
-            'App mit 4-stelligem PIN sperren',
-            style: TextStyle(
+          subtitle: Text(
+            l10n.pinLockSubtitle,
+            style: const TextStyle(
                 color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12),
           ),
           value: pinLock,
@@ -711,22 +725,22 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
         if (pinLock)
           ListTile(
             leading: const Icon(Icons.edit_rounded, color: TraumColors.indigoBlue, size: 20),
-            title: const Text('PIN ändern',
-                style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+            title: Text(l10n.changePin,
+                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
             trailing: const Icon(Icons.chevron_right, color: TraumColors.onBackgroundMuted),
             onTap: () => _changePinDialog(context),
           ),
         ListTile(
           leading: const Icon(Icons.download_rounded, color: TraumColors.cyanBlue),
-          title: const Text('Daten exportieren',
-              style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+          title: Text(l10n.export_data,
+              style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
           trailing: const Icon(Icons.chevron_right, color: TraumColors.onBackgroundMuted),
           onTap: () => _showExportSheet(context),
         ),
         ListTile(
           leading: const Icon(Icons.delete_forever_rounded, color: TraumColors.roseRed),
-          title: const Text('Alle Daten löschen',
-              style: TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
+          title: Text(l10n.delete_all_data,
+              style: const TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
           onTap: () => _confirmDeleteAll(context),
         ),
       ]),
@@ -736,11 +750,13 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
   Future<void> _toggleBiometric(bool enable) async {
     if (enable) {
       try {
+        final l10n = AppLocalizations.of(context)!;
         final authenticated = await _auth.authenticate(
-          localizedReason: 'Biometrische Sperre bestätigen',
+          localizedReason: l10n.unlockReason,
           options: const AuthenticationOptions(
             biometricOnly: false,
             stickyAuth: true,
+            useErrorDialogs: true,
           ),
         );
         if (authenticated) {
@@ -793,27 +809,27 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
   }
 
   Future<void> _confirmDeleteAll(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final first = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surfaceElevated,
-        title: const Text('Alle Daten löschen?',
-            style: TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
-        content: const Text(
-          'Diese Aktion kann nicht rückgängig gemacht werden. '
-          'Alle deine Daten werden dauerhaft gelöscht.',
-          style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+        title: Text(l10n.deleteAllConfirmTitle,
+            style: const TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
+        content: Text(
+          l10n.deleteAllConfirmContent,
+          style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Abbrechen',
-                style: TextStyle(color: TraumColors.onBackgroundMuted)),
+            child: Text(l10n.cancel,
+                style: const TextStyle(color: TraumColors.onBackgroundMuted)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Weiter',
-                style: TextStyle(color: TraumColors.roseRed)),
+            child: Text(l10n.continueLabel,
+                style: const TextStyle(color: TraumColors.roseRed)),
           ),
         ],
       ),
@@ -825,22 +841,22 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surfaceElevated,
-        title: const Text('Wirklich alles löschen?',
-            style: TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
-        content: const Text(
-          'Letzte Warnung — alle Trainingsdaten, Gesundheitsdaten, Budget-Daten und Einstellungen werden unwiderruflich gelöscht.',
-          style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+        title: Text(l10n.reallyDeleteAllTitle,
+            style: const TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
+        content: Text(
+          l10n.reallyDeleteAllContent,
+          style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Abbrechen',
-                style: TextStyle(color: TraumColors.onBackgroundMuted)),
+            child: Text(l10n.cancel,
+                style: const TextStyle(color: TraumColors.onBackgroundMuted)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Alles löschen',
-                style: TextStyle(color: TraumColors.roseRed, fontWeight: FontWeight.w700)),
+            child: Text(l10n.deleteEverything,
+                style: const TextStyle(color: TraumColors.roseRed, fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -862,22 +878,49 @@ class _ExportSheet extends StatefulWidget {
 
 class _ExportSheetState extends State<_ExportSheet> {
   String _format = 'json';
+  // Keys are module ids; labels come from l10n at build time.
   final Map<String, bool> _modules = {
-    'Training': false,
-    'Gesundheit': false,
-    'Ernährung': false,
-    'Supplements': false,
-    'Planung': false,
-    'Medikamente': false,
-    'Abstinenz': false,
-    'Budget': false,
-    'Zyklustracking': false,
+    'training': false,
+    'health': false,
+    'nutrition': false,
+    'supplements': false,
+    'planning': false,
+    'medication': false,
+    'abstinence': false,
+    'budget': false,
+    'period': false,
   };
 
   bool get _anySelected => _modules.values.any((v) => v);
 
+  String _moduleLabel(String key, AppLocalizations l10n) {
+    switch (key) {
+      case 'training':
+        return l10n.training;
+      case 'health':
+        return l10n.health;
+      case 'nutrition':
+        return l10n.nutrition;
+      case 'supplements':
+        return l10n.supplements;
+      case 'planning':
+        return l10n.planning;
+      case 'medication':
+        return l10n.medication;
+      case 'abstinence':
+        return l10n.abstinence;
+      case 'budget':
+        return l10n.budget;
+      case 'period':
+        return l10n.periodTracking;
+      default:
+        return key;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.only(
         left: 16, right: 16, top: 16,
@@ -897,8 +940,8 @@ class _ExportSheetState extends State<_ExportSheet> {
             ),
           ),
           const SizedBox(height: 16),
-          const Text('Daten exportieren',
-              style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
+          Text(l10n.export_data,
+              style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
                   fontWeight: FontWeight.w700, fontSize: 18)),
           const SizedBox(height: 16),
           ElevatedButton.icon(
@@ -909,21 +952,22 @@ class _ExportSheetState extends State<_ExportSheet> {
               minimumSize: const Size(double.infinity, 48),
             ),
             icon: const Icon(Icons.download_rounded),
-            label: const Text('Alles exportieren', style: TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
+            label: Text(l10n.exportAll, style: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Export wird vorbereitet…')),
+                SnackBar(content: Text(l10n.exportPreparing)),
               );
               Navigator.pop(context);
             },
           ),
           const SizedBox(height: 20),
-          const Text('Auswahl exportieren',
-              style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans',
+          Text(l10n.exportSelection,
+              style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans',
                   fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           ..._modules.keys.map((m) => CheckboxListTile(
-            title: Text(m, style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+            title: Text(_moduleLabel(m, l10n),
+                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
             value: _modules[m],
             activeColor: TraumColors.cyanBlue,
             checkColor: Colors.white,
@@ -954,12 +998,12 @@ class _ExportSheetState extends State<_ExportSheet> {
               minimumSize: const Size(double.infinity, 48),
             ),
             icon: const Icon(Icons.share_rounded),
-            label: Text('Ausgewählte exportieren (${_format.toUpperCase()})',
+            label: Text('${l10n.exportSelected} (${_format.toUpperCase()})',
                 style: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
             onPressed: _anySelected
                 ? () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('${_format.toUpperCase()}-Export wird vorbereitet…')),
+                      SnackBar(content: Text(l10n.exportPreparing)),
                     );
                     Navigator.pop(context);
                   }
@@ -977,13 +1021,14 @@ class _ExportSheetState extends State<_ExportSheet> {
 class _LegalSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _Section(
-      title: 'Rechtliches',
+      title: l10n.legal,
       child: Column(children: [
-        _LegalTile(title: 'Datenschutzerklärung', asset: 'assets/legal/privacy.md'),
-        _LegalTile(title: 'Nutzungsbedingungen', asset: 'assets/legal/terms.md'),
-        _LegalTile(title: 'Medizinischer Haftungsausschluss', asset: 'assets/legal/disclaimer.md'),
-        _LegalTile(title: 'Open-Source-Lizenzen', asset: 'assets/legal/licenses.md'),
+        _LegalTile(title: l10n.privacy_policy, asset: 'assets/legal/privacy.md'),
+        _LegalTile(title: l10n.terms_of_service, asset: 'assets/legal/terms.md'),
+        _LegalTile(title: l10n.medical_disclaimer, asset: 'assets/legal/disclaimer.md'),
+        _LegalTile(title: l10n.open_source_licenses, asset: 'assets/legal/licenses.md'),
       ]),
     );
   }
@@ -1060,12 +1105,13 @@ class _LegalTile extends StatelessWidget {
 class _SupportSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _Section(
-      title: 'Support',
+      title: l10n.supportSection,
       child: ListTile(
         leading: const Icon(Icons.bug_report_rounded, color: TraumColors.coralOrange),
-        title: const Text('Fehler melden',
-            style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+        title: Text(l10n.report_bug,
+            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
         trailing: const Icon(Icons.chevron_right, color: TraumColors.onBackgroundMuted),
         onTap: () => _openBugReport(context),
       ),
@@ -1073,22 +1119,17 @@ class _SupportSection extends StatelessWidget {
   }
 
   Future<void> _openBugReport(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     try {
       final pkg = await PackageInfo.fromPlatform();
-      String systemInfo = '---SYSTEMINFO---\nApp-Version: ${pkg.version}+${pkg.buildNumber}\nDark Mode: Ja\nDatum: ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now())}\n';
+      String systemInfo = '---SYSTEMINFO---\nApp-Version: ${pkg.version}+${pkg.buildNumber}\nDark Mode: ${l10n.bugReportDarkModeYes}\nDatum: ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now())}\n';
       if (Platform.isAndroid) {
         final deviceInfo = DeviceInfoPlugin();
         final android = await deviceInfo.androidInfo;
-        systemInfo = '''---SYSTEMINFO---
-App-Version: ${pkg.version}+${pkg.buildNumber}
-Android-Version: Android ${android.version.release} (API ${android.version.sdkInt})
-Gerät: ${android.manufacturer} ${android.model}
-Dark Mode: Ja
-Datum: ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now())}
-''';
+        systemInfo = '---SYSTEMINFO---\nApp-Version: ${pkg.version}+${pkg.buildNumber}\nAndroid-Version: Android ${android.version.release} (API ${android.version.sdkInt})\n${l10n.bugReportDevice}: ${android.manufacturer} ${android.model}\nDark Mode: ${l10n.bugReportDarkModeYes}\nDatum: ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now())}\n';
       }
-      final subject = Uri.encodeComponent('TRAUM Fehlerbericht v${pkg.version}');
-      final body = Uri.encodeComponent('Beschreibe den Fehler hier:\n\n\n$systemInfo');
+      final subject = Uri.encodeComponent('${l10n.bugReportSubject}${pkg.version}');
+      final body = Uri.encodeComponent('${l10n.bugReportBody}$systemInfo');
       await launchUrl(Uri.parse('mailto:support@traum-app.de?subject=$subject&body=$body'));
     } catch (_) {}
   }
@@ -1099,15 +1140,16 @@ Datum: ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now())}
 class _AccountSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return _Section(
-      title: 'App',
+      title: l10n.appSection,
       child: Column(children: [
         ListTile(
           leading: const Icon(Icons.replay_rounded, color: TraumColors.lavender),
-          title: const Text('Onboarding wiederholen',
-              style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
-          subtitle: const Text('Profildaten aktualisieren (keine Daten werden gelöscht)',
-              style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12)),
+          title: Text(l10n.reset_onboarding,
+              style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+          subtitle: Text(l10n.repeatOnboardingSubtitle,
+              style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12)),
           onTap: () async {
             await ref.read(preferencesRepositoryProvider).setOnboardingComplete(false);
             if (context.mounted) context.go(Routes.onboarding);
@@ -1227,9 +1269,10 @@ class _PinSetupSheetState extends State<_PinSetupSheet> {
   }
 
   Future<void> _save() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_pin != _confirm) {
       setState(() {
-        _error = 'PINs stimmen nicht überein.';
+        _error = l10n.pinsDoNotMatch;
         _confirming = false;
         _pin = '';
         _confirm = '';
@@ -1243,8 +1286,9 @@ class _PinSetupSheetState extends State<_PinSetupSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final current = _confirming ? _confirm : _pin;
-    final title = _confirming ? 'PIN bestätigen' : 'PIN festlegen';
+    final title = _confirming ? l10n.pinConfirmTitle : l10n.pinSetTitle;
 
     return Padding(
       padding: EdgeInsets.only(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../l10n/app_localizations.dart';
 import '../providers/preferences_provider.dart';
 import '../theme/colors.dart';
 import '../theme/radius.dart';
@@ -137,7 +138,7 @@ class _NavCustomizationSheetState
 
   Widget _buildSlotItem(String module, int index) {
     final color = TraumColors.moduleColor(module);
-    final label = Routes.moduleLabels[module] ?? module;
+    final label = Routes.labelFor(module, AppLocalizations.of(context)!);
     return Container(
       key: ValueKey(module),
       margin: const EdgeInsets.only(bottom: 8),
@@ -197,17 +198,18 @@ class _NavCustomizationSheetState
   // ── Available modules ────────────────────────────────────────────────────
 
   Widget _buildAvailableModules(bool periodEnabled) {
+    final l10n = AppLocalizations.of(context)!;
     final available = _allModules
         .where((m) => !_slots.contains(m))
         .where((m) => m != 'period' || periodEnabled)
         .toList();
 
     if (available.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         child: Text(
-          'Alle Module sind bereits ausgewählt.',
-          style: TextStyle(
+          l10n.allModulesInNav,
+          style: const TextStyle(
             color: TraumColors.onBackgroundSubtle,
             fontFamily: 'DMSans',
             fontSize: 13,
@@ -225,7 +227,7 @@ class _NavCustomizationSheetState
         runSpacing: 8,
         children: available.map((module) {
           final color = TraumColors.moduleColor(module);
-          final label = Routes.moduleLabels[module] ?? module;
+          final label = Routes.labelFor(module, l10n);
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: full ? null : () => _add(module),
@@ -278,6 +280,7 @@ class _NavCustomizationSheetState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final periodEnabled = ref.watch(isPeriodTrackingEnabledProvider);
 
     return DraggableScrollableSheet(
@@ -302,10 +305,10 @@ class _NavCustomizationSheetState
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Navigation anpassen',
-                    style: TextStyle(
+                    l10n.adjustNav,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: TraumColors.onBackground,
@@ -322,9 +325,9 @@ class _NavCustomizationSheetState
                       borderRadius: BorderRadius.circular(TraumRadius.chip),
                     ),
                   ),
-                  child: const Text(
-                    'Fertig',
-                    style: TextStyle(
+                  child: Text(
+                    l10n.done,
+                    style: const TextStyle(
                       color: TraumColors.indigoBlue,
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w700,
@@ -348,9 +351,9 @@ class _NavCustomizationSheetState
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
-                      const Text(
-                        'AKTIVE MODULE',
-                        style: TextStyle(
+                      Text(
+                        l10n.activeModules,
+                        style: const TextStyle(
                           color: TraumColors.onBackgroundSubtle,
                           fontFamily: 'DMSans',
                           fontWeight: FontWeight.w700,
@@ -375,7 +378,7 @@ class _NavCustomizationSheetState
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
-                      'Noch kein Modul ausgewählt. Tippe unten auf ein Modul, um es hinzuzufügen.',
+                      l10n.noModulesYet,
                       style: const TextStyle(
                         color: TraumColors.onBackgroundSubtle,
                         fontFamily: 'DMSans',
@@ -400,11 +403,11 @@ class _NavCustomizationSheetState
                 const SizedBox(height: 24),
 
                 // ── Available modules ─────────────────────────────────
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
-                    'WEITERE MODULE',
-                    style: TextStyle(
+                    l10n.otherModules,
+                    style: const TextStyle(
                       color: TraumColors.onBackgroundSubtle,
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w700,
@@ -416,11 +419,11 @@ class _NavCustomizationSheetState
                 const SizedBox(height: 10),
                 _buildAvailableModules(periodEnabled),
                 if (_slots.length >= 4)
-                  const Padding(
-                    padding: EdgeInsets.only(left: 20, top: 8),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, top: 8),
                     child: Text(
-                      'Maximum erreicht. Entferne ein Modul oben, um ein anderes hinzuzufügen.',
-                      style: TextStyle(
+                      l10n.maxModulesReached,
+                      style: const TextStyle(
                         color: TraumColors.onBackgroundSubtle,
                         fontFamily: 'DMSans',
                         fontSize: 12,

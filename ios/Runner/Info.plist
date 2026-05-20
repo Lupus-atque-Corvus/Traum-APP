@@ -47,5 +47,21 @@
 	<true/>
 	<key>AppGroupIdentifier</key>
 	<string>group.de.traum.widgets</string>
+
+	<!-- Location -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>TRAUM uses your location to show current weather and temperature data.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>TRAUM uses your location to show current weather and temperature data.</string>
+
+	<!-- HealthKit -->
+	<key>NSHealthShareUsageDescription</key>
+	<string>TRAUM reads health data (steps, heart rate, sleep) to display your statistics.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>TRAUM writes workout data to your Apple Health profile.</string>
+
+	<!-- Face ID / Biometrics -->
+	<key>NSFaceIDUsageDescription</key>
+	<string>TRAUM uses Face ID to protect your personal data.</string>
 </dict>
 </plist>

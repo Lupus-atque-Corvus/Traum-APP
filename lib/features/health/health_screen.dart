@@ -9,6 +9,7 @@ import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 import 'health_score_provider.dart';
 import 'health_score_result.dart';
 import 'widgets/circular_score_ring.dart';
@@ -49,12 +50,13 @@ class _HealthScreenState extends ConsumerState<HealthScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Gesundheit',
-            style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
+        title: Text(l10n.health,
+            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
         elevation: 0,
         bottom: TabBar(
@@ -63,12 +65,12 @@ class _HealthScreenState extends ConsumerState<HealthScreen>
           labelColor: TraumColors.cyanBlue,
           unselectedLabelColor: TraumColors.onBackgroundMuted,
           labelStyle: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600, fontSize: 13),
-          tabs: const [
-            Tab(text: 'Score'),
-            Tab(text: 'Übersicht'),
-            Tab(text: 'Schlaf'),
-            Tab(text: 'Gewicht'),
-            Tab(text: 'Maße'),
+          tabs: [
+            Tab(text: l10n.score),
+            Tab(text: l10n.overview),
+            Tab(text: l10n.sleepTab),
+            Tab(text: l10n.weightTab),
+            Tab(text: l10n.measurementsTab),
           ],
         ),
       ),
@@ -100,6 +102,7 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final scoreAsync = ref.watch(healthScoreProvider);
     final historyAsync = ref.watch(healthScoreHistoryProvider);
 
@@ -143,9 +146,9 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
-                                'Dein Gesundheitsscore',
-                                style: TextStyle(
+                              Text(
+                                l10n.healthScoreTitle,
+                                style: const TextStyle(
                                   color: TraumColors.onBackground,
                                   fontFamily: 'DMSans',
                                   fontWeight: FontWeight.w700,
@@ -243,7 +246,7 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                           const SizedBox(height: 8),
                           Center(
                             child: Text(
-                              motivationstext(result.gesamtScore),
+                              motivationstext(result.gesamtScore, l10n),
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 color: TraumColors.onBackgroundMuted,
@@ -275,9 +278,9 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
-                                'Einflussfaktoren',
-                                style: TextStyle(
+                              Text(
+                                l10n.healthScoreInfluenceFactors,
+                                style: const TextStyle(
                                   color: TraumColors.onBackground,
                                   fontFamily: 'DMSans',
                                   fontWeight: FontWeight.w700,
@@ -287,9 +290,9 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                               GestureDetector(
                                 onTap: () =>
                                     context.push('/health/score-detail'),
-                                child: const Text(
-                                  'Mehr ›',
-                                  style: TextStyle(
+                                child: Text(
+                                  '${l10n.moreLabel} ›',
+                                  style: const TextStyle(
                                     color: TraumColors.coralOrange,
                                     fontFamily: 'DMSans',
                                     fontSize: 13,
@@ -327,9 +330,9 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Heute im Fokus',
-                            style: TextStyle(
+                          Text(
+                            l10n.healthScoreTodayFocus,
+                            style: const TextStyle(
                               color: TraumColors.onBackground,
                               fontFamily: 'DMSans',
                               fontWeight: FontWeight.w700,
@@ -359,7 +362,7 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      faktorHinweis(weakest.name),
+                                      faktorHinweis(weakest.name, l10n),
                                       style: const TextStyle(
                                         color: TraumColors.onBackgroundMuted,
                                         fontFamily: 'DMSans',
@@ -393,9 +396,9 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Einflussfaktor Details',
-                          style: TextStyle(
+                        Text(
+                          l10n.healthScoreFactorDetails,
+                          style: const TextStyle(
                             color: TraumColors.onBackground,
                             fontFamily: 'DMSans',
                             fontWeight: FontWeight.w700,
@@ -403,9 +406,9 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        const Text(
-                          'Tippe auf einen Bereich',
-                          style: TextStyle(
+                        Text(
+                          l10n.tapOnArea,
+                          style: const TextStyle(
                             color: TraumColors.onBackgroundMuted,
                             fontFamily: 'DMSans',
                             fontSize: 12,
@@ -434,9 +437,9 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Insights & Empfehlungen',
-                          style: TextStyle(
+                        Text(
+                          l10n.healthScoreInsights,
+                          style: const TextStyle(
                             color: TraumColors.onBackground,
                             fontFamily: 'DMSans',
                             fontWeight: FontWeight.w700,
@@ -458,43 +461,45 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                             InsightCard(
                               icon: Icons.star_rounded,
                               color: TraumColors.mintGreen,
-                              title: 'Stärke',
+                              title: l10n.strength,
                               text:
                                   '${strongest.name}: ${faktorBewertung(strongest.score)} (${strongest.score}/100)',
-                              buttonLabel: 'Details',
+                              buttonLabel: l10n.details,
                               onTap: () =>
                                   context.push('/health/score-detail'),
                             ),
                             InsightCard(
                               icon: Icons.trending_up_rounded,
                               color: TraumColors.amberGold,
-                              title: 'Verbesserungspotenzial',
+                              title: l10n.healthScorePotential,
                               text:
-                                  '${weakest.name}: ${faktorBewertung(weakest.score)} (${weakest.score}/100). ${faktorHinweis(weakest.name)}',
-                              buttonLabel: 'Verbessern',
+                                  '${weakest.name}: ${faktorBewertung(weakest.score, l10n)} (${weakest.score}/100). ${faktorHinweis(weakest.name, l10n)}',
+                              buttonLabel: l10n.improve,
                               onTap: () =>
                                   context.push('/health/score-detail'),
                             ),
                             InsightCard(
                               icon: Icons.show_chart_rounded,
                               color: TraumColors.cyanBlue,
-                              title: 'Trend',
+                              title: l10n.trendLabel,
                               text: diff == null
-                                  ? 'Noch keine Verlaufsdaten verfügbar.'
+                                  ? l10n.noTrendData
                                   : diff >= 0
-                                      ? 'Score heute um $diff Punkte besser als gestern.'
-                                      : 'Score heute um ${diff.abs()} Punkte schwächer als gestern.',
-                              buttonLabel: 'Verlauf',
+                                      ? l10n.trendBetter(diff)
+                                      : l10n.trendWorse(diff.abs()),
+                              buttonLabel: l10n.trendLabel,
                               onTap: () =>
                                   context.push('/health/score-detail'),
                             ),
                             InsightCard(
                               icon: Icons.balance_rounded,
                               color: TraumColors.lavender,
-                              title: 'Gesamtbalance',
-                              text:
-                                  'Differenz: ${strongest.score - weakest.score} Punkte zwischen ${strongest.name} und ${weakest.name}.',
-                              buttonLabel: 'Analysieren',
+                              title: l10n.healthScoreBalance,
+                              text: l10n.balanceDiff(
+                                  strongest.score - weakest.score,
+                                  strongest.name,
+                                  weakest.name),
+                              buttonLabel: l10n.analyze,
                               onTap: () =>
                                   context.push('/health/score-detail'),
                             ),
@@ -524,7 +529,7 @@ class _DaySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+    final weekdays = AppLocalizations.of(context)!.weekdaysShort.split(',');
     final now = DateTime.now();
 
     return SizedBox(
@@ -595,6 +600,7 @@ class _DailySummaryCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final nutritionAsync = ref.watch(_todayNutritionProvider);
     final kcalGoal = ref.watch(kcalGoalNotifierProvider);
 
@@ -608,9 +614,9 @@ class _DailySummaryCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Tageszusammenfassung',
-            style: TextStyle(
+          Text(
+            l10n.healthScoreDailySummary,
+            style: const TextStyle(
               color: TraumColors.onBackground,
               fontFamily: 'DMSans',
               fontWeight: FontWeight.w700,
@@ -631,14 +637,14 @@ class _DailySummaryCard extends ConsumerWidget {
                 icon: Icons.directions_walk_rounded,
                 color: TraumColors.mintGreen,
                 value: '—',
-                sub: 'Schritte',
+                sub: l10n.steps,
               ),
               const SizedBox(width: 8),
               _SummaryMetric(
                 icon: Icons.bedtime_rounded,
                 color: TraumColors.cyanBlue,
                 value: '—',
-                sub: 'Schlaf',
+                sub: l10n.sleep,
               ),
             ],
           ),
@@ -706,6 +712,7 @@ class _OverviewTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final sleepAsync = ref.watch(recentSleepLogsProvider(7));
     final moodAsync = ref.watch(latestMoodProvider);
     final weightAsync = ref.watch(latestWeightProvider);
@@ -718,7 +725,7 @@ class _OverviewTab extends ConsumerWidget {
           data: (logs) {
             if (logs.isEmpty) {
               return TraumCard(
-                child: _EmptyCardContent(icon: Icons.bedtime_rounded, label: 'Noch keine Schlafdaten'),
+                child: _EmptyCardContent(icon: Icons.bedtime_rounded, label: l10n.noSleepData),
               );
             }
             final avgHours = logs.map((l) => l.wakeTime.difference(l.bedtime).inMinutes / 60.0).reduce((a, b) => a + b) / logs.length;
@@ -729,15 +736,15 @@ class _OverviewTab extends ConsumerWidget {
                   Row(children: [
                     const Icon(Icons.bedtime_rounded, color: TraumColors.cyanBlue, size: 20),
                     const SizedBox(width: 8),
-                    const Text('Schlaf (letzte 7 Nächte)',
-                        style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
+                    Text(l10n.sleepLast7Nights,
+                        style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
                             fontWeight: FontWeight.w700, fontSize: 14)),
                   ]),
                   const SizedBox(height: 12),
-                  Text('Ø ${avgHours.toStringAsFixed(1)} Stunden',
+                  Text(l10n.avgHours(avgHours.toStringAsFixed(1)),
                       style: const TextStyle(color: TraumColors.cyanBlue, fontFamily: 'DMSans',
                           fontWeight: FontWeight.w700, fontSize: 28)),
-                  Text('${logs.length} Einträge aufgezeichnet',
+                  Text(l10n.entriesRecorded(logs.length),
                       style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12)),
                   const SizedBox(height: 8),
                   TraumLineChart(
@@ -767,10 +774,10 @@ class _OverviewTab extends ConsumerWidget {
               ),
               const SizedBox(width: 12),
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Text('Aktuelles Gewicht',
-                    style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
+                Text(l10n.currentWeight,
+                    style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
                 Text(
-                  w != null ? '${w.weightKg.toStringAsFixed(1)} kg' : 'Noch kein Eintrag',
+                  w != null ? '${w.weightKg.toStringAsFixed(1)} kg' : l10n.noEntry,
                   style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
                       fontWeight: FontWeight.w700, fontSize: 20),
                 ),
@@ -793,10 +800,10 @@ class _OverviewTab extends ConsumerWidget {
               ),
               const SizedBox(width: 12),
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Text('Stimmung (letzte Eingabe)',
-                    style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
+                Text(l10n.moodLastEntry,
+                    style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
                 Text(
-                  m != null ? _moodLabel(m.moodScore) : 'Noch kein Eintrag',
+                  m != null ? _moodLabel(l10n, m.moodScore) : l10n.noEntry,
                   style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
                       fontWeight: FontWeight.w600, fontSize: 16),
                 ),
@@ -821,14 +828,14 @@ class _OverviewTab extends ConsumerWidget {
     }
   }
 
-  String _moodLabel(int score) {
+  String _moodLabel(AppLocalizations l10n, int score) {
     switch (score) {
-      case 1: return 'Sehr schlecht';
-      case 2: return 'Schlecht';
-      case 3: return 'Neutral';
-      case 4: return 'Gut';
-      case 5: return 'Ausgezeichnet';
-      default: return 'Neutral';
+      case 1: return l10n.moodVeryBad;
+      case 2: return l10n.moodBad;
+      case 3: return l10n.moodNeutral;
+      case 4: return l10n.moodGood;
+      case 5: return l10n.moodExcellent;
+      default: return l10n.moodNeutral;
     }
   }
 }
@@ -840,6 +847,7 @@ class _SleepTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final logsAsync = ref.watch(allSleepLogsStreamProvider);
 
     return Scaffold(
@@ -852,8 +860,8 @@ class _SleepTab extends ConsumerWidget {
       body: logsAsync.when(
         data: (logs) {
           if (logs.isEmpty) {
-            return const Center(
-              child: _EmptyCardContent(icon: Icons.bedtime_rounded, label: 'Noch keine Schlafdaten'),
+            return Center(
+              child: _EmptyCardContent(icon: Icons.bedtime_rounded, label: l10n.noSleepData),
             );
           }
           return ListView.builder(
@@ -945,6 +953,7 @@ class _AddSleepSheetState extends State<_AddSleepSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.only(left: 20, right: 20, top: 16,
           bottom: MediaQuery.of(context).viewInsets.bottom + 20),
@@ -955,21 +964,21 @@ class _AddSleepSheetState extends State<_AddSleepSheet> {
           Center(child: Container(width: 40, height: 4,
               decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle, borderRadius: BorderRadius.circular(2)))),
           const SizedBox(height: 16),
-          const Text('Schlaf eintragen', style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
+          Text(l10n.logSleep, style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
               fontWeight: FontWeight.w700, fontSize: 18)),
           const SizedBox(height: 16),
           _TimePickerTile(
-            label: 'Einschlafen',
+            label: l10n.fallingAsleep,
             time: TimeOfDay.fromDateTime(_bedtime),
             onChanged: (t) => setState(() => _bedtime = DateTime(_bedtime.year, _bedtime.month, _bedtime.day, t.hour, t.minute)),
           ),
           _TimePickerTile(
-            label: 'Aufwachen',
+            label: l10n.wakingUp,
             time: TimeOfDay.fromDateTime(_wakeTime),
             onChanged: (t) => setState(() => _wakeTime = DateTime(_wakeTime.year, _wakeTime.month, _wakeTime.day, t.hour, t.minute)),
           ),
           const SizedBox(height: 8),
-          const Text('Schlafqualität', style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
+          Text(l10n.sleepQuality, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
           const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -981,7 +990,7 @@ class _AddSleepSheetState extends State<_AddSleepSheet> {
           ),
           const SizedBox(height: 20),
           GradientButton(
-            label: 'Speichern',
+            label: l10n.save,
             onPressed: () async {
               await widget.onAdd(SleepLogsCompanion.insert(bedtime: _bedtime, wakeTime: _wakeTime, qualityStars: Value(_quality)));
               if (context.mounted) Navigator.pop(context);
@@ -1042,6 +1051,7 @@ class _WeightTab extends ConsumerWidget {
     final logsAsync = ref.watch(allWeightLogsStreamProvider);
     final unitSystem = ref.watch(unitSystemProvider);
 
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton(
@@ -1058,8 +1068,8 @@ class _WeightTab extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Gewichtsverlauf',
-                        style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
+                    Text(l10n.weightHistory,
+                        style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
                             fontWeight: FontWeight.w700, fontSize: 14)),
                     const SizedBox(height: 8),
                     TraumLineChart(
@@ -1075,10 +1085,10 @@ class _WeightTab extends ConsumerWidget {
                 ),
               ),
             const SizedBox(height: 12),
-            const SectionHeader(title: 'Einträge'),
+            SectionHeader(title: l10n.entries),
             const SizedBox(height: 8),
             if (logs.isEmpty)
-              const _EmptyCardContent(icon: Icons.monitor_weight_rounded, label: 'Noch keine Gewichtseinträge'),
+              _EmptyCardContent(icon: Icons.monitor_weight_rounded, label: l10n.noWeightEntries),
             ...logs.map((log) => Dismissible(
               key: ValueKey(log.id),
               direction: DismissDirection.endToStart,
@@ -1121,8 +1131,8 @@ class _WeightTab extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surfaceElevated,
-        title: const Text('Gewicht eintragen',
-            style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+        title: Text(AppLocalizations.of(ctx)!.logWeight,
+            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
         content: TextField(
           controller: ctrl,
           autofocus: true,
@@ -1132,7 +1142,7 @@ class _WeightTab extends ConsumerWidget {
         ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx),
-              child: const Text('Abbrechen', style: TextStyle(color: TraumColors.onBackgroundMuted))),
+              child: Text(AppLocalizations.of(ctx)!.cancel, style: const TextStyle(color: TraumColors.onBackgroundMuted))),
           TextButton(
             onPressed: () async {
               final v = double.tryParse(ctrl.text.replaceAll(',', '.'));
@@ -1143,7 +1153,7 @@ class _WeightTab extends ConsumerWidget {
               }
               if (ctx.mounted) Navigator.pop(ctx);
             },
-            child: const Text('Speichern', style: TextStyle(color: TraumColors.coralOrange)),
+            child: Text(AppLocalizations.of(ctx)!.save, style: const TextStyle(color: TraumColors.coralOrange)),
           ),
         ],
       ),
@@ -1158,6 +1168,7 @@ class _MeasurementsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final latestAsync = ref.watch(allMeasurementsStreamProvider);
 
     return latestAsync.when(
@@ -1174,26 +1185,26 @@ class _MeasurementsTab extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             children: [
               if (latest == null)
-                const _EmptyCardContent(icon: Icons.straighten_rounded, label: 'Noch keine Körpermaße eingetragen'),
+                _EmptyCardContent(icon: Icons.straighten_rounded, label: l10n.noBodyMeasurements),
               if (latest != null) ...[
                 TraumCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Aktuelle Maße',
-                          style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
+                      Text(l10n.currentMeasurements,
+                          style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
                               fontWeight: FontWeight.w700, fontSize: 14)),
                       const SizedBox(height: 12),
-                      _MeasurementRow('Brust', latest.chestCm),
-                      _MeasurementRow('Taille', latest.waistCm),
-                      _MeasurementRow('Hüfte', latest.hipsCm),
-                      _MeasurementRow('Oberschenkel', latest.thighCm),
-                      _MeasurementRow('Bizeps', latest.bicepCm),
-                      _MeasurementRow('Schultern', latest.shoulderCm),
-                      _MeasurementRow('Wade', latest.calfCm),
-                      _MeasurementRow('Hals', latest.neckCm),
+                      _MeasurementRow(l10n.chest, latest.chestCm),
+                      _MeasurementRow(l10n.waist, latest.waistCm),
+                      _MeasurementRow(l10n.hips, latest.hipsCm),
+                      _MeasurementRow(l10n.thigh, latest.thighCm),
+                      _MeasurementRow(l10n.bicep, latest.bicepCm),
+                      _MeasurementRow(l10n.shoulders, latest.shoulderCm),
+                      _MeasurementRow(l10n.calf, latest.calfCm),
+                      _MeasurementRow(l10n.neck, latest.neckCm),
                       if (latest.bodyFatPct != null)
-                        _MeasurementRow('Körperfett', latest.bodyFatPct, suffix: '%'),
+                        _MeasurementRow(l10n.bodyFat, latest.bodyFatPct, suffix: '%'),
                     ],
                   ),
                 ),
@@ -1294,14 +1305,17 @@ class _AddMeasurementSheetState extends State<_AddMeasurementSheet> {
             Center(child: Container(width: 40, height: 4,
                 decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle, borderRadius: BorderRadius.circular(2)))),
             const SizedBox(height: 16),
-            const Text('Körpermaße eintragen', style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
+            Text(AppLocalizations.of(context)!.logBodyMeasurements, style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700, fontSize: 18)),
             const SizedBox(height: 16),
-            for (final entry in [
-              ('Brust (cm)', 'chest'), ('Taille (cm)', 'waist'), ('Hüfte (cm)', 'hips'),
-              ('Oberschenkel (cm)', 'thigh'), ('Bizeps (cm)', 'bicep'), ('Schultern (cm)', 'shoulder'),
-              ('Wade (cm)', 'calf'), ('Hals (cm)', 'neck'), ('Körperfett (%)', 'bodyfat'),
-            ])
+            for (final entry in () {
+              final l10n = AppLocalizations.of(context)!;
+              return [
+                ('${l10n.chest} (cm)', 'chest'), ('${l10n.waist} (cm)', 'waist'), ('${l10n.hips} (cm)', 'hips'),
+                ('${l10n.thigh} (cm)', 'thigh'), ('${l10n.bicep} (cm)', 'bicep'), ('${l10n.shoulders} (cm)', 'shoulder'),
+                ('${l10n.calf} (cm)', 'calf'), ('${l10n.neck} (cm)', 'neck'), ('${l10n.bodyFat} (%)', 'bodyfat'),
+              ];
+            }())
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: TextField(
@@ -1319,7 +1333,7 @@ class _AddMeasurementSheetState extends State<_AddMeasurementSheet> {
               ),
             const SizedBox(height: 8),
             GradientButton(
-              label: 'Speichern',
+              label: AppLocalizations.of(context)!.save,
               onPressed: () async {
                 await widget.onSave(BodyMeasurementsCompanion.insert(
                   logDate: DateTime.now(),

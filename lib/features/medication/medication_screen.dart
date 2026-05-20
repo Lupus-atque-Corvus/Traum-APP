@@ -8,6 +8,20 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
+
+String _formLabel(String key, AppLocalizations l10n) {
+  switch (key) {
+    case 'Tablette': return l10n.formTablet;
+    case 'Kapsel': return l10n.formCapsule;
+    case 'Tropfen': return l10n.formDrops;
+    case 'Injektion': return l10n.formInjection;
+    case 'Salbe': return l10n.formOintment;
+    case 'Spray': return l10n.formSpray;
+    case 'Sonstige': return l10n.formOther;
+    default: return key;
+  }
+}
 
 class MedicationScreen extends ConsumerWidget {
   const MedicationScreen({super.key});
@@ -23,8 +37,8 @@ class MedicationScreen extends ConsumerWidget {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Medikamente',
-            style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
+        title: Text(AppLocalizations.of(context)!.medicationsTitle,
+            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
         elevation: 0,
       ),
@@ -46,7 +60,7 @@ class MedicationScreen extends ConsumerWidget {
             error: (_, __) => const SizedBox.shrink(),
           ),
           const SizedBox(height: 16),
-          const SectionHeader(title: 'Alle Medikamente'),
+          SectionHeader(title: AppLocalizations.of(context)!.allMedications),
           const SizedBox(height: 8),
           medsAsync.when(
             data: (meds) {
@@ -59,7 +73,7 @@ class MedicationScreen extends ConsumerWidget {
               );
             },
             loading: () => const ShimmerLoader(width: double.infinity, height: 200),
-            error: (e, _) => Text('Fehler: $e',
+            error: (e, _) => Text('${AppLocalizations.of(context)!.error}: $e',
                 style: const TextStyle(color: TraumColors.roseRed)),
           ),
         ],
@@ -87,7 +101,7 @@ class MedicationScreen extends ConsumerWidget {
                 await NotificationService.scheduleDailyAt(
                   id: 100 + i,
                   title: companion.name.value,
-                  body: 'Zeit für ${companion.name.value}',
+                  body: AppLocalizations.of(context)!.timeForMedication(companion.name.value),
                   hour: int.parse(parts[0]),
                   minute: int.parse(parts[1]),
                   channelId: 'medication',
@@ -116,8 +130,8 @@ class _TodayStatusCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Heute',
-              style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
+          Text(AppLocalizations.of(context)!.today,
+              style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
                   fontWeight: FontWeight.w700, fontSize: 16)),
           const SizedBox(height: 12),
           ...activeMeds.map((med) {
@@ -189,7 +203,7 @@ class _MedicationCard extends StatelessWidget {
                 Text('${medication.dosage ?? ''} ${medication.form != null ? '· ${medication.form}' : ''}'.trim(),
                     style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12)),
               if (times.isNotEmpty)
-                Text('Erinnerungen: ${times.join(', ')}',
+                Text(AppLocalizations.of(context)!.remindersTimes(times.join(', ')),
                     style: const TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontSize: 11)),
             ],
           ),
@@ -200,7 +214,7 @@ class _MedicationCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              medication.isActive ? 'Aktiv' : 'Inaktiv',
+              medication.isActive ? AppLocalizations.of(context)!.activeLabel : AppLocalizations.of(context)!.inactive,
               style: TextStyle(
                 color: medication.isActive ? TraumColors.mintGreen : TraumColors.onBackgroundMuted,
                 fontFamily: 'DMSans', fontSize: 11, fontWeight: FontWeight.w600,
@@ -231,12 +245,12 @@ class _EmptyState extends StatelessWidget {
             Icon(Icons.medication_rounded, size: 64,
                 color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
             const SizedBox(height: 16),
-            const Text('Noch keine Medikamente',
-                style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans',
+            Text(AppLocalizations.of(context)!.noMedicationsYet,
+                style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans',
                     fontWeight: FontWeight.w600, fontSize: 16)),
             const SizedBox(height: 8),
-            const Text('Tippe auf + um ein Medikament hinzuzufügen',
-                style: TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontSize: 13),
+            Text(AppLocalizations.of(context)!.tapToAddMedication,
+                style: const TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontSize: 13),
                 textAlign: TextAlign.center),
           ],
         ),
@@ -285,16 +299,16 @@ class _AddMedicationSheetState extends State<_AddMedicationSheet> {
                 decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle,
                     borderRadius: BorderRadius.circular(2)))),
             const SizedBox(height: 16),
-            const Text('Medikament hinzufügen',
-                style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
+            Text(AppLocalizations.of(context)!.addMedication,
+                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
                     fontWeight: FontWeight.w700, fontSize: 18)),
             const SizedBox(height: 16),
-            _buildField('Name', _nameCtrl, hint: 'z.B. Aspirin'),
+            _buildField(AppLocalizations.of(context)!.fieldName, _nameCtrl, hint: AppLocalizations.of(context)!.medicationNameHint),
             const SizedBox(height: 12),
-            _buildField('Dosierung', _dosageCtrl, hint: 'z.B. 100 mg'),
+            _buildField(AppLocalizations.of(context)!.dosage, _dosageCtrl, hint: AppLocalizations.of(context)!.dosageHint),
             const SizedBox(height: 12),
-            const Text('Darreichungsform',
-                style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
+            Text(AppLocalizations.of(context)!.formLabel,
+                style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
             const SizedBox(height: 6),
             Wrap(
               spacing: 8, runSpacing: 8,
@@ -309,7 +323,7 @@ class _AddMedicationSheetState extends State<_AddMedicationSheet> {
                       borderRadius: BorderRadius.circular(TraumRadius.chip),
                       border: Border.all(color: selected ? TraumColors.roseRed : Colors.transparent),
                     ),
-                    child: Text(f, style: TextStyle(
+                    child: Text(_formLabel(f, AppLocalizations.of(context)!), style: TextStyle(
                         color: selected ? TraumColors.roseRed : TraumColors.onBackgroundMuted,
                         fontFamily: 'DMSans', fontSize: 13)),
                   ),
@@ -318,14 +332,14 @@ class _AddMedicationSheetState extends State<_AddMedicationSheet> {
             ),
             const SizedBox(height: 12),
             Row(children: [
-              const Text('Erinnerungszeiten',
-                  style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
+              Text(AppLocalizations.of(context)!.reminderTimes,
+                  style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
               const Spacer(),
               TextButton.icon(
                 onPressed: _addTime,
                 icon: const Icon(Icons.add, size: 16, color: TraumColors.coralOrange),
-                label: const Text('Hinzufügen',
-                    style: TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans', fontSize: 12)),
+                label: Text(AppLocalizations.of(context)!.add,
+                    style: const TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans', fontSize: 12)),
               ),
             ]),
             ..._times.asMap().entries.map((e) => Row(children: [
@@ -350,7 +364,7 @@ class _AddMedicationSheetState extends State<_AddMedicationSheet> {
                 ),
             ])),
             const SizedBox(height: 20),
-            GradientButton(label: _saving ? 'Speichern…' : 'Speichern', onPressed: _saving ? null : _save),
+            GradientButton(label: _saving ? AppLocalizations.of(context)!.saving : AppLocalizations.of(context)!.save, onPressed: _saving ? null : _save),
             const SizedBox(height: 8),
           ],
         ),
@@ -413,7 +427,7 @@ class _AddMedicationSheetState extends State<_AddMedicationSheet> {
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Name ist ein Pflichtfeld')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)),
       );
       return;
     }

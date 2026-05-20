@@ -6,6 +6,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class WorkoutPlanDetailScreen extends ConsumerWidget {
   final int planId;
@@ -24,23 +25,23 @@ class WorkoutPlanDetailScreen extends ConsumerWidget {
           data: (plans) {
             final plan = plans.cast<WorkoutPlan?>().firstWhere(
                 (p) => p?.id == planId, orElse: () => null);
-            return Text(plan?.name ?? 'Trainingsplan',
+            return Text(plan?.name ?? AppLocalizations.of(context)!.trainingPlan,
                 style: const TextStyle(
                     color: TraumColors.onBackground,
                     fontFamily: 'DMSans',
                     fontWeight: FontWeight.w700));
           },
-          loading: () => const Text('Trainingsplan',
-              style: TextStyle(
+          loading: () => Text(AppLocalizations.of(context)!.trainingPlan,
+              style: const TextStyle(
                   color: TraumColors.onBackground, fontFamily: 'DMSans')),
-          error: (_, __) => const Text('Plan'),
+          error: (_, __) => Text(AppLocalizations.of(context)!.trainingPlan),
         ),
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
         elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.play_arrow_rounded, color: TraumColors.coralOrange, size: 28),
-            tooltip: 'Workout starten',
+            tooltip: AppLocalizations.of(context)!.startWorkout,
             onPressed: () => context.go('/training/active'),
           ),
         ],
@@ -48,9 +49,9 @@ class WorkoutPlanDetailScreen extends ConsumerWidget {
       body: daysAsync.when(
         data: (days) {
           if (days.isEmpty) {
-            return const Center(
-              child: Text('Keine Trainingstage',
-                  style: TextStyle(
+            return Center(
+              child: Text(AppLocalizations.of(context)!.noTrainingDays,
+                  style: const TextStyle(
                       color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
             );
           }
@@ -67,13 +68,13 @@ class WorkoutPlanDetailScreen extends ConsumerWidget {
         loading: () =>
             const Center(child: CircularProgressIndicator(color: TraumColors.coralOrange)),
         error: (e, _) => Center(
-            child: Text('Fehler: $e',
+            child: Text('${AppLocalizations.of(context)!.error}: $e',
                 style: const TextStyle(color: TraumColors.roseRed))),
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
         child: GradientButton(
-          label: 'Workout starten',
+          label: AppLocalizations.of(context)!.startWorkout,
           onPressed: () => context.go('/training/active'),
         ),
       ),
@@ -94,7 +95,7 @@ class _DayCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final weekDays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+    final weekDays = AppLocalizations.of(context)!.weekdaysShort.split(',');
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(16),

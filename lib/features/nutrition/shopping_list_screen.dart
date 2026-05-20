@@ -6,6 +6,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class ShoppingListScreen extends ConsumerWidget {
   const ShoppingListScreen({super.key});
@@ -18,8 +19,8 @@ class ShoppingListScreen extends ConsumerWidget {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Einkaufsliste',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.shoppingList,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -31,7 +32,7 @@ class ShoppingListScreen extends ConsumerWidget {
                 ? IconButton(
                     icon: const Icon(Icons.cleaning_services_rounded,
                         color: TraumColors.amberGold),
-                    tooltip: 'Erledigte löschen',
+                    tooltip: AppLocalizations.of(context)!.deleteCompletedTooltip,
                     onPressed: () =>
                         ref.read(nutritionDaoProvider).deleteCheckedShoppingItems(),
                   )
@@ -55,14 +56,14 @@ class ShoppingListScreen extends ConsumerWidget {
                     size: 64,
                     color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
                 const SizedBox(height: 16),
-                const Text('Einkaufsliste ist leer',
-                    style: TextStyle(
+                Text(AppLocalizations.of(context)!.shoppingListEmpty,
+                    style: const TextStyle(
                         color: TraumColors.onBackgroundMuted,
                         fontFamily: 'DMSans',
                         fontWeight: FontWeight.w600,
                         fontSize: 16)),
                 const SizedBox(height: 8),
-                const Text('Tippe auf + um ein Produkt hinzuzufügen',
+                Text(AppLocalizations.of(context)!.tapToAddProduct,
                     style: TextStyle(
                         color: TraumColors.onBackgroundSubtle,
                         fontFamily: 'DMSans',
@@ -96,10 +97,10 @@ class ShoppingListScreen extends ConsumerWidget {
                     )),
               ],
               if (checked.isNotEmpty) ...[
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  child: Text('Erledigt',
-                      style: TextStyle(
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Text(AppLocalizations.of(context)!.completed,
+                      style: const TextStyle(
                           color: TraumColors.onBackgroundMuted,
                           fontFamily: 'DMSans',
                           fontWeight: FontWeight.w600,
@@ -127,7 +128,7 @@ class ShoppingListScreen extends ConsumerWidget {
         loading: () =>
             const Center(child: CircularProgressIndicator(color: TraumColors.amberGold)),
         error: (e, _) => Center(
-            child: Text('Fehler: $e',
+            child: Text('${AppLocalizations.of(context)!.error}: $e',
                 style: const TextStyle(color: TraumColors.roseRed))),
       ),
     );
@@ -253,8 +254,8 @@ class _AddItemSheetState extends State<_AddItemSheet> {
                     borderRadius: BorderRadius.circular(2))),
           ),
           const SizedBox(height: 16),
-          const Text('Produkt hinzufügen',
-              style: TextStyle(
+          Text(AppLocalizations.of(context)!.addProduct,
+              style: const TextStyle(
                   color: TraumColors.onBackground,
                   fontFamily: 'DMSans',
                   fontWeight: FontWeight.w700,
@@ -265,7 +266,7 @@ class _AddItemSheetState extends State<_AddItemSheet> {
             autofocus: true,
             style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
             decoration: InputDecoration(
-              hintText: 'z.B. Haferflocken',
+              hintText: AppLocalizations.of(context)!.itemHint,
               hintStyle: const TextStyle(
                   color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
               filled: true, fillColor: TraumColors.surface,
@@ -284,7 +285,7 @@ class _AddItemSheetState extends State<_AddItemSheet> {
                 style: const TextStyle(
                     color: TraumColors.onBackground, fontFamily: 'DMSans'),
                 decoration: InputDecoration(
-                  hintText: 'Menge',
+                  hintText: AppLocalizations.of(context)!.quantity,
                   hintStyle: const TextStyle(
                       color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
                   filled: true, fillColor: TraumColors.surface,
@@ -303,7 +304,7 @@ class _AddItemSheetState extends State<_AddItemSheet> {
                 style: const TextStyle(
                     color: TraumColors.onBackground, fontFamily: 'DMSans'),
                 decoration: InputDecoration(
-                  hintText: 'Einheit (g, Stk, Pkg…)',
+                  hintText: AppLocalizations.of(context)!.unitHint,
                   hintStyle: const TextStyle(
                       color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
                   filled: true, fillColor: TraumColors.surface,
@@ -318,7 +319,7 @@ class _AddItemSheetState extends State<_AddItemSheet> {
           ]),
           const SizedBox(height: 20),
           GradientButton(
-            label: _saving ? 'Hinzufügen…' : 'Hinzufügen',
+            label: _saving ? AppLocalizations.of(context)!.saving : AppLocalizations.of(context)!.add,
             onPressed: _saving ? null : _save,
           ),
           const SizedBox(height: 8),
@@ -330,7 +331,7 @@ class _AddItemSheetState extends State<_AddItemSheet> {
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Name ist ein Pflichtfeld')));
+          .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
       return;
     }
     setState(() => _saving = true);

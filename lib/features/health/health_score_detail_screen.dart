@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/components/components.dart';
 import '../../core/theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 import 'health_score_provider.dart';
 import 'health_score_result.dart';
 import 'widgets/circular_score_ring.dart';
@@ -22,6 +23,7 @@ class _HealthScoreDetailScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final scoreAsync = ref.watch(healthScoreProvider);
     final historyAsync = ref.watch(healthScoreHistoryProvider);
 
@@ -29,9 +31,9 @@ class _HealthScoreDetailScreenState
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text(
-          'Gesundheitsscore',
-          style: TextStyle(
+        title: Text(
+          l10n.healthScoreTitle,
+          style: const TextStyle(
             color: TraumColors.onBackground,
             fontFamily: 'DMSans',
             fontWeight: FontWeight.w700,
@@ -185,7 +187,7 @@ class _HealthScoreDetailScreenState
                           ),
                     const SizedBox(height: 8),
                     Text(
-                      motivationstext(result.gesamtScore),
+                      motivationstext(result.gesamtScore, l10n),
                       style: const TextStyle(
                         color: TraumColors.onBackgroundMuted,
                         fontFamily: 'DMSans',

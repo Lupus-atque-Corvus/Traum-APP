@@ -6,6 +6,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class RoutinesScreen extends ConsumerWidget {
   const RoutinesScreen({super.key});
@@ -18,8 +19,8 @@ class RoutinesScreen extends ConsumerWidget {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Trainingsroutinen',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.trainingRoutines,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -40,15 +41,15 @@ class RoutinesScreen extends ConsumerWidget {
                     size: 64,
                     color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
                 const SizedBox(height: 16),
-                const Text('Noch keine Routinen',
-                    style: TextStyle(
+                Text(AppLocalizations.of(context)!.noRoutines,
+                    style: const TextStyle(
                         color: TraumColors.onBackgroundMuted,
                         fontFamily: 'DMSans',
                         fontWeight: FontWeight.w600,
                         fontSize: 16)),
                 const SizedBox(height: 8),
-                const Text('Tippe auf + um eine Routine zu erstellen',
-                    style: TextStyle(
+                Text(AppLocalizations.of(context)!.tapToCreateRoutine,
+                    style: const TextStyle(
                         color: TraumColors.onBackgroundSubtle,
                         fontFamily: 'DMSans',
                         fontSize: 13),
@@ -77,7 +78,7 @@ class RoutinesScreen extends ConsumerWidget {
         loading: () =>
             const Center(child: CircularProgressIndicator(color: TraumColors.coralOrange)),
         error: (e, _) => Center(
-            child: Text('Fehler: $e',
+            child: Text('${AppLocalizations.of(context)!.error}: $e',
                 style: const TextStyle(color: TraumColors.roseRed))),
       ),
     );
@@ -163,8 +164,8 @@ class _PlanCard extends StatelessWidget {
               TextButton(
                 onPressed: onSetActive,
                 style: TextButton.styleFrom(foregroundColor: TraumColors.coralOrange),
-                child: const Text('Aktivieren',
-                    style: TextStyle(fontFamily: 'DMSans', fontSize: 12)),
+                child: Text(AppLocalizations.of(context)!.activate,
+                    style: const TextStyle(fontFamily: 'DMSans', fontSize: 12)),
               )
             else
               Container(
@@ -173,8 +174,8 @@ class _PlanCard extends StatelessWidget {
                   color: TraumColors.coralDim,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Text('Aktiv',
-                    style: TextStyle(
+                child: Text(AppLocalizations.of(context)!.active,
+                    style: const TextStyle(
                         color: TraumColors.coralOrange,
                         fontFamily: 'DMSans',
                         fontWeight: FontWeight.w600,

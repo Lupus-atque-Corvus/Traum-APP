@@ -7,6 +7,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class NewRoutineScreen extends ConsumerStatefulWidget {
   const NewRoutineScreen({super.key});
@@ -20,10 +21,18 @@ class _NewRoutineScreenState extends ConsumerState<NewRoutineScreen> {
   final _descCtrl = TextEditingController();
   bool _isActive = false;
   bool _saving = false;
+  bool _daysInitialized = false;
 
-  final _days = <_DayEntry>[
-    _DayEntry('Tag A'),
-  ];
+  final _days = <_DayEntry>[];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_daysInitialized) {
+      _daysInitialized = true;
+      _days.add(_DayEntry(AppLocalizations.of(context)!.trainingDayA));
+    }
+  }
 
   @override
   void dispose() {
@@ -38,8 +47,8 @@ class _NewRoutineScreenState extends ConsumerState<NewRoutineScreen> {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Neue Routine',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.newRoutine,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -51,18 +60,18 @@ class _NewRoutineScreenState extends ConsumerState<NewRoutineScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildLabel('Name der Routine'),
+            _buildLabel(AppLocalizations.of(context)!.routineName),
             const SizedBox(height: 6),
-            _buildTextField(_nameCtrl, hint: 'z.B. Push/Pull/Beine'),
+            _buildTextField(_nameCtrl, hint: AppLocalizations.of(context)!.routineNameHint),
             const SizedBox(height: 16),
-            _buildLabel('Beschreibung (optional)'),
+            _buildLabel(AppLocalizations.of(context)!.descriptionOptional),
             const SizedBox(height: 6),
             TextField(
               controller: _descCtrl,
               maxLines: 3,
               style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
               decoration: InputDecoration(
-                hintText: 'Ziel, Fokus, Notizen…',
+                hintText: AppLocalizations.of(context)!.descriptionHint,
                 hintStyle: const TextStyle(
                     color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
                 filled: true,
@@ -77,8 +86,8 @@ class _NewRoutineScreenState extends ConsumerState<NewRoutineScreen> {
             const SizedBox(height: 16),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('Als aktive Routine setzen',
-                  style: TextStyle(
+              title: Text(AppLocalizations.of(context)!.setAsActive,
+                  style: const TextStyle(
                       color: TraumColors.onBackground,
                       fontFamily: 'DMSans',
                       fontSize: 14)),
@@ -88,18 +97,19 @@ class _NewRoutineScreenState extends ConsumerState<NewRoutineScreen> {
             ),
             const SizedBox(height: 16),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              const Text('Trainingstage',
-                  style: TextStyle(
+              Text(AppLocalizations.of(context)!.trainingDays,
+                  style: const TextStyle(
                       color: TraumColors.onBackground,
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w700,
                       fontSize: 15)),
               TextButton.icon(
-                onPressed: () =>
-                    setState(() => _days.add(_DayEntry('Tag ${String.fromCharCode(64 + _days.length + 1)}'))),
+                onPressed: () => setState(() => _days.add(_DayEntry(
+                    AppLocalizations.of(context)!.trainingDayName(
+                        String.fromCharCode(64 + _days.length + 1))))),
                 icon: const Icon(Icons.add, size: 16, color: TraumColors.coralOrange),
-                label: const Text('Tag hinzufügen',
-                    style: TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans', fontSize: 12)),
+                label: Text(AppLocalizations.of(context)!.addDay,
+                    style: const TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans', fontSize: 12)),
               ),
             ]),
             const SizedBox(height: 8),
@@ -136,7 +146,7 @@ class _NewRoutineScreenState extends ConsumerState<NewRoutineScreen> {
             )),
             const SizedBox(height: 28),
             GradientButton(
-              label: _saving ? 'Speichern…' : 'Routine erstellen',
+              label: _saving ? AppLocalizations.of(context)!.saving : AppLocalizations.of(context)!.createRoutineButton,
               onPressed: _saving ? null : _save,
             ),
           ],
@@ -168,7 +178,7 @@ class _NewRoutineScreenState extends ConsumerState<NewRoutineScreen> {
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Name ist ein Pflichtfeld')));
+          .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
       return;
     }
     setState(() => _saving = true);

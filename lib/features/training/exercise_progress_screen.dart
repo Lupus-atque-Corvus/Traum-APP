@@ -4,6 +4,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class ExerciseProgressScreen extends ConsumerWidget {
   final int exerciseId;
@@ -18,8 +19,8 @@ class ExerciseProgressScreen extends ConsumerWidget {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Fortschritt',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.progress,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -40,13 +41,13 @@ class ExerciseProgressScreen extends ConsumerWidget {
                   const Icon(Icons.show_chart_rounded,
                       size: 64, color: TraumColors.onBackgroundSubtle),
                   const SizedBox(height: 16),
-                  const Text('Noch keine Daten',
-                      style: TextStyle(
+                  Text(AppLocalizations.of(context)!.noProgressData,
+                      style: const TextStyle(
                           color: TraumColors.onBackgroundMuted,
                           fontFamily: 'DMSans',
                           fontWeight: FontWeight.w600)),
                   const SizedBox(height: 8),
-                  const Text('Trainiere diese Übung, um Fortschritte zu sehen',
+                  Text(AppLocalizations.of(context)!.trainExerciseToSeeProgress,
                       style: TextStyle(
                           color: TraumColors.onBackgroundSubtle,
                           fontFamily: 'DMSans',
@@ -112,7 +113,7 @@ class ExerciseProgressScreen extends ConsumerWidget {
                 Row(children: [
                   Expanded(
                     child: _PRCard(
-                      label: 'Max. Gewicht',
+                      label: AppLocalizations.of(context)!.maxWeight,
                       value: '${maxWeight.toStringAsFixed(1)} kg',
                       icon: Icons.trending_up_rounded,
                       color: TraumColors.coralOrange,
@@ -121,7 +122,7 @@ class ExerciseProgressScreen extends ConsumerWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: _PRCard(
-                      label: 'Max. Wiederh.',
+                      label: AppLocalizations.of(context)!.maxReps,
                       value: '$maxReps',
                       icon: Icons.repeat_rounded,
                       color: TraumColors.mintGreen,
@@ -140,7 +141,7 @@ class ExerciseProgressScreen extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Volumen (letzte 90 Tage)',
+                        Text(AppLocalizations.of(context)!.volumeLast90Days,
                             style: TextStyle(
                                 color: TraumColors.onBackground,
                                 fontFamily: 'DMSans',
@@ -171,8 +172,8 @@ class ExerciseProgressScreen extends ConsumerWidget {
                   const SizedBox(height: 16),
                 ],
                 // Recent sets
-                const Text('Letzte Sätze',
-                    style: TextStyle(
+                Text(AppLocalizations.of(context)!.recentSets,
+                    style: const TextStyle(
                         color: TraumColors.onBackground,
                         fontFamily: 'DMSans',
                         fontWeight: FontWeight.w700,
@@ -187,7 +188,7 @@ class ExerciseProgressScreen extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(TraumRadius.card),
                       ),
                       child: Row(children: [
-                        Text('Satz ${s.setNumber}',
+                        Text(AppLocalizations.of(context)!.setLabel(s.setNumber),
                             style: const TextStyle(
                                 color: TraumColors.onBackgroundMuted,
                                 fontFamily: 'DMSans',
@@ -205,7 +206,7 @@ class ExerciseProgressScreen extends ConsumerWidget {
                                   color: TraumColors.onBackgroundMuted,
                                   fontFamily: 'DMSans')),
                         if (s.reps != null)
-                          Text('${s.reps} Wdh.',
+                          Text(AppLocalizations.of(context)!.repsCount(s.reps!),
                               style: const TextStyle(
                                   color: TraumColors.onBackground,
                                   fontFamily: 'DMSans',
@@ -222,7 +223,7 @@ class ExerciseProgressScreen extends ConsumerWidget {
         loading: () =>
             const Center(child: CircularProgressIndicator(color: TraumColors.coralOrange)),
         error: (e, _) => Center(
-            child: Text('Fehler: $e',
+            child: Text('${AppLocalizations.of(context)!.error}: $e',
                 style: const TextStyle(color: TraumColors.roseRed))),
       ),
     );

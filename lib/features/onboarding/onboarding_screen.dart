@@ -16,7 +16,46 @@ import '../../core/theme/radius.dart';
 import '../../core/components/components.dart';
 import '../../core/utils/water_calculator.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 import '../legal/legal_document_screen.dart';
+
+String _categoryLabel(String key, AppLocalizations l10n) {
+  switch (key) {
+    case 'Vitamine': return l10n.categoryVitamins;
+    case 'Mineralien': return l10n.categoryMinerals;
+    case 'Aminosäuren': return l10n.categoryAminoAcids;
+    case 'Protein': return l10n.categoryProtein;
+    case 'Omega-3': return l10n.categoryOmega3;
+    case 'Adaptogene': return l10n.categoryAdaptogens;
+    case 'Pre-Workout': return l10n.categoryPreWorkout;
+    case 'Darmgesundheit': return l10n.categoryGutHealth;
+    case 'Kreatin': return l10n.categoryCreatine;
+    case 'Sonstige': return l10n.categoryOther;
+    default: return key;
+  }
+}
+
+String _unitLabel(String key, AppLocalizations l10n) {
+  switch (key) {
+    case 'Kapsel(n)': return l10n.unitCapsules;
+    case 'Tablette(n)': return l10n.unitTablets;
+    case 'Messbecher': return l10n.unitScoop;
+    default: return key;
+  }
+}
+
+String _formLabel(String key, AppLocalizations l10n) {
+  switch (key) {
+    case 'Tablette': return l10n.formTablet;
+    case 'Kapsel': return l10n.formCapsule;
+    case 'Tropfen': return l10n.formDrops;
+    case 'Injektion': return l10n.formInjection;
+    case 'Salbe': return l10n.formOintment;
+    case 'Spray': return l10n.formSpray;
+    case 'Sonstige': return l10n.formOther;
+    default: return key;
+  }
+}
 
 // File-level stream providers used by the onboarding supplement/medication pages
 final _onboardingSuppsProvider = StreamProvider.autoDispose<List<Supplement>>(
@@ -380,9 +419,10 @@ class _WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _OnboardingPage(
-      title: 'Willkommen bei TRAUM',
-      buttonLabel: 'Loslegen',
+      title: l10n.welcomeToTraum,
+      buttonLabel: l10n.startNow,
       onButton: onNext,
       content: Column(
         children: [
@@ -397,9 +437,9 @@ class _WelcomePage extends StatelessWidget {
             child: const Icon(Icons.auto_awesome, color: Colors.white, size: 50),
           ),
           const SizedBox(height: 24),
-          const Text(
-            'Dein Leben. Deine Daten. Dein System.',
-            style: TextStyle(
+          Text(
+            l10n.yourLifeYourData,
+            style: const TextStyle(
               fontSize: 18,
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
@@ -407,10 +447,9 @@ class _WelcomePage extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          const Text(
-            'TRAUM bringt alle wichtigen Lebensbereiche in einer App zusammen — '
-            'komplett offline, sicher auf deinem Gerät.',
-            style: TextStyle(
+          Text(
+            l10n.traumDescription,
+            style: const TextStyle(
               fontSize: 14,
               color: TraumColors.onBackgroundSubtle,
               fontFamily: 'DMSans',
@@ -454,9 +493,10 @@ class _ConsentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _OnboardingPage(
-      title: 'Datenschutz & Einwilligung',
-      buttonLabel: 'Weiter',
+      title: l10n.onboarding_privacy_title,
+      buttonLabel: l10n.next,
       onButton: onNext,
       buttonEnabled: canContinue,
       content: Column(
@@ -465,17 +505,17 @@ class _ConsentPage extends StatelessWidget {
             value: consentPrivacy,
             onChanged: (v) => onChanged(
                 v ?? false, consentHealth, consentTerms, consentDisclaimer, consentAge),
-            leading: 'Ich habe die ',
-            linkText: 'Datenschutzerklärung',
-            trailing: ' gelesen und stimme zu.',
+            leading: l10n.consentReadLeading,
+            linkText: l10n.privacy_policy,
+            trailing: l10n.consentReadTrailing,
             onLinkTap: () => _openLegal(
               context,
               'assets/legal/privacy_policy_de.md',
-              'Datenschutzerklärung',
+              l10n.privacy_policy,
             ),
           ),
           _ConsentTile(
-            label: 'Ich willige in die Verarbeitung von Gesundheitsdaten ein (DSGVO Art. 9).',
+            label: l10n.healthDataConsent,
             value: consentHealth,
             onChanged: (v) => onChanged(
                 consentPrivacy, v ?? false, consentTerms, consentDisclaimer, consentAge),
@@ -484,30 +524,30 @@ class _ConsentPage extends StatelessWidget {
             value: consentTerms,
             onChanged: (v) => onChanged(
                 consentPrivacy, consentHealth, v ?? false, consentDisclaimer, consentAge),
-            leading: 'Ich akzeptiere die ',
-            linkText: 'Nutzungsbedingungen',
-            trailing: '.',
+            leading: l10n.consentAcceptLeading,
+            linkText: l10n.terms_of_service,
+            trailing: l10n.consentDot,
             onLinkTap: () => _openLegal(
               context,
               'assets/legal/terms_de.md',
-              'Nutzungsbedingungen',
+              l10n.terms_of_service,
             ),
           ),
           _LinkedConsentTile(
             value: consentDisclaimer,
             onChanged: (v) => onChanged(
                 consentPrivacy, consentHealth, consentTerms, v ?? false, consentAge),
-            leading: 'Ich bestätige den ',
-            linkText: 'Medizinischen Haftungsausschluss',
-            trailing: '.',
+            leading: l10n.consentConfirmLeading,
+            linkText: l10n.medical_disclaimer,
+            trailing: l10n.consentDot,
             onLinkTap: () => _openLegal(
               context,
               'assets/legal/medical_disclaimer_de.md',
-              'Medizinischer Haftungsausschluss',
+              l10n.medical_disclaimer,
             ),
           ),
           _ConsentTile(
-            label: 'Ich bestätige, dass ich mindestens 16 Jahre alt bin.',
+            label: l10n.ageConsent,
             value: consentAge,
             onChanged: (v) => onChanged(
                 consentPrivacy, consentHealth, consentTerms, consentDisclaimer, v ?? false),
@@ -626,9 +666,10 @@ class _ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _OnboardingPage(
-      title: 'Dein Profil',
-      buttonLabel: 'Weiter',
+      title: l10n.profileTitle,
+      buttonLabel: l10n.next,
       onButton: _canProceed ? onNext : null,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -636,16 +677,16 @@ class _ProfilePage extends StatelessWidget {
           TextField(
             controller: nameController,
             maxLength: 30,
-            decoration: const InputDecoration(labelText: 'Dein Name'),
+            decoration: InputDecoration(labelText: l10n.yourName),
             style: const TextStyle(
               color: TraumColors.onBackground,
               fontFamily: 'DMSans',
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Geschlecht',
-            style: TextStyle(
+          Text(
+            l10n.sex,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 13,
@@ -653,9 +694,9 @@ class _ProfilePage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           SegmentedButton<String>(
-            segments: const [
-              ButtonSegment(value: 'male', label: Text('Männlich')),
-              ButtonSegment(value: 'female', label: Text('Weiblich')),
+            segments: [
+              ButtonSegment(value: 'male', label: Text(l10n.sexMale)),
+              ButtonSegment(value: 'female', label: Text(l10n.sexFemale)),
             ],
             selected: sex != null ? {sex!} : const <String>{},
             emptySelectionAllowed: true,
@@ -664,9 +705,9 @@ class _ProfilePage extends StatelessWidget {
             },
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Einheiten',
-            style: TextStyle(
+          Text(
+            l10n.unitsLabel,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 13,
@@ -674,9 +715,9 @@ class _ProfilePage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           SegmentedButton<String>(
-            segments: const [
-              ButtonSegment(value: 'metric', label: Text('Metrisch')),
-              ButtonSegment(value: 'imperial', label: Text('Imperial')),
+            segments: [
+              ButtonSegment(value: 'metric', label: Text(l10n.metric)),
+              ButtonSegment(value: 'imperial', label: Text(l10n.imperial)),
             ],
             selected: unitSystem != null ? {unitSystem!} : const <String>{},
             emptySelectionAllowed: true,
@@ -686,9 +727,9 @@ class _ProfilePage extends StatelessWidget {
           ),
           if (!_canProceed) ...[
             const SizedBox(height: 12),
-            const Text(
-              'Bitte gib deinen Namen ein und wähle Geschlecht und Einheiten.',
-              style: TextStyle(
+            Text(
+              l10n.pleaseFillProfile,
+              style: const TextStyle(
                 fontSize: 12,
                 color: TraumColors.onBackgroundSubtle,
                 fontFamily: 'DMSans',
@@ -736,15 +777,16 @@ class _BodyPage extends StatelessWidget {
     final waterMin = WaterCalculator.minimumMl(weightKg, sex);
     final waterMax = WaterCalculator.maximumMl(weightKg);
 
+    final l10n = AppLocalizations.of(context)!;
     return _OnboardingPage(
-      title: 'Körper & Fitness',
-      buttonLabel: 'Weiter',
+      title: l10n.onboarding_body_title,
+      buttonLabel: l10n.next,
       onButton: onNext,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _SliderField(
-            label: 'Körpergröße',
+            label: l10n.heightLabelOnboarding,
             value: heightCm,
             min: 120,
             max: 230,
@@ -752,7 +794,7 @@ class _BodyPage extends StatelessWidget {
             onChanged: onHeightChanged,
           ),
           _SliderField(
-            label: 'Körpergewicht',
+            label: l10n.weightLabelOnboarding,
             value: weightKg,
             min: 30,
             max: 250,
@@ -760,7 +802,7 @@ class _BodyPage extends StatelessWidget {
             onChanged: onWeightChanged,
           ),
           _SliderField(
-            label: 'Zielgewicht (optional)',
+            label: l10n.weightGoalLabelOnboarding,
             value: weightGoalKg,
             min: 30,
             max: 250,
@@ -771,16 +813,16 @@ class _BodyPage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Tägliches Schrittziel',
-                style: TextStyle(
+              Text(
+                l10n.dailyStepsGoal,
+                style: const TextStyle(
                   fontSize: 14,
                   color: TraumColors.onBackground,
                   fontFamily: 'DMSans',
                 ),
               ),
               Text(
-                '$stepsGoal Schritte',
+                l10n.stepsLabelText(stepsGoal),
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -808,9 +850,9 @@ class _BodyPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Dein Wasserziel (automatisch berechnet)',
-                  style: TextStyle(
+                Text(
+                  l10n.yourWaterGoal,
+                  style: const TextStyle(
                     fontSize: 12,
                     color: TraumColors.cyanBlue,
                     fontWeight: FontWeight.w600,
@@ -819,7 +861,7 @@ class _BodyPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Ziel: $waterGoal ml · Minimum: $waterMin ml · Maximum: $waterMax ml',
+                  l10n.waterGoalSummary(waterGoal, waterMin, waterMax),
                   style: const TextStyle(
                     fontSize: 12,
                     color: TraumColors.onBackgroundMuted,
@@ -906,14 +948,15 @@ class _NutritionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _OnboardingPage(
-      title: 'Ernährung',
-      buttonLabel: 'Weiter',
+      title: l10n.nutritionTitleOb,
+      buttonLabel: l10n.next,
       onButton: onNext,
       content: Column(
         children: [
           _SliderField(
-            label: 'Kalorienziel',
+            label: l10n.caloriesGoalLabel,
             value: kcalGoal.toDouble(),
             min: 1000,
             max: 5000,
@@ -921,7 +964,7 @@ class _NutritionPage extends StatelessWidget {
             onChanged: (v) => onKcalChanged(v.toInt()),
           ),
           _SliderField(
-            label: 'Proteinziel',
+            label: l10n.proteinGoalLabelOb,
             value: proteinGoal.toDouble(),
             min: 40,
             max: 300,
@@ -944,16 +987,17 @@ class _SupplementsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final suppsAsync = ref.watch(_onboardingSuppsProvider);
 
+    final l10n = AppLocalizations.of(context)!;
     return _OnboardingPage(
-      title: 'Supplements',
-      buttonLabel: 'Weiter',
+      title: l10n.supplementsTitleOb,
+      buttonLabel: l10n.next,
       onButton: onNext,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Nimmst du regelmäßig Supplements? Füge sie direkt hier hinzu.',
-            style: TextStyle(
+          Text(
+            l10n.takeSupplementsRegularly,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14,
@@ -963,8 +1007,8 @@ class _SupplementsPage extends ConsumerWidget {
           OutlinedButton.icon(
             onPressed: () => _showAddSheet(context, ref),
             icon: const Icon(Icons.add_rounded, size: 18),
-            label: const Text('Supplement hinzufügen',
-                style: TextStyle(fontFamily: 'DMSans')),
+            label: Text(l10n.addSupplementButton,
+                style: const TextStyle(fontFamily: 'DMSans')),
             style: OutlinedButton.styleFrom(
               foregroundColor: TraumColors.indigoBlue,
               side: const BorderSide(color: TraumColors.indigoBlue),
@@ -975,11 +1019,11 @@ class _SupplementsPage extends ConsumerWidget {
           const SizedBox(height: 12),
           suppsAsync.when(
             data: (supps) => supps.isEmpty
-                ? const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8),
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Text(
-                      'Noch keine Supplements hinzugefügt.',
-                      style: TextStyle(
+                      l10n.noSupplementsAddedYet,
+                      style: const TextStyle(
                           color: TraumColors.onBackgroundSubtle,
                           fontFamily: 'DMSans',
                           fontSize: 13),
@@ -1085,9 +1129,10 @@ class _MedicationPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final medsAsync = ref.watch(_onboardingMedsProvider);
 
+    final l10n = AppLocalizations.of(context)!;
     return _OnboardingPage(
-      title: 'Medikamente',
-      buttonLabel: 'Weiter',
+      title: l10n.medicationTitleOb,
+      buttonLabel: l10n.next,
       onButton: onNext,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1098,9 +1143,9 @@ class _MedicationPage extends ConsumerWidget {
               color: TraumColors.roseRedDim,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Text(
-              'Diese App ersetzt keine ärztliche Beratung.',
-              style: TextStyle(
+            child: Text(
+              l10n.medicalDisclaimerOb,
+              style: const TextStyle(
                 color: TraumColors.roseRed,
                 fontFamily: 'DMSans',
                 fontSize: 13,
@@ -1108,9 +1153,9 @@ class _MedicationPage extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Nimmst du regelmäßig Medikamente? Füge sie direkt hier hinzu.',
-            style: TextStyle(
+          Text(
+            l10n.takeMedicationRegularly,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14,
@@ -1120,8 +1165,8 @@ class _MedicationPage extends ConsumerWidget {
           OutlinedButton.icon(
             onPressed: () => _showAddSheet(context, ref),
             icon: const Icon(Icons.add_rounded, size: 18),
-            label: const Text('Medikament hinzufügen',
-                style: TextStyle(fontFamily: 'DMSans')),
+            label: Text(l10n.addMedicationButton,
+                style: const TextStyle(fontFamily: 'DMSans')),
             style: OutlinedButton.styleFrom(
               foregroundColor: TraumColors.roseRed,
               side: const BorderSide(color: TraumColors.roseRed),
@@ -1132,11 +1177,11 @@ class _MedicationPage extends ConsumerWidget {
           const SizedBox(height: 12),
           medsAsync.when(
             data: (meds) => meds.isEmpty
-                ? const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8),
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Text(
-                      'Noch keine Medikamente hinzugefügt.',
-                      style: TextStyle(
+                      l10n.noMedicationsAddedYet,
+                      style: const TextStyle(
                           color: TraumColors.onBackgroundSubtle,
                           fontFamily: 'DMSans',
                           fontSize: 13),
@@ -1256,14 +1301,15 @@ class _BudgetPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _OnboardingPage(
-      title: 'Budget',
+      title: l10n.budgetTitleOb,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Möchtest du dein Budget im Blick behalten?',
-            style: TextStyle(
+          Text(
+            l10n.wantToKeepBudget,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14,
@@ -1271,7 +1317,7 @@ class _BudgetPage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           _SliderField(
-            label: 'Monatliches Budget',
+            label: l10n.monthlyBudget,
             value: monthlyBudget,
             min: 100,
             max: 10000,
@@ -1279,9 +1325,9 @@ class _BudgetPage extends StatelessWidget {
             onChanged: onBudgetChanged,
           ),
           const SizedBox(height: 24),
-          GradientButton(label: 'Weiter', onPressed: onNext),
+          GradientButton(label: l10n.next, onPressed: onNext),
           const SizedBox(height: 8),
-          TextButton(onPressed: onSkip, child: const Text('Überspringen')),
+          TextButton(onPressed: onSkip, child: Text(l10n.skip)),
         ],
       ),
     );
@@ -1310,30 +1356,31 @@ class _CyclePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _OnboardingPage(
-      title: 'Dein Zyklus',
+      title: l10n.cycleTitleOb,
       content: Column(
         children: [
           _SliderField(
-            label: 'Zykluslänge (Tage)',
+            label: l10n.cycleLengthLabel,
             value: avgCycleLength.toDouble(),
             min: 21,
             max: 40,
-            unit: 'T',
+            unit: l10n.tDayUnit,
             onChanged: (v) => onCycleLengthChanged(v.toInt()),
           ),
           _SliderField(
-            label: 'Periodenlänge (Tage)',
+            label: l10n.periodLengthLabel,
             value: avgPeriodLength.toDouble(),
             min: 2,
             max: 10,
-            unit: 'T',
+            unit: l10n.tDayUnit,
             onChanged: (v) => onPeriodLengthChanged(v.toInt()),
           ),
           const SizedBox(height: 24),
-          GradientButton(label: 'Weiter', onPressed: onNext),
+          GradientButton(label: l10n.next, onPressed: onNext),
           const SizedBox(height: 8),
-          TextButton(onPressed: onSkip, child: const Text('Überspringen')),
+          TextButton(onPressed: onSkip, child: Text(l10n.skip)),
         ],
       ),
     );
@@ -1361,19 +1408,6 @@ class _NavPageState extends ConsumerState<_NavPage> {
     'period', 'profile', 'settings',
   ];
 
-  static const _labels = {
-    'training': 'Training',
-    'health': 'Gesundheit',
-    'nutrition': 'Ernährung',
-    'supplements': 'Supplements',
-    'planning': 'Planung',
-    'medication': 'Medikamente',
-    'abstinence': 'Abstinenz',
-    'budget': 'Budget',
-    'period': 'Zyklus',
-    'profile': 'Profil',
-    'settings': 'Einstellungen',
-  };
 
   @override
   void initState() {
@@ -1407,16 +1441,30 @@ class _NavPageState extends ConsumerState<_NavPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final labels = {
+      'training': l10n.training,
+      'health': l10n.health,
+      'nutrition': l10n.nutrition,
+      'supplements': l10n.supplements,
+      'planning': l10n.planning,
+      'medication': l10n.medication,
+      'abstinence': l10n.abstinence,
+      'budget': l10n.budget,
+      'period': l10n.period,
+      'profile': l10n.profile,
+      'settings': l10n.settings,
+    };
     return _OnboardingPage(
-      title: 'Navigation anpassen',
-      buttonLabel: 'Weiter',
+      title: l10n.navTitleOb,
+      buttonLabel: l10n.next,
       onButton: _proceed,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Home ist immer links fest. Wähle bis zu 4 weitere Module für deine Navigation.',
-            style: TextStyle(
+          Text(
+            l10n.homeAlwaysLeft,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14,
@@ -1425,7 +1473,7 @@ class _NavPageState extends ConsumerState<_NavPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            '${_selectedSlots.length}/4 ausgewählt',
+            l10n.slotsSelected(_selectedSlots.length),
             style: const TextStyle(
               color: TraumColors.onBackgroundSubtle,
               fontFamily: 'DMSans',
@@ -1461,7 +1509,7 @@ class _NavPageState extends ConsumerState<_NavPage> {
                     ),
                   ),
                   child: Text(
-                    _labels[module] ?? module,
+                    labels[module] ?? module,
                     style: TextStyle(
                       color: selected
                           ? color
@@ -1486,9 +1534,9 @@ class _NavPageState extends ConsumerState<_NavPage> {
               color: TraumColors.surfaceVariant.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Text(
-              'Du kannst die Navigation jederzeit über das „Mehr"-Menü anpassen.',
-              style: TextStyle(
+            child: Text(
+              l10n.adjustNavLater,
+              style: const TextStyle(
                 color: TraumColors.onBackgroundSubtle,
                 fontFamily: 'DMSans',
                 fontSize: 12,
@@ -1517,6 +1565,12 @@ class _WeatherPageState extends State<_WeatherPage> {
   Future<void> _requestLocation() async {
     setState(() => _requesting = true);
     try {
+      var status = await Permission.locationWhenInUse.status;
+      if (status.isPermanentlyDenied) {
+        await openAppSettings();
+        if (mounted) setState(() => _requesting = false);
+        return;
+      }
       await Permission.locationWhenInUse.request();
     } finally {
       if (mounted) setState(() => _requesting = false);
@@ -1526,14 +1580,14 @@ class _WeatherPageState extends State<_WeatherPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _OnboardingPage(
-      title: 'Wetter-Standort',
+      title: l10n.weatherTitleOb,
       content: Column(
         children: [
-          const Text(
-            'TRAUM kann das aktuelle Wetter auf der Startseite anzeigen. '
-            'Dazu wird der Standort benötigt.',
-            style: TextStyle(
+          Text(
+            l10n.weatherDescription,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14,
@@ -1542,14 +1596,14 @@ class _WeatherPageState extends State<_WeatherPage> {
           ),
           const SizedBox(height: 24),
           GradientButton(
-            label: _requesting ? 'Anfrage läuft…' : 'Standort erlauben',
+            label: _requesting ? l10n.requestingLocation : l10n.allowLocation,
             onPressed: _requesting ? null : _requestLocation,
             icon: const Icon(Icons.location_on, color: Colors.white, size: 18),
           ),
           const SizedBox(height: 8),
           TextButton(
               onPressed: _requesting ? null : widget.onNext,
-              child: const Text('Überspringen')),
+              child: Text(l10n.skip)),
         ],
       ),
     );
@@ -1558,19 +1612,43 @@ class _WeatherPageState extends State<_WeatherPage> {
 
 // ── Notifications ─────────────────────────────────────────────────────────────
 
-class _NotificationsPage extends StatelessWidget {
+class _NotificationsPage extends StatefulWidget {
   final VoidCallback onNext;
   const _NotificationsPage({required this.onNext});
 
   @override
+  State<_NotificationsPage> createState() => _NotificationsPageState();
+}
+
+class _NotificationsPageState extends State<_NotificationsPage> {
+  bool _requesting = false;
+
+  Future<void> _requestNotification() async {
+    setState(() => _requesting = true);
+    try {
+      var status = await Permission.notification.status;
+      if (status.isPermanentlyDenied) {
+        await openAppSettings();
+        if (mounted) setState(() => _requesting = false);
+        return;
+      }
+      await Permission.notification.request();
+    } finally {
+      if (mounted) setState(() => _requesting = false);
+    }
+    widget.onNext();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _OnboardingPage(
-      title: 'Benachrichtigungen',
+      title: l10n.notificationsTitleOb,
       content: Column(
         children: [
-          const Text(
-            'Erlaube Benachrichtigungen um Erinnerungen für Medikamente, Wasser, Workouts und mehr zu erhalten.',
-            style: TextStyle(
+          Text(
+            l10n.notificationsDescription,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14,
@@ -1579,14 +1657,11 @@ class _NotificationsPage extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           GradientButton(
-            label: 'Benachrichtigungen erlauben',
-            onPressed: () async {
-              await Permission.notification.request();
-              onNext();
-            },
+            label: l10n.allowNotifications,
+            onPressed: _requesting ? null : _requestNotification,
           ),
           const SizedBox(height: 8),
-          TextButton(onPressed: onNext, child: const Text('Nicht jetzt')),
+          TextButton(onPressed: _requesting ? null : widget.onNext, child: Text(l10n.notNow)),
         ],
       ),
     );
@@ -1615,25 +1690,26 @@ class _HealthPageState extends State<_HealthPage> {
         HealthDataType.STEPS,
         HealthDataType.HEART_RATE,
         HealthDataType.SLEEP_ASLEEP,
+        HealthDataType.WEIGHT,
       ]);
     } catch (_) {
-      // Ignore errors – health connect may not be available on all devices
+      // Health Connect may not be installed; user can install it later.
     } finally {
       if (mounted) setState(() => _requesting = false);
     }
-    widget.onNext();
+    if (mounted) widget.onNext();
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _OnboardingPage(
-      title: 'Fitness-Daten verbinden',
+      title: l10n.healthTitleOb,
       content: Column(
         children: [
-          const Text(
-            'Verbinde Health Connect (Android) oder Apple Health (iOS) um Schritte, '
-            'Schlaf und Herzfrequenz automatisch zu importieren.',
-            style: TextStyle(
+          Text(
+            l10n.healthDescription,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14,
@@ -1642,14 +1718,14 @@ class _HealthPageState extends State<_HealthPage> {
           ),
           const SizedBox(height: 24),
           GradientButton(
-            label: _requesting ? 'Verbinde…' : 'Zugriff erlauben & importieren',
+            label: _requesting ? l10n.connecting : l10n.allowAccessImport,
             gradient: TraumColors.gradientCool,
             onPressed: _requesting ? null : _requestHealth,
           ),
           const SizedBox(height: 8),
           TextButton(
               onPressed: _requesting ? null : widget.onNext,
-              child: const Text('Überspringen')),
+              child: Text(l10n.skip)),
         ],
       ),
     );
@@ -1672,9 +1748,10 @@ class _DonePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _OnboardingPage(
-      title: 'Alles bereit!',
-      buttonLabel: "Los geht's",
+      title: l10n.doneTitleOb,
+      buttonLabel: l10n.lets_go,
       onButton: onFinish,
       content: Column(
         children: [
@@ -1691,7 +1768,7 @@ class _DonePage extends StatelessWidget {
           const SizedBox(height: 20),
           if (name.isNotEmpty)
             Text(
-              'Willkommen, $name!',
+              l10n.welcomeName(name),
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -1701,7 +1778,7 @@ class _DonePage extends StatelessWidget {
             ),
           const SizedBox(height: 12),
           Text(
-            'Kalorienziel: $kcalGoal kcal · Wasserziel: $waterGoal ml',
+            l10n.summaryGoals(kcalGoal, waterGoal),
             style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
@@ -1709,9 +1786,9 @@ class _DonePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Alle Daten bleiben auf deinem Gerät.',
-            style: TextStyle(
+          Text(
+            l10n.allDataOnDevice,
+            style: const TextStyle(
               color: TraumColors.onBackgroundSubtle,
               fontFamily: 'DMSans',
               fontSize: 12,
@@ -1753,9 +1830,11 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
 
   Future<void> _checkBiometric() async {
     try {
-      final canCheck = await _auth.canCheckBiometrics;
+      // isDeviceSupported returns true if device has any secure lock (PIN/pattern/biometrics).
+      // We don't require canCheckBiometrics here — authenticate() with biometricOnly:false
+      // falls back to PIN/password, so the option is valid even without enrolled biometrics.
       final isSupported = await _auth.isDeviceSupported();
-      if (mounted && canCheck && isSupported) {
+      if (mounted && isSupported) {
         final types = await _auth.getAvailableBiometrics();
         setState(() {
           _biometricAvailable = true;
@@ -1770,10 +1849,10 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
           ? Icons.face_rounded
           : Icons.fingerprint_rounded;
 
-  String get _biometricLabel =>
+  String _getBiometricLabel(AppLocalizations l10n) =>
       _biometricTypes.contains(BiometricType.face)
-          ? 'Face ID aktivieren'
-          : 'Fingerabdruck aktivieren';
+          ? l10n.faceIdActivate
+          : l10n.fingerprintActivate;
 
   Future<void> _enableBiometric() async {
     setState(() {
@@ -1781,11 +1860,13 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
       _error = null;
     });
     try {
+      final l10n = AppLocalizations.of(context)!;
       final ok = await _auth.authenticate(
-        localizedReason: 'Biometrische App-Sperre einrichten',
+        localizedReason: l10n.biometricSetupReason,
         options: const AuthenticationOptions(
           biometricOnly: false,
           stickyAuth: true,
+          useErrorDialogs: true,
         ),
       );
       if (!mounted) return;
@@ -1793,11 +1874,20 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
         await ref.read(biometricLockProvider.notifier).set(true);
         widget.onNext();
       } else {
-        setState(() => _error = 'Authentifizierung fehlgeschlagen.');
+        setState(() => _error = AppLocalizations.of(context)!.authFailedShort);
+      }
+    } on PlatformException catch (e) {
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
+      // passcode_not_set: device has no lock screen set up at all
+      if (e.code == 'PasscodeNotSet' || e.code == 'NotEnrolled') {
+        setState(() => _error = l10n.biometricCouldNotSet);
+      } else {
+        setState(() => _error = l10n.biometricCouldNotSet);
       }
     } catch (_) {
       if (mounted) {
-        setState(() => _error = 'Biometrie konnte nicht eingerichtet werden.');
+        setState(() => _error = AppLocalizations.of(context)!.biometricCouldNotSet);
       }
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -1835,7 +1925,7 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
     if (_pin != _pinToConfirm) {
       HapticFeedback.heavyImpact();
       setState(() {
-        _error = 'PINs stimmen nicht überein. Bitte erneut eingeben.';
+        _error = AppLocalizations.of(context)!.pinsDoNotMatch;
         _mode = _SecurityMode.enterPin;
         _pin = '';
         _pinToConfirm = '';
@@ -1855,15 +1945,16 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
   }
 
   Widget _buildChoosePage() {
+    final l10n = AppLocalizations.of(context)!;
     return _OnboardingPage(
-      title: 'App-Sicherheit',
+      title: l10n.appSecurity,
       buttonLabel: null,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Schütze deine Daten mit einer Sperre. Die App sperrt sich automatisch nach 5 Minuten Inaktivität.',
-            style: TextStyle(
+          Text(
+            l10n.protectDataWith,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14,
@@ -1874,8 +1965,8 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
           if (_biometricAvailable) ...[
             _SecurityOptionCard(
               icon: _biometricIcon,
-              title: _biometricLabel,
-              subtitle: 'Entsperre die App schnell und sicher',
+              title: _getBiometricLabel(l10n),
+              subtitle: l10n.unlockAppFastSecure,
               color: TraumColors.indigoBlue,
               loading: _loading,
               onTap: _loading ? null : _enableBiometric,
@@ -1884,8 +1975,8 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
           ],
           _SecurityOptionCard(
             icon: Icons.pin_rounded,
-            title: 'PIN festlegen',
-            subtitle: '4-stellige Sicherheits-PIN',
+            title: l10n.pinSet,
+            subtitle: l10n.pin4Digit,
             color: TraumColors.coralOrange,
             onTap: _loading
                 ? null
@@ -1910,10 +2001,9 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
           Center(
             child: TextButton(
               onPressed: _loading ? null : widget.onNext,
-              child: const Text(
-                'Ohne Sperre fortfahren',
-                style:
-                    TextStyle(color: TraumColors.onBackgroundMuted),
+              child: Text(
+                l10n.continueWithoutLock,
+                style: const TextStyle(color: TraumColors.onBackgroundMuted),
               ),
             ),
           ),
@@ -1923,14 +2013,15 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
   }
 
   Widget _buildPinPage() {
+    final l10n = AppLocalizations.of(context)!;
     final current =
         _mode == _SecurityMode.enterPin ? _pin : _pinToConfirm;
     final title = _mode == _SecurityMode.enterPin
-        ? 'PIN festlegen'
-        : 'PIN bestätigen';
+        ? l10n.pinSetTitle
+        : l10n.pinConfirmTitle;
     final subtitle = _mode == _SecurityMode.enterPin
-        ? 'Gib eine 4-stellige PIN ein'
-        : 'Gib die PIN zur Bestätigung nochmal ein';
+        ? l10n.enterPin4Digits
+        : l10n.enterPinAgainConfirm;
 
     return _OnboardingPage(
       title: title,
@@ -1994,9 +2085,9 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
               _pinToConfirm = '';
               _error = null;
             }),
-            child: const Text(
-              'Zurück zur Auswahl',
-              style: TextStyle(
+            child: Text(
+              AppLocalizations.of(context)!.backToSelection,
+              style: const TextStyle(
                   color: TraumColors.onBackgroundMuted,
                   fontFamily: 'DMSans',
                   fontSize: 13),
@@ -2239,6 +2330,7 @@ class _OnboardingAddSupplementSheetState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.only(
         left: 20, right: 20, top: 16,
@@ -2258,17 +2350,17 @@ class _OnboardingAddSupplementSheetState
               ),
             ),
             const SizedBox(height: 16),
-            const Text('Supplement hinzufügen',
-                style: TextStyle(
+            Text(l10n.addSupplement,
+                style: const TextStyle(
                     color: TraumColors.onBackground,
                     fontFamily: 'DMSans',
                     fontWeight: FontWeight.w700,
                     fontSize: 18)),
             const SizedBox(height: 16),
-            _buildField('Name', _nameCtrl, hint: 'z.B. Vitamin D3'),
+            _buildField(l10n.fieldName, _nameCtrl, hint: l10n.supplementNameHint),
             const SizedBox(height: 12),
-            const Text('Kategorie',
-                style: TextStyle(
+            Text(l10n.category,
+                style: const TextStyle(
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans',
                     fontSize: 13)),
@@ -2282,23 +2374,23 @@ class _OnboardingAddSupplementSheetState
               underline:
                   Container(height: 1, color: TraumColors.surfaceVariant),
               items: _categories
-                  .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                  .map((c) => DropdownMenuItem(value: c, child: Text(_categoryLabel(c, l10n))))
                   .toList(),
               onChanged: (v) => setState(() => _category = v!),
             ),
             const SizedBox(height: 12),
             Row(children: [
               Expanded(
-                child: _buildField('Menge', _amountCtrl,
-                    hint: '1000',
+                child: _buildField(l10n.fieldAmount, _amountCtrl,
+                    hint: l10n.amountHint,
                     keyboardType: TextInputType.number),
               ),
               const SizedBox(width: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Einheit',
-                      style: TextStyle(
+                  Text(l10n.fieldUnit,
+                      style: const TextStyle(
                           color: TraumColors.onBackgroundMuted,
                           fontFamily: 'DMSans',
                           fontSize: 13)),
@@ -2313,7 +2405,7 @@ class _OnboardingAddSupplementSheetState
                         height: 1, color: TraumColors.surfaceVariant),
                     items: _units
                         .map((u) =>
-                            DropdownMenuItem(value: u, child: Text(u)))
+                            DropdownMenuItem(value: u, child: Text(_unitLabel(u, l10n))))
                         .toList(),
                     onChanged: (v) => setState(() => _unit = v!),
                   ),
@@ -2322,7 +2414,7 @@ class _OnboardingAddSupplementSheetState
             ]),
             const SizedBox(height: 20),
             GradientButton(
-              label: _saving ? 'Speichern…' : 'Speichern',
+              label: _saving ? l10n.saving : l10n.save,
               onPressed: _saving ? null : _save,
             ),
             const SizedBox(height: 8),
@@ -2370,7 +2462,7 @@ class _OnboardingAddSupplementSheetState
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Name ist ein Pflichtfeld')));
+          SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
       return;
     }
     setState(() => _saving = true);
@@ -2416,6 +2508,7 @@ class _OnboardingAddMedicationSheetState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.only(
         left: 20, right: 20, top: 16,
@@ -2435,19 +2528,19 @@ class _OnboardingAddMedicationSheetState
               ),
             ),
             const SizedBox(height: 16),
-            const Text('Medikament hinzufügen',
-                style: TextStyle(
+            Text(l10n.addMedication,
+                style: const TextStyle(
                     color: TraumColors.onBackground,
                     fontFamily: 'DMSans',
                     fontWeight: FontWeight.w700,
                     fontSize: 18)),
             const SizedBox(height: 16),
-            _buildField('Name', _nameCtrl, hint: 'z.B. Aspirin'),
+            _buildField(l10n.fieldName, _nameCtrl, hint: l10n.medicationNameHint),
             const SizedBox(height: 12),
-            _buildField('Dosierung', _dosageCtrl, hint: 'z.B. 100 mg'),
+            _buildField(l10n.dosage, _dosageCtrl, hint: l10n.dosageHint),
             const SizedBox(height: 12),
-            const Text('Darreichungsform',
-                style: TextStyle(
+            Text(l10n.formLabel,
+                style: const TextStyle(
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans',
                     fontSize: 13)),
@@ -2473,7 +2566,7 @@ class _OnboardingAddMedicationSheetState
                               ? TraumColors.roseRed
                               : Colors.transparent),
                     ),
-                    child: Text(f,
+                    child: Text(_formLabel(f, l10n),
                         style: TextStyle(
                             color: selected
                                 ? TraumColors.roseRed
@@ -2486,7 +2579,7 @@ class _OnboardingAddMedicationSheetState
             ),
             const SizedBox(height: 20),
             GradientButton(
-              label: _saving ? 'Speichern…' : 'Speichern',
+              label: _saving ? l10n.saving : l10n.save,
               onPressed: _saving ? null : _save,
             ),
             const SizedBox(height: 8),
@@ -2533,7 +2626,7 @@ class _OnboardingAddMedicationSheetState
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Name ist ein Pflichtfeld')));
+          SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
       return;
     }
     setState(() => _saving = true);

@@ -7,6 +7,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class AbstinenceScreen extends ConsumerWidget {
   const AbstinenceScreen({super.key});
@@ -19,8 +20,8 @@ class AbstinenceScreen extends ConsumerWidget {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Abstinenz',
-            style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
+        title: Text(AppLocalizations.of(context)!.abstinence,
+            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
         elevation: 0,
       ),
@@ -43,7 +44,7 @@ class AbstinenceScreen extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator(color: TraumColors.roseRed)),
-        error: (e, _) => Center(child: Text('Fehler: $e',
+        error: (e, _) => Center(child: Text('${AppLocalizations.of(context)!.error}: $e',
             style: const TextStyle(color: TraumColors.roseRed))),
       ),
     );
@@ -68,16 +69,16 @@ class AbstinenceScreen extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surfaceElevated,
-        title: Text('Rückfall bei "${tracker.name}"?',
+        title: Text(AppLocalizations.of(ctx)!.relapseAt(tracker.name),
             style: const TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
-        content: const Text(
-          'Das Startdatum wird auf jetzt zurückgesetzt. Der Rückfall wird gespeichert.',
-          style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+        content: Text(
+          AppLocalizations.of(ctx)!.relapseDescription,
+          style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Abbrechen', style: TextStyle(color: TraumColors.onBackgroundMuted)),
+            child: Text(AppLocalizations.of(ctx)!.cancel, style: const TextStyle(color: TraumColors.onBackgroundMuted)),
           ),
           TextButton(
             onPressed: () async {
@@ -100,8 +101,8 @@ class AbstinenceScreen extends ConsumerWidget {
                 ),
               );
             },
-            child: const Text('Rückfall bestätigen',
-                style: TextStyle(color: TraumColors.roseRed, fontWeight: FontWeight.w700)),
+            child: Text(AppLocalizations.of(ctx)!.confirmRelapse,
+                style: const TextStyle(color: TraumColors.roseRed, fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -185,20 +186,20 @@ class _TrackerCardState extends State<_TrackerCard> {
                 TextButton(
                   onPressed: widget.onRelapse,
                   style: TextButton.styleFrom(foregroundColor: TraumColors.roseRed),
-                  child: const Text('Rückfall', style: TextStyle(fontFamily: 'DMSans', fontSize: 12)),
+                  child: Text(AppLocalizations.of(context)!.relapse, style: const TextStyle(fontFamily: 'DMSans', fontSize: 12)),
                 ),
               ]),
               const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _TimeUnit(value: days, label: 'Tage'),
+                  _TimeUnit(value: days, label: AppLocalizations.of(context)!.daysShort),
                   const Text(':', style: TextStyle(color: TraumColors.roseRed, fontWeight: FontWeight.w700, fontSize: 28)),
-                  _TimeUnit(value: hours, label: 'Std'),
+                  _TimeUnit(value: hours, label: AppLocalizations.of(context)!.hoursShort),
                   const Text(':', style: TextStyle(color: TraumColors.roseRed, fontWeight: FontWeight.w700, fontSize: 28)),
-                  _TimeUnit(value: minutes, label: 'Min'),
+                  _TimeUnit(value: minutes, label: AppLocalizations.of(context)!.minutesShort),
                   const Text(':', style: TextStyle(color: TraumColors.roseRed, fontWeight: FontWeight.w700, fontSize: 28)),
-                  _TimeUnit(value: seconds, label: 'Sek'),
+                  _TimeUnit(value: seconds, label: AppLocalizations.of(context)!.secondsShort),
                 ],
               ),
               if (widget.tracker.note != null) ...[
@@ -242,12 +243,12 @@ class _EmptyState extends StatelessWidget {
         Icon(Icons.block_rounded, size: 64,
             color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
         const SizedBox(height: 16),
-        const Text('Noch kein Abstinenz-Tracker',
-            style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans',
+        Text(AppLocalizations.of(context)!.noTrackers,
+            style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans',
                 fontWeight: FontWeight.w600, fontSize: 16)),
         const SizedBox(height: 8),
-        const Text('Tippe auf + um einen Tracker zu starten',
-            style: TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontSize: 13),
+        Text(AppLocalizations.of(context)!.tapToStartTracker,
+            style: const TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontSize: 13),
             textAlign: TextAlign.center),
       ]),
     );
@@ -294,15 +295,15 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
                 decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle,
                     borderRadius: BorderRadius.circular(2)))),
             const SizedBox(height: 16),
-            const Text('Tracker starten',
-                style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
+            Text(AppLocalizations.of(context)!.startTracker,
+                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
                     fontWeight: FontWeight.w700, fontSize: 18)),
             const SizedBox(height: 16),
             TextField(
               controller: _nameCtrl,
               style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
               decoration: InputDecoration(
-                labelText: 'Was willst du vermeiden?',
+                labelText: AppLocalizations.of(context)!.whatToAvoid,
                 labelStyle: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
                 filled: true, fillColor: TraumColors.surface,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(TraumRadius.card), borderSide: BorderSide.none),
@@ -310,7 +311,7 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
               ),
             ),
             const SizedBox(height: 12),
-            const Text('Emoji', style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
+            Text(AppLocalizations.of(context)!.emoji, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
             const SizedBox(height: 6),
             Wrap(
               spacing: 8, runSpacing: 8,
@@ -333,7 +334,7 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
             const SizedBox(height: 12),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('Startdatum', style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
+              title: Text(AppLocalizations.of(context)!.startDate, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
               trailing: Text(
                 '${_startDate.day.toString().padLeft(2, '0')}.${_startDate.month.toString().padLeft(2, '0')}.${_startDate.year}',
                 style: const TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans', fontWeight: FontWeight.w600),
@@ -355,7 +356,7 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
               style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
               maxLines: 2,
               decoration: InputDecoration(
-                labelText: 'Motivation / Notiz (optional)',
+                labelText: AppLocalizations.of(context)!.motivationOptional,
                 labelStyle: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
                 filled: true, fillColor: TraumColors.surface,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(TraumRadius.card), borderSide: BorderSide.none),
@@ -363,7 +364,7 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
               ),
             ),
             const SizedBox(height: 20),
-            GradientButton(label: _saving ? 'Starten…' : 'Tracker starten', onPressed: _saving ? null : _save),
+            GradientButton(label: _saving ? AppLocalizations.of(context)!.starting : AppLocalizations.of(context)!.startTrackerButton, onPressed: _saving ? null : _save),
             const SizedBox(height: 8),
           ],
         ),
@@ -373,7 +374,7 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
 
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Name ist ein Pflichtfeld')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
       return;
     }
     setState(() => _saving = true);

@@ -6,6 +6,7 @@ import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class BudgetStatsScreen extends ConsumerWidget {
   const BudgetStatsScreen({super.key});
@@ -20,8 +21,8 @@ class BudgetStatsScreen extends ConsumerWidget {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Statistiken',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.statistics,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -42,7 +43,7 @@ class BudgetStatsScreen extends ConsumerWidget {
         loading: () =>
             const Center(child: CircularProgressIndicator(color: TraumColors.amberGold)),
         error: (e, _) => Center(
-            child: Text('Fehler: $e',
+            child: Text('${AppLocalizations.of(context)!.error}: $e',
                 style: const TextStyle(color: TraumColors.roseRed))),
       ),
     );
@@ -105,7 +106,7 @@ class _StatsBody extends StatelessWidget {
         Row(children: [
           Expanded(
             child: _SummaryCard(
-              label: 'Ges. Einnahmen',
+              label: AppLocalizations.of(context)!.totalIncome,
               value: totalIncome,
               currency: currency,
               color: TraumColors.mintGreen,
@@ -115,7 +116,7 @@ class _StatsBody extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: _SummaryCard(
-              label: 'Ges. Ausgaben',
+              label: AppLocalizations.of(context)!.totalExpense,
               value: totalExpense,
               currency: currency,
               color: TraumColors.roseRed,
@@ -134,8 +135,8 @@ class _StatsBody extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Letzte 6 Monate',
-                  style: TextStyle(
+              Text(AppLocalizations.of(context)!.last6Months,
+                  style: const TextStyle(
                       color: TraumColors.onBackground,
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w700,
@@ -157,8 +158,8 @@ class _StatsBody extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Top Ausgabenkategorien',
-                    style: TextStyle(
+                Text(AppLocalizations.of(context)!.topExpenseCategories,
+                    style: const TextStyle(
                         color: TraumColors.onBackground,
                         fontFamily: 'DMSans',
                         fontWeight: FontWeight.w700,
@@ -170,7 +171,7 @@ class _StatsBody extends StatelessWidget {
                       orElse: () => null);
                   final name = cat != null
                       ? '${cat.emoji ?? ''} ${cat.name}'.trim()
-                      : 'Sonstige';
+                      : AppLocalizations.of(context)!.categoryOther;
                   final ratio = totalExpense > 0 ? entry.value / totalExpense : 0.0;
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
@@ -274,8 +275,13 @@ class _MonthlyBarChart extends StatelessWidget {
         .expand((m) => [m.income, m.expense])
         .fold(0.0, (a, b) => a > b ? a : b);
 
-    const monthShort = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+    final l10n = AppLocalizations.of(context)!;
+    final monthShort = [
+      l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
+      l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
+      l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
+      l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
+    ];
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,

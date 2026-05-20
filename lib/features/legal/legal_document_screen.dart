@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import '../../core/theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 
 class LegalDocumentScreen extends StatelessWidget {
   final String assetPath;
@@ -40,10 +41,11 @@ class LegalDocumentScreen extends StatelessWidget {
             );
           }
           if (snap.hasError || !snap.hasData) {
-            return const Center(
+            final l10n = AppLocalizations.of(context)!;
+            return Center(
               child: Text(
-                'Dokument konnte nicht geladen werden.',
-                style: TextStyle(
+                l10n.documentCouldNotLoad,
+                style: const TextStyle(
                   color: TraumColors.onBackgroundMuted,
                   fontFamily: 'DMSans',
                 ),

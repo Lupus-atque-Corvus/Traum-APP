@@ -4,16 +4,18 @@ import 'package:go_router/go_router.dart';
 import '../../core/components/components.dart';
 import '../../core/navigation/routes.dart';
 import '../../core/theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 
 class TrainingScreen extends ConsumerWidget {
   const TrainingScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: TraumColors.background,
       appBar: AppBar(
-        title: const Text('Training'),
+        title: Text(l10n.training),
         actions: [
           IconButton(
             icon: const Icon(Icons.calendar_month_outlined),
@@ -24,9 +26,9 @@ class TrainingScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push(Routes.routines),
         backgroundColor: TraumColors.coralOrange,
-        label: const Text(
-          'Routine erstellen',
-          style: TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600),
+        label: Text(
+          l10n.createRoutine,
+          style: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600),
         ),
         icon: const Icon(Icons.add),
       ),
@@ -36,35 +38,28 @@ class TrainingScreen extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                // Wochentag-Leiste
                 _WeekDayStrip(),
                 const SizedBox(height: 12),
-
-                // Heutiges Workout
                 _TodayWorkoutCard(
                   onStart: () => context.push(Routes.activeWorkout),
                 ),
                 const SizedBox(height: 12),
-
-                // Wöchentlicher Fortschritt
                 _WeeklyProgressCard(),
                 const SizedBox(height: 12),
-
-                // Muskelgruppen-Übersicht
                 TraumCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SectionHeader(
-                        title: 'Muskelgruppen Übersicht',
-                        actionLabel: 'Mehr ›',
+                        title: l10n.muscleGroupsOverview,
+                        actionLabel: '${l10n.moreLabel} ›',
                         onAction: () => context.push(Routes.muscleHeatmap),
                       ),
                       const SizedBox(height: 12),
-                      const Center(
+                      Center(
                         child: Text(
-                          'Noch keine Trainingseinheiten aufgezeichnet.',
-                          style: TextStyle(
+                          l10n.noTrainingSessionsRecorded,
+                          style: const TextStyle(
                             fontSize: 13,
                             color: TraumColors.onBackgroundMuted,
                             fontFamily: 'DMSans',
@@ -75,21 +70,19 @@ class TrainingScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-
-                // Routinen
                 TraumCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SectionHeader(
-                        title: 'Meine Routinen',
-                        actionLabel: 'Alle ›',
+                        title: l10n.myRoutines,
+                        actionLabel: '${l10n.all} ›',
                         onAction: () => context.push(Routes.routines),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        'Noch keine Routinen erstellt.',
-                        style: TextStyle(
+                      Text(
+                        l10n.noRoutinesCreated,
+                        style: const TextStyle(
                           fontSize: 13,
                           color: TraumColors.onBackgroundMuted,
                           fontFamily: 'DMSans',
@@ -115,10 +108,10 @@ class _WeekDayStrip extends StatefulWidget {
 
 class _WeekDayStripState extends State<_WeekDayStrip> {
   int _selected = DateTime.now().weekday - 1;
-  final _days = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 
   @override
   Widget build(BuildContext context) {
+    final days = AppLocalizations.of(context)!.weekdaysShort.split(',');
     final today = DateTime.now().weekday - 1;
     return SizedBox(
       height: 56,
@@ -145,7 +138,7 @@ class _WeekDayStripState extends State<_WeekDayStrip> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    _days[i],
+                    days[i],
                     style: TextStyle(
                       fontSize: 11,
                       color: isPast
@@ -194,6 +187,7 @@ class _TodayWorkoutCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return TraumCard(
       borderColor: TraumColors.coralOrange,
       padding: EdgeInsets.zero,
@@ -228,9 +222,9 @@ class _TodayWorkoutCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Kein Workout geplant',
-                  style: TextStyle(
+                Text(
+                  l10n.noWorkoutPlanned,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: TraumColors.onBackground,
@@ -239,7 +233,7 @@ class _TodayWorkoutCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 GradientButton(
-                  label: 'Workout starten',
+                  label: l10n.startWorkout,
                   onPressed: onStart,
                   icon: const Icon(Icons.play_arrow_rounded,
                       color: Colors.white, size: 20),
@@ -256,11 +250,12 @@ class _TodayWorkoutCard extends StatelessWidget {
 class _WeeklyProgressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return TraumCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionHeader(title: 'Wöchentlicher Fortschritt'),
+          SectionHeader(title: l10n.weeklyProgress),
           const SizedBox(height: 12),
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,

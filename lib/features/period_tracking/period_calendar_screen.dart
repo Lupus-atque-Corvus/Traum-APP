@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
+import '../../l10n/app_localizations.dart';
 import 'cycle_calculator.dart';
 
 class PeriodCalendarScreen extends ConsumerStatefulWidget {
@@ -25,8 +26,8 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Periode Kalender',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.periodCalendar,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -167,11 +168,11 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _LegendDot(color: TraumColors.periodRose, label: 'Periode'),
+                    _LegendDot(color: TraumColors.periodRose, label: AppLocalizations.of(context)!.periodLegend),
                     const SizedBox(width: 20),
-                    _LegendDot(color: TraumColors.fertileCyan, label: 'Fruchtbar'),
+                    _LegendDot(color: TraumColors.fertileCyan, label: AppLocalizations.of(context)!.fertileLegend),
                     const SizedBox(width: 20),
-                    _LegendDot(color: TraumColors.ovulationCyan, label: 'Eisprung'),
+                    _LegendDot(color: TraumColors.ovulationCyan, label: AppLocalizations.of(context)!.ovulationLegend),
                   ],
                 ),
               ),
@@ -191,7 +192,7 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
         loading: () =>
             const Center(child: CircularProgressIndicator(color: TraumColors.periodRose)),
         error: (e, _) => Center(
-            child: Text('Fehler: $e',
+            child: Text('${AppLocalizations.of(context)!.error}: $e',
                 style: const TextStyle(color: TraumColors.roseRed))),
       ),
     );
@@ -241,12 +242,13 @@ class _DayDetail extends StatelessWidget {
     final isNextPeriod = nextPeriod != null &&
         DateTime(nextPeriod!.year, nextPeriod!.month, nextPeriod!.day) == d;
 
+    final l10n = AppLocalizations.of(context)!;
     final info = <String>[];
-    if (isPeriod) info.add('Periodenblutung');
-    if (isOvul) info.add('Voraussichtlicher Eisprung');
-    if (isFertile && !isOvul) info.add('Fruchtbares Fenster');
-    if (isNextPeriod) info.add('Voraussichtlicher Periodenbeginn');
-    if (info.isEmpty) info.add('Kein besonderes Ereignis');
+    if (isPeriod) info.add(l10n.periodBleed);
+    if (isOvul) info.add(l10n.predictedOvulation);
+    if (isFertile && !isOvul) info.add(l10n.fertileWindow2);
+    if (isNextPeriod) info.add(l10n.predictedPeriodStart);
+    if (info.isEmpty) info.add(l10n.noSpecialEvent);
 
     return Padding(
       padding: const EdgeInsets.all(16),

@@ -5,6 +5,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class WorkoutSessionDetailScreen extends ConsumerWidget {
   final int sessionId;
@@ -19,8 +20,8 @@ class WorkoutSessionDetailScreen extends ConsumerWidget {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Workout-Details',
-            style: TextStyle(
+        title: Text(AppLocalizations.of(context)!.workoutDetails,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -31,9 +32,9 @@ class WorkoutSessionDetailScreen extends ConsumerWidget {
         data: (sets) => exercisesAsync.when(
           data: (exercises) {
             if (sets.isEmpty) {
-              return const Center(
-                child: Text('Keine Sätze aufgezeichnet',
-                    style: TextStyle(
+              return Center(
+                child: Text(AppLocalizations.of(context)!.noSetsRecorded,
+                    style: const TextStyle(
                         color: TraumColors.onBackgroundMuted,
                         fontFamily: 'DMSans')),
               );
@@ -63,21 +64,21 @@ class WorkoutSessionDetailScreen extends ConsumerWidget {
                   child: Row(children: [
                     Expanded(
                       child: _StatChip(
-                        label: 'Übungen',
+                        label: AppLocalizations.of(context)!.exercises,
                         value: '${grouped.length}',
                         color: TraumColors.coralOrange,
                       ),
                     ),
                     Expanded(
                       child: _StatChip(
-                        label: 'Sätze',
+                        label: AppLocalizations.of(context)!.setsLabel,
                         value: '${sets.length}',
                         color: TraumColors.mintGreen,
                       ),
                     ),
                     Expanded(
                       child: _StatChip(
-                        label: 'Volumen (kg)',
+                        label: AppLocalizations.of(context)!.volumeKg,
                         value: totalVolume.toStringAsFixed(0),
                         color: TraumColors.lavender,
                       ),
@@ -106,7 +107,7 @@ class WorkoutSessionDetailScreen extends ConsumerWidget {
         loading: () =>
             const Center(child: CircularProgressIndicator(color: TraumColors.coralOrange)),
         error: (e, _) => Center(
-            child: Text('Fehler: $e',
+            child: Text('${AppLocalizations.of(context)!.error}: $e',
                 style: const TextStyle(color: TraumColors.roseRed))),
       ),
     );
@@ -183,7 +184,7 @@ class _ExerciseGroup extends StatelessWidget {
           ...sets.map((s) => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(children: [
-                  Text('Satz ${s.setNumber}',
+                  Text(AppLocalizations.of(context)!.setLabel(s.setNumber),
                       style: const TextStyle(
                           color: TraumColors.onBackgroundMuted,
                           fontFamily: 'DMSans',
@@ -201,7 +202,7 @@ class _ExerciseGroup extends StatelessWidget {
                         style: TextStyle(
                             color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
                   if (s.reps != null)
-                    Text('${s.reps} Wdh.',
+                    Text(AppLocalizations.of(context)!.repsCount(s.reps!),
                         style: const TextStyle(
                             color: TraumColors.onBackground,
                             fontFamily: 'DMSans',

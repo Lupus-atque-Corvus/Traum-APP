@@ -130,5 +130,853 @@
   "healthScoreBewertungOptimal": "Optimal",
   "healthScoreBewertungGut": "Good",
   "healthScoreBewertungMittel": "Average",
-  "healthScoreBewertungSchwach": "Poor"
+  "healthScoreBewertungSchwach": "Poor",
+
+  "allModulesInNav": "All modules in navigation",
+  "adjustNav": "Customize navigation",
+  "activeModules": "Active modules",
+  "noModulesYet": "No modules",
+  "otherModules": "More modules",
+  "maxModulesReached": "Maximum reached",
+  "exitDialogTitle": "Exit app?",
+  "exitDialogContent": "Do you really want to exit the app?",
+  "more": "More",
+  "customize": "Customize",
+  "exit": "Exit",
+
+  "relapseAt": "Relapse: {name}",
+  "@relapseAt": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "relapseDescription": "Are you sure you want to report a relapse?",
+  "confirmRelapse": "Confirm relapse",
+  "relapse": "Relapse",
+  "daysShort": "d",
+  "hoursShort": "h",
+  "minutesShort": "min",
+  "secondsShort": "s",
+  "noTrackers": "No trackers",
+  "tapToStartTracker": "Tap to start a tracker",
+  "startTracker": "Start tracker",
+  "whatToAvoid": "What do you want to avoid?",
+  "emoji": "Emoji",
+  "motivationOptional": "Motivation (optional)",
+  "starting": "Starting...",
+  "startTrackerButton": "Start tracker",
+  "nameRequired": "Name required",
+  "startDate": "Start date",
+
+  "addTransaction": "Add transaction",
+  "expenseLabel": "Expense",
+  "incomeLabel": "Income",
+  "amountWithCurrency": "Amount ({currency})",
+  "@amountWithCurrency": {
+    "placeholders": {
+      "currency": {"type": "String"}
+    }
+  },
+  "fieldDescription": "Description",
+  "transactionDescriptionHint": "e.g. Grocery",
+  "dateLabel": "Date",
+  "categoryOptional": "Category (optional)",
+  "noCategories": "No categories",
+  "noCategory": "No category",
+  "fieldNoteOptional": "Note (optional)",
+  "noteHint": "Note...",
+  "pleaseEnterValidAmount": "Please enter a valid amount",
+  "descriptionRequired": "Description required",
+  "saving": "Saving...",
+  "latestTransactions": "Latest transactions",
+  "all": "All",
+  "balanceThisMonth": "Balance this month",
+  "categoryOther": "Other",
+  "budgetsLabel": "Budgets",
+  "monthJan": "January",
+  "monthFeb": "February",
+  "monthMar": "March",
+  "monthApr": "April",
+  "monthMay": "May",
+  "monthJun": "June",
+  "monthJul": "July",
+  "monthAug": "August",
+  "monthSep": "September",
+  "monthOct": "October",
+  "monthNov": "November",
+  "monthDec": "December",
+  "monthShortJan": "Jan",
+  "monthShortFeb": "Feb",
+  "monthShortMar": "Mar",
+  "monthShortApr": "Apr",
+  "monthShortMay": "May",
+  "monthShortJun": "Jun",
+  "monthShortJul": "Jul",
+  "monthShortAug": "Aug",
+  "monthShortSep": "Sep",
+  "monthShortOct": "Oct",
+  "monthShortNov": "Nov",
+  "monthShortDec": "Dec",
+  "noTransactions": "No transactions",
+  "tapPlusToAdd": "Tap + to add",
+  "statistics": "Statistics",
+  "savingsGoals": "Savings goals",
+  "totalIncome": "Total income",
+  "totalExpense": "Total expenses",
+  "last6Months": "Last 6 months",
+  "topExpenseCategories": "Top expense categories",
+  "reached": "Reached",
+  "remainingAmount": "{remaining} {currency} remaining",
+  "@remainingAmount": {
+    "placeholders": {
+      "remaining": {"type": "String"},
+      "currency": {"type": "String"}
+    }
+  },
+  "targetDate": "Target date: {date}",
+  "@targetDate": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "deposit": "Deposit",
+  "depositAmount": "Deposit amount",
+  "fieldName": "Name",
+  "createSavingsGoal": "Create savings goal",
+  "savingsGoalNameHint": "e.g. Vacation",
+  "targetAmountLabel": "Target amount",
+  "alreadySaved": "Already saved",
+  "targetDateOptional": "Target date (optional)",
+  "noDate": "No date",
+  "whatSavingFor": "What are you saving for?",
+  "pleaseEnterValidTargetAmount": "Please enter a valid target amount",
+  "allTransactions": "All transactions",
+  "noSavingsGoals": "No savings goals",
+  "tapToCreateSavingsGoal": "Tap to create a savings goal",
+
+  "motivationExcellent": "Excellent! Your body is in top shape.",
+  "motivationGood": "Great! You're on a good track.",
+  "motivationSolid": "Solid! Small adjustments will get you further.",
+  "motivationImprove": "There's room for improvement. Start today!",
+  "motivationAttention": "Your body needs attention. Take action now!",
+  "hintTraining": "Plan your next workout and stay active.",
+  "hintNutrition": "Focus on balanced meals and enough protein.",
+  "hintRegeneration": "Give your body enough sleep and recovery.",
+  "hintSupplements": "Supplement your diet with targeted supplements.",
+  "hintMedication": "Don't forget to take your medication.",
+  "hintMentalStress": "Take time for relaxation and stress reduction.",
+  "hintDefault": "Stay consistent and track your goals daily.",
+
+  "score": "Score",
+  "overview": "Overview",
+  "sleepTab": "Sleep",
+  "weightTab": "Weight",
+  "measurementsTab": "Measurements",
+  "moreLabel": "More",
+  "tapOnArea": "Tap on an area",
+  "strength": "Strength",
+  "details": "Details",
+  "improve": "Improve",
+  "trendLabel": "Trend",
+  "noTrendData": "No trend data",
+  "trendBetter": "+{diff} pts better",
+  "@trendBetter": {
+    "placeholders": {
+      "diff": {"type": "int"}
+    }
+  },
+  "trendWorse": "-{diff} pts worse",
+  "@trendWorse": {
+    "placeholders": {
+      "diff": {"type": "int"}
+    }
+  },
+  "balanceDiff": "{diff} pts gap between {best} and {worst}",
+  "@balanceDiff": {
+    "placeholders": {
+      "diff": {"type": "int"},
+      "best": {"type": "String"},
+      "worst": {"type": "String"}
+    }
+  },
+  "analyze": "Analyze",
+  "weekdaysShort": "Mon,Tue,Wed,Thu,Fri,Sat,Sun",
+  "noSleepData": "No sleep data",
+  "sleepLast7Nights": "Sleep (last 7 nights)",
+  "avgHours": "Ø {hours} h",
+  "@avgHours": {
+    "placeholders": {
+      "hours": {"type": "String"}
+    }
+  },
+  "entriesRecorded": "{n} entries",
+  "@entriesRecorded": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "currentWeight": "Current weight",
+  "noEntry": "No entry",
+  "moodLastEntry": "Last mood entry",
+  "moodVeryBad": "Very bad",
+  "moodBad": "Bad",
+  "moodNeutral": "Neutral",
+  "moodGood": "Good",
+  "moodExcellent": "Excellent",
+  "weightHistory": "Weight history",
+  "entries": "Entries",
+  "noWeightEntries": "No weight entries",
+  "logWeight": "Log weight",
+  "noBodyMeasurements": "No body measurements",
+  "currentMeasurements": "Current measurements",
+  "chest": "Chest",
+  "waist": "Waist",
+  "hips": "Hips",
+  "thigh": "Thigh",
+  "bicep": "Bicep",
+  "shoulders": "Shoulders",
+  "calf": "Calf",
+  "neck": "Neck",
+  "bodyFat": "Body fat",
+  "logBodyMeasurements": "Log body measurements",
+  "logSleep": "Log sleep",
+  "fallingAsleep": "Falling asleep",
+  "wakingUp": "Waking up",
+  "sleepQuality": "Sleep quality",
+
+  "weatherClear": "Clear",
+  "weatherCloudy": "Cloudy",
+  "weatherFoggy": "Foggy",
+  "weatherRain": "Rain",
+  "weatherSnow": "Snow",
+  "weatherShowers": "Showers",
+  "weatherThunderstorm": "Thunderstorm",
+  "goalShort": "Goal",
+  "stepsProgress": "{current} / {goal}",
+  "@stepsProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "goal": {"type": "int"}
+    }
+  },
+  "macroProgress": "{val} / {goal} {unit}",
+  "@macroProgress": {
+    "placeholders": {
+      "val": {"type": "String"},
+      "goal": {"type": "int"},
+      "unit": {"type": "String"}
+    }
+  },
+  "dailyLimitReached": "Daily limit reached",
+  "waterMin": "Min {ml} ml",
+  "@waterMin": {
+    "placeholders": {
+      "ml": {"type": "int"}
+    }
+  },
+  "permissionNotifications": "Notifications",
+  "waterTotal": "{ml} ml",
+  "@waterTotal": {
+    "placeholders": {
+      "ml": {"type": "int"}
+    }
+  },
+  "waterGoalAndMax": "Goal: {goal} ml · Max: {max} ml",
+  "@waterGoalAndMax": {
+    "placeholders": {
+      "goal": {"type": "int"},
+      "max": {"type": "int"}
+    }
+  },
+  "permissionLocation": "Location",
+  "waterButton": "+{ml} ml",
+  "@waterButton": {
+    "placeholders": {
+      "ml": {"type": "int"}
+    }
+  },
+  "todos": "Tasks",
+  "allLabel": "All",
+  "noOpenTodos": "No open tasks",
+  "medicationsTitle": "Medications",
+  "noMedications": "No medications",
+  "missingPermissions": "Missing permissions",
+  "habits": "Habits",
+  "noHabitsTapToAdd": "No habits – Tap to add",
+  "noTransactionsThisMonth": "No transactions this month",
+  "permissionsContent": "{items}",
+  "@permissionsContent": {
+    "placeholders": {
+      "items": {"type": "String"}
+    }
+  },
+  "tapForCycleInfo": "Tap for cycle info",
+  "healthLabel": "Health",
+  "heartRate": "Heart rate",
+  "mood": "Mood",
+  "later": "Later",
+  "openSettings": "Open settings",
+
+  "documentCouldNotLoad": "Document could not be loaded",
+
+  "appIsLocked": "App locked",
+  "unlock": "Unlock",
+  "usePin": "Use PIN",
+  "unlockReason": "Unlock TRAUM",
+  "authFailedTryAgain": "Authentication failed. Please try again.",
+  "biometricNotAvailable": "Biometrics not available",
+  "biometricNotEnrolled": "No biometric data enrolled",
+  "biometricLockedOut": "Biometrics locked. Please try again later.",
+  "biometricError": "Biometric error: {msg}",
+  "@biometricError": {
+    "placeholders": {
+      "msg": {"type": "String"}
+    }
+  },
+  "biometricNotAvailableUsePin": "Biometrics not available. Please use PIN.",
+  "enterPin": "Enter PIN",
+  "wrongPin": "Wrong PIN",
+
+  "formTablet": "Tablet",
+  "formCapsule": "Capsule",
+  "formDrops": "Drops",
+  "formInjection": "Injection",
+  "formOintment": "Ointment",
+  "formSpray": "Spray",
+  "formOther": "Other",
+  "inactive": "Inactive",
+  "activeLabel": "Active",
+  "noMedicationsYet": "No medications yet",
+  "tapToAddMedication": "Tap to add a medication",
+  "addMedication": "Add medication",
+  "medicationNameHint": "e.g. Ibuprofen",
+  "dosageHint": "e.g. 400mg",
+  "dosage": "Dosage",
+  "formLabel": "Form",
+  "reminderTimes": "Reminder times",
+  "allMedications": "All medications",
+  "timeForMedication": "Time for {name}",
+  "@timeForMedication": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "remindersTimes": "Reminders: {times}",
+  "@remindersTimes": {
+    "placeholders": {
+      "times": {"type": "String"}
+    }
+  },
+
+  "breakfast": "Breakfast",
+  "lunch": "Lunch",
+  "dinner": "Dinner",
+  "snack": "Snack",
+  "searchOrCreate": "Search or create",
+  "noResultsLabel": "No results found",
+  "createFood": "Create food",
+  "amountG": "Amount (g)",
+  "logEntry": "Save entry",
+  "searchFood": "Search food",
+  "plusNew": "+ New",
+  "searchHint": "Search...",
+  "mealType": "Meal type",
+  "foodHint": "e.g. Oats",
+  "foodLabel": "Food",
+  "amountGrams": "Amount (g)",
+  "caloriesKcal": "Calories (kcal)",
+  "proteinG": "Protein (g)",
+  "carbsG": "Carbs (g)",
+  "fatG": "Fat (g)",
+  "logMeal": "Log meal",
+  "quickSelect": "Quick select",
+  "addWater": "Add water",
+  "waterGoal2000": "Goal: 2000 ml",
+  "nothingLogged": "Nothing logged yet",
+  "shoppingListTooltip": "Shopping list",
+  "completed": "Completed",
+  "shoppingList": "Shopping list",
+  "addProduct": "Add product",
+  "itemHint": "Item...",
+  "quantity": "Quantity",
+  "unitHint": "Unit",
+  "deleteCompletedTooltip": "Delete completed",
+  "shoppingListEmpty": "Shopping list empty",
+  "tapToAddProduct": "Tap to add a product",
+  "servingSize": "Serving size",
+  "kcalPer100g": "kcal/100g",
+  "proteinPer100g": "Protein (g/100g)",
+  "carbsPer100g": "Carbs (g/100g)",
+  "fatPer100g": "Fat (g/100g)",
+  "createButton": "Create",
+  "caloriesRequired": "Calories required",
+  "noResults": "No results",
+  "search": "Search",
+  "weightKg": "Weight (kg)",
+
+  "welcomeToTraum": "Welcome to TRAUM",
+  "startNow": "Start now",
+  "yourLifeYourData": "Your life. Your data.",
+  "traumDescription": "TRAUM is your personal health dashboard. All data stays on your device.",
+  "consentReadLeading": "I have read the",
+  "consentReadTrailing": "read and accepted",
+  "healthDataConsent": "Health data consent",
+  "consentAcceptLeading": "I accept the",
+  "consentDot": "·",
+  "consentConfirmLeading": "I confirm that I",
+  "ageConsent": "I am at least 16 years old",
+  "profileTitle": "Your Profile",
+  "yourName": "Your name",
+  "sex": "Sex",
+  "sexMale": "Male",
+  "sexFemale": "Female",
+  "unitsLabel": "Units",
+  "pleaseFillProfile": "Please fill in your profile",
+  "heightLabelOnboarding": "Height (cm)",
+  "weightLabelOnboarding": "Weight (kg)",
+  "weightGoalLabelOnboarding": "Target weight (kg)",
+  "dailyStepsGoal": "Daily step goal",
+  "stepsLabelText": "{steps} steps",
+  "@stepsLabelText": {
+    "placeholders": {
+      "steps": {"type": "int"}
+    }
+  },
+  "yourWaterGoal": "Your water goal",
+  "waterGoalSummary": "Goal: {goal} ml (Min: {min} ml, Max: {max} ml)",
+  "@waterGoalSummary": {
+    "placeholders": {
+      "goal": {"type": "int"},
+      "min": {"type": "int"},
+      "max": {"type": "int"}
+    }
+  },
+  "nutritionTitleOb": "Nutrition goals",
+  "caloriesGoalLabel": "Calorie goal (kcal)",
+  "proteinGoalLabelOb": "Protein goal (g)",
+  "supplementsTitleOb": "Supplements",
+  "takeSupplementsRegularly": "Do you take supplements regularly?",
+  "addSupplementButton": "Add supplement",
+  "noSupplementsAddedYet": "No supplements added yet",
+  "medicationTitleOb": "Medication",
+  "medicalDisclaimerOb": "TRAUM is not a substitute for medical advice.",
+  "takeMedicationRegularly": "Do you take medication regularly?",
+  "addMedicationButton": "Add medication",
+  "noMedicationsAddedYet": "No medications added yet",
+  "budgetTitleOb": "Budget",
+  "wantToKeepBudget": "Do you want to manage your budget?",
+  "monthlyBudget": "Monthly budget (€)",
+  "cycleTitleOb": "Your Cycle",
+  "cycleLengthLabel": "Cycle length (days)",
+  "periodLengthLabel": "Period length (days)",
+  "navTitleOb": "Customize navigation",
+  "homeAlwaysLeft": "Home is always on the left",
+  "slotsSelected": "{n} slots selected",
+  "@slotsSelected": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "adjustNavLater": "Adjust later",
+  "weatherTitleOb": "Weather location",
+  "weatherDescription": "TRAUM shows you the current weather on the home screen.",
+  "requestingLocation": "Requesting location...",
+  "allowLocation": "Allow location",
+  "notificationsTitleOb": "Notifications",
+  "notificationsDescription": "Receive reminders for medication, supplements and more.",
+  "allowNotifications": "Allow notifications",
+  "notNow": "Not now",
+  "healthTitleOb": "Fitness data",
+  "healthDescription": "Connect TRAUM to your health app for automatic steps, sleep and heart rate.",
+  "connecting": "Connecting...",
+  "allowAccessImport": "Allow access & import",
+  "doneTitleOb": "All set!",
+  "welcomeName": "Welcome, {name}!",
+  "@welcomeName": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "summaryGoals": "Goals: {kcal} kcal · {water} ml water",
+  "@summaryGoals": {
+    "placeholders": {
+      "kcal": {"type": "int"},
+      "water": {"type": "int"}
+    }
+  },
+  "faceIdActivate": "Activate Face ID",
+  "fingerprintActivate": "Activate fingerprint",
+  "biometricSetupReason": "Protect TRAUM with biometrics",
+  "authFailedShort": "Authentication failed",
+  "biometricCouldNotSet": "Biometrics could not be set up",
+  "pinsDoNotMatch": "PINs do not match",
+  "appSecurity": "App security",
+  "protectDataWith": "Protect your data with",
+  "unlockAppFastSecure": "Fast & secure unlock",
+  "pinSet": "Set PIN",
+  "pin4Digit": "4-digit PIN",
+  "continueWithoutLock": "Continue without lock",
+  "pinSetTitle": "Set PIN",
+  "pinConfirmTitle": "Confirm PIN",
+  "enterPin4Digits": "Enter 4-digit PIN",
+  "enterPinAgainConfirm": "Enter PIN again",
+  "backToSelection": "Back to selection",
+  "addSupplement": "Add supplement",
+  "supplementNameHint": "e.g. Vitamin D",
+  "category": "Category",
+  "fieldAmount": "Amount",
+  "amountHint": "e.g. 1000",
+  "fieldUnit": "Unit",
+  "categoryVitamins": "Vitamins",
+  "categoryMinerals": "Minerals",
+  "categoryAminoAcids": "Amino acids",
+  "categoryProtein": "Protein",
+  "categoryOmega3": "Omega-3",
+  "categoryAdaptogens": "Adaptogens",
+  "categoryPreWorkout": "Pre-workout",
+  "categoryGutHealth": "Gut health",
+  "categoryCreatine": "Creatine",
+  "unitCapsules": "Capsules",
+  "unitTablets": "Tablets",
+  "unitScoop": "Scoop",
+  "noSupplements": "No supplements",
+  "tapToAddSupplement": "Tap to add a supplement",
+
+  "avgCycleDaysShort": "Ø {n} d.",
+  "@avgCycleDaysShort": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "avgCycleDays": "Ø {days} d.",
+  "@avgCycleDays": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "avgDurationDays": "Ø {days} d.",
+  "@avgDurationDays": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "entriesLabel": "Entries",
+  "irregularCycle": "Irregular",
+  "cycleLengths": "Cycle lengths",
+  "periods": "Periods",
+  "cycle": "Cycle",
+  "tDayUnit": "d.",
+  "cycleHistory": "Cycle history",
+  "noHistory": "No history",
+  "logPeriodsToSeeStats": "Log periods to see statistics",
+  "flowLight": "Light",
+  "flowMedium": "Medium",
+  "flowStrong": "Heavy",
+  "flowVeryStrong": "Very heavy",
+  "periodBleed": "Period",
+  "predictedOvulation": "Predicted ovulation",
+  "fertileWindow2": "Fertile window",
+  "predictedPeriodStart": "Predicted period start",
+  "noSpecialEvent": "No special event",
+  "periodCalendar": "Cycle calendar",
+  "symptomsToday": "Symptoms today",
+  "periodEntries": "Period entries",
+  "tapToStartPeriod": "Tap to start a period",
+  "follicularPhase": "Follicular phase",
+  "ovulationPhase": "Ovulation phase",
+  "fertileWindowPhase": "Fertile window",
+  "nextPeriodLabel": "Next period",
+  "ovulationLabel": "Ovulation",
+  "fertileLabel": "Fertile",
+  "pregnancyProbabilityToday": "{pct}% pregnancy probability",
+  "@pregnancyProbabilityToday": {
+    "placeholders": {
+      "pct": {"type": "int"}
+    }
+  },
+  "calendarTooltip": "Calendar",
+  "historyTooltip": "History",
+  "noSymptomsToday": "No symptoms today",
+  "selectOrEnterSymptom": "Select or enter symptom",
+  "endPeriod": "End period",
+  "startPeriod": "Start period",
+  "flowIntensity": "Intensity",
+  "noteOptional": "Note (optional)",
+  "savingPeriod": "Saving...",
+  "startPeriodButton": "Start period",
+  "symptomCramps": "Cramps",
+  "symptomHeadache": "Headache",
+  "symptomBackPain": "Back pain",
+  "symptomBreastTension": "Breast tenderness",
+  "symptomBloating": "Bloating",
+  "symptomNausea": "Nausea",
+  "symptomMoodSwings": "Mood swings",
+  "symptomTiredness": "Fatigue",
+  "symptomAcne": "Acne",
+  "symptomSleepIssues": "Sleep issues",
+  "addSymptom": "Add symptom",
+  "orCustomSymptom": "or enter custom symptom",
+  "intensityLabel": "Intensity",
+  "intensityLight": "Light",
+  "intensityMedium": "Medium",
+  "intensityStrong": "Strong",
+  "saveSymptom": "Save symptom",
+  "fertileLegend": "Fertile",
+  "ovulationLegend": "Ovulation",
+  "periodLegend": "Period",
+
+  "noAppointmentsOnDate": "No appointments on {date}",
+  "@noAppointmentsOnDate": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "addAppointment": "Add appointment",
+  "titleRequiredField": "Title",
+  "location": "Location",
+  "optional": "(optional)",
+  "startLabel": "Start",
+  "endLabel": "End",
+  "titleRequired": "Title required",
+  "noTasks": "No tasks",
+  "tapToAddTask": "Tap to add a task",
+  "open": "Open",
+  "finished": "Done",
+  "dueDateLabel": "Due: {date}",
+  "@dueDateLabel": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "addTask": "Add task",
+  "fieldTitle": "Title",
+  "fieldPriority": "Priority",
+  "priorityLow": "Low",
+  "priorityMedium": "Medium",
+  "priorityHigh": "High",
+  "dueDate": "Due date",
+  "noGoals": "No goals",
+  "addGoal": "Add goal",
+  "targetValue": "Target value",
+  "unitHintKgKm": "e.g. kg, km",
+  "deadline": "Deadline",
+  "noHabits": "No habits",
+  "tapToAddHabit": "Tap to add a habit",
+  "addHabit": "Add habit",
+  "frequency": "Frequency",
+  "frequencyDaily": "Daily",
+  "frequencyWeekly": "Weekly",
+  "calendar": "Calendar",
+  "todosTab": "Tasks",
+  "goalsTab": "Goals",
+  "habitsTab": "Habits",
+
+  "bmi": "BMI",
+  "weightGoalLabel": "Target weight",
+  "loseAction": "lose",
+  "gainAction": "gain",
+  "weightDiff": "{diff} kg to {action}",
+  "@weightDiff": {
+    "placeholders": {
+      "diff": {"type": "String"},
+      "action": {"type": "String"}
+    }
+  },
+  "sleepDays": "Last {days} days",
+  "@sleepDays": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "avgSleepDuration": "Ø sleep duration",
+  "avgQuality": "Ø quality",
+  "trainingThisWeek": "Training this week",
+  "workoutsLabel": "Workouts",
+  "setsLabel": "Sets",
+  "volumeLabel": "Volume",
+  "nutritionGoals": "Nutrition goals",
+  "kcalGoal": "kcal goal",
+  "proteinGoal": "Protein goal",
+  "stepsGoal": "Steps goal",
+  "moodLabel": "Mood",
+  "noMoodData": "No mood data",
+  "moodLast": "Last value: {score}/5",
+  "@moodLast": {
+    "placeholders": {
+      "score": {"type": "int"}
+    }
+  },
+  "bmiUnderweight": "Underweight",
+  "bmiNormal": "Normal weight",
+  "bmiOverweight": "Overweight",
+  "bmiObese": "Obese",
+  "myProfile": "My profile",
+  "myDashboard": "My dashboard",
+  "body": "Body",
+  "height": "Height",
+
+  "exportSelected": "Export selected",
+  "exportPreparing": "Preparing...",
+  "supportSection": "Support",
+  "bugReportDarkModeYes": "Yes",
+  "bugReportDevice": "Device: {device}",
+  "@bugReportDevice": {
+    "placeholders": {
+      "device": {"type": "String"}
+    }
+  },
+  "bugReportSubject": "[TRAUM] Bug report",
+  "bugReportBody": "Please describe the bug:",
+  "appSection": "App",
+  "repeatOnboardingSubtitle": "Repeat the onboarding process",
+  "navigationSection": "Navigation",
+  "adjustNavSubtitle": "Choose your modules",
+  "units": "Units",
+  "metricSwitch": "Metric",
+  "metricSwitchSubtitle": "kg, cm, km",
+  "notificationsSection": "Notifications",
+  "notifMedication": "Medication",
+  "notifSupplements": "Supplements",
+  "notifTraining": "Training",
+  "notifWater": "Water",
+  "notifHabits": "Habits",
+  "notifTodos": "Tasks",
+  "notifCycle": "Cycle",
+  "notifDailyAt": "Daily at {time}",
+  "@notifDailyAt": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "goals": "Goals",
+  "kcalGoalLabel": "Calorie goal",
+  "proteinGoalLabel": "Protein goal (g)",
+  "stepsGoalLabel": "Step goal",
+  "stepsGoalSuffix": "steps",
+  "heightLabel": "Height",
+  "heightCm": "cm",
+  "weightGoalCm": "kg",
+  "waterGoal": "Water goal",
+  "waterGoalAutomatic": "Automatic ({ml} ml)",
+  "@waterGoalAutomatic": {
+    "placeholders": {
+      "ml": {"type": "int"}
+    }
+  },
+  "currency": "Currency",
+  "currencySymbol": "Currency symbol",
+  "chooseCurrency": "Choose currency",
+  "periodTracking": "Cycle tracking",
+  "enablePeriodTracking": "Enable cycle tracking",
+  "periodTrackingSubtitle": "Track your cycle",
+  "privacySecurity": "Privacy & Security",
+  "biometricLockSubtitle": "Use biometrics",
+  "biometricLockUnavailable": "Biometrics not available",
+  "pinLock": "PIN lock",
+  "pinLockSubtitle": "4-digit PIN",
+  "changePin": "Change PIN",
+  "languageSection": "Language",
+  "appLanguage": "App language",
+  "deleteAllConfirmTitle": "Delete all data?",
+  "deleteAllConfirmContent": "This action cannot be undone.",
+  "continueLabel": "Continue",
+  "reallyDeleteAllTitle": "Really delete everything?",
+  "reallyDeleteAllContent": "All your data will be permanently deleted.",
+  "deleteEverything": "Delete everything",
+  "exportAll": "Export all",
+  "exportSelection": "Export selection",
+  "chooseLanguage": "Choose language",
+
+  "exercise": "Exercise",
+  "muscleBrust": "Chest",
+  "muscleRuecken": "Back",
+  "muscleSchulter": "Shoulders",
+  "muscleBizeps": "Biceps",
+  "muscleTrizeps": "Triceps",
+  "muscleBauch": "Abs",
+  "muscleBeine": "Legs",
+  "muscleGesaess": "Glutes",
+  "muscleWaden": "Calves",
+  "muscleGanzkoerper": "Full body",
+  "noWorkoutPlanned": "No workout planned",
+  "weeklyProgress": "Weekly progress",
+  "createRoutine": "Create routine",
+  "muscleGroupsOverview": "Muscle groups overview",
+  "noTrainingSessionsRecorded": "No training sessions recorded",
+  "myRoutines": "My routines",
+  "noRoutinesCreated": "No routines created",
+  "trainingDayName": "Day {letter}",
+  "@trainingDayName": {
+    "placeholders": {
+      "letter": {"type": "String"}
+    }
+  },
+  "trainingDayA": "Day A",
+  "newRoutine": "New routine",
+  "routineName": "Routine name",
+  "routineNameHint": "e.g. Push Day",
+  "descriptionOptional": "Description (optional)",
+  "descriptionHint": "e.g. Chest & Shoulders",
+  "setAsActive": "Set as active",
+  "trainingDays": "Training days",
+  "addDay": "Add day",
+  "createRoutineButton": "Create routine",
+  "trainingRoutines": "Training routines",
+  "noRoutines": "No routines",
+  "tapToCreateRoutine": "Tap to create a routine",
+  "activate": "Activate",
+  "active": "Active",
+  "trainingPlan": "Training plan",
+  "noTrainingDays": "No training days",
+  "workoutDetails": "Workout details",
+  "noSetsRecorded": "No sets recorded",
+  "setLabel": "Set {n}",
+  "@setLabel": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "repsCount": "{n} reps",
+  "@repsCount": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "setCount": "{n} sets",
+  "@setCount": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "addExercise": "Add exercise",
+  "exerciseLibrary": "Exercise library",
+  "exerciseHint": "Exercise name",
+  "equipmentOptional": "Equipment (optional)",
+  "equipmentHint": "e.g. Dumbbell",
+  "instructionsOptional": "Instructions (optional)",
+  "instructionExecution": "Execution instruction",
+  "noExercisesInLibrary": "No exercises in library",
+  "noExercisesYet": "No exercises yet",
+  "muscleGroup": "Muscle group",
+  "muscleHeatmapTitle": "Muscle heatmap",
+  "recentSets": "Recent sets",
+  "trainExerciseToSeeProgress": "Train this exercise to see progress",
+  "noProgressData": "No progress data",
+  "trainingVolumeLast7Days": "Training volume (last 7 days)",
+  "volumeLast90Days": "Volume (last 90 days)",
+  "maxWeight": "Max. weight",
+  "maxReps": "Max. reps",
+  "little": "Little",
+  "much": "Much",
+  "addSet": "Add set",
+  "noTraining": "No training",
+  "notTrained": "Not trained",
+  "progress": "Progress",
+  "reps": "Reps",
+  "finishing": "Finishing...",
+  "noTrainingPlanned": "No training planned",
+  "exercises": "Exercises",
+  "volumeKg": "Volume (kg)",
+  "createExercise": "Create exercise",
+  "medium": "Medium"
 }

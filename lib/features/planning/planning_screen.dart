@@ -7,6 +7,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class PlanningScreen extends ConsumerStatefulWidget {
   const PlanningScreen({super.key});
@@ -37,8 +38,8 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Planung',
-            style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
+        title: Text(AppLocalizations.of(context)!.planning,
+            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
         elevation: 0,
         bottom: TabBar(
@@ -47,11 +48,11 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
           labelColor: TraumColors.lavender,
           unselectedLabelColor: TraumColors.onBackgroundMuted,
           labelStyle: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600, fontSize: 13),
-          tabs: const [
-            Tab(text: 'Kalender'),
-            Tab(text: 'Todos'),
-            Tab(text: 'Ziele'),
-            Tab(text: 'Gewohnheiten'),
+          tabs: [
+            Tab(text: AppLocalizations.of(context)!.calendar),
+            Tab(text: AppLocalizations.of(context)!.todosTab),
+            Tab(text: AppLocalizations.of(context)!.goalsTab),
+            Tab(text: AppLocalizations.of(context)!.habitsTab),
           ],
         ),
       ),
@@ -153,7 +154,7 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
                 if (appts.isEmpty) {
                   return Center(
                     child: Text(
-                      'Keine Termine am ${_selectedDay.day}.${_selectedDay.month}.${_selectedDay.year}',
+                      AppLocalizations.of(context)!.noAppointmentsOnDate('${_selectedDay.day}.${_selectedDay.month}.${_selectedDay.year}'),
                       style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
                     ),
                   );
@@ -254,25 +255,25 @@ class _AddAppointmentSheetState extends State<_AddAppointmentSheet> {
             Center(child: Container(width: 40, height: 4,
                 decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle, borderRadius: BorderRadius.circular(2)))),
             const SizedBox(height: 16),
-            const Text('Termin hinzufügen', style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
+            Text(AppLocalizations.of(context)!.addAppointment, style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700, fontSize: 18)),
             const SizedBox(height: 16),
-            _buildField('Titel *', _titleCtrl),
+            _buildField(AppLocalizations.of(context)!.titleRequiredField, _titleCtrl),
             const SizedBox(height: 10),
-            _buildField('Ort', _locationCtrl, hint: 'optional'),
+            _buildField(AppLocalizations.of(context)!.location, _locationCtrl, hint: AppLocalizations.of(context)!.optional),
             const SizedBox(height: 10),
-            _buildField('Beschreibung', _descCtrl, hint: 'optional', maxLines: 2),
+            _buildField(AppLocalizations.of(context)!.fieldDescription, _descCtrl, hint: AppLocalizations.of(context)!.optional, maxLines: 2),
             const SizedBox(height: 12),
             Row(children: [
               Expanded(child: _DateTimeTile(
-                label: 'Start',
+                label: AppLocalizations.of(context)!.startLabel,
                 dateTime: _startTime,
                 color: TraumColors.lavender,
                 onChanged: (dt) => setState(() { _startTime = dt; if (_endTime.isBefore(_startTime)) _endTime = _startTime.add(const Duration(hours: 1)); }),
               )),
               const SizedBox(width: 12),
               Expanded(child: _DateTimeTile(
-                label: 'Ende',
+                label: AppLocalizations.of(context)!.endLabel,
                 dateTime: _endTime,
                 color: TraumColors.lavender,
                 onChanged: (dt) => setState(() => _endTime = dt),
@@ -280,10 +281,10 @@ class _AddAppointmentSheetState extends State<_AddAppointmentSheet> {
             ]),
             const SizedBox(height: 20),
             GradientButton(
-              label: 'Speichern',
+              label: AppLocalizations.of(context)!.save,
               onPressed: () async {
                 if (_titleCtrl.text.trim().isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Titel ist ein Pflichtfeld')));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.titleRequired)));
                   return;
                 }
                 await widget.onAdd(AppointmentsCompanion.insert(
@@ -395,10 +396,10 @@ class _TodosTab extends ConsumerWidget {
                 Icon(Icons.check_circle_outline_rounded, size: 64,
                     color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
                 const SizedBox(height: 16),
-                const Text('Keine Aufgaben', style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 16, fontWeight: FontWeight.w600)),
+                Text(AppLocalizations.of(context)!.noTasks, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 16, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
-                const Text('Tippe auf + um eine Aufgabe hinzuzufügen',
-                    style: TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontSize: 13), textAlign: TextAlign.center),
+                Text(AppLocalizations.of(context)!.tapToAddTask,
+                    style: const TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontSize: 13), textAlign: TextAlign.center),
               ]),
             );
           }
@@ -408,13 +409,13 @@ class _TodosTab extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             children: [
               if (open.isNotEmpty) ...[
-                const SectionHeader(title: 'Offen'),
+                SectionHeader(title: AppLocalizations.of(context)!.open),
                 const SizedBox(height: 8),
                 ...open.map((t) => _TodoTile(todo: t, ref: ref)),
               ],
               if (done.isNotEmpty) ...[
                 const SizedBox(height: 16),
-                const SectionHeader(title: 'Erledigt'),
+                SectionHeader(title: AppLocalizations.of(context)!.finished),
                 const SizedBox(height: 8),
                 ...done.map((t) => _TodoTile(todo: t, ref: ref)),
               ],
@@ -496,7 +497,7 @@ class _TodoTile extends StatelessWidget {
             ),
           ),
           subtitle: todo.dueDate != null
-              ? Text('Fällig: ${todo.dueDate!.day}.${todo.dueDate!.month}.${todo.dueDate!.year}',
+              ? Text(AppLocalizations.of(context)!.dueDateLabel('${todo.dueDate!.day}.${todo.dueDate!.month}.${todo.dueDate!.year}'),
                   style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 11))
               : null,
           secondary: Container(
@@ -537,7 +538,7 @@ class _AddTodoSheetState extends State<_AddTodoSheet> {
           Center(child: Container(width: 40, height: 4,
               decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle, borderRadius: BorderRadius.circular(2)))),
           const SizedBox(height: 16),
-          const Text('Aufgabe hinzufügen', style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
+          Text(AppLocalizations.of(context)!.addTask, style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
               fontWeight: FontWeight.w700, fontSize: 18)),
           const SizedBox(height: 16),
           TextField(
@@ -545,7 +546,7 @@ class _AddTodoSheetState extends State<_AddTodoSheet> {
             autofocus: true,
             style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
             decoration: InputDecoration(
-              labelText: 'Titel',
+              labelText: AppLocalizations.of(context)!.fieldTitle,
               labelStyle: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
               filled: true, fillColor: TraumColors.surface,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(TraumRadius.card), borderSide: BorderSide.none),
@@ -553,23 +554,23 @@ class _AddTodoSheetState extends State<_AddTodoSheet> {
             ),
           ),
           const SizedBox(height: 12),
-          const Text('Priorität', style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
+          Text(AppLocalizations.of(context)!.fieldPriority, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
           const SizedBox(height: 6),
           Row(children: [
-            _PriorityChip(label: 'Niedrig', value: 0, selected: _priority == 0, color: TraumColors.onBackgroundSubtle, onTap: () => setState(() => _priority = 0)),
+            _PriorityChip(label: AppLocalizations.of(context)!.priorityLow, value: 0, selected: _priority == 0, color: TraumColors.onBackgroundSubtle, onTap: () => setState(() => _priority = 0)),
             const SizedBox(width: 8),
-            _PriorityChip(label: 'Mittel', value: 1, selected: _priority == 1, color: TraumColors.amberGold, onTap: () => setState(() => _priority = 1)),
+            _PriorityChip(label: AppLocalizations.of(context)!.priorityMedium, value: 1, selected: _priority == 1, color: TraumColors.amberGold, onTap: () => setState(() => _priority = 1)),
             const SizedBox(width: 8),
-            _PriorityChip(label: 'Hoch', value: 2, selected: _priority == 2, color: TraumColors.roseRed, onTap: () => setState(() => _priority = 2)),
+            _PriorityChip(label: AppLocalizations.of(context)!.priorityHigh, value: 2, selected: _priority == 2, color: TraumColors.roseRed, onTap: () => setState(() => _priority = 2)),
           ]),
           const SizedBox(height: 12),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Fälligkeitsdatum', style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
+            title: Text(AppLocalizations.of(context)!.dueDate, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
             trailing: Text(
               _dueDate != null
                   ? '${_dueDate!.day}.${_dueDate!.month}.${_dueDate!.year}'
-                  : 'Kein Datum',
+                  : AppLocalizations.of(context)!.noDate,
               style: TextStyle(
                 color: _dueDate != null ? TraumColors.lavender : TraumColors.onBackgroundSubtle,
                 fontFamily: 'DMSans', fontWeight: FontWeight.w600,
@@ -590,10 +591,10 @@ class _AddTodoSheetState extends State<_AddTodoSheet> {
           ),
           const SizedBox(height: 20),
           GradientButton(
-            label: 'Speichern',
+            label: AppLocalizations.of(context)!.save,
             onPressed: () async {
               if (_titleCtrl.text.trim().isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Titel ist ein Pflichtfeld')));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.titleRequired)));
                 return;
               }
               await widget.onAdd(TodosCompanion.insert(
@@ -662,7 +663,7 @@ class _GoalsTab extends ConsumerWidget {
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 Icon(Icons.flag_rounded, size: 64, color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
                 const SizedBox(height: 16),
-                const Text('Noch keine Ziele', style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 16, fontWeight: FontWeight.w600)),
+                Text(AppLocalizations.of(context)!.noGoals, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 16, fontWeight: FontWeight.w600)),
               ]),
             );
           }
@@ -725,7 +726,7 @@ class _GoalCard extends StatelessWidget {
               if (goal.done)
                 Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(color: TraumColors.mintGreenDim, borderRadius: BorderRadius.circular(20)),
-                    child: const Text('Erreicht', style: TextStyle(color: TraumColors.mintGreen, fontFamily: 'DMSans', fontSize: 11, fontWeight: FontWeight.w600))),
+                    child: Text(AppLocalizations.of(context)!.reached, style: const TextStyle(color: TraumColors.mintGreen, fontFamily: 'DMSans', fontSize: 11, fontWeight: FontWeight.w600))),
             ]),
             if (goal.description != null) ...[
               const SizedBox(height: 4),
@@ -743,7 +744,7 @@ class _GoalCard extends StatelessWidget {
             ],
             if (goal.targetDate != null) ...[
               const SizedBox(height: 6),
-              Text('Deadline: ${goal.targetDate!.day}.${goal.targetDate!.month}.${goal.targetDate!.year}',
+              Text('${AppLocalizations.of(context)!.deadline}: ${goal.targetDate!.day}.${goal.targetDate!.month}.${goal.targetDate!.year}',
                   style: const TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontSize: 11)),
             ],
           ]),
@@ -783,22 +784,22 @@ class _AddGoalSheetState extends State<_AddGoalSheet> {
           Center(child: Container(width: 40, height: 4,
               decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle, borderRadius: BorderRadius.circular(2)))),
           const SizedBox(height: 16),
-          const Text('Ziel hinzufügen', style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
+          Text(AppLocalizations.of(context)!.addGoal, style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
           const SizedBox(height: 16),
-          _field('Titel *', _titleCtrl),
+          _field(AppLocalizations.of(context)!.titleRequiredField, _titleCtrl),
           const SizedBox(height: 10),
-          _field('Beschreibung', _descCtrl, maxLines: 2),
+          _field(AppLocalizations.of(context)!.fieldDescription, _descCtrl, maxLines: 2),
           const SizedBox(height: 10),
           Row(children: [
-            Expanded(child: _field('Zielwert', _targetCtrl, keyboard: TextInputType.number)),
+            Expanded(child: _field(AppLocalizations.of(context)!.targetValue, _targetCtrl, keyboard: TextInputType.number)),
             const SizedBox(width: 12),
-            Expanded(child: _field('Einheit', _unitCtrl, hint: 'kg, km, …')),
+            Expanded(child: _field(AppLocalizations.of(context)!.fieldUnit, _unitCtrl, hint: AppLocalizations.of(context)!.unitHintKgKm)),
           ]),
           const SizedBox(height: 12),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Deadline', style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
-            trailing: Text(_deadline != null ? '${_deadline!.day}.${_deadline!.month}.${_deadline!.year}' : 'Kein Datum',
+            title: Text(AppLocalizations.of(context)!.deadline, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
+            trailing: Text(_deadline != null ? '${_deadline!.day}.${_deadline!.month}.${_deadline!.year}' : AppLocalizations.of(context)!.noDate,
                 style: TextStyle(color: _deadline != null ? TraumColors.lavender : TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
             onTap: () async {
               final p = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2100),
@@ -807,8 +808,8 @@ class _AddGoalSheetState extends State<_AddGoalSheet> {
             },
           ),
           const SizedBox(height: 20),
-          GradientButton(label: 'Speichern', onPressed: () async {
-            if (_titleCtrl.text.trim().isEmpty) { ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Titel ist ein Pflichtfeld'))); return; }
+          GradientButton(label: AppLocalizations.of(context)!.save, onPressed: () async {
+            if (_titleCtrl.text.trim().isEmpty) { ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.titleRequired))); return; }
             await widget.onAdd(GoalsCompanion.insert(
               title: _titleCtrl.text.trim(),
               description: Value(_descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim()),
@@ -862,10 +863,10 @@ class _HabitsTab extends ConsumerWidget {
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 Icon(Icons.loop_rounded, size: 64, color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
                 const SizedBox(height: 16),
-                const Text('Noch keine Gewohnheiten', style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 16, fontWeight: FontWeight.w600)),
+                Text(AppLocalizations.of(context)!.noHabits, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 16, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
-                const Text('Tippe auf + um eine Gewohnheit hinzuzufügen',
-                    style: TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontSize: 13), textAlign: TextAlign.center),
+                Text(AppLocalizations.of(context)!.tapToAddHabit,
+                    style: const TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontSize: 13), textAlign: TextAlign.center),
               ]),
             );
           }
@@ -1009,16 +1010,16 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
           Center(child: Container(width: 40, height: 4,
               decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle, borderRadius: BorderRadius.circular(2)))),
           const SizedBox(height: 16),
-          const Text('Gewohnheit hinzufügen', style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
+          Text(AppLocalizations.of(context)!.addHabit, style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
           const SizedBox(height: 16),
           TextField(controller: _nameCtrl, autofocus: true,
               style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
-              decoration: InputDecoration(labelText: 'Name', labelStyle: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.fieldName, labelStyle: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
                   filled: true, fillColor: TraumColors.surface,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(TraumRadius.card), borderSide: BorderSide.none),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12))),
           const SizedBox(height: 12),
-          const Text('Emoji', style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
+          Text(AppLocalizations.of(context)!.emoji, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
           const SizedBox(height: 6),
           Wrap(spacing: 8, runSpacing: 8, children: _emojis.map((e) {
             final selected = e == _emoji;
@@ -1030,16 +1031,16 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
                     child: Text(e, style: const TextStyle(fontSize: 20))));
           }).toList()),
           const SizedBox(height: 12),
-          const Text('Häufigkeit', style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
+          Text(AppLocalizations.of(context)!.frequency, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
           const SizedBox(height: 6),
           Row(children: [
-            _FreqChip(label: 'Täglich', value: 'daily', selected: _frequency == 'daily', onTap: () => setState(() => _frequency = 'daily')),
+            _FreqChip(label: AppLocalizations.of(context)!.frequencyDaily, value: 'daily', selected: _frequency == 'daily', onTap: () => setState(() => _frequency = 'daily')),
             const SizedBox(width: 8),
-            _FreqChip(label: 'Wöchentlich', value: 'weekly', selected: _frequency == 'weekly', onTap: () => setState(() => _frequency = 'weekly')),
+            _FreqChip(label: AppLocalizations.of(context)!.frequencyWeekly, value: 'weekly', selected: _frequency == 'weekly', onTap: () => setState(() => _frequency = 'weekly')),
           ]),
           const SizedBox(height: 20),
-          GradientButton(label: 'Speichern', onPressed: () async {
-            if (_nameCtrl.text.trim().isEmpty) { ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Name ist ein Pflichtfeld'))); return; }
+          GradientButton(label: AppLocalizations.of(context)!.save, onPressed: () async {
+            if (_nameCtrl.text.trim().isEmpty) { ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired))); return; }
             await widget.onAdd(HabitsCompanion.insert(name: _nameCtrl.text.trim(), emoji: Value(_emoji), frequency: Value(_frequency)));
             if (context.mounted) Navigator.pop(context);
           }),

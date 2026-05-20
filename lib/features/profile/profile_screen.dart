@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/components/components.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
@@ -23,12 +24,13 @@ class ProfileScreen extends ConsumerWidget {
     final moodAsync = ref.watch(latestMoodProvider);
     final trainingSetsAsync = ref.watch(recentTrainingSetsProvider(30));
     final trainingSessionsAsync = ref.watch(trainingSessionsThisWeekProvider);
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: const Text('Mein Profil',
-            style: TextStyle(
+        title: Text(l10n.myProfile,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700)),
@@ -50,8 +52,8 @@ class ProfileScreen extends ConsumerWidget {
                 child: const Icon(Icons.person_rounded, color: Colors.white, size: 40),
               ),
               const SizedBox(height: 12),
-              const Text('Mein Dashboard',
-                  style: TextStyle(
+              Text(l10n.myDashboard,
+                  style: const TextStyle(
                       color: TraumColors.onBackground,
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w700,
@@ -61,7 +63,7 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 24),
 
           // Body stats
-          SectionHeader(title: 'Körper'),
+          SectionHeader(title: l10n.body),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.all(16),
@@ -83,7 +85,7 @@ class ProfileScreen extends ConsumerWidget {
                   return Column(children: [
                     Row(children: [
                       Expanded(child: _StatCard(
-                        label: 'Aktuelles Gewicht',
+                        label: l10n.currentWeight,
                         value: unitSystem == 'metric'
                             ? '${weightKg.toStringAsFixed(1)} kg'
                             : '${(weightKg * 2.20462).toStringAsFixed(1)} lbs',
@@ -92,7 +94,7 @@ class ProfileScreen extends ConsumerWidget {
                       if (heightCm > 0) ...[
                         const SizedBox(width: 12),
                         Expanded(child: _StatCard(
-                          label: 'Größe',
+                          label: l10n.height,
                           value: unitSystem == 'metric'
                               ? '${heightCm.toStringAsFixed(0)} cm'
                               : "${(heightCm / 30.48).floor()}' ${((heightCm / 2.54) % 12).round()}\"",
@@ -104,17 +106,17 @@ class ProfileScreen extends ConsumerWidget {
                       const SizedBox(height: 12),
                       Row(children: [
                         Expanded(child: _StatCard(
-                          label: 'BMI',
+                          label: l10n.bmi,
                           value: bmi.toStringAsFixed(1),
                           color: _bmiColor(bmi),
-                          subtitle: _bmiCategory(bmi),
+                          subtitle: _bmiCategory(bmi, l10n),
                         )),
                         const SizedBox(width: 12),
                         Expanded(child: _StatCard(
-                          label: 'Gewichtsziel',
+                          label: l10n.weightGoalLabel,
                           value: '${weightGoal.toStringAsFixed(1)} kg',
                           color: TraumColors.mintGreen,
-                          subtitle: '${(weightKg - weightGoal).abs().toStringAsFixed(1)} kg ${weightKg > weightGoal ? 'abnehmen' : 'zunehmen'}',
+                          subtitle: l10n.weightDiff((weightKg - weightGoal).abs().toStringAsFixed(1), weightKg > weightGoal ? l10n.loseAction : l10n.gainAction),
                         )),
                       ]),
                     ],
@@ -128,12 +130,12 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 16),
 
           // Sleep stats
-          SectionHeader(title: 'Schlaf (30 Tage)'),
+          SectionHeader(title: l10n.sleepDays(30)),
           const SizedBox(height: 8),
           sleepAsync.when(
             data: (logs) {
               if (logs.isEmpty) {
-                return _EmptyCard(message: 'Keine Schlafdaten');
+                return _EmptyCard(message: l10n.noSleepData);
               }
               final avgMinutes = logs.map((l) => l.wakeTime.difference(l.bedtime).inMinutes)
                   .fold(0, (s, m) => s + m) ~/ logs.length;
@@ -150,20 +152,20 @@ class ProfileScreen extends ConsumerWidget {
                 ),
                 child: Row(children: [
                   Expanded(child: _StatCard(
-                    label: 'Ø Schlafdauer',
+                    label: l10n.avgSleepDuration,
                     value: '${avgHours}h ${avgMins}m',
                     color: TraumColors.indigoBlue,
                   )),
                   const SizedBox(width: 12),
                   Expanded(child: _StatCard(
-                    label: 'Ø Qualität',
+                    label: l10n.avgQuality,
                     value: '⭐' * avgQuality.round(),
                     color: TraumColors.amberGold,
                     subtitle: '${avgQuality.toStringAsFixed(1)}/5',
                   )),
                   const SizedBox(width: 12),
                   Expanded(child: _StatCard(
-                    label: 'Einträge',
+                    label: l10n.entries,
                     value: '${logs.length}',
                     color: TraumColors.lavender,
                   )),
@@ -176,7 +178,7 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 16),
 
           // Training stats
-          SectionHeader(title: 'Training (diese Woche)'),
+          SectionHeader(title: l10n.trainingThisWeek),
           const SizedBox(height: 8),
           trainingSessionsAsync.when(
             data: (sessions) {
@@ -192,19 +194,19 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                     child: Row(children: [
                       Expanded(child: _StatCard(
-                        label: 'Workouts',
+                        label: l10n.workoutsLabel,
                         value: '${sessions.length}',
                         color: TraumColors.coralOrange,
                       )),
                       const SizedBox(width: 12),
                       Expanded(child: _StatCard(
-                        label: 'Sätze',
+                        label: l10n.setsLabel,
                         value: '${sets.length}',
                         color: TraumColors.peachOrange,
                       )),
                       const SizedBox(width: 12),
                       Expanded(child: _StatCard(
-                        label: 'Volumen',
+                        label: l10n.volumeLabel,
                         value: '${volume.toStringAsFixed(0)} kg',
                         color: TraumColors.amberGold,
                       )),
@@ -221,7 +223,7 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 16),
 
           // Nutrition goals
-          SectionHeader(title: 'Ernährungsziele'),
+          SectionHeader(title: l10n.nutritionGoals),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.all(16),
@@ -231,19 +233,19 @@ class ProfileScreen extends ConsumerWidget {
             ),
             child: Row(children: [
               Expanded(child: _StatCard(
-                label: 'Kcal-Ziel',
+                label: l10n.kcalGoal,
                 value: '$kcalGoal kcal',
                 color: TraumColors.mintGreen,
               )),
               const SizedBox(width: 12),
               Expanded(child: _StatCard(
-                label: 'Protein-Ziel',
+                label: l10n.proteinGoal,
                 value: '${proteinGoal}g',
                 color: TraumColors.indigoBlue,
               )),
               const SizedBox(width: 12),
               Expanded(child: _StatCard(
-                label: 'Schritte-Ziel',
+                label: l10n.stepsGoal,
                 value: '$stepsGoal',
                 color: TraumColors.amberGold,
               )),
@@ -252,11 +254,11 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 16),
 
           // Mood
-          SectionHeader(title: 'Stimmung'),
+          SectionHeader(title: l10n.moodLabel),
           const SizedBox(height: 8),
           moodAsync.when(
             data: (mood) {
-              if (mood == null) return _EmptyCard(message: 'Keine Stimmungsdaten');
+              if (mood == null) return _EmptyCard(message: l10n.noMoodData);
               const moodEmojis = ['', '😢', '😕', '😐', '😊', '😄'];
               return Container(
                 padding: const EdgeInsets.all(16),
@@ -271,7 +273,7 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                   const SizedBox(width: 16),
                   Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text('Letzte Stimmung: ${mood.moodScore}/5',
+                    Text(l10n.moodLast(mood.moodScore),
                         style: const TextStyle(
                             color: TraumColors.onBackground,
                             fontFamily: 'DMSans',
@@ -303,11 +305,11 @@ class ProfileScreen extends ConsumerWidget {
     return TraumColors.roseRed;
   }
 
-  String _bmiCategory(double bmi) {
-    if (bmi < 18.5) return 'Untergewicht';
-    if (bmi < 25) return 'Normalgewicht';
-    if (bmi < 30) return 'Übergewicht';
-    return 'Adipositas';
+  String _bmiCategory(double bmi, AppLocalizations l10n) {
+    if (bmi < 18.5) return l10n.bmiUnderweight;
+    if (bmi < 25) return l10n.bmiNormal;
+    if (bmi < 30) return l10n.bmiOverweight;
+    return l10n.bmiObese;
   }
 }
 
