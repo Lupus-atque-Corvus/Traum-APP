@@ -37,6 +37,11 @@ class PreferencesRepository {
   Future<void> setOnboardingComplete(bool v) =>
       _prefs.setBool('onboarding_complete', v);
 
+  bool get trainingSetupComplete =>
+      _prefs.getBool('training_setup_complete') ?? false;
+  Future<void> setTrainingSetupComplete(bool v) =>
+      _prefs.setBool('training_setup_complete', v);
+
   // Goals
   int get stepsGoal => _prefs.getInt('steps_goal') ?? 10000;
   Future<void> setStepsGoal(int v) => _prefs.setInt('steps_goal', v);
