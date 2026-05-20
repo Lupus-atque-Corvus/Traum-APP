@@ -134,6 +134,9 @@ class TrainingDao extends DatabaseAccessor<TraumDatabase>
   Future<int> insertDayExercise(WorkoutDayExercisesCompanion entry) =>
       into(workoutDayExercises).insert(entry);
 
+  Future<bool> updateDayExercise(WorkoutDayExercisesCompanion entry) =>
+      update(workoutDayExercises).replace(entry);
+
   Future<int> deleteDayExercise(int id) =>
       (delete(workoutDayExercises)..where((t) => t.id.equals(id))).go();
 
