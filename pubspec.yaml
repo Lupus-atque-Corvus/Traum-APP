@@ -127,6 +127,7 @@ flutter:
 
   assets:
     - assets/exercises/
+    - assets/exercises/icons/
     - assets/supplements/
     - assets/svg/
     - assets/legal/
