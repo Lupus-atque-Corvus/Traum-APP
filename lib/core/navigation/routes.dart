@@ -6,6 +6,7 @@ class Routes {
   static const String onboarding = '/onboarding';
   static const String home = '/home';
   static const String training = '/training';
+  static const String trainingSetup = '/training/setup';
   static const String activeWorkout = '/training/active';
   static const String exerciseLibrary = '/training/exercises';
   static const String workoutDetail = '/training/session/:id';

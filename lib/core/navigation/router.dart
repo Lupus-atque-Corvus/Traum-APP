@@ -14,6 +14,7 @@ import '../../features/training/workout_plan_detail_screen.dart';
 import '../../features/training/routines_screen.dart';
 import '../../features/training/new_routine_screen.dart';
 import '../../features/training/muscle_heatmap_screen.dart';
+import '../../features/training/training_wizard_screen.dart';
 import '../../features/health/health_screen.dart';
 import '../../features/health/health_score_detail_screen.dart';
 import '../../features/nutrition/nutrition_screen.dart';
@@ -48,6 +49,15 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       if (!onboarded && !goingToOnboarding) return Routes.onboarding;
       if (onboarded && goingToOnboarding) return Routes.home;
+
+      // If onboarded but training setup not done, redirect /training to /training/setup
+      final trainingSetupDone = prefs.trainingSetupComplete;
+      if (onboarded &&
+          !trainingSetupDone &&
+          state.matchedLocation == Routes.training) {
+        return Routes.trainingSetup;
+      }
+
       return null;
     },
     routes: [
@@ -62,6 +72,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.pinEntry,
         builder: (_, __) => const PinLockScreen(),
+      ),
+      GoRoute(
+        path: Routes.trainingSetup,
+        builder: (_, __) => const TrainingWizardScreen(),
       ),
       ShellRoute(
         builder: (context, state, child) => TraumScaffold(child: child),
