@@ -4609,6 +4609,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Mittel'**
   String get medium;
+
+  /// No description provided for @noExercises.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Übungen'**
+  String get noExercises;
 }
 
 class _AppLocalizationsDelegate

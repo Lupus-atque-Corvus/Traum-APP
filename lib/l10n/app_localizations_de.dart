@@ -2369,4 +2369,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get medium => 'Mittel';
+
+  @override
+  String get noExercises => 'Noch keine Übungen';
 }

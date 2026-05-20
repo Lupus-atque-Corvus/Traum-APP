@@ -7,6 +7,23 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'widgets/exercise_icon.dart';
+
+String _muscleGroupKey(String germanKey) {
+  switch (germanKey) {
+    case 'Brust': return 'chest';
+    case 'Rücken': return 'back';
+    case 'Schulter': return 'shoulders';
+    case 'Bizeps': return 'biceps';
+    case 'Trizeps': return 'triceps';
+    case 'Bauch': return 'core';
+    case 'Beine': return 'legs';
+    case 'Gesäß': return 'legs';
+    case 'Waden': return 'legs';
+    case 'Ganzkörper': return 'full_body';
+    default: return 'full_body';
+  }
+}
 
 class WorkoutPlanDetailScreen extends ConsumerWidget {
   final int planId;
@@ -82,7 +99,7 @@ class WorkoutPlanDetailScreen extends ConsumerWidget {
   }
 }
 
-class _DayCard extends StatelessWidget {
+class _DayCard extends ConsumerWidget {
   final WorkoutDay day;
   final int dayNumber;
   final VoidCallback onStartWorkout;
@@ -94,48 +111,128 @@ class _DayCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final weekDays = AppLocalizations.of(context)!.weekdaysShort.split(',');
+    final exercisesAsync = ref.watch(dayExercisesProvider(day.id));
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: TraumColors.surface,
         borderRadius: BorderRadius.circular(TraumRadius.card),
       ),
-      child: Row(children: [
-        Container(
-          width: 44, height: 44,
-          decoration: const BoxDecoration(
-              color: TraumColors.coralDim, shape: BoxShape.circle),
-          child: Center(
-            child: Text(
-              day.dayOfWeek != null
-                  ? weekDays[(day.dayOfWeek! - 1).clamp(0, 6)]
-                  : '$dayNumber',
-              style: const TextStyle(
-                  color: TraumColors.coralOrange,
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14),
-            ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Day header row
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 8, 10),
+            child: Row(children: [
+              Container(
+                width: 44, height: 44,
+                decoration: const BoxDecoration(
+                    color: TraumColors.coralDim, shape: BoxShape.circle),
+                child: Center(
+                  child: Text(
+                    day.dayOfWeek != null
+                        ? weekDays[(day.dayOfWeek! - 1).clamp(0, 6)]
+                        : '$dayNumber',
+                    style: const TextStyle(
+                        color: TraumColors.coralOrange,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(day.name,
+                    style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15)),
+              ),
+              IconButton(
+                icon: const Icon(Icons.play_circle_outline_rounded,
+                    color: TraumColors.coralOrange, size: 28),
+                onPressed: onStartWorkout,
+              ),
+            ]),
           ),
-        ),
-        const SizedBox(width: 14),
-        Expanded(
-          child: Text(day.name,
+          // Exercise rows
+          exercisesAsync.when(
+            data: (entries) {
+              if (entries.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+                  child: Text(
+                    AppLocalizations.of(context)!.noExercises,
+                    style: const TextStyle(
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                        fontSize: 13),
+                  ),
+                );
+              }
+              return Column(
+                children: entries.map((entry) =>
+                  _ExerciseRow(dayExercise: entry)
+                ).toList(),
+              );
+            },
+            loading: () => const SizedBox(
+                height: 32,
+                child: Center(child: CircularProgressIndicator(
+                    strokeWidth: 2, color: TraumColors.coralOrange))),
+            error: (_, __) => const SizedBox.shrink(),
+          ),
+          const SizedBox(height: 6),
+        ],
+      ),
+    );
+  }
+}
+
+class _ExerciseRow extends ConsumerWidget {
+  final WorkoutDayExercise dayExercise;
+  const _ExerciseRow({required this.dayExercise});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final exercisesAsync = ref.watch(allExercisesStreamProvider);
+    return exercisesAsync.when(
+      data: (exercises) {
+        final exercise = exercises.cast<Exercise?>().firstWhere(
+          (e) => e?.id == dayExercise.exerciseId,
+          orElse: () => null,
+        );
+        if (exercise == null) return const SizedBox.shrink();
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+          child: Row(children: [
+            ExerciseIcon(muscleGroup: _muscleGroupKey(exercise.muscleGroup), size: 36),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(exercise.name,
+                  style: const TextStyle(
+                      color: TraumColors.onBackground,
+                      fontFamily: 'DMSans',
+                      fontSize: 13)),
+            ),
+            Text(
+              '${dayExercise.defaultSets}x${dayExercise.defaultReps}',
               style: const TextStyle(
-                  color: TraumColors.onBackground,
+                  color: TraumColors.onBackgroundMuted,
                   fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15)),
-        ),
-        IconButton(
-          icon: const Icon(Icons.play_circle_outline_rounded,
-              color: TraumColors.coralOrange, size: 28),
-          onPressed: onStartWorkout,
-        ),
-      ]),
+                  fontSize: 12),
+            ),
+          ]),
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
     );
   }
 }

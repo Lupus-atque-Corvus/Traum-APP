@@ -978,5 +978,6 @@
   "exercises": "Exercises",
   "volumeKg": "Volume (kg)",
   "createExercise": "Create exercise",
-  "medium": "Medium"
+  "medium": "Medium",
+  "noExercises": "No exercises yet"
 }

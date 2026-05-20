@@ -978,5 +978,6 @@
   "exercises": "Übungen",
   "volumeKg": "Volumen (kg)",
   "createExercise": "Übung erstellen",
-  "medium": "Mittel"
+  "medium": "Mittel",
+  "noExercises": "Noch keine Übungen"
 }

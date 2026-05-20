@@ -133,6 +133,13 @@ final workoutDaysForPlanProvider = StreamProvider.autoDispose.family<List<Workou
 final setsForSessionProvider = StreamProvider.autoDispose.family<List<WorkoutSet>, int>((ref, sessionId) =>
     ref.watch(trainingDaoProvider).watchSetsForSession(sessionId));
 
+final dayExercisesProvider = StreamProvider.autoDispose
+    .family<List<WorkoutDayExercise>, int>((ref, dayId) =>
+        ref.watch(trainingDaoProvider).watchDayExercises(dayId));
+
+final activePlanProvider = FutureProvider.autoDispose<WorkoutPlan?>((ref) =>
+    ref.watch(trainingDaoProvider).getActivePlan());
+
 // ─── Nutrition extras ─────────────────────────────────────────────────────────
 final allMealTemplatesStreamProvider = StreamProvider.autoDispose<List<MealTemplate>>((ref) =>
     ref.watch(nutritionDaoProvider).watchAllTemplates());
