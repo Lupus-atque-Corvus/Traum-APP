@@ -8,6 +8,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'widgets/exercise_icon.dart';
 
 String _muscleLabel(String key, AppLocalizations l10n) {
   switch (key) {
@@ -22,6 +23,22 @@ String _muscleLabel(String key, AppLocalizations l10n) {
     case 'Waden': return l10n.muscleWaden;
     case 'Ganzkörper': return l10n.muscleGanzkoerper;
     default: return key;
+  }
+}
+
+String _muscleGroupKey(String germanKey) {
+  switch (germanKey) {
+    case 'Brust': return 'chest';
+    case 'Rücken': return 'back';
+    case 'Schulter': return 'shoulders';
+    case 'Bizeps': return 'biceps';
+    case 'Trizeps': return 'triceps';
+    case 'Bauch': return 'core';
+    case 'Beine': return 'legs';
+    case 'Gesäß': return 'legs';
+    case 'Waden': return 'legs';
+    case 'Ganzkörper': return 'full_body';
+    default: return 'full_body';
   }
 }
 
@@ -243,13 +260,7 @@ class _ExerciseTile extends StatelessWidget {
       ),
       child: ListTile(
         onTap: onTap,
-        leading: Container(
-          width: 40, height: 40,
-          decoration: const BoxDecoration(
-              color: TraumColors.coralDim, shape: BoxShape.circle),
-          child: const Icon(Icons.fitness_center_rounded,
-              color: TraumColors.coralOrange, size: 18),
-        ),
+        leading: ExerciseIcon(muscleGroup: _muscleGroupKey(exercise.muscleGroup), size: 44),
         title: Text(exercise.name,
             style: const TextStyle(
                 color: TraumColors.onBackground,
