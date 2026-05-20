@@ -83,7 +83,7 @@ class _WizardExercisesStepState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Uebungen pruefen',
+          'Übungen prüfen',
           style: TextStyle(
               color: TraumColors.onBackground,
               fontFamily: 'DMSans',
@@ -92,7 +92,7 @@ class _WizardExercisesStepState
         ),
         const SizedBox(height: 6),
         const Text(
-          'Passe die Uebungen je Trainingstag an.',
+          'Passe die Übungen je Trainingstag an.',
           style: TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
@@ -150,7 +150,7 @@ class _DayExerciseBlock extends StatelessWidget {
             onPressed: onAdd,
             icon: const Icon(Icons.add_rounded,
                 color: TraumColors.coralOrange, size: 18),
-            label: const Text('Uebung hinzufuegen',
+            label: const Text('Übung hinzufügen',
                 style: TextStyle(
                     color: TraumColors.coralOrange,
                     fontFamily: 'DMSans',
@@ -247,7 +247,7 @@ class _ExercisePickerSheetState extends State<_ExercisePickerSheet> {
             style: const TextStyle(
                 color: TraumColors.onBackground, fontFamily: 'DMSans'),
             decoration: InputDecoration(
-              hintText: 'Uebung suchen...',
+              hintText: 'Übung suchen...',
               hintStyle: const TextStyle(color: TraumColors.onBackgroundMuted),
               prefixIcon: const Icon(Icons.search_rounded,
                   color: TraumColors.onBackgroundMuted),

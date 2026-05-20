@@ -74,7 +74,7 @@ class _WizardDaysStepState extends State<WizardDaysStep> {
         ),
         const SizedBox(height: 6),
         const Text(
-          'Waehle die Tage und passe die Namen an.',
+          'Wähle die Tage und passe die Namen an.',
           style: TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',

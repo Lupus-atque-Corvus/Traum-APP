@@ -150,7 +150,7 @@ class _TrainingWizardScreenState
         actions: [
           TextButton(
             onPressed: _skip,
-            child: const Text('Ueberspringen',
+            child: const Text('Überspringen',
                 style: TextStyle(
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans',

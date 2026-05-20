@@ -19,7 +19,7 @@ class WizardTemplateStep extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Vorlage waehlen',
+          'Vorlage wählen',
           style: TextStyle(
               color: TraumColors.onBackground,
               fontFamily: 'DMSans',
@@ -28,7 +28,7 @@ class WizardTemplateStep extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         const Text(
-          'Waehle einen bewaehrten Plan oder erstelle deinen eigenen.',
+          'Wähle einen bewährten Plan oder erstelle deinen eigenen.',
           style: TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
