@@ -57,12 +57,13 @@ part 'traum_database.g.dart';
     SubTasks,
     Habits,
     HabitLogs,
-    // Training (5)
+    // Training (6)
     WorkoutPlans,
     WorkoutDays,
     Exercises,
     WorkoutSessions,
     WorkoutSets,
+    WorkoutDayExercises,
     // Health (5)
     WeightLogs,
     BodyMeasurements,
@@ -111,7 +112,16 @@ class TraumDatabase extends _$TraumDatabase {
   TraumDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (migrator, from, to) async {
+      if (from < 2) {
+        await migrator.createTable(workoutDayExercises);
+      }
+    },
+  );
 }
 
 LazyDatabase _openConnection() {

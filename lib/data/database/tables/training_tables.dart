@@ -46,3 +46,12 @@ class WorkoutSets extends Table {
   TextColumn get setType => text().withDefault(const Constant('normal'))();
   BoolColumn get isWarmup => boolean().withDefault(const Constant(false))();
 }
+
+class WorkoutDayExercises extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get dayId => integer().references(WorkoutDays, #id)();
+  IntColumn get exerciseId => integer().references(Exercises, #id)();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  IntColumn get defaultSets => integer().withDefault(const Constant(3))();
+  IntColumn get defaultReps => integer().withDefault(const Constant(10))();
+}

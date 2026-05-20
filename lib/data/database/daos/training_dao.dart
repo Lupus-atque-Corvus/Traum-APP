@@ -3,8 +3,10 @@ import '../traum_database.dart';
 
 part 'training_dao.g.dart';
 
-@DriftAccessor(
-    tables: [WorkoutPlans, WorkoutDays, Exercises, WorkoutSessions, WorkoutSets])
+@DriftAccessor(tables: [
+  WorkoutPlans, WorkoutDays, Exercises,
+  WorkoutSessions, WorkoutSets, WorkoutDayExercises,
+])
 class TrainingDao extends DatabaseAccessor<TraumDatabase>
     with _$TrainingDaoMixin {
   TrainingDao(super.db);
@@ -115,4 +117,26 @@ class TrainingDao extends DatabaseAccessor<TraumDatabase>
 
   Future<int> deleteSet(int id) =>
       (delete(workoutSets)..where((t) => t.id.equals(id))).go();
+
+  // WorkoutDayExercises
+  Future<List<WorkoutDayExercise>> getDayExercises(int dayId) =>
+      (select(workoutDayExercises)
+            ..where((t) => t.dayId.equals(dayId))
+            ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
+          .get();
+
+  Stream<List<WorkoutDayExercise>> watchDayExercises(int dayId) =>
+      (select(workoutDayExercises)
+            ..where((t) => t.dayId.equals(dayId))
+            ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
+          .watch();
+
+  Future<int> insertDayExercise(WorkoutDayExercisesCompanion entry) =>
+      into(workoutDayExercises).insert(entry);
+
+  Future<int> deleteDayExercise(int id) =>
+      (delete(workoutDayExercises)..where((t) => t.id.equals(id))).go();
+
+  Future<void> deleteDayExercisesForDay(int dayId) =>
+      (delete(workoutDayExercises)..where((t) => t.dayId.equals(dayId))).go();
 }

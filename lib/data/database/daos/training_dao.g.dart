@@ -9,4 +9,6 @@ mixin _$TrainingDaoMixin on DatabaseAccessor<TraumDatabase> {
   $ExercisesTable get exercises => attachedDatabase.exercises;
   $WorkoutSessionsTable get workoutSessions => attachedDatabase.workoutSessions;
   $WorkoutSetsTable get workoutSets => attachedDatabase.workoutSets;
+  $WorkoutDayExercisesTable get workoutDayExercises =>
+      attachedDatabase.workoutDayExercises;
 }
