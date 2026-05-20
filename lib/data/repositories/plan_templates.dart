@@ -28,11 +28,13 @@ class TemplateExercise {
   final String exerciseName; // must match seeded exercise name exactly
   final int sets;
   final int reps;
+  final String unit; // 'reps' | 'seconds'
 
   const TemplateExercise({
     required this.exerciseName,
     required this.sets,
     required this.reps,
+    this.unit = 'reps',
   });
 }
 
@@ -69,14 +71,14 @@ class PlanTemplates {
         exercises: [
           TemplateExercise(exerciseName: 'Kniebeugen', sets: 4, reps: 8),
           TemplateExercise(exerciseName: 'Ausfallschritte', sets: 3, reps: 12),
-          TemplateExercise(exerciseName: 'Plank', sets: 3, reps: 60),
+          TemplateExercise(exerciseName: 'Plank', sets: 3, reps: 60, unit: 'seconds'),
         ],
       ),
     ],
   );
 
   static const PlanTemplate ganzkoerper = PlanTemplate(
-    id: 'fullbody',
+    id: 'ganzkoerper',
     name: 'Ganzkoerper 3x',
     subtitle: '3 Tage · Kraft + Ausdauer',
     days: [
@@ -87,7 +89,7 @@ class PlanTemplates {
           TemplateExercise(exerciseName: 'Bankdruecken', sets: 3, reps: 10),
           TemplateExercise(exerciseName: 'Kniebeugen', sets: 3, reps: 10),
           TemplateExercise(exerciseName: 'Klimmzuege', sets: 3, reps: 8),
-          TemplateExercise(exerciseName: 'Plank', sets: 3, reps: 45),
+          TemplateExercise(exerciseName: 'Plank', sets: 3, reps: 45, unit: 'seconds'),
         ],
       ),
       TemplateDay(
@@ -97,7 +99,7 @@ class PlanTemplates {
           TemplateExercise(exerciseName: 'Schulterdruecken', sets: 3, reps: 10),
           TemplateExercise(exerciseName: 'Kreuzheben', sets: 3, reps: 8),
           TemplateExercise(exerciseName: 'Bizepscurls', sets: 3, reps: 12),
-          TemplateExercise(exerciseName: 'Laufen', sets: 1, reps: 20),
+          TemplateExercise(exerciseName: 'Laufen', sets: 1, reps: 20, unit: 'seconds'),
         ],
       ),
       TemplateDay(
@@ -107,7 +109,7 @@ class PlanTemplates {
           TemplateExercise(exerciseName: 'Liegestuetze', sets: 4, reps: 12),
           TemplateExercise(exerciseName: 'Ausfallschritte', sets: 3, reps: 12),
           TemplateExercise(exerciseName: 'Trizepsdruecken', sets: 3, reps: 12),
-          TemplateExercise(exerciseName: 'Plank', sets: 3, reps: 45),
+          TemplateExercise(exerciseName: 'Plank', sets: 3, reps: 45, unit: 'seconds'),
         ],
       ),
     ],
@@ -136,7 +138,7 @@ class PlanTemplates {
           TemplateExercise(exerciseName: 'Kniebeugen', sets: 4, reps: 8),
           TemplateExercise(exerciseName: 'Kreuzheben', sets: 3, reps: 6),
           TemplateExercise(exerciseName: 'Ausfallschritte', sets: 3, reps: 12),
-          TemplateExercise(exerciseName: 'Plank', sets: 3, reps: 45),
+          TemplateExercise(exerciseName: 'Plank', sets: 3, reps: 45, unit: 'seconds'),
         ],
       ),
       TemplateDay(
@@ -156,8 +158,8 @@ class PlanTemplates {
         exercises: [
           TemplateExercise(exerciseName: 'Kniebeugen', sets: 4, reps: 10),
           TemplateExercise(exerciseName: 'Ausfallschritte', sets: 3, reps: 15),
-          TemplateExercise(exerciseName: 'Plank', sets: 3, reps: 60),
-          TemplateExercise(exerciseName: 'Laufen', sets: 1, reps: 20),
+          TemplateExercise(exerciseName: 'Plank', sets: 3, reps: 60, unit: 'seconds'),
+          TemplateExercise(exerciseName: 'Laufen', sets: 1, reps: 20, unit: 'seconds'),
         ],
       ),
     ],
