@@ -6,6 +6,21 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'widgets/exercise_icon.dart';
+
+String _muscleGroupKey(String g) {
+  switch (g.toLowerCase()) {
+    case 'brust': return 'chest';
+    case 'rücken': return 'back';
+    case 'schulter': return 'shoulders';
+    case 'bizeps': return 'biceps';
+    case 'trizeps': return 'triceps';
+    case 'bauch': return 'core';
+    case 'beine': case 'gesäß': case 'waden': return 'legs';
+    case 'ganzkörper': return 'full_body';
+    default: return 'full_body';
+  }
+}
 
 class WorkoutSessionDetailScreen extends ConsumerWidget {
   final int sessionId;
@@ -165,6 +180,8 @@ class _ExerciseGroup extends StatelessWidget {
         children: [
           ListTile(
             onTap: onExerciseTap,
+            leading: ExerciseIcon(
+                muscleGroup: _muscleGroupKey(muscleGroup), size: 36),
             title: Text(exerciseName,
                 style: const TextStyle(
                     color: TraumColors.onBackground,

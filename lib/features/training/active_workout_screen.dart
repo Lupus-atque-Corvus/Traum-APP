@@ -9,6 +9,21 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'widgets/exercise_icon.dart';
+
+String _muscleGroupKey(String g) {
+  switch (g.toLowerCase()) {
+    case 'brust': return 'chest';
+    case 'rücken': return 'back';
+    case 'schulter': return 'shoulders';
+    case 'bizeps': return 'biceps';
+    case 'trizeps': return 'triceps';
+    case 'bauch': return 'core';
+    case 'beine': case 'gesäß': case 'waden': return 'legs';
+    case 'ganzkörper': return 'full_body';
+    default: return 'full_body';
+  }
+}
 
 class ActiveWorkoutScreen extends ConsumerStatefulWidget {
   const ActiveWorkoutScreen({super.key});
@@ -111,6 +126,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
                     final l10n = AppLocalizations.of(context)!;
                     return _SetCard(
                       exerciseName: ex?.name ?? l10n.exercise,
+                      muscleGroup: ex?.muscleGroup ?? '',
                       entry: entry,
                       onRemove: () => setState(() => _sets.removeAt(e.key)),
                     );
@@ -268,11 +284,15 @@ class _SetEntry {
 
 class _SetCard extends StatelessWidget {
   final String exerciseName;
+  final String muscleGroup;
   final _SetEntry entry;
   final VoidCallback onRemove;
 
   const _SetCard(
-      {required this.exerciseName, required this.entry, required this.onRemove});
+      {required this.exerciseName,
+      required this.muscleGroup,
+      required this.entry,
+      required this.onRemove});
 
   @override
   Widget build(BuildContext context) {
@@ -284,6 +304,8 @@ class _SetCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(TraumRadius.card),
       ),
       child: Row(children: [
+        ExerciseIcon(muscleGroup: _muscleGroupKey(muscleGroup), size: 40),
+        const SizedBox(width: 12),
         Container(
           width: 32, height: 32,
           decoration: const BoxDecoration(
