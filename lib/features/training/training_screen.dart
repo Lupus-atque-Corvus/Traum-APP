@@ -160,7 +160,7 @@ class _WeekStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final today = DateTime.now().weekday;
-    final labels = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+    final labels = AppLocalizations.of(context)!.weekdaysShort.split(',');
 
     return Row(
       children: List.generate(7, (i) {
@@ -351,7 +351,7 @@ class _TodayCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                       fontSize: 16)),
               const SizedBox(height: 3),
-              Text('$exerciseCount Übungen · heute',
+              Text(AppLocalizations.of(context)!.exercisesToday(exerciseCount),
                   style: const TextStyle(
                       color: TraumColors.onBackgroundMuted,
                       fontFamily: 'DMSans',

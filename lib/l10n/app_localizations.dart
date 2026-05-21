@@ -4711,6 +4711,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Volumen'**
   String get weeklyVolume;
+
+  /// No description provided for @exercisesToday.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} Übungen · heute'**
+  String exercisesToday(int count);
+
+  /// No description provided for @sessionNamesLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Einheitennamen'**
+  String get sessionNamesLabel;
 }
 
 class _AppLocalizationsDelegate

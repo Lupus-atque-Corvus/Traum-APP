@@ -123,9 +123,9 @@ class _WizardDaysStepState extends State<WizardDaysStep> {
         ),
         if (_days.isNotEmpty) ...[
           const SizedBox(height: 24),
-          const Text(
-            'Einheitennamen',
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)!.sessionNamesLabel,
+            style: const TextStyle(
                 color: TraumColors.onBackgroundMuted,
                 fontFamily: 'DMSans',
                 fontSize: 12,

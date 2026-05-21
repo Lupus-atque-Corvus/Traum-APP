@@ -2412,4 +2412,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get weeklyVolume => 'Volume';
+
+  @override
+  String exercisesToday(int count) => '$count exercises · today';
+
+  @override
+  String get sessionNamesLabel => 'Session names';
 }

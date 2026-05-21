@@ -1002,5 +1002,13 @@
   "freeTraining": "Freies Training",
   "completedThisWeek": "Absolviert",
   "plannedThisWeek": "Geplant",
-  "weeklyVolume": "Volumen"
+  "weeklyVolume": "Volumen",
+
+  "exercisesToday": "{count} Übungen · heute",
+  "@exercisesToday": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "sessionNamesLabel": "Einheitennamen"
 }
