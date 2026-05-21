@@ -968,6 +968,7 @@
   "maxReps": "Max. reps",
   "little": "Little",
   "much": "Much",
+  "restTimerLabel": "Rest",
   "addSet": "Add set",
   "noTraining": "No training",
   "notTrained": "Not trained",

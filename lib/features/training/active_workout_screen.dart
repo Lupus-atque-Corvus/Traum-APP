@@ -34,13 +34,14 @@ class ActiveWorkoutScreen extends ConsumerStatefulWidget {
 }
 
 class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
+  static const int _restSeconds = 90;
+
   late DateTime _startedAt;
   late Timer _timer;
   Duration _elapsed = Duration.zero;
   int? _sessionId;
   final _sets = <_SetEntry>[];
   bool _finishing = false;
-  final int _restSeconds = 90;
 
   @override
   void initState() {
@@ -251,7 +252,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
       context: context,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
       ),
       builder: (_) => RestTimerWidget(
         durationSeconds: _restSeconds,

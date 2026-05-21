@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/radius.dart';
+import '../../../core/utils/formatters.dart';
+import '../../../l10n/app_localizations.dart';
 
 class RestTimerWidget extends StatefulWidget {
   final int durationSeconds;
@@ -30,7 +33,8 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
       if (!mounted) return;
       if (_remaining <= 1) {
         _timer.cancel();
-        widget.onFinished();
+        setState(() => _remaining = 0);
+        if (mounted) widget.onFinished();
       } else {
         setState(() => _remaining--);
       }
@@ -43,35 +47,30 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
     super.dispose();
   }
 
-  String get _formatted {
-    final m = _remaining ~/ 60;
-    final s = _remaining % 60;
-    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
-  }
-
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final ratio = _remaining / widget.durationSeconds;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(height: 8),
         Container(
-          width: 4,
+          width: 32,
           height: 4,
           decoration: BoxDecoration(
             color: TraumColors.onBackgroundSubtle,
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(TraumRadius.card),
           ),
         ),
         const SizedBox(height: 16),
-        const Text('Pause', style: TextStyle(
+        Text(l10n.restTimerLabel, style: const TextStyle(
           color: TraumColors.onBackgroundMuted,
           fontFamily: 'DMSans',
           fontSize: 13,
         )),
         const SizedBox(height: 8),
-        Text(_formatted, style: const TextStyle(
+        Text(formatDurationHMS(_remaining), style: const TextStyle(
           color: TraumColors.mintGreen,
           fontFamily: 'DMSans',
           fontWeight: FontWeight.w700,
@@ -91,7 +90,7 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
         const SizedBox(height: 20),
         TextButton(
           onPressed: widget.onSkip,
-          child: const Text('Skip', style: TextStyle(
+          child: Text(l10n.skip, style: const TextStyle(
             color: TraumColors.onBackgroundMuted,
             fontFamily: 'DMSans',
           )),

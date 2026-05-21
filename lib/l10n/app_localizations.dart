@@ -4544,6 +4544,12 @@ abstract class AppLocalizations {
   /// **'Viel'**
   String get much;
 
+  /// No description provided for @restTimerLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Pause'**
+  String get restTimerLabel;
+
   /// No description provided for @addSet.
   ///
   /// In de, this message translates to:

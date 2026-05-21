@@ -2327,6 +2327,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get much => 'Much';
 
   @override
+  String get restTimerLabel => 'Rest';
+
+  @override
   String get addSet => 'Add set';
 
   @override
@@ -2414,7 +2417,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weeklyVolume => 'Volume';
 
   @override
-  String exercisesToday(int count) => '$count exercises · today';
+  String exercisesToday(int count) {
+    return '$count exercises · today';
+  }
 
   @override
   String get sessionNamesLabel => 'Session names';
