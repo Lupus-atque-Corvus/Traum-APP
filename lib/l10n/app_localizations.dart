@@ -4741,6 +4741,24 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Geschätzter 1RM (Epley)'**
   String get estimated1RM;
+
+  /// No description provided for @heavilyTrained.
+  ///
+  /// In de, this message translates to:
+  /// **'Stark trainiert'**
+  String get heavilyTrained;
+
+  /// No description provided for @lightlyTrained.
+  ///
+  /// In de, this message translates to:
+  /// **'Leicht trainiert'**
+  String get lightlyTrained;
+
+  /// No description provided for @notTrainedHeatmap.
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht trainiert'**
+  String get notTrainedHeatmap;
 }
 
 class _AppLocalizationsDelegate

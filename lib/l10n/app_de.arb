@@ -1013,5 +1013,8 @@
   },
   "sessionNamesLabel": "Einheitennamen",
   "bookmarked": "Gespeichert",
-  "estimated1RM": "Geschätzter 1RM (Epley)"
+  "estimated1RM": "Geschätzter 1RM (Epley)",
+  "heavilyTrained": "Stark trainiert",
+  "lightlyTrained": "Leicht trainiert",
+  "notTrainedHeatmap": "Nicht trainiert"
 }

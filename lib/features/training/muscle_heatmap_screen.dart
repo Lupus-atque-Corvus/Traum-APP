@@ -5,6 +5,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'widgets/body_map_widget.dart';
 
 String _muscleLabel(String key, AppLocalizations l10n) {
   switch (key) {
@@ -64,9 +65,55 @@ class MuscleHeatmapScreen extends ConsumerWidget {
                 ? 1
                 : setsPerMuscle.values.reduce((a, b) => a > b ? a : b);
 
+            // Map trained muscle groups → BodyMap muscle IDs
+            final strongMuscles = <String>{};
+            final lightMuscles = <String>{};
+            for (final entry in setsPerMuscle.entries) {
+              final muscleIds = BodyMapWidget.musclesForGroup(entry.key);
+              final ratio = maxSets > 0 ? entry.value / maxSets : 0.0;
+              if (ratio > 0.5) {
+                strongMuscles.addAll(muscleIds);
+              } else if (ratio > 0) {
+                lightMuscles.addAll(muscleIds);
+              }
+            }
+            final primaryMuscles = strongMuscles.toList();
+            final secondaryMuscles = lightMuscles.difference(strongMuscles).toList();
+
             return ListView(
               padding: const EdgeInsets.all(16),
               children: [
+                // Body map front + back
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    BodyMapWidget(
+                      primaryMuscles: primaryMuscles,
+                      secondaryMuscles: secondaryMuscles,
+                      height: 200,
+                    ),
+                    const SizedBox(width: 16),
+                    BodyMapWidget(
+                      primaryMuscles: primaryMuscles,
+                      secondaryMuscles: secondaryMuscles,
+                      showBack: true,
+                      height: 200,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                // Legend
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _BodyMapLegendDot(color: const Color(0xFFFF4D4D), label: AppLocalizations.of(context)!.heavilyTrained),
+                    const SizedBox(width: 16),
+                    _BodyMapLegendDot(color: const Color(0xFFFFD34C), label: AppLocalizations.of(context)!.lightlyTrained),
+                    const SizedBox(width: 16),
+                    _BodyMapLegendDot(color: const Color(0xFF2A2A3D), label: AppLocalizations.of(context)!.notTrainedHeatmap),
+                  ],
+                ),
+                const SizedBox(height: 20),
                 Text(AppLocalizations.of(context)!.trainingVolumeLast7Days,
                     style: TextStyle(
                         color: TraumColors.onBackground,
@@ -188,6 +235,28 @@ class _LegendItem extends StatelessWidget {
       Text(label,
           style: const TextStyle(
               color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 10)),
+    ]);
+  }
+}
+
+class _BodyMapLegendDot extends StatelessWidget {
+  final Color color;
+  final String label;
+  const _BodyMapLegendDot({required this.color, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      Container(
+        width: 10, height: 10,
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+      ),
+      const SizedBox(width: 4),
+      Text(label, style: const TextStyle(
+        color: TraumColors.onBackgroundMuted,
+        fontFamily: 'DMSans',
+        fontSize: 11,
+      )),
     ]);
   }
 }

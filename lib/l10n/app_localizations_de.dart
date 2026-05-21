@@ -2440,4 +2440,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get estimated1RM => 'Geschätzter 1RM (Epley)';
+
+  @override
+  String get heavilyTrained => 'Stark trainiert';
+
+  @override
+  String get lightlyTrained => 'Leicht trainiert';
+
+  @override
+  String get notTrainedHeatmap => 'Nicht trainiert';
 }

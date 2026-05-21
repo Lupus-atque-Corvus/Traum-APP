@@ -1013,5 +1013,8 @@
   },
   "sessionNamesLabel": "Session names",
   "bookmarked": "Bookmarked",
-  "estimated1RM": "Estimated 1RM (Epley)"
+  "estimated1RM": "Estimated 1RM (Epley)",
+  "heavilyTrained": "Heavily trained",
+  "lightlyTrained": "Lightly trained",
+  "notTrainedHeatmap": "Not trained"
 }
