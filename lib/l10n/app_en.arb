@@ -979,5 +979,28 @@
   "volumeKg": "Volume (kg)",
   "createExercise": "Create exercise",
   "medium": "Medium",
-  "noExercises": "No exercises yet"
+  "noExercises": "No exercises yet",
+
+  "wizardSkip": "Skip",
+  "wizardNext": "Next",
+  "wizardFinish": "Done",
+  "wizardStepOf": "Step {current} of {total}",
+  "@wizardStepOf": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "templateSelectTitle": "Choose template",
+  "templateSelectSubtitle": "Choose a proven plan or build your own.",
+  "daysSelectTitle": "Training days",
+  "daysSelectSubtitle": "Select days and customize the names.",
+  "exercisesReviewTitle": "Review exercises",
+  "exercisesReviewSubtitle": "Adjust exercises per training day.",
+  "searchExercise": "Search exercise...",
+  "restDay": "Rest day",
+  "freeTraining": "Free workout",
+  "completedThisWeek": "Completed",
+  "plannedThisWeek": "Planned",
+  "weeklyVolume": "Volume"
 }

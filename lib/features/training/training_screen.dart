@@ -237,6 +237,7 @@ class _StatsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     String volLabel;
     if (volumeKg >= 1000) {
       volLabel = '${(volumeKg / 1000).toStringAsFixed(1)}t';
@@ -245,11 +246,11 @@ class _StatsRow extends StatelessWidget {
     }
 
     return Row(children: [
-      _StatTile(value: '$completed', label: 'Absolviert'),
+      _StatTile(value: '$completed', label: l10n.completedThisWeek),
       const SizedBox(width: 10),
-      _StatTile(value: '$planned', label: 'Geplant'),
+      _StatTile(value: '$planned', label: l10n.plannedThisWeek),
       const SizedBox(width: 10),
-      _StatTile(value: volLabel, label: 'Volumen'),
+      _StatTile(value: volLabel, label: l10n.weeklyVolume),
     ]);
   }
 }
@@ -298,6 +299,7 @@ class _TodayCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (todayDay == null) {
       return Container(
         padding: const EdgeInsets.all(16),
@@ -309,9 +311,9 @@ class _TodayCard extends StatelessWidget {
           const Icon(Icons.self_improvement_rounded,
               color: TraumColors.onBackgroundMuted, size: 28),
           const SizedBox(width: 14),
-          const Expanded(
-            child: Text('Ruhetag',
-                style: TextStyle(
+          Expanded(
+            child: Text(l10n.restDay,
+                style: const TextStyle(
                     color: TraumColors.onBackground,
                     fontFamily: 'DMSans',
                     fontWeight: FontWeight.w600,
@@ -319,8 +321,8 @@ class _TodayCard extends StatelessWidget {
           ),
           TextButton(
             onPressed: () => context.go(Routes.activeWorkout),
-            child: const Text('Freies Training',
-                style: TextStyle(
+            child: Text(l10n.freeTraining,
+                style: const TextStyle(
                     color: TraumColors.coralOrange,
                     fontFamily: 'DMSans',
                     fontSize: 13)),

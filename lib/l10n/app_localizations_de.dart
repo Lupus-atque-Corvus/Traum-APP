@@ -2372,4 +2372,55 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get noExercises => 'Noch keine Übungen';
+
+  @override
+  String get wizardSkip => 'Überspringen';
+
+  @override
+  String get wizardNext => 'Weiter';
+
+  @override
+  String get wizardFinish => 'Fertig';
+
+  @override
+  String wizardStepOf(int current, int total) {
+    return 'Schritt $current von $total';
+  }
+
+  @override
+  String get templateSelectTitle => 'Vorlage wählen';
+
+  @override
+  String get templateSelectSubtitle =>
+      'Wähle einen bewährten Plan oder erstelle deinen eigenen.';
+
+  @override
+  String get daysSelectTitle => 'Trainingstage';
+
+  @override
+  String get daysSelectSubtitle => 'Wähle die Tage und passe die Namen an.';
+
+  @override
+  String get exercisesReviewTitle => 'Übungen prüfen';
+
+  @override
+  String get exercisesReviewSubtitle => 'Passe die Übungen je Trainingstag an.';
+
+  @override
+  String get searchExercise => 'Übung suchen...';
+
+  @override
+  String get restDay => 'Ruhetag';
+
+  @override
+  String get freeTraining => 'Freies Training';
+
+  @override
+  String get completedThisWeek => 'Absolviert';
+
+  @override
+  String get plannedThisWeek => 'Geplant';
+
+  @override
+  String get weeklyVolume => 'Volumen';
 }

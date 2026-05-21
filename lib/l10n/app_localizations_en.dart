@@ -2361,4 +2361,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noExercises => 'No exercises yet';
+
+  @override
+  String get wizardSkip => 'Skip';
+
+  @override
+  String get wizardNext => 'Next';
+
+  @override
+  String get wizardFinish => 'Done';
+
+  @override
+  String wizardStepOf(int current, int total) {
+    return 'Step $current of $total';
+  }
+
+  @override
+  String get templateSelectTitle => 'Choose template';
+
+  @override
+  String get templateSelectSubtitle =>
+      'Choose a proven plan or build your own.';
+
+  @override
+  String get daysSelectTitle => 'Training days';
+
+  @override
+  String get daysSelectSubtitle => 'Select days and customize the names.';
+
+  @override
+  String get exercisesReviewTitle => 'Review exercises';
+
+  @override
+  String get exercisesReviewSubtitle => 'Adjust exercises per training day.';
+
+  @override
+  String get searchExercise => 'Search exercise...';
+
+  @override
+  String get restDay => 'Rest day';
+
+  @override
+  String get freeTraining => 'Free workout';
+
+  @override
+  String get completedThisWeek => 'Completed';
+
+  @override
+  String get plannedThisWeek => 'Planned';
+
+  @override
+  String get weeklyVolume => 'Volume';
 }

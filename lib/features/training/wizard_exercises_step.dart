@@ -5,6 +5,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../data/repositories/plan_templates.dart';
+import '../../l10n/app_localizations.dart';
 import 'widgets/exercise_icon.dart';
 
 class WizardExercisesStep extends ConsumerStatefulWidget {
@@ -77,23 +78,24 @@ class _WizardExercisesStepState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final sortedDays = widget.selectedDays.keys.toList()..sort();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Übungen prüfen',
-          style: TextStyle(
+        Text(
+          l10n.exercisesReviewTitle,
+          style: const TextStyle(
               color: TraumColors.onBackground,
               fontFamily: 'DMSans',
               fontWeight: FontWeight.w700,
               fontSize: 20),
         ),
         const SizedBox(height: 6),
-        const Text(
-          'Passe die Übungen je Trainingstag an.',
-          style: TextStyle(
+        Text(
+          l10n.exercisesReviewSubtitle,
+          style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14),
@@ -125,6 +127,7 @@ class _DayExerciseBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(14),
@@ -150,8 +153,8 @@ class _DayExerciseBlock extends StatelessWidget {
             onPressed: onAdd,
             icon: const Icon(Icons.add_rounded,
                 color: TraumColors.coralOrange, size: 18),
-            label: const Text('Übung hinzufügen',
-                style: TextStyle(
+            label: Text(l10n.addExercise,
+                style: const TextStyle(
                     color: TraumColors.coralOrange,
                     fontFamily: 'DMSans',
                     fontSize: 13)),
@@ -221,6 +224,7 @@ class _ExercisePickerSheetState extends State<_ExercisePickerSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final filtered = widget.exercises
         .where((e) =>
             e.name.toLowerCase().contains(_query.toLowerCase()))
@@ -247,7 +251,7 @@ class _ExercisePickerSheetState extends State<_ExercisePickerSheet> {
             style: const TextStyle(
                 color: TraumColors.onBackground, fontFamily: 'DMSans'),
             decoration: InputDecoration(
-              hintText: 'Übung suchen...',
+              hintText: l10n.searchExercise,
               hintStyle: const TextStyle(color: TraumColors.onBackgroundMuted),
               prefixIcon: const Icon(Icons.search_rounded,
                   color: TraumColors.onBackgroundMuted),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/repositories/plan_templates.dart';
+import '../../l10n/app_localizations.dart';
 
 class WizardDaysStep extends StatefulWidget {
   final PlanTemplate template;
@@ -61,21 +62,22 @@ class _WizardDaysStepState extends State<WizardDaysStep> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Trainingstage',
-          style: TextStyle(
+        Text(
+          l10n.daysSelectTitle,
+          style: const TextStyle(
               color: TraumColors.onBackground,
               fontFamily: 'DMSans',
               fontWeight: FontWeight.w700,
               fontSize: 20),
         ),
         const SizedBox(height: 6),
-        const Text(
-          'Wähle die Tage und passe die Namen an.',
-          style: TextStyle(
+        Text(
+          l10n.daysSelectSubtitle,
+          style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14),

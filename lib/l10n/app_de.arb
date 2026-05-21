@@ -979,5 +979,28 @@
   "volumeKg": "Volumen (kg)",
   "createExercise": "Übung erstellen",
   "medium": "Mittel",
-  "noExercises": "Noch keine Übungen"
+  "noExercises": "Noch keine Übungen",
+
+  "wizardSkip": "Überspringen",
+  "wizardNext": "Weiter",
+  "wizardFinish": "Fertig",
+  "wizardStepOf": "Schritt {current} von {total}",
+  "@wizardStepOf": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "templateSelectTitle": "Vorlage wählen",
+  "templateSelectSubtitle": "Wähle einen bewährten Plan oder erstelle deinen eigenen.",
+  "daysSelectTitle": "Trainingstage",
+  "daysSelectSubtitle": "Wähle die Tage und passe die Namen an.",
+  "exercisesReviewTitle": "Übungen prüfen",
+  "exercisesReviewSubtitle": "Passe die Übungen je Trainingstag an.",
+  "searchExercise": "Übung suchen...",
+  "restDay": "Ruhetag",
+  "freeTraining": "Freies Training",
+  "completedThisWeek": "Absolviert",
+  "plannedThisWeek": "Geplant",
+  "weeklyVolume": "Volumen"
 }

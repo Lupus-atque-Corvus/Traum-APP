@@ -9,6 +9,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../data/repositories/plan_templates.dart';
+import '../../l10n/app_localizations.dart';
 import 'wizard_template_step.dart';
 import 'wizard_days_step.dart';
 import 'wizard_exercises_step.dart';
@@ -128,6 +129,7 @@ class _TrainingWizardScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: TraumColors.background,
       appBar: AppBar(
@@ -141,7 +143,7 @@ class _TrainingWizardScreenState
               )
             : null,
         title: Text(
-          'Schritt ${_step + 1} von 3',
+          l10n.wizardStepOf(_step + 1, 3),
           style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
@@ -150,8 +152,8 @@ class _TrainingWizardScreenState
         actions: [
           TextButton(
             onPressed: _skip,
-            child: const Text('Überspringen',
-                style: TextStyle(
+            child: Text(l10n.wizardSkip,
+                style: const TextStyle(
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans',
                     fontSize: 13)),
@@ -193,7 +195,7 @@ class _TrainingWizardScreenState
                       child: CircularProgressIndicator(
                           strokeWidth: 2, color: Colors.white))
                   : Text(
-                      _step < 2 ? 'Weiter' : 'Fertig',
+                      _step < 2 ? l10n.wizardNext : l10n.wizardFinish,
                       style: const TextStyle(
                           fontFamily: 'DMSans',
                           fontWeight: FontWeight.w700,

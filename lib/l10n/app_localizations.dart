@@ -4615,6 +4615,102 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Noch keine Übungen'**
   String get noExercises;
+
+  /// No description provided for @wizardSkip.
+  ///
+  /// In de, this message translates to:
+  /// **'Überspringen'**
+  String get wizardSkip;
+
+  /// No description provided for @wizardNext.
+  ///
+  /// In de, this message translates to:
+  /// **'Weiter'**
+  String get wizardNext;
+
+  /// No description provided for @wizardFinish.
+  ///
+  /// In de, this message translates to:
+  /// **'Fertig'**
+  String get wizardFinish;
+
+  /// No description provided for @wizardStepOf.
+  ///
+  /// In de, this message translates to:
+  /// **'Schritt {current} von {total}'**
+  String wizardStepOf(int current, int total);
+
+  /// No description provided for @templateSelectTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlage wählen'**
+  String get templateSelectTitle;
+
+  /// No description provided for @templateSelectSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wähle einen bewährten Plan oder erstelle deinen eigenen.'**
+  String get templateSelectSubtitle;
+
+  /// No description provided for @daysSelectTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Trainingstage'**
+  String get daysSelectTitle;
+
+  /// No description provided for @daysSelectSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wähle die Tage und passe die Namen an.'**
+  String get daysSelectSubtitle;
+
+  /// No description provided for @exercisesReviewTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen prüfen'**
+  String get exercisesReviewTitle;
+
+  /// No description provided for @exercisesReviewSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Passe die Übungen je Trainingstag an.'**
+  String get exercisesReviewSubtitle;
+
+  /// No description provided for @searchExercise.
+  ///
+  /// In de, this message translates to:
+  /// **'Übung suchen...'**
+  String get searchExercise;
+
+  /// No description provided for @restDay.
+  ///
+  /// In de, this message translates to:
+  /// **'Ruhetag'**
+  String get restDay;
+
+  /// No description provided for @freeTraining.
+  ///
+  /// In de, this message translates to:
+  /// **'Freies Training'**
+  String get freeTraining;
+
+  /// No description provided for @completedThisWeek.
+  ///
+  /// In de, this message translates to:
+  /// **'Absolviert'**
+  String get completedThisWeek;
+
+  /// No description provided for @plannedThisWeek.
+  ///
+  /// In de, this message translates to:
+  /// **'Geplant'**
+  String get plannedThisWeek;
+
+  /// No description provided for @weeklyVolume.
+  ///
+  /// In de, this message translates to:
+  /// **'Volumen'**
+  String get weeklyVolume;
 }
 
 class _AppLocalizationsDelegate
