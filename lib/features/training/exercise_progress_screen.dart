@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+
+double _epley1RM(double weight, int reps) =>
+    reps == 1 ? weight : weight * (1 + reps / 30);
 
 class ExerciseProgressScreen extends ConsumerWidget {
   final int exerciseId;
@@ -67,9 +71,6 @@ class ExerciseProgressScreen extends ConsumerWidget {
                 .where((s) => s.weightKg != null && s.reps != null)
                 .map((s) => s.weightKg! * s.reps!)
                 .toList();
-            final maxVol = volumeData.isEmpty
-                ? 1.0
-                : volumeData.fold(0.0, (m, v) => v > m ? v : m);
 
             return ListView(
               padding: const EdgeInsets.all(16),
@@ -130,6 +131,100 @@ class ExerciseProgressScreen extends ConsumerWidget {
                   ),
                 ]),
                 const SizedBox(height: 16),
+                // 1RM LineChart
+                Builder(builder: (context) {
+                  final oneRMPoints = sets
+                      .where((s) => s.weightKg != null && s.reps != null && s.reps! > 0)
+                      .toList();
+
+                  if (oneRMPoints.length > 1) {
+                    return Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: TraumColors.surface,
+                            borderRadius: BorderRadius.circular(TraumRadius.card),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.estimated1RM,
+                                style: const TextStyle(
+                                  color: TraumColors.onBackground,
+                                  fontFamily: 'DMSans',
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                height: 160,
+                                child: LineChart(
+                                  LineChartData(
+                                    gridData: FlGridData(
+                                      show: true,
+                                      drawVerticalLine: false,
+                                      getDrawingHorizontalLine: (_) => FlLine(
+                                        color: TraumColors.surfaceVariant,
+                                        strokeWidth: 1,
+                                      ),
+                                    ),
+                                    titlesData: FlTitlesData(
+                                      leftTitles: AxisTitles(
+                                        sideTitles: SideTitles(
+                                          showTitles: true,
+                                          reservedSize: 40,
+                                          getTitlesWidget: (v, _) => Text(
+                                            '${v.toInt()} kg',
+                                            style: const TextStyle(
+                                              color: TraumColors.onBackgroundSubtle,
+                                              fontFamily: 'DMSans',
+                                              fontSize: 10,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      bottomTitles: const AxisTitles(
+                                        sideTitles: SideTitles(showTitles: false),
+                                      ),
+                                      rightTitles: const AxisTitles(
+                                        sideTitles: SideTitles(showTitles: false),
+                                      ),
+                                      topTitles: const AxisTitles(
+                                        sideTitles: SideTitles(showTitles: false),
+                                      ),
+                                    ),
+                                    borderData: FlBorderData(show: false),
+                                    lineBarsData: [
+                                      LineChartBarData(
+                                        spots: oneRMPoints.asMap().entries.map((e) {
+                                          final rm = _epley1RM(e.value.weightKg!, e.value.reps!);
+                                          return FlSpot(e.key.toDouble(), rm);
+                                        }).toList(),
+                                        isCurved: true,
+                                        color: TraumColors.coralOrange,
+                                        barWidth: 2,
+                                        dotData: const FlDotData(show: false),
+                                        belowBarData: BarAreaData(
+                                          show: true,
+                                          color: TraumColors.coralOrange.withValues(alpha: 0.1),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    );
+                  }
+                  return const SizedBox.shrink();
+                }),
                 // Volume chart
                 if (volumeData.length > 1) ...[
                   Container(
@@ -141,30 +236,44 @@ class ExerciseProgressScreen extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(AppLocalizations.of(context)!.volumeLast90Days,
-                            style: TextStyle(
-                                color: TraumColors.onBackground,
-                                fontFamily: 'DMSans',
-                                fontWeight: FontWeight.w700,
-                                fontSize: 14)),
+                        Text(
+                          AppLocalizations.of(context)!.volumeLast90Days,
+                          style: const TextStyle(
+                            color: TraumColors.onBackground,
+                            fontFamily: 'DMSans',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                          ),
+                        ),
                         const SizedBox(height: 12),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: volumeData.take(20).map((v) {
-                            final h = maxVol > 0 ? (v / maxVol) * 80 : 2.0;
-                            return Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 1),
-                                child: Container(
-                                  height: h.clamp(2.0, 80.0),
-                                  decoration: BoxDecoration(
-                                    color: TraumColors.coralOrange.withValues(alpha: 0.7),
-                                    borderRadius: BorderRadius.circular(2),
-                                  ),
-                                ),
+                        SizedBox(
+                          height: 120,
+                          child: BarChart(
+                            BarChartData(
+                              alignment: BarChartAlignment.spaceAround,
+                              gridData: const FlGridData(show: false),
+                              borderData: FlBorderData(show: false),
+                              titlesData: const FlTitlesData(
+                                leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                               ),
-                            );
-                          }).toList(),
+                              barGroups: volumeData.asMap().entries.map((e) =>
+                                BarChartGroupData(
+                                  x: e.key,
+                                  barRods: [
+                                    BarChartRodData(
+                                      toY: e.value,
+                                      color: TraumColors.mintGreen,
+                                      width: 8,
+                                      borderRadius: BorderRadius.circular(3),
+                                    ),
+                                  ],
+                                ),
+                              ).toList(),
+                            ),
+                          ),
                         ),
                       ],
                     ),

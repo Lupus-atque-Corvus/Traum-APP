@@ -2437,4 +2437,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get bookmarked => 'Gespeichert';
+
+  @override
+  String get estimated1RM => 'Geschätzter 1RM (Epley)';
 }

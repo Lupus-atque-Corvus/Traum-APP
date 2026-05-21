@@ -4735,6 +4735,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Gespeichert'**
   String get bookmarked;
+
+  /// No description provided for @estimated1RM.
+  ///
+  /// In de, this message translates to:
+  /// **'Geschätzter 1RM (Epley)'**
+  String get estimated1RM;
 }
 
 class _AppLocalizationsDelegate

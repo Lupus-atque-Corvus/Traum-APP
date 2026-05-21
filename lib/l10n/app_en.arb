@@ -1012,5 +1012,6 @@
     }
   },
   "sessionNamesLabel": "Session names",
-  "bookmarked": "Bookmarked"
+  "bookmarked": "Bookmarked",
+  "estimated1RM": "Estimated 1RM (Epley)"
 }

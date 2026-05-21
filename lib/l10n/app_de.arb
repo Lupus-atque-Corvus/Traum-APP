@@ -1012,5 +1012,6 @@
     }
   },
   "sessionNamesLabel": "Einheitennamen",
-  "bookmarked": "Gespeichert"
+  "bookmarked": "Gespeichert",
+  "estimated1RM": "Geschätzter 1RM (Epley)"
 }
