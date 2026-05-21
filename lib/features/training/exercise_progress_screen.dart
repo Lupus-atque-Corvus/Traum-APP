@@ -179,7 +179,7 @@ class ExerciseProgressScreen extends ConsumerWidget {
                                           showTitles: true,
                                           reservedSize: 40,
                                           getTitlesWidget: (v, _) => Text(
-                                            '${v.toInt()} kg',
+                                            '${v.toInt()} ${useLbs ? 'lbs' : 'kg'}',
                                             style: const TextStyle(
                                               color: TraumColors.onBackgroundSubtle,
                                               fontFamily: 'DMSans',
@@ -203,7 +203,7 @@ class ExerciseProgressScreen extends ConsumerWidget {
                                       LineChartBarData(
                                         spots: oneRMPoints.asMap().entries.map((e) {
                                           final rm = _epley1RM(e.value.weightKg!, e.value.reps!);
-                                          return FlSpot(e.key.toDouble(), rm);
+                                          return FlSpot(e.key.toDouble(), rm.toDisplayUnit(useLbs));
                                         }).toList(),
                                         isCurved: true,
                                         color: TraumColors.coralOrange,

@@ -308,7 +308,7 @@ class _SetEntry {
       this.reps});
 }
 
-class _SetCard extends StatelessWidget {
+class _SetCard extends ConsumerWidget {
   final String exerciseName;
   final String muscleGroup;
   final _SetEntry entry;
@@ -321,7 +321,8 @@ class _SetCard extends StatelessWidget {
       required this.onRemove});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final useLbs = ref.watch(unitPreferenceProvider);
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -355,7 +356,7 @@ class _SetCard extends StatelessWidget {
                     fontWeight: FontWeight.w600)),
             Text(
               [
-                if (entry.weightKg != null) '${entry.weightKg} kg',
+                if (entry.weightKg != null) '${entry.weightKg!.toDisplayUnit(useLbs).toStringAsFixed(1)} ${entry.weightKg!.unitLabel(useLbs)}',
                 if (entry.reps != null) AppLocalizations.of(context)!.repsCount(entry.reps!),
               ].join('  ×  '),
               style: const TextStyle(
