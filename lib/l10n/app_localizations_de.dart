@@ -1266,6 +1266,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get weightKg => 'Gewicht (kg)';
 
   @override
+  String get weightLbs => 'Gewicht (lbs)';
+
+  @override
   String get welcomeToTraum => 'Willkommen bei TRAUM';
 
   @override

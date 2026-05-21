@@ -2504,6 +2504,12 @@ abstract class AppLocalizations {
   /// **'Gewicht (kg)'**
   String get weightKg;
 
+  /// No description provided for @weightLbs.
+  ///
+  /// In de, this message translates to:
+  /// **'Gewicht (lbs)'**
+  String get weightLbs;
+
   /// No description provided for @welcomeToTraum.
   ///
   /// In de, this message translates to:

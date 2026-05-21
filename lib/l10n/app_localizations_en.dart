@@ -1258,6 +1258,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weightKg => 'Weight (kg)';
 
   @override
+  String get weightLbs => 'Weight (lbs)';
+
+  @override
   String get welcomeToTraum => 'Welcome to TRAUM';
 
   @override

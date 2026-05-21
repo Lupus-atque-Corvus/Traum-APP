@@ -8,6 +8,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../core/providers/unit_preference_provider.dart';
 import '../../l10n/app_localizations.dart';
 import 'widgets/exercise_icon.dart';
 import 'widgets/rest_timer_widget.dart';
@@ -163,6 +164,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
           content: Text(AppLocalizations.of(context)!.noExercisesInLibrary)));
       return;
     }
+    final useLbs = ref.read(unitPreferenceProvider);
     int? selectedExerciseId = exercises.first.id;
     final weightCtrl = TextEditingController();
     final repsCtrl = TextEditingController();
@@ -200,7 +202,9 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
               decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.weightKg,
+                labelText: useLbs
+                    ? AppLocalizations.of(context)!.weightLbs
+                    : AppLocalizations.of(context)!.weightKg,
                 labelStyle: const TextStyle(
                     color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
               ),
@@ -231,7 +235,10 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
                 _sets.add(_SetEntry(
                   exerciseId: selectedExerciseId!,
                   setNumber: _sets.length + 1,
-                  weightKg: double.tryParse(weightCtrl.text.replaceAll(',', '.')),
+                  weightKg: (() {
+                    final raw = double.tryParse(weightCtrl.text.replaceAll(',', '.'));
+                    return (raw != null && useLbs) ? raw / 2.20462 : raw;
+                  })(),
                   reps: int.tryParse(repsCtrl.text),
                 ));
               });

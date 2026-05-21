@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../core/providers/database_provider.dart';
+import '../../core/providers/unit_preference_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
@@ -18,6 +19,7 @@ class ExerciseProgressScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final setsAsync = ref.watch(recentTrainingSetsProvider(90));
     final exercisesAsync = ref.watch(allExercisesStreamProvider);
+    final useLbs = ref.watch(unitPreferenceProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,
@@ -115,7 +117,7 @@ class ExerciseProgressScreen extends ConsumerWidget {
                   Expanded(
                     child: _PRCard(
                       label: AppLocalizations.of(context)!.maxWeight,
-                      value: '${maxWeight.toStringAsFixed(1)} kg',
+                      value: '${maxWeight.toDisplayUnit(useLbs).toStringAsFixed(1)} ${maxWeight.unitLabel(useLbs)}',
                       icon: Icons.trending_up_rounded,
                       color: TraumColors.coralOrange,
                     ),
@@ -304,7 +306,7 @@ class ExerciseProgressScreen extends ConsumerWidget {
                                 fontSize: 12)),
                         const Spacer(),
                         if (s.weightKg != null)
-                          Text('${s.weightKg} kg',
+                          Text('${s.weightKg!.toDisplayUnit(useLbs).toStringAsFixed(1)} ${s.weightKg!.unitLabel(useLbs)}',
                               style: const TextStyle(
                                   color: TraumColors.onBackground,
                                   fontFamily: 'DMSans',
