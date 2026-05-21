@@ -1011,5 +1011,6 @@
       "count": {"type": "int"}
     }
   },
-  "sessionNamesLabel": "Session names"
+  "sessionNamesLabel": "Session names",
+  "bookmarked": "Bookmarked"
 }

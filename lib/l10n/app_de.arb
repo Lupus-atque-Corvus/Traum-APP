@@ -1011,5 +1011,6 @@
       "count": {"type": "int"}
     }
   },
-  "sessionNamesLabel": "Einheitennamen"
+  "sessionNamesLabel": "Einheitennamen",
+  "bookmarked": "Gespeichert"
 }

@@ -52,6 +52,7 @@ class ExerciseLibraryScreen extends ConsumerStatefulWidget {
 class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
   String _search = '';
   String? _muscleFilter;
+  bool _showBookmarkedOnly = false;
 
   static const _muscleGroups = [
     'Brust', 'Rücken', 'Schulter', 'Bizeps', 'Trizeps',
@@ -109,6 +110,28 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: FilterChip(
+                    label: Text(AppLocalizations.of(context)!.bookmarked),
+                    selected: _showBookmarkedOnly,
+                    onSelected: (v) => setState(() {
+                      _showBookmarkedOnly = v;
+                      if (v) _muscleFilter = null;
+                    }),
+                    selectedColor: TraumColors.coralDim,
+                    checkmarkColor: TraumColors.coralOrange,
+                    labelStyle: TextStyle(
+                      color: _showBookmarkedOnly ? TraumColors.coralOrange : TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontSize: 12,
+                    ),
+                    backgroundColor: TraumColors.surface,
+                    side: BorderSide(
+                      color: _showBookmarkedOnly ? TraumColors.coralOrange : TraumColors.surfaceVariant,
+                    ),
+                  ),
+                ),
                 _MuscleChip(
                     label: AppLocalizations.of(context)!.all, selected: _muscleFilter == null,
                     onTap: () => setState(() => _muscleFilter = null)),
@@ -126,6 +149,7 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
             child: exercisesAsync.when(
               data: (exercises) {
                 var filtered = exercises.where((e) {
+                  if (_showBookmarkedOnly && !e.isBookmarked) return false;
                   if (_search.isNotEmpty &&
                       !e.name.toLowerCase().contains(_search.toLowerCase())) {
                     return false;
@@ -176,6 +200,7 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
                             onDelete: ex.isCustom
                                 ? () => ref.read(trainingDaoProvider).deleteExercise(ex.id)
                                 : null,
+                            onBookmark: () => ref.read(trainingDaoProvider).setBookmarked(ex.id, !ex.isBookmarked),
                           )),
                     ],
                   )).toList(),
@@ -246,9 +271,10 @@ class _ExerciseTile extends StatelessWidget {
   final Exercise exercise;
   final VoidCallback onTap;
   final VoidCallback? onDelete;
+  final VoidCallback? onBookmark;
 
   const _ExerciseTile(
-      {required this.exercise, required this.onTap, this.onDelete});
+      {required this.exercise, required this.onTap, this.onDelete, this.onBookmark});
 
   @override
   Widget build(BuildContext context) {
@@ -276,14 +302,26 @@ class _ExerciseTile extends StatelessWidget {
               fontFamily: 'DMSans',
               fontSize: 11),
         ),
-        trailing: onDelete != null
-            ? IconButton(
-                icon: const Icon(Icons.delete_rounded,
-                    color: TraumColors.onBackgroundSubtle, size: 18),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(
+                exercise.isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+                color: exercise.isBookmarked ? TraumColors.coralOrange : TraumColors.onBackgroundSubtle,
+                size: 20,
+              ),
+              onPressed: onBookmark,
+            ),
+            if (onDelete != null)
+              IconButton(
+                icon: const Icon(Icons.delete_rounded, color: TraumColors.onBackgroundSubtle, size: 18),
                 onPressed: onDelete,
               )
-            : const Icon(Icons.chevron_right_rounded,
-                color: TraumColors.onBackgroundSubtle),
+            else
+              const Icon(Icons.chevron_right_rounded, color: TraumColors.onBackgroundSubtle),
+          ],
+        ),
       ),
     );
   }

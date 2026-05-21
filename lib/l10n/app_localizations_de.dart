@@ -2434,4 +2434,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get sessionNamesLabel => 'Einheitennamen';
+
+  @override
+  String get bookmarked => 'Gespeichert';
 }

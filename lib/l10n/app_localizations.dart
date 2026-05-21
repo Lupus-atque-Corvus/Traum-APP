@@ -4729,6 +4729,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Einheitennamen'**
   String get sessionNamesLabel;
+
+  /// No description provided for @bookmarked.
+  ///
+  /// In de, this message translates to:
+  /// **'Gespeichert'**
+  String get bookmarked;
 }
 
 class _AppLocalizationsDelegate
