@@ -368,8 +368,8 @@ class _TodayCard extends StatelessWidget {
             padding:
                 const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
           ),
-          child: const Text('Start',
-              style: TextStyle(
+          child: Text(l10n.startWorkout,
+              style: const TextStyle(
                   fontFamily: 'DMSans',
                   fontWeight: FontWeight.w700,
                   fontSize: 14)),
