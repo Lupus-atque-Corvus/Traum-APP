@@ -59,7 +59,7 @@ class TrainingDao extends DatabaseAccessor<TraumDatabase>
   Future<int> deleteExercise(int id) =>
       (delete(exercises)..where((t) => t.id.equals(id))).go();
 
-  Future<void> toggleBookmark(int exerciseId, bool value) =>
+  Future<void> setBookmarked(int exerciseId, bool value) =>
       (update(exercises)..where((t) => t.id.equals(exerciseId)))
           .write(ExercisesCompanion(isBookmarked: Value(value)));
 

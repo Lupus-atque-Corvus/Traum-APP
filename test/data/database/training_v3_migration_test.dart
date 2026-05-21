@@ -20,14 +20,25 @@ void main() {
     expect(ex.difficulty, null);
   });
 
-  test('toggleBookmark flips isBookmarked', () async {
+  test('setBookmarked sets isBookmarked', () async {
     final id = await db.trainingDao.insertExercise(
       ExercisesCompanion.insert(name: 'Kniebeugen', muscleGroup: 'Beine'),
     );
-    await db.trainingDao.toggleBookmark(id, true);
+    await db.trainingDao.setBookmarked(id, true);
     final ex = await (db.select(db.exercises)..where((t) => t.id.equals(id)))
         .getSingle();
     expect(ex.isBookmarked, true);
+  });
+
+  test('watchBookmarkedExercises emits bookmarked exercises', () async {
+    final id = await db.trainingDao.insertExercise(
+      ExercisesCompanion.insert(name: 'Klimmzüge', muscleGroup: 'Rücken'),
+    );
+    await db.trainingDao.setBookmarked(id, true);
+    final bookmarked = await db.trainingDao.watchBookmarkedExercises().first;
+    expect(bookmarked.length, 1);
+    expect(bookmarked.first.id, id);
+    expect(bookmarked.first.isBookmarked, true);
   });
 
   test('WorkoutDayExercise has defaultRestSeconds column defaulting to 90', () async {
