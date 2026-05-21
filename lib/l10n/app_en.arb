@@ -1017,5 +1017,8 @@
   "estimated1RM": "Estimated 1RM (Epley)",
   "heavilyTrained": "Heavily trained",
   "lightlyTrained": "Lightly trained",
-  "notTrainedHeatmap": "Not trained"
+  "notTrainedHeatmap": "Not trained",
+  "restTimer": "Rest",
+  "restTimerSkip": "Skip",
+  "bookmarkExercise": "Bookmark exercise"
 }

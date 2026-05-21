@@ -2441,4 +2441,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notTrainedHeatmap => 'Not trained';
+
+  @override
+  String get restTimer => 'Rest';
+
+  @override
+  String get restTimerSkip => 'Skip';
+
+  @override
+  String get bookmarkExercise => 'Bookmark exercise';
 }

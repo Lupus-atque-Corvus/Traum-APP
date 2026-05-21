@@ -4765,6 +4765,24 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Nicht trainiert'**
   String get notTrainedHeatmap;
+
+  /// No description provided for @restTimer.
+  ///
+  /// In de, this message translates to:
+  /// **'Pause'**
+  String get restTimer;
+
+  /// No description provided for @restTimerSkip.
+  ///
+  /// In de, this message translates to:
+  /// **'Überspringen'**
+  String get restTimerSkip;
+
+  /// No description provided for @bookmarkExercise.
+  ///
+  /// In de, this message translates to:
+  /// **'Übung speichern'**
+  String get bookmarkExercise;
 }
 
 class _AppLocalizationsDelegate

@@ -1017,5 +1017,8 @@
   "estimated1RM": "Geschätzter 1RM (Epley)",
   "heavilyTrained": "Stark trainiert",
   "lightlyTrained": "Leicht trainiert",
-  "notTrainedHeatmap": "Nicht trainiert"
+  "notTrainedHeatmap": "Nicht trainiert",
+  "restTimer": "Pause",
+  "restTimerSkip": "Überspringen",
+  "bookmarkExercise": "Übung speichern"
 }
