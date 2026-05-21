@@ -10,6 +10,7 @@ import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'widgets/exercise_icon.dart';
+import 'widgets/rest_timer_widget.dart';
 
 String _muscleGroupKey(String g) {
   switch (g.toLowerCase()) {
@@ -39,6 +40,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
   int? _sessionId;
   final _sets = <_SetEntry>[];
   bool _finishing = false;
+  final int _restSeconds = 90;
 
   @override
   void initState() {
@@ -233,12 +235,28 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
                 ));
               });
               Navigator.pop(ctx);
+              _showRestTimer(context);
             },
             child: Text(AppLocalizations.of(ctx)!.add,
                 style: const TextStyle(
                     color: TraumColors.coralOrange, fontWeight: FontWeight.w700)),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showRestTimer(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: TraumColors.surfaceElevated,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => RestTimerWidget(
+        durationSeconds: _restSeconds,
+        onFinished: () => Navigator.pop(context),
+        onSkip: () => Navigator.pop(context),
       ),
     );
   }
