@@ -112,13 +112,26 @@ class TraumDatabase extends _$TraumDatabase {
   TraumDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onUpgrade: (migrator, from, to) async {
       if (from < 2) {
         await migrator.createTable(workoutDayExercises);
+      }
+      if (from < 3) {
+        await migrator.addColumn(exercises, exercises.primaryMuscles);
+        await migrator.addColumn(exercises, exercises.secondaryMuscles);
+        await migrator.addColumn(exercises, exercises.difficulty);
+        await migrator.addColumn(exercises, exercises.mechanic);
+        await migrator.addColumn(exercises, exercises.force);
+        await migrator.addColumn(exercises, exercises.imageUrl);
+        await migrator.addColumn(exercises, exercises.isBookmarked);
+        await migrator.addColumn(workoutDayExercises, workoutDayExercises.notes);
+        await migrator.addColumn(workoutDayExercises, workoutDayExercises.defaultRestSeconds);
+        await migrator.addColumn(workoutDayExercises, workoutDayExercises.progressionType);
+        await migrator.addColumn(workoutDayExercises, workoutDayExercises.supersetGroup);
       }
     },
   );

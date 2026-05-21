@@ -20,6 +20,18 @@ class Exercises extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text()();
   TextColumn get muscleGroup => text()();
+  // New in v3:
+  TextColumn get primaryMuscles =>
+      text().withDefault(const Constant('[]'))();
+  TextColumn get secondaryMuscles =>
+      text().withDefault(const Constant('[]'))();
+  TextColumn get difficulty => text().nullable()();
+  TextColumn get mechanic => text().nullable()();
+  TextColumn get force => text().nullable()();
+  TextColumn get imageUrl => text().nullable()();
+  BoolColumn get isBookmarked =>
+      boolean().withDefault(const Constant(false))();
+  // Existing:
   TextColumn get equipment => text().nullable()();
   TextColumn get instructions => text().nullable()();
   BoolColumn get isCustom => boolean().withDefault(const Constant(false))();
@@ -43,7 +55,8 @@ class WorkoutSets extends Table {
   RealColumn get weightKg => real().nullable()();
   IntColumn get reps => integer().nullable()();
   IntColumn get durationSeconds => integer().nullable()();
-  TextColumn get setType => text().withDefault(const Constant('normal'))();
+  TextColumn get setType =>
+      text().withDefault(const Constant('normal'))();
   BoolColumn get isWarmup => boolean().withDefault(const Constant(false))();
 }
 
@@ -54,4 +67,11 @@ class WorkoutDayExercises extends Table {
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
   IntColumn get defaultSets => integer().withDefault(const Constant(3))();
   IntColumn get defaultReps => integer().withDefault(const Constant(10))();
+  // New in v3:
+  TextColumn get notes => text().nullable()();
+  IntColumn get defaultRestSeconds =>
+      integer().withDefault(const Constant(90))();
+  TextColumn get progressionType =>
+      text().withDefault(const Constant('linear'))();
+  IntColumn get supersetGroup => integer().nullable()();
 }

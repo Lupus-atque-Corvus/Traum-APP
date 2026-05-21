@@ -3449,6 +3449,87 @@ class $ExercisesTable extends Exercises
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _primaryMusclesMeta = const VerificationMeta(
+    'primaryMuscles',
+  );
+  @override
+  late final GeneratedColumn<String> primaryMuscles = GeneratedColumn<String>(
+    'primary_muscles',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _secondaryMusclesMeta = const VerificationMeta(
+    'secondaryMuscles',
+  );
+  @override
+  late final GeneratedColumn<String> secondaryMuscles = GeneratedColumn<String>(
+    'secondary_muscles',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _difficultyMeta = const VerificationMeta(
+    'difficulty',
+  );
+  @override
+  late final GeneratedColumn<String> difficulty = GeneratedColumn<String>(
+    'difficulty',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _mechanicMeta = const VerificationMeta(
+    'mechanic',
+  );
+  @override
+  late final GeneratedColumn<String> mechanic = GeneratedColumn<String>(
+    'mechanic',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _forceMeta = const VerificationMeta('force');
+  @override
+  late final GeneratedColumn<String> force = GeneratedColumn<String>(
+    'force',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _imageUrlMeta = const VerificationMeta(
+    'imageUrl',
+  );
+  @override
+  late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
+    'image_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isBookmarkedMeta = const VerificationMeta(
+    'isBookmarked',
+  );
+  @override
+  late final GeneratedColumn<bool> isBookmarked = GeneratedColumn<bool>(
+    'is_bookmarked',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_bookmarked" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _equipmentMeta = const VerificationMeta(
     'equipment',
   );
@@ -3491,6 +3572,13 @@ class $ExercisesTable extends Exercises
     id,
     name,
     muscleGroup,
+    primaryMuscles,
+    secondaryMuscles,
+    difficulty,
+    mechanic,
+    force,
+    imageUrl,
+    isBookmarked,
     equipment,
     instructions,
     isCustom,
@@ -3528,6 +3616,57 @@ class $ExercisesTable extends Exercises
       );
     } else if (isInserting) {
       context.missing(_muscleGroupMeta);
+    }
+    if (data.containsKey('primary_muscles')) {
+      context.handle(
+        _primaryMusclesMeta,
+        primaryMuscles.isAcceptableOrUnknown(
+          data['primary_muscles']!,
+          _primaryMusclesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('secondary_muscles')) {
+      context.handle(
+        _secondaryMusclesMeta,
+        secondaryMuscles.isAcceptableOrUnknown(
+          data['secondary_muscles']!,
+          _secondaryMusclesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('difficulty')) {
+      context.handle(
+        _difficultyMeta,
+        difficulty.isAcceptableOrUnknown(data['difficulty']!, _difficultyMeta),
+      );
+    }
+    if (data.containsKey('mechanic')) {
+      context.handle(
+        _mechanicMeta,
+        mechanic.isAcceptableOrUnknown(data['mechanic']!, _mechanicMeta),
+      );
+    }
+    if (data.containsKey('force')) {
+      context.handle(
+        _forceMeta,
+        force.isAcceptableOrUnknown(data['force']!, _forceMeta),
+      );
+    }
+    if (data.containsKey('image_url')) {
+      context.handle(
+        _imageUrlMeta,
+        imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta),
+      );
+    }
+    if (data.containsKey('is_bookmarked')) {
+      context.handle(
+        _isBookmarkedMeta,
+        isBookmarked.isAcceptableOrUnknown(
+          data['is_bookmarked']!,
+          _isBookmarkedMeta,
+        ),
+      );
     }
     if (data.containsKey('equipment')) {
       context.handle(
@@ -3571,6 +3710,34 @@ class $ExercisesTable extends Exercises
         DriftSqlType.string,
         data['${effectivePrefix}muscle_group'],
       )!,
+      primaryMuscles: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}primary_muscles'],
+      )!,
+      secondaryMuscles: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}secondary_muscles'],
+      )!,
+      difficulty: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}difficulty'],
+      ),
+      mechanic: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mechanic'],
+      ),
+      force: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}force'],
+      ),
+      imageUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}image_url'],
+      ),
+      isBookmarked: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_bookmarked'],
+      )!,
       equipment: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}equipment'],
@@ -3596,6 +3763,13 @@ class Exercise extends DataClass implements Insertable<Exercise> {
   final int id;
   final String name;
   final String muscleGroup;
+  final String primaryMuscles;
+  final String secondaryMuscles;
+  final String? difficulty;
+  final String? mechanic;
+  final String? force;
+  final String? imageUrl;
+  final bool isBookmarked;
   final String? equipment;
   final String? instructions;
   final bool isCustom;
@@ -3603,6 +3777,13 @@ class Exercise extends DataClass implements Insertable<Exercise> {
     required this.id,
     required this.name,
     required this.muscleGroup,
+    required this.primaryMuscles,
+    required this.secondaryMuscles,
+    this.difficulty,
+    this.mechanic,
+    this.force,
+    this.imageUrl,
+    required this.isBookmarked,
     this.equipment,
     this.instructions,
     required this.isCustom,
@@ -3613,6 +3794,21 @@ class Exercise extends DataClass implements Insertable<Exercise> {
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     map['muscle_group'] = Variable<String>(muscleGroup);
+    map['primary_muscles'] = Variable<String>(primaryMuscles);
+    map['secondary_muscles'] = Variable<String>(secondaryMuscles);
+    if (!nullToAbsent || difficulty != null) {
+      map['difficulty'] = Variable<String>(difficulty);
+    }
+    if (!nullToAbsent || mechanic != null) {
+      map['mechanic'] = Variable<String>(mechanic);
+    }
+    if (!nullToAbsent || force != null) {
+      map['force'] = Variable<String>(force);
+    }
+    if (!nullToAbsent || imageUrl != null) {
+      map['image_url'] = Variable<String>(imageUrl);
+    }
+    map['is_bookmarked'] = Variable<bool>(isBookmarked);
     if (!nullToAbsent || equipment != null) {
       map['equipment'] = Variable<String>(equipment);
     }
@@ -3628,6 +3824,21 @@ class Exercise extends DataClass implements Insertable<Exercise> {
       id: Value(id),
       name: Value(name),
       muscleGroup: Value(muscleGroup),
+      primaryMuscles: Value(primaryMuscles),
+      secondaryMuscles: Value(secondaryMuscles),
+      difficulty: difficulty == null && nullToAbsent
+          ? const Value.absent()
+          : Value(difficulty),
+      mechanic: mechanic == null && nullToAbsent
+          ? const Value.absent()
+          : Value(mechanic),
+      force: force == null && nullToAbsent
+          ? const Value.absent()
+          : Value(force),
+      imageUrl: imageUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imageUrl),
+      isBookmarked: Value(isBookmarked),
       equipment: equipment == null && nullToAbsent
           ? const Value.absent()
           : Value(equipment),
@@ -3647,6 +3858,13 @@ class Exercise extends DataClass implements Insertable<Exercise> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       muscleGroup: serializer.fromJson<String>(json['muscleGroup']),
+      primaryMuscles: serializer.fromJson<String>(json['primaryMuscles']),
+      secondaryMuscles: serializer.fromJson<String>(json['secondaryMuscles']),
+      difficulty: serializer.fromJson<String?>(json['difficulty']),
+      mechanic: serializer.fromJson<String?>(json['mechanic']),
+      force: serializer.fromJson<String?>(json['force']),
+      imageUrl: serializer.fromJson<String?>(json['imageUrl']),
+      isBookmarked: serializer.fromJson<bool>(json['isBookmarked']),
       equipment: serializer.fromJson<String?>(json['equipment']),
       instructions: serializer.fromJson<String?>(json['instructions']),
       isCustom: serializer.fromJson<bool>(json['isCustom']),
@@ -3659,6 +3877,13 @@ class Exercise extends DataClass implements Insertable<Exercise> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'muscleGroup': serializer.toJson<String>(muscleGroup),
+      'primaryMuscles': serializer.toJson<String>(primaryMuscles),
+      'secondaryMuscles': serializer.toJson<String>(secondaryMuscles),
+      'difficulty': serializer.toJson<String?>(difficulty),
+      'mechanic': serializer.toJson<String?>(mechanic),
+      'force': serializer.toJson<String?>(force),
+      'imageUrl': serializer.toJson<String?>(imageUrl),
+      'isBookmarked': serializer.toJson<bool>(isBookmarked),
       'equipment': serializer.toJson<String?>(equipment),
       'instructions': serializer.toJson<String?>(instructions),
       'isCustom': serializer.toJson<bool>(isCustom),
@@ -3669,6 +3894,13 @@ class Exercise extends DataClass implements Insertable<Exercise> {
     int? id,
     String? name,
     String? muscleGroup,
+    String? primaryMuscles,
+    String? secondaryMuscles,
+    Value<String?> difficulty = const Value.absent(),
+    Value<String?> mechanic = const Value.absent(),
+    Value<String?> force = const Value.absent(),
+    Value<String?> imageUrl = const Value.absent(),
+    bool? isBookmarked,
     Value<String?> equipment = const Value.absent(),
     Value<String?> instructions = const Value.absent(),
     bool? isCustom,
@@ -3676,6 +3908,13 @@ class Exercise extends DataClass implements Insertable<Exercise> {
     id: id ?? this.id,
     name: name ?? this.name,
     muscleGroup: muscleGroup ?? this.muscleGroup,
+    primaryMuscles: primaryMuscles ?? this.primaryMuscles,
+    secondaryMuscles: secondaryMuscles ?? this.secondaryMuscles,
+    difficulty: difficulty.present ? difficulty.value : this.difficulty,
+    mechanic: mechanic.present ? mechanic.value : this.mechanic,
+    force: force.present ? force.value : this.force,
+    imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
+    isBookmarked: isBookmarked ?? this.isBookmarked,
     equipment: equipment.present ? equipment.value : this.equipment,
     instructions: instructions.present ? instructions.value : this.instructions,
     isCustom: isCustom ?? this.isCustom,
@@ -3687,6 +3926,21 @@ class Exercise extends DataClass implements Insertable<Exercise> {
       muscleGroup: data.muscleGroup.present
           ? data.muscleGroup.value
           : this.muscleGroup,
+      primaryMuscles: data.primaryMuscles.present
+          ? data.primaryMuscles.value
+          : this.primaryMuscles,
+      secondaryMuscles: data.secondaryMuscles.present
+          ? data.secondaryMuscles.value
+          : this.secondaryMuscles,
+      difficulty: data.difficulty.present
+          ? data.difficulty.value
+          : this.difficulty,
+      mechanic: data.mechanic.present ? data.mechanic.value : this.mechanic,
+      force: data.force.present ? data.force.value : this.force,
+      imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
+      isBookmarked: data.isBookmarked.present
+          ? data.isBookmarked.value
+          : this.isBookmarked,
       equipment: data.equipment.present ? data.equipment.value : this.equipment,
       instructions: data.instructions.present
           ? data.instructions.value
@@ -3701,6 +3955,13 @@ class Exercise extends DataClass implements Insertable<Exercise> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('muscleGroup: $muscleGroup, ')
+          ..write('primaryMuscles: $primaryMuscles, ')
+          ..write('secondaryMuscles: $secondaryMuscles, ')
+          ..write('difficulty: $difficulty, ')
+          ..write('mechanic: $mechanic, ')
+          ..write('force: $force, ')
+          ..write('imageUrl: $imageUrl, ')
+          ..write('isBookmarked: $isBookmarked, ')
           ..write('equipment: $equipment, ')
           ..write('instructions: $instructions, ')
           ..write('isCustom: $isCustom')
@@ -3709,8 +3970,21 @@ class Exercise extends DataClass implements Insertable<Exercise> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, muscleGroup, equipment, instructions, isCustom);
+  int get hashCode => Object.hash(
+    id,
+    name,
+    muscleGroup,
+    primaryMuscles,
+    secondaryMuscles,
+    difficulty,
+    mechanic,
+    force,
+    imageUrl,
+    isBookmarked,
+    equipment,
+    instructions,
+    isCustom,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3718,6 +3992,13 @@ class Exercise extends DataClass implements Insertable<Exercise> {
           other.id == this.id &&
           other.name == this.name &&
           other.muscleGroup == this.muscleGroup &&
+          other.primaryMuscles == this.primaryMuscles &&
+          other.secondaryMuscles == this.secondaryMuscles &&
+          other.difficulty == this.difficulty &&
+          other.mechanic == this.mechanic &&
+          other.force == this.force &&
+          other.imageUrl == this.imageUrl &&
+          other.isBookmarked == this.isBookmarked &&
           other.equipment == this.equipment &&
           other.instructions == this.instructions &&
           other.isCustom == this.isCustom);
@@ -3727,6 +4008,13 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
   final Value<int> id;
   final Value<String> name;
   final Value<String> muscleGroup;
+  final Value<String> primaryMuscles;
+  final Value<String> secondaryMuscles;
+  final Value<String?> difficulty;
+  final Value<String?> mechanic;
+  final Value<String?> force;
+  final Value<String?> imageUrl;
+  final Value<bool> isBookmarked;
   final Value<String?> equipment;
   final Value<String?> instructions;
   final Value<bool> isCustom;
@@ -3734,6 +4022,13 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.muscleGroup = const Value.absent(),
+    this.primaryMuscles = const Value.absent(),
+    this.secondaryMuscles = const Value.absent(),
+    this.difficulty = const Value.absent(),
+    this.mechanic = const Value.absent(),
+    this.force = const Value.absent(),
+    this.imageUrl = const Value.absent(),
+    this.isBookmarked = const Value.absent(),
     this.equipment = const Value.absent(),
     this.instructions = const Value.absent(),
     this.isCustom = const Value.absent(),
@@ -3742,6 +4037,13 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
     this.id = const Value.absent(),
     required String name,
     required String muscleGroup,
+    this.primaryMuscles = const Value.absent(),
+    this.secondaryMuscles = const Value.absent(),
+    this.difficulty = const Value.absent(),
+    this.mechanic = const Value.absent(),
+    this.force = const Value.absent(),
+    this.imageUrl = const Value.absent(),
+    this.isBookmarked = const Value.absent(),
     this.equipment = const Value.absent(),
     this.instructions = const Value.absent(),
     this.isCustom = const Value.absent(),
@@ -3751,6 +4053,13 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? muscleGroup,
+    Expression<String>? primaryMuscles,
+    Expression<String>? secondaryMuscles,
+    Expression<String>? difficulty,
+    Expression<String>? mechanic,
+    Expression<String>? force,
+    Expression<String>? imageUrl,
+    Expression<bool>? isBookmarked,
     Expression<String>? equipment,
     Expression<String>? instructions,
     Expression<bool>? isCustom,
@@ -3759,6 +4068,13 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (muscleGroup != null) 'muscle_group': muscleGroup,
+      if (primaryMuscles != null) 'primary_muscles': primaryMuscles,
+      if (secondaryMuscles != null) 'secondary_muscles': secondaryMuscles,
+      if (difficulty != null) 'difficulty': difficulty,
+      if (mechanic != null) 'mechanic': mechanic,
+      if (force != null) 'force': force,
+      if (imageUrl != null) 'image_url': imageUrl,
+      if (isBookmarked != null) 'is_bookmarked': isBookmarked,
       if (equipment != null) 'equipment': equipment,
       if (instructions != null) 'instructions': instructions,
       if (isCustom != null) 'is_custom': isCustom,
@@ -3769,6 +4085,13 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
     Value<int>? id,
     Value<String>? name,
     Value<String>? muscleGroup,
+    Value<String>? primaryMuscles,
+    Value<String>? secondaryMuscles,
+    Value<String?>? difficulty,
+    Value<String?>? mechanic,
+    Value<String?>? force,
+    Value<String?>? imageUrl,
+    Value<bool>? isBookmarked,
     Value<String?>? equipment,
     Value<String?>? instructions,
     Value<bool>? isCustom,
@@ -3777,6 +4100,13 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
       id: id ?? this.id,
       name: name ?? this.name,
       muscleGroup: muscleGroup ?? this.muscleGroup,
+      primaryMuscles: primaryMuscles ?? this.primaryMuscles,
+      secondaryMuscles: secondaryMuscles ?? this.secondaryMuscles,
+      difficulty: difficulty ?? this.difficulty,
+      mechanic: mechanic ?? this.mechanic,
+      force: force ?? this.force,
+      imageUrl: imageUrl ?? this.imageUrl,
+      isBookmarked: isBookmarked ?? this.isBookmarked,
       equipment: equipment ?? this.equipment,
       instructions: instructions ?? this.instructions,
       isCustom: isCustom ?? this.isCustom,
@@ -3794,6 +4124,27 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
     }
     if (muscleGroup.present) {
       map['muscle_group'] = Variable<String>(muscleGroup.value);
+    }
+    if (primaryMuscles.present) {
+      map['primary_muscles'] = Variable<String>(primaryMuscles.value);
+    }
+    if (secondaryMuscles.present) {
+      map['secondary_muscles'] = Variable<String>(secondaryMuscles.value);
+    }
+    if (difficulty.present) {
+      map['difficulty'] = Variable<String>(difficulty.value);
+    }
+    if (mechanic.present) {
+      map['mechanic'] = Variable<String>(mechanic.value);
+    }
+    if (force.present) {
+      map['force'] = Variable<String>(force.value);
+    }
+    if (imageUrl.present) {
+      map['image_url'] = Variable<String>(imageUrl.value);
+    }
+    if (isBookmarked.present) {
+      map['is_bookmarked'] = Variable<bool>(isBookmarked.value);
     }
     if (equipment.present) {
       map['equipment'] = Variable<String>(equipment.value);
@@ -3813,6 +4164,13 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('muscleGroup: $muscleGroup, ')
+          ..write('primaryMuscles: $primaryMuscles, ')
+          ..write('secondaryMuscles: $secondaryMuscles, ')
+          ..write('difficulty: $difficulty, ')
+          ..write('mechanic: $mechanic, ')
+          ..write('force: $force, ')
+          ..write('imageUrl: $imageUrl, ')
+          ..write('isBookmarked: $isBookmarked, ')
           ..write('equipment: $equipment, ')
           ..write('instructions: $instructions, ')
           ..write('isCustom: $isCustom')
@@ -4930,6 +5288,49 @@ class $WorkoutDayExercisesTable extends WorkoutDayExercises
     requiredDuringInsert: false,
     defaultValue: const Constant(10),
   );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _defaultRestSecondsMeta =
+      const VerificationMeta('defaultRestSeconds');
+  @override
+  late final GeneratedColumn<int> defaultRestSeconds = GeneratedColumn<int>(
+    'default_rest_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(90),
+  );
+  static const VerificationMeta _progressionTypeMeta = const VerificationMeta(
+    'progressionType',
+  );
+  @override
+  late final GeneratedColumn<String> progressionType = GeneratedColumn<String>(
+    'progression_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('linear'),
+  );
+  static const VerificationMeta _supersetGroupMeta = const VerificationMeta(
+    'supersetGroup',
+  );
+  @override
+  late final GeneratedColumn<int> supersetGroup = GeneratedColumn<int>(
+    'superset_group',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4938,6 +5339,10 @@ class $WorkoutDayExercisesTable extends WorkoutDayExercises
     sortOrder,
     defaultSets,
     defaultReps,
+    notes,
+    defaultRestSeconds,
+    progressionType,
+    supersetGroup,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4994,6 +5399,39 @@ class $WorkoutDayExercisesTable extends WorkoutDayExercises
         ),
       );
     }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('default_rest_seconds')) {
+      context.handle(
+        _defaultRestSecondsMeta,
+        defaultRestSeconds.isAcceptableOrUnknown(
+          data['default_rest_seconds']!,
+          _defaultRestSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('progression_type')) {
+      context.handle(
+        _progressionTypeMeta,
+        progressionType.isAcceptableOrUnknown(
+          data['progression_type']!,
+          _progressionTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('superset_group')) {
+      context.handle(
+        _supersetGroupMeta,
+        supersetGroup.isAcceptableOrUnknown(
+          data['superset_group']!,
+          _supersetGroupMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -5027,6 +5465,22 @@ class $WorkoutDayExercisesTable extends WorkoutDayExercises
         DriftSqlType.int,
         data['${effectivePrefix}default_reps'],
       )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      defaultRestSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}default_rest_seconds'],
+      )!,
+      progressionType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}progression_type'],
+      )!,
+      supersetGroup: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}superset_group'],
+      ),
     );
   }
 
@@ -5044,6 +5498,10 @@ class WorkoutDayExercise extends DataClass
   final int sortOrder;
   final int defaultSets;
   final int defaultReps;
+  final String? notes;
+  final int defaultRestSeconds;
+  final String progressionType;
+  final int? supersetGroup;
   const WorkoutDayExercise({
     required this.id,
     required this.dayId,
@@ -5051,6 +5509,10 @@ class WorkoutDayExercise extends DataClass
     required this.sortOrder,
     required this.defaultSets,
     required this.defaultReps,
+    this.notes,
+    required this.defaultRestSeconds,
+    required this.progressionType,
+    this.supersetGroup,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -5061,6 +5523,14 @@ class WorkoutDayExercise extends DataClass
     map['sort_order'] = Variable<int>(sortOrder);
     map['default_sets'] = Variable<int>(defaultSets);
     map['default_reps'] = Variable<int>(defaultReps);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['default_rest_seconds'] = Variable<int>(defaultRestSeconds);
+    map['progression_type'] = Variable<String>(progressionType);
+    if (!nullToAbsent || supersetGroup != null) {
+      map['superset_group'] = Variable<int>(supersetGroup);
+    }
     return map;
   }
 
@@ -5072,6 +5542,14 @@ class WorkoutDayExercise extends DataClass
       sortOrder: Value(sortOrder),
       defaultSets: Value(defaultSets),
       defaultReps: Value(defaultReps),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      defaultRestSeconds: Value(defaultRestSeconds),
+      progressionType: Value(progressionType),
+      supersetGroup: supersetGroup == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supersetGroup),
     );
   }
 
@@ -5087,6 +5565,10 @@ class WorkoutDayExercise extends DataClass
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
       defaultSets: serializer.fromJson<int>(json['defaultSets']),
       defaultReps: serializer.fromJson<int>(json['defaultReps']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      defaultRestSeconds: serializer.fromJson<int>(json['defaultRestSeconds']),
+      progressionType: serializer.fromJson<String>(json['progressionType']),
+      supersetGroup: serializer.fromJson<int?>(json['supersetGroup']),
     );
   }
   @override
@@ -5099,6 +5581,10 @@ class WorkoutDayExercise extends DataClass
       'sortOrder': serializer.toJson<int>(sortOrder),
       'defaultSets': serializer.toJson<int>(defaultSets),
       'defaultReps': serializer.toJson<int>(defaultReps),
+      'notes': serializer.toJson<String?>(notes),
+      'defaultRestSeconds': serializer.toJson<int>(defaultRestSeconds),
+      'progressionType': serializer.toJson<String>(progressionType),
+      'supersetGroup': serializer.toJson<int?>(supersetGroup),
     };
   }
 
@@ -5109,6 +5595,10 @@ class WorkoutDayExercise extends DataClass
     int? sortOrder,
     int? defaultSets,
     int? defaultReps,
+    Value<String?> notes = const Value.absent(),
+    int? defaultRestSeconds,
+    String? progressionType,
+    Value<int?> supersetGroup = const Value.absent(),
   }) => WorkoutDayExercise(
     id: id ?? this.id,
     dayId: dayId ?? this.dayId,
@@ -5116,6 +5606,12 @@ class WorkoutDayExercise extends DataClass
     sortOrder: sortOrder ?? this.sortOrder,
     defaultSets: defaultSets ?? this.defaultSets,
     defaultReps: defaultReps ?? this.defaultReps,
+    notes: notes.present ? notes.value : this.notes,
+    defaultRestSeconds: defaultRestSeconds ?? this.defaultRestSeconds,
+    progressionType: progressionType ?? this.progressionType,
+    supersetGroup: supersetGroup.present
+        ? supersetGroup.value
+        : this.supersetGroup,
   );
   WorkoutDayExercise copyWithCompanion(WorkoutDayExercisesCompanion data) {
     return WorkoutDayExercise(
@@ -5131,6 +5627,16 @@ class WorkoutDayExercise extends DataClass
       defaultReps: data.defaultReps.present
           ? data.defaultReps.value
           : this.defaultReps,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      defaultRestSeconds: data.defaultRestSeconds.present
+          ? data.defaultRestSeconds.value
+          : this.defaultRestSeconds,
+      progressionType: data.progressionType.present
+          ? data.progressionType.value
+          : this.progressionType,
+      supersetGroup: data.supersetGroup.present
+          ? data.supersetGroup.value
+          : this.supersetGroup,
     );
   }
 
@@ -5142,14 +5648,28 @@ class WorkoutDayExercise extends DataClass
           ..write('exerciseId: $exerciseId, ')
           ..write('sortOrder: $sortOrder, ')
           ..write('defaultSets: $defaultSets, ')
-          ..write('defaultReps: $defaultReps')
+          ..write('defaultReps: $defaultReps, ')
+          ..write('notes: $notes, ')
+          ..write('defaultRestSeconds: $defaultRestSeconds, ')
+          ..write('progressionType: $progressionType, ')
+          ..write('supersetGroup: $supersetGroup')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, dayId, exerciseId, sortOrder, defaultSets, defaultReps);
+  int get hashCode => Object.hash(
+    id,
+    dayId,
+    exerciseId,
+    sortOrder,
+    defaultSets,
+    defaultReps,
+    notes,
+    defaultRestSeconds,
+    progressionType,
+    supersetGroup,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -5159,7 +5679,11 @@ class WorkoutDayExercise extends DataClass
           other.exerciseId == this.exerciseId &&
           other.sortOrder == this.sortOrder &&
           other.defaultSets == this.defaultSets &&
-          other.defaultReps == this.defaultReps);
+          other.defaultReps == this.defaultReps &&
+          other.notes == this.notes &&
+          other.defaultRestSeconds == this.defaultRestSeconds &&
+          other.progressionType == this.progressionType &&
+          other.supersetGroup == this.supersetGroup);
 }
 
 class WorkoutDayExercisesCompanion extends UpdateCompanion<WorkoutDayExercise> {
@@ -5169,6 +5693,10 @@ class WorkoutDayExercisesCompanion extends UpdateCompanion<WorkoutDayExercise> {
   final Value<int> sortOrder;
   final Value<int> defaultSets;
   final Value<int> defaultReps;
+  final Value<String?> notes;
+  final Value<int> defaultRestSeconds;
+  final Value<String> progressionType;
+  final Value<int?> supersetGroup;
   const WorkoutDayExercisesCompanion({
     this.id = const Value.absent(),
     this.dayId = const Value.absent(),
@@ -5176,6 +5704,10 @@ class WorkoutDayExercisesCompanion extends UpdateCompanion<WorkoutDayExercise> {
     this.sortOrder = const Value.absent(),
     this.defaultSets = const Value.absent(),
     this.defaultReps = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.defaultRestSeconds = const Value.absent(),
+    this.progressionType = const Value.absent(),
+    this.supersetGroup = const Value.absent(),
   });
   WorkoutDayExercisesCompanion.insert({
     this.id = const Value.absent(),
@@ -5184,6 +5716,10 @@ class WorkoutDayExercisesCompanion extends UpdateCompanion<WorkoutDayExercise> {
     this.sortOrder = const Value.absent(),
     this.defaultSets = const Value.absent(),
     this.defaultReps = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.defaultRestSeconds = const Value.absent(),
+    this.progressionType = const Value.absent(),
+    this.supersetGroup = const Value.absent(),
   }) : dayId = Value(dayId),
        exerciseId = Value(exerciseId);
   static Insertable<WorkoutDayExercise> custom({
@@ -5193,6 +5729,10 @@ class WorkoutDayExercisesCompanion extends UpdateCompanion<WorkoutDayExercise> {
     Expression<int>? sortOrder,
     Expression<int>? defaultSets,
     Expression<int>? defaultReps,
+    Expression<String>? notes,
+    Expression<int>? defaultRestSeconds,
+    Expression<String>? progressionType,
+    Expression<int>? supersetGroup,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -5201,6 +5741,11 @@ class WorkoutDayExercisesCompanion extends UpdateCompanion<WorkoutDayExercise> {
       if (sortOrder != null) 'sort_order': sortOrder,
       if (defaultSets != null) 'default_sets': defaultSets,
       if (defaultReps != null) 'default_reps': defaultReps,
+      if (notes != null) 'notes': notes,
+      if (defaultRestSeconds != null)
+        'default_rest_seconds': defaultRestSeconds,
+      if (progressionType != null) 'progression_type': progressionType,
+      if (supersetGroup != null) 'superset_group': supersetGroup,
     });
   }
 
@@ -5211,6 +5756,10 @@ class WorkoutDayExercisesCompanion extends UpdateCompanion<WorkoutDayExercise> {
     Value<int>? sortOrder,
     Value<int>? defaultSets,
     Value<int>? defaultReps,
+    Value<String?>? notes,
+    Value<int>? defaultRestSeconds,
+    Value<String>? progressionType,
+    Value<int?>? supersetGroup,
   }) {
     return WorkoutDayExercisesCompanion(
       id: id ?? this.id,
@@ -5219,6 +5768,10 @@ class WorkoutDayExercisesCompanion extends UpdateCompanion<WorkoutDayExercise> {
       sortOrder: sortOrder ?? this.sortOrder,
       defaultSets: defaultSets ?? this.defaultSets,
       defaultReps: defaultReps ?? this.defaultReps,
+      notes: notes ?? this.notes,
+      defaultRestSeconds: defaultRestSeconds ?? this.defaultRestSeconds,
+      progressionType: progressionType ?? this.progressionType,
+      supersetGroup: supersetGroup ?? this.supersetGroup,
     );
   }
 
@@ -5243,6 +5796,18 @@ class WorkoutDayExercisesCompanion extends UpdateCompanion<WorkoutDayExercise> {
     if (defaultReps.present) {
       map['default_reps'] = Variable<int>(defaultReps.value);
     }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (defaultRestSeconds.present) {
+      map['default_rest_seconds'] = Variable<int>(defaultRestSeconds.value);
+    }
+    if (progressionType.present) {
+      map['progression_type'] = Variable<String>(progressionType.value);
+    }
+    if (supersetGroup.present) {
+      map['superset_group'] = Variable<int>(supersetGroup.value);
+    }
     return map;
   }
 
@@ -5254,7 +5819,11 @@ class WorkoutDayExercisesCompanion extends UpdateCompanion<WorkoutDayExercise> {
           ..write('exerciseId: $exerciseId, ')
           ..write('sortOrder: $sortOrder, ')
           ..write('defaultSets: $defaultSets, ')
-          ..write('defaultReps: $defaultReps')
+          ..write('defaultReps: $defaultReps, ')
+          ..write('notes: $notes, ')
+          ..write('defaultRestSeconds: $defaultRestSeconds, ')
+          ..write('progressionType: $progressionType, ')
+          ..write('supersetGroup: $supersetGroup')
           ..write(')'))
         .toString();
   }
@@ -17528,6 +18097,13 @@ typedef $$ExercisesTableCreateCompanionBuilder =
       Value<int> id,
       required String name,
       required String muscleGroup,
+      Value<String> primaryMuscles,
+      Value<String> secondaryMuscles,
+      Value<String?> difficulty,
+      Value<String?> mechanic,
+      Value<String?> force,
+      Value<String?> imageUrl,
+      Value<bool> isBookmarked,
       Value<String?> equipment,
       Value<String?> instructions,
       Value<bool> isCustom,
@@ -17537,6 +18113,13 @@ typedef $$ExercisesTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> name,
       Value<String> muscleGroup,
+      Value<String> primaryMuscles,
+      Value<String> secondaryMuscles,
+      Value<String?> difficulty,
+      Value<String?> mechanic,
+      Value<String?> force,
+      Value<String?> imageUrl,
+      Value<bool> isBookmarked,
       Value<String?> equipment,
       Value<String?> instructions,
       Value<bool> isCustom,
@@ -17613,6 +18196,41 @@ class $$ExercisesTableFilterComposer
 
   ColumnFilters<String> get muscleGroup => $composableBuilder(
     column: $table.muscleGroup,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get primaryMuscles => $composableBuilder(
+    column: $table.primaryMuscles,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get secondaryMuscles => $composableBuilder(
+    column: $table.secondaryMuscles,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get difficulty => $composableBuilder(
+    column: $table.difficulty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mechanic => $composableBuilder(
+    column: $table.mechanic,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get force => $composableBuilder(
+    column: $table.force,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get imageUrl => $composableBuilder(
+    column: $table.imageUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isBookmarked => $composableBuilder(
+    column: $table.isBookmarked,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -17706,6 +18324,41 @@ class $$ExercisesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get primaryMuscles => $composableBuilder(
+    column: $table.primaryMuscles,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get secondaryMuscles => $composableBuilder(
+    column: $table.secondaryMuscles,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get difficulty => $composableBuilder(
+    column: $table.difficulty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mechanic => $composableBuilder(
+    column: $table.mechanic,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get force => $composableBuilder(
+    column: $table.force,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get imageUrl => $composableBuilder(
+    column: $table.imageUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isBookmarked => $composableBuilder(
+    column: $table.isBookmarked,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get equipment => $composableBuilder(
     column: $table.equipment,
     builder: (column) => ColumnOrderings(column),
@@ -17739,6 +18392,35 @@ class $$ExercisesTableAnnotationComposer
 
   GeneratedColumn<String> get muscleGroup => $composableBuilder(
     column: $table.muscleGroup,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get primaryMuscles => $composableBuilder(
+    column: $table.primaryMuscles,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get secondaryMuscles => $composableBuilder(
+    column: $table.secondaryMuscles,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get difficulty => $composableBuilder(
+    column: $table.difficulty,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get mechanic =>
+      $composableBuilder(column: $table.mechanic, builder: (column) => column);
+
+  GeneratedColumn<String> get force =>
+      $composableBuilder(column: $table.force, builder: (column) => column);
+
+  GeneratedColumn<String> get imageUrl =>
+      $composableBuilder(column: $table.imageUrl, builder: (column) => column);
+
+  GeneratedColumn<bool> get isBookmarked => $composableBuilder(
+    column: $table.isBookmarked,
     builder: (column) => column,
   );
 
@@ -17839,6 +18521,13 @@ class $$ExercisesTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String> muscleGroup = const Value.absent(),
+                Value<String> primaryMuscles = const Value.absent(),
+                Value<String> secondaryMuscles = const Value.absent(),
+                Value<String?> difficulty = const Value.absent(),
+                Value<String?> mechanic = const Value.absent(),
+                Value<String?> force = const Value.absent(),
+                Value<String?> imageUrl = const Value.absent(),
+                Value<bool> isBookmarked = const Value.absent(),
                 Value<String?> equipment = const Value.absent(),
                 Value<String?> instructions = const Value.absent(),
                 Value<bool> isCustom = const Value.absent(),
@@ -17846,6 +18535,13 @@ class $$ExercisesTableTableManager
                 id: id,
                 name: name,
                 muscleGroup: muscleGroup,
+                primaryMuscles: primaryMuscles,
+                secondaryMuscles: secondaryMuscles,
+                difficulty: difficulty,
+                mechanic: mechanic,
+                force: force,
+                imageUrl: imageUrl,
+                isBookmarked: isBookmarked,
                 equipment: equipment,
                 instructions: instructions,
                 isCustom: isCustom,
@@ -17855,6 +18551,13 @@ class $$ExercisesTableTableManager
                 Value<int> id = const Value.absent(),
                 required String name,
                 required String muscleGroup,
+                Value<String> primaryMuscles = const Value.absent(),
+                Value<String> secondaryMuscles = const Value.absent(),
+                Value<String?> difficulty = const Value.absent(),
+                Value<String?> mechanic = const Value.absent(),
+                Value<String?> force = const Value.absent(),
+                Value<String?> imageUrl = const Value.absent(),
+                Value<bool> isBookmarked = const Value.absent(),
                 Value<String?> equipment = const Value.absent(),
                 Value<String?> instructions = const Value.absent(),
                 Value<bool> isCustom = const Value.absent(),
@@ -17862,6 +18565,13 @@ class $$ExercisesTableTableManager
                 id: id,
                 name: name,
                 muscleGroup: muscleGroup,
+                primaryMuscles: primaryMuscles,
+                secondaryMuscles: secondaryMuscles,
+                difficulty: difficulty,
+                mechanic: mechanic,
+                force: force,
+                imageUrl: imageUrl,
+                isBookmarked: isBookmarked,
                 equipment: equipment,
                 instructions: instructions,
                 isCustom: isCustom,
@@ -18786,6 +19496,10 @@ typedef $$WorkoutDayExercisesTableCreateCompanionBuilder =
       Value<int> sortOrder,
       Value<int> defaultSets,
       Value<int> defaultReps,
+      Value<String?> notes,
+      Value<int> defaultRestSeconds,
+      Value<String> progressionType,
+      Value<int?> supersetGroup,
     });
 typedef $$WorkoutDayExercisesTableUpdateCompanionBuilder =
     WorkoutDayExercisesCompanion Function({
@@ -18795,6 +19509,10 @@ typedef $$WorkoutDayExercisesTableUpdateCompanionBuilder =
       Value<int> sortOrder,
       Value<int> defaultSets,
       Value<int> defaultReps,
+      Value<String?> notes,
+      Value<int> defaultRestSeconds,
+      Value<String> progressionType,
+      Value<int?> supersetGroup,
     });
 
 final class $$WorkoutDayExercisesTableReferences
@@ -18881,6 +19599,26 @@ class $$WorkoutDayExercisesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get defaultRestSeconds => $composableBuilder(
+    column: $table.defaultRestSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get progressionType => $composableBuilder(
+    column: $table.progressionType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get supersetGroup => $composableBuilder(
+    column: $table.supersetGroup,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$WorkoutDaysTableFilterComposer get dayId {
     final $$WorkoutDaysTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -18957,6 +19695,26 @@ class $$WorkoutDayExercisesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get defaultRestSeconds => $composableBuilder(
+    column: $table.defaultRestSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get progressionType => $composableBuilder(
+    column: $table.progressionType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get supersetGroup => $composableBuilder(
+    column: $table.supersetGroup,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$WorkoutDaysTableOrderingComposer get dayId {
     final $$WorkoutDaysTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -19026,6 +19784,24 @@ class $$WorkoutDayExercisesTableAnnotationComposer
 
   GeneratedColumn<int> get defaultReps => $composableBuilder(
     column: $table.defaultReps,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<int> get defaultRestSeconds => $composableBuilder(
+    column: $table.defaultRestSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get progressionType => $composableBuilder(
+    column: $table.progressionType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get supersetGroup => $composableBuilder(
+    column: $table.supersetGroup,
     builder: (column) => column,
   );
 
@@ -19118,6 +19894,10 @@ class $$WorkoutDayExercisesTableTableManager
                 Value<int> sortOrder = const Value.absent(),
                 Value<int> defaultSets = const Value.absent(),
                 Value<int> defaultReps = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> defaultRestSeconds = const Value.absent(),
+                Value<String> progressionType = const Value.absent(),
+                Value<int?> supersetGroup = const Value.absent(),
               }) => WorkoutDayExercisesCompanion(
                 id: id,
                 dayId: dayId,
@@ -19125,6 +19905,10 @@ class $$WorkoutDayExercisesTableTableManager
                 sortOrder: sortOrder,
                 defaultSets: defaultSets,
                 defaultReps: defaultReps,
+                notes: notes,
+                defaultRestSeconds: defaultRestSeconds,
+                progressionType: progressionType,
+                supersetGroup: supersetGroup,
               ),
           createCompanionCallback:
               ({
@@ -19134,6 +19918,10 @@ class $$WorkoutDayExercisesTableTableManager
                 Value<int> sortOrder = const Value.absent(),
                 Value<int> defaultSets = const Value.absent(),
                 Value<int> defaultReps = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> defaultRestSeconds = const Value.absent(),
+                Value<String> progressionType = const Value.absent(),
+                Value<int?> supersetGroup = const Value.absent(),
               }) => WorkoutDayExercisesCompanion.insert(
                 id: id,
                 dayId: dayId,
@@ -19141,6 +19929,10 @@ class $$WorkoutDayExercisesTableTableManager
                 sortOrder: sortOrder,
                 defaultSets: defaultSets,
                 defaultReps: defaultReps,
+                notes: notes,
+                defaultRestSeconds: defaultRestSeconds,
+                progressionType: progressionType,
+                supersetGroup: supersetGroup,
               ),
           withReferenceMapper: (p0) => p0
               .map(
