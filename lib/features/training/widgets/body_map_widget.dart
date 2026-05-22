@@ -5,6 +5,7 @@ import 'body_map_svg_data.dart';
 class BodyMapWidget extends StatelessWidget {
   final List<String> primaryMuscles;
   final List<String> secondaryMuscles;
+  final Map<String, DateTime>? heatMap;
   final bool showBack;
   final double height;
 
@@ -39,6 +40,7 @@ class BodyMapWidget extends StatelessWidget {
     super.key,
     required this.primaryMuscles,
     required this.secondaryMuscles,
+    this.heatMap,
     this.showBack = false,
     this.height = 260,
   });
@@ -60,13 +62,25 @@ class BodyMapWidget extends StatelessWidget {
     }
   }
 
+  // Heat-map hex colors by recency
+  static String _heatHex(DateTime? lastTrained) {
+    if (lastTrained == null) return '#2A2A3D';
+    final hours = DateTime.now().difference(lastTrained).inHours;
+    if (hours <= 24) return '#E97B4A';  // bright orange
+    if (hours <= 48) return '#A0442A';  // medium
+    if (hours <= 72) return '#5C2116';  // dark red-brown
+    return '#2A2A3D';
+  }
+
   String _buildSvg() {
     var svg = showBack ? BodyMapSvgData.maleBack : BodyMapSvgData.maleFront;
     for (final entry in _muscleDefaultColors.entries) {
       final muscle = entry.key;
       final defaultHex = entry.value;
       final String targetHex;
-      if (primaryMuscles.contains(muscle)) {
+      if (heatMap != null) {
+        targetHex = _heatHex(heatMap![muscle]);
+      } else if (primaryMuscles.contains(muscle)) {
         targetHex = '#FF4D4D';
       } else if (secondaryMuscles.contains(muscle)) {
         targetHex = '#FFD34C';

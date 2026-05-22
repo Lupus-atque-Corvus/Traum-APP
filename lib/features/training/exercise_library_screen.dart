@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/components/components.dart';
 import '../../core/providers/database_provider.dart';
@@ -104,43 +105,53 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
             ),
           ),
           const SizedBox(height: 8),
+          // Icon-based muscle group filter bar
           SizedBox(
-            height: 36,
+            height: 76,
             child: ListView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
+                // Bookmarks filter
                 Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: FilterChip(
-                    label: Text(AppLocalizations.of(context)!.bookmarked),
+                  padding: const EdgeInsets.only(right: 10),
+                  child: _MuscleIconFilter(
+                    iconKey: 'cardio',
+                    label: AppLocalizations.of(context)!.bookmarked,
                     selected: _showBookmarkedOnly,
-                    onSelected: (v) => setState(() {
-                      _showBookmarkedOnly = v;
-                      if (v) _muscleFilter = null;
+                    onTap: () => setState(() {
+                      _showBookmarkedOnly = !_showBookmarkedOnly;
+                      if (_showBookmarkedOnly) _muscleFilter = null;
                     }),
-                    selectedColor: TraumColors.coralDim,
-                    checkmarkColor: TraumColors.coralOrange,
-                    labelStyle: TextStyle(
-                      color: _showBookmarkedOnly ? TraumColors.coralOrange : TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontSize: 12,
-                    ),
-                    backgroundColor: TraumColors.surface,
-                    side: BorderSide(
-                      color: _showBookmarkedOnly ? TraumColors.coralOrange : TraumColors.surfaceVariant,
-                    ),
+                    useBookmarkIcon: true,
                   ),
                 ),
-                _MuscleChip(
-                    label: AppLocalizations.of(context)!.all, selected: _muscleFilter == null,
-                    onTap: () => setState(() => _muscleFilter = null)),
-                ..._muscleGroups.map((m) => _MuscleChip(
-                      label: _muscleLabel(m, AppLocalizations.of(context)!),
-                      selected: _muscleFilter == m,
-                      onTap: () => setState(
-                          () => _muscleFilter = _muscleFilter == m ? null : m),
-                    )),
+                // All filter
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: _MuscleIconFilter(
+                    iconKey: 'full_body',
+                    label: AppLocalizations.of(context)!.all,
+                    selected: _muscleFilter == null && !_showBookmarkedOnly,
+                    onTap: () => setState(() {
+                      _muscleFilter = null;
+                      _showBookmarkedOnly = false;
+                    }),
+                  ),
+                ),
+                // Muscle group filters
+                ..._muscleGroups.map((m) => Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: _MuscleIconFilter(
+                    iconKey: _muscleGroupKey(m),
+                    label: _muscleLabel(m, AppLocalizations.of(context)!),
+                    selected: _muscleFilter == m,
+                    onTap: () => setState(() {
+                      _muscleFilter = _muscleFilter == m ? null : m;
+                      _showBookmarkedOnly = false;
+                    }),
+                  ),
+                )),
               ],
             ),
           ),
@@ -322,37 +333,83 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
   }
 }
 
-class _MuscleChip extends StatelessWidget {
+class _MuscleIconFilter extends StatelessWidget {
+  final String iconKey;
   final String label;
   final bool selected;
   final VoidCallback onTap;
+  final bool useBookmarkIcon;
 
-  const _MuscleChip(
-      {required this.label, required this.selected, required this.onTap});
+  static const _assetMap = {
+    'chest':     'assets/exercises/icons/chest.svg',
+    'back':      'assets/exercises/icons/back.svg',
+    'shoulders': 'assets/exercises/icons/shoulders.svg',
+    'biceps':    'assets/exercises/icons/biceps.svg',
+    'triceps':   'assets/exercises/icons/triceps.svg',
+    'legs':      'assets/exercises/icons/legs.svg',
+    'core':      'assets/exercises/icons/core.svg',
+    'cardio':    'assets/exercises/icons/cardio.svg',
+    'full_body': 'assets/exercises/icons/full_body.svg',
+  };
+
+  const _MuscleIconFilter({
+    required this.iconKey,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+    this.useBookmarkIcon = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: selected ? TraumColors.coralDim : TraumColors.surfaceVariant,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-                color: selected ? TraumColors.coralOrange : Colors.transparent),
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: selected
+                  ? TraumColors.coralOrange
+                  : TraumColors.surfaceVariant,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            padding: const EdgeInsets.all(10),
+            child: useBookmarkIcon
+                ? Icon(
+                    Icons.bookmark_rounded,
+                    color: selected ? Colors.white : TraumColors.onBackgroundMuted,
+                    size: 22,
+                  )
+                : SvgPicture.asset(
+                    _assetMap[iconKey] ?? _assetMap['full_body']!,
+                    colorFilter: ColorFilter.mode(
+                      selected ? Colors.white : TraumColors.onBackgroundMuted,
+                      BlendMode.srcIn,
+                    ),
+                  ),
           ),
-          child: Text(label,
+          const SizedBox(height: 4),
+          SizedBox(
+            width: 56,
+            child: Text(
+              label,
               style: TextStyle(
-                  color: selected
-                      ? TraumColors.coralOrange
-                      : TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans',
-                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                  fontSize: 12)),
-        ),
+                color: selected
+                    ? TraumColors.coralOrange
+                    : TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 9,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -389,15 +446,27 @@ class _ExerciseTile extends StatelessWidget {
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w600)),
-        subtitle: Text(
-          [
-            exercise.muscleGroup,
-            if (exercise.equipment != null) exercise.equipment!,
-          ].join('  •  '),
-          style: const TextStyle(
-              color: TraumColors.onBackgroundMuted,
-              fontFamily: 'DMSans',
-              fontSize: 11),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              exercise.muscleGroup.toUpperCase(),
+              style: const TextStyle(
+                  color: TraumColors.coralOrange,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 11,
+                  letterSpacing: 0.5),
+            ),
+            if (exercise.equipment != null)
+              Text(
+                exercise.equipment!,
+                style: const TextStyle(
+                    color: TraumColors.onBackgroundSubtle,
+                    fontFamily: 'DMSans',
+                    fontSize: 10),
+              ),
+          ],
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,

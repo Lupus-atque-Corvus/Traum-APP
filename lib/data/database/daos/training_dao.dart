@@ -34,6 +34,9 @@ class TrainingDao extends DatabaseAccessor<TraumDatabase>
             ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
           .watch();
 
+  Future<List<WorkoutDay>> getDaysForPlan(int planId) =>
+      (select(workoutDays)..where((t) => t.planId.equals(planId))).get();
+
   Future<int> insertDay(WorkoutDaysCompanion entry) =>
       into(workoutDays).insert(entry);
 

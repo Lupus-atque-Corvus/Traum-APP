@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/components/components.dart';
 import '../../core/navigation/routes.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'widgets/body_map_widget.dart';
 
 class TrainingScreen extends ConsumerWidget {
   const TrainingScreen({super.key});
@@ -34,23 +34,37 @@ class TrainingScreen extends ConsumerWidget {
     final exercises =
         ref.watch(allExercisesStreamProvider).valueOrNull ?? [];
 
+    final sessions72h =
+        ref.watch(sessionsLast72hProvider).valueOrNull ?? [];
+
+    final recentSets72h =
+        ref.watch(recentTrainingSetsProvider(3)).valueOrNull ?? [];
+
+    final plans =
+        ref.watch(allWorkoutPlansStreamProvider).valueOrNull ?? [];
+
     final totalVolume = recentSets.fold<double>(
       0.0,
       (sum, s) => sum + (s.weightKg ?? 0) * (s.reps ?? 1),
     );
 
-    // Volume per muscle group for chart
-    final Map<String, double> muscleVolume = {};
-    for (final s in recentSets) {
-      if (s.weightKg == null || s.reps == null) continue;
+    // Heat map: muscle -> most recent session time
+    final sessionById = {for (final s in sessions72h) s.id: s};
+    final Map<String, DateTime> muscleLastTrainedAt = {};
+    for (final set in recentSets72h) {
+      final session = sessionById[set.sessionId];
+      if (session == null) continue;
       final ex = exercises.cast<Exercise?>().firstWhere(
-          (e) => e?.id == s.exerciseId, orElse: () => null);
+          (e) => e?.id == set.exerciseId, orElse: () => null);
       if (ex == null) continue;
-      final mg = ex.muscleGroup;
-      muscleVolume[mg] = (muscleVolume[mg] ?? 0) + s.weightKg! * s.reps!;
+      final muscles = BodyMapWidget.musclesForGroup(ex.muscleGroup);
+      for (final muscle in muscles) {
+        final existing = muscleLastTrainedAt[muscle];
+        if (existing == null || session.startedAt.isAfter(existing)) {
+          muscleLastTrainedAt[muscle] = session.startedAt;
+        }
+      }
     }
-    final sortedMuscles = muscleVolume.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
 
     final today = DateTime.now().weekday;
     final WorkoutDay? todayDay = days.where((d) => d.dayOfWeek == today).isNotEmpty
@@ -61,106 +75,86 @@ class TrainingScreen extends ConsumerWidget {
         ? (ref.watch(dayExercisesProvider(todayDay.id)).valueOrNull ?? []).length
         : 0;
 
+    // Last completed session time label
+    final completedSessions = sessions72h
+        .where((s) => s.completedAt != null)
+        .toList()
+      ..sort((a, b) => b.startedAt.compareTo(a.startedAt));
+    final lastSession = completedSessions.isNotEmpty ? completedSessions.first : null;
+
     return Scaffold(
       backgroundColor: TraumColors.background,
       appBar: AppBar(
-        title: Text(l10n.training),
+        title: Text(l10n.training,
+            style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+                fontSize: 20)),
+        backgroundColor: TraumColors.background,
+        elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.calendar_month_outlined),
+            icon: const Icon(Icons.history_rounded, color: TraumColors.onBackgroundMuted),
             onPressed: () {},
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push(Routes.routines),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.push(Routes.activeWorkout),
         backgroundColor: TraumColors.coralOrange,
-        label: Text(
-          l10n.createRoutine,
-          style: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600),
-        ),
-        icon: const Icon(Icons.add),
+        child: const Icon(Icons.add_rounded, color: Colors.white, size: 28),
       ),
       body: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                // Week overview section
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                  child: Column(children: [
-                    _WeekStrip(
-                      plannedDows: days
-                          .where((d) => d.dayOfWeek != null)
-                          .map((d) => d.dayOfWeek!)
-                          .toList(),
-                      completedDates:
-                          sessions.map((s) => s.startedAt).toList(),
-                    ),
-                    const SizedBox(height: 14),
-                    _StatsRow(
-                      completed: sessions.length,
-                      planned: days.length,
-                      volumeKg: totalVolume,
-                      streak: streak,
-                    ),
-                    const SizedBox(height: 14),
-                    _TodayCard(
-                        todayDay: todayDay,
-                        exerciseCount: todayExerciseCount),
-                    const SizedBox(height: 20),
-                  ]),
-                ),
-                TraumCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SectionHeader(
-                        title: l10n.muscleGroupVolume,
-                        actionLabel: '${l10n.moreLabel} ›',
-                        onAction: () => context.push(Routes.muscleHeatmap),
+                // Last workout subtitle
+                if (lastSession != null) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Text(
+                      _lastWorkoutLabel(lastSession.startedAt, l10n),
+                      style: const TextStyle(
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                        fontSize: 13,
                       ),
-                      const SizedBox(height: 12),
-                      if (sortedMuscles.isEmpty)
-                        Center(
-                          child: Text(
-                            l10n.noMuscleDataThisWeek,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: TraumColors.onBackgroundMuted,
-                              fontFamily: 'DMSans',
-                            ),
-                          ),
-                        )
-                      else
-                        _MuscleVolumeChart(muscles: sortedMuscles),
-                    ],
+                    ),
                   ),
+                ],
+
+                // Week strip
+                _WeekStrip(
+                  plannedDows: days
+                      .where((d) => d.dayOfWeek != null)
+                      .map((d) => d.dayOfWeek!)
+                      .toList(),
+                  completedDates: sessions.map((s) => s.startedAt).toList(),
                 ),
+                const SizedBox(height: 14),
+
+                // Stats row
+                _StatsRow(
+                  completed: sessions.length,
+                  planned: days.length,
+                  volumeKg: totalVolume,
+                  streak: streak,
+                ),
+                const SizedBox(height: 14),
+
+                // Today card
+                _TodayCard(todayDay: todayDay, exerciseCount: todayExerciseCount),
+                const SizedBox(height: 16),
+
+                // ── Heat Map ──────────────────────────────────────────────
+                _HeatMapCard(heatMap: muscleLastTrainedAt, l10n: l10n),
                 const SizedBox(height: 12),
-                TraumCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SectionHeader(
-                        title: l10n.myRoutines,
-                        actionLabel: '${l10n.all} ›',
-                        onAction: () => context.push(Routes.routines),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        l10n.noRoutinesCreated,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+
+                // ── Routines ──────────────────────────────────────────────
+                _RoutinesSection(plans: plans, l10n: l10n),
                 const SizedBox(height: 80),
               ]),
             ),
@@ -169,80 +163,300 @@ class TrainingScreen extends ConsumerWidget {
       ),
     );
   }
+
+  String _lastWorkoutLabel(DateTime dt, AppLocalizations l10n) {
+    final diff = DateTime.now().difference(dt);
+    if (diff.inMinutes < 60) return 'Last workout ${diff.inMinutes} min ago';
+    if (diff.inHours < 24) return 'Last workout ${diff.inHours}h ago';
+    if (diff.inDays == 1) return 'Last workout yesterday';
+    return 'Last workout ${diff.inDays} days ago';
+  }
 }
 
-// ─── Muscle Volume Chart ──────────────────────────────────────────────────────
+// ─── Heat Map Card ────────────────────────────────────────────────────────────
 
-class _MuscleVolumeChart extends StatelessWidget {
-  final List<MapEntry<String, double>> muscles;
+class _HeatMapCard extends StatelessWidget {
+  final Map<String, DateTime> heatMap;
+  final AppLocalizations l10n;
 
-  const _MuscleVolumeChart({required this.muscles});
+  const _HeatMapCard({required this.heatMap, required this.l10n});
 
   @override
   Widget build(BuildContext context) {
-    final top = muscles.take(6).toList();
-    final maxVol = top.first.value;
-
-    return Column(
-      children: top.asMap().entries.map((e) {
-        final ratio = maxVol > 0 ? (e.value.value / maxVol).clamp(0.0, 1.0) : 0.0;
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Row(children: [
-            SizedBox(
-              width: 72,
+    return Container(
+      decoration: BoxDecoration(
+        color: TraumColors.surface,
+        borderRadius: BorderRadius.circular(TraumRadius.card),
+      ),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Expanded(
               child: Text(
-                e.value.key,
+                l10n.muscleHeatmapTitle,
                 style: const TextStyle(
-                  color: TraumColors.onBackgroundMuted,
+                  color: TraumColors.onBackground,
                   fontFamily: 'DMSans',
-                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 15,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
               ),
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Stack(children: [
-                Container(
-                  height: 16,
-                  decoration: BoxDecoration(
-                    color: TraumColors.surfaceVariant,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                FractionallySizedBox(
-                  widthFactor: ratio,
-                  child: Container(
-                    height: 16,
-                    decoration: BoxDecoration(
-                      color: TraumColors.mintGreen.withValues(
-                          alpha: 0.5 + 0.5 * ratio),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                ),
-              ]),
-            ),
-            const SizedBox(width: 8),
-            SizedBox(
-              width: 48,
-              child: Text(
-                e.value.value >= 1000
-                    ? '${(e.value.value / 1000).toStringAsFixed(1)}t'
-                    : '${e.value.value.toInt()} kg',
-                style: const TextStyle(
-                  color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans',
-                  fontSize: 11,
-                ),
-                textAlign: TextAlign.right,
+            Text(
+              '72h',
+              style: const TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 12,
               ),
             ),
           ]),
-        );
-      }).toList(),
+          const SizedBox(height: 12),
+
+          // Front + Back body maps
+          Row(
+            children: [
+              Expanded(
+                child: BodyMapWidget(
+                  primaryMuscles: const [],
+                  secondaryMuscles: const [],
+                  heatMap: heatMap,
+                  showBack: false,
+                  height: 180,
+                ),
+              ),
+              Expanded(
+                child: BodyMapWidget(
+                  primaryMuscles: const [],
+                  secondaryMuscles: const [],
+                  heatMap: heatMap,
+                  showBack: true,
+                  height: 180,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          // Legend
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _LegendItem(color: const Color(0xFFE97B4A), label: '24h'),
+              const SizedBox(width: 16),
+              _LegendItem(color: const Color(0xFFA0442A), label: '48h'),
+              const SizedBox(width: 16),
+              _LegendItem(color: const Color(0xFF5C2116), label: '72h'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LegendItem extends StatelessWidget {
+  final Color color;
+  final String label;
+
+  const _LegendItem({required this.color, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      Container(
+        width: 12,
+        height: 12,
+        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
+      ),
+      const SizedBox(width: 5),
+      Text(label,
+          style: const TextStyle(
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            fontSize: 11,
+          )),
+    ]);
+  }
+}
+
+// ─── Routines Section ─────────────────────────────────────────────────────────
+
+class _RoutinesSection extends StatelessWidget {
+  final List<WorkoutPlan> plans;
+  final AppLocalizations l10n;
+
+  const _RoutinesSection({required this.plans, required this.l10n});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Row(children: [
+            Expanded(
+              child: Text(
+                l10n.myRoutines,
+                style: const TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () => context.push(Routes.routines),
+              child: Text(
+                '${l10n.all} ›',
+                style: const TextStyle(
+                  color: TraumColors.coralOrange,
+                  fontFamily: 'DMSans',
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          ]),
+        ),
+        if (plans.isEmpty)
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              borderRadius: BorderRadius.circular(TraumRadius.card),
+            ),
+            child: Row(children: [
+              Icon(Icons.fitness_center_rounded,
+                  color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5), size: 28),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(l10n.noRoutines,
+                      style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      )),
+                  const SizedBox(height: 2),
+                  Text(l10n.tapToCreateRoutine,
+                      style: const TextStyle(
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                        fontSize: 12,
+                      )),
+                ]),
+              ),
+            ]),
+          )
+        else
+          ...plans.take(3).map((plan) => _RoutineCard(
+                plan: plan,
+                onTap: () => context.go('/training/plan/${plan.id}'),
+              )),
+        if (plans.length > 3)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: GestureDetector(
+              onTap: () => context.push(Routes.routines),
+              child: Center(
+                child: Text(
+                  '${l10n.all} (${plans.length}) ›',
+                  style: const TextStyle(
+                    color: TraumColors.coralOrange,
+                    fontFamily: 'DMSans',
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _RoutineCard extends StatelessWidget {
+  final WorkoutPlan plan;
+  final VoidCallback onTap;
+
+  const _RoutineCard({required this.plan, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: TraumColors.surface,
+          borderRadius: BorderRadius.circular(TraumRadius.card),
+          border: Border.all(
+            color: plan.isActive
+                ? TraumColors.coralOrange.withValues(alpha: 0.4)
+                : TraumColors.surfaceVariant,
+          ),
+        ),
+        child: Row(children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: plan.isActive ? TraumColors.coralDim : TraumColors.surfaceVariant,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.fitness_center_rounded,
+              color: plan.isActive ? TraumColors.coralOrange : TraumColors.onBackgroundMuted,
+              size: 22,
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(plan.name,
+                  style: const TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  )),
+              if (plan.description != null)
+                Text(plan.description!,
+                    style: const TextStyle(
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontSize: 11,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
+            ]),
+          ),
+          if (plan.isActive)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: TraumColors.coralDim,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text('Active',
+                  style: const TextStyle(
+                    color: TraumColors.coralOrange,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 10,
+                  )),
+            )
+          else
+            const Icon(Icons.chevron_right_rounded,
+                color: TraumColors.onBackgroundSubtle, size: 20),
+        ]),
+      ),
     );
   }
 }
@@ -264,55 +478,48 @@ class _WeekStrip extends StatelessWidget {
       children: List.generate(7, (i) {
         final dow = i + 1;
         final isToday = dow == today;
-        final isPlanned = plannedDows.contains(dow);
         final isCompleted = completedDates.any((d) => d.weekday == dow);
-
-        Color dotColor;
-        if (isCompleted) {
-          dotColor = TraumColors.mintGreen;
-        } else if (isPlanned) {
-          dotColor = TraumColors.coralOrange;
-        } else {
-          dotColor = TraumColors.surfaceVariant;
-        }
+        final isPlanned = plannedDows.contains(dow);
 
         return Expanded(
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 3),
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            decoration: BoxDecoration(
-              color: isToday
-                  ? TraumColors.coralOrange.withValues(alpha: 0.1)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
-              border: isToday
-                  ? Border.all(
-                      color: TraumColors.coralOrange.withValues(alpha: 0.4))
-                  : null,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  labels[i],
-                  style: TextStyle(
-                      color: isToday
-                          ? TraumColors.coralOrange
-                          : TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontWeight:
-                          isToday ? FontWeight.w700 : FontWeight.w400,
-                      fontSize: 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                labels[i],
+                style: TextStyle(
+                  color: isToday
+                      ? TraumColors.coralOrange
+                      : TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                  fontWeight: isToday ? FontWeight.w700 : FontWeight.w400,
+                  fontSize: 11,
                 ),
-                const SizedBox(height: 5),
-                Container(
-                  width: 7,
-                  height: 7,
-                  decoration: BoxDecoration(
-                      color: dotColor, shape: BoxShape.circle),
+              ),
+              const SizedBox(height: 6),
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: isCompleted
+                      ? TraumColors.coralOrange
+                      : isToday
+                          ? TraumColors.coralOrange.withValues(alpha: 0.15)
+                          : isPlanned
+                              ? TraumColors.surfaceVariant
+                              : TraumColors.surfaceVariant.withValues(alpha: 0.5),
+                  shape: BoxShape.circle,
+                  border: isToday && !isCompleted
+                      ? Border.all(color: TraumColors.coralOrange, width: 1.5)
+                      : null,
                 ),
-              ],
-            ),
+                child: isCompleted
+                    ? const Icon(Icons.check_rounded, color: Colors.white, size: 16)
+                    : isPlanned && !isToday
+                        ? null
+                        : null,
+              ),
+            ],
           ),
         );
       }),
@@ -465,8 +672,7 @@ class _TodayCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: TraumColors.coralOrange.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(TraumRadius.card),
-        border:
-            Border.all(color: TraumColors.coralOrange.withValues(alpha: 0.3)),
+        border: Border.all(color: TraumColors.coralOrange.withValues(alpha: 0.3)),
       ),
       child: Row(children: [
         Expanded(
@@ -494,8 +700,7 @@ class _TodayCard extends StatelessWidget {
             backgroundColor: TraumColors.coralOrange,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(TraumRadius.button)),
-            padding:
-                const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
           ),
           child: Text(l10n.startWorkout,
               style: const TextStyle(

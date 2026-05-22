@@ -7,6 +7,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'widgets/body_map_widget.dart';
 
 class RoutinesScreen extends ConsumerWidget {
   const RoutinesScreen({super.key});
@@ -85,7 +86,7 @@ class RoutinesScreen extends ConsumerWidget {
   }
 }
 
-class _PlanCard extends StatelessWidget {
+class _PlanCard extends ConsumerWidget {
   final WorkoutPlan plan;
   final VoidCallback onTap;
   final VoidCallback onSetActive;
@@ -99,7 +100,17 @@ class _PlanCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final muscleGroupsAsync = ref.watch(planMuscleGroupsProvider(plan.id));
+    final muscleGroups = muscleGroupsAsync.valueOrNull ?? [];
+
+    // Convert German muscle groups to body map muscle keys
+    final Set<String> primaryMuscles = {};
+    for (final group in muscleGroups) {
+      primaryMuscles.addAll(BodyMapWidget.musclesForGroup(group));
+    }
+
     return Dismissible(
       key: ValueKey(plan.id),
       direction: DismissDirection.endToStart,
@@ -116,8 +127,7 @@ class _PlanCard extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.all(16),
+          margin: const EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
             color: TraumColors.surface,
             borderRadius: BorderRadius.circular(TraumRadius.card),
@@ -127,61 +137,88 @@ class _PlanCard extends StatelessWidget {
                   : TraumColors.surfaceVariant,
             ),
           ),
-          child: Row(children: [
-            Container(
-              width: 44, height: 44,
-              decoration: BoxDecoration(
-                color: plan.isActive ? TraumColors.coralDim : TraumColors.surfaceVariant,
-                shape: BoxShape.circle,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header row
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
+                child: Row(children: [
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(plan.name,
+                          style: const TextStyle(
+                              color: TraumColors.onBackground,
+                              fontFamily: 'DMSans',
+                              fontWeight: FontWeight.w700,
+                              fontSize: 15)),
+                      if (plan.description != null)
+                        Text(plan.description!,
+                            style: const TextStyle(
+                                color: TraumColors.onBackgroundMuted,
+                                fontFamily: 'DMSans',
+                                fontSize: 12),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                    ]),
+                  ),
+                  if (!plan.isActive)
+                    TextButton(
+                      onPressed: onSetActive,
+                      style: TextButton.styleFrom(foregroundColor: TraumColors.coralOrange),
+                      child: Text(l10n.activate,
+                          style: const TextStyle(fontFamily: 'DMSans', fontSize: 12)),
+                    )
+                  else
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: TraumColors.coralDim,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(l10n.active,
+                          style: const TextStyle(
+                              color: TraumColors.coralOrange,
+                              fontFamily: 'DMSans',
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11)),
+                    ),
+                ]),
               ),
-              child: Icon(
-                Icons.fitness_center_rounded,
-                color:
-                    plan.isActive ? TraumColors.coralOrange : TraumColors.onBackgroundMuted,
-                size: 22,
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(plan.name,
-                    style: const TextStyle(
-                        color: TraumColors.onBackground,
-                        fontFamily: 'DMSans',
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15)),
-                if (plan.description != null)
-                  Text(plan.description!,
-                      style: const TextStyle(
-                          color: TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans',
-                          fontSize: 12),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-              ]),
-            ),
-            if (!plan.isActive)
-              TextButton(
-                onPressed: onSetActive,
-                style: TextButton.styleFrom(foregroundColor: TraumColors.coralOrange),
-                child: Text(AppLocalizations.of(context)!.activate,
-                    style: const TextStyle(fontFamily: 'DMSans', fontSize: 12)),
-              )
-            else
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: TraumColors.coralDim,
-                  borderRadius: BorderRadius.circular(12),
+
+              // Body map preview (only show if there are muscles to display)
+              if (primaryMuscles.isNotEmpty)
+                Container(
+                  decoration: BoxDecoration(
+                    color: TraumColors.background.withValues(alpha: 0.5),
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(TraumRadius.card - 1),
+                      bottomRight: Radius.circular(TraumRadius.card - 1),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: BodyMapWidget(
+                          primaryMuscles: primaryMuscles.toList(),
+                          secondaryMuscles: const [],
+                          showBack: false,
+                          height: 120,
+                        ),
+                      ),
+                      Expanded(
+                        child: BodyMapWidget(
+                          primaryMuscles: primaryMuscles.toList(),
+                          secondaryMuscles: const [],
+                          showBack: true,
+                          height: 120,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Text(AppLocalizations.of(context)!.active,
-                    style: const TextStyle(
-                        color: TraumColors.coralOrange,
-                        fontFamily: 'DMSans',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 11)),
-              ),
-          ]),
+            ],
+          ),
         ),
       ),
     );

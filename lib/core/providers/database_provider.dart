@@ -158,6 +158,29 @@ final allPeriodSymptomsStreamProvider = StreamProvider.autoDispose<List<PeriodSy
 final allTransactionsStreamProvider = StreamProvider.autoDispose<List<Transaction>>((ref) =>
     ref.watch(budgetDaoProvider).watchAllTransactions());
 
+// ─── Muscle groups for a routine plan (for body map preview) ─────────────────
+final planMuscleGroupsProvider = FutureProvider.autoDispose.family<List<String>, int>((ref, planId) async {
+  final dao = ref.watch(trainingDaoProvider);
+  final days = await dao.getDaysForPlan(planId);
+  final allExercises = ref.watch(allExercisesStreamProvider).valueOrNull ?? [];
+  final exerciseById = {for (final e in allExercises) e.id: e};
+  final Set<String> groups = {};
+  for (final day in days) {
+    final dayExercises = await dao.getDayExercises(day.id);
+    for (final de in dayExercises) {
+      final ex = exerciseById[de.exerciseId];
+      if (ex != null) groups.add(ex.muscleGroup);
+    }
+  }
+  return groups.toList();
+});
+
+// ─── Sessions last 72 h (for muscle heat map) ────────────────────────────────
+final sessionsLast72hProvider = FutureProvider.autoDispose<List<WorkoutSession>>((ref) =>
+    ref.watch(trainingDaoProvider).getSessionsAfter(
+      DateTime.now().subtract(const Duration(hours: 72))
+    ));
+
 // ─── Workout streak ───────────────────────────────────────────────────────────
 final workoutStreakProvider = FutureProvider.autoDispose<int>((ref) async {
   final cutoff = DateTime.now().subtract(const Duration(days: 365));
