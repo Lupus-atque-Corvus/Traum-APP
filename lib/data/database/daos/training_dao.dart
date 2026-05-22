@@ -128,6 +128,38 @@ class TrainingDao extends DatabaseAccessor<TraumDatabase>
   Future<int> deleteSet(int id) =>
       (delete(workoutSets)..where((t) => t.id.equals(id))).go();
 
+  Future<Map<int, int>> getExerciseSetCounts() async {
+    final rows = await customSelect(
+      'SELECT exercise_id, COUNT(DISTINCT session_id) as cnt FROM workout_sets GROUP BY exercise_id',
+      readsFrom: {workoutSets},
+    ).get();
+    return {for (final r in rows) r.read<int>('exercise_id'): r.read<int>('cnt')};
+  }
+
+  Future<List<WorkoutSet>> getSetsForExercise(int exerciseId) async {
+    final query = select(workoutSets).join([
+      innerJoin(workoutSessions, workoutSessions.id.equalsExp(workoutSets.sessionId)),
+    ])
+      ..where(workoutSets.exerciseId.equals(exerciseId))
+      ..orderBy([OrderingTerm.desc(workoutSessions.startedAt)]);
+    return query.map((r) => r.readTable(workoutSets)).get();
+  }
+
+  Future<List<(WorkoutSession, List<WorkoutSet>)>> getSessionsWithSetsForExercise(int exerciseId) async {
+    final sets = await (select(workoutSets)
+      ..where((t) => t.exerciseId.equals(exerciseId))).get();
+    if (sets.isEmpty) return [];
+    final sessionIds = sets.map((s) => s.sessionId).toSet().toList();
+    final sessions = await (select(workoutSessions)
+      ..where((t) => t.id.isIn(sessionIds))
+      ..orderBy([(t) => OrderingTerm.desc(t.startedAt)])).get();
+    return sessions.map((session) {
+      final sessionSets = sets.where((s) => s.sessionId == session.id).toList()
+        ..sort((a, b) => a.setNumber.compareTo(b.setNumber));
+      return (session, sessionSets);
+    }).toList();
+  }
+
   // WorkoutDayExercises
   Future<List<WorkoutDayExercise>> getDayExercises(int dayId) =>
       (select(workoutDayExercises)

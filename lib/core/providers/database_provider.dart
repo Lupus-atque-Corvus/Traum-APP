@@ -202,3 +202,10 @@ final workoutStreakProvider = FutureProvider.autoDispose<int>((ref) async {
 
 final allSavingsGoalsStreamProvider = StreamProvider.autoDispose<List<SavingsGoal>>((ref) =>
     ref.watch(budgetDaoProvider).watchAllSavingsGoals());
+
+final exerciseSetCountsProvider = FutureProvider.autoDispose<Map<int, int>>((ref) =>
+    ref.watch(trainingDaoProvider).getExerciseSetCounts());
+
+final exerciseSessionHistoryProvider = FutureProvider.autoDispose
+    .family<List<(WorkoutSession, List<WorkoutSet>)>, int>((ref, exerciseId) =>
+        ref.watch(trainingDaoProvider).getSessionsWithSetsForExercise(exerciseId));
