@@ -158,5 +158,24 @@ final allPeriodSymptomsStreamProvider = StreamProvider.autoDispose<List<PeriodSy
 final allTransactionsStreamProvider = StreamProvider.autoDispose<List<Transaction>>((ref) =>
     ref.watch(budgetDaoProvider).watchAllTransactions());
 
+// ─── Workout streak ───────────────────────────────────────────────────────────
+final workoutStreakProvider = FutureProvider.autoDispose<int>((ref) async {
+  final cutoff = DateTime.now().subtract(const Duration(days: 365));
+  final sessions = await ref.watch(trainingDaoProvider).getSessionsAfter(cutoff);
+  final trainedDays = sessions
+      .where((s) => s.completedAt != null)
+      .map((s) => DateTime(s.startedAt.year, s.startedAt.month, s.startedAt.day))
+      .toSet();
+
+  int streak = 0;
+  var day = DateTime.now();
+  day = DateTime(day.year, day.month, day.day);
+  while (trainedDays.contains(day)) {
+    streak++;
+    day = day.subtract(const Duration(days: 1));
+  }
+  return streak;
+});
+
 final allSavingsGoalsStreamProvider = StreamProvider.autoDispose<List<SavingsGoal>>((ref) =>
     ref.watch(budgetDaoProvider).watchAllSavingsGoals());

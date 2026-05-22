@@ -197,6 +197,7 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
                       ...entry.value.map((ex) => _ExerciseTile(
                             exercise: ex,
                             onTap: () => context.go('/training/exercise/${ex.id}/progress'),
+                            onInfo: () => _showExerciseDetail(context, ex),
                             onDelete: ex.isCustom
                                 ? () => ref.read(trainingDaoProvider).deleteExercise(ex.id)
                                 : null,
@@ -212,6 +213,96 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showExerciseDetail(BuildContext context, Exercise ex) {
+    final l10n = AppLocalizations.of(context)!;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: TraumColors.surfaceElevated,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+      ),
+      builder: (_) => DraggableScrollableSheet(
+        initialChildSize: 0.55,
+        minChildSize: 0.35,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (_, scrollCtrl) => ListView(
+          controller: scrollCtrl,
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+          children: [
+            Center(
+              child: Container(
+                width: 40, height: 4,
+                decoration: BoxDecoration(
+                  color: TraumColors.onBackgroundSubtle,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(children: [
+              ExerciseIcon(muscleGroup: _muscleGroupKey(ex.muscleGroup), size: 48),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(ex.name,
+                      style: const TextStyle(
+                          color: TraumColors.onBackground,
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18)),
+                  Text(ex.muscleGroup,
+                      style: const TextStyle(
+                          color: TraumColors.coralOrange,
+                          fontFamily: 'DMSans',
+                          fontSize: 13)),
+                ]),
+              ),
+            ]),
+            const SizedBox(height: 16),
+            if (ex.equipment != null || ex.difficulty != null) ...[
+              Wrap(spacing: 8, runSpacing: 6, children: [
+                if (ex.equipment != null)
+                  _DetailChip(
+                    icon: Icons.fitness_center_rounded,
+                    label: ex.equipment!,
+                  ),
+                if (ex.difficulty != null)
+                  _DetailChip(
+                    icon: Icons.bar_chart_rounded,
+                    label: ex.difficulty!,
+                    color: TraumColors.mintGreen,
+                  ),
+              ]),
+              const SizedBox(height: 16),
+            ],
+            if (ex.instructions != null && ex.instructions!.isNotEmpty) ...[
+              Text(l10n.instructionsLabel,
+                  style: const TextStyle(
+                      color: TraumColors.onBackground,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14)),
+              const SizedBox(height: 8),
+              Text(ex.instructions!,
+                  style: const TextStyle(
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontSize: 13,
+                      height: 1.5)),
+            ] else
+              Text(l10n.noLastPerformance,
+                  style: const TextStyle(
+                      color: TraumColors.onBackgroundSubtle,
+                      fontFamily: 'DMSans',
+                      fontSize: 13)),
+          ],
+        ),
       ),
     );
   }
@@ -270,11 +361,17 @@ class _MuscleChip extends StatelessWidget {
 class _ExerciseTile extends StatelessWidget {
   final Exercise exercise;
   final VoidCallback onTap;
+  final VoidCallback? onInfo;
   final VoidCallback? onDelete;
   final VoidCallback? onBookmark;
 
-  const _ExerciseTile(
-      {required this.exercise, required this.onTap, this.onDelete, this.onBookmark});
+  const _ExerciseTile({
+    required this.exercise,
+    required this.onTap,
+    this.onInfo,
+    this.onDelete,
+    this.onBookmark,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -313,16 +410,53 @@ class _ExerciseTile extends StatelessWidget {
               ),
               onPressed: onBookmark,
             ),
+            IconButton(
+              icon: const Icon(Icons.info_outline_rounded,
+                  color: TraumColors.onBackgroundSubtle, size: 18),
+              onPressed: onInfo,
+            ),
             if (onDelete != null)
               IconButton(
-                icon: const Icon(Icons.delete_rounded, color: TraumColors.onBackgroundSubtle, size: 18),
+                icon: const Icon(Icons.delete_rounded,
+                    color: TraumColors.onBackgroundSubtle, size: 18),
                 onPressed: onDelete,
-              )
-            else
-              const Icon(Icons.chevron_right_rounded, color: TraumColors.onBackgroundSubtle),
+              ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _DetailChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  const _DetailChip({
+    required this.icon,
+    required this.label,
+    this.color = TraumColors.coralOrange,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Icon(icon, color: color, size: 13),
+        const SizedBox(width: 5),
+        Text(label,
+            style: TextStyle(
+                color: color,
+                fontFamily: 'DMSans',
+                fontSize: 12,
+                fontWeight: FontWeight.w600)),
+      ]),
     );
   }
 }

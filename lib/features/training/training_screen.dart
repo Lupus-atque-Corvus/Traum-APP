@@ -26,13 +26,31 @@ class TrainingScreen extends ConsumerWidget {
     final sessions =
         ref.watch(trainingSessionsThisWeekProvider).valueOrNull ?? [];
 
+    final streak = ref.watch(workoutStreakProvider).valueOrNull ?? 0;
+
     final recentSets =
         ref.watch(recentTrainingSetsProvider(7)).valueOrNull ?? [];
+
+    final exercises =
+        ref.watch(allExercisesStreamProvider).valueOrNull ?? [];
 
     final totalVolume = recentSets.fold<double>(
       0.0,
       (sum, s) => sum + (s.weightKg ?? 0) * (s.reps ?? 1),
     );
+
+    // Volume per muscle group for chart
+    final Map<String, double> muscleVolume = {};
+    for (final s in recentSets) {
+      if (s.weightKg == null || s.reps == null) continue;
+      final ex = exercises.cast<Exercise?>().firstWhere(
+          (e) => e?.id == s.exerciseId, orElse: () => null);
+      if (ex == null) continue;
+      final mg = ex.muscleGroup;
+      muscleVolume[mg] = (muscleVolume[mg] ?? 0) + s.weightKg! * s.reps!;
+    }
+    final sortedMuscles = muscleVolume.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
 
     final today = DateTime.now().weekday;
     final WorkoutDay? todayDay = days.where((d) => d.dayOfWeek == today).isNotEmpty
@@ -86,6 +104,7 @@ class TrainingScreen extends ConsumerWidget {
                       completed: sessions.length,
                       planned: days.length,
                       volumeKg: totalVolume,
+                      streak: streak,
                     ),
                     const SizedBox(height: 14),
                     _TodayCard(
@@ -99,21 +118,24 @@ class TrainingScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SectionHeader(
-                        title: l10n.muscleGroupsOverview,
+                        title: l10n.muscleGroupVolume,
                         actionLabel: '${l10n.moreLabel} ›',
                         onAction: () => context.push(Routes.muscleHeatmap),
                       ),
                       const SizedBox(height: 12),
-                      Center(
-                        child: Text(
-                          l10n.noTrainingSessionsRecorded,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: TraumColors.onBackgroundMuted,
-                            fontFamily: 'DMSans',
+                      if (sortedMuscles.isEmpty)
+                        Center(
+                          child: Text(
+                            l10n.noMuscleDataThisWeek,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: TraumColors.onBackgroundMuted,
+                              fontFamily: 'DMSans',
+                            ),
                           ),
-                        ),
-                      ),
+                        )
+                      else
+                        _MuscleVolumeChart(muscles: sortedMuscles),
                     ],
                   ),
                 ),
@@ -145,6 +167,82 @@ class TrainingScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ─── Muscle Volume Chart ──────────────────────────────────────────────────────
+
+class _MuscleVolumeChart extends StatelessWidget {
+  final List<MapEntry<String, double>> muscles;
+
+  const _MuscleVolumeChart({required this.muscles});
+
+  @override
+  Widget build(BuildContext context) {
+    final top = muscles.take(6).toList();
+    final maxVol = top.first.value;
+
+    return Column(
+      children: top.asMap().entries.map((e) {
+        final ratio = maxVol > 0 ? (e.value.value / maxVol).clamp(0.0, 1.0) : 0.0;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Row(children: [
+            SizedBox(
+              width: 72,
+              child: Text(
+                e.value.key,
+                style: const TextStyle(
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                  fontSize: 11,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Stack(children: [
+                Container(
+                  height: 16,
+                  decoration: BoxDecoration(
+                    color: TraumColors.surfaceVariant,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                FractionallySizedBox(
+                  widthFactor: ratio,
+                  child: Container(
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: TraumColors.mintGreen.withValues(
+                          alpha: 0.5 + 0.5 * ratio),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+            const SizedBox(width: 8),
+            SizedBox(
+              width: 48,
+              child: Text(
+                e.value.value >= 1000
+                    ? '${(e.value.value / 1000).toStringAsFixed(1)}t'
+                    : '${e.value.value.toInt()} kg',
+                style: const TextStyle(
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                  fontSize: 11,
+                ),
+                textAlign: TextAlign.right,
+              ),
+            ),
+          ]),
+        );
+      }).toList(),
     );
   }
 }
@@ -228,11 +326,13 @@ class _StatsRow extends StatelessWidget {
   final int completed;
   final int planned;
   final double volumeKg;
+  final int streak;
 
   const _StatsRow({
     required this.completed,
     required this.planned,
     required this.volumeKg,
+    required this.streak,
   });
 
   @override
@@ -247,10 +347,17 @@ class _StatsRow extends StatelessWidget {
 
     return Row(children: [
       _StatTile(value: '$completed', label: l10n.completedThisWeek),
-      const SizedBox(width: 10),
+      const SizedBox(width: 8),
       _StatTile(value: '$planned', label: l10n.plannedThisWeek),
-      const SizedBox(width: 10),
+      const SizedBox(width: 8),
       _StatTile(value: volLabel, label: l10n.weeklyVolume),
+      const SizedBox(width: 8),
+      _StatTile(
+        value: '$streak',
+        label: l10n.workoutStreak,
+        icon: streak > 0 ? Icons.local_fire_department_rounded : null,
+        iconColor: TraumColors.coralOrange,
+      ),
     ]);
   }
 }
@@ -258,31 +365,53 @@ class _StatsRow extends StatelessWidget {
 class _StatTile extends StatelessWidget {
   final String value;
   final String label;
+  final IconData? icon;
+  final Color? iconColor;
 
-  const _StatTile({required this.value, required this.label});
+  const _StatTile({
+    required this.value,
+    required this.label,
+    this.icon,
+    this.iconColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
           color: TraumColors.surface,
           borderRadius: BorderRadius.circular(TraumRadius.card),
         ),
         child: Column(children: [
-          Text(value,
-              style: const TextStyle(
-                  color: TraumColors.coralOrange,
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20)),
+          if (icon != null)
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(icon, color: iconColor ?? TraumColors.coralOrange, size: 14),
+              const SizedBox(width: 3),
+              Text(value,
+                  style: TextStyle(
+                      color: iconColor ?? TraumColors.coralOrange,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18)),
+            ])
+          else
+            Text(value,
+                style: const TextStyle(
+                    color: TraumColors.coralOrange,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18)),
           const SizedBox(height: 2),
           Text(label,
               style: const TextStyle(
                   color: TraumColors.onBackgroundMuted,
                   fontFamily: 'DMSans',
-                  fontSize: 11)),
+                  fontSize: 10),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis),
         ]),
       ),
     );

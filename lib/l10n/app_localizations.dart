@@ -4783,6 +4783,72 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Übung speichern'**
   String get bookmarkExercise;
+
+  /// No description provided for @warmupSet.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufwärm-Satz'**
+  String get warmupSet;
+
+  /// No description provided for @workoutStreak.
+  ///
+  /// In de, this message translates to:
+  /// **'Tage in Folge'**
+  String get workoutStreak;
+
+  /// No description provided for @restDuration.
+  ///
+  /// In de, this message translates to:
+  /// **'Pausenlänge'**
+  String get restDuration;
+
+  /// No description provided for @muscleGroupVolume.
+  ///
+  /// In de, this message translates to:
+  /// **'Volumen pro Muskelgruppe'**
+  String get muscleGroupVolume;
+
+  /// No description provided for @noMuscleDataThisWeek.
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Trainingsvolumen diese Woche'**
+  String get noMuscleDataThisWeek;
+
+  /// No description provided for @lastPerformanceHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt: {info}'**
+  String lastPerformanceHint(String info);
+
+  /// No description provided for @noLastPerformance.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine früheren Daten'**
+  String get noLastPerformance;
+
+  /// No description provided for @instructionsLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausführung'**
+  String get instructionsLabel;
+
+  /// No description provided for @equipmentLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Equipment'**
+  String get equipmentLabel;
+
+  /// No description provided for @difficultyLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Schwierigkeit'**
+  String get difficultyLabel;
+
+  /// No description provided for @detailsLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Details'**
+  String get detailsLabel;
 }
 
 class _AppLocalizationsDelegate

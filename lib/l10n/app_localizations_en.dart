@@ -2450,4 +2450,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bookmarkExercise => 'Bookmark exercise';
+
+  @override
+  String get warmupSet => 'Warmup set';
+
+  @override
+  String get workoutStreak => 'Day streak';
+
+  @override
+  String get restDuration => 'Rest duration';
+
+  @override
+  String get muscleGroupVolume => 'Volume by muscle group';
+
+  @override
+  String get noMuscleDataThisWeek => 'No training volume this week';
+
+  @override
+  String lastPerformanceHint(String info) {
+    return 'Last: $info';
+  }
+
+  @override
+  String get noLastPerformance => 'No previous data';
+
+  @override
+  String get instructionsLabel => 'Instructions';
+
+  @override
+  String get equipmentLabel => 'Equipment';
+
+  @override
+  String get difficultyLabel => 'Difficulty';
+
+  @override
+  String get detailsLabel => 'Details';
 }

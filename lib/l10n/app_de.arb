@@ -1020,5 +1020,22 @@
   "notTrainedHeatmap": "Nicht trainiert",
   "restTimer": "Pause",
   "restTimerSkip": "Überspringen",
-  "bookmarkExercise": "Übung speichern"
+  "bookmarkExercise": "Übung speichern",
+
+  "warmupSet": "Aufwärm-Satz",
+  "workoutStreak": "Tage in Folge",
+  "restDuration": "Pausenlänge",
+  "muscleGroupVolume": "Volumen pro Muskelgruppe",
+  "noMuscleDataThisWeek": "Kein Trainingsvolumen diese Woche",
+  "lastPerformanceHint": "Zuletzt: {info}",
+  "@lastPerformanceHint": {
+    "placeholders": {
+      "info": {"type": "String"}
+    }
+  },
+  "noLastPerformance": "Keine früheren Daten",
+  "instructionsLabel": "Ausführung",
+  "equipmentLabel": "Equipment",
+  "difficultyLabel": "Schwierigkeit",
+  "detailsLabel": "Details"
 }

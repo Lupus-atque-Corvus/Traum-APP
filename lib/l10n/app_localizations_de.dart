@@ -2461,4 +2461,39 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get bookmarkExercise => 'Übung speichern';
+
+  @override
+  String get warmupSet => 'Aufwärm-Satz';
+
+  @override
+  String get workoutStreak => 'Tage in Folge';
+
+  @override
+  String get restDuration => 'Pausenlänge';
+
+  @override
+  String get muscleGroupVolume => 'Volumen pro Muskelgruppe';
+
+  @override
+  String get noMuscleDataThisWeek => 'Kein Trainingsvolumen diese Woche';
+
+  @override
+  String lastPerformanceHint(String info) {
+    return 'Zuletzt: $info';
+  }
+
+  @override
+  String get noLastPerformance => 'Keine früheren Daten';
+
+  @override
+  String get instructionsLabel => 'Ausführung';
+
+  @override
+  String get equipmentLabel => 'Equipment';
+
+  @override
+  String get difficultyLabel => 'Schwierigkeit';
+
+  @override
+  String get detailsLabel => 'Details';
 }

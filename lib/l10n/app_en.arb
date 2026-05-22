@@ -1020,5 +1020,22 @@
   "notTrainedHeatmap": "Not trained",
   "restTimer": "Rest",
   "restTimerSkip": "Skip",
-  "bookmarkExercise": "Bookmark exercise"
+  "bookmarkExercise": "Bookmark exercise",
+
+  "warmupSet": "Warmup set",
+  "workoutStreak": "Day streak",
+  "restDuration": "Rest duration",
+  "muscleGroupVolume": "Volume by muscle group",
+  "noMuscleDataThisWeek": "No training volume this week",
+  "lastPerformanceHint": "Last: {info}",
+  "@lastPerformanceHint": {
+    "placeholders": {
+      "info": {"type": "String"}
+    }
+  },
+  "noLastPerformance": "No previous data",
+  "instructionsLabel": "Instructions",
+  "equipmentLabel": "Equipment",
+  "difficultyLabel": "Difficulty",
+  "detailsLabel": "Details"
 }
