@@ -603,6 +603,7 @@ class _DailySummaryCard extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final nutritionAsync = ref.watch(_todayNutritionProvider);
     final kcalGoal = ref.watch(kcalGoalNotifierProvider);
+    final stepsToday = ref.watch(stepsTodayProvider);
 
     final totalKcal = nutritionAsync.valueOrNull?.fold<double>(
           0,
@@ -636,7 +637,7 @@ class _DailySummaryCard extends ConsumerWidget {
               _SummaryMetric(
                 icon: Icons.directions_walk_rounded,
                 color: TraumColors.mintGreen,
-                value: '—',
+                value: stepsToday > 0 ? '$stepsToday' : '—',
                 sub: l10n.steps,
               ),
               const SizedBox(width: 8),

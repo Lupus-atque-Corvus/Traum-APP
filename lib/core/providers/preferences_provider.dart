@@ -158,6 +158,10 @@ final stepsGoalProvider = Provider<int>((ref) {
   return ref.watch(preferencesRepositoryProvider).stepsGoal;
 });
 
+final stepsTodayProvider = Provider<int>((ref) {
+  return ref.watch(preferencesRepositoryProvider).stepsToday;
+});
+
 final kcalGoalProvider = Provider<int>((ref) {
   return ref.watch(preferencesRepositoryProvider).kcalGoal;
 });
