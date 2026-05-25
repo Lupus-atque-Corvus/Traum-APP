@@ -1037,5 +1037,18 @@
   "instructionsLabel": "Ausführung",
   "equipmentLabel": "Equipment",
   "difficultyLabel": "Schwierigkeit",
-  "detailsLabel": "Details"
+  "detailsLabel": "Details",
+
+  "feedbackTitle": "Feedback senden",
+  "feedbackSubtitle": "Dein Feedback hilft TRAUM besser zu machen.",
+  "feedbackTypeBug": "Bug",
+  "feedbackTypeFeature": "Feature",
+  "feedbackTypeImprovement": "Verbesserung",
+  "feedbackShortTitle": "Kurztitel",
+  "feedbackDescription": "Beschreibung",
+  "feedbackSubmit": "GitHub öffnen & absenden",
+  "feedbackHint": "Öffnet GitHub im Browser. Ein GitHub-Account ist zum Absenden nötig.",
+  "feedbackSystemInfo": "Systemdaten werden automatisch angehängt.",
+  "settingsFeedback": "Feedback & Fehler melden",
+  "settingsFeedbackSubtitle": "Bug · Feature · Verbesserung"
 }

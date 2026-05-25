@@ -1,15 +1,12 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:intl/intl.dart';
 import '../../core/navigation/nav_customization_sheet.dart';
+import 'feedback/feedback_bottom_sheet.dart';
 import '../../core/navigation/routes.dart';
 import '../../core/notifications/notification_service.dart';
 import '../../core/providers/preferences_provider.dart';
@@ -1109,29 +1106,40 @@ class _SupportSection extends StatelessWidget {
     return _Section(
       title: l10n.supportSection,
       child: ListTile(
-        leading: const Icon(Icons.bug_report_rounded, color: TraumColors.coralOrange),
-        title: Text(l10n.report_bug,
-            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
-        trailing: const Icon(Icons.chevron_right, color: TraumColors.onBackgroundMuted),
-        onTap: () => _openBugReport(context),
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: TraumColors.coralOrange.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Icon(Icons.feedback_outlined,
+              color: TraumColors.coralOrange, size: 20),
+        ),
+        title: Text(
+          l10n.settingsFeedback,
+          style: const TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackground,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        subtitle: Text(
+          l10n.settingsFeedbackSubtitle,
+          style: const TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackgroundMuted,
+            fontSize: 12,
+          ),
+        ),
+        trailing: const Icon(Icons.chevron_right, color: TraumColors.onBackgroundSubtle),
+        onTap: () => showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (_) => const FeedbackBottomSheet(),
+        ),
       ),
     );
-  }
-
-  Future<void> _openBugReport(BuildContext context) async {
-    final l10n = AppLocalizations.of(context)!;
-    try {
-      final pkg = await PackageInfo.fromPlatform();
-      String systemInfo = '---SYSTEMINFO---\nApp-Version: ${pkg.version}+${pkg.buildNumber}\nDark Mode: ${l10n.bugReportDarkModeYes}\nDatum: ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now())}\n';
-      if (Platform.isAndroid) {
-        final deviceInfo = DeviceInfoPlugin();
-        final android = await deviceInfo.androidInfo;
-        systemInfo = '---SYSTEMINFO---\nApp-Version: ${pkg.version}+${pkg.buildNumber}\nAndroid-Version: Android ${android.version.release} (API ${android.version.sdkInt})\n${l10n.bugReportDevice}: ${android.manufacturer} ${android.model}\nDark Mode: ${l10n.bugReportDarkModeYes}\nDatum: ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now())}\n';
-      }
-      final subject = Uri.encodeComponent('${l10n.bugReportSubject}${pkg.version}');
-      final body = Uri.encodeComponent('${l10n.bugReportBody}$systemInfo');
-      await launchUrl(Uri.parse('mailto:support@traum-app.de?subject=$subject&body=$body'));
-    } catch (_) {}
   }
 }
 

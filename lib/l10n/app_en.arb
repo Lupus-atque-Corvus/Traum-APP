@@ -1037,5 +1037,18 @@
   "instructionsLabel": "Instructions",
   "equipmentLabel": "Equipment",
   "difficultyLabel": "Difficulty",
-  "detailsLabel": "Details"
+  "detailsLabel": "Details",
+
+  "feedbackTitle": "Send feedback",
+  "feedbackSubtitle": "Your feedback helps improve TRAUM.",
+  "feedbackTypeBug": "Bug",
+  "feedbackTypeFeature": "Feature",
+  "feedbackTypeImprovement": "Improvement",
+  "feedbackShortTitle": "Short title",
+  "feedbackDescription": "Description",
+  "feedbackSubmit": "Open GitHub & submit",
+  "feedbackHint": "Opens GitHub in browser. A GitHub account is needed to submit.",
+  "feedbackSystemInfo": "System info will be attached automatically.",
+  "settingsFeedback": "Feedback & bug reports",
+  "settingsFeedbackSubtitle": "Bug · Feature · Improvement"
 }

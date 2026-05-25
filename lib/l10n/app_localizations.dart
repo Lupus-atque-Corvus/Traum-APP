@@ -4849,6 +4849,78 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Details'**
   String get detailsLabel;
+
+  /// No description provided for @feedbackTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Feedback senden'**
+  String get feedbackTitle;
+
+  /// No description provided for @feedbackSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Feedback hilft TRAUM besser zu machen.'**
+  String get feedbackSubtitle;
+
+  /// No description provided for @feedbackTypeBug.
+  ///
+  /// In de, this message translates to:
+  /// **'Bug'**
+  String get feedbackTypeBug;
+
+  /// No description provided for @feedbackTypeFeature.
+  ///
+  /// In de, this message translates to:
+  /// **'Feature'**
+  String get feedbackTypeFeature;
+
+  /// No description provided for @feedbackTypeImprovement.
+  ///
+  /// In de, this message translates to:
+  /// **'Verbesserung'**
+  String get feedbackTypeImprovement;
+
+  /// No description provided for @feedbackShortTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Kurztitel'**
+  String get feedbackShortTitle;
+
+  /// No description provided for @feedbackDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Beschreibung'**
+  String get feedbackDescription;
+
+  /// No description provided for @feedbackSubmit.
+  ///
+  /// In de, this message translates to:
+  /// **'GitHub öffnen & absenden'**
+  String get feedbackSubmit;
+
+  /// No description provided for @feedbackHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Öffnet GitHub im Browser. Ein GitHub-Account ist zum Absenden nötig.'**
+  String get feedbackHint;
+
+  /// No description provided for @feedbackSystemInfo.
+  ///
+  /// In de, this message translates to:
+  /// **'Systemdaten werden automatisch angehängt.'**
+  String get feedbackSystemInfo;
+
+  /// No description provided for @settingsFeedback.
+  ///
+  /// In de, this message translates to:
+  /// **'Feedback & Fehler melden'**
+  String get settingsFeedback;
+
+  /// No description provided for @settingsFeedbackSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Bug · Feature · Verbesserung'**
+  String get settingsFeedbackSubtitle;
 }
 
 class _AppLocalizationsDelegate

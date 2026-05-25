@@ -2485,4 +2485,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get detailsLabel => 'Details';
+
+  @override
+  String get feedbackTitle => 'Send feedback';
+
+  @override
+  String get feedbackSubtitle => 'Your feedback helps improve TRAUM.';
+
+  @override
+  String get feedbackTypeBug => 'Bug';
+
+  @override
+  String get feedbackTypeFeature => 'Feature';
+
+  @override
+  String get feedbackTypeImprovement => 'Improvement';
+
+  @override
+  String get feedbackShortTitle => 'Short title';
+
+  @override
+  String get feedbackDescription => 'Description';
+
+  @override
+  String get feedbackSubmit => 'Open GitHub & submit';
+
+  @override
+  String get feedbackHint =>
+      'Opens GitHub in browser. A GitHub account is needed to submit.';
+
+  @override
+  String get feedbackSystemInfo =>
+      'System info will be attached automatically.';
+
+  @override
+  String get settingsFeedback => 'Feedback & bug reports';
+
+  @override
+  String get settingsFeedbackSubtitle => 'Bug · Feature · Improvement';
 }

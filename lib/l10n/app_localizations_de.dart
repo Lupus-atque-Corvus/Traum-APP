@@ -2496,4 +2496,41 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get detailsLabel => 'Details';
+
+  @override
+  String get feedbackTitle => 'Feedback senden';
+
+  @override
+  String get feedbackSubtitle => 'Dein Feedback hilft TRAUM besser zu machen.';
+
+  @override
+  String get feedbackTypeBug => 'Bug';
+
+  @override
+  String get feedbackTypeFeature => 'Feature';
+
+  @override
+  String get feedbackTypeImprovement => 'Verbesserung';
+
+  @override
+  String get feedbackShortTitle => 'Kurztitel';
+
+  @override
+  String get feedbackDescription => 'Beschreibung';
+
+  @override
+  String get feedbackSubmit => 'GitHub öffnen & absenden';
+
+  @override
+  String get feedbackHint =>
+      'Öffnet GitHub im Browser. Ein GitHub-Account ist zum Absenden nötig.';
+
+  @override
+  String get feedbackSystemInfo => 'Systemdaten werden automatisch angehängt.';
+
+  @override
+  String get settingsFeedback => 'Feedback & Fehler melden';
+
+  @override
+  String get settingsFeedbackSubtitle => 'Bug · Feature · Verbesserung';
 }
