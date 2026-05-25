@@ -1192,6 +1192,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addWater => 'Add water';
 
   @override
+  String get positiveAmountRequired => 'Please enter a positive amount';
+
+  @override
   String get waterGoal2000 => 'Goal: 2000 ml';
 
   @override

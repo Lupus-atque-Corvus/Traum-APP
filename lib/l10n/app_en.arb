@@ -491,6 +491,7 @@
   "logMeal": "Log meal",
   "quickSelect": "Quick select",
   "addWater": "Add water",
+  "positiveAmountRequired": "Please enter a positive amount",
   "waterGoal2000": "Goal: 2000 ml",
   "nothingLogged": "Nothing logged yet",
   "shoppingListTooltip": "Shopping list",

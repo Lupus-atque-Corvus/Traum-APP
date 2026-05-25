@@ -210,8 +210,8 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                 onPressed: () async {
                   if (amount <= 0) {
                     ScaffoldMessenger.of(ctx).showSnackBar(
-                      const SnackBar(
-                          content: Text('Bitte eine positive Menge eingeben')));
+                      SnackBar(
+                          content: Text(AppLocalizations.of(ctx)!.positiveAmountRequired)));
                     return;
                   }
                   Navigator.pop(ctx);

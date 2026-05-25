@@ -2372,6 +2372,12 @@ abstract class AppLocalizations {
   /// **'Wasser hinzufügen'**
   String get addWater;
 
+  /// No description provided for @positiveAmountRequired.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte eine positive Menge eingeben'**
+  String get positiveAmountRequired;
+
   /// No description provided for @waterGoal2000.
   ///
   /// In de, this message translates to:

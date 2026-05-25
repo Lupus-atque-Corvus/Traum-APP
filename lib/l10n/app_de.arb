@@ -491,6 +491,7 @@
   "logMeal": "Mahlzeit eintragen",
   "quickSelect": "Schnellauswahl",
   "addWater": "Wasser hinzufügen",
+  "positiveAmountRequired": "Bitte eine positive Menge eingeben",
   "waterGoal2000": "Ziel: 2000 ml",
   "nothingLogged": "Noch nichts eingetragen",
   "shoppingListTooltip": "Einkaufsliste",
