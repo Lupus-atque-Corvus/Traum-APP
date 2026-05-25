@@ -208,6 +208,12 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
               ),
               TextButton(
                 onPressed: () async {
+                  if (amount <= 0) {
+                    ScaffoldMessenger.of(ctx).showSnackBar(
+                      const SnackBar(
+                          content: Text('Bitte eine positive Menge eingeben')));
+                    return;
+                  }
                   Navigator.pop(ctx);
                   await ref.read(nutritionDaoProvider).insertWaterLog(
                         WaterLogsCompanion.insert(
