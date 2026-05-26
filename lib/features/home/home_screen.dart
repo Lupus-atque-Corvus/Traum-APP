@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -137,7 +136,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 // Clock + Weather Card
-                _ClockWeatherCard(),
+                const ClockWeatherWidget(),
                 const SizedBox(height: 12),
 
                 // Aktivitäts-Grid
@@ -196,142 +195,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _ClockWeatherCard extends ConsumerStatefulWidget {
-  @override
-  ConsumerState<_ClockWeatherCard> createState() => _ClockWeatherCardState();
-}
-
-class _ClockWeatherCardState extends ConsumerState<_ClockWeatherCard> {
-  late final _ticker = Stream.periodic(const Duration(seconds: 1));
-  String? _tempStr;
-  String? _condition;
-  IconData _weatherIcon = Icons.wb_sunny_rounded;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadWeather());
-  }
-
-  Future<void> _loadWeather() async {
-    final prefs = ref.read(sharedPreferencesProvider);
-    _parseCachedWeather(prefs);
-    final repo = ref.read(weatherRepositoryProvider);
-    if (mounted) {
-      await repo.refreshOnStart(prefs, context);
-      if (mounted) _parseCachedWeather(prefs);
-    }
-  }
-
-  void _parseCachedWeather(dynamic prefs) {
-    final cache = prefs.getString('weather_cache') as String?;
-    if (cache == null) return;
-    try {
-      final l10n = AppLocalizations.of(context)!;
-      final data = jsonDecode(cache) as Map<String, dynamic>;
-      final current = data['current'] as Map<String, dynamic>?;
-      if (current == null) return;
-      final temp = current['temperature_2m'] as num?;
-      final code = (current['weathercode'] as num?)?.toInt() ?? 0;
-      if (mounted) {
-        setState(() {
-          _tempStr = temp != null ? '${temp.toStringAsFixed(0)}°C' : null;
-          _weatherIcon = _iconForCode(code);
-          _condition = _conditionForCode(code, l10n);
-        });
-      }
-    } catch (_) {}
-  }
-
-  IconData _iconForCode(int code) {
-    if (code == 0) return Icons.wb_sunny_rounded;
-    if (code <= 3) return Icons.wb_cloudy_rounded;
-    if (code <= 48) return Icons.cloud_rounded;
-    if (code <= 67) return Icons.grain_rounded;
-    if (code <= 77) return Icons.ac_unit_rounded;
-    if (code <= 82) return Icons.grain_rounded;
-    return Icons.thunderstorm_rounded;
-  }
-
-  String _conditionForCode(int code, AppLocalizations l10n) {
-    if (code == 0) return l10n.weatherClear;
-    if (code <= 3) return l10n.weatherCloudy;
-    if (code <= 48) return l10n.weatherFoggy;
-    if (code <= 67) return l10n.weatherRain;
-    if (code <= 77) return l10n.weatherSnow;
-    if (code <= 82) return l10n.weatherShowers;
-    return l10n.weatherThunderstorm;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: _ticker,
-      builder: (_, __) {
-        final now = DateTime.now();
-        final timeStr =
-            '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
-        final dateStr = traum_dates.formatDate(now, format: 'EEEE, d. MMMM');
-
-        return TraumCard(
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      timeStr,
-                      style: const TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.w700,
-                        color: TraumColors.onBackground,
-                        fontFamily: 'DMSans',
-                      ),
-                    ),
-                    Text(
-                      dateStr,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (_tempStr != null)
-                Column(
-                  children: [
-                    Icon(_weatherIcon, color: TraumColors.amberGold, size: 28),
-                    const SizedBox(height: 4),
-                    Text(
-                      _tempStr!,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: TraumColors.onBackground,
-                        fontFamily: 'DMSans',
-                      ),
-                    ),
-                    Text(
-                      _condition!,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans',
-                      ),
-                    ),
-                  ],
-                ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

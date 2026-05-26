@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -101,12 +102,7 @@ class _TraumScaffoldState extends ConsumerState<TraumScaffold> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: TraumColors.surfaceElevated,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(TraumRadius.card),
-        ),
-      ),
+      backgroundColor: Colors.transparent,
       builder: (ctx) => _MoreMenuSheet(
         moreModules: moreModules,
         onNavigate: (module) {
@@ -191,41 +187,47 @@ class _TraumNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 64,
-      decoration: BoxDecoration(
-        color: const Color(0xFF0F1115),
-        borderRadius: BorderRadius.circular(50),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.10),
-          width: 1,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(50),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+        child: Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFF0F1115),
+            borderRadius: BorderRadius.circular(50),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.10),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.55),
+                blurRadius: 40,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // Home (fixed left)
+              _NavItem(
+                module: 'home',
+                isActive: currentModule == 'home',
+                onTap: () => onTap('home'),
+              ),
+              // Free slots
+              ...navSlots.map((module) => _NavItem(
+                    module: module,
+                    isActive: currentModule == module,
+                    onTap: () => onTap(module),
+                  )),
+              // More (fixed right)
+              _MoreButton(onTap: onMoreTap),
+            ],
+          ),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.4),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          // Home (fixed left)
-          _NavItem(
-            module: 'home',
-            isActive: currentModule == 'home',
-            onTap: () => onTap('home'),
-          ),
-          // Free slots
-          ...navSlots.map((module) => _NavItem(
-                module: module,
-                isActive: currentModule == module,
-                onTap: () => onTap(module),
-              )),
-          // More (fixed right)
-          _MoreButton(onTap: onMoreTap),
-        ],
       ),
     );
   }
@@ -273,67 +275,81 @@ class _NavItem extends StatelessWidget {
     }
   }
 
+  bool _isCyan(String module) =>
+      module == 'health' ||
+      module == 'nutrition' ||
+      module == 'supplements' ||
+      module == 'abstinence';
+
   @override
   Widget build(BuildContext context) {
-    final color = TraumColors.moduleColor(module);
     final label = Routes.labelFor(module, AppLocalizations.of(context)!);
+    final cyan = _isCyan(module);
 
-    if (isActive) {
-      return GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                color.withValues(alpha: 0.20),
-                color.withValues(alpha: 0.10),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(50),
-            boxShadow: [
-              BoxShadow(
-                color: color.withValues(alpha: 0.30),
-                blurRadius: 8,
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                _iconFor(module),
-                color: color,
-                size: 18,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: TextStyle(
-                  color: color,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'DMSans',
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
+    // Pill gradient colours matching the original concept
+    final pillGradient = cyan
+        ? const LinearGradient(
+            colors: [Color(0x331A5F66), Color(0x1A0D3F46)])
+        : const LinearGradient(
+            colors: [Color(0x33FF9A5A), Color(0x1AFFB07A)]);
+
+    final textColor =
+        cyan ? const Color(0xFF7EE7F0) : const Color(0xFFFFB07A);
+    final glowColor =
+        cyan ? const Color(0x297EE7F0) : const Color(0x2EFF9A5A);
+    final borderAccent =
+        cyan ? const Color(0xFF7EE7F0) : const Color(0xFFFF9A5A);
 
     return GestureDetector(
-      behavior: HitTestBehavior.opaque,
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        child: Icon(
-          _iconFor(module),
-          color: Colors.white.withValues(alpha: 0.85),
-          size: 22,
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        padding: EdgeInsets.symmetric(
+          horizontal: isActive ? 14 : 11,
+          vertical: 9,
+        ),
+        decoration: isActive
+            ? BoxDecoration(
+                gradient: pillGradient,
+                borderRadius: BorderRadius.circular(50),
+                border: Border.all(
+                    color: borderAccent.withValues(alpha: 0.12)),
+                boxShadow: [
+                  BoxShadow(color: glowColor, blurRadius: 14)
+                ],
+              )
+            : null,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              _iconFor(module),
+              size: 22,
+              color: isActive
+                  ? textColor
+                  : Colors.white.withValues(alpha: 0.85),
+            ),
+            AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              child: isActive
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 6),
+                      child: Text(
+                        label,
+                        style: TextStyle(
+                          color: textColor,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'DMSans',
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ],
         ),
       ),
     );
@@ -347,19 +363,22 @@ class _MoreButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      behavior: HitTestBehavior.opaque,
       onTap: onTap,
+      behavior: HitTestBehavior.opaque,
       child: Container(
-        width: 40,
-        height: 40,
+        width: 44,
+        height: 44,
+        margin: const EdgeInsets.symmetric(horizontal: 3),
         decoration: BoxDecoration(
-          color: TraumColors.surfaceVariant,
+          color: Colors.white.withValues(alpha: 0.04),
           shape: BoxShape.circle,
+          border:
+              Border.all(color: Colors.white.withValues(alpha: 0.05)),
         ),
-        child: const Icon(
+        child: Icon(
           Icons.more_horiz_rounded,
-          color: Colors.white,
-          size: 20,
+          size: 22,
+          color: Colors.white.withValues(alpha: 0.85),
         ),
       ),
     );
@@ -379,152 +398,207 @@ class _MoreMenuSheet extends StatelessWidget {
 
   static IconData _iconFor(String module) {
     switch (module) {
-      case 'training':    return Icons.fitness_center_rounded;
-      case 'health':      return Icons.favorite_rounded;
-      case 'nutrition':   return Icons.restaurant_rounded;
-      case 'supplements': return Icons.science_rounded;
-      case 'planning':    return Icons.calendar_today_rounded;
-      case 'medication':  return Icons.medication_rounded;
-      case 'abstinence':  return Icons.block_rounded;
-      case 'budget':      return Icons.account_balance_wallet_rounded;
-      case 'period':      return Icons.water_drop_rounded;
-      case 'profile':     return Icons.person_rounded;
-      case 'settings':    return Icons.settings_rounded;
-      default:            return Icons.circle;
+      case 'training':
+        return Icons.fitness_center_rounded;
+      case 'health':
+        return Icons.favorite_rounded;
+      case 'nutrition':
+        return Icons.restaurant_rounded;
+      case 'supplements':
+        return Icons.science_rounded;
+      case 'planning':
+        return Icons.calendar_today_rounded;
+      case 'medication':
+        return Icons.medication_rounded;
+      case 'abstinence':
+        return Icons.self_improvement_rounded;
+      case 'budget':
+        return Icons.account_balance_wallet_rounded;
+      case 'period':
+        return Icons.water_drop_rounded;
+      case 'profile':
+        return Icons.person_rounded;
+      case 'settings':
+        return Icons.settings_rounded;
+      default:
+        return Icons.circle;
     }
+  }
+
+  bool _isCyan(String module) =>
+      module == 'health' ||
+      module == 'nutrition' ||
+      module == 'supplements' ||
+      module == 'abstinence';
+
+  Color _accentFor(String module) {
+    if (_isCyan(module)) return TraumColors.cyanBlue;
+    if (module == 'settings') return Colors.white70;
+    return TraumColors.coralOrange;
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      maxChildSize: 0.95,
-      minChildSize: 0.4,
-      expand: false,
-      builder: (_, controller) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF0F1115),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
+      ),
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 12,
+        bottom: 24 + MediaQuery.of(context).padding.bottom,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 8),
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: TraumColors.onBackgroundSubtle,
-                borderRadius: BorderRadius.circular(2),
-              ),
+          // Handle
+          Container(
+            width: 40,
+            height: 4,
+            margin: const EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const SizedBox(height: 12),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                Text(
-                  l10n.more,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: TraumColors.onBackground,
-                    fontFamily: 'DMSans',
+
+          // Header row
+          Row(
+            children: [
+              Text(
+                l10n.more,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onCustomize,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: TraumColors.coralOrange.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(TraumRadius.chip),
+                    border: Border.all(
+                        color: TraumColors.coralOrange.withValues(alpha: 0.30)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.tune_rounded,
+                          color:
+                              TraumColors.coralOrange.withValues(alpha: 0.80),
+                          size: 15),
+                      const SizedBox(width: 6),
+                      Text(
+                        l10n.customize,
+                        style: TextStyle(
+                          color:
+                              TraumColors.coralOrange.withValues(alpha: 0.80),
+                          fontFamily: 'DMSans',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const Spacer(),
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onCustomize,
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          if (moreModules.isNotEmpty) ...[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'WEITERE MODULE',
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.40),
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.8,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 2.8,
+              ),
+              itemCount: moreModules.length,
+              itemBuilder: (_, i) {
+                final module = moreModules[i];
+                final label = Routes.labelFor(module, l10n);
+                final ac = _accentFor(module);
+                return GestureDetector(
+                  onTap: () {
+                    HapticFeedback.selectionClick();
+                    onNavigate(module);
+                  },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: TraumColors.surface,
-                      borderRadius: BorderRadius.circular(TraumRadius.chip),
-                      border: Border.all(color: TraumColors.surfaceVariant),
+                      color: Colors.white.withValues(alpha: 0.05),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.08),
+                      ),
                     ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 10),
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.tune_rounded, color: TraumColors.onBackgroundMuted, size: 15),
-                        const SizedBox(width: 6),
-                        Text(
-                          l10n.customize,
-                          style: const TextStyle(
-                            color: TraumColors.onBackgroundMuted,
-                            fontFamily: 'DMSans',
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
+                        Icon(_iconFor(module),
+                            size: 20,
+                            color: ac.withValues(alpha: 0.85)),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            label,
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.70),
+                              fontSize: 13,
+                              fontFamily: 'DMSans',
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ],
+                );
+              },
             ),
-          ),
-          Expanded(
-            child: moreModules.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Text(
-                        l10n.allModulesInNav,
-                        style: const TextStyle(
-                          color: TraumColors.onBackgroundSubtle,
-                          fontFamily: 'DMSans',
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  )
-                : GridView.builder(
-                    controller: controller,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 1.0,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                    ),
-                    itemCount: moreModules.length,
-                    itemBuilder: (_, i) {
-                      final module = moreModules[i];
-                      final color = TraumColors.moduleColor(module);
-                      final label = Routes.labelFor(module, l10n);
-                      return GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => onNavigate(module),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: TraumColors.surface,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: color.withValues(alpha: 0.3),
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(_iconFor(module), color: color, size: 28),
-                              const SizedBox(height: 8),
-                              Text(
-                                label,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: TraumColors.onBackground,
-                                  fontFamily: 'DMSans',
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+          ] else
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  l10n.allModulesInNav,
+                  style: const TextStyle(
+                    color: TraumColors.onBackgroundSubtle,
+                    fontFamily: 'DMSans',
+                    fontSize: 14,
                   ),
-          ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
         ],
       ),
     );
