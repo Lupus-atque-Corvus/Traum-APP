@@ -1141,5 +1141,15 @@
     "placeholders": {
       "count": {"type": "int"}
     }
-  }
+  },
+
+  "importData": "Import data",
+  "importSuccess": "{count} records imported",
+  "@importSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "importError": "Import failed",
+  "exportError": "Export failed"
 }

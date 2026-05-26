@@ -83,6 +83,9 @@ dependencies:
   # Gerätkalender-Synchronisation
   device_calendar: ^4.3.3
 
+  # Datei-Auswahl (Import)
+  file_picker: ^8.0.0
+
   # SVG
   flutter_svg: ^2.0.10+1
 

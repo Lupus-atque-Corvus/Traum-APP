@@ -2731,4 +2731,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String calendarExportSuccess(int count) {
     return '$count Ereignisse exportiert';
   }
+
+  @override
+  String get importData => 'Daten importieren';
+
+  @override
+  String importSuccess(int count) {
+    return '$count Einträge importiert';
+  }
+
+  @override
+  String get importError => 'Import fehlgeschlagen';
+
+  @override
+  String get exportError => 'Export fehlgeschlagen';
 }

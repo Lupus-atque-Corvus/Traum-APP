@@ -5293,6 +5293,30 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'{count} Ereignisse exportiert'**
   String calendarExportSuccess(int count);
+
+  /// No description provided for @importData.
+  ///
+  /// In de, this message translates to:
+  /// **'Daten importieren'**
+  String get importData;
+
+  /// No description provided for @importSuccess.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} Einträge importiert'**
+  String importSuccess(int count);
+
+  /// No description provided for @importError.
+  ///
+  /// In de, this message translates to:
+  /// **'Import fehlgeschlagen'**
+  String get importError;
+
+  /// No description provided for @exportError.
+  ///
+  /// In de, this message translates to:
+  /// **'Export fehlgeschlagen'**
+  String get exportError;
 }
 
 class _AppLocalizationsDelegate
