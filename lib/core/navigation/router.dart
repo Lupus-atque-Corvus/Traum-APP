@@ -39,6 +39,7 @@ import '../../features/profile/profile_screen.dart';
 import '../../features/lock/biometric_lock_screen.dart';
 import '../../features/lock/pin_lock_screen.dart';
 import '../../features/wings/wings_screen.dart';
+import '../../features/diary/diary_screen.dart';
 import '../../features/wings/wings_exercise_detail_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -228,6 +229,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ),
               ),
             ],
+          ),
+          GoRoute(
+            path: Routes.diary,
+            builder: (_, __) => const DiaryScreen(),
           ),
           GoRoute(
             path: Routes.settings,

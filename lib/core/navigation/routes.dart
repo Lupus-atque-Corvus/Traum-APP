@@ -40,6 +40,7 @@ class Routes {
   static const String pinEntry = '/pin-entry';
   static const String wings = '/wings';
   static const String wingsExercise = '/wings/exercise/:id';
+  static const String diary = '/diary';
 
   static String workoutDetailPath(int id) => '/training/session/$id';
   static String exerciseProgressPath(int id) => '/training/exercise/$id/progress';
@@ -58,6 +59,7 @@ class Routes {
     'budget': budget,
     'period': period,
     'wings': wings,
+    'diary': diary,
     'profile': profile,
     'settings': settings,
   };
@@ -86,6 +88,8 @@ class Routes {
         return l10n.period;
       case 'wings':
         return l10n.wings;
+      case 'diary':
+        return l10n.diary;
       case 'profile':
         return l10n.profile;
       case 'settings':

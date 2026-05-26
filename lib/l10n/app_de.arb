@@ -1174,5 +1174,10 @@
   "barcodeProductNotFound": "Produkt nicht gefunden. Erneut scannen.",
   "barcodeScanAgain": "Erneut scannen",
   "barcodeScanHint": "Kamera auf den Barcode richten",
-  "barcodePer100g": "Werte für eingegebene Menge"
+  "barcodePer100g": "Werte für eingegebene Menge",
+
+  "diary": "Foto-Tagebuch",
+  "diaryRecentEntries": "Letzte Einträge",
+  "takePhoto": "Foto aufnehmen",
+  "chooseFromGallery": "Aus Galerie auswählen"
 }

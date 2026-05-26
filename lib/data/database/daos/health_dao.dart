@@ -87,4 +87,21 @@ class HealthDao extends DatabaseAccessor<TraumDatabase> with _$HealthDaoMixin {
 
   Future<int> deletePhotoLog(int id) =>
       (delete(photoLogs)..where((t) => t.id.equals(id))).go();
+
+  Stream<List<PhotoLog>> watchDiaryLogs() =>
+      (select(photoLogs)
+            ..where((t) => t.category.equals('diary'))
+            ..orderBy([(t) => OrderingTerm.desc(t.logDate)]))
+          .watch();
+
+  Future<PhotoLog?> getDiaryLogForDate(DateTime date) {
+    final start = DateTime(date.year, date.month, date.day);
+    final end = start.add(const Duration(days: 1));
+    return (select(photoLogs)
+          ..where((t) =>
+              t.category.equals('diary') &
+              t.logDate.isBiggerOrEqualValue(start) &
+              t.logDate.isSmallerThanValue(end)))
+        .getSingleOrNull();
+  }
 }

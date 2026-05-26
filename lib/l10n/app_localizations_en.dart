@@ -2797,4 +2797,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get barcodePer100g => 'Values shown for entered amount';
+
+  @override
+  String get diary => 'Photo Diary';
+
+  @override
+  String get diaryRecentEntries => 'Recent entries';
+
+  @override
+  String get takePhoto => 'Take photo';
+
+  @override
+  String get chooseFromGallery => 'Choose from gallery';
 }

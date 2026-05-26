@@ -1174,5 +1174,10 @@
   "barcodeProductNotFound": "Product not found. Try scanning again.",
   "barcodeScanAgain": "Scan again",
   "barcodeScanHint": "Point the camera at a barcode",
-  "barcodePer100g": "Values shown for entered amount"
+  "barcodePer100g": "Values shown for entered amount",
+
+  "diary": "Photo Diary",
+  "diaryRecentEntries": "Recent entries",
+  "takePhoto": "Take photo",
+  "chooseFromGallery": "Choose from gallery"
 }

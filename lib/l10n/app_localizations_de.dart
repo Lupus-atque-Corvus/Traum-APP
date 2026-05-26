@@ -2809,4 +2809,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get barcodePer100g => 'Werte für eingegebene Menge';
+
+  @override
+  String get diary => 'Foto-Tagebuch';
+
+  @override
+  String get diaryRecentEntries => 'Letzte Einträge';
+
+  @override
+  String get takePhoto => 'Foto aufnehmen';
+
+  @override
+  String get chooseFromGallery => 'Aus Galerie auswählen';
 }

@@ -5443,6 +5443,30 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Werte für eingegebene Menge'**
   String get barcodePer100g;
+
+  /// No description provided for @diary.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto-Tagebuch'**
+  String get diary;
+
+  /// No description provided for @diaryRecentEntries.
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte Einträge'**
+  String get diaryRecentEntries;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto aufnehmen'**
+  String get takePhoto;
+
+  /// No description provided for @chooseFromGallery.
+  ///
+  /// In de, this message translates to:
+  /// **'Aus Galerie auswählen'**
+  String get chooseFromGallery;
 }
 
 class _AppLocalizationsDelegate

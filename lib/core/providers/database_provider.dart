@@ -123,6 +123,9 @@ final allMeasurementsStreamProvider = StreamProvider.autoDispose<List<BodyMeasur
 final allMoodLogsStreamProvider = StreamProvider.autoDispose<List<MoodLog>>((ref) =>
     ref.watch(healthDaoProvider).watchAllMoodLogs());
 
+final diaryLogsStreamProvider = StreamProvider.autoDispose<List<PhotoLog>>((ref) =>
+    ref.watch(healthDaoProvider).watchDiaryLogs());
+
 // ─── Training ─────────────────────────────────────────────────────────────────
 final allExercisesStreamProvider = StreamProvider.autoDispose<List<Exercise>>((ref) =>
     ref.watch(trainingDaoProvider).watchAllExercises());
