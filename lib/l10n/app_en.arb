@@ -1051,5 +1051,43 @@
   "feedbackHint": "Opens GitHub in browser. A GitHub account is needed to submit.",
   "feedbackSystemInfo": "System info will be attached automatically.",
   "settingsFeedback": "Feedback & bug reports",
-  "settingsFeedbackSubtitle": "Bug · Feature · Improvement"
+  "settingsFeedbackSubtitle": "Bug · Feature · Improvement",
+
+  "newWorkout": "New Workout",
+  "addFirstExercise": "Add your first exercise",
+  "discardWorkout": "Discard Workout",
+  "deleteSet": "Delete set",
+  "exerciseInfo": "Exercise info",
+  "addNote": "Add a note",
+  "addNoteHint": "Add a note...",
+  "removeExercise": "Remove exercise",
+  "normalSet": "Normal set",
+  "warmupSetLabel": "Warm-up set",
+  "dropSet": "Drop set",
+  "failureSet": "Failure set",
+  "exerciseNotFound": "Exercise not found",
+  "trainingVolume": "Training volume",
+  "timesPerformed": "Times performed",
+  "totalDuration": "Total duration",
+  "totalVolume": "Total volume",
+  "noDataYet": "No data yet",
+  "mostRecent": "Most recent",
+  "average": "Average",
+  "noHistoryYet": "No history yet",
+  "superset": "Superset",
+  "infoTab": "Info",
+  "historyTab": "History",
+  "similarExercises": "Similar Exercises",
+  "addAllCount": "Add All ({n})",
+  "@addAllCount": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "timesPerformedValue": "{n}×",
+  "@timesPerformedValue": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  }
 }

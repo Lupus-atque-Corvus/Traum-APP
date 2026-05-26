@@ -2536,4 +2536,89 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsFeedbackSubtitle => 'Bug · Feature · Verbesserung';
+
+  @override
+  String get newWorkout => 'Neues Workout';
+
+  @override
+  String get addFirstExercise => 'Füge deine erste Übung hinzu';
+
+  @override
+  String get discardWorkout => 'Workout verwerfen';
+
+  @override
+  String get deleteSet => 'Satz löschen';
+
+  @override
+  String get exerciseInfo => 'Übungsinfo';
+
+  @override
+  String get addNote => 'Notiz hinzufügen';
+
+  @override
+  String get addNoteHint => 'Notiz hinzufügen...';
+
+  @override
+  String get removeExercise => 'Übung entfernen';
+
+  @override
+  String get normalSet => 'Normaler Satz';
+
+  @override
+  String get warmupSetLabel => 'Aufwärm-Satz';
+
+  @override
+  String get dropSet => 'Drop-Satz';
+
+  @override
+  String get failureSet => 'Versagenssatz';
+
+  @override
+  String get exerciseNotFound => 'Übung nicht gefunden';
+
+  @override
+  String get trainingVolume => 'Trainingsvolumen';
+
+  @override
+  String get timesPerformed => 'Mal durchgeführt';
+
+  @override
+  String get totalDuration => 'Gesamtdauer';
+
+  @override
+  String get totalVolume => 'Gesamtvolumen';
+
+  @override
+  String get noDataYet => 'Noch keine Daten';
+
+  @override
+  String get mostRecent => 'Zuletzt';
+
+  @override
+  String get average => 'Durchschnitt';
+
+  @override
+  String get noHistoryYet => 'Noch kein Verlauf';
+
+  @override
+  String get superset => 'Supersatz';
+
+  @override
+  String get infoTab => 'Info';
+
+  @override
+  String get historyTab => 'Verlauf';
+
+  @override
+  String get similarExercises => 'Ähnliche Übungen';
+
+  @override
+  String addAllCount(int n) {
+    return 'Alle hinzufügen ($n)';
+  }
+
+  @override
+  String timesPerformedValue(int n) {
+    return '$n×';
+  }
 }

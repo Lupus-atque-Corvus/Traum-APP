@@ -444,7 +444,7 @@ class _RoutineCard extends StatelessWidget {
                 color: TraumColors.coralDim,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Text('Active',
+              child: Text(AppLocalizations.of(context)!.active,
                   style: const TextStyle(
                     color: TraumColors.coralOrange,
                     fontFamily: 'DMSans',

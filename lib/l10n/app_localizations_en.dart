@@ -2526,4 +2526,89 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsFeedbackSubtitle => 'Bug · Feature · Improvement';
+
+  @override
+  String get newWorkout => 'New Workout';
+
+  @override
+  String get addFirstExercise => 'Add your first exercise';
+
+  @override
+  String get discardWorkout => 'Discard Workout';
+
+  @override
+  String get deleteSet => 'Delete set';
+
+  @override
+  String get exerciseInfo => 'Exercise info';
+
+  @override
+  String get addNote => 'Add a note';
+
+  @override
+  String get addNoteHint => 'Add a note...';
+
+  @override
+  String get removeExercise => 'Remove exercise';
+
+  @override
+  String get normalSet => 'Normal set';
+
+  @override
+  String get warmupSetLabel => 'Warm-up set';
+
+  @override
+  String get dropSet => 'Drop set';
+
+  @override
+  String get failureSet => 'Failure set';
+
+  @override
+  String get exerciseNotFound => 'Exercise not found';
+
+  @override
+  String get trainingVolume => 'Training volume';
+
+  @override
+  String get timesPerformed => 'Times performed';
+
+  @override
+  String get totalDuration => 'Total duration';
+
+  @override
+  String get totalVolume => 'Total volume';
+
+  @override
+  String get noDataYet => 'No data yet';
+
+  @override
+  String get mostRecent => 'Most recent';
+
+  @override
+  String get average => 'Average';
+
+  @override
+  String get noHistoryYet => 'No history yet';
+
+  @override
+  String get superset => 'Superset';
+
+  @override
+  String get infoTab => 'Info';
+
+  @override
+  String get historyTab => 'History';
+
+  @override
+  String get similarExercises => 'Similar Exercises';
+
+  @override
+  String addAllCount(int n) {
+    return 'Add All ($n)';
+  }
+
+  @override
+  String timesPerformedValue(int n) {
+    return '$n×';
+  }
 }

@@ -4927,6 +4927,168 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Bug · Feature · Verbesserung'**
   String get settingsFeedbackSubtitle;
+
+  /// No description provided for @newWorkout.
+  ///
+  /// In de, this message translates to:
+  /// **'Neues Workout'**
+  String get newWorkout;
+
+  /// No description provided for @addFirstExercise.
+  ///
+  /// In de, this message translates to:
+  /// **'Füge deine erste Übung hinzu'**
+  String get addFirstExercise;
+
+  /// No description provided for @discardWorkout.
+  ///
+  /// In de, this message translates to:
+  /// **'Workout verwerfen'**
+  String get discardWorkout;
+
+  /// No description provided for @deleteSet.
+  ///
+  /// In de, this message translates to:
+  /// **'Satz löschen'**
+  String get deleteSet;
+
+  /// No description provided for @exerciseInfo.
+  ///
+  /// In de, this message translates to:
+  /// **'Übungsinfo'**
+  String get exerciseInfo;
+
+  /// No description provided for @addNote.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz hinzufügen'**
+  String get addNote;
+
+  /// No description provided for @addNoteHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz hinzufügen...'**
+  String get addNoteHint;
+
+  /// No description provided for @removeExercise.
+  ///
+  /// In de, this message translates to:
+  /// **'Übung entfernen'**
+  String get removeExercise;
+
+  /// No description provided for @normalSet.
+  ///
+  /// In de, this message translates to:
+  /// **'Normaler Satz'**
+  String get normalSet;
+
+  /// No description provided for @warmupSetLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufwärm-Satz'**
+  String get warmupSetLabel;
+
+  /// No description provided for @dropSet.
+  ///
+  /// In de, this message translates to:
+  /// **'Drop-Satz'**
+  String get dropSet;
+
+  /// No description provided for @failureSet.
+  ///
+  /// In de, this message translates to:
+  /// **'Versagenssatz'**
+  String get failureSet;
+
+  /// No description provided for @exerciseNotFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Übung nicht gefunden'**
+  String get exerciseNotFound;
+
+  /// No description provided for @trainingVolume.
+  ///
+  /// In de, this message translates to:
+  /// **'Trainingsvolumen'**
+  String get trainingVolume;
+
+  /// No description provided for @timesPerformed.
+  ///
+  /// In de, this message translates to:
+  /// **'Mal durchgeführt'**
+  String get timesPerformed;
+
+  /// No description provided for @totalDuration.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesamtdauer'**
+  String get totalDuration;
+
+  /// No description provided for @totalVolume.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesamtvolumen'**
+  String get totalVolume;
+
+  /// No description provided for @noDataYet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Daten'**
+  String get noDataYet;
+
+  /// No description provided for @mostRecent.
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt'**
+  String get mostRecent;
+
+  /// No description provided for @average.
+  ///
+  /// In de, this message translates to:
+  /// **'Durchschnitt'**
+  String get average;
+
+  /// No description provided for @noHistoryYet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch kein Verlauf'**
+  String get noHistoryYet;
+
+  /// No description provided for @superset.
+  ///
+  /// In de, this message translates to:
+  /// **'Supersatz'**
+  String get superset;
+
+  /// No description provided for @infoTab.
+  ///
+  /// In de, this message translates to:
+  /// **'Info'**
+  String get infoTab;
+
+  /// No description provided for @historyTab.
+  ///
+  /// In de, this message translates to:
+  /// **'Verlauf'**
+  String get historyTab;
+
+  /// No description provided for @similarExercises.
+  ///
+  /// In de, this message translates to:
+  /// **'Ähnliche Übungen'**
+  String get similarExercises;
+
+  /// No description provided for @addAllCount.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle hinzufügen ({n})'**
+  String addAllCount(int n);
+
+  /// No description provided for @timesPerformedValue.
+  ///
+  /// In de, this message translates to:
+  /// **'{n}×'**
+  String timesPerformedValue(int n);
 }
 
 class _AppLocalizationsDelegate

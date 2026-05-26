@@ -5,6 +5,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 import 'widgets/exercise_icon.dart';
 
 // ── Helpers (same as library screen) ─────────────────────────────────────────
@@ -274,8 +275,8 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                           ? () => _addAll(asSuperset: true)
                           : null,
                       icon: const Icon(Icons.link_rounded, size: 18),
-                      label: const Text('Superset',
-                          style: TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
+                      label: Text(AppLocalizations.of(context)!.superset,
+                          style: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: TraumColors.onBackground,
                         side: const BorderSide(color: TraumColors.surfaceVariant),
@@ -293,7 +294,7 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                       onPressed: () => _addAll(),
                       icon: const Icon(Icons.add_rounded, size: 18),
                       label: Text(
-                        'Add All (${_selected.length})',
+                        AppLocalizations.of(context)!.addAllCount(_selected.length),
                         style: const TextStyle(
                           fontFamily: 'DMSans', fontWeight: FontWeight.w700),
                       ),

@@ -199,9 +199,9 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
         backgroundColor: TraumColors.background,
         elevation: 0,
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
-        title: const Text(
-          'New Workout',
-          style: TextStyle(
+        title: Text(
+          l10n.newWorkout,
+          style: const TextStyle(
             color: TraumColors.onBackground,
             fontFamily: 'DMSans',
             fontWeight: FontWeight.w700,
@@ -337,9 +337,9 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
         const Icon(Icons.add_circle_outline_rounded,
             size: 64, color: TraumColors.coralOrange),
         const SizedBox(height: 16),
-        const Text(
-          'Add your first exercise',
-          style: TextStyle(
+        Text(
+          AppLocalizations.of(context)!.addFirstExercise,
+          style: const TextStyle(
             color: TraumColors.onBackgroundMuted,
             fontFamily: 'DMSans',
             fontWeight: FontWeight.w600,
@@ -350,8 +350,8 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
         ElevatedButton.icon(
           onPressed: () => _openExercisePicker(context),
           icon: const Icon(Icons.add_rounded),
-          label: const Text('Add Exercise',
-              style: TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
+          label: Text(AppLocalizations.of(context)!.addExercise,
+              style: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
           style: ElevatedButton.styleFrom(
             backgroundColor: TraumColors.coralOrange,
             foregroundColor: Colors.white,
@@ -426,8 +426,8 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           ListTile(
             leading: const Icon(Icons.cancel_outlined, color: TraumColors.coralOrange),
-            title: const Text('Discard Workout',
-                style: TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
+            title: Text(AppLocalizations.of(context)!.discardWorkout,
+                style: const TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
             onTap: () {
               Navigator.pop(context);
               Navigator.pop(context);
@@ -551,10 +551,10 @@ class _ExerciseCardState extends State<_ExerciseCard> {
                 leading: _SetTypeBadge(type: type, number: setIndex + 1, size: 32),
                 title: Text(
                   switch (type) {
-                    _SetType.normal  => 'Normal set',
-                    _SetType.warmup  => 'Warm-up set',
-                    _SetType.drop    => 'Drop set',
-                    _SetType.failure => 'Failure set',
+                    _SetType.normal  => AppLocalizations.of(context)!.normalSet,
+                    _SetType.warmup  => AppLocalizations.of(context)!.warmupSetLabel,
+                    _SetType.drop    => AppLocalizations.of(context)!.dropSet,
+                    _SetType.failure => AppLocalizations.of(context)!.failureSet,
                   },
                   style: TextStyle(
                     color: type == _SetType.normal
@@ -573,8 +573,8 @@ class _ExerciseCardState extends State<_ExerciseCard> {
           const Divider(color: TraumColors.surfaceVariant),
           ListTile(
             leading: const Icon(Icons.delete_rounded, color: TraumColors.coralOrange),
-            title: const Text('Delete set',
-                style: TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
+            title: Text(AppLocalizations.of(context)!.deleteSet,
+                style: const TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
             onTap: () {
               setState(() {
                 block.sets[setIndex].dispose();
@@ -605,8 +605,8 @@ class _ExerciseCardState extends State<_ExerciseCard> {
           const SizedBox(height: 8),
           ListTile(
             leading: const Icon(Icons.info_outline_rounded, color: TraumColors.onBackground),
-            title: const Text('Exercise Info',
-                style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+            title: Text(AppLocalizations.of(context)!.exerciseInfo,
+                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
             onTap: () {
               Navigator.pop(context);
               widget.onNavigateToDetail();
@@ -614,8 +614,8 @@ class _ExerciseCardState extends State<_ExerciseCard> {
           ),
           ListTile(
             leading: const Icon(Icons.note_add_outlined, color: TraumColors.coralOrange),
-            title: const Text('Add a note',
-                style: TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
+            title: Text(AppLocalizations.of(context)!.addNote,
+                style: const TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
             onTap: () {
               Navigator.pop(context);
               _showAddNote(context);
@@ -624,8 +624,8 @@ class _ExerciseCardState extends State<_ExerciseCard> {
           const Divider(color: TraumColors.surfaceVariant),
           ListTile(
             leading: const Icon(Icons.delete_rounded, color: TraumColors.coralOrange),
-            title: const Text('Remove Exercise',
-                style: TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
+            title: Text(AppLocalizations.of(context)!.removeExercise,
+                style: const TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
             onTap: () {
               Navigator.pop(context);
               widget.onRemove();
@@ -656,7 +656,7 @@ class _ExerciseCardState extends State<_ExerciseCard> {
             maxLines: 3,
             style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
             decoration: InputDecoration(
-              hintText: 'Add a note...',
+              hintText: AppLocalizations.of(context)!.addNoteHint,
               hintStyle: const TextStyle(
                   color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
               filled: true,
@@ -671,8 +671,8 @@ class _ExerciseCardState extends State<_ExerciseCard> {
             Expanded(
               child: TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel',
-                    style: TextStyle(color: TraumColors.onBackgroundMuted)),
+                child: Text(AppLocalizations.of(context)!.cancel,
+                    style: const TextStyle(color: TraumColors.onBackgroundMuted)),
               ),
             ),
             Expanded(
@@ -686,8 +686,8 @@ class _ExerciseCardState extends State<_ExerciseCard> {
                   foregroundColor: Colors.white,
                   elevation: 0,
                 ),
-                child: const Text('Save',
-                    style: TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
+                child: Text(AppLocalizations.of(context)!.save,
+                    style: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
               ),
             ),
           ]),
@@ -1167,11 +1167,11 @@ class _AddExerciseFooter extends StatelessWidget {
     return TextButton(
       onPressed: onTap,
       style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 20)),
-      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
-        Icon(Icons.add_rounded, color: TraumColors.onBackgroundMuted, size: 18),
-        SizedBox(width: 6),
-        Text('Add Exercise',
-            style: TextStyle(
+      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        const Icon(Icons.add_rounded, color: TraumColors.onBackgroundMuted, size: 18),
+        const SizedBox(width: 6),
+        Text(AppLocalizations.of(context)!.addExercise,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14,
