@@ -5318,6 +5318,84 @@ abstract class AppLocalizations {
   /// **'Export fehlgeschlagen'**
   String get exportError;
 
+  /// No description provided for @title.
+  ///
+  /// In de, this message translates to:
+  /// **'Titel'**
+  String get title;
+
+  /// No description provided for @note.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz'**
+  String get note;
+
+  /// No description provided for @newTodo.
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Aufgabe'**
+  String get newTodo;
+
+  /// No description provided for @editTodo.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgabe bearbeiten'**
+  String get editTodo;
+
+  /// No description provided for @todoTitleHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Was muss erledigt werden?'**
+  String get todoTitleHint;
+
+  /// No description provided for @todoNoteHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz hinzufügen...'**
+  String get todoNoteHint;
+
+  /// No description provided for @todoList.
+  ///
+  /// In de, this message translates to:
+  /// **'Liste'**
+  String get todoList;
+
+  /// No description provided for @todoListHint.
+  ///
+  /// In de, this message translates to:
+  /// **'z. B. Arbeit, Privat...'**
+  String get todoListHint;
+
+  /// No description provided for @todoSubItems.
+  ///
+  /// In de, this message translates to:
+  /// **'Unteraufgaben'**
+  String get todoSubItems;
+
+  /// No description provided for @todoAddSubItem.
+  ///
+  /// In de, this message translates to:
+  /// **'Unteraufgabe hinzufügen...'**
+  String get todoAddSubItem;
+
+  /// No description provided for @noDueDate.
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Fälligkeitsdatum'**
+  String get noDueDate;
+
+  /// No description provided for @confirmDelete.
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen?'**
+  String get confirmDelete;
+
+  /// No description provided for @confirmDeleteTodo.
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Aufgabe wird dauerhaft gelöscht.'**
+  String get confirmDeleteTodo;
+
   /// No description provided for @carbs.
   ///
   /// In de, this message translates to:

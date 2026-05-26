@@ -2736,6 +2736,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportError => 'Export failed';
 
   @override
+  String get title => 'Title';
+
+  @override
+  String get note => 'Note';
+
+  @override
+  String get newTodo => 'New Todo';
+
+  @override
+  String get editTodo => 'Edit Todo';
+
+  @override
+  String get todoTitleHint => 'What needs to be done?';
+
+  @override
+  String get todoNoteHint => 'Add a note...';
+
+  @override
+  String get todoList => 'List';
+
+  @override
+  String get todoListHint => 'e.g. Work, Personal...';
+
+  @override
+  String get todoSubItems => 'Sub-tasks';
+
+  @override
+  String get todoAddSubItem => 'Add sub-task...';
+
+  @override
+  String get noDueDate => 'No due date';
+
+  @override
+  String get confirmDelete => 'Delete?';
+
+  @override
+  String get confirmDeleteTodo => 'This todo will be permanently deleted.';
+
+  @override
   String get carbs => 'Carbs';
 
   @override

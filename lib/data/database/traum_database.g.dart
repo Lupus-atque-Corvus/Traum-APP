@@ -706,6 +706,17 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
+  static const VerificationMeta _listNameMeta = const VerificationMeta(
+    'listName',
+  );
+  @override
+  late final GeneratedColumn<String> listName = GeneratedColumn<String>(
+    'list_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -716,6 +727,7 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
     dueDate,
     completedAt,
     createdAt,
+    listName,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -779,6 +791,12 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
         createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
       );
     }
+    if (data.containsKey('list_name')) {
+      context.handle(
+        _listNameMeta,
+        listName.isAcceptableOrUnknown(data['list_name']!, _listNameMeta),
+      );
+    }
     return context;
   }
 
@@ -820,6 +838,10 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      listName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}list_name'],
+      ),
     );
   }
 
@@ -838,6 +860,7 @@ class Todo extends DataClass implements Insertable<Todo> {
   final DateTime? dueDate;
   final DateTime? completedAt;
   final DateTime createdAt;
+  final String? listName;
   const Todo({
     required this.id,
     required this.title,
@@ -847,6 +870,7 @@ class Todo extends DataClass implements Insertable<Todo> {
     this.dueDate,
     this.completedAt,
     required this.createdAt,
+    this.listName,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -865,6 +889,9 @@ class Todo extends DataClass implements Insertable<Todo> {
       map['completed_at'] = Variable<DateTime>(completedAt);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || listName != null) {
+      map['list_name'] = Variable<String>(listName);
+    }
     return map;
   }
 
@@ -882,6 +909,9 @@ class Todo extends DataClass implements Insertable<Todo> {
           ? const Value.absent()
           : Value(completedAt),
       createdAt: Value(createdAt),
+      listName: listName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(listName),
     );
   }
 
@@ -899,6 +929,7 @@ class Todo extends DataClass implements Insertable<Todo> {
       dueDate: serializer.fromJson<DateTime?>(json['dueDate']),
       completedAt: serializer.fromJson<DateTime?>(json['completedAt']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      listName: serializer.fromJson<String?>(json['listName']),
     );
   }
   @override
@@ -913,6 +944,7 @@ class Todo extends DataClass implements Insertable<Todo> {
       'dueDate': serializer.toJson<DateTime?>(dueDate),
       'completedAt': serializer.toJson<DateTime?>(completedAt),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'listName': serializer.toJson<String?>(listName),
     };
   }
 
@@ -925,6 +957,7 @@ class Todo extends DataClass implements Insertable<Todo> {
     Value<DateTime?> dueDate = const Value.absent(),
     Value<DateTime?> completedAt = const Value.absent(),
     DateTime? createdAt,
+    Value<String?> listName = const Value.absent(),
   }) => Todo(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -934,6 +967,7 @@ class Todo extends DataClass implements Insertable<Todo> {
     dueDate: dueDate.present ? dueDate.value : this.dueDate,
     completedAt: completedAt.present ? completedAt.value : this.completedAt,
     createdAt: createdAt ?? this.createdAt,
+    listName: listName.present ? listName.value : this.listName,
   );
   Todo copyWithCompanion(TodosCompanion data) {
     return Todo(
@@ -947,6 +981,7 @@ class Todo extends DataClass implements Insertable<Todo> {
           ? data.completedAt.value
           : this.completedAt,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      listName: data.listName.present ? data.listName.value : this.listName,
     );
   }
 
@@ -960,7 +995,8 @@ class Todo extends DataClass implements Insertable<Todo> {
           ..write('done: $done, ')
           ..write('dueDate: $dueDate, ')
           ..write('completedAt: $completedAt, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('listName: $listName')
           ..write(')'))
         .toString();
   }
@@ -975,6 +1011,7 @@ class Todo extends DataClass implements Insertable<Todo> {
     dueDate,
     completedAt,
     createdAt,
+    listName,
   );
   @override
   bool operator ==(Object other) =>
@@ -987,7 +1024,8 @@ class Todo extends DataClass implements Insertable<Todo> {
           other.done == this.done &&
           other.dueDate == this.dueDate &&
           other.completedAt == this.completedAt &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.listName == this.listName);
 }
 
 class TodosCompanion extends UpdateCompanion<Todo> {
@@ -999,6 +1037,7 @@ class TodosCompanion extends UpdateCompanion<Todo> {
   final Value<DateTime?> dueDate;
   final Value<DateTime?> completedAt;
   final Value<DateTime> createdAt;
+  final Value<String?> listName;
   const TodosCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
@@ -1008,6 +1047,7 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     this.dueDate = const Value.absent(),
     this.completedAt = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.listName = const Value.absent(),
   });
   TodosCompanion.insert({
     this.id = const Value.absent(),
@@ -1018,6 +1058,7 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     this.dueDate = const Value.absent(),
     this.completedAt = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.listName = const Value.absent(),
   }) : title = Value(title);
   static Insertable<Todo> custom({
     Expression<int>? id,
@@ -1028,6 +1069,7 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     Expression<DateTime>? dueDate,
     Expression<DateTime>? completedAt,
     Expression<DateTime>? createdAt,
+    Expression<String>? listName,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1038,6 +1080,7 @@ class TodosCompanion extends UpdateCompanion<Todo> {
       if (dueDate != null) 'due_date': dueDate,
       if (completedAt != null) 'completed_at': completedAt,
       if (createdAt != null) 'created_at': createdAt,
+      if (listName != null) 'list_name': listName,
     });
   }
 
@@ -1050,6 +1093,7 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     Value<DateTime?>? dueDate,
     Value<DateTime?>? completedAt,
     Value<DateTime>? createdAt,
+    Value<String?>? listName,
   }) {
     return TodosCompanion(
       id: id ?? this.id,
@@ -1060,6 +1104,7 @@ class TodosCompanion extends UpdateCompanion<Todo> {
       dueDate: dueDate ?? this.dueDate,
       completedAt: completedAt ?? this.completedAt,
       createdAt: createdAt ?? this.createdAt,
+      listName: listName ?? this.listName,
     );
   }
 
@@ -1090,6 +1135,9 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (listName.present) {
+      map['list_name'] = Variable<String>(listName.value);
+    }
     return map;
   }
 
@@ -1103,7 +1151,350 @@ class TodosCompanion extends UpdateCompanion<Todo> {
           ..write('done: $done, ')
           ..write('dueDate: $dueDate, ')
           ..write('completedAt: $completedAt, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('listName: $listName')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TodoSubItemsTable extends TodoSubItems
+    with TableInfo<$TodoSubItemsTable, TodoSubItem> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TodoSubItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _todoIdMeta = const VerificationMeta('todoId');
+  @override
+  late final GeneratedColumn<int> todoId = GeneratedColumn<int>(
+    'todo_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES todos (id)',
+    ),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _doneMeta = const VerificationMeta('done');
+  @override
+  late final GeneratedColumn<bool> done = GeneratedColumn<bool>(
+    'done',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("done" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, todoId, title, done, sortOrder];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'todo_sub_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TodoSubItem> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('todo_id')) {
+      context.handle(
+        _todoIdMeta,
+        todoId.isAcceptableOrUnknown(data['todo_id']!, _todoIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_todoIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('done')) {
+      context.handle(
+        _doneMeta,
+        done.isAcceptableOrUnknown(data['done']!, _doneMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TodoSubItem map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TodoSubItem(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      todoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}todo_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      done: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}done'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $TodoSubItemsTable createAlias(String alias) {
+    return $TodoSubItemsTable(attachedDatabase, alias);
+  }
+}
+
+class TodoSubItem extends DataClass implements Insertable<TodoSubItem> {
+  final int id;
+  final int todoId;
+  final String title;
+  final bool done;
+  final int sortOrder;
+  const TodoSubItem({
+    required this.id,
+    required this.todoId,
+    required this.title,
+    required this.done,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['todo_id'] = Variable<int>(todoId);
+    map['title'] = Variable<String>(title);
+    map['done'] = Variable<bool>(done);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  TodoSubItemsCompanion toCompanion(bool nullToAbsent) {
+    return TodoSubItemsCompanion(
+      id: Value(id),
+      todoId: Value(todoId),
+      title: Value(title),
+      done: Value(done),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory TodoSubItem.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TodoSubItem(
+      id: serializer.fromJson<int>(json['id']),
+      todoId: serializer.fromJson<int>(json['todoId']),
+      title: serializer.fromJson<String>(json['title']),
+      done: serializer.fromJson<bool>(json['done']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'todoId': serializer.toJson<int>(todoId),
+      'title': serializer.toJson<String>(title),
+      'done': serializer.toJson<bool>(done),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  TodoSubItem copyWith({
+    int? id,
+    int? todoId,
+    String? title,
+    bool? done,
+    int? sortOrder,
+  }) => TodoSubItem(
+    id: id ?? this.id,
+    todoId: todoId ?? this.todoId,
+    title: title ?? this.title,
+    done: done ?? this.done,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  TodoSubItem copyWithCompanion(TodoSubItemsCompanion data) {
+    return TodoSubItem(
+      id: data.id.present ? data.id.value : this.id,
+      todoId: data.todoId.present ? data.todoId.value : this.todoId,
+      title: data.title.present ? data.title.value : this.title,
+      done: data.done.present ? data.done.value : this.done,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TodoSubItem(')
+          ..write('id: $id, ')
+          ..write('todoId: $todoId, ')
+          ..write('title: $title, ')
+          ..write('done: $done, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, todoId, title, done, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TodoSubItem &&
+          other.id == this.id &&
+          other.todoId == this.todoId &&
+          other.title == this.title &&
+          other.done == this.done &&
+          other.sortOrder == this.sortOrder);
+}
+
+class TodoSubItemsCompanion extends UpdateCompanion<TodoSubItem> {
+  final Value<int> id;
+  final Value<int> todoId;
+  final Value<String> title;
+  final Value<bool> done;
+  final Value<int> sortOrder;
+  const TodoSubItemsCompanion({
+    this.id = const Value.absent(),
+    this.todoId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.done = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+  });
+  TodoSubItemsCompanion.insert({
+    this.id = const Value.absent(),
+    required int todoId,
+    required String title,
+    this.done = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+  }) : todoId = Value(todoId),
+       title = Value(title);
+  static Insertable<TodoSubItem> custom({
+    Expression<int>? id,
+    Expression<int>? todoId,
+    Expression<String>? title,
+    Expression<bool>? done,
+    Expression<int>? sortOrder,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (todoId != null) 'todo_id': todoId,
+      if (title != null) 'title': title,
+      if (done != null) 'done': done,
+      if (sortOrder != null) 'sort_order': sortOrder,
+    });
+  }
+
+  TodoSubItemsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? todoId,
+    Value<String>? title,
+    Value<bool>? done,
+    Value<int>? sortOrder,
+  }) {
+    return TodoSubItemsCompanion(
+      id: id ?? this.id,
+      todoId: todoId ?? this.todoId,
+      title: title ?? this.title,
+      done: done ?? this.done,
+      sortOrder: sortOrder ?? this.sortOrder,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (todoId.present) {
+      map['todo_id'] = Variable<int>(todoId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (done.present) {
+      map['done'] = Variable<bool>(done.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TodoSubItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('todoId: $todoId, ')
+          ..write('title: $title, ')
+          ..write('done: $done, ')
+          ..write('sortOrder: $sortOrder')
           ..write(')'))
         .toString();
   }
@@ -15462,6 +15853,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   $TraumDatabaseManager get managers => $TraumDatabaseManager(this);
   late final $AppointmentsTable appointments = $AppointmentsTable(this);
   late final $TodosTable todos = $TodosTable(this);
+  late final $TodoSubItemsTable todoSubItems = $TodoSubItemsTable(this);
   late final $GoalsTable goals = $GoalsTable(this);
   late final $SubTasksTable subTasks = $SubTasksTable(this);
   late final $HabitsTable habits = $HabitsTable(this);
@@ -15522,6 +15914,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     appointments,
     todos,
+    todoSubItems,
     goals,
     subTasks,
     habits,
@@ -15860,6 +16253,7 @@ typedef $$TodosTableCreateCompanionBuilder =
       Value<DateTime?> dueDate,
       Value<DateTime?> completedAt,
       Value<DateTime> createdAt,
+      Value<String?> listName,
     });
 typedef $$TodosTableUpdateCompanionBuilder =
     TodosCompanion Function({
@@ -15871,7 +16265,31 @@ typedef $$TodosTableUpdateCompanionBuilder =
       Value<DateTime?> dueDate,
       Value<DateTime?> completedAt,
       Value<DateTime> createdAt,
+      Value<String?> listName,
     });
+
+final class $$TodosTableReferences
+    extends BaseReferences<_$TraumDatabase, $TodosTable, Todo> {
+  $$TodosTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$TodoSubItemsTable, List<TodoSubItem>>
+  _todoSubItemsRefsTable(_$TraumDatabase db) => MultiTypedResultKey.fromTable(
+    db.todoSubItems,
+    aliasName: $_aliasNameGenerator(db.todos.id, db.todoSubItems.todoId),
+  );
+
+  $$TodoSubItemsTableProcessedTableManager get todoSubItemsRefs {
+    final manager = $$TodoSubItemsTableTableManager(
+      $_db,
+      $_db.todoSubItems,
+    ).filter((f) => f.todoId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_todoSubItemsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
 
 class $$TodosTableFilterComposer
     extends Composer<_$TraumDatabase, $TodosTable> {
@@ -15921,6 +16339,36 @@ class $$TodosTableFilterComposer
     column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnFilters<String> get listName => $composableBuilder(
+    column: $table.listName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> todoSubItemsRefs(
+    Expression<bool> Function($$TodoSubItemsTableFilterComposer f) f,
+  ) {
+    final $$TodoSubItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.todoSubItems,
+      getReferencedColumn: (t) => t.todoId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TodoSubItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.todoSubItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$TodosTableOrderingComposer
@@ -15971,6 +16419,11 @@ class $$TodosTableOrderingComposer
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get listName => $composableBuilder(
+    column: $table.listName,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TodosTableAnnotationComposer
@@ -16007,6 +16460,34 @@ class $$TodosTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get listName =>
+      $composableBuilder(column: $table.listName, builder: (column) => column);
+
+  Expression<T> todoSubItemsRefs<T extends Object>(
+    Expression<T> Function($$TodoSubItemsTableAnnotationComposer a) f,
+  ) {
+    final $$TodoSubItemsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.todoSubItems,
+      getReferencedColumn: (t) => t.todoId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TodoSubItemsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.todoSubItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$TodosTableTableManager
@@ -16020,9 +16501,9 @@ class $$TodosTableTableManager
           $$TodosTableAnnotationComposer,
           $$TodosTableCreateCompanionBuilder,
           $$TodosTableUpdateCompanionBuilder,
-          (Todo, BaseReferences<_$TraumDatabase, $TodosTable, Todo>),
+          (Todo, $$TodosTableReferences),
           Todo,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool todoSubItemsRefs})
         > {
   $$TodosTableTableManager(_$TraumDatabase db, $TodosTable table)
     : super(
@@ -16045,6 +16526,7 @@ class $$TodosTableTableManager
                 Value<DateTime?> dueDate = const Value.absent(),
                 Value<DateTime?> completedAt = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> listName = const Value.absent(),
               }) => TodosCompanion(
                 id: id,
                 title: title,
@@ -16054,6 +16536,7 @@ class $$TodosTableTableManager
                 dueDate: dueDate,
                 completedAt: completedAt,
                 createdAt: createdAt,
+                listName: listName,
               ),
           createCompanionCallback:
               ({
@@ -16065,6 +16548,7 @@ class $$TodosTableTableManager
                 Value<DateTime?> dueDate = const Value.absent(),
                 Value<DateTime?> completedAt = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> listName = const Value.absent(),
               }) => TodosCompanion.insert(
                 id: id,
                 title: title,
@@ -16074,11 +16558,39 @@ class $$TodosTableTableManager
                 dueDate: dueDate,
                 completedAt: completedAt,
                 createdAt: createdAt,
+                listName: listName,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) =>
+                    (e.readTable(table), $$TodosTableReferences(db, table, e)),
+              )
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({todoSubItemsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (todoSubItemsRefs) db.todoSubItems],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (todoSubItemsRefs)
+                    await $_getPrefetchedData<Todo, $TodosTable, TodoSubItem>(
+                      currentTable: table,
+                      referencedTable: $$TodosTableReferences
+                          ._todoSubItemsRefsTable(db),
+                      managerFromTypedResult: (p0) => $$TodosTableReferences(
+                        db,
+                        table,
+                        p0,
+                      ).todoSubItemsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.todoId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
         ),
       );
 }
@@ -16093,9 +16605,321 @@ typedef $$TodosTableProcessedTableManager =
       $$TodosTableAnnotationComposer,
       $$TodosTableCreateCompanionBuilder,
       $$TodosTableUpdateCompanionBuilder,
-      (Todo, BaseReferences<_$TraumDatabase, $TodosTable, Todo>),
+      (Todo, $$TodosTableReferences),
       Todo,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool todoSubItemsRefs})
+    >;
+typedef $$TodoSubItemsTableCreateCompanionBuilder =
+    TodoSubItemsCompanion Function({
+      Value<int> id,
+      required int todoId,
+      required String title,
+      Value<bool> done,
+      Value<int> sortOrder,
+    });
+typedef $$TodoSubItemsTableUpdateCompanionBuilder =
+    TodoSubItemsCompanion Function({
+      Value<int> id,
+      Value<int> todoId,
+      Value<String> title,
+      Value<bool> done,
+      Value<int> sortOrder,
+    });
+
+final class $$TodoSubItemsTableReferences
+    extends BaseReferences<_$TraumDatabase, $TodoSubItemsTable, TodoSubItem> {
+  $$TodoSubItemsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $TodosTable _todoIdTable(_$TraumDatabase db) => db.todos.createAlias(
+    $_aliasNameGenerator(db.todoSubItems.todoId, db.todos.id),
+  );
+
+  $$TodosTableProcessedTableManager get todoId {
+    final $_column = $_itemColumn<int>('todo_id')!;
+
+    final manager = $$TodosTableTableManager(
+      $_db,
+      $_db.todos,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_todoIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$TodoSubItemsTableFilterComposer
+    extends Composer<_$TraumDatabase, $TodoSubItemsTable> {
+  $$TodoSubItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get done => $composableBuilder(
+    column: $table.done,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TodosTableFilterComposer get todoId {
+    final $$TodosTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.todoId,
+      referencedTable: $db.todos,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TodosTableFilterComposer(
+            $db: $db,
+            $table: $db.todos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TodoSubItemsTableOrderingComposer
+    extends Composer<_$TraumDatabase, $TodoSubItemsTable> {
+  $$TodoSubItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get done => $composableBuilder(
+    column: $table.done,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TodosTableOrderingComposer get todoId {
+    final $$TodosTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.todoId,
+      referencedTable: $db.todos,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TodosTableOrderingComposer(
+            $db: $db,
+            $table: $db.todos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TodoSubItemsTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $TodoSubItemsTable> {
+  $$TodoSubItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<bool> get done =>
+      $composableBuilder(column: $table.done, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  $$TodosTableAnnotationComposer get todoId {
+    final $$TodosTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.todoId,
+      referencedTable: $db.todos,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TodosTableAnnotationComposer(
+            $db: $db,
+            $table: $db.todos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TodoSubItemsTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $TodoSubItemsTable,
+          TodoSubItem,
+          $$TodoSubItemsTableFilterComposer,
+          $$TodoSubItemsTableOrderingComposer,
+          $$TodoSubItemsTableAnnotationComposer,
+          $$TodoSubItemsTableCreateCompanionBuilder,
+          $$TodoSubItemsTableUpdateCompanionBuilder,
+          (TodoSubItem, $$TodoSubItemsTableReferences),
+          TodoSubItem,
+          PrefetchHooks Function({bool todoId})
+        > {
+  $$TodoSubItemsTableTableManager(_$TraumDatabase db, $TodoSubItemsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TodoSubItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TodoSubItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TodoSubItemsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> todoId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<bool> done = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+              }) => TodoSubItemsCompanion(
+                id: id,
+                todoId: todoId,
+                title: title,
+                done: done,
+                sortOrder: sortOrder,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int todoId,
+                required String title,
+                Value<bool> done = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+              }) => TodoSubItemsCompanion.insert(
+                id: id,
+                todoId: todoId,
+                title: title,
+                done: done,
+                sortOrder: sortOrder,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$TodoSubItemsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({todoId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (todoId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.todoId,
+                                referencedTable: $$TodoSubItemsTableReferences
+                                    ._todoIdTable(db),
+                                referencedColumn: $$TodoSubItemsTableReferences
+                                    ._todoIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$TodoSubItemsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $TodoSubItemsTable,
+      TodoSubItem,
+      $$TodoSubItemsTableFilterComposer,
+      $$TodoSubItemsTableOrderingComposer,
+      $$TodoSubItemsTableAnnotationComposer,
+      $$TodoSubItemsTableCreateCompanionBuilder,
+      $$TodoSubItemsTableUpdateCompanionBuilder,
+      (TodoSubItem, $$TodoSubItemsTableReferences),
+      TodoSubItem,
+      PrefetchHooks Function({bool todoId})
     >;
 typedef $$GoalsTableCreateCompanionBuilder =
     GoalsCompanion Function({
@@ -26059,6 +26883,8 @@ class $TraumDatabaseManager {
       $$AppointmentsTableTableManager(_db, _db.appointments);
   $$TodosTableTableManager get todos =>
       $$TodosTableTableManager(_db, _db.todos);
+  $$TodoSubItemsTableTableManager get todoSubItems =>
+      $$TodoSubItemsTableTableManager(_db, _db.todoSubItems);
   $$GoalsTableTableManager get goals =>
       $$GoalsTableTableManager(_db, _db.goals);
   $$SubTasksTableTableManager get subTasks =>

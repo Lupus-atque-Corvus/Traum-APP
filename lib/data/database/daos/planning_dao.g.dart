@@ -6,6 +6,7 @@ part of 'planning_dao.dart';
 mixin _$PlanningDaoMixin on DatabaseAccessor<TraumDatabase> {
   $AppointmentsTable get appointments => attachedDatabase.appointments;
   $TodosTable get todos => attachedDatabase.todos;
+  $TodoSubItemsTable get todoSubItems => attachedDatabase.todoSubItems;
   $GoalsTable get goals => attachedDatabase.goals;
   $SubTasksTable get subTasks => attachedDatabase.subTasks;
   $HabitsTable get habits => attachedDatabase.habits;

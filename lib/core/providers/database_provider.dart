@@ -66,6 +66,9 @@ final appointmentsForDateProvider = StreamProvider.autoDispose.family<List<Appoi
 final allTodosStreamProvider = StreamProvider.autoDispose<List<Todo>>((ref) =>
     ref.watch(planningDaoProvider).watchAllTodos());
 
+final todoSubItemsProvider = StreamProvider.autoDispose.family<List<TodoSubItem>, int>((ref, todoId) =>
+    ref.watch(planningDaoProvider).watchSubItemsForTodo(todoId));
+
 final allGoalsStreamProvider = StreamProvider.autoDispose<List<Goal>>((ref) =>
     ref.watch(planningDaoProvider).watchAllGoals());
 

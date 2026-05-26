@@ -67,6 +67,7 @@ class DataImportExportService {
     final appointments = await _db.select(_db.appointments).get();
     final todos = await _db.select(_db.todos).get();
     final goals = await _db.select(_db.goals).get();
+    final todoSubItems = await _db.select(_db.todoSubItems).get();
     final subTasks = await _db.select(_db.subTasks).get();
     final habits = await _db.select(_db.habits).get();
     final habitLogs = await _db.select(_db.habitLogs).get();
@@ -85,6 +86,11 @@ class DataImportExportService {
             'dueDate': r.dueDate?.toIso8601String(),
             'completedAt': r.completedAt?.toIso8601String(),
             'createdAt': r.createdAt.toIso8601String(),
+            'listName': r.listName,
+          }).toList(),
+      'todoSubItems': todoSubItems.map((r) => {
+            'id': r.id, 'todoId': r.todoId, 'title': r.title,
+            'done': r.done, 'sortOrder': r.sortOrder,
           }).toList(),
       'goals': goals.map((r) => {
             'id': r.id, 'title': r.title, 'description': r.description,
@@ -415,6 +421,17 @@ class DataImportExportService {
         dueDate: Value(r['dueDate'] != null ? DateTime.parse(r['dueDate'] as String) : null),
         completedAt: Value(r['completedAt'] != null ? DateTime.parse(r['completedAt'] as String) : null),
         createdAt: Value(DateTime.parse(r['createdAt'] as String)),
+        listName: Value(r['listName'] as String?),
+      ));
+      count++;
+    }
+    for (final r in _rows(m, 'todoSubItems')) {
+      await _db.into(_db.todoSubItems).insertOnConflictUpdate(TodoSubItemsCompanion(
+        id: Value(r['id'] as int),
+        todoId: Value(r['todoId'] as int),
+        title: Value(r['title'] as String),
+        done: Value(r['done'] as bool? ?? false),
+        sortOrder: Value(r['sortOrder'] as int? ?? 0),
       ));
       count++;
     }

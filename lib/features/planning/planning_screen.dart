@@ -5,6 +5,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../core/components/components.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/services/calendar_sync_service.dart';
+import 'todo_detail_screen.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
@@ -483,16 +484,9 @@ class _TodosTab extends ConsumerWidget {
   }
 
   void _showAddTodo(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: TraumColors.surfaceElevated,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
-      ),
-      builder: (ctx) => _AddTodoSheet(
-        onAdd: (c) => ref.read(planningDaoProvider).insertTodo(c),
-      ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const TodoDetailScreen()),
     );
   }
 }
@@ -501,6 +495,31 @@ class _TodoTile extends StatelessWidget {
   final Todo todo;
   final WidgetRef ref;
   const _TodoTile({required this.todo, required this.ref});
+
+  void _openDetail(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TodoDetailScreen(todo: todo),
+      ),
+    );
+  }
+
+  Widget? _buildSubtitle(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final parts = <String>[];
+    if (todo.listName != null) parts.add(todo.listName!);
+    if (todo.dueDate != null) {
+      parts.add(l10n.dueDateLabel('${todo.dueDate!.day}.${todo.dueDate!.month}.${todo.dueDate!.year}'));
+    }
+    if (todo.note != null && todo.note!.isNotEmpty) parts.add(todo.note!);
+    if (parts.isEmpty) return null;
+    return Text(parts.join(' · '),
+        style: const TextStyle(
+            color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 11),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -529,34 +548,35 @@ class _TodoTile extends StatelessWidget {
           color: TraumColors.surface,
           borderRadius: BorderRadius.circular(TraumRadius.card),
         ),
-        child: CheckboxListTile(
-          value: todo.done,
-          activeColor: TraumColors.mintGreen,
-          checkColor: Colors.white,
-          controlAffinity: ListTileControlAffinity.leading,
-          onChanged: (v) => ref.read(planningDaoProvider).updateTodo(
-            TodosCompanion(
-              id: Value(todo.id),
-              title: Value(todo.title),
-              done: Value(v ?? false),
-              completedAt: Value(v == true ? DateTime.now() : null),
+        child: InkWell(
+          onTap: () => _openDetail(context),
+          borderRadius: BorderRadius.circular(TraumRadius.card),
+          child: CheckboxListTile(
+            value: todo.done,
+            activeColor: TraumColors.mintGreen,
+            checkColor: Colors.white,
+            controlAffinity: ListTileControlAffinity.leading,
+            onChanged: (v) => ref.read(planningDaoProvider).updateTodo(
+              TodosCompanion(
+                id: Value(todo.id),
+                title: Value(todo.title),
+                done: Value(v ?? false),
+                completedAt: Value(v == true ? DateTime.now() : null),
+              ),
             ),
-          ),
-          title: Text(
-            todo.title,
-            style: TextStyle(
-              color: todo.done ? TraumColors.onBackgroundSubtle : TraumColors.onBackground,
-              fontFamily: 'DMSans',
-              decoration: todo.done ? TextDecoration.lineThrough : null,
+            title: Text(
+              todo.title,
+              style: TextStyle(
+                color: todo.done ? TraumColors.onBackgroundSubtle : TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                decoration: todo.done ? TextDecoration.lineThrough : null,
+              ),
             ),
-          ),
-          subtitle: todo.dueDate != null
-              ? Text(AppLocalizations.of(context)!.dueDateLabel('${todo.dueDate!.day}.${todo.dueDate!.month}.${todo.dueDate!.year}'),
-                  style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 11))
-              : null,
-          secondary: Container(
-            width: 8, height: 8,
-            decoration: BoxDecoration(color: priorityColor, shape: BoxShape.circle),
+            subtitle: _buildSubtitle(context),
+            secondary: Container(
+              width: 8, height: 8,
+              decoration: BoxDecoration(color: priorityColor, shape: BoxShape.circle),
+            ),
           ),
         ),
       ),

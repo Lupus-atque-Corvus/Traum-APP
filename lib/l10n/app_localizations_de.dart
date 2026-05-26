@@ -2747,6 +2747,45 @@ class AppLocalizationsDe extends AppLocalizations {
   String get exportError => 'Export fehlgeschlagen';
 
   @override
+  String get title => 'Titel';
+
+  @override
+  String get note => 'Notiz';
+
+  @override
+  String get newTodo => 'Neue Aufgabe';
+
+  @override
+  String get editTodo => 'Aufgabe bearbeiten';
+
+  @override
+  String get todoTitleHint => 'Was muss erledigt werden?';
+
+  @override
+  String get todoNoteHint => 'Notiz hinzufügen...';
+
+  @override
+  String get todoList => 'Liste';
+
+  @override
+  String get todoListHint => 'z. B. Arbeit, Privat...';
+
+  @override
+  String get todoSubItems => 'Unteraufgaben';
+
+  @override
+  String get todoAddSubItem => 'Unteraufgabe hinzufügen...';
+
+  @override
+  String get noDueDate => 'Kein Fälligkeitsdatum';
+
+  @override
+  String get confirmDelete => 'Löschen?';
+
+  @override
+  String get confirmDeleteTodo => 'Diese Aufgabe wird dauerhaft gelöscht.';
+
+  @override
   String get carbs => 'Kohlenhydrate';
 
   @override
