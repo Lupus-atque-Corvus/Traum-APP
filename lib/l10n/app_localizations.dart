@@ -5257,6 +5257,42 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Übung nicht gefunden'**
   String get wingsExerciseNotFound;
+
+  /// No description provided for @calendarImport.
+  ///
+  /// In de, this message translates to:
+  /// **'Vom Kalender importieren'**
+  String get calendarImport;
+
+  /// No description provided for @calendarExport.
+  ///
+  /// In de, this message translates to:
+  /// **'In Kalender exportieren'**
+  String get calendarExport;
+
+  /// No description provided for @calendarPermissionDenied.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalender-Zugriff verweigert. Bitte Berechtigung in den Einstellungen erteilen.'**
+  String get calendarPermissionDenied;
+
+  /// No description provided for @calendarSyncError.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalender-Synchronisation fehlgeschlagen. Bitte erneut versuchen.'**
+  String get calendarSyncError;
+
+  /// No description provided for @calendarImportSuccess.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} Ereignisse importiert'**
+  String calendarImportSuccess(int count);
+
+  /// No description provided for @calendarExportSuccess.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} Ereignisse exportiert'**
+  String calendarExportSuccess(int count);
 }
 
 class _AppLocalizationsDelegate

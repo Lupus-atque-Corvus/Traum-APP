@@ -2707,4 +2707,28 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get wingsExerciseNotFound => 'Übung nicht gefunden';
+
+  @override
+  String get calendarImport => 'Vom Kalender importieren';
+
+  @override
+  String get calendarExport => 'In Kalender exportieren';
+
+  @override
+  String get calendarPermissionDenied =>
+      'Kalender-Zugriff verweigert. Bitte Berechtigung in den Einstellungen erteilen.';
+
+  @override
+  String get calendarSyncError =>
+      'Kalender-Synchronisation fehlgeschlagen. Bitte erneut versuchen.';
+
+  @override
+  String calendarImportSuccess(int count) {
+    return '$count Ereignisse importiert';
+  }
+
+  @override
+  String calendarExportSuccess(int count) {
+    return '$count Ereignisse exportiert';
+  }
 }

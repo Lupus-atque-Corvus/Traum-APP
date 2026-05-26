@@ -1124,5 +1124,22 @@
   "wingsNoExercisesFound": "Keine Übungen gefunden",
   "wingsExercisesCount": "Übungen",
   "wingsViewTutorial": "Tutorial öffnen",
-  "wingsExerciseNotFound": "Übung nicht gefunden"
+  "wingsExerciseNotFound": "Übung nicht gefunden",
+
+  "calendarImport": "Vom Kalender importieren",
+  "calendarExport": "In Kalender exportieren",
+  "calendarPermissionDenied": "Kalender-Zugriff verweigert. Bitte Berechtigung in den Einstellungen erteilen.",
+  "calendarSyncError": "Kalender-Synchronisation fehlgeschlagen. Bitte erneut versuchen.",
+  "calendarImportSuccess": "{count} Ereignisse importiert",
+  "@calendarImportSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "calendarExportSuccess": "{count} Ereignisse exportiert",
+  "@calendarExportSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  }
 }

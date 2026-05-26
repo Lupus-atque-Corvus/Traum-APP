@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../core/components/components.dart';
 import '../../core/providers/database_provider.dart';
+import '../../core/services/calendar_sync_service.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
@@ -77,6 +78,37 @@ class _CalendarTab extends ConsumerStatefulWidget {
 class _CalendarTabState extends ConsumerState<_CalendarTab> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
+  bool _syncing = false;
+
+  Future<void> _handleSync(BuildContext context, bool importFromDevice) async {
+    setState(() => _syncing = true);
+    final syncService = ref.read(calendarSyncServiceProvider);
+    final l10n = AppLocalizations.of(context)!;
+
+    final result = importFromDevice
+        ? await syncService.syncFromDevice()
+        : await syncService.syncToDevice();
+
+    if (!context.mounted) return;
+    setState(() => _syncing = false);
+
+    if (result.error != null) {
+      final msg = result.error == 'calendar_permission_denied'
+          ? l10n.calendarPermissionDenied
+          : l10n.calendarSyncError;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(msg), backgroundColor: TraumColors.roseRed),
+      );
+    } else {
+      final count = importFromDevice ? result.imported : result.exported;
+      final msg = importFromDevice
+          ? l10n.calendarImportSuccess(count)
+          : l10n.calendarExportSuccess(count);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(msg), backgroundColor: TraumColors.mintGreen),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +124,31 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
       ),
       body: Column(
         children: [
+          // Calendar sync action bar
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _SyncButton(
+                    icon: Icons.download_rounded,
+                    label: AppLocalizations.of(context)!.calendarImport,
+                    loading: _syncing,
+                    onTap: () => _handleSync(context, true),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _SyncButton(
+                    icon: Icons.upload_rounded,
+                    label: AppLocalizations.of(context)!.calendarExport,
+                    loading: _syncing,
+                    onTap: () => _handleSync(context, false),
+                  ),
+                ),
+              ],
+            ),
+          ),
           apptAsync.when(
             data: (appts) {
               final events = <DateTime, List<Appointment>>{};
@@ -712,6 +769,61 @@ class _AbstinenceDaySection extends ConsumerWidget {
       },
       loading: () => const SizedBox.shrink(),
       error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+}
+
+// ─── Calendar sync button ─────────────────────────────────────────────────────
+
+class _SyncButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool loading;
+  final VoidCallback onTap;
+
+  const _SyncButton({
+    required this.icon,
+    required this.label,
+    required this.loading,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: loading ? null : onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        decoration: BoxDecoration(
+          color: TraumColors.surfaceVariant,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            loading
+                ? const SizedBox(
+                    width: 14,
+                    height: 14,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: TraumColors.lavender,
+                    ),
+                  )
+                : Icon(icon, size: 16, color: TraumColors.lavender),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.lavender,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

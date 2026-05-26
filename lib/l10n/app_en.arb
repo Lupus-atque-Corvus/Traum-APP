@@ -1124,5 +1124,22 @@
   "wingsNoExercisesFound": "No exercises found",
   "wingsExercisesCount": "exercises",
   "wingsViewTutorial": "View Tutorial",
-  "wingsExerciseNotFound": "Exercise not found"
+  "wingsExerciseNotFound": "Exercise not found",
+
+  "calendarImport": "Import from Calendar",
+  "calendarExport": "Export to Calendar",
+  "calendarPermissionDenied": "Calendar access denied. Please grant permission in Settings.",
+  "calendarSyncError": "Calendar sync failed. Please try again.",
+  "calendarImportSuccess": "{count} events imported",
+  "@calendarImportSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "calendarExportSuccess": "{count} events exported",
+  "@calendarExportSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  }
 }
