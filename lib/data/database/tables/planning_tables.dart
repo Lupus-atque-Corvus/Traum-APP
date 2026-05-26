@@ -22,6 +22,16 @@ class Todos extends Table {
   DateTimeColumn get dueDate => dateTime().nullable()();
   DateTimeColumn get completedAt => dateTime().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  // Added in v4: list grouping
+  TextColumn get listName => text().nullable()();
+}
+
+class TodoSubItems extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get todoId => integer().references(Todos, #id)();
+  TextColumn get title => text()();
+  BoolColumn get done => boolean().withDefault(const Constant(false))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
 }
 
 class Goals extends Table {

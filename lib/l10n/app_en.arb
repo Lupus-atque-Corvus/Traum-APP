@@ -491,6 +491,7 @@
   "logMeal": "Log meal",
   "quickSelect": "Quick select",
   "addWater": "Add water",
+  "positiveAmountRequired": "Please enter a positive amount",
   "waterGoal2000": "Goal: 2000 ml",
   "nothingLogged": "Nothing logged yet",
   "shoppingListTooltip": "Shopping list",
@@ -771,6 +772,15 @@
   "todosTab": "Tasks",
   "goalsTab": "Goals",
   "habitsTab": "Habits",
+  "abstinenceDay": "Abstinence tracker",
+  "abstinenceDayActive": "{name} – {days} days clean",
+  "@abstinenceDayActive": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "days": {"type": "int"}
+    }
+  },
+  "abstinenceDayNone": "No active abstinence trackers",
 
   "bmi": "BMI",
   "weightGoalLabel": "Target weight",
@@ -1050,5 +1060,124 @@
   "feedbackHint": "Opens GitHub in browser. A GitHub account is needed to submit.",
   "feedbackSystemInfo": "System info will be attached automatically.",
   "settingsFeedback": "Feedback & bug reports",
-  "settingsFeedbackSubtitle": "Bug · Feature · Improvement"
+  "settingsFeedbackSubtitle": "Bug · Feature · Improvement",
+
+  "newWorkout": "New Workout",
+  "addFirstExercise": "Add your first exercise",
+  "discardWorkout": "Discard Workout",
+  "deleteSet": "Delete set",
+  "exerciseInfo": "Exercise info",
+  "addNote": "Add a note",
+  "addNoteHint": "Add a note...",
+  "removeExercise": "Remove exercise",
+  "normalSet": "Normal set",
+  "warmupSetLabel": "Warm-up set",
+  "dropSet": "Drop set",
+  "failureSet": "Failure set",
+  "exerciseNotFound": "Exercise not found",
+  "trainingVolume": "Training volume",
+  "timesPerformed": "Times performed",
+  "totalDuration": "Total duration",
+  "totalVolume": "Total volume",
+  "noDataYet": "No data yet",
+  "mostRecent": "Most recent",
+  "average": "Average",
+  "noHistoryYet": "No history yet",
+  "superset": "Superset",
+  "infoTab": "Info",
+  "historyTab": "History",
+  "similarExercises": "Similar Exercises",
+  "addAllCount": "Add All ({n})",
+  "@addAllCount": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "timesPerformedValue": "{n}×",
+  "@timesPerformedValue": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+
+  "wings": "WINGS",
+  "wingsSkillTree": "Skill Tree",
+  "wingsExercises": "Exercises",
+  "wingsTraining": "Training",
+  "wingsGoodForm": "Good Form",
+  "wingsBadForm": "Common Mistakes",
+  "wingsOverview": "Overview",
+  "wingsInstructions": "Instructions",
+  "wingsMuscles": "Muscles",
+  "wingsDifficulty": "Difficulty",
+  "wingsInProgress": "In Progress",
+  "wingsComingSoon": "Detailed tutorial coming soon.",
+  "wingsBeginnerGuide": "Beginner Guide",
+  "wingsBeginnerWorkout": "Beginner Workout",
+  "wingsIntermediateWorkout": "Intermediate Workout",
+  "wingsProgressiveOverload": "Progressive Overload",
+  "wingsFrontLeverGuide": "Front Lever Guide",
+  "wingsHandstandGuide": "Handstand Guide",
+  "wingsSkillPriority": "Skill Priority & Rest",
+  "wingsSearchExercises": "Search exercises...",
+  "wingsAll": "All",
+  "wingsNoExercisesFound": "No exercises found",
+  "wingsExercisesCount": "exercises",
+  "wingsViewTutorial": "View Tutorial",
+  "wingsExerciseNotFound": "Exercise not found",
+
+  "calendarImport": "Import from Calendar",
+  "calendarExport": "Export to Calendar",
+  "calendarPermissionDenied": "Calendar access denied. Please grant permission in Settings.",
+  "calendarSyncError": "Calendar sync failed. Please try again.",
+  "calendarImportSuccess": "{count} events imported",
+  "@calendarImportSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "calendarExportSuccess": "{count} events exported",
+  "@calendarExportSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+
+  "importData": "Import data",
+  "importSuccess": "{count} records imported",
+  "@importSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "importError": "Import failed",
+  "exportError": "Export failed",
+
+  "title": "Title",
+  "note": "Note",
+  "newTodo": "New Todo",
+  "editTodo": "Edit Todo",
+  "todoTitleHint": "What needs to be done?",
+  "todoNoteHint": "Add a note...",
+  "todoList": "List",
+  "todoListHint": "e.g. Work, Personal...",
+  "todoSubItems": "Sub-tasks",
+  "todoAddSubItem": "Add sub-task...",
+  "noDueDate": "No due date",
+  "confirmDelete": "Delete?",
+  "confirmDeleteTodo": "This todo will be permanently deleted.",
+
+  "carbs": "Carbs",
+  "fat": "Fat",
+  "mealLogged": "Meal logged",
+  "barcodeScanner": "Barcode Scanner",
+  "barcodeProductNotFound": "Product not found. Try scanning again.",
+  "barcodeScanAgain": "Scan again",
+  "barcodeScanHint": "Point the camera at a barcode",
+  "barcodePer100g": "Values shown for entered amount",
+
+  "diary": "Photo Diary",
+  "diaryRecentEntries": "Recent entries",
+  "takePhoto": "Take photo",
+  "chooseFromGallery": "Choose from gallery"
 }

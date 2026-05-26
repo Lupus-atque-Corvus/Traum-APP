@@ -1192,6 +1192,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addWater => 'Add water';
 
   @override
+  String get positiveAmountRequired => 'Please enter a positive amount';
+
+  @override
   String get waterGoal2000 => 'Goal: 2000 ml';
 
   @override
@@ -1876,6 +1879,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get habitsTab => 'Habits';
 
   @override
+  String get abstinenceDay => 'Abstinence tracker';
+
+  @override
+  String abstinenceDayActive(String name, int days) {
+    return '$name – $days days clean';
+  }
+
+  @override
+  String get abstinenceDayNone => 'No active abstinence trackers';
+
+  @override
   String get bmi => 'BMI';
 
   @override
@@ -2523,4 +2537,276 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsFeedbackSubtitle => 'Bug · Feature · Improvement';
+
+  @override
+  String get newWorkout => 'New Workout';
+
+  @override
+  String get addFirstExercise => 'Add your first exercise';
+
+  @override
+  String get discardWorkout => 'Discard Workout';
+
+  @override
+  String get deleteSet => 'Delete set';
+
+  @override
+  String get exerciseInfo => 'Exercise info';
+
+  @override
+  String get addNote => 'Add a note';
+
+  @override
+  String get addNoteHint => 'Add a note...';
+
+  @override
+  String get removeExercise => 'Remove exercise';
+
+  @override
+  String get normalSet => 'Normal set';
+
+  @override
+  String get warmupSetLabel => 'Warm-up set';
+
+  @override
+  String get dropSet => 'Drop set';
+
+  @override
+  String get failureSet => 'Failure set';
+
+  @override
+  String get exerciseNotFound => 'Exercise not found';
+
+  @override
+  String get trainingVolume => 'Training volume';
+
+  @override
+  String get timesPerformed => 'Times performed';
+
+  @override
+  String get totalDuration => 'Total duration';
+
+  @override
+  String get totalVolume => 'Total volume';
+
+  @override
+  String get noDataYet => 'No data yet';
+
+  @override
+  String get mostRecent => 'Most recent';
+
+  @override
+  String get average => 'Average';
+
+  @override
+  String get noHistoryYet => 'No history yet';
+
+  @override
+  String get superset => 'Superset';
+
+  @override
+  String get infoTab => 'Info';
+
+  @override
+  String get historyTab => 'History';
+
+  @override
+  String get similarExercises => 'Similar Exercises';
+
+  @override
+  String addAllCount(int n) {
+    return 'Add All ($n)';
+  }
+
+  @override
+  String timesPerformedValue(int n) {
+    return '$n×';
+  }
+
+  @override
+  String get wings => 'WINGS';
+
+  @override
+  String get wingsSkillTree => 'Skill Tree';
+
+  @override
+  String get wingsExercises => 'Exercises';
+
+  @override
+  String get wingsTraining => 'Training';
+
+  @override
+  String get wingsGoodForm => 'Good Form';
+
+  @override
+  String get wingsBadForm => 'Common Mistakes';
+
+  @override
+  String get wingsOverview => 'Overview';
+
+  @override
+  String get wingsInstructions => 'Instructions';
+
+  @override
+  String get wingsMuscles => 'Muscles';
+
+  @override
+  String get wingsDifficulty => 'Difficulty';
+
+  @override
+  String get wingsInProgress => 'In Progress';
+
+  @override
+  String get wingsComingSoon => 'Detailed tutorial coming soon.';
+
+  @override
+  String get wingsBeginnerGuide => 'Beginner Guide';
+
+  @override
+  String get wingsBeginnerWorkout => 'Beginner Workout';
+
+  @override
+  String get wingsIntermediateWorkout => 'Intermediate Workout';
+
+  @override
+  String get wingsProgressiveOverload => 'Progressive Overload';
+
+  @override
+  String get wingsFrontLeverGuide => 'Front Lever Guide';
+
+  @override
+  String get wingsHandstandGuide => 'Handstand Guide';
+
+  @override
+  String get wingsSkillPriority => 'Skill Priority & Rest';
+
+  @override
+  String get wingsSearchExercises => 'Search exercises...';
+
+  @override
+  String get wingsAll => 'All';
+
+  @override
+  String get wingsNoExercisesFound => 'No exercises found';
+
+  @override
+  String get wingsExercisesCount => 'exercises';
+
+  @override
+  String get wingsViewTutorial => 'View Tutorial';
+
+  @override
+  String get wingsExerciseNotFound => 'Exercise not found';
+
+  @override
+  String get calendarImport => 'Import from Calendar';
+
+  @override
+  String get calendarExport => 'Export to Calendar';
+
+  @override
+  String get calendarPermissionDenied =>
+      'Calendar access denied. Please grant permission in Settings.';
+
+  @override
+  String get calendarSyncError => 'Calendar sync failed. Please try again.';
+
+  @override
+  String calendarImportSuccess(int count) {
+    return '$count events imported';
+  }
+
+  @override
+  String calendarExportSuccess(int count) {
+    return '$count events exported';
+  }
+
+  @override
+  String get importData => 'Import data';
+
+  @override
+  String importSuccess(int count) {
+    return '$count records imported';
+  }
+
+  @override
+  String get importError => 'Import failed';
+
+  @override
+  String get exportError => 'Export failed';
+
+  @override
+  String get title => 'Title';
+
+  @override
+  String get note => 'Note';
+
+  @override
+  String get newTodo => 'New Todo';
+
+  @override
+  String get editTodo => 'Edit Todo';
+
+  @override
+  String get todoTitleHint => 'What needs to be done?';
+
+  @override
+  String get todoNoteHint => 'Add a note...';
+
+  @override
+  String get todoList => 'List';
+
+  @override
+  String get todoListHint => 'e.g. Work, Personal...';
+
+  @override
+  String get todoSubItems => 'Sub-tasks';
+
+  @override
+  String get todoAddSubItem => 'Add sub-task...';
+
+  @override
+  String get noDueDate => 'No due date';
+
+  @override
+  String get confirmDelete => 'Delete?';
+
+  @override
+  String get confirmDeleteTodo => 'This todo will be permanently deleted.';
+
+  @override
+  String get carbs => 'Carbs';
+
+  @override
+  String get fat => 'Fat';
+
+  @override
+  String get mealLogged => 'Meal logged';
+
+  @override
+  String get barcodeScanner => 'Barcode Scanner';
+
+  @override
+  String get barcodeProductNotFound => 'Product not found. Try scanning again.';
+
+  @override
+  String get barcodeScanAgain => 'Scan again';
+
+  @override
+  String get barcodeScanHint => 'Point the camera at a barcode';
+
+  @override
+  String get barcodePer100g => 'Values shown for entered amount';
+
+  @override
+  String get diary => 'Photo Diary';
+
+  @override
+  String get diaryRecentEntries => 'Recent entries';
+
+  @override
+  String get takePhoto => 'Take photo';
+
+  @override
+  String get chooseFromGallery => 'Choose from gallery';
 }

@@ -6,6 +6,7 @@ import '../../core/providers/unit_preference_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 import 'widgets/body_map_widget.dart';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -114,10 +115,10 @@ class _ExerciseProgressScreenState
               indicatorColor: TraumColors.onBackground,
               indicatorSize: TabBarIndicatorSize.tab,
               labelStyle: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600, fontSize: 13),
-              tabs: const [
-                Tab(icon: Icon(Icons.info_outline_rounded, size: 18), text: 'Info'),
-                Tab(icon: Icon(Icons.bar_chart_rounded, size: 18), text: 'Statistics'),
-                Tab(icon: Icon(Icons.history_rounded, size: 18), text: 'History'),
+              tabs: [
+                Tab(icon: const Icon(Icons.info_outline_rounded, size: 18), text: AppLocalizations.of(context)!.infoTab),
+                Tab(icon: const Icon(Icons.bar_chart_rounded, size: 18), text: AppLocalizations.of(context)!.statistics),
+                Tab(icon: const Icon(Icons.history_rounded, size: 18), text: AppLocalizations.of(context)!.historyTab),
               ],
             ),
           ),
@@ -174,9 +175,9 @@ class _InfoTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (exercise == null) {
-      return const Center(
-        child: Text('Exercise not found',
-            style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
+      return Center(
+        child: Text(AppLocalizations.of(context)!.exerciseNotFound,
+            style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
       );
     }
     final ex = exercise!;
@@ -299,9 +300,9 @@ class _InfoTab extends StatelessWidget {
 
         // Similar exercises
         if (similar.isNotEmpty) ...[
-          const Text(
-            'Similar Exercises',
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)!.similarExercises,
+            style: const TextStyle(
               color: TraumColors.onBackground,
               fontFamily: 'DMSans',
               fontWeight: FontWeight.w700,
@@ -395,7 +396,7 @@ class _StatisticsTab extends StatelessWidget {
     });
 
     if (filtered.isEmpty) {
-      return _emptyState();
+      return _emptyState(context);
     }
 
     // Build chart points (max weight or volume per session)
@@ -427,22 +428,22 @@ class _StatisticsTab extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Training volume',
-                  style: TextStyle(
+              Text(AppLocalizations.of(context)!.trainingVolume,
+                  style: const TextStyle(
                     color: TraumColors.onBackground,
                     fontFamily: 'DMSans',
                     fontWeight: FontWeight.w700,
                     fontSize: 14,
                   )),
               const SizedBox(height: 12),
-              _StatRow(label: 'Times performed', value: '$totalSets'),
+              _StatRow(label: AppLocalizations.of(context)!.timesPerformed, value: '$totalSets'),
               _StatRow(
-                label: 'Total duration',
+                label: AppLocalizations.of(context)!.totalDuration,
                 value: '${totalDuration.inHours > 0 ? '${totalDuration.inHours} h ' : ''}${totalDuration.inMinutes % 60} min',
               ),
               if (!cardio)
                 _StatRow(
-                  label: 'Total volume',
+                  label: AppLocalizations.of(context)!.totalVolume,
                   value: '${totalVolume.toStringAsFixed(0)} kg',
                 ),
             ],
@@ -599,20 +600,21 @@ class _StatisticsTab extends StatelessWidget {
     );
   }
 
-  Widget _emptyState() {
-    return const Center(
+  Widget _emptyState(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.show_chart_rounded, size: 48, color: TraumColors.onBackgroundSubtle),
-        SizedBox(height: 12),
-        Text('No data yet',
-            style: TextStyle(
+        const Icon(Icons.show_chart_rounded, size: 48, color: TraumColors.onBackgroundSubtle),
+        const SizedBox(height: 12),
+        Text(l10n.noDataYet,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontWeight: FontWeight.w600,
             )),
-        SizedBox(height: 4),
-        Text('Train this exercise to see your progress',
-            style: TextStyle(
+        const SizedBox(height: 4),
+        Text(l10n.trainExerciseToSeeProgress,
+            style: const TextStyle(
               color: TraumColors.onBackgroundSubtle,
               fontFamily: 'DMSans',
               fontSize: 12,
@@ -676,11 +678,11 @@ class _ChartStats extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _MiniStat(label: 'Most recent', value: '${mostRecent.toStringAsFixed(1)} $unit',
+        _MiniStat(label: AppLocalizations.of(context)!.mostRecent, value: '${mostRecent.toStringAsFixed(1)} $unit',
             icon: Icons.access_time_rounded),
-        _MiniStat(label: 'Maximum', value: '${maximum.toStringAsFixed(1)} $unit',
+        _MiniStat(label: AppLocalizations.of(context)!.maximum, value: '${maximum.toStringAsFixed(1)} $unit',
             icon: Icons.trending_up_rounded),
-        _MiniStat(label: 'Average', value: '${average.toStringAsFixed(1)} $unit',
+        _MiniStat(label: AppLocalizations.of(context)!.average, value: '${average.toStringAsFixed(1)} $unit',
             icon: Icons.bar_chart_rounded),
       ],
     );
@@ -728,12 +730,12 @@ class _HistoryTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (history.isEmpty) {
-      return const Center(
+      return Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Icons.history_rounded, size: 48, color: TraumColors.onBackgroundSubtle),
-          SizedBox(height: 12),
-          Text('No history yet',
-              style: TextStyle(
+          const Icon(Icons.history_rounded, size: 48, color: TraumColors.onBackgroundSubtle),
+          const SizedBox(height: 12),
+          Text(AppLocalizations.of(context)!.noHistoryYet,
+              style: const TextStyle(
                 color: TraumColors.onBackgroundMuted,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w600,

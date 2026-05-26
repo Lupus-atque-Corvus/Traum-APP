@@ -11,6 +11,7 @@ import '../../core/navigation/routes.dart';
 import '../../core/notifications/notification_service.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/security/pin_service.dart';
+import '../../core/services/data_import_export_service.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../l10n/app_localizations.dart';
@@ -735,6 +736,13 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
           onTap: () => _showExportSheet(context),
         ),
         ListTile(
+          leading: const Icon(Icons.upload_rounded, color: TraumColors.cyanBlue),
+          title: Text(l10n.importData,
+              style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+          trailing: const Icon(Icons.chevron_right, color: TraumColors.onBackgroundMuted),
+          onTap: () => _handleImport(context),
+        ),
+        ListTile(
           leading: const Icon(Icons.delete_forever_rounded, color: TraumColors.roseRed),
           title: Text(l10n.delete_all_data,
               style: const TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
@@ -793,6 +801,23 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
     );
   }
 
+  Future<void> _handleImport(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final service = ref.read(dataImportExportServiceProvider);
+    final result = await service.pickAndImport();
+    if (!context.mounted) return;
+    if (result.error == 'no_file') return;
+    if (result.error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.importError)),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.importSuccess(result.total))),
+      );
+    }
+  }
+
   void _showExportSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -801,7 +826,7 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
       ),
       isScrollControlled: true,
-      builder: (ctx) => const _ExportSheet(),
+      builder: (ctx) => _ExportSheet(service: ref.read(dataImportExportServiceProvider)),
     );
   }
 
@@ -867,7 +892,8 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
 }
 
 class _ExportSheet extends StatefulWidget {
-  const _ExportSheet();
+  final DataImportExportService service;
+  const _ExportSheet({required this.service});
 
   @override
   State<_ExportSheet> createState() => _ExportSheetState();
@@ -875,6 +901,7 @@ class _ExportSheet extends StatefulWidget {
 
 class _ExportSheetState extends State<_ExportSheet> {
   String _format = 'json';
+  bool _exporting = false;
   // Keys are module ids; labels come from l10n at build time.
   final Map<String, bool> _modules = {
     'training': false,
@@ -889,6 +916,23 @@ class _ExportSheetState extends State<_ExportSheet> {
   };
 
   bool get _anySelected => _modules.values.any((v) => v);
+
+  Future<void> _doExport(BuildContext context, List<String> modules) async {
+    setState(() => _exporting = true);
+    try {
+      await widget.service.exportModules(modules);
+      if (context.mounted) Navigator.pop(context);
+    } catch (_) {
+      if (context.mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.exportError)),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _exporting = false);
+    }
+  }
 
   String _moduleLabel(String key, AppLocalizations l10n) {
     switch (key) {
@@ -950,12 +994,10 @@ class _ExportSheetState extends State<_ExportSheet> {
             ),
             icon: const Icon(Icons.download_rounded),
             label: Text(l10n.exportAll, style: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.exportPreparing)),
-              );
-              Navigator.pop(context);
-            },
+            onPressed: _exporting ? null : () => _doExport(context, [
+              'planning', 'training', 'health', 'nutrition',
+              'supplements', 'medication', 'abstinence', 'budget', 'period',
+            ]),
           ),
           const SizedBox(height: 20),
           Text(l10n.exportSelection,
@@ -997,13 +1039,8 @@ class _ExportSheetState extends State<_ExportSheet> {
             icon: const Icon(Icons.share_rounded),
             label: Text('${l10n.exportSelected} (${_format.toUpperCase()})',
                 style: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
-            onPressed: _anySelected
-                ? () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.exportPreparing)),
-                    );
-                    Navigator.pop(context);
-                  }
+            onPressed: _anySelected && !_exporting
+                ? () => _doExport(context, _modules.entries.where((e) => e.value).map((e) => e.key).toList())
                 : null,
           ),
           const SizedBox(height: 8),

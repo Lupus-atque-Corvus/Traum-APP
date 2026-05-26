@@ -3,7 +3,7 @@ import '../traum_database.dart';
 
 part 'planning_dao.g.dart';
 
-@DriftAccessor(tables: [Appointments, Todos, Goals, SubTasks, Habits, HabitLogs])
+@DriftAccessor(tables: [Appointments, Todos, TodoSubItems, Goals, SubTasks, Habits, HabitLogs])
 class PlanningDao extends DatabaseAccessor<TraumDatabase>
     with _$PlanningDaoMixin {
   PlanningDao(super.db);
@@ -42,6 +42,41 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
 
   Future<int> deleteTodo(int id) =>
       (delete(todos)..where((t) => t.id.equals(id))).go();
+
+  Stream<List<Todo>> watchTodosByList(String? listName) {
+    return (select(todos)
+          ..where((t) => listName == null
+              ? t.listName.isNull()
+              : t.listName.equals(listName))
+          ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
+        .watch();
+  }
+
+  Future<List<String>> getDistinctLists() async {
+    final rows = await (select(todos)
+          ..where((t) => t.listName.isNotNull()))
+        .get();
+    return rows.map((r) => r.listName!).toSet().toList()..sort();
+  }
+
+  // TodoSubItems
+  Stream<List<TodoSubItem>> watchSubItemsForTodo(int todoId) =>
+      (select(todoSubItems)
+            ..where((t) => t.todoId.equals(todoId))
+            ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
+          .watch();
+
+  Future<int> insertSubItem(TodoSubItemsCompanion entry) =>
+      into(todoSubItems).insert(entry);
+
+  Future<bool> updateSubItem(TodoSubItemsCompanion entry) =>
+      update(todoSubItems).replace(entry);
+
+  Future<int> deleteSubItem(int id) =>
+      (delete(todoSubItems)..where((t) => t.id.equals(id))).go();
+
+  Future<int> deleteSubItemsForTodo(int todoId) =>
+      (delete(todoSubItems)..where((t) => t.todoId.equals(todoId))).go();
 
   // Goals
   Stream<List<Goal>> watchAllGoals() => select(goals).watch();

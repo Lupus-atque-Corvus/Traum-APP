@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../core/components/components.dart';
 import '../../core/providers/database_provider.dart';
+import '../../core/services/calendar_sync_service.dart';
+import 'todo_detail_screen.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
@@ -23,7 +25,7 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -51,8 +53,6 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
           tabs: [
             Tab(text: AppLocalizations.of(context)!.calendar),
             Tab(text: AppLocalizations.of(context)!.todosTab),
-            Tab(text: AppLocalizations.of(context)!.goalsTab),
-            Tab(text: AppLocalizations.of(context)!.habitsTab),
           ],
         ),
       ),
@@ -61,8 +61,6 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
         children: const [
           _CalendarTab(),
           _TodosTab(),
-          _GoalsTab(),
-          _HabitsTab(),
         ],
       ),
     );
@@ -81,6 +79,37 @@ class _CalendarTab extends ConsumerStatefulWidget {
 class _CalendarTabState extends ConsumerState<_CalendarTab> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
+  bool _syncing = false;
+
+  Future<void> _handleSync(BuildContext context, bool importFromDevice) async {
+    setState(() => _syncing = true);
+    final syncService = ref.read(calendarSyncServiceProvider);
+    final l10n = AppLocalizations.of(context)!;
+
+    final result = importFromDevice
+        ? await syncService.syncFromDevice()
+        : await syncService.syncToDevice();
+
+    if (!context.mounted) return;
+    setState(() => _syncing = false);
+
+    if (result.error != null) {
+      final msg = result.error == 'calendar_permission_denied'
+          ? l10n.calendarPermissionDenied
+          : l10n.calendarSyncError;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(msg), backgroundColor: TraumColors.roseRed),
+      );
+    } else {
+      final count = importFromDevice ? result.imported : result.exported;
+      final msg = importFromDevice
+          ? l10n.calendarImportSuccess(count)
+          : l10n.calendarExportSuccess(count);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(msg), backgroundColor: TraumColors.mintGreen),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +125,31 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
       ),
       body: Column(
         children: [
+          // Calendar sync action bar
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _SyncButton(
+                    icon: Icons.download_rounded,
+                    label: AppLocalizations.of(context)!.calendarImport,
+                    loading: _syncing,
+                    onTap: () => _handleSync(context, true),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _SyncButton(
+                    icon: Icons.upload_rounded,
+                    label: AppLocalizations.of(context)!.calendarExport,
+                    loading: _syncing,
+                    onTap: () => _handleSync(context, false),
+                  ),
+                ),
+              ],
+            ),
+          ),
           apptAsync.when(
             data: (appts) {
               final events = <DateTime, List<Appointment>>{};
@@ -148,6 +202,7 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
             error: (_, __) => const SizedBox.shrink(),
           ),
           const Divider(color: TraumColors.surfaceVariant, height: 1),
+          _AbstinenceDaySection(selectedDay: _selectedDay),
           Expanded(
             child: dayApptAsync.when(
               data: (appts) {
@@ -429,16 +484,9 @@ class _TodosTab extends ConsumerWidget {
   }
 
   void _showAddTodo(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: TraumColors.surfaceElevated,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
-      ),
-      builder: (ctx) => _AddTodoSheet(
-        onAdd: (c) => ref.read(planningDaoProvider).insertTodo(c),
-      ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const TodoDetailScreen()),
     );
   }
 }
@@ -447,6 +495,31 @@ class _TodoTile extends StatelessWidget {
   final Todo todo;
   final WidgetRef ref;
   const _TodoTile({required this.todo, required this.ref});
+
+  void _openDetail(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TodoDetailScreen(todo: todo),
+      ),
+    );
+  }
+
+  Widget? _buildSubtitle(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final parts = <String>[];
+    if (todo.listName != null) parts.add(todo.listName!);
+    if (todo.dueDate != null) {
+      parts.add(l10n.dueDateLabel('${todo.dueDate!.day}.${todo.dueDate!.month}.${todo.dueDate!.year}'));
+    }
+    if (todo.note != null && todo.note!.isNotEmpty) parts.add(todo.note!);
+    if (parts.isEmpty) return null;
+    return Text(parts.join(' · '),
+        style: const TextStyle(
+            color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 11),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -475,34 +548,35 @@ class _TodoTile extends StatelessWidget {
           color: TraumColors.surface,
           borderRadius: BorderRadius.circular(TraumRadius.card),
         ),
-        child: CheckboxListTile(
-          value: todo.done,
-          activeColor: TraumColors.mintGreen,
-          checkColor: Colors.white,
-          controlAffinity: ListTileControlAffinity.leading,
-          onChanged: (v) => ref.read(planningDaoProvider).updateTodo(
-            TodosCompanion(
-              id: Value(todo.id),
-              title: Value(todo.title),
-              done: Value(v ?? false),
-              completedAt: Value(v == true ? DateTime.now() : null),
+        child: InkWell(
+          onTap: () => _openDetail(context),
+          borderRadius: BorderRadius.circular(TraumRadius.card),
+          child: CheckboxListTile(
+            value: todo.done,
+            activeColor: TraumColors.mintGreen,
+            checkColor: Colors.white,
+            controlAffinity: ListTileControlAffinity.leading,
+            onChanged: (v) => ref.read(planningDaoProvider).updateTodo(
+              TodosCompanion(
+                id: Value(todo.id),
+                title: Value(todo.title),
+                done: Value(v ?? false),
+                completedAt: Value(v == true ? DateTime.now() : null),
+              ),
             ),
-          ),
-          title: Text(
-            todo.title,
-            style: TextStyle(
-              color: todo.done ? TraumColors.onBackgroundSubtle : TraumColors.onBackground,
-              fontFamily: 'DMSans',
-              decoration: todo.done ? TextDecoration.lineThrough : null,
+            title: Text(
+              todo.title,
+              style: TextStyle(
+                color: todo.done ? TraumColors.onBackgroundSubtle : TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                decoration: todo.done ? TextDecoration.lineThrough : null,
+              ),
             ),
-          ),
-          subtitle: todo.dueDate != null
-              ? Text(AppLocalizations.of(context)!.dueDateLabel('${todo.dueDate!.day}.${todo.dueDate!.month}.${todo.dueDate!.year}'),
-                  style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 11))
-              : null,
-          secondary: Container(
-            width: 8, height: 8,
-            decoration: BoxDecoration(color: priorityColor, shape: BoxShape.circle),
+            subtitle: _buildSubtitle(context),
+            secondary: Container(
+              width: 8, height: 8,
+              decoration: BoxDecoration(color: priorityColor, shape: BoxShape.circle),
+            ),
           ),
         ),
       ),
@@ -640,435 +714,136 @@ class _PriorityChip extends StatelessWidget {
   }
 }
 
-// ─── Goals tab ────────────────────────────────────────────────────────────────
+// ─── Abstinence day section ───────────────────────────────────────────────────
 
-class _GoalsTab extends ConsumerWidget {
-  const _GoalsTab();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final goalsAsync = ref.watch(allGoalsStreamProvider);
-
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: TraumColors.lavender,
-        onPressed: () => _showAddGoal(context, ref),
-        child: const Icon(Icons.add_rounded, color: Colors.white),
-      ),
-      body: goalsAsync.when(
-        data: (goals) {
-          if (goals.isEmpty) {
-            return Center(
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.flag_rounded, size: 64, color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
-                const SizedBox(height: 16),
-                Text(AppLocalizations.of(context)!.noGoals, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 16, fontWeight: FontWeight.w600)),
-              ]),
-            );
-          }
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: goals.length,
-            itemBuilder: (ctx, i) => _GoalCard(goal: goals[i], ref: ref),
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator(color: TraumColors.lavender)),
-        error: (e, _) => Center(child: Text('$e', style: const TextStyle(color: TraumColors.roseRed))),
-      ),
-    );
-  }
-
-  void _showAddGoal(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: TraumColors.surfaceElevated,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
-      builder: (ctx) => _AddGoalSheet(onAdd: (c) => ref.read(planningDaoProvider).insertGoal(c)),
-    );
-  }
-}
-
-class _GoalCard extends StatelessWidget {
-  final Goal goal;
-  final WidgetRef ref;
-  const _GoalCard({required this.goal, required this.ref});
-
-  @override
-  Widget build(BuildContext context) {
-    final progress = goal.targetValue != null && goal.targetValue! > 0
-        ? (goal.currentValue / goal.targetValue!).clamp(0.0, 1.0)
-        : 0.0;
-
-    return Dismissible(
-      key: ValueKey(goal.id),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        decoration: BoxDecoration(color: TraumColors.roseRed.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(TraumRadius.card)),
-        child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
-      ),
-      onDismissed: (_) => ref.read(planningDaoProvider).deleteGoal(goal.id),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 10),
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(TraumRadius.card),
-          border: Border.all(color: TraumColors.lavender.withValues(alpha: 0.25)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              Expanded(child: Text(goal.title, style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700))),
-              if (goal.done)
-                Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(color: TraumColors.mintGreenDim, borderRadius: BorderRadius.circular(20)),
-                    child: Text(AppLocalizations.of(context)!.reached, style: const TextStyle(color: TraumColors.mintGreen, fontFamily: 'DMSans', fontSize: 11, fontWeight: FontWeight.w600))),
-            ]),
-            if (goal.description != null) ...[
-              const SizedBox(height: 4),
-              Text(goal.description!, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12)),
-            ],
-            if (goal.targetValue != null) ...[
-              const SizedBox(height: 10),
-              GradientProgressBar(
-                value: progress,
-                gradient: const LinearGradient(colors: [TraumColors.lavender, TraumColors.indigoBlue]),
-              ),
-              const SizedBox(height: 4),
-              Text('${goal.currentValue} / ${goal.targetValue} ${goal.unit ?? ''}',
-                  style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 11)),
-            ],
-            if (goal.targetDate != null) ...[
-              const SizedBox(height: 6),
-              Text('${AppLocalizations.of(context)!.deadline}: ${goal.targetDate!.day}.${goal.targetDate!.month}.${goal.targetDate!.year}',
-                  style: const TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontSize: 11)),
-            ],
-          ]),
-        ),
-      ),
-    );
-  }
-}
-
-class _AddGoalSheet extends StatefulWidget {
-  final Future<void> Function(GoalsCompanion) onAdd;
-  const _AddGoalSheet({required this.onAdd});
-
-  @override
-  State<_AddGoalSheet> createState() => _AddGoalSheetState();
-}
-
-class _AddGoalSheetState extends State<_AddGoalSheet> {
-  final _titleCtrl = TextEditingController();
-  final _descCtrl = TextEditingController();
-  final _targetCtrl = TextEditingController();
-  final _unitCtrl = TextEditingController();
-  DateTime? _deadline;
-
-  @override
-  void dispose() {
-    _titleCtrl.dispose(); _descCtrl.dispose(); _targetCtrl.dispose(); _unitCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: 20, right: 20, top: 16, bottom: MediaQuery.of(context).viewInsets.bottom + 20),
-      child: SingleChildScrollView(
-        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Center(child: Container(width: 40, height: 4,
-              decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle, borderRadius: BorderRadius.circular(2)))),
-          const SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.addGoal, style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
-          const SizedBox(height: 16),
-          _field(AppLocalizations.of(context)!.titleRequiredField, _titleCtrl),
-          const SizedBox(height: 10),
-          _field(AppLocalizations.of(context)!.fieldDescription, _descCtrl, maxLines: 2),
-          const SizedBox(height: 10),
-          Row(children: [
-            Expanded(child: _field(AppLocalizations.of(context)!.targetValue, _targetCtrl, keyboard: TextInputType.number)),
-            const SizedBox(width: 12),
-            Expanded(child: _field(AppLocalizations.of(context)!.fieldUnit, _unitCtrl, hint: AppLocalizations.of(context)!.unitHintKgKm)),
-          ]),
-          const SizedBox(height: 12),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(AppLocalizations.of(context)!.deadline, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
-            trailing: Text(_deadline != null ? '${_deadline!.day}.${_deadline!.month}.${_deadline!.year}' : AppLocalizations.of(context)!.noDate,
-                style: TextStyle(color: _deadline != null ? TraumColors.lavender : TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
-            onTap: () async {
-              final p = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2100),
-                  builder: (ctx, child) => Theme(data: ThemeData.dark().copyWith(colorScheme: const ColorScheme.dark(primary: TraumColors.lavender)), child: child!));
-              if (p != null) setState(() => _deadline = p);
-            },
-          ),
-          const SizedBox(height: 20),
-          GradientButton(label: AppLocalizations.of(context)!.save, onPressed: () async {
-            if (_titleCtrl.text.trim().isEmpty) { ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.titleRequired))); return; }
-            await widget.onAdd(GoalsCompanion.insert(
-              title: _titleCtrl.text.trim(),
-              description: Value(_descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim()),
-              targetValue: Value(int.tryParse(_targetCtrl.text)),
-              unit: Value(_unitCtrl.text.trim().isEmpty ? null : _unitCtrl.text.trim()),
-              targetDate: Value(_deadline),
-            ));
-            if (context.mounted) Navigator.pop(context);
-          }),
-          const SizedBox(height: 8),
-        ]),
-      ),
-    );
-  }
-
-  Widget _field(String label, TextEditingController ctrl, {String? hint, int maxLines = 1, TextInputType? keyboard}) {
-    return TextField(controller: ctrl, maxLines: maxLines, keyboardType: keyboard,
-        style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
-        decoration: InputDecoration(labelText: label, hintText: hint,
-            labelStyle: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
-            hintStyle: const TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
-            filled: true, fillColor: TraumColors.surface,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(TraumRadius.card), borderSide: BorderSide.none),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12)));
-  }
-}
-
-// ─── Habits tab ───────────────────────────────────────────────────────────────
-
-class _HabitsTab extends ConsumerWidget {
-  const _HabitsTab();
+class _AbstinenceDaySection extends ConsumerWidget {
+  final DateTime selectedDay;
+  const _AbstinenceDaySection({required this.selectedDay});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final habitsAsync = ref.watch(allHabitsStreamProvider);
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final logsAsync = ref.watch(habitLogsForDateProvider(today));
+    final trackersAsync = ref.watch(abstinenceTrackersStreamProvider);
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: TraumColors.lavender,
-        onPressed: () => _showAddHabit(context, ref),
-        child: const Icon(Icons.add_rounded, color: Colors.white),
-      ),
-      body: habitsAsync.when(
-        data: (habits) {
-          if (habits.isEmpty) {
-            return Center(
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.loop_rounded, size: 64, color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
-                const SizedBox(height: 16),
-                Text(AppLocalizations.of(context)!.noHabits, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 16, fontWeight: FontWeight.w600)),
-                const SizedBox(height: 8),
-                Text(AppLocalizations.of(context)!.tapToAddHabit,
-                    style: const TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontSize: 13), textAlign: TextAlign.center),
-              ]),
-            );
-          }
-          return logsAsync.when(
-            data: (logs) => ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: habits.length,
-              itemBuilder: (ctx, i) => _HabitTile(
-                habit: habits[i],
-                isCheckedToday: logs.any((l) => l.habitId == habits[i].id),
-                onToggle: (checked) async {
-                  if (checked) {
-                    await ref.read(planningDaoProvider).insertHabitLog(
-                      HabitLogsCompanion.insert(habitId: habits[i].id, logDate: today),
-                    );
-                  } else {
-                    await ref.read(planningDaoProvider).deleteHabitLog(habits[i].id, today);
-                  }
-                },
-                onDelete: () => ref.read(planningDaoProvider).deleteHabit(habits[i].id),
-                ref: ref,
-              ),
+    return trackersAsync.when(
+      data: (trackers) {
+        final active = trackers.where((t) => t.isActive).toList();
+        if (active.isEmpty) {
+          return Container(
+            margin: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              borderRadius: BorderRadius.circular(TraumRadius.card),
+              border: Border.all(color: TraumColors.lavender.withValues(alpha: 0.2)),
             ),
-            loading: () => const Center(child: CircularProgressIndicator(color: TraumColors.lavender)),
-            error: (_, __) => const SizedBox.shrink(),
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator(color: TraumColors.lavender)),
-        error: (e, _) => Center(child: Text('$e', style: const TextStyle(color: TraumColors.roseRed))),
-      ),
-    );
-  }
-
-  void _showAddHabit(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: TraumColors.surfaceElevated,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
-      builder: (ctx) => _AddHabitSheet(onAdd: (c) => ref.read(planningDaoProvider).insertHabit(c)),
-    );
-  }
-}
-
-class _HabitTile extends ConsumerWidget {
-  final Habit habit;
-  final bool isCheckedToday;
-  final void Function(bool) onToggle;
-  final VoidCallback onDelete;
-  final WidgetRef ref;
-
-  const _HabitTile({required this.habit, required this.isCheckedToday, required this.onToggle, required this.onDelete, required this.ref});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final last7Async = ref.watch(habitLogsLast7DaysProvider(habit.id));
-
-    return Dismissible(
-      key: ValueKey(habit.id),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        decoration: BoxDecoration(color: TraumColors.roseRed.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(TraumRadius.card)),
-        child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
-      ),
-      onDismissed: (_) => onDelete(),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 10),
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(TraumRadius.card),
-          border: Border.all(color: isCheckedToday ? TraumColors.mintGreen.withValues(alpha: 0.3) : TraumColors.surfaceVariant),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Column(children: [
-            Row(children: [
-              if (habit.emoji != null) Text(habit.emoji!, style: const TextStyle(fontSize: 20)),
-              if (habit.emoji != null) const SizedBox(width: 10),
-              Expanded(child: Text(habit.name, style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w600))),
-              GestureDetector(
-                onTap: () => onToggle(!isCheckedToday),
-                child: Container(
-                  width: 32, height: 32,
-                  decoration: BoxDecoration(
-                    color: isCheckedToday ? TraumColors.mintGreen : TraumColors.surfaceVariant,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(isCheckedToday ? Icons.check_rounded : Icons.add_rounded,
-                      color: Colors.white, size: 18),
+            child: Row(children: [
+              const Icon(Icons.self_improvement_rounded, color: TraumColors.onBackgroundSubtle, size: 18),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  AppLocalizations.of(context)!.abstinenceDayNone,
+                  style: const TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontSize: 12),
                 ),
               ),
             ]),
-            const SizedBox(height: 10),
-            last7Async.when(
-              data: (logs) {
-                final weekStatus = List.generate(7, (i) {
-                  final day = DateTime.now().subtract(Duration(days: 6 - i));
-                  return logs.any((l) => isSameDay(l.logDate, day));
-                });
-                return HabitWeekRow(habitName: '', weekStatus: weekStatus);
-              },
-              loading: () => const SizedBox(height: 28),
-              error: (_, __) => const SizedBox.shrink(),
+          );
+        }
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: active.map((tracker) {
+            final selected = DateTime(selectedDay.year, selectedDay.month, selectedDay.day);
+            final start = DateTime(tracker.startDate.year, tracker.startDate.month, tracker.startDate.day);
+            final daysClean = selected.isBefore(start) ? 0 : selected.difference(start).inDays;
+            return Container(
+              margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: TraumColors.surface,
+                borderRadius: BorderRadius.circular(TraumRadius.card),
+                border: Border.all(color: TraumColors.lavender.withValues(alpha: 0.2)),
+              ),
+              child: Row(children: [
+                Text(tracker.emoji ?? '🧘', style: const TextStyle(fontSize: 18)),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context)!.abstinenceDayActive(tracker.name, daysClean),
+                    style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontSize: 13),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: TraumColors.lavender.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '$daysClean d',
+                    style: const TextStyle(color: TraumColors.lavender, fontFamily: 'DMSans', fontSize: 11, fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ]),
+            );
+          }).toList(),
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+}
+
+// ─── Calendar sync button ─────────────────────────────────────────────────────
+
+class _SyncButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool loading;
+  final VoidCallback onTap;
+
+  const _SyncButton({
+    required this.icon,
+    required this.label,
+    required this.loading,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: loading ? null : onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        decoration: BoxDecoration(
+          color: TraumColors.surfaceVariant,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            loading
+                ? const SizedBox(
+                    width: 14,
+                    height: 14,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: TraumColors.lavender,
+                    ),
+                  )
+                : Icon(icon, size: 16, color: TraumColors.lavender),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.lavender,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ]),
+          ],
         ),
       ),
     );
-  }
-
-  bool isSameDay(DateTime a, DateTime b) =>
-      a.year == b.year && a.month == b.month && a.day == b.day;
-}
-
-class _AddHabitSheet extends StatefulWidget {
-  final Future<void> Function(HabitsCompanion) onAdd;
-  const _AddHabitSheet({required this.onAdd});
-
-  @override
-  State<_AddHabitSheet> createState() => _AddHabitSheetState();
-}
-
-class _AddHabitSheetState extends State<_AddHabitSheet> {
-  final _nameCtrl = TextEditingController();
-  String _emoji = '⭐';
-  String _frequency = 'daily';
-
-  static const _emojis = ['⭐', '💪', '🏃', '📚', '💧', '🧘', '🍎', '😴', '✍️', '🎯'];
-
-  @override
-  void dispose() { _nameCtrl.dispose(); super.dispose(); }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: 20, right: 20, top: 16, bottom: MediaQuery.of(context).viewInsets.bottom + 20),
-      child: SingleChildScrollView(
-        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Center(child: Container(width: 40, height: 4,
-              decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle, borderRadius: BorderRadius.circular(2)))),
-          const SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.addHabit, style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
-          const SizedBox(height: 16),
-          TextField(controller: _nameCtrl, autofocus: true,
-              style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.fieldName, labelStyle: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
-                  filled: true, fillColor: TraumColors.surface,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(TraumRadius.card), borderSide: BorderSide.none),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12))),
-          const SizedBox(height: 12),
-          Text(AppLocalizations.of(context)!.emoji, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
-          const SizedBox(height: 6),
-          Wrap(spacing: 8, runSpacing: 8, children: _emojis.map((e) {
-            final selected = e == _emoji;
-            return GestureDetector(onTap: () => setState(() => _emoji = e),
-                child: Container(padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(color: selected ? TraumColors.lavenderDim : TraumColors.surfaceVariant,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: selected ? TraumColors.lavender : Colors.transparent)),
-                    child: Text(e, style: const TextStyle(fontSize: 20))));
-          }).toList()),
-          const SizedBox(height: 12),
-          Text(AppLocalizations.of(context)!.frequency, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
-          const SizedBox(height: 6),
-          Row(children: [
-            _FreqChip(label: AppLocalizations.of(context)!.frequencyDaily, value: 'daily', selected: _frequency == 'daily', onTap: () => setState(() => _frequency = 'daily')),
-            const SizedBox(width: 8),
-            _FreqChip(label: AppLocalizations.of(context)!.frequencyWeekly, value: 'weekly', selected: _frequency == 'weekly', onTap: () => setState(() => _frequency = 'weekly')),
-          ]),
-          const SizedBox(height: 20),
-          GradientButton(label: AppLocalizations.of(context)!.save, onPressed: () async {
-            if (_nameCtrl.text.trim().isEmpty) { ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired))); return; }
-            await widget.onAdd(HabitsCompanion.insert(name: _nameCtrl.text.trim(), emoji: Value(_emoji), frequency: Value(_frequency)));
-            if (context.mounted) Navigator.pop(context);
-          }),
-          const SizedBox(height: 8),
-        ]),
-      ),
-    );
-  }
-}
-
-class _FreqChip extends StatelessWidget {
-  final String label, value;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _FreqChip({required this.label, required this.value, required this.selected, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-          decoration: BoxDecoration(
-            color: selected ? TraumColors.lavenderDim : TraumColors.surfaceVariant,
-            borderRadius: BorderRadius.circular(TraumRadius.chip),
-            border: Border.all(color: selected ? TraumColors.lavender : Colors.transparent),
-          ),
-          child: Text(label, style: TextStyle(color: selected ? TraumColors.lavender : TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
-        ));
   }
 }

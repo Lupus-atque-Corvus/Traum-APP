@@ -50,9 +50,10 @@ part 'traum_database.g.dart';
 
 @DriftDatabase(
   tables: [
-    // Planning (6)
+    // Planning (7)
     Appointments,
     Todos,
+    TodoSubItems,
     Goals,
     SubTasks,
     Habits,
@@ -112,7 +113,7 @@ class TraumDatabase extends _$TraumDatabase {
   TraumDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -132,6 +133,10 @@ class TraumDatabase extends _$TraumDatabase {
         await migrator.addColumn(workoutDayExercises, workoutDayExercises.defaultRestSeconds);
         await migrator.addColumn(workoutDayExercises, workoutDayExercises.progressionType);
         await migrator.addColumn(workoutDayExercises, workoutDayExercises.supersetGroup);
+      }
+      if (from < 4) {
+        await migrator.addColumn(todos, todos.listName);
+        await migrator.createTable(todoSubItems);
       }
     },
   );

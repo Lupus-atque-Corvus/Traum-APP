@@ -21,6 +21,7 @@ import '../../features/nutrition/nutrition_screen.dart';
 import '../../features/nutrition/meal_log_screen.dart';
 import '../../features/nutrition/food_search_screen.dart';
 import '../../features/nutrition/shopping_list_screen.dart';
+import '../../features/nutrition/barcode_scanner_screen.dart';
 import '../../features/supplements/supplement_screen.dart';
 import '../../features/planning/planning_screen.dart';
 import '../../features/medication/medication_screen.dart';
@@ -37,6 +38,9 @@ import '../../features/settings/settings_screen.dart';
 import '../../features/profile/profile_screen.dart';
 import '../../features/lock/biometric_lock_screen.dart';
 import '../../features/lock/pin_lock_screen.dart';
+import '../../features/wings/wings_screen.dart';
+import '../../features/diary/diary_screen.dart';
+import '../../features/wings/wings_exercise_detail_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final prefs = ref.watch(preferencesRepositoryProvider);
@@ -156,6 +160,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: 'shopping',
                 builder: (_, __) => const ShoppingListScreen(),
               ),
+              GoRoute(
+                path: 'scan',
+                builder: (_, __) => const BarcodeScannerScreen(),
+              ),
             ],
           ),
           GoRoute(
@@ -209,6 +217,22 @@ final routerProvider = Provider<GoRouter>((ref) {
                 builder: (_, __) => const CycleHistoryScreen(),
               ),
             ],
+          ),
+          GoRoute(
+            path: Routes.wings,
+            builder: (_, __) => const WingsScreen(),
+            routes: [
+              GoRoute(
+                path: 'exercise/:id',
+                builder: (_, state) => WingsExerciseDetailScreen(
+                  exerciseId: state.pathParameters['id']!,
+                ),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: Routes.diary,
+            builder: (_, __) => const DiaryScreen(),
           ),
           GoRoute(
             path: Routes.settings,

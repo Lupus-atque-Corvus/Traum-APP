@@ -10,3 +10,4 @@ export 'donut_chart.dart';
 export 'budget_category_bar.dart';
 export 'shimmer_loader.dart';
 export 'medication_dot_row.dart';
+export 'clock_weather_widget.dart';

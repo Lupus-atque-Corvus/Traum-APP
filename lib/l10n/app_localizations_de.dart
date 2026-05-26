@@ -1200,6 +1200,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addWater => 'Wasser hinzufügen';
 
   @override
+  String get positiveAmountRequired => 'Bitte eine positive Menge eingeben';
+
+  @override
   String get waterGoal2000 => 'Ziel: 2000 ml';
 
   @override
@@ -1885,6 +1888,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get habitsTab => 'Gewohnheiten';
 
   @override
+  String get abstinenceDay => 'Abstinenz-Tracker';
+
+  @override
+  String abstinenceDayActive(String name, int days) {
+    return '$name – $days Tage clean';
+  }
+
+  @override
+  String get abstinenceDayNone => 'Keine aktiven Abstinenz-Tracker';
+
+  @override
   String get bmi => 'BMI';
 
   @override
@@ -2533,4 +2547,278 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsFeedbackSubtitle => 'Bug · Feature · Verbesserung';
+
+  @override
+  String get newWorkout => 'Neues Workout';
+
+  @override
+  String get addFirstExercise => 'Füge deine erste Übung hinzu';
+
+  @override
+  String get discardWorkout => 'Workout verwerfen';
+
+  @override
+  String get deleteSet => 'Satz löschen';
+
+  @override
+  String get exerciseInfo => 'Übungsinfo';
+
+  @override
+  String get addNote => 'Notiz hinzufügen';
+
+  @override
+  String get addNoteHint => 'Notiz hinzufügen...';
+
+  @override
+  String get removeExercise => 'Übung entfernen';
+
+  @override
+  String get normalSet => 'Normaler Satz';
+
+  @override
+  String get warmupSetLabel => 'Aufwärm-Satz';
+
+  @override
+  String get dropSet => 'Drop-Satz';
+
+  @override
+  String get failureSet => 'Versagenssatz';
+
+  @override
+  String get exerciseNotFound => 'Übung nicht gefunden';
+
+  @override
+  String get trainingVolume => 'Trainingsvolumen';
+
+  @override
+  String get timesPerformed => 'Mal durchgeführt';
+
+  @override
+  String get totalDuration => 'Gesamtdauer';
+
+  @override
+  String get totalVolume => 'Gesamtvolumen';
+
+  @override
+  String get noDataYet => 'Noch keine Daten';
+
+  @override
+  String get mostRecent => 'Zuletzt';
+
+  @override
+  String get average => 'Durchschnitt';
+
+  @override
+  String get noHistoryYet => 'Noch kein Verlauf';
+
+  @override
+  String get superset => 'Supersatz';
+
+  @override
+  String get infoTab => 'Info';
+
+  @override
+  String get historyTab => 'Verlauf';
+
+  @override
+  String get similarExercises => 'Ähnliche Übungen';
+
+  @override
+  String addAllCount(int n) {
+    return 'Alle hinzufügen ($n)';
+  }
+
+  @override
+  String timesPerformedValue(int n) {
+    return '$n×';
+  }
+
+  @override
+  String get wings => 'WINGS';
+
+  @override
+  String get wingsSkillTree => 'Skill-Baum';
+
+  @override
+  String get wingsExercises => 'Übungen';
+
+  @override
+  String get wingsTraining => 'Training';
+
+  @override
+  String get wingsGoodForm => 'Gute Form';
+
+  @override
+  String get wingsBadForm => 'Häufige Fehler';
+
+  @override
+  String get wingsOverview => 'Übersicht';
+
+  @override
+  String get wingsInstructions => 'Anleitung';
+
+  @override
+  String get wingsMuscles => 'Muskeln';
+
+  @override
+  String get wingsDifficulty => 'Schwierigkeit';
+
+  @override
+  String get wingsInProgress => 'In Bearbeitung';
+
+  @override
+  String get wingsComingSoon => 'Detailliertes Tutorial bald verfügbar.';
+
+  @override
+  String get wingsBeginnerGuide => 'Einsteiger-Guide';
+
+  @override
+  String get wingsBeginnerWorkout => 'Einsteiger-Workout';
+
+  @override
+  String get wingsIntermediateWorkout => 'Fortgeschrittenen-Workout';
+
+  @override
+  String get wingsProgressiveOverload => 'Progressive Überlastung';
+
+  @override
+  String get wingsFrontLeverGuide => 'Front-Lever-Guide';
+
+  @override
+  String get wingsHandstandGuide => 'Handstand-Guide';
+
+  @override
+  String get wingsSkillPriority => 'Skill-Priorität & Erholung';
+
+  @override
+  String get wingsSearchExercises => 'Übungen suchen...';
+
+  @override
+  String get wingsAll => 'Alle';
+
+  @override
+  String get wingsNoExercisesFound => 'Keine Übungen gefunden';
+
+  @override
+  String get wingsExercisesCount => 'Übungen';
+
+  @override
+  String get wingsViewTutorial => 'Tutorial öffnen';
+
+  @override
+  String get wingsExerciseNotFound => 'Übung nicht gefunden';
+
+  @override
+  String get calendarImport => 'Vom Kalender importieren';
+
+  @override
+  String get calendarExport => 'In Kalender exportieren';
+
+  @override
+  String get calendarPermissionDenied =>
+      'Kalender-Zugriff verweigert. Bitte Berechtigung in den Einstellungen erteilen.';
+
+  @override
+  String get calendarSyncError =>
+      'Kalender-Synchronisation fehlgeschlagen. Bitte erneut versuchen.';
+
+  @override
+  String calendarImportSuccess(int count) {
+    return '$count Ereignisse importiert';
+  }
+
+  @override
+  String calendarExportSuccess(int count) {
+    return '$count Ereignisse exportiert';
+  }
+
+  @override
+  String get importData => 'Daten importieren';
+
+  @override
+  String importSuccess(int count) {
+    return '$count Einträge importiert';
+  }
+
+  @override
+  String get importError => 'Import fehlgeschlagen';
+
+  @override
+  String get exportError => 'Export fehlgeschlagen';
+
+  @override
+  String get title => 'Titel';
+
+  @override
+  String get note => 'Notiz';
+
+  @override
+  String get newTodo => 'Neue Aufgabe';
+
+  @override
+  String get editTodo => 'Aufgabe bearbeiten';
+
+  @override
+  String get todoTitleHint => 'Was muss erledigt werden?';
+
+  @override
+  String get todoNoteHint => 'Notiz hinzufügen...';
+
+  @override
+  String get todoList => 'Liste';
+
+  @override
+  String get todoListHint => 'z. B. Arbeit, Privat...';
+
+  @override
+  String get todoSubItems => 'Unteraufgaben';
+
+  @override
+  String get todoAddSubItem => 'Unteraufgabe hinzufügen...';
+
+  @override
+  String get noDueDate => 'Kein Fälligkeitsdatum';
+
+  @override
+  String get confirmDelete => 'Löschen?';
+
+  @override
+  String get confirmDeleteTodo => 'Diese Aufgabe wird dauerhaft gelöscht.';
+
+  @override
+  String get carbs => 'Kohlenhydrate';
+
+  @override
+  String get fat => 'Fett';
+
+  @override
+  String get mealLogged => 'Mahlzeit gespeichert';
+
+  @override
+  String get barcodeScanner => 'Barcode-Scanner';
+
+  @override
+  String get barcodeProductNotFound =>
+      'Produkt nicht gefunden. Erneut scannen.';
+
+  @override
+  String get barcodeScanAgain => 'Erneut scannen';
+
+  @override
+  String get barcodeScanHint => 'Kamera auf den Barcode richten';
+
+  @override
+  String get barcodePer100g => 'Werte für eingegebene Menge';
+
+  @override
+  String get diary => 'Foto-Tagebuch';
+
+  @override
+  String get diaryRecentEntries => 'Letzte Einträge';
+
+  @override
+  String get takePhoto => 'Foto aufnehmen';
+
+  @override
+  String get chooseFromGallery => 'Aus Galerie auswählen';
 }

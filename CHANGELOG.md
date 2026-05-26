@@ -1,5 +1,69 @@
 # Changelog
 
+## v0.5.0 (2026-05-26) — Feature-Release: WINGS · Kalender · Scanner · Tagebuch
+
+### Neue Features
+
+#### WINGS Calisthenics Tab
+- Nativer Flutter-Tab mit allen Inhalten von wingssw.com (kein WebView)
+- Skill-Tree: sechs Kategorien (Vertical Pull, Horizontal Pull, Push, Legs, Core) mit interaktiven Skill-Karten
+- Übungsbibliothek: 45+ Übungen mit Suche, Kategorie-Filter, Schwierigkeitsgrad, Muskelgruppen, Schritt-für-Schritt-Anleitung, Good/Bad-Form-Cues
+- Trainingsguide: Anfänger- & Fortgeschrittenen-Workouts, Progressive Overload, Front Lever- & Handstand-Guide
+
+#### Kalender-Synchronisation (bidirektional)
+- Termine vom Gerät-Kalender in die App importieren (letzte 30 / nächste 90 Tage)
+- App-Termine in einen eigenen "TRAUM"-Kalender auf dem Gerät exportieren
+- Doppelte Einträge werden automatisch erkannt und übersprungen
+- Sync-Buttons direkt im Kalender-Tab
+
+#### Daten-Import / Export
+- Vollständiger JSON-Backup aller 9 Module (Training, Gesundheit, Ernährung, Supplemente, Planung, Medikamente, Abstinenz, Budget, Zyklus)
+- Export via Share-Sheet; Import aus einer JSON-Datei via Dateiauswahl
+- `INSERT OR REPLACE`-Logik: vorhandene Einträge werden aktualisiert, neue eingefügt
+- Einzel-Modul-Export (Auswahl per Checkbox) oder kompletter Gesamt-Export
+
+#### Ernährungs-Barcode-Scanner
+- Kamera-Barcode-Scanner (mobile_scanner) direkt im Ernährungs-Tab
+- OpenFoodFacts API v2: Produktname, Marke, Kalorien, Protein, Kohlenhydrate, Fett pro 100 g
+- Portionsgröße anpassbar; Makros werden live neu berechnet
+- Mahlzeitentyp wählen und direkt in die Datenbank speichern
+
+#### Todos – Habitify-Style
+- Neuer `TodoDetailScreen`: Titel, Notiz, Liste (Gruppenname), Priorität (Niedrig / Mittel / Hoch), Fälligkeitsdatum, Unteraufgaben
+- Unteraufgaben (Sub-Items) als eigene Tabelle mit Checkbox und Lösch-Funktion
+- Todos in der Liste zeigen Listname, Datum und Notiz-Vorschau als Untertitel
+- Farbige Prioritäts-Indikatoren (Grün / Gold / Rot)
+
+#### Foto-Tagebuch (1SE-Style)
+- Monatskalender-Grid: jeder Tag kann mit einem Foto belegt werden
+- Fotos per Kamera aufnehmen oder aus der Galerie wählen
+- Vollbild-Viewer mit Pinch-to-Zoom und Löschen-Funktion
+- Horizontale Vorschau der letzten Einträge unterhalb des Kalenders
+- Fotos werden lokal im App-Verzeichnis gespeichert (diary/)
+- Nutzt die bestehende PhotoLogs-Tabelle (category = 'diary')
+
+#### Navigationsleiste & Wetter-Widget
+- Neue Navigationsleiste mit Drag-and-Drop-Sortierung, Icon-Auswahl, Show/Hide pro Modul
+- Uhrzeit- & Wetter-Widget auf der Startseite (Standort-basierte Wetterdaten)
+
+### Verbesserungen & Bugfixes
+
+- **Schrittzähler**: Health Connect Schritte werden jetzt korrekt aus dem Tages-Query geladen
+- **Wasser-Tracking**: Eingabe erlaubt jetzt auch negative Werte (Korrektur-Funktion)
+- **Workout-Daten**: Letztes Gewicht/Wiederholungen werden beim Erfassen vorausgefüllt
+- **Datenbank-Audit**: Alle Drift-Migrations bereinigt, Analyzer-Warnungen behoben
+- **Übersetzungen**: Alle hartcodierten deutschen/englischen Strings vollständig in ARB-Dateien überführt
+- **Planung-Tab**: Goals & Habits entfernt; Abstinenz-Tracker in Kalender-Tab integriert
+
+### Technische Details
+
+- Neue Pakete: `device_calendar ^4.3.3`, `file_picker ^8.0.0`, `mobile_scanner ^6.0.0`
+- Datenbank Schema v4: neue Tabelle `TodoSubItems`, neue Spalte `todos.listName`
+- Neue Dart-Dateien: `wings_screen`, `wings_data`, `wings_tutorials_screen`, `wings_skill_tree_screen`, `wings_training_screen`, `wings_exercise_detail_screen`, `calendar_sync_service`, `data_import_export_service`, `open_food_facts_service`, `barcode_scanner_screen`, `todo_detail_screen`, `diary_screen`
+- AndroidManifest: `READ_CALENDAR`, `WRITE_CALENDAR`, `CAMERA` Permissions hinzugefügt
+
+---
+
 ## v0.0.2 (2026-05-16) — Bugfix-Release
 
 ### Fehlerbehebungen

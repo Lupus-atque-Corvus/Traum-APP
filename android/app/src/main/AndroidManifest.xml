@@ -21,6 +21,13 @@
     <uses-permission android:name="android.permission.health.READ_SLEEP_SESSION" />
     <uses-permission android:name="android.permission.health.READ_WEIGHT" />
 
+    <!-- Kamera (Barcode-Scanner) -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Kalender-Zugriff -->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+
     <!-- APK installation (update) -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 

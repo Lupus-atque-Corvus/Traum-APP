@@ -33,7 +33,7 @@ void main() {
         .toList();
     final planks = allExercises.where((e) => e.exerciseName == 'Plank');
     final laufen = allExercises.where((e) => e.exerciseName == 'Laufen');
-    for (final e in planks) expect(e.unit, 'seconds', reason: 'Plank should be seconds');
-    for (final e in laufen) expect(e.unit, 'seconds', reason: 'Laufen should be seconds');
+    for (final e in planks) { expect(e.unit, 'seconds', reason: 'Plank should be seconds'); }
+    for (final e in laufen) { expect(e.unit, 'seconds', reason: 'Laufen should be seconds'); }
   });
 }

@@ -41,6 +41,11 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
         elevation: 0,
         actions: [
           IconButton(
+            icon: const Icon(Icons.qr_code_scanner_rounded, color: TraumColors.mintGreen),
+            tooltip: AppLocalizations.of(context)!.barcodeScanner,
+            onPressed: () => context.go('/nutrition/scan'),
+          ),
+          IconButton(
             icon: const Icon(Icons.search_rounded, color: TraumColors.mintGreen),
             tooltip: AppLocalizations.of(context)!.searchFood,
             onPressed: () => context.go('/nutrition/search'),
@@ -208,6 +213,12 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
               ),
               TextButton(
                 onPressed: () async {
+                  if (amount <= 0) {
+                    ScaffoldMessenger.of(ctx).showSnackBar(
+                      SnackBar(
+                          content: Text(AppLocalizations.of(ctx)!.positiveAmountRequired)));
+                    return;
+                  }
                   Navigator.pop(ctx);
                   await ref.read(nutritionDaoProvider).insertWaterLog(
                         WaterLogsCompanion.insert(

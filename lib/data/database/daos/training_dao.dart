@@ -128,6 +128,15 @@ class TrainingDao extends DatabaseAccessor<TraumDatabase>
   Future<int> deleteSet(int id) =>
       (delete(workoutSets)..where((t) => t.id.equals(id))).go();
 
+  Future<WorkoutSet?> getLastSetForExercise(int exerciseId) async {
+    final results = await (select(workoutSets)
+          ..where((s) => s.exerciseId.equals(exerciseId))
+          ..orderBy([(s) => OrderingTerm.desc(s.id)])
+          ..limit(1))
+        .get();
+    return results.isEmpty ? null : results.first;
+  }
+
   Future<Map<int, int>> getExerciseSetCounts() async {
     final rows = await customSelect(
       'SELECT exercise_id, COUNT(DISTINCT session_id) as cnt FROM workout_sets GROUP BY exercise_id',

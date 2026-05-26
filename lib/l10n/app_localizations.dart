@@ -2372,6 +2372,12 @@ abstract class AppLocalizations {
   /// **'Wasser hinzufügen'**
   String get addWater;
 
+  /// No description provided for @positiveAmountRequired.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte eine positive Menge eingeben'**
+  String get positiveAmountRequired;
+
   /// No description provided for @waterGoal2000.
   ///
   /// In de, this message translates to:
@@ -3686,6 +3692,24 @@ abstract class AppLocalizations {
   /// **'Gewohnheiten'**
   String get habitsTab;
 
+  /// No description provided for @abstinenceDay.
+  ///
+  /// In de, this message translates to:
+  /// **'Abstinenz-Tracker'**
+  String get abstinenceDay;
+
+  /// No description provided for @abstinenceDayActive.
+  ///
+  /// In de, this message translates to:
+  /// **'{name} – {days} Tage clean'**
+  String abstinenceDayActive(String name, int days);
+
+  /// No description provided for @abstinenceDayNone.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine aktiven Abstinenz-Tracker'**
+  String get abstinenceDayNone;
+
   /// No description provided for @bmi.
   ///
   /// In de, this message translates to:
@@ -4921,6 +4945,528 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Bug · Feature · Verbesserung'**
   String get settingsFeedbackSubtitle;
+
+  /// No description provided for @newWorkout.
+  ///
+  /// In de, this message translates to:
+  /// **'Neues Workout'**
+  String get newWorkout;
+
+  /// No description provided for @addFirstExercise.
+  ///
+  /// In de, this message translates to:
+  /// **'Füge deine erste Übung hinzu'**
+  String get addFirstExercise;
+
+  /// No description provided for @discardWorkout.
+  ///
+  /// In de, this message translates to:
+  /// **'Workout verwerfen'**
+  String get discardWorkout;
+
+  /// No description provided for @deleteSet.
+  ///
+  /// In de, this message translates to:
+  /// **'Satz löschen'**
+  String get deleteSet;
+
+  /// No description provided for @exerciseInfo.
+  ///
+  /// In de, this message translates to:
+  /// **'Übungsinfo'**
+  String get exerciseInfo;
+
+  /// No description provided for @addNote.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz hinzufügen'**
+  String get addNote;
+
+  /// No description provided for @addNoteHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz hinzufügen...'**
+  String get addNoteHint;
+
+  /// No description provided for @removeExercise.
+  ///
+  /// In de, this message translates to:
+  /// **'Übung entfernen'**
+  String get removeExercise;
+
+  /// No description provided for @normalSet.
+  ///
+  /// In de, this message translates to:
+  /// **'Normaler Satz'**
+  String get normalSet;
+
+  /// No description provided for @warmupSetLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufwärm-Satz'**
+  String get warmupSetLabel;
+
+  /// No description provided for @dropSet.
+  ///
+  /// In de, this message translates to:
+  /// **'Drop-Satz'**
+  String get dropSet;
+
+  /// No description provided for @failureSet.
+  ///
+  /// In de, this message translates to:
+  /// **'Versagenssatz'**
+  String get failureSet;
+
+  /// No description provided for @exerciseNotFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Übung nicht gefunden'**
+  String get exerciseNotFound;
+
+  /// No description provided for @trainingVolume.
+  ///
+  /// In de, this message translates to:
+  /// **'Trainingsvolumen'**
+  String get trainingVolume;
+
+  /// No description provided for @timesPerformed.
+  ///
+  /// In de, this message translates to:
+  /// **'Mal durchgeführt'**
+  String get timesPerformed;
+
+  /// No description provided for @totalDuration.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesamtdauer'**
+  String get totalDuration;
+
+  /// No description provided for @totalVolume.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesamtvolumen'**
+  String get totalVolume;
+
+  /// No description provided for @noDataYet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Daten'**
+  String get noDataYet;
+
+  /// No description provided for @mostRecent.
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt'**
+  String get mostRecent;
+
+  /// No description provided for @average.
+  ///
+  /// In de, this message translates to:
+  /// **'Durchschnitt'**
+  String get average;
+
+  /// No description provided for @noHistoryYet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch kein Verlauf'**
+  String get noHistoryYet;
+
+  /// No description provided for @superset.
+  ///
+  /// In de, this message translates to:
+  /// **'Supersatz'**
+  String get superset;
+
+  /// No description provided for @infoTab.
+  ///
+  /// In de, this message translates to:
+  /// **'Info'**
+  String get infoTab;
+
+  /// No description provided for @historyTab.
+  ///
+  /// In de, this message translates to:
+  /// **'Verlauf'**
+  String get historyTab;
+
+  /// No description provided for @similarExercises.
+  ///
+  /// In de, this message translates to:
+  /// **'Ähnliche Übungen'**
+  String get similarExercises;
+
+  /// No description provided for @addAllCount.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle hinzufügen ({n})'**
+  String addAllCount(int n);
+
+  /// No description provided for @timesPerformedValue.
+  ///
+  /// In de, this message translates to:
+  /// **'{n}×'**
+  String timesPerformedValue(int n);
+
+  /// No description provided for @wings.
+  ///
+  /// In de, this message translates to:
+  /// **'WINGS'**
+  String get wings;
+
+  /// No description provided for @wingsSkillTree.
+  ///
+  /// In de, this message translates to:
+  /// **'Skill-Baum'**
+  String get wingsSkillTree;
+
+  /// No description provided for @wingsExercises.
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen'**
+  String get wingsExercises;
+
+  /// No description provided for @wingsTraining.
+  ///
+  /// In de, this message translates to:
+  /// **'Training'**
+  String get wingsTraining;
+
+  /// No description provided for @wingsGoodForm.
+  ///
+  /// In de, this message translates to:
+  /// **'Gute Form'**
+  String get wingsGoodForm;
+
+  /// No description provided for @wingsBadForm.
+  ///
+  /// In de, this message translates to:
+  /// **'Häufige Fehler'**
+  String get wingsBadForm;
+
+  /// No description provided for @wingsOverview.
+  ///
+  /// In de, this message translates to:
+  /// **'Übersicht'**
+  String get wingsOverview;
+
+  /// No description provided for @wingsInstructions.
+  ///
+  /// In de, this message translates to:
+  /// **'Anleitung'**
+  String get wingsInstructions;
+
+  /// No description provided for @wingsMuscles.
+  ///
+  /// In de, this message translates to:
+  /// **'Muskeln'**
+  String get wingsMuscles;
+
+  /// No description provided for @wingsDifficulty.
+  ///
+  /// In de, this message translates to:
+  /// **'Schwierigkeit'**
+  String get wingsDifficulty;
+
+  /// No description provided for @wingsInProgress.
+  ///
+  /// In de, this message translates to:
+  /// **'In Bearbeitung'**
+  String get wingsInProgress;
+
+  /// No description provided for @wingsComingSoon.
+  ///
+  /// In de, this message translates to:
+  /// **'Detailliertes Tutorial bald verfügbar.'**
+  String get wingsComingSoon;
+
+  /// No description provided for @wingsBeginnerGuide.
+  ///
+  /// In de, this message translates to:
+  /// **'Einsteiger-Guide'**
+  String get wingsBeginnerGuide;
+
+  /// No description provided for @wingsBeginnerWorkout.
+  ///
+  /// In de, this message translates to:
+  /// **'Einsteiger-Workout'**
+  String get wingsBeginnerWorkout;
+
+  /// No description provided for @wingsIntermediateWorkout.
+  ///
+  /// In de, this message translates to:
+  /// **'Fortgeschrittenen-Workout'**
+  String get wingsIntermediateWorkout;
+
+  /// No description provided for @wingsProgressiveOverload.
+  ///
+  /// In de, this message translates to:
+  /// **'Progressive Überlastung'**
+  String get wingsProgressiveOverload;
+
+  /// No description provided for @wingsFrontLeverGuide.
+  ///
+  /// In de, this message translates to:
+  /// **'Front-Lever-Guide'**
+  String get wingsFrontLeverGuide;
+
+  /// No description provided for @wingsHandstandGuide.
+  ///
+  /// In de, this message translates to:
+  /// **'Handstand-Guide'**
+  String get wingsHandstandGuide;
+
+  /// No description provided for @wingsSkillPriority.
+  ///
+  /// In de, this message translates to:
+  /// **'Skill-Priorität & Erholung'**
+  String get wingsSkillPriority;
+
+  /// No description provided for @wingsSearchExercises.
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen suchen...'**
+  String get wingsSearchExercises;
+
+  /// No description provided for @wingsAll.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle'**
+  String get wingsAll;
+
+  /// No description provided for @wingsNoExercisesFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Übungen gefunden'**
+  String get wingsNoExercisesFound;
+
+  /// No description provided for @wingsExercisesCount.
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen'**
+  String get wingsExercisesCount;
+
+  /// No description provided for @wingsViewTutorial.
+  ///
+  /// In de, this message translates to:
+  /// **'Tutorial öffnen'**
+  String get wingsViewTutorial;
+
+  /// No description provided for @wingsExerciseNotFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Übung nicht gefunden'**
+  String get wingsExerciseNotFound;
+
+  /// No description provided for @calendarImport.
+  ///
+  /// In de, this message translates to:
+  /// **'Vom Kalender importieren'**
+  String get calendarImport;
+
+  /// No description provided for @calendarExport.
+  ///
+  /// In de, this message translates to:
+  /// **'In Kalender exportieren'**
+  String get calendarExport;
+
+  /// No description provided for @calendarPermissionDenied.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalender-Zugriff verweigert. Bitte Berechtigung in den Einstellungen erteilen.'**
+  String get calendarPermissionDenied;
+
+  /// No description provided for @calendarSyncError.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalender-Synchronisation fehlgeschlagen. Bitte erneut versuchen.'**
+  String get calendarSyncError;
+
+  /// No description provided for @calendarImportSuccess.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} Ereignisse importiert'**
+  String calendarImportSuccess(int count);
+
+  /// No description provided for @calendarExportSuccess.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} Ereignisse exportiert'**
+  String calendarExportSuccess(int count);
+
+  /// No description provided for @importData.
+  ///
+  /// In de, this message translates to:
+  /// **'Daten importieren'**
+  String get importData;
+
+  /// No description provided for @importSuccess.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} Einträge importiert'**
+  String importSuccess(int count);
+
+  /// No description provided for @importError.
+  ///
+  /// In de, this message translates to:
+  /// **'Import fehlgeschlagen'**
+  String get importError;
+
+  /// No description provided for @exportError.
+  ///
+  /// In de, this message translates to:
+  /// **'Export fehlgeschlagen'**
+  String get exportError;
+
+  /// No description provided for @title.
+  ///
+  /// In de, this message translates to:
+  /// **'Titel'**
+  String get title;
+
+  /// No description provided for @note.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz'**
+  String get note;
+
+  /// No description provided for @newTodo.
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Aufgabe'**
+  String get newTodo;
+
+  /// No description provided for @editTodo.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgabe bearbeiten'**
+  String get editTodo;
+
+  /// No description provided for @todoTitleHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Was muss erledigt werden?'**
+  String get todoTitleHint;
+
+  /// No description provided for @todoNoteHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz hinzufügen...'**
+  String get todoNoteHint;
+
+  /// No description provided for @todoList.
+  ///
+  /// In de, this message translates to:
+  /// **'Liste'**
+  String get todoList;
+
+  /// No description provided for @todoListHint.
+  ///
+  /// In de, this message translates to:
+  /// **'z. B. Arbeit, Privat...'**
+  String get todoListHint;
+
+  /// No description provided for @todoSubItems.
+  ///
+  /// In de, this message translates to:
+  /// **'Unteraufgaben'**
+  String get todoSubItems;
+
+  /// No description provided for @todoAddSubItem.
+  ///
+  /// In de, this message translates to:
+  /// **'Unteraufgabe hinzufügen...'**
+  String get todoAddSubItem;
+
+  /// No description provided for @noDueDate.
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Fälligkeitsdatum'**
+  String get noDueDate;
+
+  /// No description provided for @confirmDelete.
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen?'**
+  String get confirmDelete;
+
+  /// No description provided for @confirmDeleteTodo.
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Aufgabe wird dauerhaft gelöscht.'**
+  String get confirmDeleteTodo;
+
+  /// No description provided for @carbs.
+  ///
+  /// In de, this message translates to:
+  /// **'Kohlenhydrate'**
+  String get carbs;
+
+  /// No description provided for @fat.
+  ///
+  /// In de, this message translates to:
+  /// **'Fett'**
+  String get fat;
+
+  /// No description provided for @mealLogged.
+  ///
+  /// In de, this message translates to:
+  /// **'Mahlzeit gespeichert'**
+  String get mealLogged;
+
+  /// No description provided for @barcodeScanner.
+  ///
+  /// In de, this message translates to:
+  /// **'Barcode-Scanner'**
+  String get barcodeScanner;
+
+  /// No description provided for @barcodeProductNotFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Produkt nicht gefunden. Erneut scannen.'**
+  String get barcodeProductNotFound;
+
+  /// No description provided for @barcodeScanAgain.
+  ///
+  /// In de, this message translates to:
+  /// **'Erneut scannen'**
+  String get barcodeScanAgain;
+
+  /// No description provided for @barcodeScanHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Kamera auf den Barcode richten'**
+  String get barcodeScanHint;
+
+  /// No description provided for @barcodePer100g.
+  ///
+  /// In de, this message translates to:
+  /// **'Werte für eingegebene Menge'**
+  String get barcodePer100g;
+
+  /// No description provided for @diary.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto-Tagebuch'**
+  String get diary;
+
+  /// No description provided for @diaryRecentEntries.
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte Einträge'**
+  String get diaryRecentEntries;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto aufnehmen'**
+  String get takePhoto;
+
+  /// No description provided for @chooseFromGallery.
+  ///
+  /// In de, this message translates to:
+  /// **'Aus Galerie auswählen'**
+  String get chooseFromGallery;
 }
 
 class _AppLocalizationsDelegate

@@ -491,6 +491,7 @@
   "logMeal": "Mahlzeit eintragen",
   "quickSelect": "Schnellauswahl",
   "addWater": "Wasser hinzufügen",
+  "positiveAmountRequired": "Bitte eine positive Menge eingeben",
   "waterGoal2000": "Ziel: 2000 ml",
   "nothingLogged": "Noch nichts eingetragen",
   "shoppingListTooltip": "Einkaufsliste",
@@ -771,6 +772,15 @@
   "todosTab": "Aufgaben",
   "goalsTab": "Ziele",
   "habitsTab": "Gewohnheiten",
+  "abstinenceDay": "Abstinenz-Tracker",
+  "abstinenceDayActive": "{name} – {days} Tage clean",
+  "@abstinenceDayActive": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "days": {"type": "int"}
+    }
+  },
+  "abstinenceDayNone": "Keine aktiven Abstinenz-Tracker",
 
   "bmi": "BMI",
   "weightGoalLabel": "Zielgewicht",
@@ -1050,5 +1060,124 @@
   "feedbackHint": "Öffnet GitHub im Browser. Ein GitHub-Account ist zum Absenden nötig.",
   "feedbackSystemInfo": "Systemdaten werden automatisch angehängt.",
   "settingsFeedback": "Feedback & Fehler melden",
-  "settingsFeedbackSubtitle": "Bug · Feature · Verbesserung"
+  "settingsFeedbackSubtitle": "Bug · Feature · Verbesserung",
+
+  "newWorkout": "Neues Workout",
+  "addFirstExercise": "Füge deine erste Übung hinzu",
+  "discardWorkout": "Workout verwerfen",
+  "deleteSet": "Satz löschen",
+  "exerciseInfo": "Übungsinfo",
+  "addNote": "Notiz hinzufügen",
+  "addNoteHint": "Notiz hinzufügen...",
+  "removeExercise": "Übung entfernen",
+  "normalSet": "Normaler Satz",
+  "warmupSetLabel": "Aufwärm-Satz",
+  "dropSet": "Drop-Satz",
+  "failureSet": "Versagenssatz",
+  "exerciseNotFound": "Übung nicht gefunden",
+  "trainingVolume": "Trainingsvolumen",
+  "timesPerformed": "Mal durchgeführt",
+  "totalDuration": "Gesamtdauer",
+  "totalVolume": "Gesamtvolumen",
+  "noDataYet": "Noch keine Daten",
+  "mostRecent": "Zuletzt",
+  "average": "Durchschnitt",
+  "noHistoryYet": "Noch kein Verlauf",
+  "superset": "Supersatz",
+  "infoTab": "Info",
+  "historyTab": "Verlauf",
+  "similarExercises": "Ähnliche Übungen",
+  "addAllCount": "Alle hinzufügen ({n})",
+  "@addAllCount": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "timesPerformedValue": "{n}×",
+  "@timesPerformedValue": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+
+  "wings": "WINGS",
+  "wingsSkillTree": "Skill-Baum",
+  "wingsExercises": "Übungen",
+  "wingsTraining": "Training",
+  "wingsGoodForm": "Gute Form",
+  "wingsBadForm": "Häufige Fehler",
+  "wingsOverview": "Übersicht",
+  "wingsInstructions": "Anleitung",
+  "wingsMuscles": "Muskeln",
+  "wingsDifficulty": "Schwierigkeit",
+  "wingsInProgress": "In Bearbeitung",
+  "wingsComingSoon": "Detailliertes Tutorial bald verfügbar.",
+  "wingsBeginnerGuide": "Einsteiger-Guide",
+  "wingsBeginnerWorkout": "Einsteiger-Workout",
+  "wingsIntermediateWorkout": "Fortgeschrittenen-Workout",
+  "wingsProgressiveOverload": "Progressive Überlastung",
+  "wingsFrontLeverGuide": "Front-Lever-Guide",
+  "wingsHandstandGuide": "Handstand-Guide",
+  "wingsSkillPriority": "Skill-Priorität & Erholung",
+  "wingsSearchExercises": "Übungen suchen...",
+  "wingsAll": "Alle",
+  "wingsNoExercisesFound": "Keine Übungen gefunden",
+  "wingsExercisesCount": "Übungen",
+  "wingsViewTutorial": "Tutorial öffnen",
+  "wingsExerciseNotFound": "Übung nicht gefunden",
+
+  "calendarImport": "Vom Kalender importieren",
+  "calendarExport": "In Kalender exportieren",
+  "calendarPermissionDenied": "Kalender-Zugriff verweigert. Bitte Berechtigung in den Einstellungen erteilen.",
+  "calendarSyncError": "Kalender-Synchronisation fehlgeschlagen. Bitte erneut versuchen.",
+  "calendarImportSuccess": "{count} Ereignisse importiert",
+  "@calendarImportSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "calendarExportSuccess": "{count} Ereignisse exportiert",
+  "@calendarExportSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+
+  "importData": "Daten importieren",
+  "importSuccess": "{count} Einträge importiert",
+  "@importSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "importError": "Import fehlgeschlagen",
+  "exportError": "Export fehlgeschlagen",
+
+  "title": "Titel",
+  "note": "Notiz",
+  "newTodo": "Neue Aufgabe",
+  "editTodo": "Aufgabe bearbeiten",
+  "todoTitleHint": "Was muss erledigt werden?",
+  "todoNoteHint": "Notiz hinzufügen...",
+  "todoList": "Liste",
+  "todoListHint": "z. B. Arbeit, Privat...",
+  "todoSubItems": "Unteraufgaben",
+  "todoAddSubItem": "Unteraufgabe hinzufügen...",
+  "noDueDate": "Kein Fälligkeitsdatum",
+  "confirmDelete": "Löschen?",
+  "confirmDeleteTodo": "Diese Aufgabe wird dauerhaft gelöscht.",
+
+  "carbs": "Kohlenhydrate",
+  "fat": "Fett",
+  "mealLogged": "Mahlzeit gespeichert",
+  "barcodeScanner": "Barcode-Scanner",
+  "barcodeProductNotFound": "Produkt nicht gefunden. Erneut scannen.",
+  "barcodeScanAgain": "Erneut scannen",
+  "barcodeScanHint": "Kamera auf den Barcode richten",
+  "barcodePer100g": "Werte für eingegebene Menge",
+
+  "diary": "Foto-Tagebuch",
+  "diaryRecentEntries": "Letzte Einträge",
+  "takePhoto": "Foto aufnehmen",
+  "chooseFromGallery": "Aus Galerie auswählen"
 }
