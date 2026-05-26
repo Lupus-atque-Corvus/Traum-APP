@@ -37,4 +37,7 @@ class TrainingRepository {
   Future<int> addSet(WorkoutSetsCompanion e) => _dao.insertSet(e);
   Future<bool> updateSet(WorkoutSetsCompanion e) => _dao.updateSet(e);
   Future<int> deleteSet(int id) => _dao.deleteSet(id);
+
+  Future<WorkoutSet?> getLastSetForExercise(int exerciseId) =>
+      _dao.getLastSetForExercise(exerciseId);
 }

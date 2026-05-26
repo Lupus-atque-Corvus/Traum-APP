@@ -145,6 +145,27 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
     if (mounted) setState(() => _sessionId = id);
   }
 
+  /// Pre-fills the first set of each block with weight/reps from the most
+  /// recent historical set for that exercise across all sessions.
+  Future<void> _loadLastSets(List<_ExerciseBlock> blocks) async {
+    final dao = ref.read(trainingDaoProvider);
+    for (final block in blocks) {
+      final lastSet = await dao.getLastSetForExercise(block.exercise.id);
+      if (lastSet == null) continue;
+      if (!mounted) return;
+      setState(() {
+        final firstSet = block.sets.first;
+        if (lastSet.weightKg != null) {
+          firstSet.weightCtrl.text =
+              lastSet.weightKg!.toStringAsFixed(1);
+        }
+        if (lastSet.reps != null) {
+          firstSet.repsCtrl.text = '${lastSet.reps}';
+        }
+      });
+    }
+  }
+
   @override
   void dispose() {
     _timer.cancel();
@@ -364,9 +385,12 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
       MaterialPageRoute(builder: (_) => const ExercisePickerScreen()),
     );
     if (result == null || result.isEmpty) return;
+    final newBlocks = <_ExerciseBlock>[];
     setState(() {
       for (final picked in result) {
-        _blocks.add(_ExerciseBlock(exercise: picked.exercise));
+        final block = _ExerciseBlock(exercise: picked.exercise);
+        _blocks.add(block);
+        newBlocks.add(block);
         _blockKeys.add(GlobalKey());
       }
       _focusedBlock = _blocks.length - result.length;
@@ -374,6 +398,8 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToBlock(_focusedBlock);
     });
+    // Pre-fill first set of each new block from historical data.
+    _loadLastSets(newBlocks);
   }
 
   void _showRestTimer(BuildContext context) {
