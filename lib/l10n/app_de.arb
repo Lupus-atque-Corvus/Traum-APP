@@ -1151,5 +1151,14 @@
     }
   },
   "importError": "Import fehlgeschlagen",
-  "exportError": "Export fehlgeschlagen"
+  "exportError": "Export fehlgeschlagen",
+
+  "carbs": "Kohlenhydrate",
+  "fat": "Fett",
+  "mealLogged": "Mahlzeit gespeichert",
+  "barcodeScanner": "Barcode-Scanner",
+  "barcodeProductNotFound": "Produkt nicht gefunden. Erneut scannen.",
+  "barcodeScanAgain": "Erneut scannen",
+  "barcodeScanHint": "Kamera auf den Barcode richten",
+  "barcodePer100g": "Werte für eingegebene Menge"
 }

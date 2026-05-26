@@ -1151,5 +1151,14 @@
     }
   },
   "importError": "Import failed",
-  "exportError": "Export failed"
+  "exportError": "Export failed",
+
+  "carbs": "Carbs",
+  "fat": "Fat",
+  "mealLogged": "Meal logged",
+  "barcodeScanner": "Barcode Scanner",
+  "barcodeProductNotFound": "Product not found. Try scanning again.",
+  "barcodeScanAgain": "Scan again",
+  "barcodeScanHint": "Point the camera at a barcode",
+  "barcodePer100g": "Values shown for entered amount"
 }

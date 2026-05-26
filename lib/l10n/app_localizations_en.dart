@@ -2734,4 +2734,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exportError => 'Export failed';
+
+  @override
+  String get carbs => 'Carbs';
+
+  @override
+  String get fat => 'Fat';
+
+  @override
+  String get mealLogged => 'Meal logged';
+
+  @override
+  String get barcodeScanner => 'Barcode Scanner';
+
+  @override
+  String get barcodeProductNotFound => 'Product not found. Try scanning again.';
+
+  @override
+  String get barcodeScanAgain => 'Scan again';
+
+  @override
+  String get barcodeScanHint => 'Point the camera at a barcode';
+
+  @override
+  String get barcodePer100g => 'Values shown for entered amount';
 }

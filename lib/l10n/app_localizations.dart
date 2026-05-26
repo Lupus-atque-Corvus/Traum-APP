@@ -5317,6 +5317,54 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Export fehlgeschlagen'**
   String get exportError;
+
+  /// No description provided for @carbs.
+  ///
+  /// In de, this message translates to:
+  /// **'Kohlenhydrate'**
+  String get carbs;
+
+  /// No description provided for @fat.
+  ///
+  /// In de, this message translates to:
+  /// **'Fett'**
+  String get fat;
+
+  /// No description provided for @mealLogged.
+  ///
+  /// In de, this message translates to:
+  /// **'Mahlzeit gespeichert'**
+  String get mealLogged;
+
+  /// No description provided for @barcodeScanner.
+  ///
+  /// In de, this message translates to:
+  /// **'Barcode-Scanner'**
+  String get barcodeScanner;
+
+  /// No description provided for @barcodeProductNotFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Produkt nicht gefunden. Erneut scannen.'**
+  String get barcodeProductNotFound;
+
+  /// No description provided for @barcodeScanAgain.
+  ///
+  /// In de, this message translates to:
+  /// **'Erneut scannen'**
+  String get barcodeScanAgain;
+
+  /// No description provided for @barcodeScanHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Kamera auf den Barcode richten'**
+  String get barcodeScanHint;
+
+  /// No description provided for @barcodePer100g.
+  ///
+  /// In de, this message translates to:
+  /// **'Werte für eingegebene Menge'**
+  String get barcodePer100g;
 }
 
 class _AppLocalizationsDelegate

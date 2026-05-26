@@ -21,6 +21,7 @@ class Routes {
   static const String mealLog = '/nutrition/log';
   static const String foodSearch = '/nutrition/search';
   static const String shoppingList = '/nutrition/shopping';
+  static const String barcodeScanner = '/nutrition/scan';
   static const String supplements = '/supplements';
   static const String planning = '/planning';
   static const String medication = '/medication';

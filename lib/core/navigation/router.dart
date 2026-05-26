@@ -21,6 +21,7 @@ import '../../features/nutrition/nutrition_screen.dart';
 import '../../features/nutrition/meal_log_screen.dart';
 import '../../features/nutrition/food_search_screen.dart';
 import '../../features/nutrition/shopping_list_screen.dart';
+import '../../features/nutrition/barcode_scanner_screen.dart';
 import '../../features/supplements/supplement_screen.dart';
 import '../../features/planning/planning_screen.dart';
 import '../../features/medication/medication_screen.dart';
@@ -157,6 +158,10 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'shopping',
                 builder: (_, __) => const ShoppingListScreen(),
+              ),
+              GoRoute(
+                path: 'scan',
+                builder: (_, __) => const BarcodeScannerScreen(),
               ),
             ],
           ),

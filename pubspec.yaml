@@ -86,6 +86,9 @@ dependencies:
   # Datei-Auswahl (Import)
   file_picker: ^8.0.0
 
+  # Barcode-Scanner (Ernährung)
+  mobile_scanner: ^6.0.0
+
   # SVG
   flutter_svg: ^2.0.10+1
 

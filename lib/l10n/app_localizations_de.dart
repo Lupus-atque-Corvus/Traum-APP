@@ -2745,4 +2745,29 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get exportError => 'Export fehlgeschlagen';
+
+  @override
+  String get carbs => 'Kohlenhydrate';
+
+  @override
+  String get fat => 'Fett';
+
+  @override
+  String get mealLogged => 'Mahlzeit gespeichert';
+
+  @override
+  String get barcodeScanner => 'Barcode-Scanner';
+
+  @override
+  String get barcodeProductNotFound =>
+      'Produkt nicht gefunden. Erneut scannen.';
+
+  @override
+  String get barcodeScanAgain => 'Erneut scannen';
+
+  @override
+  String get barcodeScanHint => 'Kamera auf den Barcode richten';
+
+  @override
+  String get barcodePer100g => 'Werte für eingegebene Menge';
 }
