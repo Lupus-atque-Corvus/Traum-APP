@@ -1888,6 +1888,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get habitsTab => 'Gewohnheiten';
 
   @override
+  String get abstinenceDay => 'Abstinenz-Tracker';
+
+  @override
+  String abstinenceDayActive(String name, int days) {
+    return '$name – $days Tage clean';
+  }
+
+  @override
+  String get abstinenceDayNone => 'Keine aktiven Abstinenz-Tracker';
+
+  @override
   String get bmi => 'BMI';
 
   @override

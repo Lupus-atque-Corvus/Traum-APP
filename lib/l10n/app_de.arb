@@ -772,6 +772,15 @@
   "todosTab": "Aufgaben",
   "goalsTab": "Ziele",
   "habitsTab": "Gewohnheiten",
+  "abstinenceDay": "Abstinenz-Tracker",
+  "abstinenceDayActive": "{name} – {days} Tage clean",
+  "@abstinenceDayActive": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "days": {"type": "int"}
+    }
+  },
+  "abstinenceDayNone": "Keine aktiven Abstinenz-Tracker",
 
   "bmi": "BMI",
   "weightGoalLabel": "Zielgewicht",

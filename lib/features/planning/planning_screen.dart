@@ -23,7 +23,7 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -51,8 +51,6 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
           tabs: [
             Tab(text: AppLocalizations.of(context)!.calendar),
             Tab(text: AppLocalizations.of(context)!.todosTab),
-            Tab(text: AppLocalizations.of(context)!.goalsTab),
-            Tab(text: AppLocalizations.of(context)!.habitsTab),
           ],
         ),
       ),
@@ -61,8 +59,6 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
         children: const [
           _CalendarTab(),
           _TodosTab(),
-          _GoalsTab(),
-          _HabitsTab(),
         ],
       ),
     );
@@ -148,6 +144,7 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
             error: (_, __) => const SizedBox.shrink(),
           ),
           const Divider(color: TraumColors.surfaceVariant, height: 1),
+          _AbstinenceDaySection(selectedDay: _selectedDay),
           Expanded(
             child: dayApptAsync.when(
               data: (appts) {
@@ -636,6 +633,85 @@ class _PriorityChip extends StatelessWidget {
             color: selected ? color : TraumColors.onBackgroundMuted,
             fontFamily: 'DMSans', fontSize: 13)),
       ),
+    );
+  }
+}
+
+// ─── Abstinence day section ───────────────────────────────────────────────────
+
+class _AbstinenceDaySection extends ConsumerWidget {
+  final DateTime selectedDay;
+  const _AbstinenceDaySection({required this.selectedDay});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final trackersAsync = ref.watch(abstinenceTrackersStreamProvider);
+
+    return trackersAsync.when(
+      data: (trackers) {
+        final active = trackers.where((t) => t.isActive).toList();
+        if (active.isEmpty) {
+          return Container(
+            margin: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              borderRadius: BorderRadius.circular(TraumRadius.card),
+              border: Border.all(color: TraumColors.lavender.withValues(alpha: 0.2)),
+            ),
+            child: Row(children: [
+              const Icon(Icons.self_improvement_rounded, color: TraumColors.onBackgroundSubtle, size: 18),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  AppLocalizations.of(context)!.abstinenceDayNone,
+                  style: const TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontSize: 12),
+                ),
+              ),
+            ]),
+          );
+        }
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: active.map((tracker) {
+            final selected = DateTime(selectedDay.year, selectedDay.month, selectedDay.day);
+            final start = DateTime(tracker.startDate.year, tracker.startDate.month, tracker.startDate.day);
+            final daysClean = selected.isBefore(start) ? 0 : selected.difference(start).inDays;
+            return Container(
+              margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: TraumColors.surface,
+                borderRadius: BorderRadius.circular(TraumRadius.card),
+                border: Border.all(color: TraumColors.lavender.withValues(alpha: 0.2)),
+              ),
+              child: Row(children: [
+                Text(tracker.emoji ?? '🧘', style: const TextStyle(fontSize: 18)),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context)!.abstinenceDayActive(tracker.name, daysClean),
+                    style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontSize: 13),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: TraumColors.lavender.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '$daysClean d',
+                    style: const TextStyle(color: TraumColors.lavender, fontFamily: 'DMSans', fontSize: 11, fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ]),
+            );
+          }).toList(),
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
     );
   }
 }

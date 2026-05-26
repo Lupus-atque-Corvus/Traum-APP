@@ -3692,6 +3692,24 @@ abstract class AppLocalizations {
   /// **'Gewohnheiten'**
   String get habitsTab;
 
+  /// No description provided for @abstinenceDay.
+  ///
+  /// In de, this message translates to:
+  /// **'Abstinenz-Tracker'**
+  String get abstinenceDay;
+
+  /// No description provided for @abstinenceDayActive.
+  ///
+  /// In de, this message translates to:
+  /// **'{name} – {days} Tage clean'**
+  String abstinenceDayActive(String name, int days);
+
+  /// No description provided for @abstinenceDayNone.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine aktiven Abstinenz-Tracker'**
+  String get abstinenceDayNone;
+
   /// No description provided for @bmi.
   ///
   /// In de, this message translates to:
