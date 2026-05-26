@@ -2632,4 +2632,79 @@ class AppLocalizationsDe extends AppLocalizations {
   String timesPerformedValue(int n) {
     return '$n×';
   }
+
+  @override
+  String get wings => 'WINGS';
+
+  @override
+  String get wingsSkillTree => 'Skill-Baum';
+
+  @override
+  String get wingsExercises => 'Übungen';
+
+  @override
+  String get wingsTraining => 'Training';
+
+  @override
+  String get wingsGoodForm => 'Gute Form';
+
+  @override
+  String get wingsBadForm => 'Häufige Fehler';
+
+  @override
+  String get wingsOverview => 'Übersicht';
+
+  @override
+  String get wingsInstructions => 'Anleitung';
+
+  @override
+  String get wingsMuscles => 'Muskeln';
+
+  @override
+  String get wingsDifficulty => 'Schwierigkeit';
+
+  @override
+  String get wingsInProgress => 'In Bearbeitung';
+
+  @override
+  String get wingsComingSoon => 'Detailliertes Tutorial bald verfügbar.';
+
+  @override
+  String get wingsBeginnerGuide => 'Einsteiger-Guide';
+
+  @override
+  String get wingsBeginnerWorkout => 'Einsteiger-Workout';
+
+  @override
+  String get wingsIntermediateWorkout => 'Fortgeschrittenen-Workout';
+
+  @override
+  String get wingsProgressiveOverload => 'Progressive Überlastung';
+
+  @override
+  String get wingsFrontLeverGuide => 'Front-Lever-Guide';
+
+  @override
+  String get wingsHandstandGuide => 'Handstand-Guide';
+
+  @override
+  String get wingsSkillPriority => 'Skill-Priorität & Erholung';
+
+  @override
+  String get wingsSearchExercises => 'Übungen suchen...';
+
+  @override
+  String get wingsAll => 'Alle';
+
+  @override
+  String get wingsNoExercisesFound => 'Keine Übungen gefunden';
+
+  @override
+  String get wingsExercisesCount => 'Übungen';
+
+  @override
+  String get wingsViewTutorial => 'Tutorial öffnen';
+
+  @override
+  String get wingsExerciseNotFound => 'Übung nicht gefunden';
 }

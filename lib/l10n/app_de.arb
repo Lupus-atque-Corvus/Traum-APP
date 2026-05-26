@@ -1098,5 +1098,31 @@
     "placeholders": {
       "n": {"type": "int"}
     }
-  }
+  },
+
+  "wings": "WINGS",
+  "wingsSkillTree": "Skill-Baum",
+  "wingsExercises": "Übungen",
+  "wingsTraining": "Training",
+  "wingsGoodForm": "Gute Form",
+  "wingsBadForm": "Häufige Fehler",
+  "wingsOverview": "Übersicht",
+  "wingsInstructions": "Anleitung",
+  "wingsMuscles": "Muskeln",
+  "wingsDifficulty": "Schwierigkeit",
+  "wingsInProgress": "In Bearbeitung",
+  "wingsComingSoon": "Detailliertes Tutorial bald verfügbar.",
+  "wingsBeginnerGuide": "Einsteiger-Guide",
+  "wingsBeginnerWorkout": "Einsteiger-Workout",
+  "wingsIntermediateWorkout": "Fortgeschrittenen-Workout",
+  "wingsProgressiveOverload": "Progressive Überlastung",
+  "wingsFrontLeverGuide": "Front-Lever-Guide",
+  "wingsHandstandGuide": "Handstand-Guide",
+  "wingsSkillPriority": "Skill-Priorität & Erholung",
+  "wingsSearchExercises": "Übungen suchen...",
+  "wingsAll": "Alle",
+  "wingsNoExercisesFound": "Keine Übungen gefunden",
+  "wingsExercisesCount": "Übungen",
+  "wingsViewTutorial": "Tutorial öffnen",
+  "wingsExerciseNotFound": "Übung nicht gefunden"
 }

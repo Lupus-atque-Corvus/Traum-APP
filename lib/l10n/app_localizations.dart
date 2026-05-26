@@ -5107,6 +5107,156 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'{n}×'**
   String timesPerformedValue(int n);
+
+  /// No description provided for @wings.
+  ///
+  /// In de, this message translates to:
+  /// **'WINGS'**
+  String get wings;
+
+  /// No description provided for @wingsSkillTree.
+  ///
+  /// In de, this message translates to:
+  /// **'Skill-Baum'**
+  String get wingsSkillTree;
+
+  /// No description provided for @wingsExercises.
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen'**
+  String get wingsExercises;
+
+  /// No description provided for @wingsTraining.
+  ///
+  /// In de, this message translates to:
+  /// **'Training'**
+  String get wingsTraining;
+
+  /// No description provided for @wingsGoodForm.
+  ///
+  /// In de, this message translates to:
+  /// **'Gute Form'**
+  String get wingsGoodForm;
+
+  /// No description provided for @wingsBadForm.
+  ///
+  /// In de, this message translates to:
+  /// **'Häufige Fehler'**
+  String get wingsBadForm;
+
+  /// No description provided for @wingsOverview.
+  ///
+  /// In de, this message translates to:
+  /// **'Übersicht'**
+  String get wingsOverview;
+
+  /// No description provided for @wingsInstructions.
+  ///
+  /// In de, this message translates to:
+  /// **'Anleitung'**
+  String get wingsInstructions;
+
+  /// No description provided for @wingsMuscles.
+  ///
+  /// In de, this message translates to:
+  /// **'Muskeln'**
+  String get wingsMuscles;
+
+  /// No description provided for @wingsDifficulty.
+  ///
+  /// In de, this message translates to:
+  /// **'Schwierigkeit'**
+  String get wingsDifficulty;
+
+  /// No description provided for @wingsInProgress.
+  ///
+  /// In de, this message translates to:
+  /// **'In Bearbeitung'**
+  String get wingsInProgress;
+
+  /// No description provided for @wingsComingSoon.
+  ///
+  /// In de, this message translates to:
+  /// **'Detailliertes Tutorial bald verfügbar.'**
+  String get wingsComingSoon;
+
+  /// No description provided for @wingsBeginnerGuide.
+  ///
+  /// In de, this message translates to:
+  /// **'Einsteiger-Guide'**
+  String get wingsBeginnerGuide;
+
+  /// No description provided for @wingsBeginnerWorkout.
+  ///
+  /// In de, this message translates to:
+  /// **'Einsteiger-Workout'**
+  String get wingsBeginnerWorkout;
+
+  /// No description provided for @wingsIntermediateWorkout.
+  ///
+  /// In de, this message translates to:
+  /// **'Fortgeschrittenen-Workout'**
+  String get wingsIntermediateWorkout;
+
+  /// No description provided for @wingsProgressiveOverload.
+  ///
+  /// In de, this message translates to:
+  /// **'Progressive Überlastung'**
+  String get wingsProgressiveOverload;
+
+  /// No description provided for @wingsFrontLeverGuide.
+  ///
+  /// In de, this message translates to:
+  /// **'Front-Lever-Guide'**
+  String get wingsFrontLeverGuide;
+
+  /// No description provided for @wingsHandstandGuide.
+  ///
+  /// In de, this message translates to:
+  /// **'Handstand-Guide'**
+  String get wingsHandstandGuide;
+
+  /// No description provided for @wingsSkillPriority.
+  ///
+  /// In de, this message translates to:
+  /// **'Skill-Priorität & Erholung'**
+  String get wingsSkillPriority;
+
+  /// No description provided for @wingsSearchExercises.
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen suchen...'**
+  String get wingsSearchExercises;
+
+  /// No description provided for @wingsAll.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle'**
+  String get wingsAll;
+
+  /// No description provided for @wingsNoExercisesFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Übungen gefunden'**
+  String get wingsNoExercisesFound;
+
+  /// No description provided for @wingsExercisesCount.
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen'**
+  String get wingsExercisesCount;
+
+  /// No description provided for @wingsViewTutorial.
+  ///
+  /// In de, this message translates to:
+  /// **'Tutorial öffnen'**
+  String get wingsViewTutorial;
+
+  /// No description provided for @wingsExerciseNotFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Übung nicht gefunden'**
+  String get wingsExerciseNotFound;
 }
 
 class _AppLocalizationsDelegate

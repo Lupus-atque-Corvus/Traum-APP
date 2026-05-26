@@ -37,6 +37,8 @@ import '../../features/settings/settings_screen.dart';
 import '../../features/profile/profile_screen.dart';
 import '../../features/lock/biometric_lock_screen.dart';
 import '../../features/lock/pin_lock_screen.dart';
+import '../../features/wings/wings_screen.dart';
+import '../../features/wings/wings_exercise_detail_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final prefs = ref.watch(preferencesRepositoryProvider);
@@ -207,6 +209,18 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'history',
                 builder: (_, __) => const CycleHistoryScreen(),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: Routes.wings,
+            builder: (_, __) => const WingsScreen(),
+            routes: [
+              GoRoute(
+                path: 'exercise/:id',
+                builder: (_, state) => WingsExerciseDetailScreen(
+                  exerciseId: state.pathParameters['id']!,
+                ),
               ),
             ],
           ),

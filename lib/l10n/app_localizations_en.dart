@@ -2622,4 +2622,79 @@ class AppLocalizationsEn extends AppLocalizations {
   String timesPerformedValue(int n) {
     return '$n×';
   }
+
+  @override
+  String get wings => 'WINGS';
+
+  @override
+  String get wingsSkillTree => 'Skill Tree';
+
+  @override
+  String get wingsExercises => 'Exercises';
+
+  @override
+  String get wingsTraining => 'Training';
+
+  @override
+  String get wingsGoodForm => 'Good Form';
+
+  @override
+  String get wingsBadForm => 'Common Mistakes';
+
+  @override
+  String get wingsOverview => 'Overview';
+
+  @override
+  String get wingsInstructions => 'Instructions';
+
+  @override
+  String get wingsMuscles => 'Muscles';
+
+  @override
+  String get wingsDifficulty => 'Difficulty';
+
+  @override
+  String get wingsInProgress => 'In Progress';
+
+  @override
+  String get wingsComingSoon => 'Detailed tutorial coming soon.';
+
+  @override
+  String get wingsBeginnerGuide => 'Beginner Guide';
+
+  @override
+  String get wingsBeginnerWorkout => 'Beginner Workout';
+
+  @override
+  String get wingsIntermediateWorkout => 'Intermediate Workout';
+
+  @override
+  String get wingsProgressiveOverload => 'Progressive Overload';
+
+  @override
+  String get wingsFrontLeverGuide => 'Front Lever Guide';
+
+  @override
+  String get wingsHandstandGuide => 'Handstand Guide';
+
+  @override
+  String get wingsSkillPriority => 'Skill Priority & Rest';
+
+  @override
+  String get wingsSearchExercises => 'Search exercises...';
+
+  @override
+  String get wingsAll => 'All';
+
+  @override
+  String get wingsNoExercisesFound => 'No exercises found';
+
+  @override
+  String get wingsExercisesCount => 'exercises';
+
+  @override
+  String get wingsViewTutorial => 'View Tutorial';
+
+  @override
+  String get wingsExerciseNotFound => 'Exercise not found';
 }

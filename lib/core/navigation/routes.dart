@@ -37,10 +37,13 @@ class Routes {
   static const String profile = '/profile';
   static const String biometricLock = '/biometric-lock';
   static const String pinEntry = '/pin-entry';
+  static const String wings = '/wings';
+  static const String wingsExercise = '/wings/exercise/:id';
 
   static String workoutDetailPath(int id) => '/training/session/$id';
   static String exerciseProgressPath(int id) => '/training/exercise/$id/progress';
   static String workoutPlanPath(int id) => '/training/plan/$id';
+  static String wingsExercisePath(String id) => '/wings/exercise/$id';
 
   static const Map<String, String> moduleRoutes = {
     'home': home,
@@ -53,6 +56,7 @@ class Routes {
     'abstinence': abstinence,
     'budget': budget,
     'period': period,
+    'wings': wings,
     'profile': profile,
     'settings': settings,
   };
@@ -79,6 +83,8 @@ class Routes {
         return l10n.budget;
       case 'period':
         return l10n.period;
+      case 'wings':
+        return l10n.wings;
       case 'profile':
         return l10n.profile;
       case 'settings':
