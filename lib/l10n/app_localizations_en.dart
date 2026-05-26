@@ -2709,6 +2709,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Calendar access denied. Please grant permission in Settings.';
 
   @override
+  String get calendarSyncTitleOb => 'Calendar Sync';
+
+  @override
+  String get calendarSyncDescriptionOb =>
+      'TRAUM can automatically sync your appointments bidirectionally with your device calendar – so you never miss anything.';
+
+  @override
+  String get enableCalendarSync => 'Enable Calendar Sync';
+
+  @override
+  String get calendarSyncAutoInfo =>
+      'Your appointments will be synced automatically when the app starts.';
+
+  @override
   String get calendarSyncError => 'Calendar sync failed. Please try again.';
 
   @override

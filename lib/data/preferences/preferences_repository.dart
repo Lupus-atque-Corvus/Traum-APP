@@ -192,6 +192,11 @@ class PreferencesRepository {
   int get lockTimestamp => _prefs.getInt('lock_timestamp') ?? 0;
   Future<void> setLockTimestamp(int v) => _prefs.setInt('lock_timestamp', v);
 
+  // Calendar sync
+  bool get calendarSyncEnabled => _prefs.getBool('calendar_sync_enabled') ?? false;
+  Future<void> setCalendarSyncEnabled(bool v) =>
+      _prefs.setBool('calendar_sync_enabled', v);
+
   // Seeder flags
   bool get exercisesSeeded => _prefs.getBool('exercises_seeded') ?? false;
   Future<void> setExercisesSeeded(bool v) =>

@@ -5276,6 +5276,30 @@ abstract class AppLocalizations {
   /// **'Kalender-Zugriff verweigert. Bitte Berechtigung in den Einstellungen erteilen.'**
   String get calendarPermissionDenied;
 
+  /// No description provided for @calendarSyncTitleOb.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalender-Sync'**
+  String get calendarSyncTitleOb;
+
+  /// No description provided for @calendarSyncDescriptionOb.
+  ///
+  /// In de, this message translates to:
+  /// **'TRAUM kann deine Termine bidirektional mit deinem Gerätekalender synchronisieren – automatisch beim App-Start.'**
+  String get calendarSyncDescriptionOb;
+
+  /// No description provided for @enableCalendarSync.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalender-Sync aktivieren'**
+  String get enableCalendarSync;
+
+  /// No description provided for @calendarSyncAutoInfo.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Termine werden beim App-Start automatisch synchronisiert.'**
+  String get calendarSyncAutoInfo;
+
   /// No description provided for @calendarSyncError.
   ///
   /// In de, this message translates to:

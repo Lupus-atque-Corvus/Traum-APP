@@ -141,6 +141,20 @@ class PeriodTrackingNotifier extends Notifier<bool> {
 final isPeriodTrackingEnabledProvider =
     NotifierProvider<PeriodTrackingNotifier, bool>(PeriodTrackingNotifier.new);
 
+// Calendar sync
+class CalendarSyncEnabledNotifier extends Notifier<bool> {
+  @override
+  bool build() => ref.watch(preferencesRepositoryProvider).calendarSyncEnabled;
+
+  Future<void> set(bool value) async {
+    await ref.read(preferencesRepositoryProvider).setCalendarSyncEnabled(value);
+    state = value;
+  }
+}
+
+final calendarSyncEnabledProvider =
+    NotifierProvider<CalendarSyncEnabledNotifier, bool>(CalendarSyncEnabledNotifier.new);
+
 // Simple derived providers
 final userNameProvider = Provider<String>((ref) {
   return ref.watch(preferencesRepositoryProvider).userName;

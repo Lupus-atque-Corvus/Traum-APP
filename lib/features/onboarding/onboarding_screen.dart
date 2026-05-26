@@ -10,6 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../core/navigation/routes.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
+import '../../core/services/calendar_sync_service.dart';
 import '../../core/security/pin_service.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
@@ -196,6 +197,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       _WeatherPage(onNext: _next),
       _NotificationsPage(onNext: _next),
       _HealthPage(onNext: _next),
+      _CalendarPage(onNext: _next),
       _SecurityPage(onNext: _next),
       _DonePage(
         name: _nameController.text,
@@ -1793,6 +1795,149 @@ class _DonePage extends StatelessWidget {
               fontFamily: 'DMSans',
               fontSize: 12,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Calendar Sync ─────────────────────────────────────────────────────────────
+
+class _CalendarPage extends ConsumerStatefulWidget {
+  final VoidCallback onNext;
+  const _CalendarPage({required this.onNext});
+
+  @override
+  ConsumerState<_CalendarPage> createState() => _CalendarPageState();
+}
+
+class _CalendarPageState extends ConsumerState<_CalendarPage> {
+  bool _enabled = false;
+  bool _requesting = false;
+
+  Future<void> _enableSync() async {
+    setState(() => _requesting = true);
+    try {
+      final syncService = ref.read(calendarSyncServiceProvider);
+      final result = await syncService.syncBidirectional();
+      if (!mounted) return;
+      if (result.error == 'calendar_permission_denied') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.calendarPermissionDenied)),
+        );
+        setState(() => _requesting = false);
+        return;
+      }
+      await ref.read(calendarSyncEnabledProvider.notifier).set(true);
+      setState(() {
+        _enabled = true;
+        _requesting = false;
+      });
+    } catch (_) {
+      if (mounted) setState(() => _requesting = false);
+    }
+    widget.onNext();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return _OnboardingPage(
+      title: l10n.calendarSyncTitleOb,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: TraumColors.lavender.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: TraumColors.lavender.withValues(alpha: 0.25)),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: TraumColors.lavender.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: const Icon(Icons.calendar_month_rounded, color: TraumColors.lavender, size: 26),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    l10n.calendarSyncDescriptionOb,
+                    style: const TextStyle(
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontSize: 14,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: TraumColors.surfaceVariant.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.sync_rounded, color: TraumColors.onBackgroundSubtle, size: 16),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l10n.calendarSyncAutoInfo,
+                    style: const TextStyle(
+                      color: TraumColors.onBackgroundSubtle,
+                      fontFamily: 'DMSans',
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          if (_enabled) ...[
+            Row(
+              children: [
+                const Icon(Icons.check_circle_rounded, color: TraumColors.mintGreen, size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.calendarSyncTitleOb,
+                  style: const TextStyle(
+                    color: TraumColors.mintGreen,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+          ],
+          GradientButton(
+            label: _requesting
+                ? l10n.connecting
+                : l10n.enableCalendarSync,
+            gradient: const LinearGradient(
+              colors: [TraumColors.lavender, TraumColors.indigoBlue],
+            ),
+            onPressed: _requesting || _enabled ? null : _enableSync,
+            icon: const Icon(Icons.calendar_today_rounded, color: Colors.white, size: 18),
+          ),
+          const SizedBox(height: 8),
+          TextButton(
+            onPressed: _requesting ? null : widget.onNext,
+            child: Text(l10n.skip),
           ),
         ],
       ),

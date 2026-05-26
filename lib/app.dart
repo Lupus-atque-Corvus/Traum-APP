@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/navigation/router.dart';
 import 'core/navigation/routes.dart';
 import 'core/providers/preferences_provider.dart';
+import 'core/services/calendar_sync_service.dart';
 import 'core/theme/traum_theme.dart';
 import 'l10n/app_localizations.dart';
 
@@ -30,7 +31,10 @@ class _TraumAppState extends ConsumerState<TraumApp> {
       onResume: _onResume,
     );
     // Always lock on cold start if lock is configured.
-    WidgetsBinding.instance.addPostFrameCallback((_) => _checkStartupLock());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkStartupLock();
+      _autoCalendarSync();
+    });
   }
 
   @override
@@ -62,14 +66,23 @@ class _TraumAppState extends ConsumerState<TraumApp> {
   }
 
   void _onResume() {
-    if (!_pausedForLock) return;
-    _pausedForLock = false;
+    if (_pausedForLock) {
+      _pausedForLock = false;
+      final biometric = ref.read(biometricLockProvider);
+      final pin = ref.read(pinLockProvider);
+      if (biometric || pin) {
+        _goToLock(biometric);
+        return;
+      }
+    }
+    _autoCalendarSync();
+  }
 
-    final biometric = ref.read(biometricLockProvider);
-    final pin = ref.read(pinLockProvider);
-    if (!biometric && !pin) return;
-
-    _goToLock(biometric);
+  void _autoCalendarSync() {
+    final prefs = ref.read(preferencesRepositoryProvider);
+    if (!prefs.onboardingComplete) return;
+    if (!prefs.calendarSyncEnabled) return;
+    ref.read(calendarSyncServiceProvider).syncBidirectional();
   }
 
   void _goToLock(bool biometric) {

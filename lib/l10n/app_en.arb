@@ -1129,6 +1129,10 @@
   "calendarImport": "Import from Calendar",
   "calendarExport": "Export to Calendar",
   "calendarPermissionDenied": "Calendar access denied. Please grant permission in Settings.",
+  "calendarSyncTitleOb": "Calendar Sync",
+  "calendarSyncDescriptionOb": "TRAUM can automatically sync your appointments bidirectionally with your device calendar – so you never miss anything.",
+  "enableCalendarSync": "Enable Calendar Sync",
+  "calendarSyncAutoInfo": "Your appointments will be synced automatically when the app starts.",
   "calendarSyncError": "Calendar sync failed. Please try again.",
   "calendarImportSuccess": "{count} events imported",
   "@calendarImportSuccess": {

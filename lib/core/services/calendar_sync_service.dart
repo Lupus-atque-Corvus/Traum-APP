@@ -3,6 +3,7 @@ import 'package:device_calendar/device_calendar.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart' show Color;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:timezone/timezone.dart' as tz;
 import '../../data/database/traum_database.dart';
 import '../providers/database_provider.dart';
 
@@ -141,11 +142,11 @@ class CalendarSyncService {
           title: appt.title,
           description: appt.description,
           location: appt.location,
-          start: TZDateTime.from(appt.startTime, local),
+          start: TZDateTime.from(appt.startTime, tz.local),
           end: appt.endTime != null
-              ? TZDateTime.from(appt.endTime!, local)
+              ? TZDateTime.from(appt.endTime!, tz.local)
               : TZDateTime.from(
-                  appt.startTime.add(const Duration(hours: 1)), local),
+                  appt.startTime.add(const Duration(hours: 1)), tz.local),
           allDay: appt.allDay,
         );
 
@@ -157,6 +158,17 @@ class CalendarSyncService {
     } catch (e) {
       return CalendarSyncResult(error: e.toString());
     }
+  }
+
+  Future<CalendarSyncResult> syncBidirectional() async {
+    final fromResult = await syncFromDevice();
+    if (fromResult.error != null) return fromResult;
+    final toResult = await syncToDevice();
+    return CalendarSyncResult(
+      imported: fromResult.imported,
+      exported: toResult.exported,
+      error: toResult.error,
+    );
   }
 }
 

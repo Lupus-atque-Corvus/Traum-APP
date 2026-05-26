@@ -2719,6 +2719,20 @@ class AppLocalizationsDe extends AppLocalizations {
       'Kalender-Zugriff verweigert. Bitte Berechtigung in den Einstellungen erteilen.';
 
   @override
+  String get calendarSyncTitleOb => 'Kalender-Sync';
+
+  @override
+  String get calendarSyncDescriptionOb =>
+      'TRAUM kann deine Termine bidirektional mit deinem Gerätekalender synchronisieren – automatisch beim App-Start.';
+
+  @override
+  String get enableCalendarSync => 'Kalender-Sync aktivieren';
+
+  @override
+  String get calendarSyncAutoInfo =>
+      'Deine Termine werden beim App-Start automatisch synchronisiert.';
+
+  @override
   String get calendarSyncError =>
       'Kalender-Synchronisation fehlgeschlagen. Bitte erneut versuchen.';
 

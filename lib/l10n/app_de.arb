@@ -1129,6 +1129,10 @@
   "calendarImport": "Vom Kalender importieren",
   "calendarExport": "In Kalender exportieren",
   "calendarPermissionDenied": "Kalender-Zugriff verweigert. Bitte Berechtigung in den Einstellungen erteilen.",
+  "calendarSyncTitleOb": "Kalender-Sync",
+  "calendarSyncDescriptionOb": "TRAUM kann deine Termine bidirektional mit deinem Gerätekalender synchronisieren – automatisch beim App-Start.",
+  "enableCalendarSync": "Kalender-Sync aktivieren",
+  "calendarSyncAutoInfo": "Deine Termine werden beim App-Start automatisch synchronisiert.",
   "calendarSyncError": "Kalender-Synchronisation fehlgeschlagen. Bitte erneut versuchen.",
   "calendarImportSuccess": "{count} Ereignisse importiert",
   "@calendarImportSuccess": {
