@@ -47,7 +47,7 @@ IconData _equipIcon(String? eq) {
   if (eq == null) return Icons.accessibility_new_rounded;
   final l = eq.toLowerCase();
   if (l.contains('hantel') || l.contains('dumbbell') || l.contains('barbell') ||
-      l.contains('stange') || l.contains('langhantel')) return Icons.fitness_center_rounded;
+      l.contains('stange') || l.contains('langhantel')) { return Icons.fitness_center_rounded; }
   if (l.contains('maschine') || l.contains('machine')) return Icons.settings_rounded;
   if (l.contains('kabel') || l.contains('cable')) return Icons.linear_scale_rounded;
   if (l.contains('kettlebell')) return Icons.sports_handball_rounded;
@@ -102,7 +102,7 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
     }
     if (_selectedCats.isNotEmpty) {
       final allowed = <String>{};
-      for (final i in _selectedCats) allowed.addAll(_kCats[i].keys);
+      for (final i in _selectedCats) { allowed.addAll(_kCats[i].keys); }
       list = list.where((e) => allowed.contains(e.muscleGroup)).toList();
     }
     return list;
@@ -132,7 +132,7 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
                 final active = _selectedCats.contains(i);
                 return GestureDetector(
                   onTap: () => setState(() {
-                    if (active) _selectedCats.remove(i); else _selectedCats.add(i);
+                    if (active) { _selectedCats.remove(i); } else { _selectedCats.add(i); }
                   }),
                   child: Padding(
                     padding: const EdgeInsets.only(right: 10),

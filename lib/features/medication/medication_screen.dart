@@ -91,6 +91,8 @@ class MedicationScreen extends ConsumerWidget {
       ),
       builder: (ctx) => _AddMedicationSheet(
         onAdd: (companion) async {
+          final medicationLabel =
+              AppLocalizations.of(context)!.timeForMedication(companion.name.value);
           await ref.read(medicationDaoProvider).insertMedication(companion);
           final timesJson = companion.timings.value;
           if (timesJson != '[]') {
@@ -101,7 +103,7 @@ class MedicationScreen extends ConsumerWidget {
                 await NotificationService.scheduleDailyAt(
                   id: 100 + i,
                   title: companion.name.value,
-                  body: AppLocalizations.of(context)!.timeForMedication(companion.name.value),
+                  body: medicationLabel,
                   hour: int.parse(parts[0]),
                   minute: int.parse(parts[1]),
                   channelId: 'medication',
