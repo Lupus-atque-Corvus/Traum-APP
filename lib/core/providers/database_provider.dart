@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/database/traum_database.dart';
+import '../../data/models/substance_info.dart';
 import '../../data/repositories/substance_repository.dart';
 import '../../data/services/substance_api_service.dart';
 import '../services/interaction_service.dart';
