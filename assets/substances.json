@@ -58,8 +58,7 @@
       {"name": "Hautausschlag", "frequencyPercent": 0.5}
     ],
     "interactions": [
-      {"withId": "warfarin", "withName": "Warfarin", "severity": "moderate", "description": "Regelmäßige Einnahme kann INR erhöhen – Monitoring empfohlen."},
-      {"withId": "alkohol", "withName": "Alkohol", "severity": "major", "description": "Kombination erhöht das Risiko einer Leberschädigung erheblich."}
+      {"withId": "warfarin", "withName": "Warfarin", "severity": "moderate", "description": "Regelmäßige Einnahme kann INR erhöhen – Monitoring empfohlen."}
     ]
   },
   {
@@ -459,5 +458,22 @@
     "evidenceGrade": "A",
     "adverseEvents": [],
     "interactions": []
+  },
+  {
+    "id": "kalium",
+    "name": "Kalium",
+    "type": "supplement",
+    "category": "Mineralien",
+    "atcCode": null,
+    "mechanism": "Essenzieller Elektrolyt; reguliert Membranpotenzial und Herzrhythmus.",
+    "halfLife": null,
+    "commonDosage": "99–400 mg/Tag (elementares Kalium)",
+    "evidenceGrade": "A",
+    "adverseEvents": [
+      {"name": "Übelkeit / Magenreizung", "frequencyPercent": 5.0}
+    ],
+    "interactions": [
+      {"withId": "lisinopril", "withName": "Lisinopril", "severity": "moderate", "description": "ACE-Hemmer erhöhen Kaliumspiegel; Kalium-Supplementierung kann zu Hyperkaliämie führen."}
+    ]
   }
 ]
