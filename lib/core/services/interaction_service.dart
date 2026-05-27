@@ -31,33 +31,36 @@ class InteractionService {
         if (seen.contains(key)) continue;
         seen.add(key);
 
+        bool alertAdded = false;
         for (final ix in a.interactions) {
           if (ix.withId == b.id || ix.withName.toLowerCase() == b.name.toLowerCase()) {
-            if (ix.severity == 'major' || ix.severity == 'moderate') {
+            final sev = ix.severity.trim().toLowerCase();
+            if (sev == 'major' || sev == 'moderate') {
               alerts.add(InteractionAlert(
                 substanceAName: a.name,
                 substanceBName: b.name,
                 severity: ix.severity,
                 description: ix.description,
               ));
+              alertAdded = true;
             }
             break;
           }
         }
-        for (final ix in b.interactions) {
-          if (ix.withId == a.id || ix.withName.toLowerCase() == a.name.toLowerCase()) {
-            final alreadyAdded = alerts.any((al) =>
-                (al.substanceAName == b.name && al.substanceBName == a.name) ||
-                (al.substanceAName == a.name && al.substanceBName == b.name));
-            if (!alreadyAdded && (ix.severity == 'major' || ix.severity == 'moderate')) {
-              alerts.add(InteractionAlert(
-                substanceAName: b.name,
-                substanceBName: a.name,
-                severity: ix.severity,
-                description: ix.description,
-              ));
+        if (!alertAdded) {
+          for (final ix in b.interactions) {
+            if (ix.withId == a.id || ix.withName.toLowerCase() == a.name.toLowerCase()) {
+              final sev = ix.severity.trim().toLowerCase();
+              if (sev == 'major' || sev == 'moderate') {
+                alerts.add(InteractionAlert(
+                  substanceAName: b.name,
+                  substanceBName: a.name,
+                  severity: ix.severity,
+                  description: ix.description,
+                ));
+              }
+              break;
             }
-            break;
           }
         }
       }
