@@ -135,6 +135,7 @@ flutter:
     - assets/svg/
     - assets/legal/
     - assets/lottie/
+    - assets/substances.json
 
   fonts:
     - family: DMSans
