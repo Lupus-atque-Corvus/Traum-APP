@@ -252,6 +252,8 @@ class _NavItem extends StatelessWidget {
         return Icons.favorite_rounded;
       case 'nutrition':
         return Icons.restaurant_rounded;
+      case 'substances':
+        return Icons.medication_liquid_rounded;
       case 'supplements':
         return Icons.science_rounded;
       case 'planning':
@@ -382,6 +384,7 @@ class _MoreMenuSheet extends StatelessWidget {
       case 'training':    return Icons.fitness_center_rounded;
       case 'health':      return Icons.favorite_rounded;
       case 'nutrition':   return Icons.restaurant_rounded;
+      case 'substances':  return Icons.medication_liquid_rounded;
       case 'supplements': return Icons.science_rounded;
       case 'planning':    return Icons.calendar_today_rounded;
       case 'medication':  return Icons.medication_rounded;
