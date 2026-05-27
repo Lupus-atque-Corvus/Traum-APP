@@ -21,6 +21,7 @@ class Routes {
   static const String mealLog = '/nutrition/log';
   static const String foodSearch = '/nutrition/search';
   static const String shoppingList = '/nutrition/shopping';
+  static const String substances = '/substances';
   static const String supplements = '/supplements';
   static const String planning = '/planning';
   static const String medication = '/medication';
@@ -47,9 +48,8 @@ class Routes {
     'training': training,
     'health': health,
     'nutrition': nutrition,
-    'supplements': supplements,
+    'substances': substances,
     'planning': planning,
-    'medication': medication,
     'abstinence': abstinence,
     'budget': budget,
     'period': period,
@@ -67,12 +67,10 @@ class Routes {
         return l10n.health;
       case 'nutrition':
         return l10n.nutrition;
-      case 'supplements':
-        return l10n.supplements;
+      case 'substances':
+        return 'Mittel';
       case 'planning':
         return l10n.planning;
-      case 'medication':
-        return l10n.medication;
       case 'abstinence':
         return l10n.abstinence;
       case 'budget':
