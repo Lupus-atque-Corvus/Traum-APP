@@ -13,6 +13,7 @@ import 'tables/medication_tables.dart';
 import 'tables/abstinence_tables.dart';
 import 'tables/budget_tables.dart';
 import 'tables/period_tables.dart';
+import 'tables/substance_tables.dart';
 
 import 'daos/planning_dao.dart';
 import 'daos/training_dao.dart';
@@ -23,6 +24,7 @@ import 'daos/medication_dao.dart';
 import 'daos/abstinence_dao.dart';
 import 'daos/budget_dao.dart';
 import 'daos/period_dao.dart';
+import 'daos/substance_dao.dart';
 
 // Re-export all table types
 export 'tables/planning_tables.dart';
@@ -34,6 +36,7 @@ export 'tables/medication_tables.dart';
 export 'tables/abstinence_tables.dart';
 export 'tables/budget_tables.dart';
 export 'tables/period_tables.dart';
+export 'tables/substance_tables.dart';
 
 // Re-export all DAO types
 export 'daos/planning_dao.dart';
@@ -45,6 +48,7 @@ export 'daos/medication_dao.dart';
 export 'daos/abstinence_dao.dart';
 export 'daos/budget_dao.dart';
 export 'daos/period_dao.dart';
+export 'daos/substance_dao.dart';
 
 part 'traum_database.g.dart';
 
@@ -93,6 +97,8 @@ part 'traum_database.g.dart';
     PeriodEntries,
     CycleCalculations,
     PeriodSymptoms,
+    // Substance cache (1)
+    SubstanceCaches,
   ],
   daos: [
     PlanningDao,
@@ -104,6 +110,7 @@ part 'traum_database.g.dart';
     AbstinenceDao,
     BudgetDao,
     PeriodDao,
+    SubstanceDao,
   ],
 )
 class TraumDatabase extends _$TraumDatabase {
@@ -111,8 +118,10 @@ class TraumDatabase extends _$TraumDatabase {
 
   TraumDatabase.forTesting(super.e);
 
+  SubstanceDao get substanceDao => SubstanceDao(this);
+
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -132,6 +141,9 @@ class TraumDatabase extends _$TraumDatabase {
         await migrator.addColumn(workoutDayExercises, workoutDayExercises.defaultRestSeconds);
         await migrator.addColumn(workoutDayExercises, workoutDayExercises.progressionType);
         await migrator.addColumn(workoutDayExercises, workoutDayExercises.supersetGroup);
+      }
+      if (from < 4) {
+        await migrator.createTable(substanceCaches);
       }
     },
   );

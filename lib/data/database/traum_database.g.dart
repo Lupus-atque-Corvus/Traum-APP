@@ -15457,6 +15457,418 @@ class PeriodSymptomsCompanion extends UpdateCompanion<PeriodSymptom> {
   }
 }
 
+class $SubstanceCachesTable extends SubstanceCaches
+    with TableInfo<$SubstanceCachesTable, SubstanceCache> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SubstanceCachesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _substanceIdMeta = const VerificationMeta(
+    'substanceId',
+  );
+  @override
+  late final GeneratedColumn<String> substanceId = GeneratedColumn<String>(
+    'substance_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dataJsonMeta = const VerificationMeta(
+    'dataJson',
+  );
+  @override
+  late final GeneratedColumn<String> dataJson = GeneratedColumn<String>(
+    'data_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _cachedAtMeta = const VerificationMeta(
+    'cachedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> cachedAt = GeneratedColumn<DateTime>(
+    'cached_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    substanceId,
+    name,
+    type,
+    dataJson,
+    source,
+    cachedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'substance_caches';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SubstanceCache> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('substance_id')) {
+      context.handle(
+        _substanceIdMeta,
+        substanceId.isAcceptableOrUnknown(
+          data['substance_id']!,
+          _substanceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_substanceIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('data_json')) {
+      context.handle(
+        _dataJsonMeta,
+        dataJson.isAcceptableOrUnknown(data['data_json']!, _dataJsonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dataJsonMeta);
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
+    }
+    if (data.containsKey('cached_at')) {
+      context.handle(
+        _cachedAtMeta,
+        cachedAt.isAcceptableOrUnknown(data['cached_at']!, _cachedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {substanceId};
+  @override
+  SubstanceCache map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SubstanceCache(
+      substanceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}substance_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      dataJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}data_json'],
+      )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      cachedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}cached_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SubstanceCachesTable createAlias(String alias) {
+    return $SubstanceCachesTable(attachedDatabase, alias);
+  }
+}
+
+class SubstanceCache extends DataClass implements Insertable<SubstanceCache> {
+  final String substanceId;
+  final String name;
+  final String type;
+  final String dataJson;
+  final String source;
+  final DateTime cachedAt;
+  const SubstanceCache({
+    required this.substanceId,
+    required this.name,
+    required this.type,
+    required this.dataJson,
+    required this.source,
+    required this.cachedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['substance_id'] = Variable<String>(substanceId);
+    map['name'] = Variable<String>(name);
+    map['type'] = Variable<String>(type);
+    map['data_json'] = Variable<String>(dataJson);
+    map['source'] = Variable<String>(source);
+    map['cached_at'] = Variable<DateTime>(cachedAt);
+    return map;
+  }
+
+  SubstanceCachesCompanion toCompanion(bool nullToAbsent) {
+    return SubstanceCachesCompanion(
+      substanceId: Value(substanceId),
+      name: Value(name),
+      type: Value(type),
+      dataJson: Value(dataJson),
+      source: Value(source),
+      cachedAt: Value(cachedAt),
+    );
+  }
+
+  factory SubstanceCache.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SubstanceCache(
+      substanceId: serializer.fromJson<String>(json['substanceId']),
+      name: serializer.fromJson<String>(json['name']),
+      type: serializer.fromJson<String>(json['type']),
+      dataJson: serializer.fromJson<String>(json['dataJson']),
+      source: serializer.fromJson<String>(json['source']),
+      cachedAt: serializer.fromJson<DateTime>(json['cachedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'substanceId': serializer.toJson<String>(substanceId),
+      'name': serializer.toJson<String>(name),
+      'type': serializer.toJson<String>(type),
+      'dataJson': serializer.toJson<String>(dataJson),
+      'source': serializer.toJson<String>(source),
+      'cachedAt': serializer.toJson<DateTime>(cachedAt),
+    };
+  }
+
+  SubstanceCache copyWith({
+    String? substanceId,
+    String? name,
+    String? type,
+    String? dataJson,
+    String? source,
+    DateTime? cachedAt,
+  }) => SubstanceCache(
+    substanceId: substanceId ?? this.substanceId,
+    name: name ?? this.name,
+    type: type ?? this.type,
+    dataJson: dataJson ?? this.dataJson,
+    source: source ?? this.source,
+    cachedAt: cachedAt ?? this.cachedAt,
+  );
+  SubstanceCache copyWithCompanion(SubstanceCachesCompanion data) {
+    return SubstanceCache(
+      substanceId: data.substanceId.present
+          ? data.substanceId.value
+          : this.substanceId,
+      name: data.name.present ? data.name.value : this.name,
+      type: data.type.present ? data.type.value : this.type,
+      dataJson: data.dataJson.present ? data.dataJson.value : this.dataJson,
+      source: data.source.present ? data.source.value : this.source,
+      cachedAt: data.cachedAt.present ? data.cachedAt.value : this.cachedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubstanceCache(')
+          ..write('substanceId: $substanceId, ')
+          ..write('name: $name, ')
+          ..write('type: $type, ')
+          ..write('dataJson: $dataJson, ')
+          ..write('source: $source, ')
+          ..write('cachedAt: $cachedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(substanceId, name, type, dataJson, source, cachedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SubstanceCache &&
+          other.substanceId == this.substanceId &&
+          other.name == this.name &&
+          other.type == this.type &&
+          other.dataJson == this.dataJson &&
+          other.source == this.source &&
+          other.cachedAt == this.cachedAt);
+}
+
+class SubstanceCachesCompanion extends UpdateCompanion<SubstanceCache> {
+  final Value<String> substanceId;
+  final Value<String> name;
+  final Value<String> type;
+  final Value<String> dataJson;
+  final Value<String> source;
+  final Value<DateTime> cachedAt;
+  final Value<int> rowid;
+  const SubstanceCachesCompanion({
+    this.substanceId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.type = const Value.absent(),
+    this.dataJson = const Value.absent(),
+    this.source = const Value.absent(),
+    this.cachedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SubstanceCachesCompanion.insert({
+    required String substanceId,
+    required String name,
+    required String type,
+    required String dataJson,
+    required String source,
+    this.cachedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : substanceId = Value(substanceId),
+       name = Value(name),
+       type = Value(type),
+       dataJson = Value(dataJson),
+       source = Value(source);
+  static Insertable<SubstanceCache> custom({
+    Expression<String>? substanceId,
+    Expression<String>? name,
+    Expression<String>? type,
+    Expression<String>? dataJson,
+    Expression<String>? source,
+    Expression<DateTime>? cachedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (substanceId != null) 'substance_id': substanceId,
+      if (name != null) 'name': name,
+      if (type != null) 'type': type,
+      if (dataJson != null) 'data_json': dataJson,
+      if (source != null) 'source': source,
+      if (cachedAt != null) 'cached_at': cachedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SubstanceCachesCompanion copyWith({
+    Value<String>? substanceId,
+    Value<String>? name,
+    Value<String>? type,
+    Value<String>? dataJson,
+    Value<String>? source,
+    Value<DateTime>? cachedAt,
+    Value<int>? rowid,
+  }) {
+    return SubstanceCachesCompanion(
+      substanceId: substanceId ?? this.substanceId,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      dataJson: dataJson ?? this.dataJson,
+      source: source ?? this.source,
+      cachedAt: cachedAt ?? this.cachedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (substanceId.present) {
+      map['substance_id'] = Variable<String>(substanceId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (dataJson.present) {
+      map['data_json'] = Variable<String>(dataJson.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (cachedAt.present) {
+      map['cached_at'] = Variable<DateTime>(cachedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubstanceCachesCompanion(')
+          ..write('substanceId: $substanceId, ')
+          ..write('name: $name, ')
+          ..write('type: $type, ')
+          ..write('dataJson: $dataJson, ')
+          ..write('source: $source, ')
+          ..write('cachedAt: $cachedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$TraumDatabase extends GeneratedDatabase {
   _$TraumDatabase(QueryExecutor e) : super(e);
   $TraumDatabaseManager get managers => $TraumDatabaseManager(this);
@@ -15506,6 +15918,9 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   late final $CycleCalculationsTable cycleCalculations =
       $CycleCalculationsTable(this);
   late final $PeriodSymptomsTable periodSymptoms = $PeriodSymptomsTable(this);
+  late final $SubstanceCachesTable substanceCaches = $SubstanceCachesTable(
+    this,
+  );
   late final PlanningDao planningDao = PlanningDao(this as TraumDatabase);
   late final TrainingDao trainingDao = TrainingDao(this as TraumDatabase);
   late final HealthDao healthDao = HealthDao(this as TraumDatabase);
@@ -15515,6 +15930,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   late final AbstinenceDao abstinenceDao = AbstinenceDao(this as TraumDatabase);
   late final BudgetDao budgetDao = BudgetDao(this as TraumDatabase);
   late final PeriodDao periodDao = PeriodDao(this as TraumDatabase);
+  late final SubstanceDao substanceDao = SubstanceDao(this as TraumDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -15554,6 +15970,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
     periodEntries,
     cycleCalculations,
     periodSymptoms,
+    substanceCaches,
   ];
 }
 
@@ -26051,6 +26468,233 @@ typedef $$PeriodSymptomsTableProcessedTableManager =
       PeriodSymptom,
       PrefetchHooks Function()
     >;
+typedef $$SubstanceCachesTableCreateCompanionBuilder =
+    SubstanceCachesCompanion Function({
+      required String substanceId,
+      required String name,
+      required String type,
+      required String dataJson,
+      required String source,
+      Value<DateTime> cachedAt,
+      Value<int> rowid,
+    });
+typedef $$SubstanceCachesTableUpdateCompanionBuilder =
+    SubstanceCachesCompanion Function({
+      Value<String> substanceId,
+      Value<String> name,
+      Value<String> type,
+      Value<String> dataJson,
+      Value<String> source,
+      Value<DateTime> cachedAt,
+      Value<int> rowid,
+    });
+
+class $$SubstanceCachesTableFilterComposer
+    extends Composer<_$TraumDatabase, $SubstanceCachesTable> {
+  $$SubstanceCachesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get substanceId => $composableBuilder(
+    column: $table.substanceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dataJson => $composableBuilder(
+    column: $table.dataJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get cachedAt => $composableBuilder(
+    column: $table.cachedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SubstanceCachesTableOrderingComposer
+    extends Composer<_$TraumDatabase, $SubstanceCachesTable> {
+  $$SubstanceCachesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get substanceId => $composableBuilder(
+    column: $table.substanceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dataJson => $composableBuilder(
+    column: $table.dataJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get cachedAt => $composableBuilder(
+    column: $table.cachedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SubstanceCachesTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $SubstanceCachesTable> {
+  $$SubstanceCachesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get substanceId => $composableBuilder(
+    column: $table.substanceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get dataJson =>
+      $composableBuilder(column: $table.dataJson, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get cachedAt =>
+      $composableBuilder(column: $table.cachedAt, builder: (column) => column);
+}
+
+class $$SubstanceCachesTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $SubstanceCachesTable,
+          SubstanceCache,
+          $$SubstanceCachesTableFilterComposer,
+          $$SubstanceCachesTableOrderingComposer,
+          $$SubstanceCachesTableAnnotationComposer,
+          $$SubstanceCachesTableCreateCompanionBuilder,
+          $$SubstanceCachesTableUpdateCompanionBuilder,
+          (
+            SubstanceCache,
+            BaseReferences<
+              _$TraumDatabase,
+              $SubstanceCachesTable,
+              SubstanceCache
+            >,
+          ),
+          SubstanceCache,
+          PrefetchHooks Function()
+        > {
+  $$SubstanceCachesTableTableManager(
+    _$TraumDatabase db,
+    $SubstanceCachesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SubstanceCachesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SubstanceCachesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SubstanceCachesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> substanceId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String> dataJson = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<DateTime> cachedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SubstanceCachesCompanion(
+                substanceId: substanceId,
+                name: name,
+                type: type,
+                dataJson: dataJson,
+                source: source,
+                cachedAt: cachedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String substanceId,
+                required String name,
+                required String type,
+                required String dataJson,
+                required String source,
+                Value<DateTime> cachedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SubstanceCachesCompanion.insert(
+                substanceId: substanceId,
+                name: name,
+                type: type,
+                dataJson: dataJson,
+                source: source,
+                cachedAt: cachedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SubstanceCachesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $SubstanceCachesTable,
+      SubstanceCache,
+      $$SubstanceCachesTableFilterComposer,
+      $$SubstanceCachesTableOrderingComposer,
+      $$SubstanceCachesTableAnnotationComposer,
+      $$SubstanceCachesTableCreateCompanionBuilder,
+      $$SubstanceCachesTableUpdateCompanionBuilder,
+      (
+        SubstanceCache,
+        BaseReferences<_$TraumDatabase, $SubstanceCachesTable, SubstanceCache>,
+      ),
+      SubstanceCache,
+      PrefetchHooks Function()
+    >;
 
 class $TraumDatabaseManager {
   final _$TraumDatabase _db;
@@ -26123,4 +26767,6 @@ class $TraumDatabaseManager {
       $$CycleCalculationsTableTableManager(_db, _db.cycleCalculations);
   $$PeriodSymptomsTableTableManager get periodSymptoms =>
       $$PeriodSymptomsTableTableManager(_db, _db.periodSymptoms);
+  $$SubstanceCachesTableTableManager get substanceCaches =>
+      $$SubstanceCachesTableTableManager(_db, _db.substanceCaches);
 }
