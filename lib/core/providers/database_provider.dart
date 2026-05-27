@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/database/traum_database.dart';
+import '../../data/repositories/substance_repository.dart';
+import '../../data/services/substance_api_service.dart';
+import '../services/interaction_service.dart';
 
 final databaseProvider = Provider<TraumDatabase>((ref) {
   throw UnimplementedError('Override in ProviderScope');
@@ -209,3 +212,34 @@ final exerciseSetCountsProvider = FutureProvider.autoDispose<Map<int, int>>((ref
 final exerciseSessionHistoryProvider = FutureProvider.autoDispose
     .family<List<(WorkoutSession, List<WorkoutSet>)>, int>((ref, exerciseId) =>
         ref.watch(trainingDaoProvider).getSessionsWithSetsForExercise(exerciseId));
+
+// ─── Substance ────────────────────────────────────────────────────────────────
+final substanceDaoProvider = Provider<SubstanceDao>((ref) =>
+    ref.watch(databaseProvider).substanceDao);
+
+final substanceApiServiceProvider = Provider<SubstanceApiService>((_) =>
+    SubstanceApiService());
+
+final substanceRepositoryProvider = Provider<SubstanceRepository>((ref) =>
+    SubstanceRepository(
+      ref.watch(substanceDaoProvider),
+      ref.watch(substanceApiServiceProvider),
+    ));
+
+final substanceSearchProvider =
+    FutureProvider.autoDispose.family<List<SubstanceInfo>, String>((ref, q) =>
+        ref.watch(substanceRepositoryProvider).search(q));
+
+final interactionServiceProvider = Provider<InteractionService>((ref) =>
+    InteractionService(ref.watch(substanceRepositoryProvider)));
+
+final interactionAlertsProvider =
+    FutureProvider.autoDispose<List<InteractionAlert>>((ref) async {
+  final supps = ref.watch(supplementsStreamProvider).valueOrNull ?? [];
+  final meds = ref.watch(allMedicationsStreamProvider).valueOrNull ?? [];
+  final activeNames = [
+    ...supps.where((s) => s.isActive).map((s) => s.name),
+    ...meds.where((m) => m.isActive).map((m) => m.name),
+  ];
+  return ref.read(interactionServiceProvider).checkSubstances(activeNames);
+});
