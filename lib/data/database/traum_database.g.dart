@@ -12786,6 +12786,65 @@ class $TransactionsTable extends Transactions
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
+  static const VerificationMeta _receiptImagePathMeta = const VerificationMeta(
+    'receiptImagePath',
+  );
+  @override
+  late final GeneratedColumn<String> receiptImagePath = GeneratedColumn<String>(
+    'receipt_image_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isRecurringMeta = const VerificationMeta(
+    'isRecurring',
+  );
+  @override
+  late final GeneratedColumn<bool> isRecurring = GeneratedColumn<bool>(
+    'is_recurring',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_recurring" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _recurringDayMeta = const VerificationMeta(
+    'recurringDay',
+  );
+  @override
+  late final GeneratedColumn<int> recurringDay = GeneratedColumn<int>(
+    'recurring_day',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _templateNameMeta = const VerificationMeta(
+    'templateName',
+  );
+  @override
+  late final GeneratedColumn<String> templateName = GeneratedColumn<String>(
+    'template_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _splitFromIdMeta = const VerificationMeta(
+    'splitFromId',
+  );
+  @override
+  late final GeneratedColumn<int> splitFromId = GeneratedColumn<int>(
+    'split_from_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -12796,6 +12855,11 @@ class $TransactionsTable extends Transactions
     date,
     note,
     createdAt,
+    receiptImagePath,
+    isRecurring,
+    recurringDay,
+    templateName,
+    splitFromId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -12863,6 +12927,51 @@ class $TransactionsTable extends Transactions
         createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
       );
     }
+    if (data.containsKey('receipt_image_path')) {
+      context.handle(
+        _receiptImagePathMeta,
+        receiptImagePath.isAcceptableOrUnknown(
+          data['receipt_image_path']!,
+          _receiptImagePathMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_recurring')) {
+      context.handle(
+        _isRecurringMeta,
+        isRecurring.isAcceptableOrUnknown(
+          data['is_recurring']!,
+          _isRecurringMeta,
+        ),
+      );
+    }
+    if (data.containsKey('recurring_day')) {
+      context.handle(
+        _recurringDayMeta,
+        recurringDay.isAcceptableOrUnknown(
+          data['recurring_day']!,
+          _recurringDayMeta,
+        ),
+      );
+    }
+    if (data.containsKey('template_name')) {
+      context.handle(
+        _templateNameMeta,
+        templateName.isAcceptableOrUnknown(
+          data['template_name']!,
+          _templateNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('split_from_id')) {
+      context.handle(
+        _splitFromIdMeta,
+        splitFromId.isAcceptableOrUnknown(
+          data['split_from_id']!,
+          _splitFromIdMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -12904,6 +13013,26 @@ class $TransactionsTable extends Transactions
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      receiptImagePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}receipt_image_path'],
+      ),
+      isRecurring: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_recurring'],
+      )!,
+      recurringDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}recurring_day'],
+      ),
+      templateName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}template_name'],
+      ),
+      splitFromId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}split_from_id'],
+      ),
     );
   }
 
@@ -12922,6 +13051,11 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   final DateTime date;
   final String? note;
   final DateTime createdAt;
+  final String? receiptImagePath;
+  final bool isRecurring;
+  final int? recurringDay;
+  final String? templateName;
+  final int? splitFromId;
   const Transaction({
     required this.id,
     required this.amount,
@@ -12931,6 +13065,11 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     required this.date,
     this.note,
     required this.createdAt,
+    this.receiptImagePath,
+    required this.isRecurring,
+    this.recurringDay,
+    this.templateName,
+    this.splitFromId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -12947,6 +13086,19 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       map['note'] = Variable<String>(note);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || receiptImagePath != null) {
+      map['receipt_image_path'] = Variable<String>(receiptImagePath);
+    }
+    map['is_recurring'] = Variable<bool>(isRecurring);
+    if (!nullToAbsent || recurringDay != null) {
+      map['recurring_day'] = Variable<int>(recurringDay);
+    }
+    if (!nullToAbsent || templateName != null) {
+      map['template_name'] = Variable<String>(templateName);
+    }
+    if (!nullToAbsent || splitFromId != null) {
+      map['split_from_id'] = Variable<int>(splitFromId);
+    }
     return map;
   }
 
@@ -12962,6 +13114,19 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       date: Value(date),
       note: note == null && nullToAbsent ? const Value.absent() : Value(note),
       createdAt: Value(createdAt),
+      receiptImagePath: receiptImagePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(receiptImagePath),
+      isRecurring: Value(isRecurring),
+      recurringDay: recurringDay == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recurringDay),
+      templateName: templateName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(templateName),
+      splitFromId: splitFromId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(splitFromId),
     );
   }
 
@@ -12979,6 +13144,11 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       date: serializer.fromJson<DateTime>(json['date']),
       note: serializer.fromJson<String?>(json['note']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      receiptImagePath: serializer.fromJson<String?>(json['receiptImagePath']),
+      isRecurring: serializer.fromJson<bool>(json['isRecurring']),
+      recurringDay: serializer.fromJson<int?>(json['recurringDay']),
+      templateName: serializer.fromJson<String?>(json['templateName']),
+      splitFromId: serializer.fromJson<int?>(json['splitFromId']),
     );
   }
   @override
@@ -12993,6 +13163,11 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       'date': serializer.toJson<DateTime>(date),
       'note': serializer.toJson<String?>(note),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'receiptImagePath': serializer.toJson<String?>(receiptImagePath),
+      'isRecurring': serializer.toJson<bool>(isRecurring),
+      'recurringDay': serializer.toJson<int?>(recurringDay),
+      'templateName': serializer.toJson<String?>(templateName),
+      'splitFromId': serializer.toJson<int?>(splitFromId),
     };
   }
 
@@ -13005,6 +13180,11 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     DateTime? date,
     Value<String?> note = const Value.absent(),
     DateTime? createdAt,
+    Value<String?> receiptImagePath = const Value.absent(),
+    bool? isRecurring,
+    Value<int?> recurringDay = const Value.absent(),
+    Value<String?> templateName = const Value.absent(),
+    Value<int?> splitFromId = const Value.absent(),
   }) => Transaction(
     id: id ?? this.id,
     amount: amount ?? this.amount,
@@ -13014,6 +13194,13 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     date: date ?? this.date,
     note: note.present ? note.value : this.note,
     createdAt: createdAt ?? this.createdAt,
+    receiptImagePath: receiptImagePath.present
+        ? receiptImagePath.value
+        : this.receiptImagePath,
+    isRecurring: isRecurring ?? this.isRecurring,
+    recurringDay: recurringDay.present ? recurringDay.value : this.recurringDay,
+    templateName: templateName.present ? templateName.value : this.templateName,
+    splitFromId: splitFromId.present ? splitFromId.value : this.splitFromId,
   );
   Transaction copyWithCompanion(TransactionsCompanion data) {
     return Transaction(
@@ -13029,6 +13216,21 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       date: data.date.present ? data.date.value : this.date,
       note: data.note.present ? data.note.value : this.note,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      receiptImagePath: data.receiptImagePath.present
+          ? data.receiptImagePath.value
+          : this.receiptImagePath,
+      isRecurring: data.isRecurring.present
+          ? data.isRecurring.value
+          : this.isRecurring,
+      recurringDay: data.recurringDay.present
+          ? data.recurringDay.value
+          : this.recurringDay,
+      templateName: data.templateName.present
+          ? data.templateName.value
+          : this.templateName,
+      splitFromId: data.splitFromId.present
+          ? data.splitFromId.value
+          : this.splitFromId,
     );
   }
 
@@ -13042,7 +13244,12 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           ..write('type: $type, ')
           ..write('date: $date, ')
           ..write('note: $note, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('receiptImagePath: $receiptImagePath, ')
+          ..write('isRecurring: $isRecurring, ')
+          ..write('recurringDay: $recurringDay, ')
+          ..write('templateName: $templateName, ')
+          ..write('splitFromId: $splitFromId')
           ..write(')'))
         .toString();
   }
@@ -13057,6 +13264,11 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     date,
     note,
     createdAt,
+    receiptImagePath,
+    isRecurring,
+    recurringDay,
+    templateName,
+    splitFromId,
   );
   @override
   bool operator ==(Object other) =>
@@ -13069,7 +13281,12 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           other.type == this.type &&
           other.date == this.date &&
           other.note == this.note &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.receiptImagePath == this.receiptImagePath &&
+          other.isRecurring == this.isRecurring &&
+          other.recurringDay == this.recurringDay &&
+          other.templateName == this.templateName &&
+          other.splitFromId == this.splitFromId);
 }
 
 class TransactionsCompanion extends UpdateCompanion<Transaction> {
@@ -13081,6 +13298,11 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<DateTime> date;
   final Value<String?> note;
   final Value<DateTime> createdAt;
+  final Value<String?> receiptImagePath;
+  final Value<bool> isRecurring;
+  final Value<int?> recurringDay;
+  final Value<String?> templateName;
+  final Value<int?> splitFromId;
   const TransactionsCompanion({
     this.id = const Value.absent(),
     this.amount = const Value.absent(),
@@ -13090,6 +13312,11 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.date = const Value.absent(),
     this.note = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.receiptImagePath = const Value.absent(),
+    this.isRecurring = const Value.absent(),
+    this.recurringDay = const Value.absent(),
+    this.templateName = const Value.absent(),
+    this.splitFromId = const Value.absent(),
   });
   TransactionsCompanion.insert({
     this.id = const Value.absent(),
@@ -13100,6 +13327,11 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     required DateTime date,
     this.note = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.receiptImagePath = const Value.absent(),
+    this.isRecurring = const Value.absent(),
+    this.recurringDay = const Value.absent(),
+    this.templateName = const Value.absent(),
+    this.splitFromId = const Value.absent(),
   }) : amount = Value(amount),
        description = Value(description),
        date = Value(date);
@@ -13112,6 +13344,11 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     Expression<DateTime>? date,
     Expression<String>? note,
     Expression<DateTime>? createdAt,
+    Expression<String>? receiptImagePath,
+    Expression<bool>? isRecurring,
+    Expression<int>? recurringDay,
+    Expression<String>? templateName,
+    Expression<int>? splitFromId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -13122,6 +13359,11 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       if (date != null) 'date': date,
       if (note != null) 'note': note,
       if (createdAt != null) 'created_at': createdAt,
+      if (receiptImagePath != null) 'receipt_image_path': receiptImagePath,
+      if (isRecurring != null) 'is_recurring': isRecurring,
+      if (recurringDay != null) 'recurring_day': recurringDay,
+      if (templateName != null) 'template_name': templateName,
+      if (splitFromId != null) 'split_from_id': splitFromId,
     });
   }
 
@@ -13134,6 +13376,11 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     Value<DateTime>? date,
     Value<String?>? note,
     Value<DateTime>? createdAt,
+    Value<String?>? receiptImagePath,
+    Value<bool>? isRecurring,
+    Value<int?>? recurringDay,
+    Value<String?>? templateName,
+    Value<int?>? splitFromId,
   }) {
     return TransactionsCompanion(
       id: id ?? this.id,
@@ -13144,6 +13391,11 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       date: date ?? this.date,
       note: note ?? this.note,
       createdAt: createdAt ?? this.createdAt,
+      receiptImagePath: receiptImagePath ?? this.receiptImagePath,
+      isRecurring: isRecurring ?? this.isRecurring,
+      recurringDay: recurringDay ?? this.recurringDay,
+      templateName: templateName ?? this.templateName,
+      splitFromId: splitFromId ?? this.splitFromId,
     );
   }
 
@@ -13174,6 +13426,21 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (receiptImagePath.present) {
+      map['receipt_image_path'] = Variable<String>(receiptImagePath.value);
+    }
+    if (isRecurring.present) {
+      map['is_recurring'] = Variable<bool>(isRecurring.value);
+    }
+    if (recurringDay.present) {
+      map['recurring_day'] = Variable<int>(recurringDay.value);
+    }
+    if (templateName.present) {
+      map['template_name'] = Variable<String>(templateName.value);
+    }
+    if (splitFromId.present) {
+      map['split_from_id'] = Variable<int>(splitFromId.value);
+    }
     return map;
   }
 
@@ -13187,7 +13454,12 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
           ..write('type: $type, ')
           ..write('date: $date, ')
           ..write('note: $note, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('receiptImagePath: $receiptImagePath, ')
+          ..write('isRecurring: $isRecurring, ')
+          ..write('recurringDay: $recurringDay, ')
+          ..write('templateName: $templateName, ')
+          ..write('splitFromId: $splitFromId')
           ..write(')'))
         .toString();
   }
@@ -14259,6 +14531,466 @@ class DebtsCompanion extends UpdateCompanion<Debt> {
           ..write('note: $note, ')
           ..write('isPaidOff: $isPaidOff, ')
           ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $QuickTemplatesTable extends QuickTemplates
+    with TableInfo<$QuickTemplatesTable, QuickTemplate> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $QuickTemplatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _defaultAmountMeta = const VerificationMeta(
+    'defaultAmount',
+  );
+  @override
+  late final GeneratedColumn<double> defaultAmount = GeneratedColumn<double>(
+    'default_amount',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _categoryIdMeta = const VerificationMeta(
+    'categoryId',
+  );
+  @override
+  late final GeneratedColumn<int> categoryId = GeneratedColumn<int>(
+    'category_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _useCountMeta = const VerificationMeta(
+    'useCount',
+  );
+  @override
+  late final GeneratedColumn<int> useCount = GeneratedColumn<int>(
+    'use_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lastUsedMeta = const VerificationMeta(
+    'lastUsed',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastUsed = GeneratedColumn<DateTime>(
+    'last_used',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    defaultAmount,
+    categoryId,
+    type,
+    useCount,
+    lastUsed,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'quick_templates';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<QuickTemplate> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('default_amount')) {
+      context.handle(
+        _defaultAmountMeta,
+        defaultAmount.isAcceptableOrUnknown(
+          data['default_amount']!,
+          _defaultAmountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('category_id')) {
+      context.handle(
+        _categoryIdMeta,
+        categoryId.isAcceptableOrUnknown(data['category_id']!, _categoryIdMeta),
+      );
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('use_count')) {
+      context.handle(
+        _useCountMeta,
+        useCount.isAcceptableOrUnknown(data['use_count']!, _useCountMeta),
+      );
+    }
+    if (data.containsKey('last_used')) {
+      context.handle(
+        _lastUsedMeta,
+        lastUsed.isAcceptableOrUnknown(data['last_used']!, _lastUsedMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  QuickTemplate map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return QuickTemplate(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      defaultAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}default_amount'],
+      ),
+      categoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}category_id'],
+      ),
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      useCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}use_count'],
+      )!,
+      lastUsed: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_used'],
+      ),
+    );
+  }
+
+  @override
+  $QuickTemplatesTable createAlias(String alias) {
+    return $QuickTemplatesTable(attachedDatabase, alias);
+  }
+}
+
+class QuickTemplate extends DataClass implements Insertable<QuickTemplate> {
+  final int id;
+  final String name;
+  final double? defaultAmount;
+  final int? categoryId;
+  final String type;
+  final int useCount;
+  final DateTime? lastUsed;
+  const QuickTemplate({
+    required this.id,
+    required this.name,
+    this.defaultAmount,
+    this.categoryId,
+    required this.type,
+    required this.useCount,
+    this.lastUsed,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || defaultAmount != null) {
+      map['default_amount'] = Variable<double>(defaultAmount);
+    }
+    if (!nullToAbsent || categoryId != null) {
+      map['category_id'] = Variable<int>(categoryId);
+    }
+    map['type'] = Variable<String>(type);
+    map['use_count'] = Variable<int>(useCount);
+    if (!nullToAbsent || lastUsed != null) {
+      map['last_used'] = Variable<DateTime>(lastUsed);
+    }
+    return map;
+  }
+
+  QuickTemplatesCompanion toCompanion(bool nullToAbsent) {
+    return QuickTemplatesCompanion(
+      id: Value(id),
+      name: Value(name),
+      defaultAmount: defaultAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(defaultAmount),
+      categoryId: categoryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categoryId),
+      type: Value(type),
+      useCount: Value(useCount),
+      lastUsed: lastUsed == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastUsed),
+    );
+  }
+
+  factory QuickTemplate.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return QuickTemplate(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      defaultAmount: serializer.fromJson<double?>(json['defaultAmount']),
+      categoryId: serializer.fromJson<int?>(json['categoryId']),
+      type: serializer.fromJson<String>(json['type']),
+      useCount: serializer.fromJson<int>(json['useCount']),
+      lastUsed: serializer.fromJson<DateTime?>(json['lastUsed']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'defaultAmount': serializer.toJson<double?>(defaultAmount),
+      'categoryId': serializer.toJson<int?>(categoryId),
+      'type': serializer.toJson<String>(type),
+      'useCount': serializer.toJson<int>(useCount),
+      'lastUsed': serializer.toJson<DateTime?>(lastUsed),
+    };
+  }
+
+  QuickTemplate copyWith({
+    int? id,
+    String? name,
+    Value<double?> defaultAmount = const Value.absent(),
+    Value<int?> categoryId = const Value.absent(),
+    String? type,
+    int? useCount,
+    Value<DateTime?> lastUsed = const Value.absent(),
+  }) => QuickTemplate(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    defaultAmount: defaultAmount.present
+        ? defaultAmount.value
+        : this.defaultAmount,
+    categoryId: categoryId.present ? categoryId.value : this.categoryId,
+    type: type ?? this.type,
+    useCount: useCount ?? this.useCount,
+    lastUsed: lastUsed.present ? lastUsed.value : this.lastUsed,
+  );
+  QuickTemplate copyWithCompanion(QuickTemplatesCompanion data) {
+    return QuickTemplate(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      defaultAmount: data.defaultAmount.present
+          ? data.defaultAmount.value
+          : this.defaultAmount,
+      categoryId: data.categoryId.present
+          ? data.categoryId.value
+          : this.categoryId,
+      type: data.type.present ? data.type.value : this.type,
+      useCount: data.useCount.present ? data.useCount.value : this.useCount,
+      lastUsed: data.lastUsed.present ? data.lastUsed.value : this.lastUsed,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QuickTemplate(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('defaultAmount: $defaultAmount, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('type: $type, ')
+          ..write('useCount: $useCount, ')
+          ..write('lastUsed: $lastUsed')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    defaultAmount,
+    categoryId,
+    type,
+    useCount,
+    lastUsed,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is QuickTemplate &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.defaultAmount == this.defaultAmount &&
+          other.categoryId == this.categoryId &&
+          other.type == this.type &&
+          other.useCount == this.useCount &&
+          other.lastUsed == this.lastUsed);
+}
+
+class QuickTemplatesCompanion extends UpdateCompanion<QuickTemplate> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<double?> defaultAmount;
+  final Value<int?> categoryId;
+  final Value<String> type;
+  final Value<int> useCount;
+  final Value<DateTime?> lastUsed;
+  const QuickTemplatesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.defaultAmount = const Value.absent(),
+    this.categoryId = const Value.absent(),
+    this.type = const Value.absent(),
+    this.useCount = const Value.absent(),
+    this.lastUsed = const Value.absent(),
+  });
+  QuickTemplatesCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    this.defaultAmount = const Value.absent(),
+    this.categoryId = const Value.absent(),
+    required String type,
+    this.useCount = const Value.absent(),
+    this.lastUsed = const Value.absent(),
+  }) : name = Value(name),
+       type = Value(type);
+  static Insertable<QuickTemplate> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<double>? defaultAmount,
+    Expression<int>? categoryId,
+    Expression<String>? type,
+    Expression<int>? useCount,
+    Expression<DateTime>? lastUsed,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (defaultAmount != null) 'default_amount': defaultAmount,
+      if (categoryId != null) 'category_id': categoryId,
+      if (type != null) 'type': type,
+      if (useCount != null) 'use_count': useCount,
+      if (lastUsed != null) 'last_used': lastUsed,
+    });
+  }
+
+  QuickTemplatesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<double?>? defaultAmount,
+    Value<int?>? categoryId,
+    Value<String>? type,
+    Value<int>? useCount,
+    Value<DateTime?>? lastUsed,
+  }) {
+    return QuickTemplatesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      defaultAmount: defaultAmount ?? this.defaultAmount,
+      categoryId: categoryId ?? this.categoryId,
+      type: type ?? this.type,
+      useCount: useCount ?? this.useCount,
+      lastUsed: lastUsed ?? this.lastUsed,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (defaultAmount.present) {
+      map['default_amount'] = Variable<double>(defaultAmount.value);
+    }
+    if (categoryId.present) {
+      map['category_id'] = Variable<int>(categoryId.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (useCount.present) {
+      map['use_count'] = Variable<int>(useCount.value);
+    }
+    if (lastUsed.present) {
+      map['last_used'] = Variable<DateTime>(lastUsed.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QuickTemplatesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('defaultAmount: $defaultAmount, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('type: $type, ')
+          ..write('useCount: $useCount, ')
+          ..write('lastUsed: $lastUsed')
           ..write(')'))
         .toString();
   }
@@ -15914,6 +16646,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   late final $TransactionsTable transactions = $TransactionsTable(this);
   late final $SavingsGoalsTable savingsGoals = $SavingsGoalsTable(this);
   late final $DebtsTable debts = $DebtsTable(this);
+  late final $QuickTemplatesTable quickTemplates = $QuickTemplatesTable(this);
   late final $PeriodEntriesTable periodEntries = $PeriodEntriesTable(this);
   late final $CycleCalculationsTable cycleCalculations =
       $CycleCalculationsTable(this);
@@ -15967,6 +16700,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
     transactions,
     savingsGoals,
     debts,
+    quickTemplates,
     periodEntries,
     cycleCalculations,
     periodSymptoms,
@@ -24800,6 +25534,11 @@ typedef $$TransactionsTableCreateCompanionBuilder =
       required DateTime date,
       Value<String?> note,
       Value<DateTime> createdAt,
+      Value<String?> receiptImagePath,
+      Value<bool> isRecurring,
+      Value<int?> recurringDay,
+      Value<String?> templateName,
+      Value<int?> splitFromId,
     });
 typedef $$TransactionsTableUpdateCompanionBuilder =
     TransactionsCompanion Function({
@@ -24811,6 +25550,11 @@ typedef $$TransactionsTableUpdateCompanionBuilder =
       Value<DateTime> date,
       Value<String?> note,
       Value<DateTime> createdAt,
+      Value<String?> receiptImagePath,
+      Value<bool> isRecurring,
+      Value<int?> recurringDay,
+      Value<String?> templateName,
+      Value<int?> splitFromId,
     });
 
 class $$TransactionsTableFilterComposer
@@ -24859,6 +25603,31 @@ class $$TransactionsTableFilterComposer
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get receiptImagePath => $composableBuilder(
+    column: $table.receiptImagePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isRecurring => $composableBuilder(
+    column: $table.isRecurring,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get recurringDay => $composableBuilder(
+    column: $table.recurringDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get templateName => $composableBuilder(
+    column: $table.templateName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get splitFromId => $composableBuilder(
+    column: $table.splitFromId,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -24911,6 +25680,31 @@ class $$TransactionsTableOrderingComposer
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get receiptImagePath => $composableBuilder(
+    column: $table.receiptImagePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isRecurring => $composableBuilder(
+    column: $table.isRecurring,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get recurringDay => $composableBuilder(
+    column: $table.recurringDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get templateName => $composableBuilder(
+    column: $table.templateName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get splitFromId => $composableBuilder(
+    column: $table.splitFromId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TransactionsTableAnnotationComposer
@@ -24949,6 +25743,31 @@ class $$TransactionsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get receiptImagePath => $composableBuilder(
+    column: $table.receiptImagePath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isRecurring => $composableBuilder(
+    column: $table.isRecurring,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get recurringDay => $composableBuilder(
+    column: $table.recurringDay,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get templateName => $composableBuilder(
+    column: $table.templateName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get splitFromId => $composableBuilder(
+    column: $table.splitFromId,
+    builder: (column) => column,
+  );
 }
 
 class $$TransactionsTableTableManager
@@ -24990,6 +25809,11 @@ class $$TransactionsTableTableManager
                 Value<DateTime> date = const Value.absent(),
                 Value<String?> note = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> receiptImagePath = const Value.absent(),
+                Value<bool> isRecurring = const Value.absent(),
+                Value<int?> recurringDay = const Value.absent(),
+                Value<String?> templateName = const Value.absent(),
+                Value<int?> splitFromId = const Value.absent(),
               }) => TransactionsCompanion(
                 id: id,
                 amount: amount,
@@ -24999,6 +25823,11 @@ class $$TransactionsTableTableManager
                 date: date,
                 note: note,
                 createdAt: createdAt,
+                receiptImagePath: receiptImagePath,
+                isRecurring: isRecurring,
+                recurringDay: recurringDay,
+                templateName: templateName,
+                splitFromId: splitFromId,
               ),
           createCompanionCallback:
               ({
@@ -25010,6 +25839,11 @@ class $$TransactionsTableTableManager
                 required DateTime date,
                 Value<String?> note = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> receiptImagePath = const Value.absent(),
+                Value<bool> isRecurring = const Value.absent(),
+                Value<int?> recurringDay = const Value.absent(),
+                Value<String?> templateName = const Value.absent(),
+                Value<int?> splitFromId = const Value.absent(),
               }) => TransactionsCompanion.insert(
                 id: id,
                 amount: amount,
@@ -25019,6 +25853,11 @@ class $$TransactionsTableTableManager
                 date: date,
                 note: note,
                 createdAt: createdAt,
+                receiptImagePath: receiptImagePath,
+                isRecurring: isRecurring,
+                recurringDay: recurringDay,
+                templateName: templateName,
+                splitFromId: splitFromId,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -25572,6 +26411,248 @@ typedef $$DebtsTableProcessedTableManager =
       $$DebtsTableUpdateCompanionBuilder,
       (Debt, BaseReferences<_$TraumDatabase, $DebtsTable, Debt>),
       Debt,
+      PrefetchHooks Function()
+    >;
+typedef $$QuickTemplatesTableCreateCompanionBuilder =
+    QuickTemplatesCompanion Function({
+      Value<int> id,
+      required String name,
+      Value<double?> defaultAmount,
+      Value<int?> categoryId,
+      required String type,
+      Value<int> useCount,
+      Value<DateTime?> lastUsed,
+    });
+typedef $$QuickTemplatesTableUpdateCompanionBuilder =
+    QuickTemplatesCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<double?> defaultAmount,
+      Value<int?> categoryId,
+      Value<String> type,
+      Value<int> useCount,
+      Value<DateTime?> lastUsed,
+    });
+
+class $$QuickTemplatesTableFilterComposer
+    extends Composer<_$TraumDatabase, $QuickTemplatesTable> {
+  $$QuickTemplatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get defaultAmount => $composableBuilder(
+    column: $table.defaultAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get useCount => $composableBuilder(
+    column: $table.useCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastUsed => $composableBuilder(
+    column: $table.lastUsed,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$QuickTemplatesTableOrderingComposer
+    extends Composer<_$TraumDatabase, $QuickTemplatesTable> {
+  $$QuickTemplatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get defaultAmount => $composableBuilder(
+    column: $table.defaultAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get useCount => $composableBuilder(
+    column: $table.useCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastUsed => $composableBuilder(
+    column: $table.lastUsed,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$QuickTemplatesTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $QuickTemplatesTable> {
+  $$QuickTemplatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<double> get defaultAmount => $composableBuilder(
+    column: $table.defaultAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<int> get useCount =>
+      $composableBuilder(column: $table.useCount, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastUsed =>
+      $composableBuilder(column: $table.lastUsed, builder: (column) => column);
+}
+
+class $$QuickTemplatesTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $QuickTemplatesTable,
+          QuickTemplate,
+          $$QuickTemplatesTableFilterComposer,
+          $$QuickTemplatesTableOrderingComposer,
+          $$QuickTemplatesTableAnnotationComposer,
+          $$QuickTemplatesTableCreateCompanionBuilder,
+          $$QuickTemplatesTableUpdateCompanionBuilder,
+          (
+            QuickTemplate,
+            BaseReferences<
+              _$TraumDatabase,
+              $QuickTemplatesTable,
+              QuickTemplate
+            >,
+          ),
+          QuickTemplate,
+          PrefetchHooks Function()
+        > {
+  $$QuickTemplatesTableTableManager(
+    _$TraumDatabase db,
+    $QuickTemplatesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$QuickTemplatesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$QuickTemplatesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$QuickTemplatesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<double?> defaultAmount = const Value.absent(),
+                Value<int?> categoryId = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<int> useCount = const Value.absent(),
+                Value<DateTime?> lastUsed = const Value.absent(),
+              }) => QuickTemplatesCompanion(
+                id: id,
+                name: name,
+                defaultAmount: defaultAmount,
+                categoryId: categoryId,
+                type: type,
+                useCount: useCount,
+                lastUsed: lastUsed,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                Value<double?> defaultAmount = const Value.absent(),
+                Value<int?> categoryId = const Value.absent(),
+                required String type,
+                Value<int> useCount = const Value.absent(),
+                Value<DateTime?> lastUsed = const Value.absent(),
+              }) => QuickTemplatesCompanion.insert(
+                id: id,
+                name: name,
+                defaultAmount: defaultAmount,
+                categoryId: categoryId,
+                type: type,
+                useCount: useCount,
+                lastUsed: lastUsed,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$QuickTemplatesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $QuickTemplatesTable,
+      QuickTemplate,
+      $$QuickTemplatesTableFilterComposer,
+      $$QuickTemplatesTableOrderingComposer,
+      $$QuickTemplatesTableAnnotationComposer,
+      $$QuickTemplatesTableCreateCompanionBuilder,
+      $$QuickTemplatesTableUpdateCompanionBuilder,
+      (
+        QuickTemplate,
+        BaseReferences<_$TraumDatabase, $QuickTemplatesTable, QuickTemplate>,
+      ),
+      QuickTemplate,
       PrefetchHooks Function()
     >;
 typedef $$PeriodEntriesTableCreateCompanionBuilder =
@@ -26761,6 +27842,8 @@ class $TraumDatabaseManager {
       $$SavingsGoalsTableTableManager(_db, _db.savingsGoals);
   $$DebtsTableTableManager get debts =>
       $$DebtsTableTableManager(_db, _db.debts);
+  $$QuickTemplatesTableTableManager get quickTemplates =>
+      $$QuickTemplatesTableTableManager(_db, _db.quickTemplates);
   $$PeriodEntriesTableTableManager get periodEntries =>
       $$PeriodEntriesTableTableManager(_db, _db.periodEntries);
   $$CycleCalculationsTableTableManager get cycleCalculations =>

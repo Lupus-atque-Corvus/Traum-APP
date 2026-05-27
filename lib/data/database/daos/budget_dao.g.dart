@@ -9,4 +9,5 @@ mixin _$BudgetDaoMixin on DatabaseAccessor<TraumDatabase> {
       attachedDatabase.budgetCategories;
   $SavingsGoalsTable get savingsGoals => attachedDatabase.savingsGoals;
   $DebtsTable get debts => attachedDatabase.debts;
+  $QuickTemplatesTable get quickTemplates => attachedDatabase.quickTemplates;
 }

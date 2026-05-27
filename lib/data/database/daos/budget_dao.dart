@@ -3,7 +3,7 @@ import '../traum_database.dart';
 
 part 'budget_dao.g.dart';
 
-@DriftAccessor(tables: [Transactions, BudgetCategories, SavingsGoals, Debts])
+@DriftAccessor(tables: [Transactions, BudgetCategories, SavingsGoals, Debts, QuickTemplates])
 class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
   BudgetDao(super.db);
 
@@ -65,4 +65,62 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
 
   Future<int> deleteDebt(int id) =>
       (delete(debts)..where((t) => t.id.equals(id))).go();
+
+  // --- New Transaction methods ---
+
+  Future<List<Transaction>> getTransactionsForMonth(int year, int month) {
+    final start = DateTime(year, month, 1);
+    final end = DateTime(year, month + 1, 1);
+    return (select(transactions)
+          ..where((t) =>
+              t.date.isBiggerOrEqualValue(start) &
+              t.date.isSmallerThanValue(end))
+          ..orderBy([(t) => OrderingTerm.desc(t.date)]))
+        .get();
+  }
+
+  Future<Transaction?> getTransaction(int id) =>
+      (select(transactions)..where((t) => t.id.equals(id))).getSingleOrNull();
+
+  Future<bool> updateTransaction(TransactionsCompanion entry) =>
+      update(transactions).replace(entry);
+
+  Stream<List<Transaction>> watchRecurringTransactions() =>
+      (select(transactions)..where((t) => t.isRecurring.equals(true))).watch();
+
+  Future<List<BudgetCategory>> getAllCategories() =>
+      select(budgetCategories).get();
+
+  // --- QuickTemplates ---
+
+  Stream<List<QuickTemplate>> watchQuickTemplates() =>
+      (select(quickTemplates)
+            ..orderBy([(t) => OrderingTerm.desc(t.useCount)]))
+          .watch();
+
+  Future<List<QuickTemplate>> getTopTemplates({int limit = 8}) =>
+      (select(quickTemplates)
+            ..orderBy([(t) => OrderingTerm.desc(t.useCount)])
+            ..limit(limit))
+          .get();
+
+  Future<int> insertTemplate(QuickTemplatesCompanion entry) =>
+      into(quickTemplates).insert(entry);
+
+  Future<int> deleteTemplate(int id) =>
+      (delete(quickTemplates)..where((t) => t.id.equals(id))).go();
+
+  Future<void> incrementTemplateUsage(int id, double amount) async {
+    final template = await (select(quickTemplates)
+          ..where((t) => t.id.equals(id)))
+        .getSingleOrNull();
+    if (template == null) return;
+    await (update(quickTemplates)..where((t) => t.id.equals(id))).write(
+      QuickTemplatesCompanion(
+        useCount: Value(template.useCount + 1),
+        lastUsed: Value(DateTime.now()),
+        defaultAmount: Value(amount),
+      ),
+    );
+  }
 }

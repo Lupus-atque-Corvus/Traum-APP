@@ -88,11 +88,12 @@ part 'traum_database.g.dart';
     // Abstinence (2)
     AbstinenceTrackers,
     AbstinenceEvents,
-    // Budget (4)
+    // Budget (5)
     BudgetCategories,
     Transactions,
     SavingsGoals,
     Debts,
+    QuickTemplates,
     // Period (3)
     PeriodEntries,
     CycleCalculations,
@@ -121,7 +122,7 @@ class TraumDatabase extends _$TraumDatabase {
   SubstanceDao get substanceDao => SubstanceDao(this);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -144,6 +145,14 @@ class TraumDatabase extends _$TraumDatabase {
       }
       if (from < 4) {
         await migrator.createTable(substanceCaches);
+      }
+      if (from < 5) {
+        await migrator.addColumn(transactions, transactions.receiptImagePath);
+        await migrator.addColumn(transactions, transactions.isRecurring);
+        await migrator.addColumn(transactions, transactions.recurringDay);
+        await migrator.addColumn(transactions, transactions.templateName);
+        await migrator.addColumn(transactions, transactions.splitFromId);
+        await migrator.createTable(quickTemplates);
       }
     },
   );
