@@ -1109,5 +1109,26 @@
       "amount": {"type": "String"},
       "date": {"type": "String"}
     }
-  }
+  },
+
+  "budgetTotalBalance": "Gesamtsaldo",
+  "budgetVsLastMonth": "vs. letzter Monat",
+  "budgetAccounts": "Konten",
+  "budgetAddAccount": "Konto hinzufügen",
+  "budgetAccountChecking": "Girokonto",
+  "budgetAccountSavings": "Sparkonto",
+  "budgetAccountCredit": "Kreditkarte",
+  "budgetAccountInvestment": "Investment",
+  "budgetAccountPrimary": "Hauptkonto",
+  "budgetAccountPending": "Ausstehend",
+  "budgetAccountReturn": "Rendite: {rate}%",
+  "@budgetAccountReturn": {
+    "placeholders": {
+      "rate": {}
+    }
+  },
+  "budgetOverviewTitle": "Budgetübersicht",
+  "budgetRecentTransactions": "Letzte Transaktionen",
+  "budgetCategoryListTitle": "Ausgaben nach Kategorien",
+  "budgetBalanceHidden": "Guthaben ausgeblendet"
 }

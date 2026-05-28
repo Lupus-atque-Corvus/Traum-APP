@@ -1109,5 +1109,26 @@
       "amount": {"type": "String"},
       "date": {"type": "String"}
     }
-  }
+  },
+
+  "budgetTotalBalance": "Total balance",
+  "budgetVsLastMonth": "vs. last month",
+  "budgetAccounts": "Accounts",
+  "budgetAddAccount": "Add account",
+  "budgetAccountChecking": "Checking account",
+  "budgetAccountSavings": "Savings account",
+  "budgetAccountCredit": "Credit card",
+  "budgetAccountInvestment": "Investment",
+  "budgetAccountPrimary": "Primary",
+  "budgetAccountPending": "Pending",
+  "budgetAccountReturn": "Return: {rate}%",
+  "@budgetAccountReturn": {
+    "placeholders": {
+      "rate": {}
+    }
+  },
+  "budgetOverviewTitle": "Budget overview",
+  "budgetRecentTransactions": "Recent transactions",
+  "budgetCategoryListTitle": "Expenses by category",
+  "budgetBalanceHidden": "Balance hidden"
 }
