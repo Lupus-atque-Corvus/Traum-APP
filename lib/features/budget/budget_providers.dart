@@ -39,6 +39,38 @@ class TrendBar {
   });
 }
 
+class BudgetCategoryWithSpending {
+  final BudgetCategory category;
+  final double spent;
+  final double budgetLimit;
+
+  const BudgetCategoryWithSpending({
+    required this.category,
+    required this.spent,
+    required this.budgetLimit,
+  });
+
+  String get name => category.name;
+  String get emoji => category.emoji ?? '💰';
+  double get ratio => budgetLimit > 0
+      ? (spent / budgetLimit).clamp(0.0, 1.0)
+      : 0.0;
+  bool get isOverBudget => budgetLimit > 0 && spent > budgetLimit;
+}
+
+class RecentTransactionItem {
+  final Transaction tx;
+  final BudgetCategory? category;
+
+  const RecentTransactionItem({required this.tx, this.category});
+
+  String get name => tx.description;
+  double get amount => tx.amount;
+  DateTime get date => tx.date;
+  String get type => tx.type;
+  String get categoryName => category?.name ?? 'Sonstiges';
+}
+
 // ─── State Providers ─────────────────────────────────────────────────────────
 
 final selectedBudgetMonthProvider = StateProvider<DateTime>(
@@ -233,3 +265,64 @@ String _monthLabel(int month) {
                    'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
   return labels[(month - 1) % 12];
 }
+
+// ─── Accounts ─────────────────────────────────────────────────────────────────
+
+final totalAccountBalanceProvider = FutureProvider.autoDispose<double>((ref) async {
+  return ref.watch(accountsDaoProvider).getTotalBalance();
+});
+
+final monthlyBalanceChangeProvider =
+    FutureProvider.autoDispose<double?>((ref) async {
+  final dao = ref.watch(budgetDaoProvider);
+  final now = DateTime.now();
+  final thisMonth = await dao.getNetForMonth(now.year, now.month);
+  final prevYear = now.month == 1 ? now.year - 1 : now.year;
+  final prevMonth = now.month == 1 ? 12 : now.month - 1;
+  final lastMonth = await dao.getNetForMonth(prevYear, prevMonth);
+  if (lastMonth == 0) return null;
+  return (thisMonth - lastMonth) / lastMonth.abs() * 100;
+});
+
+// ─── Budget Overview ──────────────────────────────────────────────────────────
+
+final budgetCategoriesWithSpendingProvider =
+    FutureProvider.autoDispose.family<List<BudgetCategoryWithSpending>, (int, int)>(
+        (ref, ym) async {
+  final dao = ref.watch(budgetDaoProvider);
+  final txs = await dao.getTransactionsForMonth(ym.$1, ym.$2);
+  final cats = await dao.getAllCategories();
+
+  final spendingById = <int, double>{};
+  for (final t in txs.where((t) => t.type == 'expense')) {
+    if (t.categoryId != null) {
+      spendingById[t.categoryId!] =
+          (spendingById[t.categoryId!] ?? 0) + t.amount;
+    }
+  }
+
+  return cats
+      .where((c) => c.isExpense && c.monthlyLimit != null && c.monthlyLimit! > 0)
+      .map((cat) => BudgetCategoryWithSpending(
+            category: cat,
+            spent: spendingById[cat.id] ?? 0,
+            budgetLimit: cat.monthlyLimit!,
+          ))
+      .toList()
+    ..sort((a, b) => b.ratio.compareTo(a.ratio));
+});
+
+// ─── Recent Transactions ──────────────────────────────────────────────────────
+
+final recentTransactionItemsProvider =
+    FutureProvider.autoDispose.family<List<RecentTransactionItem>, int>(
+        (ref, limit) async {
+  final dao = ref.watch(budgetDaoProvider);
+  final txs = await dao.getRecentTransactions(limit: limit);
+  final cats = await dao.getAllCategories();
+  final catMap = {for (final c in cats) c.id: c};
+  return txs.map((tx) {
+    final cat = tx.categoryId != null ? catMap[tx.categoryId!] : null;
+    return RecentTransactionItem(tx: tx, category: cat);
+  }).toList();
+});

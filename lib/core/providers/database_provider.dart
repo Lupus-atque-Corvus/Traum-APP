@@ -41,6 +41,10 @@ final budgetDaoProvider = Provider<BudgetDao>((ref) {
   return ref.watch(databaseProvider).budgetDao;
 });
 
+final accountsDaoProvider = Provider<AccountsDao>((ref) {
+  return ref.watch(databaseProvider).accountsDao;
+});
+
 final periodDaoProvider = Provider<PeriodDao>((ref) {
   return ref.watch(databaseProvider).periodDao;
 });
@@ -244,3 +248,7 @@ final interactionAlertsProvider =
   ];
   return ref.read(interactionServiceProvider).checkSubstances(activeNames);
 });
+
+// ─── Accounts ─────────────────────────────────────────────────────────────────
+final accountsStreamProvider = StreamProvider.autoDispose<List<Account>>((ref) =>
+    ref.watch(accountsDaoProvider).watchAll());
