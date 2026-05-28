@@ -1050,5 +1050,45 @@
   "feedbackHint": "Öffnet GitHub im Browser. Ein GitHub-Account ist zum Absenden nötig.",
   "feedbackSystemInfo": "Systemdaten werden automatisch angehängt.",
   "settingsFeedback": "Feedback & Fehler melden",
-  "settingsFeedbackSubtitle": "Bug · Feature · Verbesserung"
+  "settingsFeedbackSubtitle": "Bug · Feature · Verbesserung",
+  "budgetTitle": "Finanzen",
+  "budgetAvailableBalance": "Verfügbares Guthaben",
+  "budgetForecastText": "Bei aktuellem Tempo hast du am Monatsende ~{amount} übrig.",
+  "@budgetForecastText": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "budgetScanReceipt": "Kassenzettel scannen / Foto",
+  "budgetScanningReceipt": "Kassenzettel wird analysiert...",
+  "budgetScanNoAmount": "Betrag nicht erkannt — bitte manuell eingeben",
+  "budgetSaveAsTemplate": "Als Vorlage speichern",
+  "budgetSplitTransaction": "Betrag aufteilen",
+  "budgetSplitTitle": "Transaktion aufteilen",
+  "budgetSplitRemaining": "Verbleibend: {amount} €",
+  "@budgetSplitRemaining": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "budgetStatusGood": "Noch {amount} Budget übrig",
+  "@budgetStatusGood": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "budgetStatusWarning": "80% des Budgets verbraucht",
+  "budgetStatusOverbudget": "Budget um {amount} überschritten",
+  "@budgetStatusOverbudget": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "budgetRecurringWarning": "{name} fällig in {days} Tagen",
+  "@budgetRecurringWarning": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "days": {"type": "String"}
+    }
+  }
 }

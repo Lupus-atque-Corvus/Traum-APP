@@ -1050,5 +1050,45 @@
   "feedbackHint": "Opens GitHub in browser. A GitHub account is needed to submit.",
   "feedbackSystemInfo": "System info will be attached automatically.",
   "settingsFeedback": "Feedback & bug reports",
-  "settingsFeedbackSubtitle": "Bug · Feature · Improvement"
+  "settingsFeedbackSubtitle": "Bug · Feature · Improvement",
+  "budgetTitle": "Finance",
+  "budgetAvailableBalance": "Available balance",
+  "budgetForecastText": "At this rate you'll have ~{amount} left at month end.",
+  "@budgetForecastText": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "budgetScanReceipt": "Scan receipt / photo",
+  "budgetScanningReceipt": "Analysing receipt...",
+  "budgetScanNoAmount": "Amount not detected — please enter manually",
+  "budgetSaveAsTemplate": "Save as template",
+  "budgetSplitTransaction": "Split amount",
+  "budgetSplitTitle": "Split transaction",
+  "budgetSplitRemaining": "Remaining: {amount}",
+  "@budgetSplitRemaining": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "budgetStatusGood": "{amount} budget remaining",
+  "@budgetStatusGood": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "budgetStatusWarning": "80% of budget used",
+  "budgetStatusOverbudget": "Budget exceeded by {amount}",
+  "@budgetStatusOverbudget": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "budgetRecurringWarning": "{name} due in {days} days",
+  "@budgetRecurringWarning": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "days": {"type": "String"}
+    }
+  }
 }
