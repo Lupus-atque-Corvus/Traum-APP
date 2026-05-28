@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
 import 'budget_providers.dart';
 import 'quick_entry_bottom_sheet.dart';
-import 'widgets/budget_ampel.dart';
+import 'widgets/accounts_card.dart';
+import 'widgets/balance_card.dart';
 import 'widgets/budget_header_card.dart';
-import 'widgets/category_grid.dart';
+import 'widgets/budget_overview_card.dart';
+import 'widgets/category_list_card.dart';
 import 'widgets/donut_chart_card.dart';
 import 'widgets/fixed_costs_card.dart';
 import 'widgets/quick_template_row.dart';
+import 'widgets/recent_transactions_card.dart';
 import 'widgets/savings_card.dart';
-import 'widgets/transaction_list.dart';
 import 'widgets/trend_bar_chart.dart';
 import 'package:go_router/go_router.dart';
 
@@ -35,10 +36,6 @@ class BudgetScreen extends ConsumerWidget {
     final month = ref.watch(selectedBudgetMonthProvider);
     final ym = (month.year, month.month);
     final currency = ref.watch(currencySymbolProvider);
-
-    final txAsync = ref.watch(transactionsForMonthProvider(ym));
-    final catsAsync = ref.watch(allBudgetCategoriesStreamProvider);
-    final summaryAsync = ref.watch(budgetSummaryProvider(ym));
     final categoryExpAsync = ref.watch(categoryExpensesProvider(ym));
 
     return Scaffold(
@@ -94,38 +91,19 @@ class BudgetScreen extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                // Header card with balance, sparkline, month navigation
+                // 1. Month navigation + transaction-based balance
                 const BudgetHeaderCard(),
                 const SizedBox(height: 12),
 
-                // Budget Ampel
-                summaryAsync.when(
-                  data: (summary) {
-                    return catsAsync.when(
-                      data: (cats) {
-                        final totalBudget = cats
-                            .where(
-                                (c) => c.isExpense && c.monthlyLimit != null)
-                            .fold(0.0, (s, c) => s + c.monthlyLimit!);
-                        if (totalBudget <= 0) return const SizedBox.shrink();
-                        return Column(children: [
-                          BudgetAmpel(
-                            totalBudget: totalBudget,
-                            totalSpent: summary.expenses,
-                            currency: currency,
-                          ),
-                          const SizedBox(height: 12),
-                        ]);
-                      },
-                      loading: () => const SizedBox.shrink(),
-                      error: (_, __) => const SizedBox.shrink(),
-                    );
-                  },
-                  loading: () => const SizedBox.shrink(),
-                  error: (_, __) => const SizedBox.shrink(),
-                ),
+                // 2. Gesamtsaldo (account totals + area chart)
+                const BalanceCard(),
+                const SizedBox(height: 12),
 
-                // Quick templates row
+                // 3. Konten
+                const AccountsCard(),
+                const SizedBox(height: 16),
+
+                // 4. Quick templates
                 QuickTemplateRow(
                   onTemplateTap: (t) =>
                       _openQuickEntry(context, ref, template: t),
@@ -133,30 +111,11 @@ class BudgetScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Category grid
-                txAsync.when(
-                  data: (txs) => catsAsync.when(
-                    data: (cats) => CategoryGrid(
-                      categories: cats,
-                      transactions: txs,
-                      currency: currency,
-                      onShowAll: () => context.go('/budget/stats'),
-                      onCategoryTap: (cat) {
-                        ref.read(selectedCategoryNameProvider.notifier).state =
-                            cat.name;
-                        ref.read(trendBarDateRangeProvider.notifier).state =
-                            null;
-                      },
-                    ),
-                    loading: () => const SizedBox.shrink(),
-                    error: (_, __) => const SizedBox.shrink(),
-                  ),
-                  loading: () => const SizedBox.shrink(),
-                  error: (_, __) => const SizedBox.shrink(),
-                ),
+                // 5. Budgetübersicht mit Fortschrittsbalken
+                const BudgetOverviewCard(),
                 const SizedBox(height: 16),
 
-                // Donut chart
+                // 6. Donut chart
                 categoryExpAsync.when(
                   data: (expenses) => DonutChartCard(
                     expenses: expenses,
@@ -164,7 +123,8 @@ class BudgetScreen extends ConsumerWidget {
                     onSegmentTap: (catName) {
                       ref.read(selectedCategoryNameProvider.notifier).state =
                           catName;
-                      ref.read(trendBarDateRangeProvider.notifier).state = null;
+                      ref.read(trendBarDateRangeProvider.notifier).state =
+                          null;
                     },
                   ),
                   loading: () => const SizedBox.shrink(),
@@ -172,33 +132,23 @@ class BudgetScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Trend bar chart
+                // 7. Kategorie-Listen-Ansicht
+                const CategoryListCard(),
+                const SizedBox(height: 16),
+
+                // 8. Verlaufs-Diagramm
                 const TrendBarChart(),
                 const SizedBox(height: 16),
 
-                // Transaction list
-                txAsync.when(
-                  data: (txs) => catsAsync.when(
-                    data: (cats) => TransactionList(
-                      transactions: txs,
-                      categories: cats,
-                      currency: currency,
-                      onTransactionTap: (t) =>
-                          context.go('/budget/transaction/${t.id}'),
-                    ),
-                    loading: () => const SizedBox.shrink(),
-                    error: (_, __) => const SizedBox.shrink(),
-                  ),
-                  loading: () => const SizedBox.shrink(),
-                  error: (_, __) => const SizedBox.shrink(),
-                ),
+                // 9. Letzte Transaktionen
+                const RecentTransactionsCard(),
                 const SizedBox(height: 16),
 
-                // Fixed costs
+                // 10. Fixkosten
                 FixedCostsCard(currency: currency),
                 const SizedBox(height: 16),
 
-                // Savings & Debts
+                // 11. Sparziele & Schulden
                 SavingsCard(currency: currency),
               ]),
             ),
