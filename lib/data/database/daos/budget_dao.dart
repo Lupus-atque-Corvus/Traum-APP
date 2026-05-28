@@ -123,4 +123,21 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
       ),
     );
   }
+
+  Future<List<Transaction>> getRecentTransactions({int limit = 5}) =>
+      (select(transactions)
+            ..orderBy([(t) => OrderingTerm.desc(t.date)])
+            ..limit(limit))
+          .get();
+
+  Future<double> getNetForMonth(int year, int month) async {
+    final txs = await getTransactionsForMonth(year, month);
+    final income = txs
+        .where((t) => t.type == 'income')
+        .fold(0.0, (s, t) => s + t.amount);
+    final expenses = txs
+        .where((t) => t.type == 'expense')
+        .fold(0.0, (s, t) => s + t.amount);
+    return income - expenses;
+  }
 }
