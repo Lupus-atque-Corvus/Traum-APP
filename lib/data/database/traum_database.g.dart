@@ -14996,6 +14996,752 @@ class QuickTemplatesCompanion extends UpdateCompanion<QuickTemplate> {
   }
 }
 
+class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AccountsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _institutionMeta = const VerificationMeta(
+    'institution',
+  );
+  @override
+  late final GeneratedColumn<String> institution = GeneratedColumn<String>(
+    'institution',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _balanceMeta = const VerificationMeta(
+    'balance',
+  );
+  @override
+  late final GeneratedColumn<double> balance = GeneratedColumn<double>(
+    'balance',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencyMeta = const VerificationMeta(
+    'currency',
+  );
+  @override
+  late final GeneratedColumn<String> currency = GeneratedColumn<String>(
+    'currency',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('EUR'),
+  );
+  static const VerificationMeta _lastFourMeta = const VerificationMeta(
+    'lastFour',
+  );
+  @override
+  late final GeneratedColumn<String> lastFour = GeneratedColumn<String>(
+    'last_four',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _returnRateMeta = const VerificationMeta(
+    'returnRate',
+  );
+  @override
+  late final GeneratedColumn<double> returnRate = GeneratedColumn<double>(
+    'return_rate',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isPrimaryMeta = const VerificationMeta(
+    'isPrimary',
+  );
+  @override
+  late final GeneratedColumn<bool> isPrimary = GeneratedColumn<bool>(
+    'is_primary',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_primary" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _iconNameMeta = const VerificationMeta(
+    'iconName',
+  );
+  @override
+  late final GeneratedColumn<String> iconName = GeneratedColumn<String>(
+    'icon_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _colorHexMeta = const VerificationMeta(
+    'colorHex',
+  );
+  @override
+  late final GeneratedColumn<String> colorHex = GeneratedColumn<String>(
+    'color_hex',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    institution,
+    type,
+    balance,
+    currency,
+    lastFour,
+    returnRate,
+    isPrimary,
+    iconName,
+    colorHex,
+    sortOrder,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'accounts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Account> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('institution')) {
+      context.handle(
+        _institutionMeta,
+        institution.isAcceptableOrUnknown(
+          data['institution']!,
+          _institutionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('balance')) {
+      context.handle(
+        _balanceMeta,
+        balance.isAcceptableOrUnknown(data['balance']!, _balanceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_balanceMeta);
+    }
+    if (data.containsKey('currency')) {
+      context.handle(
+        _currencyMeta,
+        currency.isAcceptableOrUnknown(data['currency']!, _currencyMeta),
+      );
+    }
+    if (data.containsKey('last_four')) {
+      context.handle(
+        _lastFourMeta,
+        lastFour.isAcceptableOrUnknown(data['last_four']!, _lastFourMeta),
+      );
+    }
+    if (data.containsKey('return_rate')) {
+      context.handle(
+        _returnRateMeta,
+        returnRate.isAcceptableOrUnknown(data['return_rate']!, _returnRateMeta),
+      );
+    }
+    if (data.containsKey('is_primary')) {
+      context.handle(
+        _isPrimaryMeta,
+        isPrimary.isAcceptableOrUnknown(data['is_primary']!, _isPrimaryMeta),
+      );
+    }
+    if (data.containsKey('icon_name')) {
+      context.handle(
+        _iconNameMeta,
+        iconName.isAcceptableOrUnknown(data['icon_name']!, _iconNameMeta),
+      );
+    }
+    if (data.containsKey('color_hex')) {
+      context.handle(
+        _colorHexMeta,
+        colorHex.isAcceptableOrUnknown(data['color_hex']!, _colorHexMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Account map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Account(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      institution: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}institution'],
+      ),
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      balance: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}balance'],
+      )!,
+      currency: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency'],
+      )!,
+      lastFour: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_four'],
+      ),
+      returnRate: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}return_rate'],
+      ),
+      isPrimary: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_primary'],
+      )!,
+      iconName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}icon_name'],
+      ),
+      colorHex: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}color_hex'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AccountsTable createAlias(String alias) {
+    return $AccountsTable(attachedDatabase, alias);
+  }
+}
+
+class Account extends DataClass implements Insertable<Account> {
+  final int id;
+  final String name;
+  final String? institution;
+  final String type;
+  final double balance;
+  final String currency;
+  final String? lastFour;
+  final double? returnRate;
+  final bool isPrimary;
+  final String? iconName;
+  final String? colorHex;
+  final int sortOrder;
+  final DateTime updatedAt;
+  const Account({
+    required this.id,
+    required this.name,
+    this.institution,
+    required this.type,
+    required this.balance,
+    required this.currency,
+    this.lastFour,
+    this.returnRate,
+    required this.isPrimary,
+    this.iconName,
+    this.colorHex,
+    required this.sortOrder,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || institution != null) {
+      map['institution'] = Variable<String>(institution);
+    }
+    map['type'] = Variable<String>(type);
+    map['balance'] = Variable<double>(balance);
+    map['currency'] = Variable<String>(currency);
+    if (!nullToAbsent || lastFour != null) {
+      map['last_four'] = Variable<String>(lastFour);
+    }
+    if (!nullToAbsent || returnRate != null) {
+      map['return_rate'] = Variable<double>(returnRate);
+    }
+    map['is_primary'] = Variable<bool>(isPrimary);
+    if (!nullToAbsent || iconName != null) {
+      map['icon_name'] = Variable<String>(iconName);
+    }
+    if (!nullToAbsent || colorHex != null) {
+      map['color_hex'] = Variable<String>(colorHex);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  AccountsCompanion toCompanion(bool nullToAbsent) {
+    return AccountsCompanion(
+      id: Value(id),
+      name: Value(name),
+      institution: institution == null && nullToAbsent
+          ? const Value.absent()
+          : Value(institution),
+      type: Value(type),
+      balance: Value(balance),
+      currency: Value(currency),
+      lastFour: lastFour == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastFour),
+      returnRate: returnRate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(returnRate),
+      isPrimary: Value(isPrimary),
+      iconName: iconName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(iconName),
+      colorHex: colorHex == null && nullToAbsent
+          ? const Value.absent()
+          : Value(colorHex),
+      sortOrder: Value(sortOrder),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory Account.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Account(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      institution: serializer.fromJson<String?>(json['institution']),
+      type: serializer.fromJson<String>(json['type']),
+      balance: serializer.fromJson<double>(json['balance']),
+      currency: serializer.fromJson<String>(json['currency']),
+      lastFour: serializer.fromJson<String?>(json['lastFour']),
+      returnRate: serializer.fromJson<double?>(json['returnRate']),
+      isPrimary: serializer.fromJson<bool>(json['isPrimary']),
+      iconName: serializer.fromJson<String?>(json['iconName']),
+      colorHex: serializer.fromJson<String?>(json['colorHex']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'institution': serializer.toJson<String?>(institution),
+      'type': serializer.toJson<String>(type),
+      'balance': serializer.toJson<double>(balance),
+      'currency': serializer.toJson<String>(currency),
+      'lastFour': serializer.toJson<String?>(lastFour),
+      'returnRate': serializer.toJson<double?>(returnRate),
+      'isPrimary': serializer.toJson<bool>(isPrimary),
+      'iconName': serializer.toJson<String?>(iconName),
+      'colorHex': serializer.toJson<String?>(colorHex),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  Account copyWith({
+    int? id,
+    String? name,
+    Value<String?> institution = const Value.absent(),
+    String? type,
+    double? balance,
+    String? currency,
+    Value<String?> lastFour = const Value.absent(),
+    Value<double?> returnRate = const Value.absent(),
+    bool? isPrimary,
+    Value<String?> iconName = const Value.absent(),
+    Value<String?> colorHex = const Value.absent(),
+    int? sortOrder,
+    DateTime? updatedAt,
+  }) => Account(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    institution: institution.present ? institution.value : this.institution,
+    type: type ?? this.type,
+    balance: balance ?? this.balance,
+    currency: currency ?? this.currency,
+    lastFour: lastFour.present ? lastFour.value : this.lastFour,
+    returnRate: returnRate.present ? returnRate.value : this.returnRate,
+    isPrimary: isPrimary ?? this.isPrimary,
+    iconName: iconName.present ? iconName.value : this.iconName,
+    colorHex: colorHex.present ? colorHex.value : this.colorHex,
+    sortOrder: sortOrder ?? this.sortOrder,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  Account copyWithCompanion(AccountsCompanion data) {
+    return Account(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      institution: data.institution.present
+          ? data.institution.value
+          : this.institution,
+      type: data.type.present ? data.type.value : this.type,
+      balance: data.balance.present ? data.balance.value : this.balance,
+      currency: data.currency.present ? data.currency.value : this.currency,
+      lastFour: data.lastFour.present ? data.lastFour.value : this.lastFour,
+      returnRate: data.returnRate.present
+          ? data.returnRate.value
+          : this.returnRate,
+      isPrimary: data.isPrimary.present ? data.isPrimary.value : this.isPrimary,
+      iconName: data.iconName.present ? data.iconName.value : this.iconName,
+      colorHex: data.colorHex.present ? data.colorHex.value : this.colorHex,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Account(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('institution: $institution, ')
+          ..write('type: $type, ')
+          ..write('balance: $balance, ')
+          ..write('currency: $currency, ')
+          ..write('lastFour: $lastFour, ')
+          ..write('returnRate: $returnRate, ')
+          ..write('isPrimary: $isPrimary, ')
+          ..write('iconName: $iconName, ')
+          ..write('colorHex: $colorHex, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    institution,
+    type,
+    balance,
+    currency,
+    lastFour,
+    returnRate,
+    isPrimary,
+    iconName,
+    colorHex,
+    sortOrder,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Account &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.institution == this.institution &&
+          other.type == this.type &&
+          other.balance == this.balance &&
+          other.currency == this.currency &&
+          other.lastFour == this.lastFour &&
+          other.returnRate == this.returnRate &&
+          other.isPrimary == this.isPrimary &&
+          other.iconName == this.iconName &&
+          other.colorHex == this.colorHex &&
+          other.sortOrder == this.sortOrder &&
+          other.updatedAt == this.updatedAt);
+}
+
+class AccountsCompanion extends UpdateCompanion<Account> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String?> institution;
+  final Value<String> type;
+  final Value<double> balance;
+  final Value<String> currency;
+  final Value<String?> lastFour;
+  final Value<double?> returnRate;
+  final Value<bool> isPrimary;
+  final Value<String?> iconName;
+  final Value<String?> colorHex;
+  final Value<int> sortOrder;
+  final Value<DateTime> updatedAt;
+  const AccountsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.institution = const Value.absent(),
+    this.type = const Value.absent(),
+    this.balance = const Value.absent(),
+    this.currency = const Value.absent(),
+    this.lastFour = const Value.absent(),
+    this.returnRate = const Value.absent(),
+    this.isPrimary = const Value.absent(),
+    this.iconName = const Value.absent(),
+    this.colorHex = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  AccountsCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    this.institution = const Value.absent(),
+    required String type,
+    required double balance,
+    this.currency = const Value.absent(),
+    this.lastFour = const Value.absent(),
+    this.returnRate = const Value.absent(),
+    this.isPrimary = const Value.absent(),
+    this.iconName = const Value.absent(),
+    this.colorHex = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    required DateTime updatedAt,
+  }) : name = Value(name),
+       type = Value(type),
+       balance = Value(balance),
+       updatedAt = Value(updatedAt);
+  static Insertable<Account> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? institution,
+    Expression<String>? type,
+    Expression<double>? balance,
+    Expression<String>? currency,
+    Expression<String>? lastFour,
+    Expression<double>? returnRate,
+    Expression<bool>? isPrimary,
+    Expression<String>? iconName,
+    Expression<String>? colorHex,
+    Expression<int>? sortOrder,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (institution != null) 'institution': institution,
+      if (type != null) 'type': type,
+      if (balance != null) 'balance': balance,
+      if (currency != null) 'currency': currency,
+      if (lastFour != null) 'last_four': lastFour,
+      if (returnRate != null) 'return_rate': returnRate,
+      if (isPrimary != null) 'is_primary': isPrimary,
+      if (iconName != null) 'icon_name': iconName,
+      if (colorHex != null) 'color_hex': colorHex,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  AccountsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<String?>? institution,
+    Value<String>? type,
+    Value<double>? balance,
+    Value<String>? currency,
+    Value<String?>? lastFour,
+    Value<double?>? returnRate,
+    Value<bool>? isPrimary,
+    Value<String?>? iconName,
+    Value<String?>? colorHex,
+    Value<int>? sortOrder,
+    Value<DateTime>? updatedAt,
+  }) {
+    return AccountsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      institution: institution ?? this.institution,
+      type: type ?? this.type,
+      balance: balance ?? this.balance,
+      currency: currency ?? this.currency,
+      lastFour: lastFour ?? this.lastFour,
+      returnRate: returnRate ?? this.returnRate,
+      isPrimary: isPrimary ?? this.isPrimary,
+      iconName: iconName ?? this.iconName,
+      colorHex: colorHex ?? this.colorHex,
+      sortOrder: sortOrder ?? this.sortOrder,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (institution.present) {
+      map['institution'] = Variable<String>(institution.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (balance.present) {
+      map['balance'] = Variable<double>(balance.value);
+    }
+    if (currency.present) {
+      map['currency'] = Variable<String>(currency.value);
+    }
+    if (lastFour.present) {
+      map['last_four'] = Variable<String>(lastFour.value);
+    }
+    if (returnRate.present) {
+      map['return_rate'] = Variable<double>(returnRate.value);
+    }
+    if (isPrimary.present) {
+      map['is_primary'] = Variable<bool>(isPrimary.value);
+    }
+    if (iconName.present) {
+      map['icon_name'] = Variable<String>(iconName.value);
+    }
+    if (colorHex.present) {
+      map['color_hex'] = Variable<String>(colorHex.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AccountsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('institution: $institution, ')
+          ..write('type: $type, ')
+          ..write('balance: $balance, ')
+          ..write('currency: $currency, ')
+          ..write('lastFour: $lastFour, ')
+          ..write('returnRate: $returnRate, ')
+          ..write('isPrimary: $isPrimary, ')
+          ..write('iconName: $iconName, ')
+          ..write('colorHex: $colorHex, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $PeriodEntriesTable extends PeriodEntries
     with TableInfo<$PeriodEntriesTable, PeriodEntry> {
   @override
@@ -16647,6 +17393,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   late final $SavingsGoalsTable savingsGoals = $SavingsGoalsTable(this);
   late final $DebtsTable debts = $DebtsTable(this);
   late final $QuickTemplatesTable quickTemplates = $QuickTemplatesTable(this);
+  late final $AccountsTable accounts = $AccountsTable(this);
   late final $PeriodEntriesTable periodEntries = $PeriodEntriesTable(this);
   late final $CycleCalculationsTable cycleCalculations =
       $CycleCalculationsTable(this);
@@ -16662,6 +17409,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   late final MedicationDao medicationDao = MedicationDao(this as TraumDatabase);
   late final AbstinenceDao abstinenceDao = AbstinenceDao(this as TraumDatabase);
   late final BudgetDao budgetDao = BudgetDao(this as TraumDatabase);
+  late final AccountsDao accountsDao = AccountsDao(this as TraumDatabase);
   late final PeriodDao periodDao = PeriodDao(this as TraumDatabase);
   late final SubstanceDao substanceDao = SubstanceDao(this as TraumDatabase);
   @override
@@ -16701,6 +17449,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
     savingsGoals,
     debts,
     quickTemplates,
+    accounts,
     periodEntries,
     cycleCalculations,
     periodSymptoms,
@@ -26655,6 +27404,350 @@ typedef $$QuickTemplatesTableProcessedTableManager =
       QuickTemplate,
       PrefetchHooks Function()
     >;
+typedef $$AccountsTableCreateCompanionBuilder =
+    AccountsCompanion Function({
+      Value<int> id,
+      required String name,
+      Value<String?> institution,
+      required String type,
+      required double balance,
+      Value<String> currency,
+      Value<String?> lastFour,
+      Value<double?> returnRate,
+      Value<bool> isPrimary,
+      Value<String?> iconName,
+      Value<String?> colorHex,
+      Value<int> sortOrder,
+      required DateTime updatedAt,
+    });
+typedef $$AccountsTableUpdateCompanionBuilder =
+    AccountsCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<String?> institution,
+      Value<String> type,
+      Value<double> balance,
+      Value<String> currency,
+      Value<String?> lastFour,
+      Value<double?> returnRate,
+      Value<bool> isPrimary,
+      Value<String?> iconName,
+      Value<String?> colorHex,
+      Value<int> sortOrder,
+      Value<DateTime> updatedAt,
+    });
+
+class $$AccountsTableFilterComposer
+    extends Composer<_$TraumDatabase, $AccountsTable> {
+  $$AccountsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get institution => $composableBuilder(
+    column: $table.institution,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get balance => $composableBuilder(
+    column: $table.balance,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currency => $composableBuilder(
+    column: $table.currency,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastFour => $composableBuilder(
+    column: $table.lastFour,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get returnRate => $composableBuilder(
+    column: $table.returnRate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isPrimary => $composableBuilder(
+    column: $table.isPrimary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get iconName => $composableBuilder(
+    column: $table.iconName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get colorHex => $composableBuilder(
+    column: $table.colorHex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AccountsTableOrderingComposer
+    extends Composer<_$TraumDatabase, $AccountsTable> {
+  $$AccountsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get institution => $composableBuilder(
+    column: $table.institution,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get balance => $composableBuilder(
+    column: $table.balance,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currency => $composableBuilder(
+    column: $table.currency,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastFour => $composableBuilder(
+    column: $table.lastFour,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get returnRate => $composableBuilder(
+    column: $table.returnRate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isPrimary => $composableBuilder(
+    column: $table.isPrimary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get iconName => $composableBuilder(
+    column: $table.iconName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get colorHex => $composableBuilder(
+    column: $table.colorHex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AccountsTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $AccountsTable> {
+  $$AccountsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get institution => $composableBuilder(
+    column: $table.institution,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<double> get balance =>
+      $composableBuilder(column: $table.balance, builder: (column) => column);
+
+  GeneratedColumn<String> get currency =>
+      $composableBuilder(column: $table.currency, builder: (column) => column);
+
+  GeneratedColumn<String> get lastFour =>
+      $composableBuilder(column: $table.lastFour, builder: (column) => column);
+
+  GeneratedColumn<double> get returnRate => $composableBuilder(
+    column: $table.returnRate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isPrimary =>
+      $composableBuilder(column: $table.isPrimary, builder: (column) => column);
+
+  GeneratedColumn<String> get iconName =>
+      $composableBuilder(column: $table.iconName, builder: (column) => column);
+
+  GeneratedColumn<String> get colorHex =>
+      $composableBuilder(column: $table.colorHex, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$AccountsTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $AccountsTable,
+          Account,
+          $$AccountsTableFilterComposer,
+          $$AccountsTableOrderingComposer,
+          $$AccountsTableAnnotationComposer,
+          $$AccountsTableCreateCompanionBuilder,
+          $$AccountsTableUpdateCompanionBuilder,
+          (Account, BaseReferences<_$TraumDatabase, $AccountsTable, Account>),
+          Account,
+          PrefetchHooks Function()
+        > {
+  $$AccountsTableTableManager(_$TraumDatabase db, $AccountsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AccountsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AccountsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AccountsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> institution = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<double> balance = const Value.absent(),
+                Value<String> currency = const Value.absent(),
+                Value<String?> lastFour = const Value.absent(),
+                Value<double?> returnRate = const Value.absent(),
+                Value<bool> isPrimary = const Value.absent(),
+                Value<String?> iconName = const Value.absent(),
+                Value<String?> colorHex = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => AccountsCompanion(
+                id: id,
+                name: name,
+                institution: institution,
+                type: type,
+                balance: balance,
+                currency: currency,
+                lastFour: lastFour,
+                returnRate: returnRate,
+                isPrimary: isPrimary,
+                iconName: iconName,
+                colorHex: colorHex,
+                sortOrder: sortOrder,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                Value<String?> institution = const Value.absent(),
+                required String type,
+                required double balance,
+                Value<String> currency = const Value.absent(),
+                Value<String?> lastFour = const Value.absent(),
+                Value<double?> returnRate = const Value.absent(),
+                Value<bool> isPrimary = const Value.absent(),
+                Value<String?> iconName = const Value.absent(),
+                Value<String?> colorHex = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                required DateTime updatedAt,
+              }) => AccountsCompanion.insert(
+                id: id,
+                name: name,
+                institution: institution,
+                type: type,
+                balance: balance,
+                currency: currency,
+                lastFour: lastFour,
+                returnRate: returnRate,
+                isPrimary: isPrimary,
+                iconName: iconName,
+                colorHex: colorHex,
+                sortOrder: sortOrder,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AccountsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $AccountsTable,
+      Account,
+      $$AccountsTableFilterComposer,
+      $$AccountsTableOrderingComposer,
+      $$AccountsTableAnnotationComposer,
+      $$AccountsTableCreateCompanionBuilder,
+      $$AccountsTableUpdateCompanionBuilder,
+      (Account, BaseReferences<_$TraumDatabase, $AccountsTable, Account>),
+      Account,
+      PrefetchHooks Function()
+    >;
 typedef $$PeriodEntriesTableCreateCompanionBuilder =
     PeriodEntriesCompanion Function({
       Value<int> id,
@@ -27844,6 +28937,8 @@ class $TraumDatabaseManager {
       $$DebtsTableTableManager(_db, _db.debts);
   $$QuickTemplatesTableTableManager get quickTemplates =>
       $$QuickTemplatesTableTableManager(_db, _db.quickTemplates);
+  $$AccountsTableTableManager get accounts =>
+      $$AccountsTableTableManager(_db, _db.accounts);
   $$PeriodEntriesTableTableManager get periodEntries =>
       $$PeriodEntriesTableTableManager(_db, _db.periodEntries);
   $$CycleCalculationsTableTableManager get cycleCalculations =>
