@@ -57,3 +57,20 @@ class QuickTemplates extends Table {
   IntColumn get useCount => integer().withDefault(const Constant(0))();
   DateTimeColumn get lastUsed => dateTime().nullable()();
 }
+
+class Accounts extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+  TextColumn get institution => text().nullable()();
+  // 'checking' | 'savings' | 'credit' | 'investment'
+  TextColumn get type => text()();
+  RealColumn get balance => real()();
+  TextColumn get currency => text().withDefault(const Constant('EUR'))();
+  TextColumn get lastFour => text().nullable()();
+  RealColumn get returnRate => real().nullable()();
+  BoolColumn get isPrimary => boolean().withDefault(const Constant(false))();
+  TextColumn get iconName => text().nullable()();
+  TextColumn get colorHex => text().nullable()();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  DateTimeColumn get updatedAt => dateTime()();
+}

@@ -23,6 +23,7 @@ import 'daos/supplement_dao.dart';
 import 'daos/medication_dao.dart';
 import 'daos/abstinence_dao.dart';
 import 'daos/budget_dao.dart';
+import 'daos/accounts_dao.dart';
 import 'daos/period_dao.dart';
 import 'daos/substance_dao.dart';
 
@@ -47,6 +48,7 @@ export 'daos/supplement_dao.dart';
 export 'daos/medication_dao.dart';
 export 'daos/abstinence_dao.dart';
 export 'daos/budget_dao.dart';
+export 'daos/accounts_dao.dart';
 export 'daos/period_dao.dart';
 export 'daos/substance_dao.dart';
 
@@ -88,12 +90,13 @@ part 'traum_database.g.dart';
     // Abstinence (2)
     AbstinenceTrackers,
     AbstinenceEvents,
-    // Budget (5)
+    // Budget (6)
     BudgetCategories,
     Transactions,
     SavingsGoals,
     Debts,
     QuickTemplates,
+    Accounts,
     // Period (3)
     PeriodEntries,
     CycleCalculations,
@@ -110,6 +113,7 @@ part 'traum_database.g.dart';
     MedicationDao,
     AbstinenceDao,
     BudgetDao,
+    AccountsDao,
     PeriodDao,
     SubstanceDao,
   ],
@@ -122,7 +126,7 @@ class TraumDatabase extends _$TraumDatabase {
   SubstanceDao get substanceDao => SubstanceDao(this);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -153,6 +157,9 @@ class TraumDatabase extends _$TraumDatabase {
         await migrator.addColumn(transactions, transactions.templateName);
         await migrator.addColumn(transactions, transactions.splitFromId);
         await migrator.createTable(quickTemplates);
+      }
+      if (from < 6) {
+        await migrator.createTable(accounts);
       }
     },
   );
