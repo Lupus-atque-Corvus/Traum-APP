@@ -9,6 +9,7 @@ import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 import 'receipt_scanner.dart';
 import 'widgets/numpad_widget.dart';
 
@@ -333,23 +334,19 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                           ? '${_date.day}.${_date.month}.${_date.year}'
                           : 'Anderes ▼',
                       isSelected: !isToday && !isYesterday && !isDayBefore,
-                      onTap: () async {
-                        final picked = await showDatePicker(
+                      onTap: () {
+                        showModalBottomSheet(
                           context: context,
-                          initialDate: _date,
-                          firstDate: DateTime(2000),
-                          lastDate:
-                              DateTime.now().add(const Duration(days: 1)),
-                          builder: (ctx, child) => Theme(
-                            data: ThemeData.dark().copyWith(
-                              colorScheme: const ColorScheme.dark(
-                                primary: TraumColors.amberGold,
-                              ),
-                            ),
-                            child: child!,
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: true,
+                          builder: (_) => _CalendarSheet(
+                            initialDate: _date,
+                            onDaySelected: (picked) {
+                              _setDateChip(picked);
+                              Navigator.of(context).pop();
+                            },
                           ),
                         );
-                        if (picked != null) _setDateChip(picked);
                       },
                     ),
                   ],
@@ -577,14 +574,17 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
               const SizedBox(height: 16),
 
               // Save button
-              GradientButton(
-                label: _saving
-                    ? 'Speichern...'
-                    : _type == 'expense'
-                        ? 'Ausgabe speichern  ${_numpadValue.isNotEmpty ? "−$_numpadValue $currency" : ""}'
-                        : 'Einnahme speichern  ${_numpadValue.isNotEmpty ? "+$_numpadValue $currency" : ""}',
-                onPressed: _saving ? null : _save,
-              ),
+              Builder(builder: (ctx) {
+                final l10n = AppLocalizations.of(ctx)!;
+                return GradientButton(
+                  label: _saving
+                      ? l10n.saving
+                      : _type == 'expense'
+                          ? '${l10n.budgetAddExpense}  ${_numpadValue.isNotEmpty ? "−$_numpadValue $currency" : ""}'
+                          : '${l10n.budgetAddIncome}  ${_numpadValue.isNotEmpty ? "+$_numpadValue $currency" : ""}',
+                  onPressed: _saving ? null : _save,
+                );
+              }),
               const SizedBox(height: 8),
             ],
           ),
@@ -647,6 +647,104 @@ class _TypeButton extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _CalendarSheet extends StatefulWidget {
+  final DateTime initialDate;
+  final void Function(DateTime) onDaySelected;
+
+  const _CalendarSheet(
+      {required this.initialDate, required this.onDaySelected});
+
+  @override
+  State<_CalendarSheet> createState() => _CalendarSheetState();
+}
+
+class _CalendarSheetState extends State<_CalendarSheet> {
+  late DateTime _focused;
+  late DateTime _selected;
+
+  @override
+  void initState() {
+    super.initState();
+    _focused = widget.initialDate;
+    _selected = widget.initialDate;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: TraumColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40,
+            height: 4,
+            margin: const EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
+              color: TraumColors.onBackgroundMuted,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          TableCalendar(
+            locale: 'de_DE',
+            focusedDay: _focused,
+            firstDay: DateTime(2000),
+            lastDay: DateTime.now().add(const Duration(days: 1)),
+            selectedDayPredicate: (day) => isSameDay(day, _selected),
+            onDaySelected: (selected, focused) {
+              setState(() {
+                _selected = selected;
+                _focused = focused;
+              });
+              widget.onDaySelected(selected);
+            },
+            calendarStyle: const CalendarStyle(
+              selectedDecoration: BoxDecoration(
+                color: TraumColors.amberGold,
+                shape: BoxShape.circle,
+              ),
+              todayDecoration: BoxDecoration(
+                color: TraumColors.amberGoldDim,
+                shape: BoxShape.circle,
+              ),
+              todayTextStyle:
+                  TextStyle(color: TraumColors.amberGold, fontFamily: 'DMSans'),
+              defaultTextStyle:
+                  TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
+              weekendTextStyle:
+                  TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
+              outsideTextStyle: TextStyle(
+                  color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+            ),
+            headerStyle: const HeaderStyle(
+              formatButtonVisible: false,
+              titleCentered: true,
+              titleTextStyle: TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w700),
+              leftChevronIcon: Icon(Icons.chevron_left,
+                  color: TraumColors.onBackgroundMuted),
+              rightChevronIcon: Icon(Icons.chevron_right,
+                  color: TraumColors.onBackgroundMuted),
+            ),
+            daysOfWeekStyle: const DaysOfWeekStyle(
+              weekdayStyle: TextStyle(
+                  color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12),
+              weekendStyle: TextStyle(
+                  color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/components/components.dart';
 import '../../../core/theme/colors.dart';
+import '../../../l10n/app_localizations.dart';
 import '../budget_providers.dart';
 
 class FixedCostsCard extends ConsumerWidget {
@@ -24,9 +25,9 @@ class FixedCostsCard extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Fixkosten diesen Monat',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.budgetFixedCosts,
+                    style: const TextStyle(
                       color: TraumColors.onBackground,
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w700,

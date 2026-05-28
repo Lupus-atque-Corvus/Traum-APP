@@ -6,7 +6,74 @@ import '../../../core/components/components.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../data/database/traum_database.dart';
+import '../../../l10n/app_localizations.dart';
 import '../budget_providers.dart';
+
+void _showDepositDialog(
+    BuildContext context, WidgetRef ref, SavingsGoal goal, String currency) {
+  final controller = TextEditingController();
+  showDialog(
+    context: context,
+    builder: (_) => StatefulBuilder(
+      builder: (ctx, setState) => AlertDialog(
+        backgroundColor: TraumColors.surface,
+        title: Text(
+          'Einzahlen – ${goal.name}',
+          style: const TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w700),
+        ),
+        content: TextField(
+          controller: controller,
+          keyboardType:
+              const TextInputType.numberWithOptions(decimal: true),
+          style: const TextStyle(
+              color: TraumColors.onBackground, fontFamily: 'DMSans'),
+          decoration: InputDecoration(
+            labelText: 'Betrag ($currency)',
+            labelStyle: const TextStyle(
+                color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+          ),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Abbrechen',
+                style: TextStyle(
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans')),
+          ),
+          TextButton(
+            onPressed: () async {
+              final amount =
+                  double.tryParse(controller.text.replaceAll(',', '.'));
+              if (amount == null || amount <= 0) return;
+              final newAmount =
+                  (goal.currentAmount + amount).clamp(0.0, goal.targetAmount);
+              final completed = newAmount >= goal.targetAmount;
+              await (ref
+                      .read(budgetDaoProvider)
+                      .update(ref.read(budgetDaoProvider).savingsGoals)
+                    ..where((t) => t.id.equals(goal.id)))
+                  .write(SavingsGoalsCompanion(
+                currentAmount: Value(newAmount),
+                isCompleted: Value(completed),
+              ));
+              if (ctx.mounted) Navigator.of(ctx).pop();
+            },
+            child: const Text('Einzahlen',
+                style: TextStyle(
+                    color: TraumColors.amberGold,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w700)),
+          ),
+        ],
+      ),
+    ),
+  );
+}
 
 class SavingsCard extends ConsumerWidget {
   final String currency;
@@ -32,9 +99,9 @@ class SavingsCard extends ConsumerWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Sparziele',
-                        style: TextStyle(
+                      Text(
+                        AppLocalizations.of(context)!.budgetSavingGoals,
+                        style: const TextStyle(
                           color: TraumColors.onBackground,
                           fontFamily: 'DMSans',
                           fontWeight: FontWeight.w700,
@@ -84,6 +151,27 @@ class SavingsCard extends ConsumerWidget {
                                     fontWeight: FontWeight.w500),
                               ),
                             ),
+                            GestureDetector(
+                              onTap: () =>
+                                  _showDepositDialog(context, ref, g, currency),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: TraumColors.mintGreenDim,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Text(
+                                  'Einzahlen',
+                                  style: TextStyle(
+                                      color: TraumColors.mintGreen,
+                                      fontFamily: 'DMSans',
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
                             Text(
                               '${g.currentAmount.toStringAsFixed(0)} / ${g.targetAmount.toStringAsFixed(0)} $currency',
                               style: const TextStyle(
@@ -127,9 +215,9 @@ class SavingsCard extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Schulden',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.budgetDebts,
+                    style: const TextStyle(
                       color: TraumColors.onBackground,
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w700,

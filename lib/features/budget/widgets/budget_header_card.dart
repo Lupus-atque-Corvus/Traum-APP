@@ -5,6 +5,7 @@ import '../../../core/components/components.dart';
 import '../../../core/providers/preferences_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/radius.dart';
+import '../../../l10n/app_localizations.dart';
 import '../budget_forecast.dart';
 import '../budget_providers.dart';
 
@@ -166,7 +167,7 @@ class BudgetHeaderCard extends ConsumerWidget {
                       _StatCol(
                         icon: Icons.arrow_downward_rounded,
                         color: TraumColors.mintGreen,
-                        label: 'Einnahmen',
+                        label: AppLocalizations.of(context)!.budgetIncome,
                         value:
                             '${summary.income.toStringAsFixed(0)} $currency',
                       ),
@@ -174,14 +175,14 @@ class BudgetHeaderCard extends ConsumerWidget {
                       _StatCol(
                         icon: Icons.arrow_upward_rounded,
                         color: TraumColors.roseRed,
-                        label: 'Ausgaben',
+                        label: AppLocalizations.of(context)!.budgetExpenses,
                         value:
                             '${summary.expenses.toStringAsFixed(0)} $currency',
                       ),
                       _StatCol(
                         icon: Icons.savings_rounded,
                         color: TraumColors.amberGold,
-                        label: 'Gespart',
+                        label: AppLocalizations.of(context)!.budgetSaved,
                         value: summary.income > 0
                             ? '${((1 - summary.expenses / summary.income) * 100).clamp(0, 100).toStringAsFixed(0)}%'
                             : '0%',

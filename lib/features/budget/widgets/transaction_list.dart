@@ -4,6 +4,8 @@ import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/radius.dart';
 import '../../../data/database/traum_database.dart';
+import '../../../l10n/app_localizations.dart';
+import '../budget_providers.dart';
 
 class TransactionList extends ConsumerStatefulWidget {
   final List<Transaction> transactions;
@@ -27,14 +29,15 @@ class _TransactionListState extends ConsumerState<TransactionList> {
   String _filter = 'all'; // all | income | expense | thisWeek | thisMonth
   String? _categoryFilter;
 
-  List<Transaction> get _filtered {
+  List<Transaction> _buildFiltered(
+      String? externalCatName, (DateTime, DateTime)? externalDateRange) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     return widget.transactions.where((t) {
       // Type filter
       if (_filter == 'income' && t.type != 'income') return false;
       if (_filter == 'expense' && t.type != 'expense') return false;
-      // Date filters
+      // Date filters (local)
       if (_filter == 'thisWeek') {
         final weekStart = today.subtract(Duration(days: today.weekday - 1));
         final tDate = DateTime(t.date.year, t.date.month, t.date.day);
@@ -43,11 +46,21 @@ class _TransactionListState extends ConsumerState<TransactionList> {
       if (_filter == 'thisMonth') {
         if (t.date.year != now.year || t.date.month != now.month) return false;
       }
-      if (_categoryFilter != null) {
+      // External date range filter (from TrendBarChart tap)
+      if (externalDateRange != null) {
+        final tDate = DateTime(t.date.year, t.date.month, t.date.day);
+        if (tDate.isBefore(externalDateRange.$1) ||
+            tDate.isAfter(externalDateRange.$2)) {
+          return false;
+        }
+      }
+      // Category filter — external overrides local
+      final effectiveCat = externalCatName ?? _categoryFilter;
+      if (effectiveCat != null) {
         final cat = widget.categories.cast<BudgetCategory?>().firstWhere(
-            (c) => c?.id == t.categoryId,
+            (c) => c?.name == effectiveCat,
             orElse: () => null);
-        if (cat?.name != _categoryFilter) return false;
+        if (cat == null || t.categoryId != cat.id) return false;
       }
       // Hide split parents
       if (t.templateName == 'SPLIT_PARENT') return false;
@@ -55,9 +68,9 @@ class _TransactionListState extends ConsumerState<TransactionList> {
     }).toList();
   }
 
-  Map<String, List<Transaction>> get _grouped {
+  Map<String, List<Transaction>> _groupTransactions(List<Transaction> filtered) {
     final grouped = <String, List<Transaction>>{};
-    for (final t in _filtered) {
+    for (final t in filtered) {
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day);
       final tDate = DateTime(t.date.year, t.date.month, t.date.day);
@@ -75,9 +88,17 @@ class _TransactionListState extends ConsumerState<TransactionList> {
     return grouped;
   }
 
+  void _clearExternalFilters() {
+    ref.read(selectedCategoryNameProvider.notifier).state = null;
+    ref.read(trendBarDateRangeProvider.notifier).state = null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final grouped = _grouped;
+    final externalCatName = ref.watch(selectedCategoryNameProvider);
+    final externalDateRange = ref.watch(trendBarDateRangeProvider);
+    final filtered = _buildFiltered(externalCatName, externalDateRange);
+    final grouped = _groupTransactions(filtered);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,8 +107,8 @@ class _TransactionListState extends ConsumerState<TransactionList> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Transaktionen',
-                style: TextStyle(
+            Text(AppLocalizations.of(context)!.budgetTransactions,
+                style: const TextStyle(
                     color: TraumColors.onBackground,
                     fontFamily: 'DMSans',
                     fontWeight: FontWeight.w700,
@@ -123,42 +144,57 @@ class _TransactionListState extends ConsumerState<TransactionList> {
               _FilterChip(
                   label: 'Alle',
                   isSelected: _filter == 'all' && _categoryFilter == null,
-                  onTap: () => setState(() {
-                        _filter = 'all';
-                        _categoryFilter = null;
-                      })),
+                  onTap: () {
+                    _clearExternalFilters();
+                    setState(() {
+                      _filter = 'all';
+                      _categoryFilter = null;
+                    });
+                  }),
               const SizedBox(width: 6),
               _FilterChip(
-                  label: 'Einnahmen',
+                  label: AppLocalizations.of(context)!.budgetIncome,
                   isSelected: _filter == 'income',
-                  onTap: () => setState(() {
-                        _filter = 'income';
-                        _categoryFilter = null;
-                      })),
+                  onTap: () {
+                    _clearExternalFilters();
+                    setState(() {
+                      _filter = 'income';
+                      _categoryFilter = null;
+                    });
+                  }),
               const SizedBox(width: 6),
               _FilterChip(
-                  label: 'Ausgaben',
+                  label: AppLocalizations.of(context)!.budgetExpenses,
                   isSelected: _filter == 'expense',
-                  onTap: () => setState(() {
-                        _filter = 'expense';
-                        _categoryFilter = null;
-                      })),
+                  onTap: () {
+                    _clearExternalFilters();
+                    setState(() {
+                      _filter = 'expense';
+                      _categoryFilter = null;
+                    });
+                  }),
               const SizedBox(width: 6),
               _FilterChip(
                   label: 'Diese Woche',
                   isSelected: _filter == 'thisWeek',
-                  onTap: () => setState(() {
-                        _filter = 'thisWeek';
-                        _categoryFilter = null;
-                      })),
+                  onTap: () {
+                    _clearExternalFilters();
+                    setState(() {
+                      _filter = 'thisWeek';
+                      _categoryFilter = null;
+                    });
+                  }),
               const SizedBox(width: 6),
               _FilterChip(
                   label: 'Diesen Monat',
                   isSelected: _filter == 'thisMonth',
-                  onTap: () => setState(() {
-                        _filter = 'thisMonth';
-                        _categoryFilter = null;
-                      })),
+                  onTap: () {
+                    _clearExternalFilters();
+                    setState(() {
+                      _filter = 'thisMonth';
+                      _categoryFilter = null;
+                    });
+                  }),
               const SizedBox(width: 6),
               ...widget.categories.take(5).map((cat) => Padding(
                     padding: const EdgeInsets.only(right: 6),

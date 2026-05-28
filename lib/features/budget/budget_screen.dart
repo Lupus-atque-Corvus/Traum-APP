@@ -141,6 +141,12 @@ class BudgetScreen extends ConsumerWidget {
                       transactions: txs,
                       currency: currency,
                       onShowAll: () => context.go('/budget/stats'),
+                      onCategoryTap: (cat) {
+                        ref.read(selectedCategoryNameProvider.notifier).state =
+                            cat.name;
+                        ref.read(trendBarDateRangeProvider.notifier).state =
+                            null;
+                      },
                     ),
                     loading: () => const SizedBox.shrink(),
                     error: (_, __) => const SizedBox.shrink(),
@@ -155,6 +161,11 @@ class BudgetScreen extends ConsumerWidget {
                   data: (expenses) => DonutChartCard(
                     expenses: expenses,
                     currency: currency,
+                    onSegmentTap: (catName) {
+                      ref.read(selectedCategoryNameProvider.notifier).state =
+                          catName;
+                      ref.read(trendBarDateRangeProvider.notifier).state = null;
+                    },
                   ),
                   loading: () => const SizedBox.shrink(),
                   error: (_, __) => const SizedBox.shrink(),

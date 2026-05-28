@@ -49,6 +49,13 @@ final budgetBalanceVisibleProvider = StateProvider<bool>((_) => true);
 
 final selectedTrendPeriodProvider = StateProvider<TrendPeriod>((_) => TrendPeriod.month);
 
+// Category name filter — set by CategoryGrid tap or DonutChart tap
+final selectedCategoryNameProvider = StateProvider<String?>((_) => null);
+
+// Date range filter — set by TrendBarChart bar tap
+final trendBarDateRangeProvider =
+    StateProvider<(DateTime, DateTime)?>((_) => null);
+
 // ─── Data Providers ───────────────────────────────────────────────────────────
 
 final budgetSummaryProvider = FutureProvider.autoDispose

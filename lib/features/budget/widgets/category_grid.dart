@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/components/components.dart';
 import '../../../core/theme/colors.dart';
 import '../../../data/database/traum_database.dart';
+import '../../../l10n/app_localizations.dart';
 
 class CategoryGrid extends StatelessWidget {
   final List<BudgetCategory> categories;
@@ -42,9 +43,9 @@ class CategoryGrid extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Kategorien',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.budgetCategories,
+              style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700,

@@ -13,6 +13,7 @@ import '../../core/theme/colors.dart';
 import '../../core/utils/date_utils.dart' as traum_dates;
 import '../../core/utils/update_service.dart';
 import '../../data/database/traum_database.dart' show WaterLogsCompanion;
+import '../../features/budget/budget_providers.dart';
 import '../../l10n/app_localizations.dart';
 
 final waterTodayProvider = StreamProvider.autoDispose<int>((ref) {
@@ -707,13 +708,18 @@ class _HabitsCard extends StatelessWidget {
   }
 }
 
-class _BudgetCard extends StatelessWidget {
+class _BudgetCard extends ConsumerWidget {
   final VoidCallback onTap;
   const _BudgetCard({required this.onTap});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final now = DateTime.now();
+    final ym = (now.year, now.month);
+    final summaryAsync = ref.watch(budgetSummaryProvider(ym));
+    final currency = ref.watch(currencySymbolProvider);
+
     return TraumCard(
       onTap: onTap,
       borderColor: TraumColors.amberGold,
@@ -722,16 +728,75 @@ class _BudgetCard extends StatelessWidget {
         children: [
           SectionHeader(title: l10n.budget),
           const SizedBox(height: 8),
-          Text(
-            l10n.noTransactionsThisMonth,
-            style: const TextStyle(
-              fontSize: 12,
-              color: TraumColors.onBackgroundMuted,
-              fontFamily: 'DMSans',
+          summaryAsync.when(
+            data: (s) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _BudgetStat(
+                  label: '↓ Ein.',
+                  value: '+${s.income.toStringAsFixed(0)} $currency',
+                  color: TraumColors.mintGreen,
+                ),
+                _BudgetStat(
+                  label: '↑ Aus.',
+                  value: '−${s.expenses.toStringAsFixed(0)} $currency',
+                  color: TraumColors.roseRed,
+                ),
+                _BudgetStat(
+                  label: 'Saldo',
+                  value:
+                      '${s.balance >= 0 ? '+' : '−'}${s.balance.abs().toStringAsFixed(0)} $currency',
+                  color: s.balance >= 0
+                      ? TraumColors.mintGreen
+                      : TraumColors.roseRed,
+                ),
+              ],
+            ),
+            loading: () => const SizedBox(
+              height: 20,
+              child: LinearProgressIndicator(
+                  color: TraumColors.amberGold,
+                  backgroundColor: TraumColors.surface),
+            ),
+            error: (_, __) => Text(
+              l10n.noTransactionsThisMonth,
+              style: const TextStyle(
+                  fontSize: 12,
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans'),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _BudgetStat extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+
+  const _BudgetStat(
+      {required this.label, required this.value, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style: const TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 10)),
+        Text(value,
+            style: TextStyle(
+                color: color,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w600,
+                fontSize: 13)),
+      ],
     );
   }
 }

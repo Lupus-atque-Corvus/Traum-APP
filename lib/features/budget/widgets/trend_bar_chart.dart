@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/components/components.dart';
 import '../../../core/theme/colors.dart';
+import '../../../l10n/app_localizations.dart';
 import '../budget_providers.dart';
 
 class TrendBarChart extends ConsumerStatefulWidget {
@@ -14,6 +15,36 @@ class TrendBarChart extends ConsumerStatefulWidget {
 
 class _TrendBarChartState extends ConsumerState<TrendBarChart> {
   int? _touchedGroupIndex;
+
+  (DateTime, DateTime) _computeDateRange(TrendPeriod period, int barIndex) {
+    final now = DateTime.now();
+    switch (period) {
+      case TrendPeriod.week:
+        final day = now.subtract(Duration(days: 6 - barIndex));
+        final start = DateTime(day.year, day.month, day.day);
+        return (start, start);
+      case TrendPeriod.month:
+        final w = 3 - barIndex;
+        final weekStart =
+            now.subtract(Duration(days: w * 7 + now.weekday - 1));
+        final start =
+            DateTime(weekStart.year, weekStart.month, weekStart.day);
+        var end = start.add(const Duration(days: 6));
+        final today = DateTime(now.year, now.month, now.day);
+        if (end.isAfter(today)) end = today;
+        return (start, end);
+      case TrendPeriod.sixMonths:
+        final month = DateTime(now.year, now.month - (5 - barIndex), 1);
+        final start = DateTime(month.year, month.month, 1);
+        final end = DateTime(month.year, month.month + 1, 0);
+        return (start, end);
+      case TrendPeriod.year:
+        final month = DateTime(now.year, now.month - (11 - barIndex), 1);
+        final start = DateTime(month.year, month.month, 1);
+        final end = DateTime(month.year, month.month + 1, 0);
+        return (start, end);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,10 +136,25 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                     maxY: maxY > 0 ? maxY : 1,
                     barTouchData: BarTouchData(
                       touchCallback: (event, response) {
+                        final groupIndex =
+                            response?.spot?.touchedBarGroupIndex;
                         setState(() {
-                          _touchedGroupIndex =
-                              response?.spot?.touchedBarGroupIndex;
+                          _touchedGroupIndex = groupIndex;
                         });
+                        if (event is FlTapUpEvent) {
+                          if (groupIndex != null) {
+                            ref
+                                .read(trendBarDateRangeProvider.notifier)
+                                .state = _computeDateRange(period, groupIndex);
+                            ref
+                                .read(selectedCategoryNameProvider.notifier)
+                                .state = null;
+                          } else {
+                            ref
+                                .read(trendBarDateRangeProvider.notifier)
+                                .state = null;
+                          }
+                        }
                       },
                       touchTooltipData: BarTouchTooltipData(
                         getTooltipItem:
@@ -221,10 +267,12 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _LegendDot(
-                  color: TraumColors.mintGreen, label: 'Einnahmen'),
+                  color: TraumColors.mintGreen,
+                  label: AppLocalizations.of(context)!.budgetIncome),
               const SizedBox(width: 16),
               _LegendDot(
-                  color: TraumColors.roseRed, label: 'Ausgaben'),
+                  color: TraumColors.roseRed,
+                  label: AppLocalizations.of(context)!.budgetExpenses),
             ],
           ),
         ],
