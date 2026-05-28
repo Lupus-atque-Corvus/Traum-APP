@@ -27,7 +27,7 @@ class BudgetAmpel extends StatelessWidget {
       final remaining = totalBudget - totalSpent;
       message =
           'Noch ${remaining.toStringAsFixed(2)} $currency Budget übrig';
-    } else if (ratio < 1.0) {
+    } else if (ratio < 0.9) {
       color = TraumColors.amberGold;
       final remaining = totalBudget - totalSpent;
       message =

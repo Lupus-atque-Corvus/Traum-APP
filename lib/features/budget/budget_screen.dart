@@ -43,10 +43,19 @@ class BudgetScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: TraumColors.background,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openQuickEntry(context, ref),
         backgroundColor: TraumColors.amberGold,
-        child: const Icon(Icons.add_rounded, color: Colors.white),
+        label: const Text(
+          '+',
+          style: TextStyle(
+            fontFamily: 'DMSans',
+            color: Colors.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 24,
+          ),
+        ),
+        icon: const Icon(Icons.add_rounded, color: Colors.white),
       ),
       body: CustomScrollView(
         slivers: [
@@ -64,6 +73,11 @@ class BudgetScreen extends ConsumerWidget {
               ),
             ),
             actions: [
+              IconButton(
+                icon: const Icon(Icons.notifications_outlined,
+                    color: TraumColors.amberGold),
+                onPressed: () {},
+              ),
               IconButton(
                 icon: const Icon(Icons.savings_rounded,
                     color: TraumColors.mintGreen),
@@ -126,6 +140,7 @@ class BudgetScreen extends ConsumerWidget {
                       categories: cats,
                       transactions: txs,
                       currency: currency,
+                      onShowAll: () => context.go('/budget/stats'),
                     ),
                     loading: () => const SizedBox.shrink(),
                     error: (_, __) => const SizedBox.shrink(),

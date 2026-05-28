@@ -8,6 +8,7 @@ class CategoryGrid extends StatelessWidget {
   final List<Transaction> transactions;
   final String currency;
   final void Function(BudgetCategory)? onCategoryTap;
+  final VoidCallback? onShowAll;
 
   const CategoryGrid({
     super.key,
@@ -15,6 +16,7 @@ class CategoryGrid extends StatelessWidget {
     required this.transactions,
     required this.currency,
     this.onCategoryTap,
+    this.onShowAll,
   });
 
   @override
@@ -37,14 +39,36 @@ class CategoryGrid extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Kategorien',
-          style: TextStyle(
-            color: TraumColors.onBackground,
-            fontFamily: 'DMSans',
-            fontWeight: FontWeight.w700,
-            fontSize: 15,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Kategorien',
+              style: TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+                fontSize: 15,
+              ),
+            ),
+            if (onShowAll != null)
+              TextButton(
+                onPressed: onShowAll,
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: const Text(
+                  'Alle anzeigen ›',
+                  style: TextStyle(
+                    color: TraumColors.amberGold,
+                    fontFamily: 'DMSans',
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+          ],
         ),
         const SizedBox(height: 10),
         GridView.builder(
@@ -64,15 +88,22 @@ class CategoryGrid extends StatelessWidget {
             final ratio = (spent / limit).clamp(0.0, double.infinity);
             final isOver = ratio > 1.0;
 
-            // gradientDanger and gradientSuccess don't exist in TraumColors.
-            // Use gradientBudgetLine for over-budget, gradientNutrition for ok.
             final gradient = isOver
                 ? const LinearGradient(
                     colors: [TraumColors.roseRed, TraumColors.roseRed],
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                   )
-                : TraumColors.gradientWarm;
+                : ratio >= 0.7
+                    ? LinearGradient(
+                        colors: [
+                          TraumColors.amberGold,
+                          TraumColors.amberGold.withValues(alpha: 0.7),
+                        ],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      )
+                    : TraumColors.gradientWarm;
 
             return TraumCard(
               padding: const EdgeInsets.all(12),

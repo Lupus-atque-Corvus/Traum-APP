@@ -1090,5 +1090,24 @@
       "name": {"type": "String"},
       "days": {"type": "String"}
     }
+  },
+  "budgetIncome": "Einnahmen",
+  "budgetExpenses": "Ausgaben",
+  "budgetSaved": "Gespart",
+  "budgetForecast": "Prognose",
+  "budgetCategories": "Kategorien",
+  "budgetTransactions": "Transaktionen",
+  "budgetFixedCosts": "Fixkosten",
+  "budgetSavingGoals": "Sparziele",
+  "budgetDebts": "Schulden",
+  "budgetQuickTemplates": "Schnellvorlagen",
+  "budgetAddExpense": "Ausgabe speichern",
+  "budgetAddIncome": "Einnahme speichern",
+  "budgetScanSuccess": "Erkannt: {amount} € am {date}",
+  "@budgetScanSuccess": {
+    "placeholders": {
+      "amount": {"type": "String"},
+      "date": {"type": "String"}
+    }
   }
 }

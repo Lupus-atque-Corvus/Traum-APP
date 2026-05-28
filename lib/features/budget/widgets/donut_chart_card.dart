@@ -73,7 +73,7 @@ class _DonutChartCardState extends State<DonutChartCard> {
                 height: 140,
                 child: PieChart(
                   PieChartData(
-                    centerSpaceRadius: 44,
+                    centerSpaceRadius: 50,
                     sectionsSpace: 2,
                     pieTouchData: PieTouchData(
                       touchCallback: (event, response) {

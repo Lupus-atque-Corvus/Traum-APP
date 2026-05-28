@@ -2523,4 +2523,98 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsFeedbackSubtitle => 'Bug · Feature · Improvement';
+
+  @override
+  String get budgetTitle => 'Finance';
+
+  @override
+  String get budgetAvailableBalance => 'Available balance';
+
+  @override
+  String budgetForecastText(String amount) {
+    return 'At this rate you\'ll have ~$amount left at month end.';
+  }
+
+  @override
+  String get budgetScanReceipt => 'Scan receipt / photo';
+
+  @override
+  String get budgetScanningReceipt => 'Analysing receipt...';
+
+  @override
+  String get budgetScanNoAmount =>
+      'Amount not detected — please enter manually';
+
+  @override
+  String get budgetSaveAsTemplate => 'Save as template';
+
+  @override
+  String get budgetSplitTransaction => 'Split amount';
+
+  @override
+  String get budgetSplitTitle => 'Split transaction';
+
+  @override
+  String budgetSplitRemaining(String amount) {
+    return 'Remaining: $amount';
+  }
+
+  @override
+  String budgetStatusGood(String amount) {
+    return '$amount budget remaining';
+  }
+
+  @override
+  String get budgetStatusWarning => '80% of budget used';
+
+  @override
+  String budgetStatusOverbudget(String amount) {
+    return 'Budget exceeded by $amount';
+  }
+
+  @override
+  String budgetRecurringWarning(String name, String days) {
+    return '$name due in $days days';
+  }
+
+  @override
+  String get budgetIncome => 'Income';
+
+  @override
+  String get budgetExpenses => 'Expenses';
+
+  @override
+  String get budgetSaved => 'Saved';
+
+  @override
+  String get budgetForecast => 'Forecast';
+
+  @override
+  String get budgetCategories => 'Categories';
+
+  @override
+  String get budgetTransactions => 'Transactions';
+
+  @override
+  String get budgetFixedCosts => 'Fixed costs';
+
+  @override
+  String get budgetSavingGoals => 'Savings goals';
+
+  @override
+  String get budgetDebts => 'Debts';
+
+  @override
+  String get budgetQuickTemplates => 'Quick templates';
+
+  @override
+  String get budgetAddExpense => 'Save expense';
+
+  @override
+  String get budgetAddIncome => 'Save income';
+
+  @override
+  String budgetScanSuccess(String amount, String date) {
+    return 'Detected: $amount on $date';
+  }
 }

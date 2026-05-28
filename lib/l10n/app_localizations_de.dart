@@ -2533,4 +2533,98 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsFeedbackSubtitle => 'Bug · Feature · Verbesserung';
+
+  @override
+  String get budgetTitle => 'Finanzen';
+
+  @override
+  String get budgetAvailableBalance => 'Verfügbares Guthaben';
+
+  @override
+  String budgetForecastText(String amount) {
+    return 'Bei aktuellem Tempo hast du am Monatsende ~$amount übrig.';
+  }
+
+  @override
+  String get budgetScanReceipt => 'Kassenzettel scannen / Foto';
+
+  @override
+  String get budgetScanningReceipt => 'Kassenzettel wird analysiert...';
+
+  @override
+  String get budgetScanNoAmount =>
+      'Betrag nicht erkannt — bitte manuell eingeben';
+
+  @override
+  String get budgetSaveAsTemplate => 'Als Vorlage speichern';
+
+  @override
+  String get budgetSplitTransaction => 'Betrag aufteilen';
+
+  @override
+  String get budgetSplitTitle => 'Transaktion aufteilen';
+
+  @override
+  String budgetSplitRemaining(String amount) {
+    return 'Verbleibend: $amount €';
+  }
+
+  @override
+  String budgetStatusGood(String amount) {
+    return 'Noch $amount Budget übrig';
+  }
+
+  @override
+  String get budgetStatusWarning => '80% des Budgets verbraucht';
+
+  @override
+  String budgetStatusOverbudget(String amount) {
+    return 'Budget um $amount überschritten';
+  }
+
+  @override
+  String budgetRecurringWarning(String name, String days) {
+    return '$name fällig in $days Tagen';
+  }
+
+  @override
+  String get budgetIncome => 'Einnahmen';
+
+  @override
+  String get budgetExpenses => 'Ausgaben';
+
+  @override
+  String get budgetSaved => 'Gespart';
+
+  @override
+  String get budgetForecast => 'Prognose';
+
+  @override
+  String get budgetCategories => 'Kategorien';
+
+  @override
+  String get budgetTransactions => 'Transaktionen';
+
+  @override
+  String get budgetFixedCosts => 'Fixkosten';
+
+  @override
+  String get budgetSavingGoals => 'Sparziele';
+
+  @override
+  String get budgetDebts => 'Schulden';
+
+  @override
+  String get budgetQuickTemplates => 'Schnellvorlagen';
+
+  @override
+  String get budgetAddExpense => 'Ausgabe speichern';
+
+  @override
+  String get budgetAddIncome => 'Einnahme speichern';
+
+  @override
+  String budgetScanSuccess(String amount, String date) {
+    return 'Erkannt: $amount € am $date';
+  }
 }

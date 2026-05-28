@@ -182,6 +182,12 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
             );
       }
 
+      if (widget.initialTemplate != null) {
+        await ref
+            .read(budgetDaoProvider)
+            .incrementTemplateUsage(widget.initialTemplate!.id, amount);
+      }
+
       if (mounted) Navigator.of(context).pop(true);
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -358,6 +364,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                       .where((c) => c.isExpense == (_type == 'expense'))
                       .toList();
                   if (filtered.isEmpty) return const SizedBox.shrink();
+                  // +1 for the "+ Neu" tile
                   return GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -368,8 +375,52 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                       crossAxisSpacing: 8,
                       childAspectRatio: 1.1,
                     ),
-                    itemCount: filtered.length,
+                    itemCount: filtered.length + 1,
                     itemBuilder: (_, i) {
+                      if (i == filtered.length) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Kategorien in Einstellungen › Budget verwalten',
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: TraumColors.surface,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: TraumColors.amberGold.withValues(alpha: 0.5),
+                                width: 1,
+                              ),
+                            ),
+                            child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.add_rounded,
+                                  color: TraumColors.amberGold,
+                                  size: 22,
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  'Neu',
+                                  style: TextStyle(
+                                    color: TraumColors.amberGold,
+                                    fontFamily: 'DMSans',
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
                       final cat = filtered[i];
                       final isSelected = _categoryId == cat.id;
                       return GestureDetector(

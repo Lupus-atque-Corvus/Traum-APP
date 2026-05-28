@@ -92,6 +92,69 @@ class _TransactionDetailScreenState
     );
   }
 
+  Future<void> _saveAsTemplateDialog() async {
+    if (_transaction == null) return;
+    final nameCtrl = TextEditingController(text: _transaction!.description);
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: TraumColors.surface,
+        title: const Text('Als Vorlage speichern',
+            style: TextStyle(
+                color: TraumColors.onBackground, fontFamily: 'DMSans')),
+        content: TextField(
+          controller: nameCtrl,
+          autofocus: true,
+          style: const TextStyle(
+              color: TraumColors.onBackground, fontFamily: 'DMSans'),
+          decoration: InputDecoration(
+            hintText: 'Vorlagenname',
+            hintStyle: const TextStyle(
+                color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
+            filled: true,
+            fillColor: TraumColors.surfaceVariant,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Abbrechen',
+                style: TextStyle(
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans')),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Speichern',
+                style: TextStyle(
+                    color: TraumColors.amberGold, fontFamily: 'DMSans')),
+          ),
+        ],
+      ),
+    );
+    if (saved == true && nameCtrl.text.trim().isNotEmpty && mounted) {
+      final tx = _transaction!;
+      await ref.read(budgetDaoProvider).insertTemplate(
+            QuickTemplatesCompanion.insert(
+              name: nameCtrl.text.trim(),
+              defaultAmount: Value(tx.amount),
+              categoryId: Value(tx.categoryId),
+              type: tx.type,
+            ),
+          );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Als Vorlage gespeichert')),
+        );
+      }
+    }
+    nameCtrl.dispose();
+  }
+
   Future<void> _saveNote() async {
     if (_transaction == null) return;
     final dao = ref.read(budgetDaoProvider);
@@ -564,6 +627,24 @@ class _TransactionDetailScreenState
                   ),
                 ),
               ),
+            const SizedBox(height: 12),
+
+            // Save as template
+            OutlinedButton.icon(
+              onPressed: _saveAsTemplateDialog,
+              icon: const Icon(Icons.bookmark_add_outlined,
+                  color: TraumColors.amberGold),
+              label: const Text('Als Vorlage speichern',
+                  style: TextStyle(
+                      color: TraumColors.amberGold, fontFamily: 'DMSans')),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: TraumColors.amberGold),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(TraumRadius.card),
+                ),
+              ),
+            ),
             const SizedBox(height: 12),
 
             // Delete button

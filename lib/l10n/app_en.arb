@@ -1090,5 +1090,24 @@
       "name": {"type": "String"},
       "days": {"type": "String"}
     }
+  },
+  "budgetIncome": "Income",
+  "budgetExpenses": "Expenses",
+  "budgetSaved": "Saved",
+  "budgetForecast": "Forecast",
+  "budgetCategories": "Categories",
+  "budgetTransactions": "Transactions",
+  "budgetFixedCosts": "Fixed costs",
+  "budgetSavingGoals": "Savings goals",
+  "budgetDebts": "Debts",
+  "budgetQuickTemplates": "Quick templates",
+  "budgetAddExpense": "Save expense",
+  "budgetAddIncome": "Save income",
+  "budgetScanSuccess": "Detected: {amount} on {date}",
+  "@budgetScanSuccess": {
+    "placeholders": {
+      "amount": {"type": "String"},
+      "date": {"type": "String"}
+    }
   }
 }

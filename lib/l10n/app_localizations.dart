@@ -4921,6 +4921,168 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Bug · Feature · Verbesserung'**
   String get settingsFeedbackSubtitle;
+
+  /// No description provided for @budgetTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Finanzen'**
+  String get budgetTitle;
+
+  /// No description provided for @budgetAvailableBalance.
+  ///
+  /// In de, this message translates to:
+  /// **'Verfügbares Guthaben'**
+  String get budgetAvailableBalance;
+
+  /// No description provided for @budgetForecastText.
+  ///
+  /// In de, this message translates to:
+  /// **'Bei aktuellem Tempo hast du am Monatsende ~{amount} übrig.'**
+  String budgetForecastText(String amount);
+
+  /// No description provided for @budgetScanReceipt.
+  ///
+  /// In de, this message translates to:
+  /// **'Kassenzettel scannen / Foto'**
+  String get budgetScanReceipt;
+
+  /// No description provided for @budgetScanningReceipt.
+  ///
+  /// In de, this message translates to:
+  /// **'Kassenzettel wird analysiert...'**
+  String get budgetScanningReceipt;
+
+  /// No description provided for @budgetScanNoAmount.
+  ///
+  /// In de, this message translates to:
+  /// **'Betrag nicht erkannt — bitte manuell eingeben'**
+  String get budgetScanNoAmount;
+
+  /// No description provided for @budgetSaveAsTemplate.
+  ///
+  /// In de, this message translates to:
+  /// **'Als Vorlage speichern'**
+  String get budgetSaveAsTemplate;
+
+  /// No description provided for @budgetSplitTransaction.
+  ///
+  /// In de, this message translates to:
+  /// **'Betrag aufteilen'**
+  String get budgetSplitTransaction;
+
+  /// No description provided for @budgetSplitTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Transaktion aufteilen'**
+  String get budgetSplitTitle;
+
+  /// No description provided for @budgetSplitRemaining.
+  ///
+  /// In de, this message translates to:
+  /// **'Verbleibend: {amount} €'**
+  String budgetSplitRemaining(String amount);
+
+  /// No description provided for @budgetStatusGood.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch {amount} Budget übrig'**
+  String budgetStatusGood(String amount);
+
+  /// No description provided for @budgetStatusWarning.
+  ///
+  /// In de, this message translates to:
+  /// **'80% des Budgets verbraucht'**
+  String get budgetStatusWarning;
+
+  /// No description provided for @budgetStatusOverbudget.
+  ///
+  /// In de, this message translates to:
+  /// **'Budget um {amount} überschritten'**
+  String budgetStatusOverbudget(String amount);
+
+  /// No description provided for @budgetRecurringWarning.
+  ///
+  /// In de, this message translates to:
+  /// **'{name} fällig in {days} Tagen'**
+  String budgetRecurringWarning(String name, String days);
+
+  /// No description provided for @budgetIncome.
+  ///
+  /// In de, this message translates to:
+  /// **'Einnahmen'**
+  String get budgetIncome;
+
+  /// No description provided for @budgetExpenses.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausgaben'**
+  String get budgetExpenses;
+
+  /// No description provided for @budgetSaved.
+  ///
+  /// In de, this message translates to:
+  /// **'Gespart'**
+  String get budgetSaved;
+
+  /// No description provided for @budgetForecast.
+  ///
+  /// In de, this message translates to:
+  /// **'Prognose'**
+  String get budgetForecast;
+
+  /// No description provided for @budgetCategories.
+  ///
+  /// In de, this message translates to:
+  /// **'Kategorien'**
+  String get budgetCategories;
+
+  /// No description provided for @budgetTransactions.
+  ///
+  /// In de, this message translates to:
+  /// **'Transaktionen'**
+  String get budgetTransactions;
+
+  /// No description provided for @budgetFixedCosts.
+  ///
+  /// In de, this message translates to:
+  /// **'Fixkosten'**
+  String get budgetFixedCosts;
+
+  /// No description provided for @budgetSavingGoals.
+  ///
+  /// In de, this message translates to:
+  /// **'Sparziele'**
+  String get budgetSavingGoals;
+
+  /// No description provided for @budgetDebts.
+  ///
+  /// In de, this message translates to:
+  /// **'Schulden'**
+  String get budgetDebts;
+
+  /// No description provided for @budgetQuickTemplates.
+  ///
+  /// In de, this message translates to:
+  /// **'Schnellvorlagen'**
+  String get budgetQuickTemplates;
+
+  /// No description provided for @budgetAddExpense.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausgabe speichern'**
+  String get budgetAddExpense;
+
+  /// No description provided for @budgetAddIncome.
+  ///
+  /// In de, this message translates to:
+  /// **'Einnahme speichern'**
+  String get budgetAddIncome;
+
+  /// No description provided for @budgetScanSuccess.
+  ///
+  /// In de, this message translates to:
+  /// **'Erkannt: {amount} € am {date}'**
+  String budgetScanSuccess(String amount, String date);
 }
 
 class _AppLocalizationsDelegate

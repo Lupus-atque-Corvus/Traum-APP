@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
+import '../../core/providers/preferences_provider.dart';
 import '../../data/database/traum_database.dart';
 
 // ─── Models ──────────────────────────────────────────────────────────────────
@@ -96,8 +97,11 @@ final categoryExpensesProvider = FutureProvider.autoDispose
 final dailyBalanceSpotsProvider = FutureProvider.autoDispose
     .family<List<FlSpot>, (int, int)>((ref, ym) async {
   final dao = ref.watch(budgetDaoProvider);
+  final prefs = ref.read(sharedPreferencesProvider);
   final txs = await dao.getTransactionsForMonth(ym.$1, ym.$2);
   final daysInMonth = DateTime(ym.$1, ym.$2 + 1, 0).day;
+  final startBalance =
+      prefs.getDouble('monthly_start_balance_${ym.$1}_${ym.$2}') ?? 0.0;
 
   final Map<int, double> daily = {};
   for (final t in txs) {
@@ -106,7 +110,7 @@ final dailyBalanceSpotsProvider = FutureProvider.autoDispose
         (daily[day] ?? 0) + (t.type == 'income' ? t.amount : -t.amount);
   }
 
-  double cumulative = 0;
+  double cumulative = startBalance;
   return List.generate(daysInMonth, (i) {
     cumulative += daily[i + 1] ?? 0;
     return FlSpot(i.toDouble(), cumulative);

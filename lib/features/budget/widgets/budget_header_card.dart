@@ -15,7 +15,12 @@ class BudgetHeaderCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final month = ref.watch(selectedBudgetMonthProvider);
     final ym = (month.year, month.month);
+    final prevMonth = month.month == 1
+        ? DateTime(month.year - 1, 12)
+        : DateTime(month.year, month.month - 1);
+    final prevYm = (prevMonth.year, prevMonth.month);
     final summaryAsync = ref.watch(budgetSummaryProvider(ym));
+    final prevSummaryAsync = ref.watch(budgetSummaryProvider(prevYm));
     final spotsAsync = ref.watch(dailyBalanceSpotsProvider(ym));
     final currency = ref.watch(currencySymbolProvider);
     final visible = ref.watch(budgetBalanceVisibleProvider);
@@ -113,6 +118,13 @@ class BudgetHeaderCard extends ConsumerWidget {
                       ),
                     ],
                   ),
+                  // Previous month comparison badge
+                  if (prevSummaryAsync.value != null &&
+                      prevSummaryAsync.value!.balance != 0)
+                    _ComparisonBadge(
+                      current: summary.balance,
+                      previous: prevSummaryAsync.value!.balance,
+                    ),
                   // Sparkline
                   spotsAsync.when(
                     data: (spots) {
@@ -231,6 +243,43 @@ class _StatCol extends StatelessWidget {
           ),
         ),
       ]),
+    );
+  }
+}
+
+class _ComparisonBadge extends StatelessWidget {
+  final double current;
+  final double previous;
+
+  const _ComparisonBadge({required this.current, required this.previous});
+
+  @override
+  Widget build(BuildContext context) {
+    final diff = current - previous;
+    final pct = (diff / previous.abs() * 100).abs();
+    final isUp = diff >= 0;
+    final color = isUp ? TraumColors.mintGreen : TraumColors.roseRed;
+    return Padding(
+      padding: const EdgeInsets.only(top: 2, bottom: 4),
+      child: Row(
+        children: [
+          Icon(
+            isUp ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
+            color: color,
+            size: 12,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            '${pct.toStringAsFixed(0)}% vs. letzter Monat',
+            style: TextStyle(
+              color: color,
+              fontFamily: 'DMSans',
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
