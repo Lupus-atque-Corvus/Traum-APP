@@ -541,11 +541,10 @@ class _DonutChartCard extends ConsumerWidget {
                               centerSpaceRadius: 46,
                               startDegreeOffset: -90,
                               sections: list.asMap().entries.map((entry) {
-                                final i = entry.key;
                                 final cat = entry.value;
                                 return PieChartSectionData(
                                   value: cat.amount,
-                                  color: categoryColor(i),
+                                  color: categoryColor(cat.category.id),
                                   radius: 42,
                                   showTitle: false,
                                   borderSide: BorderSide(
@@ -573,7 +572,6 @@ class _DonutChartCard extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: list.asMap().entries.map((entry) {
-                            final i = entry.key;
                             final cat = entry.value;
                             final percent = total > 0
                                 ? (cat.amount / total * 100).round()
@@ -585,7 +583,7 @@ class _DonutChartCard extends ConsumerWidget {
                                   width: 10,
                                   height: 10,
                                   decoration: BoxDecoration(
-                                    color: categoryColor(i),
+                                    color: categoryColor(cat.category.id),
                                     shape: BoxShape.circle,
                                   ),
                                 ),
@@ -644,7 +642,7 @@ class _KategorieListeCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(children: [
-              Text('Ausgaben nach Kategorien',
+              Text('Kategorie-Detail',
                   style: _style(16, FontWeight.w600)),
               const Spacer(),
               Icon(Icons.more_horiz,
@@ -666,11 +664,10 @@ class _KategorieListeCard extends ConsumerWidget {
                 final total = list.fold(0.0, (s, c) => s + c.amount);
                 return Column(
                   children: list.asMap().entries.map((entry) {
-                    final i = entry.key;
                     final cat = entry.value;
                     final ratio = total > 0 ? cat.amount / total : 0.0;
                     final percent = (ratio * 100).round();
-                    final color = categoryColor(i);
+                    final color = categoryColor(cat.category.id);
 
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 16),
@@ -962,6 +959,7 @@ String _fmt(double v) => v
     .replaceAllMapped(
         RegExp(r'(\d{1,3})(?=(\d{3})+,)'), (m) => '${m[1]}.');
 
-String _fmtK(double v) =>
-    v >= 1000 ? '${(v / 1000).toStringAsFixed(1)}k' : v.toStringAsFixed(0);
+String _fmtK(double v) => v >= 1000
+    ? '${(v / 1000).toStringAsFixed(1).replaceAll('.', ',')}k'
+    : v.toStringAsFixed(0);
 
