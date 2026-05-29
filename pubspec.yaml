@@ -76,6 +76,9 @@ dependencies:
   video_player: ^2.9.2
   video_thumbnail: ^0.5.3
 
+  # Barcode-Scanner
+  mobile_scanner: ^5.2.3
+
   # OCR
   google_mlkit_text_recognition: ^0.13.0
 
