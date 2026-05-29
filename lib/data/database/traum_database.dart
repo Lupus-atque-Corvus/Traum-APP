@@ -14,6 +14,7 @@ import 'tables/abstinence_tables.dart';
 import 'tables/budget_tables.dart';
 import 'tables/period_tables.dart';
 import 'tables/substance_tables.dart';
+import 'tables/diary_tables.dart';
 
 import 'daos/planning_dao.dart';
 import 'daos/training_dao.dart';
@@ -26,6 +27,7 @@ import 'daos/budget_dao.dart';
 import 'daos/accounts_dao.dart';
 import 'daos/period_dao.dart';
 import 'daos/substance_dao.dart';
+import 'daos/diary_dao.dart';
 
 // Re-export all table types
 export 'tables/planning_tables.dart';
@@ -38,6 +40,7 @@ export 'tables/abstinence_tables.dart';
 export 'tables/budget_tables.dart';
 export 'tables/period_tables.dart';
 export 'tables/substance_tables.dart';
+export 'tables/diary_tables.dart';
 
 // Re-export all DAO types
 export 'daos/planning_dao.dart';
@@ -51,6 +54,7 @@ export 'daos/budget_dao.dart';
 export 'daos/accounts_dao.dart';
 export 'daos/period_dao.dart';
 export 'daos/substance_dao.dart';
+export 'daos/diary_dao.dart';
 
 part 'traum_database.g.dart';
 
@@ -103,6 +107,8 @@ part 'traum_database.g.dart';
     PeriodSymptoms,
     // Substance cache (1)
     SubstanceCaches,
+    // Diary (1)
+    DiaryEntries,
   ],
   daos: [
     PlanningDao,
@@ -116,6 +122,7 @@ part 'traum_database.g.dart';
     AccountsDao,
     PeriodDao,
     SubstanceDao,
+    DiaryDao,
   ],
 )
 class TraumDatabase extends _$TraumDatabase {
@@ -123,10 +130,14 @@ class TraumDatabase extends _$TraumDatabase {
 
   TraumDatabase.forTesting(super.e);
 
+  @override
   SubstanceDao get substanceDao => SubstanceDao(this);
 
   @override
-  int get schemaVersion => 6;
+  DiaryDao get diaryDao => DiaryDao(this);
+
+  @override
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -160,6 +171,9 @@ class TraumDatabase extends _$TraumDatabase {
       }
       if (from < 6) {
         await migrator.createTable(accounts);
+      }
+      if (from < 7) {
+        await migrator.createTable(diaryEntries);
       }
     },
   );

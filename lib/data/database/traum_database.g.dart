@@ -17347,6 +17347,566 @@ class SubstanceCachesCompanion extends UpdateCompanion<SubstanceCache> {
   }
 }
 
+class $DiaryEntriesTable extends DiaryEntries
+    with TableInfo<$DiaryEntriesTable, DiaryEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DiaryEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<String> date = GeneratedColumn<String>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _mediaPathMeta = const VerificationMeta(
+    'mediaPath',
+  );
+  @override
+  late final GeneratedColumn<String> mediaPath = GeneratedColumn<String>(
+    'media_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _mediaTypeMeta = const VerificationMeta(
+    'mediaType',
+  );
+  @override
+  late final GeneratedColumn<String> mediaType = GeneratedColumn<String>(
+    'media_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _thumbnailPathMeta = const VerificationMeta(
+    'thumbnailPath',
+  );
+  @override
+  late final GeneratedColumn<String> thumbnailPath = GeneratedColumn<String>(
+    'thumbnail_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> durationSeconds = GeneratedColumn<int>(
+    'duration_seconds',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    date,
+    mediaPath,
+    mediaType,
+    note,
+    thumbnailPath,
+    durationSeconds,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'diary_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DiaryEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('media_path')) {
+      context.handle(
+        _mediaPathMeta,
+        mediaPath.isAcceptableOrUnknown(data['media_path']!, _mediaPathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_mediaPathMeta);
+    }
+    if (data.containsKey('media_type')) {
+      context.handle(
+        _mediaTypeMeta,
+        mediaType.isAcceptableOrUnknown(data['media_type']!, _mediaTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_mediaTypeMeta);
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('thumbnail_path')) {
+      context.handle(
+        _thumbnailPathMeta,
+        thumbnailPath.isAcceptableOrUnknown(
+          data['thumbnail_path']!,
+          _thumbnailPathMeta,
+        ),
+      );
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DiaryEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DiaryEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}date'],
+      )!,
+      mediaPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}media_path'],
+      )!,
+      mediaType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}media_type'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      )!,
+      thumbnailPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}thumbnail_path'],
+      ),
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration_seconds'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $DiaryEntriesTable createAlias(String alias) {
+    return $DiaryEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class DiaryEntry extends DataClass implements Insertable<DiaryEntry> {
+  final int id;
+  final String date;
+  final String mediaPath;
+  final String mediaType;
+  final String note;
+  final String? thumbnailPath;
+  final int? durationSeconds;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const DiaryEntry({
+    required this.id,
+    required this.date,
+    required this.mediaPath,
+    required this.mediaType,
+    required this.note,
+    this.thumbnailPath,
+    this.durationSeconds,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['date'] = Variable<String>(date);
+    map['media_path'] = Variable<String>(mediaPath);
+    map['media_type'] = Variable<String>(mediaType);
+    map['note'] = Variable<String>(note);
+    if (!nullToAbsent || thumbnailPath != null) {
+      map['thumbnail_path'] = Variable<String>(thumbnailPath);
+    }
+    if (!nullToAbsent || durationSeconds != null) {
+      map['duration_seconds'] = Variable<int>(durationSeconds);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  DiaryEntriesCompanion toCompanion(bool nullToAbsent) {
+    return DiaryEntriesCompanion(
+      id: Value(id),
+      date: Value(date),
+      mediaPath: Value(mediaPath),
+      mediaType: Value(mediaType),
+      note: Value(note),
+      thumbnailPath: thumbnailPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(thumbnailPath),
+      durationSeconds: durationSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(durationSeconds),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory DiaryEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DiaryEntry(
+      id: serializer.fromJson<int>(json['id']),
+      date: serializer.fromJson<String>(json['date']),
+      mediaPath: serializer.fromJson<String>(json['mediaPath']),
+      mediaType: serializer.fromJson<String>(json['mediaType']),
+      note: serializer.fromJson<String>(json['note']),
+      thumbnailPath: serializer.fromJson<String?>(json['thumbnailPath']),
+      durationSeconds: serializer.fromJson<int?>(json['durationSeconds']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'date': serializer.toJson<String>(date),
+      'mediaPath': serializer.toJson<String>(mediaPath),
+      'mediaType': serializer.toJson<String>(mediaType),
+      'note': serializer.toJson<String>(note),
+      'thumbnailPath': serializer.toJson<String?>(thumbnailPath),
+      'durationSeconds': serializer.toJson<int?>(durationSeconds),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  DiaryEntry copyWith({
+    int? id,
+    String? date,
+    String? mediaPath,
+    String? mediaType,
+    String? note,
+    Value<String?> thumbnailPath = const Value.absent(),
+    Value<int?> durationSeconds = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => DiaryEntry(
+    id: id ?? this.id,
+    date: date ?? this.date,
+    mediaPath: mediaPath ?? this.mediaPath,
+    mediaType: mediaType ?? this.mediaType,
+    note: note ?? this.note,
+    thumbnailPath: thumbnailPath.present
+        ? thumbnailPath.value
+        : this.thumbnailPath,
+    durationSeconds: durationSeconds.present
+        ? durationSeconds.value
+        : this.durationSeconds,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  DiaryEntry copyWithCompanion(DiaryEntriesCompanion data) {
+    return DiaryEntry(
+      id: data.id.present ? data.id.value : this.id,
+      date: data.date.present ? data.date.value : this.date,
+      mediaPath: data.mediaPath.present ? data.mediaPath.value : this.mediaPath,
+      mediaType: data.mediaType.present ? data.mediaType.value : this.mediaType,
+      note: data.note.present ? data.note.value : this.note,
+      thumbnailPath: data.thumbnailPath.present
+          ? data.thumbnailPath.value
+          : this.thumbnailPath,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DiaryEntry(')
+          ..write('id: $id, ')
+          ..write('date: $date, ')
+          ..write('mediaPath: $mediaPath, ')
+          ..write('mediaType: $mediaType, ')
+          ..write('note: $note, ')
+          ..write('thumbnailPath: $thumbnailPath, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    date,
+    mediaPath,
+    mediaType,
+    note,
+    thumbnailPath,
+    durationSeconds,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DiaryEntry &&
+          other.id == this.id &&
+          other.date == this.date &&
+          other.mediaPath == this.mediaPath &&
+          other.mediaType == this.mediaType &&
+          other.note == this.note &&
+          other.thumbnailPath == this.thumbnailPath &&
+          other.durationSeconds == this.durationSeconds &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class DiaryEntriesCompanion extends UpdateCompanion<DiaryEntry> {
+  final Value<int> id;
+  final Value<String> date;
+  final Value<String> mediaPath;
+  final Value<String> mediaType;
+  final Value<String> note;
+  final Value<String?> thumbnailPath;
+  final Value<int?> durationSeconds;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const DiaryEntriesCompanion({
+    this.id = const Value.absent(),
+    this.date = const Value.absent(),
+    this.mediaPath = const Value.absent(),
+    this.mediaType = const Value.absent(),
+    this.note = const Value.absent(),
+    this.thumbnailPath = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  DiaryEntriesCompanion.insert({
+    this.id = const Value.absent(),
+    required String date,
+    required String mediaPath,
+    required String mediaType,
+    this.note = const Value.absent(),
+    this.thumbnailPath = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : date = Value(date),
+       mediaPath = Value(mediaPath),
+       mediaType = Value(mediaType),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<DiaryEntry> custom({
+    Expression<int>? id,
+    Expression<String>? date,
+    Expression<String>? mediaPath,
+    Expression<String>? mediaType,
+    Expression<String>? note,
+    Expression<String>? thumbnailPath,
+    Expression<int>? durationSeconds,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (date != null) 'date': date,
+      if (mediaPath != null) 'media_path': mediaPath,
+      if (mediaType != null) 'media_type': mediaType,
+      if (note != null) 'note': note,
+      if (thumbnailPath != null) 'thumbnail_path': thumbnailPath,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  DiaryEntriesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? date,
+    Value<String>? mediaPath,
+    Value<String>? mediaType,
+    Value<String>? note,
+    Value<String?>? thumbnailPath,
+    Value<int?>? durationSeconds,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return DiaryEntriesCompanion(
+      id: id ?? this.id,
+      date: date ?? this.date,
+      mediaPath: mediaPath ?? this.mediaPath,
+      mediaType: mediaType ?? this.mediaType,
+      note: note ?? this.note,
+      thumbnailPath: thumbnailPath ?? this.thumbnailPath,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<String>(date.value);
+    }
+    if (mediaPath.present) {
+      map['media_path'] = Variable<String>(mediaPath.value);
+    }
+    if (mediaType.present) {
+      map['media_type'] = Variable<String>(mediaType.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (thumbnailPath.present) {
+      map['thumbnail_path'] = Variable<String>(thumbnailPath.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<int>(durationSeconds.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DiaryEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('date: $date, ')
+          ..write('mediaPath: $mediaPath, ')
+          ..write('mediaType: $mediaType, ')
+          ..write('note: $note, ')
+          ..write('thumbnailPath: $thumbnailPath, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$TraumDatabase extends GeneratedDatabase {
   _$TraumDatabase(QueryExecutor e) : super(e);
   $TraumDatabaseManager get managers => $TraumDatabaseManager(this);
@@ -17401,6 +17961,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   late final $SubstanceCachesTable substanceCaches = $SubstanceCachesTable(
     this,
   );
+  late final $DiaryEntriesTable diaryEntries = $DiaryEntriesTable(this);
   late final PlanningDao planningDao = PlanningDao(this as TraumDatabase);
   late final TrainingDao trainingDao = TrainingDao(this as TraumDatabase);
   late final HealthDao healthDao = HealthDao(this as TraumDatabase);
@@ -17412,6 +17973,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   late final AccountsDao accountsDao = AccountsDao(this as TraumDatabase);
   late final PeriodDao periodDao = PeriodDao(this as TraumDatabase);
   late final SubstanceDao substanceDao = SubstanceDao(this as TraumDatabase);
+  late final DiaryDao diaryDao = DiaryDao(this as TraumDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -17454,6 +18016,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
     cycleCalculations,
     periodSymptoms,
     substanceCaches,
+    diaryEntries,
   ];
 }
 
@@ -28869,6 +29432,280 @@ typedef $$SubstanceCachesTableProcessedTableManager =
       SubstanceCache,
       PrefetchHooks Function()
     >;
+typedef $$DiaryEntriesTableCreateCompanionBuilder =
+    DiaryEntriesCompanion Function({
+      Value<int> id,
+      required String date,
+      required String mediaPath,
+      required String mediaType,
+      Value<String> note,
+      Value<String?> thumbnailPath,
+      Value<int?> durationSeconds,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$DiaryEntriesTableUpdateCompanionBuilder =
+    DiaryEntriesCompanion Function({
+      Value<int> id,
+      Value<String> date,
+      Value<String> mediaPath,
+      Value<String> mediaType,
+      Value<String> note,
+      Value<String?> thumbnailPath,
+      Value<int?> durationSeconds,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$DiaryEntriesTableFilterComposer
+    extends Composer<_$TraumDatabase, $DiaryEntriesTable> {
+  $$DiaryEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mediaPath => $composableBuilder(
+    column: $table.mediaPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mediaType => $composableBuilder(
+    column: $table.mediaType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get thumbnailPath => $composableBuilder(
+    column: $table.thumbnailPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DiaryEntriesTableOrderingComposer
+    extends Composer<_$TraumDatabase, $DiaryEntriesTable> {
+  $$DiaryEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mediaPath => $composableBuilder(
+    column: $table.mediaPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mediaType => $composableBuilder(
+    column: $table.mediaType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get thumbnailPath => $composableBuilder(
+    column: $table.thumbnailPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DiaryEntriesTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $DiaryEntriesTable> {
+  $$DiaryEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get mediaPath =>
+      $composableBuilder(column: $table.mediaPath, builder: (column) => column);
+
+  GeneratedColumn<String> get mediaType =>
+      $composableBuilder(column: $table.mediaType, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<String> get thumbnailPath => $composableBuilder(
+    column: $table.thumbnailPath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$DiaryEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $DiaryEntriesTable,
+          DiaryEntry,
+          $$DiaryEntriesTableFilterComposer,
+          $$DiaryEntriesTableOrderingComposer,
+          $$DiaryEntriesTableAnnotationComposer,
+          $$DiaryEntriesTableCreateCompanionBuilder,
+          $$DiaryEntriesTableUpdateCompanionBuilder,
+          (
+            DiaryEntry,
+            BaseReferences<_$TraumDatabase, $DiaryEntriesTable, DiaryEntry>,
+          ),
+          DiaryEntry,
+          PrefetchHooks Function()
+        > {
+  $$DiaryEntriesTableTableManager(_$TraumDatabase db, $DiaryEntriesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DiaryEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DiaryEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DiaryEntriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> date = const Value.absent(),
+                Value<String> mediaPath = const Value.absent(),
+                Value<String> mediaType = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<String?> thumbnailPath = const Value.absent(),
+                Value<int?> durationSeconds = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => DiaryEntriesCompanion(
+                id: id,
+                date: date,
+                mediaPath: mediaPath,
+                mediaType: mediaType,
+                note: note,
+                thumbnailPath: thumbnailPath,
+                durationSeconds: durationSeconds,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String date,
+                required String mediaPath,
+                required String mediaType,
+                Value<String> note = const Value.absent(),
+                Value<String?> thumbnailPath = const Value.absent(),
+                Value<int?> durationSeconds = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => DiaryEntriesCompanion.insert(
+                id: id,
+                date: date,
+                mediaPath: mediaPath,
+                mediaType: mediaType,
+                note: note,
+                thumbnailPath: thumbnailPath,
+                durationSeconds: durationSeconds,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DiaryEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $DiaryEntriesTable,
+      DiaryEntry,
+      $$DiaryEntriesTableFilterComposer,
+      $$DiaryEntriesTableOrderingComposer,
+      $$DiaryEntriesTableAnnotationComposer,
+      $$DiaryEntriesTableCreateCompanionBuilder,
+      $$DiaryEntriesTableUpdateCompanionBuilder,
+      (
+        DiaryEntry,
+        BaseReferences<_$TraumDatabase, $DiaryEntriesTable, DiaryEntry>,
+      ),
+      DiaryEntry,
+      PrefetchHooks Function()
+    >;
 
 class $TraumDatabaseManager {
   final _$TraumDatabase _db;
@@ -28947,4 +29784,6 @@ class $TraumDatabaseManager {
       $$PeriodSymptomsTableTableManager(_db, _db.periodSymptoms);
   $$SubstanceCachesTableTableManager get substanceCaches =>
       $$SubstanceCachesTableTableManager(_db, _db.substanceCaches);
+  $$DiaryEntriesTableTableManager get diaryEntries =>
+      $$DiaryEntriesTableTableManager(_db, _db.diaryEntries);
 }
