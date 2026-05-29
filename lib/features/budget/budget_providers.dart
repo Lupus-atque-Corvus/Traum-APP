@@ -108,24 +108,25 @@ final categoryExpensesProvider = FutureProvider.autoDispose
   final cats = await dao.getAllCategories();
   final catMap = {for (final c in cats) c.id: c};
 
-  final spending = <int, double>{};
+  final spending = <int?, double>{};
   for (final t in txs.where((t) => t.type == 'expense')) {
-    if (t.categoryId != null) {
-      spending[t.categoryId!] = (spending[t.categoryId!] ?? 0) + t.amount;
-    }
+    spending[t.categoryId] = (spending[t.categoryId] ?? 0) + t.amount;
   }
+
+  final sonstigesCat = BudgetCategory(
+    id: 0,
+    name: 'Sonstiges',
+    emoji: '📦',
+    monthlyLimit: null,
+    color: null,
+    isExpense: true,
+  );
 
   final result = spending.entries
       .map((e) => CategoryExpense(
-            category: catMap[e.key] ??
-                BudgetCategory(
-                  id: e.key,
-                  name: 'Sonstiges',
-                  emoji: null,
-                  monthlyLimit: null,
-                  color: null,
-                  isExpense: true,
-                ),
+            category: e.key != null
+                ? (catMap[e.key!] ?? sonstigesCat)
+                : sonstigesCat,
             amount: e.value,
           ))
       .toList()

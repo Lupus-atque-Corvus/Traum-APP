@@ -24,6 +24,7 @@ import '../../features/nutrition/shopping_list_screen.dart';
 import '../../features/substances/substances_screen.dart';
 import '../../features/planning/planning_screen.dart';
 import '../../features/abstinence/abstinence_screen.dart';
+import '../../features/budget/budget_categories_screen.dart';
 import '../../features/budget/budget_screen.dart';
 import '../../features/budget/transaction_list_screen.dart';
 import '../../features/budget/transaction_detail_screen.dart';
@@ -181,6 +182,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: Routes.budget,
             builder: (_, __) => const BudgetScreen(),
             routes: [
+              GoRoute(
+                path: 'categories',
+                builder: (_, __) => const BudgetCategoriesScreen(),
+              ),
               GoRoute(
                 path: 'transaction/:id',
                 builder: (_, state) => TransactionDetailScreen(

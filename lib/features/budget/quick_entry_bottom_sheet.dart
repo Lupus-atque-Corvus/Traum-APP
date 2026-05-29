@@ -28,6 +28,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
   String _numpadValue = '';
   DateTime _date = DateTime.now();
   int? _categoryId;
+  String? _categoryName;
   final _noteCtrl = TextEditingController();
   String? _receiptImagePath;
   bool _saveAsTemplate = false;
@@ -154,9 +155,9 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
 
     setState(() => _saving = true);
     try {
-      final description = _noteCtrl.text.trim().isEmpty
-          ? (_type == 'expense' ? 'Ausgabe' : 'Einnahme')
-          : _noteCtrl.text.trim();
+      final description = _noteCtrl.text.trim().isNotEmpty
+          ? _noteCtrl.text.trim()
+          : (_categoryName ?? (_type == 'expense' ? 'Ausgabe' : 'Einnahme'));
 
       await ref.read(budgetDaoProvider).insertTransaction(
             TransactionsCompanion.insert(
@@ -421,8 +422,10 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                       final cat = filtered[i];
                       final isSelected = _categoryId == cat.id;
                       return GestureDetector(
-                        onTap: () => setState(() =>
-                            _categoryId = isSelected ? null : cat.id),
+                        onTap: () => setState(() {
+                          _categoryId = isSelected ? null : cat.id;
+                          _categoryName = isSelected ? null : cat.name;
+                        }),
                         child: Container(
                           decoration: BoxDecoration(
                             color: isSelected
