@@ -41,3 +41,56 @@ class ShoppingListItems extends Table {
   BoolColumn get checked => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
+
+class FoodProducts extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get barcode => text().nullable()();
+  TextColumn get name => text()();
+  TextColumn get brand => text().nullable()();
+  TextColumn get imageUrl => text().nullable()();
+  RealColumn get caloriesPer100g => real()();
+  RealColumn get proteinPer100g => real()();
+  RealColumn get carbsPer100g => real()();
+  RealColumn get fatPer100g => real()();
+  RealColumn get sugarPer100g => real().nullable()();
+  RealColumn get fiberPer100g => real().nullable()();
+  RealColumn get saltPer100g => real().nullable()();
+  RealColumn get saturatedFatPer100g => real().nullable()();
+  BoolColumn get isCustom =>
+      boolean().withDefault(const Constant(false))();
+  DateTimeColumn get lastUsed => dateTime().nullable()();
+  IntColumn get useCount =>
+      integer().withDefault(const Constant(0))();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
+class MealEntries extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get date => text()();
+  TextColumn get mealType => text()();
+  IntColumn get productId => integer()();
+  RealColumn get amountGrams => real()();
+  RealColumn get calories => real()();
+  RealColumn get protein => real()();
+  RealColumn get carbs => real()();
+  RealColumn get fat => real()();
+  DateTimeColumn get loggedAt => dateTime()();
+}
+
+class MealTemplateItems extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get templateId => integer()();
+  IntColumn get productId => integer()();
+  RealColumn get amountGrams => real()();
+}
+
+class WeeklyMealPlan extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get date => text()();
+  TextColumn get mealType => text()();
+  IntColumn get templateId => integer().nullable()();
+  IntColumn get productId => integer().nullable()();
+  RealColumn get amountGrams => real().nullable()();
+  BoolColumn get isLogged =>
+      boolean().withDefault(const Constant(false))();
+}

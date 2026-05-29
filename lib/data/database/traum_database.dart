@@ -28,6 +28,8 @@ import 'daos/accounts_dao.dart';
 import 'daos/period_dao.dart';
 import 'daos/substance_dao.dart';
 import 'daos/diary_dao.dart';
+import 'daos/food_products_dao.dart';
+import 'daos/meal_entries_dao.dart';
 
 // Re-export all table types
 export 'tables/planning_tables.dart';
@@ -55,6 +57,8 @@ export 'daos/accounts_dao.dart';
 export 'daos/period_dao.dart';
 export 'daos/substance_dao.dart';
 export 'daos/diary_dao.dart';
+export 'daos/food_products_dao.dart';
+export 'daos/meal_entries_dao.dart';
 
 part 'traum_database.g.dart';
 
@@ -109,6 +113,11 @@ part 'traum_database.g.dart';
     SubstanceCaches,
     // Diary (1)
     DiaryEntries,
+    // Nutrition Extended (4)
+    FoodProducts,
+    MealEntries,
+    MealTemplateItems,
+    WeeklyMealPlan,
   ],
   daos: [
     PlanningDao,
@@ -123,6 +132,8 @@ part 'traum_database.g.dart';
     PeriodDao,
     SubstanceDao,
     DiaryDao,
+    FoodProductsDao,
+    MealEntriesDao,
   ],
 )
 class TraumDatabase extends _$TraumDatabase {
@@ -137,7 +148,12 @@ class TraumDatabase extends _$TraumDatabase {
   DiaryDao get diaryDao => DiaryDao(this);
 
   @override
-  int get schemaVersion => 7;
+  FoodProductsDao get foodProductsDao => FoodProductsDao(this);
+  @override
+  MealEntriesDao get mealEntriesDao => MealEntriesDao(this);
+
+  @override
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -174,6 +190,12 @@ class TraumDatabase extends _$TraumDatabase {
       }
       if (from < 7) {
         await migrator.createTable(diaryEntries);
+      }
+      if (from < 8) {
+        await migrator.createTable(foodProducts);
+        await migrator.createTable(mealEntries);
+        await migrator.createTable(mealTemplateItems);
+        await migrator.createTable(weeklyMealPlan);
       }
     },
   );
