@@ -15,6 +15,7 @@ import '../../core/utils/update_service.dart';
 import '../../data/database/traum_database.dart' show WaterLogsCompanion;
 import '../../features/budget/budget_providers.dart';
 import '../../l10n/app_localizations.dart';
+import '../diary/widgets/diary_home_card.dart';
 
 final waterTodayProvider = StreamProvider.autoDispose<int>((ref) {
   final today = DateTime.now();
@@ -181,6 +182,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                 // Budget
                 _BudgetCard(onTap: () => context.go(Routes.budget)),
+                const SizedBox(height: 12),
+
+                // Diary
+                const DiaryHomeCard(),
                 const SizedBox(height: 12),
 
                 // Periode (bedingt)
