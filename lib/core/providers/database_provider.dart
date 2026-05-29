@@ -257,3 +257,11 @@ final accountsStreamProvider = StreamProvider.autoDispose<List<Account>>((ref) =
 final diaryDaoProvider = Provider<DiaryDao>((ref) {
   return ref.watch(databaseProvider).diaryDao;
 });
+
+final foodProductsDaoProvider = Provider<FoodProductsDao>((ref) {
+  return ref.watch(databaseProvider).foodProductsDao;
+});
+
+final mealEntriesDaoProvider = Provider<MealEntriesDao>((ref) {
+  return ref.watch(databaseProvider).mealEntriesDao;
+});
