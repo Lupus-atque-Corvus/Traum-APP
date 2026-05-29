@@ -252,3 +252,8 @@ final interactionAlertsProvider =
 // ─── Accounts ─────────────────────────────────────────────────────────────────
 final accountsStreamProvider = StreamProvider.autoDispose<List<Account>>((ref) =>
     ref.watch(accountsDaoProvider).watchAll());
+
+// ─── Diary ────────────────────────────────────────────────────────────────────
+final diaryDaoProvider = Provider<DiaryDao>((ref) {
+  return ref.watch(databaseProvider).diaryDao;
+});
