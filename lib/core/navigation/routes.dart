@@ -27,6 +27,7 @@ class Routes {
   static const String medication = '/medication';
   static const String abstinence = '/abstinence';
   static const String budget = '/budget';
+  static const String diary = '/diary';
   static const String budgetCategories = '/budget/categories';
   static const String transactionList = '/budget/transactions';
   static const String addTransaction = '/budget/add';

@@ -37,6 +37,9 @@ import '../../features/settings/settings_screen.dart';
 import '../../features/profile/profile_screen.dart';
 import '../../features/lock/biometric_lock_screen.dart';
 import '../../features/lock/pin_lock_screen.dart';
+import '../../features/diary/diary_screen.dart';
+import '../../features/diary/diary_entry_screen.dart';
+import '../../features/diary/diary_slideshow_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final prefs = ref.watch(preferencesRepositoryProvider);
@@ -203,6 +206,22 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'savings',
                 builder: (_, __) => const SavingsScreen(),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: Routes.diary,
+            builder: (_, __) => const DiaryScreen(),
+            routes: [
+              GoRoute(
+                path: 'entry/:date',
+                builder: (_, state) => DiaryEntryScreen(
+                  date: state.pathParameters['date']!,
+                ),
+              ),
+              GoRoute(
+                path: 'slideshow',
+                builder: (_, __) => const DiarySlideShowScreen(),
               ),
             ],
           ),
