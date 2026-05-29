@@ -7,11 +7,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/colors.dart';
 import 'budget_category_colors.dart';
+import 'budget_category_icons.dart';
 import 'budget_providers.dart';
 import 'quick_entry_bottom_sheet.dart';
 import 'widgets/accounts_card.dart';
 import 'widgets/budget_overview_card.dart';
-import 'widgets/quick_template_row.dart';
 import 'widgets/trend_bar_chart.dart';
 
 class BudgetScreen extends ConsumerWidget {
@@ -30,7 +30,6 @@ class BudgetScreen extends ConsumerWidget {
           const SliverToBoxAdapter(child: _BudgetHeaderCard()),
           const SliverToBoxAdapter(child: _GesamtsaldoCard()),
           const SliverToBoxAdapter(child: _KontenCard()),
-          const SliverToBoxAdapter(child: _SchnellvorlagenRow()),
           const SliverToBoxAdapter(child: _BudgetUebersichtCard()),
           const SliverToBoxAdapter(child: _DonutChartCard()),
           const SliverToBoxAdapter(child: _KategorieListeCard()),
@@ -443,36 +442,14 @@ class _KontenCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AccountsCard();
-  }
-}
-
-// ─── 4. Schnellvorlagen Row ───────────────────────────────────────────────────
-
-class _SchnellvorlagenRow extends ConsumerWidget {
-  const _SchnellvorlagenRow();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      child: QuickTemplateRow(
-        onTemplateTap: (t) => showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          builder: (_) => QuickEntryBottomSheet(initialTemplate: t),
-        ),
-        onNewTap: () => showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          builder: (_) => const QuickEntryBottomSheet(),
-        ),
-      ),
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: AccountsCard(),
     );
   }
 }
+
+
 
 // ─── 5. Budgetübersicht Card ──────────────────────────────────────────────────
 
@@ -481,7 +458,10 @@ class _BudgetUebersichtCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const BudgetOverviewCard();
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: BudgetOverviewCard(),
+    );
   }
 }
 
@@ -493,135 +473,127 @@ class _DonutChartCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final month = ref.watch(selectedBudgetMonthProvider);
-    final cats = ref
-        .watch(categoryExpensesProvider((month.year, month.month)));
+    final cats = ref.watch(categoryExpensesProvider((month.year, month.month)));
 
     return _Card(
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(children: [
-              Text('Ausgaben nach Kategorien',
-                  style: _style(16, FontWeight.w600)),
-              const Spacer(),
-              GestureDetector(
-                onTap: () => context.go('/budget/categories'),
-                child: Text('Mehr ›',
-                    style: _style(
-                        13, FontWeight.w500, TraumColors.amberGold)),
-              ),
-            ]),
-            const SizedBox(height: 16),
-            cats.when(
-              data: (list) {
-                if (list.isEmpty) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Center(
-                      child: Text('Noch keine Ausgaben',
-                          style: _style(13, FontWeight.w400,
-                              TraumColors.onBackgroundMuted)),
-                    ),
-                  );
-                }
-
-                final total = list.fold(0.0, (s, c) => s + c.amount);
-
-                return Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          SizedBox(
-                            width: 150,
-                            height: 150,
-                            child: PieChart(PieChartData(
-                              sectionsSpace: 2,
-                              centerSpaceRadius: 46,
-                              startDegreeOffset: -90,
-                              sections: list.asMap().entries.map((entry) {
-                                final cat = entry.value;
-                                return PieChartSectionData(
-                                  value: cat.amount,
-                                  color: categoryColor(cat.category.id),
-                                  radius: 42,
-                                  showTitle: false,
-                                  borderSide: BorderSide(
-                                      color: TraumColors.surface,
-                                      width: 2),
-                                );
-                              }).toList(),
-                            )),
-                          ),
-                          Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text('€${_fmtK(total)}',
-                                    style: _style(16, FontWeight.w700)),
-                                Text('Gesamt',
-                                    style: _style(
-                                        11,
-                                        FontWeight.w400,
-                                        TraumColors.onBackgroundMuted)),
-                              ]),
-                        ],
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: list.asMap().entries.map((entry) {
-                            final cat = entry.value;
-                            final percent = total > 0
-                                ? (cat.amount / total * 100).round()
-                                : 0;
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: Row(children: [
-                                Container(
-                                  width: 10,
-                                  height: 10,
-                                  decoration: BoxDecoration(
-                                    color: categoryColor(cat.category.id),
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(cat.category.name,
-                                      style:
-                                          _style(12, FontWeight.w500)),
-                                ),
-                                Text('€${_fmtK(cat.amount)}',
-                                    style: _style(12, FontWeight.w600)),
-                                const SizedBox(width: 6),
-                                SizedBox(
-                                  width: 32,
-                                  child: Text('$percent%',
-                                      style: _style(
-                                          12,
-                                          FontWeight.w400,
-                                          TraumColors.onBackgroundMuted),
-                                      textAlign: TextAlign.right),
-                                ),
-                              ]),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ]);
-              },
-              loading: () => const SizedBox(
-                height: 150,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Text('Ausgaben nach Kategorien', style: _style(16, FontWeight.w600)),
+          const Spacer(),
+          GestureDetector(
+            onTap: () => context.go('/budget/categories'),
+            child: Text('Mehr ›',
+                style: _style(13, FontWeight.w500, TraumColors.amberGold)),
+          ),
+        ]),
+        const SizedBox(height: 16),
+        cats.when(
+          data: (list) {
+            if (list.isEmpty) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Center(
-                  child: CircularProgressIndicator(
-                      color: TraumColors.amberGold),
+                  child: Text('Noch keine Ausgaben',
+                      style: _style(
+                          13, FontWeight.w400, TraumColors.onBackgroundMuted)),
                 ),
-              ),
-              error: (_, __) => const SizedBox.shrink(),
+              );
+            }
+
+            final total = list.fold(0.0, (s, c) => s + c.amount);
+
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 140,
+                  height: 140,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      PieChart(PieChartData(
+                        sectionsSpace: 2,
+                        centerSpaceRadius: 44,
+                        startDegreeOffset: -90,
+                        pieTouchData: PieTouchData(enabled: false),
+                        sections: list.asMap().entries.map((entry) {
+                          final cat = entry.value;
+                          return PieChartSectionData(
+                            value: cat.amount,
+                            color: categoryColor(cat.category.id),
+                            radius: 40,
+                            showTitle: false,
+                            borderSide: BorderSide(
+                                color: TraumColors.surface, width: 1.5),
+                          );
+                        }).toList(),
+                      )),
+                      Column(mainAxisSize: MainAxisSize.min, children: [
+                        Text('€${_fmtShort(total)}',
+                            style: _style(15, FontWeight.w700),
+                            textAlign: TextAlign.center),
+                        Text('Gesamt',
+                            style: _style(10, FontWeight.w400,
+                                TraumColors.onBackgroundMuted),
+                            textAlign: TextAlign.center),
+                      ]),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: list.asMap().entries.map((entry) {
+                      final cat = entry.value;
+                      final percent = total > 0
+                          ? (cat.amount / total * 100).round()
+                          : 0;
+                      final color = categoryColor(cat.category.id);
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 7),
+                        child: Row(children: [
+                          Container(
+                            width: 9,
+                            height: 9,
+                            decoration: BoxDecoration(
+                                color: color, shape: BoxShape.circle),
+                          ),
+                          const SizedBox(width: 7),
+                          Expanded(
+                            child: Text(cat.category.name,
+                                style: _style(11, FontWeight.w500),
+                                overflow: TextOverflow.ellipsis),
+                          ),
+                          Text('€${_fmtShort(cat.amount)}',
+                              style: _style(11, FontWeight.w600)),
+                          const SizedBox(width: 4),
+                          SizedBox(
+                            width: 28,
+                            child: Text('$percent%',
+                                style: _style(11, FontWeight.w400,
+                                    TraumColors.onBackgroundMuted),
+                                textAlign: TextAlign.right),
+                          ),
+                        ]),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            );
+          },
+          loading: () => const SizedBox(
+            height: 140,
+            child: Center(
+              child: CircularProgressIndicator(
+                  color: TraumColors.amberGold, strokeWidth: 2),
             ),
-          ]),
+          ),
+          error: (_, __) => const SizedBox.shrink(),
+        ),
+      ]),
     );
   }
 }
@@ -680,10 +652,8 @@ class _KategorieListeCard extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Center(
-                            child: Text(
-                              cat.category.emoji ?? '💰',
-                              style: const TextStyle(fontSize: 16),
-                            ),
+                            child: _catIcon(
+                                cat.category.emoji, color, 18),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -740,12 +710,15 @@ class _KategorieListeCard extends ConsumerWidget {
 
 // ─── 8. Verlauf Card ──────────────────────────────────────────────────────────
 
-class _VerlaufCard extends ConsumerWidget {
+class _VerlaufCard extends StatelessWidget {
   const _VerlaufCard();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return const TrendBarChart();
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: TrendBarChart(),
+    );
   }
 }
 
@@ -819,10 +792,8 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Center(
-                            child: Text(
-                              tx.category?.emoji ?? '💰',
-                              style: const TextStyle(fontSize: 18),
-                            ),
+                            child: _catIcon(
+                                tx.category?.emoji, catColor, 20),
                           ),
                         ),
                         title: Text(tx.name,
@@ -834,8 +805,7 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(
-                                '$prefix€${_fmt(tx.amount.abs())}',
+                            Text('$prefix€${_fmt(tx.amount.abs())}',
                                 style: _style(
                                     14, FontWeight.w700, amountColor)),
                             Text(_dateLabel(tx.date),
@@ -849,8 +819,7 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                       if (i < list.length - 1)
                         Divider(
                             height: 1,
-                            color:
-                                Colors.white.withValues(alpha: 0.06)),
+                            color: Colors.white.withValues(alpha: 0.06)),
                     ]);
                   }).toList(),
                 );
@@ -959,7 +928,23 @@ String _fmt(double v) => v
     .replaceAllMapped(
         RegExp(r'(\d{1,3})(?=(\d{3})+,)'), (m) => '${m[1]}.');
 
-String _fmtK(double v) => v >= 1000
-    ? '${(v / 1000).toStringAsFixed(1).replaceAll('.', ',')}k'
-    : v.toStringAsFixed(0);
+String _fmtShort(double v) {
+  if (v >= 1000) {
+    return v
+        .toStringAsFixed(0)
+        .replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+$)'), (m) => '${m[1]}.');
+  }
+  return v.toStringAsFixed(0);
+}
+
+Widget _catIcon(String? emojiOrIcon, Color color, double size) {
+  if (emojiOrIcon == null) {
+    return Icon(Icons.category_outlined, color: color, size: size);
+  }
+  final iconData = kBudgetCategoryIcons[emojiOrIcon];
+  if (iconData != null) {
+    return Icon(iconData, color: color, size: size);
+  }
+  return Text(emojiOrIcon, style: TextStyle(fontSize: size * 0.9));
+}
 

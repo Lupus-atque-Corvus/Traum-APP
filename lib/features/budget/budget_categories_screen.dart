@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
+import 'widgets/icon_picker_grid.dart';
 
 class BudgetCategoriesScreen extends ConsumerWidget {
   const BudgetCategoriesScreen({super.key});
@@ -127,15 +128,14 @@ class _AddCategorySheet extends ConsumerStatefulWidget {
 
 class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
   final _nameCtrl = TextEditingController();
-  final _emojiCtrl = TextEditingController();
   final _limitCtrl = TextEditingController();
+  String _selectedIconName = 'category';
   bool _isExpense = true;
   bool _saving = false;
 
   @override
   void dispose() {
     _nameCtrl.dispose();
-    _emojiCtrl.dispose();
     _limitCtrl.dispose();
     super.dispose();
   }
@@ -150,10 +150,7 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
       await ref.read(budgetDaoProvider).insertCategory(
             BudgetCategoriesCompanion.insert(
               name: name,
-              emoji: Value(
-                  _emojiCtrl.text.trim().isNotEmpty
-                      ? _emojiCtrl.text.trim()
-                      : '📦'),
+              emoji: Value(_selectedIconName),
               isExpense: Value(_isExpense),
               monthlyLimit: Value(limit),
               color: const Value(null),
@@ -175,7 +172,8 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
         color: TraumColors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      child: Column(
+      child: SingleChildScrollView(
+        child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -189,11 +187,7 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
             ),
           ),
           const SizedBox(height: 16),
-          Row(children: [
-            Expanded(child: _field(_nameCtrl, 'Name *', 'z.B. Lebensmittel')),
-            const SizedBox(width: 8),
-            SizedBox(width: 70, child: _field(_emojiCtrl, 'Emoji', '🛒')),
-          ]),
+          _field(_nameCtrl, 'Name *', 'z.B. Lebensmittel'),
           const SizedBox(height: 8),
           _field(_limitCtrl, 'Monatslimit (optional)', '0',
               type: TextInputType.number),
@@ -211,6 +205,11 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
             _chip('Einnahme', !_isExpense,
                 () => setState(() => _isExpense = false)),
           ]),
+          const SizedBox(height: 12),
+          IconPickerGrid(
+            selectedIconName: _selectedIconName,
+            onSelected: (name) => setState(() => _selectedIconName = name),
+          ),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
@@ -235,6 +234,7 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
             ),
           ),
         ],
+        ),
       ),
     );
   }
