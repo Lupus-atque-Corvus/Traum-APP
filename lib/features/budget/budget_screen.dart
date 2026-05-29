@@ -114,7 +114,9 @@ class _BudgetHeaderCard extends ConsumerWidget {
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               summary.when(
                 data: (s) => Text(
-                  visible ? '${_fmt(s.balance)} €' : '•••• €',
+                  visible
+                      ? '${s.balance < 0 ? '−' : ''}${_fmt(s.balance)} €'
+                      : '•••• €',
                   style: _style(
                     36,
                     FontWeight.w700,
@@ -258,7 +260,9 @@ class _GesamtsaldoCard extends ConsumerWidget {
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               balance.when(
                 data: (b) => Text(
-                  visible ? '€${_fmt(b)}' : '€ ••••',
+                  visible
+                      ? '${b < 0 ? '−' : ''}€${_fmt(b)}'
+                      : '€ ••••',
                   style: _style(30, FontWeight.w700),
                 ),
                 loading: () => Text('€ —',
@@ -352,8 +356,12 @@ class _GesamtsaldoCard extends ConsumerWidget {
                                 day != s.length) {
                               return const SizedBox.shrink();
                             }
+                            const abbrs = [
+                              'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
+                              'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'
+                            ];
                             return Text(
-                              '$day. ${_monthAbbr()}',
+                              '$day. ${abbrs[month.month - 1]}',
                               style: _style(9, FontWeight.w400,
                                   TraumColors.onBackgroundSubtle),
                             );
@@ -430,11 +438,11 @@ class _GesamtsaldoCard extends ConsumerWidget {
 
 // ─── 3. Konten Card ───────────────────────────────────────────────────────────
 
-class _KontenCard extends ConsumerWidget {
+class _KontenCard extends StatelessWidget {
   const _KontenCard();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return const AccountsCard();
   }
 }
@@ -468,11 +476,11 @@ class _SchnellvorlagenRow extends ConsumerWidget {
 
 // ─── 5. Budgetübersicht Card ──────────────────────────────────────────────────
 
-class _BudgetUebersichtCard extends ConsumerWidget {
+class _BudgetUebersichtCard extends StatelessWidget {
   const _BudgetUebersichtCard();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return const BudgetOverviewCard();
   }
 }
@@ -957,10 +965,3 @@ String _fmt(double v) => v
 String _fmtK(double v) =>
     v >= 1000 ? '${(v / 1000).toStringAsFixed(1)}k' : v.toStringAsFixed(0);
 
-String _monthAbbr() {
-  const m = [
-    'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'
-  ];
-  return m[DateTime.now().month - 1];
-}
