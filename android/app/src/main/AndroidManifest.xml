@@ -2,8 +2,10 @@
     <!-- Network -->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Camera (OCR receipt scan) -->
+    <!-- Camera (OCR receipt scan + diary) -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <!-- Notifications -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
