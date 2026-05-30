@@ -66,5 +66,7 @@
 
 	<key>NSCalendarsUsageDescription</key>
 	<string>TRAUM syncs your appointments with your calendar.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>TRAUM syncs your appointments with your calendar.</string>
 </dict>
 </plist>
