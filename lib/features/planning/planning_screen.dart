@@ -11,6 +11,81 @@ import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 
+String _calendarDisplayName(Calendar cal, int index) {
+  final name = cal.name?.trim();
+  if (name != null && name.isNotEmpty) return name;
+  final account = cal.accountName?.trim();
+  if (account != null && account.isNotEmpty) return account;
+  final id = cal.id?.trim();
+  if (id != null && id.isNotEmpty) return 'Kalender $id';
+  return 'Kalender ${index + 1}';
+}
+
+Widget _calendarPickerContent(BuildContext ctx, List<Calendar> calendars) {
+  if (calendars.isEmpty) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 12),
+      child: Text(
+        'Keine Kalender gefunden.\nBitte schließe den Planner und öffne ihn erneut.',
+        style: TextStyle(
+          color: TraumColors.onBackgroundMuted,
+          fontFamily: 'DMSans',
+          fontSize: 14,
+        ),
+      ),
+    );
+  }
+  return SizedBox(
+    width: double.maxFinite,
+    child: ListView.builder(
+      shrinkWrap: true,
+      itemCount: calendars.length,
+      itemBuilder: (_, i) {
+        final cal = calendars[i];
+        final displayName = _calendarDisplayName(cal, i);
+        final subtitle = (cal.accountName?.trim().isNotEmpty == true &&
+                cal.accountName != displayName)
+            ? cal.accountName!
+            : cal.id ?? '';
+        final selectable = cal.id != null;
+        return ListTile(
+          leading: Container(
+            width: 14,
+            height: 14,
+            decoration: BoxDecoration(
+              color: cal.color != null
+                  ? Color(cal.color!)
+                  : TraumColors.lavender,
+              shape: BoxShape.circle,
+            ),
+          ),
+          title: Text(
+            displayName,
+            style: TextStyle(
+              color: selectable
+                  ? TraumColors.onBackground
+                  : TraumColors.onBackgroundSubtle,
+              fontFamily: 'DMSans',
+              fontSize: 14,
+            ),
+          ),
+          subtitle: subtitle.isNotEmpty
+              ? Text(
+                  subtitle,
+                  style: const TextStyle(
+                    color: TraumColors.onBackgroundSubtle,
+                    fontFamily: 'DMSans',
+                    fontSize: 12,
+                  ),
+                )
+              : null,
+          onTap: selectable ? () => Navigator.pop(ctx, cal.id) : null,
+        );
+      },
+    ),
+  );
+}
+
 Future<String?> showCalendarPickerDialog(
   BuildContext context,
   List<Calendar> calendars,
@@ -29,57 +104,7 @@ Future<String?> showCalendarPickerDialog(
           fontSize: 18,
         ),
       ),
-      content: calendars.isEmpty
-          ? const Padding(
-              padding: EdgeInsets.symmetric(vertical: 12),
-              child: Text(
-                'Keine Kalender verfügbar.',
-                style: TextStyle(
-                  color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans',
-                  fontSize: 14,
-                ),
-              ),
-            )
-          : SizedBox(
-              width: double.maxFinite,
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: calendars.length,
-                itemBuilder: (_, i) {
-                  final cal = calendars[i];
-                  return ListTile(
-                    leading: Container(
-                      width: 14,
-                      height: 14,
-                      decoration: BoxDecoration(
-                        color: cal.color != null
-                            ? Color(cal.color!)
-                            : TraumColors.lavender,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    title: Text(
-                      cal.name ?? cal.id ?? 'Unbekannt',
-                      style: const TextStyle(
-                        color: TraumColors.onBackground,
-                        fontFamily: 'DMSans',
-                        fontSize: 14,
-                      ),
-                    ),
-                    subtitle: Text(
-                      cal.accountName ?? '',
-                      style: const TextStyle(
-                        color: TraumColors.onBackgroundSubtle,
-                        fontFamily: 'DMSans',
-                        fontSize: 12,
-                      ),
-                    ),
-                    onTap: cal.id != null ? () => Navigator.pop(ctx, cal.id) : null,
-                  );
-                },
-              ),
-            ),
+      content: _calendarPickerContent(ctx, calendars),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(ctx, null),

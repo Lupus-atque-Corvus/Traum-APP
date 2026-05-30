@@ -35,9 +35,22 @@ class CalendarSyncService {
   }
 
   Future<List<Calendar>> getAvailableCalendars() async {
+    // Retry up to 3x with increasing delays — Android sometimes needs time
+    // to propagate a freshly-granted calendar permission to the content provider.
+    for (int attempt = 0; attempt < 3; attempt++) {
+      if (attempt > 0) {
+        await Future.delayed(const Duration(milliseconds: 1000));
+      }
+      final result = await _plugin.retrieveCalendars();
+      final calendars = result.data
+              ?.where((c) => c.id != null && c.isReadOnly != true)
+              .toList() ??
+          [];
+      if (calendars.isNotEmpty) return calendars;
+    }
+    // Last resort: return any calendar with a non-null id, ignoring isReadOnly
     final result = await _plugin.retrieveCalendars();
-    // Use != true so calendars with isReadOnly = null are included (common on Android)
-    return result.data?.where((c) => c.isReadOnly != true).toList() ?? [];
+    return result.data?.where((c) => c.id != null).toList() ?? [];
   }
 
   TZDateTime _toTZ(DateTime dt) => TZDateTime.from(dt, tz.local);
