@@ -70,7 +70,11 @@ class CalendarSyncService {
     if (apt != null && apt.externalEventId != null) {
       final calendarId = _prefs.selectedCalendarId;
       if (calendarId != null) {
-        await _plugin.deleteEvent(calendarId, apt.externalEventId!);
+        try {
+          await _plugin.deleteEvent(calendarId, apt.externalEventId!);
+        } catch (_) {
+          // Device delete failed — local deletion still proceeds
+        }
       }
     }
     await _dao.deleteAppointment(appointmentId);
@@ -129,7 +133,9 @@ class CalendarSyncService {
     for (final apt in appAppointments) {
       try {
         if (apt.externalEventId != null) {
-          if (!deviceEventIds.contains(apt.externalEventId!)) {
+          final inWindow = apt.startTime.isAfter(windowStart) &&
+              apt.startTime.isBefore(windowEnd);
+          if (inWindow && !deviceEventIds.contains(apt.externalEventId!)) {
             await _dao.deleteAppointment(apt.id);
             synced++;
           }

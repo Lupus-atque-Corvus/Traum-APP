@@ -46,7 +46,9 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
   Future<int> deleteAppointment(int id) =>
       (delete(appointments)..where((t) => t.id.equals(id))).go();
 
-  // Used by CalendarSyncService conflict resolution — preserves device timestamp
+  // Reserved for CalendarSyncService conflict resolution — not yet called because
+  // device_calendar v4.x does not expose lastModifiedDate. Will be used when upgrading
+  // to a version that provides per-event modification timestamps.
   Future<void> updateAppointmentFromDevice({
     required int id,
     required String title,
