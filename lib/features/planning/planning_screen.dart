@@ -135,7 +135,7 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
 
       if (result.needsCalendarSelection) {
         final calendars = await syncService.getAvailableCalendars();
-        if (!mounted || calendars.isEmpty) return;
+        if (!mounted) return;
         final picked = await showCalendarPickerDialog(context, calendars);
         if (picked == null || !mounted) return;
         await ref.read(preferencesRepositoryProvider).setSelectedCalendarId(picked);
@@ -342,7 +342,11 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
       ),
       builder: (ctx) => _AddAppointmentSheet(
         initialDate: _selectedDay,
-        onAdd: (c) => ref.read(planningDaoProvider).insertAppointment(c),
+        onAdd: (c) async {
+          final id = await ref.read(planningDaoProvider).insertAppointment(c);
+          // Push immediately to device calendar without waiting
+          ref.read(calendarSyncServiceProvider).syncNewAppointment(id);
+        },
       ),
     );
   }

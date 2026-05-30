@@ -26,13 +26,18 @@ class CalendarSyncService {
   CalendarSyncService(this._dao, this._prefs);
 
   Future<bool> requestPermissions() async {
-    final result = await _plugin.requestPermissions();
+    // Check first — avoids re-prompting if already granted
+    var result = await _plugin.hasPermissions();
+    if (result.data != true) {
+      result = await _plugin.requestPermissions();
+    }
     return result.data == true;
   }
 
   Future<List<Calendar>> getAvailableCalendars() async {
     final result = await _plugin.retrieveCalendars();
-    return result.data?.where((c) => c.isReadOnly == false).toList() ?? [];
+    // Use != true so calendars with isReadOnly = null are included (common on Android)
+    return result.data?.where((c) => c.isReadOnly != true).toList() ?? [];
   }
 
   TZDateTime _toTZ(DateTime dt) => TZDateTime.from(dt, tz.local);
@@ -63,6 +68,17 @@ class CalendarSyncService {
       // device_calendar v4.x Event does not expose lastModifiedDate
       updatedAt: Value(DateTime.now()),
     ));
+  }
+
+  Future<void> syncNewAppointment(int appointmentId) async {
+    final calendarId = _prefs.selectedCalendarId;
+    if (calendarId == null) return;
+    final apt = await _dao.getAppointmentById(appointmentId);
+    if (apt == null || apt.externalEventId != null) return;
+    try {
+      final newId = await _pushToDevice(apt, calendarId);
+      if (newId != null) await _dao.updateExternalEventId(apt.id, newId);
+    } catch (_) {}
   }
 
   Future<void> deleteAppointmentWithSync(int appointmentId) async {
