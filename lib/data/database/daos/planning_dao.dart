@@ -22,11 +22,26 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
         .watch();
   }
 
+  Future<List<Appointment>> getAllAppointments() => select(appointments).get();
+
+  Future<Appointment?> getAppointmentById(int id) =>
+      (select(appointments)..where((t) => t.id.equals(id))).getSingleOrNull();
+
   Future<int> insertAppointment(AppointmentsCompanion entry) =>
       into(appointments).insert(entry);
 
   Future<bool> updateAppointment(AppointmentsCompanion entry) =>
-      update(appointments).replace(entry);
+      update(appointments).replace(
+        entry.copyWith(updatedAt: Value(DateTime.now())),
+      );
+
+  Future<void> updateExternalEventId(int id, String? externalEventId) =>
+      (update(appointments)..where((t) => t.id.equals(id))).write(
+        AppointmentsCompanion(
+          externalEventId: Value(externalEventId),
+          updatedAt: Value(DateTime.now()),
+        ),
+      );
 
   Future<int> deleteAppointment(int id) =>
       (delete(appointments)..where((t) => t.id.equals(id))).go();
