@@ -108,6 +108,29 @@ class $AppointmentsTable extends Appointments
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _externalEventIdMeta = const VerificationMeta(
+    'externalEventId',
+  );
+  @override
+  late final GeneratedColumn<String> externalEventId = GeneratedColumn<String>(
+    'external_event_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -131,6 +154,8 @@ class $AppointmentsTable extends Appointments
     allDay,
     recurrenceRule,
     color,
+    externalEventId,
+    updatedAt,
     createdAt,
   ];
   @override
@@ -206,6 +231,21 @@ class $AppointmentsTable extends Appointments
         color.isAcceptableOrUnknown(data['color']!, _colorMeta),
       );
     }
+    if (data.containsKey('external_event_id')) {
+      context.handle(
+        _externalEventIdMeta,
+        externalEventId.isAcceptableOrUnknown(
+          data['external_event_id']!,
+          _externalEventIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -257,6 +297,14 @@ class $AppointmentsTable extends Appointments
         DriftSqlType.int,
         data['${effectivePrefix}color'],
       ),
+      externalEventId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}external_event_id'],
+      ),
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -280,6 +328,8 @@ class Appointment extends DataClass implements Insertable<Appointment> {
   final bool allDay;
   final String? recurrenceRule;
   final int? color;
+  final String? externalEventId;
+  final DateTime updatedAt;
   final DateTime createdAt;
   const Appointment({
     required this.id,
@@ -291,6 +341,8 @@ class Appointment extends DataClass implements Insertable<Appointment> {
     required this.allDay,
     this.recurrenceRule,
     this.color,
+    this.externalEventId,
+    required this.updatedAt,
     required this.createdAt,
   });
   @override
@@ -315,6 +367,10 @@ class Appointment extends DataClass implements Insertable<Appointment> {
     if (!nullToAbsent || color != null) {
       map['color'] = Variable<int>(color);
     }
+    if (!nullToAbsent || externalEventId != null) {
+      map['external_event_id'] = Variable<String>(externalEventId);
+    }
+    map['updated_at'] = Variable<DateTime>(updatedAt);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -340,6 +396,10 @@ class Appointment extends DataClass implements Insertable<Appointment> {
       color: color == null && nullToAbsent
           ? const Value.absent()
           : Value(color),
+      externalEventId: externalEventId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(externalEventId),
+      updatedAt: Value(updatedAt),
       createdAt: Value(createdAt),
     );
   }
@@ -359,6 +419,8 @@ class Appointment extends DataClass implements Insertable<Appointment> {
       allDay: serializer.fromJson<bool>(json['allDay']),
       recurrenceRule: serializer.fromJson<String?>(json['recurrenceRule']),
       color: serializer.fromJson<int?>(json['color']),
+      externalEventId: serializer.fromJson<String?>(json['externalEventId']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -375,6 +437,8 @@ class Appointment extends DataClass implements Insertable<Appointment> {
       'allDay': serializer.toJson<bool>(allDay),
       'recurrenceRule': serializer.toJson<String?>(recurrenceRule),
       'color': serializer.toJson<int?>(color),
+      'externalEventId': serializer.toJson<String?>(externalEventId),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -389,6 +453,8 @@ class Appointment extends DataClass implements Insertable<Appointment> {
     bool? allDay,
     Value<String?> recurrenceRule = const Value.absent(),
     Value<int?> color = const Value.absent(),
+    Value<String?> externalEventId = const Value.absent(),
+    DateTime? updatedAt,
     DateTime? createdAt,
   }) => Appointment(
     id: id ?? this.id,
@@ -402,6 +468,10 @@ class Appointment extends DataClass implements Insertable<Appointment> {
         ? recurrenceRule.value
         : this.recurrenceRule,
     color: color.present ? color.value : this.color,
+    externalEventId: externalEventId.present
+        ? externalEventId.value
+        : this.externalEventId,
+    updatedAt: updatedAt ?? this.updatedAt,
     createdAt: createdAt ?? this.createdAt,
   );
   Appointment copyWithCompanion(AppointmentsCompanion data) {
@@ -419,6 +489,10 @@ class Appointment extends DataClass implements Insertable<Appointment> {
           ? data.recurrenceRule.value
           : this.recurrenceRule,
       color: data.color.present ? data.color.value : this.color,
+      externalEventId: data.externalEventId.present
+          ? data.externalEventId.value
+          : this.externalEventId,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -435,6 +509,8 @@ class Appointment extends DataClass implements Insertable<Appointment> {
           ..write('allDay: $allDay, ')
           ..write('recurrenceRule: $recurrenceRule, ')
           ..write('color: $color, ')
+          ..write('externalEventId: $externalEventId, ')
+          ..write('updatedAt: $updatedAt, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -451,6 +527,8 @@ class Appointment extends DataClass implements Insertable<Appointment> {
     allDay,
     recurrenceRule,
     color,
+    externalEventId,
+    updatedAt,
     createdAt,
   );
   @override
@@ -466,6 +544,8 @@ class Appointment extends DataClass implements Insertable<Appointment> {
           other.allDay == this.allDay &&
           other.recurrenceRule == this.recurrenceRule &&
           other.color == this.color &&
+          other.externalEventId == this.externalEventId &&
+          other.updatedAt == this.updatedAt &&
           other.createdAt == this.createdAt);
 }
 
@@ -479,6 +559,8 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
   final Value<bool> allDay;
   final Value<String?> recurrenceRule;
   final Value<int?> color;
+  final Value<String?> externalEventId;
+  final Value<DateTime> updatedAt;
   final Value<DateTime> createdAt;
   const AppointmentsCompanion({
     this.id = const Value.absent(),
@@ -490,6 +572,8 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
     this.allDay = const Value.absent(),
     this.recurrenceRule = const Value.absent(),
     this.color = const Value.absent(),
+    this.externalEventId = const Value.absent(),
+    this.updatedAt = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   AppointmentsCompanion.insert({
@@ -502,6 +586,8 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
     this.allDay = const Value.absent(),
     this.recurrenceRule = const Value.absent(),
     this.color = const Value.absent(),
+    this.externalEventId = const Value.absent(),
+    this.updatedAt = const Value.absent(),
     this.createdAt = const Value.absent(),
   }) : title = Value(title),
        startTime = Value(startTime);
@@ -515,6 +601,8 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
     Expression<bool>? allDay,
     Expression<String>? recurrenceRule,
     Expression<int>? color,
+    Expression<String>? externalEventId,
+    Expression<DateTime>? updatedAt,
     Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
@@ -527,6 +615,8 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
       if (allDay != null) 'all_day': allDay,
       if (recurrenceRule != null) 'recurrence_rule': recurrenceRule,
       if (color != null) 'color': color,
+      if (externalEventId != null) 'external_event_id': externalEventId,
+      if (updatedAt != null) 'updated_at': updatedAt,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
@@ -541,6 +631,8 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
     Value<bool>? allDay,
     Value<String?>? recurrenceRule,
     Value<int?>? color,
+    Value<String?>? externalEventId,
+    Value<DateTime>? updatedAt,
     Value<DateTime>? createdAt,
   }) {
     return AppointmentsCompanion(
@@ -553,6 +645,8 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
       allDay: allDay ?? this.allDay,
       recurrenceRule: recurrenceRule ?? this.recurrenceRule,
       color: color ?? this.color,
+      externalEventId: externalEventId ?? this.externalEventId,
+      updatedAt: updatedAt ?? this.updatedAt,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -587,6 +681,12 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
     if (color.present) {
       map['color'] = Variable<int>(color.value);
     }
+    if (externalEventId.present) {
+      map['external_event_id'] = Variable<String>(externalEventId.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -605,6 +705,8 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
           ..write('allDay: $allDay, ')
           ..write('recurrenceRule: $recurrenceRule, ')
           ..write('color: $color, ')
+          ..write('externalEventId: $externalEventId, ')
+          ..write('updatedAt: $updatedAt, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -20401,6 +20503,8 @@ typedef $$AppointmentsTableCreateCompanionBuilder =
       Value<bool> allDay,
       Value<String?> recurrenceRule,
       Value<int?> color,
+      Value<String?> externalEventId,
+      Value<DateTime> updatedAt,
       Value<DateTime> createdAt,
     });
 typedef $$AppointmentsTableUpdateCompanionBuilder =
@@ -20414,6 +20518,8 @@ typedef $$AppointmentsTableUpdateCompanionBuilder =
       Value<bool> allDay,
       Value<String?> recurrenceRule,
       Value<int?> color,
+      Value<String?> externalEventId,
+      Value<DateTime> updatedAt,
       Value<DateTime> createdAt,
     });
 
@@ -20468,6 +20574,16 @@ class $$AppointmentsTableFilterComposer
 
   ColumnFilters<int> get color => $composableBuilder(
     column: $table.color,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get externalEventId => $composableBuilder(
+    column: $table.externalEventId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -20531,6 +20647,16 @@ class $$AppointmentsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get externalEventId => $composableBuilder(
+    column: $table.externalEventId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -20577,6 +20703,14 @@ class $$AppointmentsTableAnnotationComposer
   GeneratedColumn<int> get color =>
       $composableBuilder(column: $table.color, builder: (column) => column);
 
+  GeneratedColumn<String> get externalEventId => $composableBuilder(
+    column: $table.externalEventId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 }
@@ -20621,6 +20755,8 @@ class $$AppointmentsTableTableManager
                 Value<bool> allDay = const Value.absent(),
                 Value<String?> recurrenceRule = const Value.absent(),
                 Value<int?> color = const Value.absent(),
+                Value<String?> externalEventId = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => AppointmentsCompanion(
                 id: id,
@@ -20632,6 +20768,8 @@ class $$AppointmentsTableTableManager
                 allDay: allDay,
                 recurrenceRule: recurrenceRule,
                 color: color,
+                externalEventId: externalEventId,
+                updatedAt: updatedAt,
                 createdAt: createdAt,
               ),
           createCompanionCallback:
@@ -20645,6 +20783,8 @@ class $$AppointmentsTableTableManager
                 Value<bool> allDay = const Value.absent(),
                 Value<String?> recurrenceRule = const Value.absent(),
                 Value<int?> color = const Value.absent(),
+                Value<String?> externalEventId = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => AppointmentsCompanion.insert(
                 id: id,
@@ -20656,6 +20796,8 @@ class $$AppointmentsTableTableManager
                 allDay: allDay,
                 recurrenceRule: recurrenceRule,
                 color: color,
+                externalEventId: externalEventId,
+                updatedAt: updatedAt,
                 createdAt: createdAt,
               ),
           withReferenceMapper: (p0) => p0

@@ -10,6 +10,8 @@ class Appointments extends Table {
   BoolColumn get allDay => boolean().withDefault(const Constant(false))();
   TextColumn get recurrenceRule => text().nullable()();
   IntColumn get color => integer().nullable()();
+  TextColumn get externalEventId => text().nullable()();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
 

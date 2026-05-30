@@ -153,7 +153,7 @@ class TraumDatabase extends _$TraumDatabase {
   MealEntriesDao get mealEntriesDao => MealEntriesDao(this);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -196,6 +196,12 @@ class TraumDatabase extends _$TraumDatabase {
         await migrator.createTable(mealEntries);
         await migrator.createTable(mealTemplateItems);
         await migrator.createTable(weeklyMealPlan);
+      }
+      if (from < 9) {
+        await migrator.addColumn(appointments, appointments.externalEventId);
+        await migrator.addColumn(appointments, appointments.updatedAt);
+        // Seed updatedAt from createdAt so existing rows have a meaningful timestamp
+        await customStatement('UPDATE appointments SET updated_at = created_at');
       }
     },
   );
