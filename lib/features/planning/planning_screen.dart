@@ -115,8 +115,8 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) => _runSync());
   }
 
-  Future<void> _runSync() async {
-    if (!mounted) return;
+  Future<void> _runSync({int depth = 0}) async {
+    if (depth > 1 || !mounted) return;
     setState(() => _isSyncing = true);
     try {
       final syncService = ref.read(calendarSyncServiceProvider);
@@ -139,7 +139,8 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
         final picked = await showCalendarPickerDialog(context, calendars);
         if (picked == null || !mounted) return;
         await ref.read(preferencesRepositoryProvider).setSelectedCalendarId(picked);
-        await _runSync();
+        if (!mounted) return;
+        await _runSync(depth: depth + 1);
       }
     } finally {
       if (mounted) setState(() => _isSyncing = false);
