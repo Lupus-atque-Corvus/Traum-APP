@@ -19,7 +19,7 @@ class SyncResult {
   });
 }
 
-/// Lightweight calendar descriptor returned by our native channel.
+/// Lightweight calendar descriptor returned by our native Android channel.
 class NativeCalendar {
   final String id;
   final String name;
@@ -34,6 +34,27 @@ class NativeCalendar {
   });
 }
 
+/// Event data read directly from Android CalendarContract via native channel.
+class _NativeEvent {
+  final String id;
+  final String title;
+  final String? description;
+  final String? location;
+  final DateTime startTime;
+  final DateTime endTime;
+  final bool allDay;
+
+  const _NativeEvent({
+    required this.id,
+    required this.title,
+    this.description,
+    this.location,
+    required this.startTime,
+    required this.endTime,
+    this.allDay = false,
+  });
+}
+
 class CalendarSyncService {
   final PlanningDao _dao;
   final PreferencesRepository _prefs;
@@ -43,7 +64,6 @@ class CalendarSyncService {
   CalendarSyncService(this._dao, this._prefs);
 
   Future<bool> requestPermissions() async {
-    // Check first — avoids re-prompting if already granted
     var result = await _plugin.hasPermissions();
     if (result.data != true) {
       result = await _plugin.requestPermissions();
@@ -51,11 +71,12 @@ class CalendarSyncService {
     return result.data == true;
   }
 
-  /// Queries the Android CalendarContract directly via a native platform channel.
-  /// This bypasses device_calendar's broken Calendar.id serialization on some devices.
+  /// Lists writable calendars via native Android CalendarContract.
+  /// Falls back to device_calendar on iOS or if the native call fails.
   Future<List<NativeCalendar>> getAvailableCalendars() async {
     try {
-      final raw = await _nativeChannel.invokeMethod<List<dynamic>>('getCalendars');
+      final raw =
+          await _nativeChannel.invokeMethod<List<dynamic>>('getCalendars');
       if (raw != null && raw.isNotEmpty) {
         return raw
             .cast<Map<dynamic, dynamic>>()
@@ -70,7 +91,7 @@ class CalendarSyncService {
             .toList();
       }
     } catch (_) {}
-    // Fallback to device_calendar if native channel fails (e.g. on iOS)
+    // iOS / fallback
     final result = await _plugin.retrieveCalendars();
     return result.data
             ?.where((c) => c.id != null && c.isReadOnly != true)
@@ -84,6 +105,37 @@ class CalendarSyncService {
         [];
   }
 
+  /// Reads events from one or more calendars directly via native Android channel.
+  Future<List<_NativeEvent>> _getNativeEvents(
+    List<String> calendarIds,
+    DateTime start,
+    DateTime end,
+  ) async {
+    try {
+      final raw = await _nativeChannel.invokeMethod<List<dynamic>>('getEvents', {
+        'calendarIds': calendarIds,
+        'startMs': start.millisecondsSinceEpoch,
+        'endMs': end.millisecondsSinceEpoch,
+      });
+      if (raw == null) return [];
+      return raw.cast<Map<dynamic, dynamic>>().map((m) {
+        final startMs = m['startMs'] as int? ?? 0;
+        final endMs = m['endMs'] as int? ?? startMs + 3600000;
+        return _NativeEvent(
+          id: m['id'].toString(),
+          title: m['title']?.toString() ?? '(Kein Titel)',
+          description: m['description']?.toString(),
+          location: m['location']?.toString(),
+          startTime: DateTime.fromMillisecondsSinceEpoch(startMs),
+          endTime: DateTime.fromMillisecondsSinceEpoch(endMs),
+          allDay: m['allDay'] as bool? ?? false,
+        );
+      }).toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
   TZDateTime _toTZ(DateTime dt) => TZDateTime.from(dt, tz.local);
 
   Future<String?> _pushToDevice(Appointment apt, String calendarId) async {
@@ -95,32 +147,31 @@ class CalendarSyncService {
       ..start = _toTZ(apt.startTime)
       ..end = _toTZ(apt.endTime ?? apt.startTime.add(const Duration(hours: 1)))
       ..allDay = apt.allDay;
-    // Note: device_calendar Event does not expose a color setter in v4.x
     final result = await _plugin.createOrUpdateEvent(event);
     return result?.data;
   }
 
-  Future<void> _pullFromDevice(Event event) async {
+  Future<void> _pullNativeEvent(_NativeEvent event) async {
     await _dao.insertAppointment(AppointmentsCompanion.insert(
-      title: event.title ?? '(Kein Titel)',
+      title: event.title,
       description: Value(event.description),
       location: Value(event.location),
-      startTime: event.start?.toLocal() ?? DateTime.now(),
-      endTime: Value(event.end?.toLocal()),
-      allDay: Value(event.allDay ?? false),
-      externalEventId: Value(event.eventId),
-      // device_calendar v4.x Event does not expose lastModifiedDate
+      startTime: event.startTime,
+      endTime: Value(event.endTime),
+      allDay: Value(event.allDay),
+      externalEventId: Value(event.id),
       updatedAt: Value(DateTime.now()),
     ));
   }
 
+  /// Push a single newly created app appointment to the primary device calendar.
   Future<void> syncNewAppointment(int appointmentId) async {
-    final calendarId = _prefs.selectedCalendarId;
-    if (calendarId == null) return;
+    final ids = _prefs.selectedCalendarIds;
+    if (ids.isEmpty) return;
     final apt = await _dao.getAppointmentById(appointmentId);
     if (apt == null || apt.externalEventId != null) return;
     try {
-      final newId = await _pushToDevice(apt, calendarId);
+      final newId = await _pushToDevice(apt, ids.first);
       if (newId != null) await _dao.updateExternalEventId(apt.id, newId);
     } catch (_) {}
   }
@@ -128,13 +179,11 @@ class CalendarSyncService {
   Future<void> deleteAppointmentWithSync(int appointmentId) async {
     final apt = await _dao.getAppointmentById(appointmentId);
     if (apt != null && apt.externalEventId != null) {
-      final calendarId = _prefs.selectedCalendarId;
-      if (calendarId != null) {
+      final ids = _prefs.selectedCalendarIds;
+      if (ids.isNotEmpty) {
         try {
-          await _plugin.deleteEvent(calendarId, apt.externalEventId!);
-        } catch (_) {
-          // Device delete failed — local deletion still proceeds
-        }
+          await _plugin.deleteEvent(ids.first, apt.externalEventId!);
+        } catch (_) {}
       }
     }
     await _dao.deleteAppointment(appointmentId);
@@ -144,52 +193,41 @@ class CalendarSyncService {
     final granted = await requestPermissions();
     if (!granted) return const SyncResult(permissionDenied: true);
 
-    final calendarId = _prefs.selectedCalendarId;
-    if (calendarId == null) return const SyncResult(needsCalendarSelection: true);
+    final calendarIds = _prefs.selectedCalendarIds;
+    if (calendarIds.isEmpty) return const SyncResult(needsCalendarSelection: true);
 
     final now = DateTime.now();
     final windowStart = now.subtract(const Duration(days: 180));
     final windowEnd = now.add(const Duration(days: 365));
 
-    final eventsResult = await _plugin.retrieveEvents(
-      calendarId,
-      RetrieveEventsParams(startDate: windowStart, endDate: windowEnd),
-    );
-    final deviceEvents = eventsResult.data?.toList() ?? [];
+    // Read events from ALL selected calendars via native channel
+    final deviceEvents =
+        await _getNativeEvents(calendarIds, windowStart, windowEnd);
     final appAppointments = await _dao.getAllAppointments();
 
     final appByExternalId = <String, Appointment>{
       for (final a in appAppointments)
         if (a.externalEventId != null) a.externalEventId!: a,
     };
-    final deviceEventIds = <String>{
-      for (final e in deviceEvents)
-        if (e.eventId != null) e.eventId!,
-    };
+    final deviceEventIds = {for (final e in deviceEvents) e.id};
 
     int synced = 0;
     int errors = 0;
 
-    // Device → App: import new events + conflict resolution
+    // Device → App: import new events
     for (final event in deviceEvents) {
       try {
-        if (event.eventId == null) continue;
-        final existing = appByExternalId[event.eventId!];
-        if (existing == null) {
-          await _pullFromDevice(event);
+        if (!appByExternalId.containsKey(event.id)) {
+          await _pullNativeEvent(event);
           synced++;
         }
-        // Note: device_calendar v4.x does not expose a lastModifiedDate on Event,
-        // so timestamp-based conflict resolution ("newest wins") is not possible.
-        // Existing local records are preserved; only genuinely new device events
-        // are imported. If the package is upgraded to expose a modification
-        // timestamp, updateAppointmentFromDevice() can be used here.
       } catch (_) {
         errors++;
       }
     }
 
-    // App → Device: push new app appointments + handle device-side deletions
+    // App → Device: push new app appointments to primary calendar + handle deletions
+    final primaryCalendarId = calendarIds.first;
     for (final apt in appAppointments) {
       try {
         if (apt.externalEventId != null) {
@@ -200,7 +238,7 @@ class CalendarSyncService {
             synced++;
           }
         } else {
-          final newId = await _pushToDevice(apt, calendarId);
+          final newId = await _pushToDevice(apt, primaryCalendarId);
           if (newId != null) {
             await _dao.updateExternalEventId(apt.id, newId);
             synced++;
@@ -213,4 +251,5 @@ class CalendarSyncService {
 
     return SyncResult(synced: synced, errors: errors);
   }
+
 }

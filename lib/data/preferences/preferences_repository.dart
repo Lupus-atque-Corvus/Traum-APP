@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferencesRepository {
@@ -32,13 +33,24 @@ class PreferencesRepository {
       '["training","health","nutrition","budget"]';
   Future<void> setNavSlots(String v) => _prefs.setString('nav_slots', v);
 
+  // Legacy single-ID — kept for migration only
   String? get selectedCalendarId => _prefs.getString('calendar_sync_id');
-  Future<void> setSelectedCalendarId(String? v) async {
-    if (v != null) {
-      await _prefs.setString('calendar_sync_id', v);
-    } else {
-      await _prefs.remove('calendar_sync_id');
+
+  List<String> get selectedCalendarIds {
+    final stored = _prefs.getString('calendar_sync_ids');
+    if (stored != null) {
+      try {
+        return (jsonDecode(stored) as List<dynamic>).cast<String>();
+      } catch (_) {}
     }
+    // Migrate from old single-ID key
+    final single = selectedCalendarId;
+    if (single != null) return [single];
+    return [];
+  }
+
+  Future<void> setSelectedCalendarIds(List<String> ids) async {
+    await _prefs.setString('calendar_sync_ids', jsonEncode(ids));
   }
 
   bool get onboardingComplete =>
