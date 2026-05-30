@@ -6,6 +6,9 @@ import 'package:local_auth/local_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import '../../core/navigation/nav_customization_sheet.dart';
+import '../../core/providers/database_provider.dart';
+import '../../core/services/calendar_sync_service.dart' show NativeCalendar;
+import '../planning/calendar_picker_dialog.dart';
 import 'feedback/feedback_bottom_sheet.dart';
 import '../../core/navigation/routes.dart';
 import '../../core/notifications/notification_service.dart';
@@ -41,6 +44,7 @@ class SettingsScreen extends ConsumerWidget {
         children: [
           _LanguageSection(),
           _NavSection(),
+          _CalendarSyncSection(),
           _UnitsSection(),
           _NotificationsSection(),
           _GoalsSection(),
@@ -149,6 +153,115 @@ class _NavSection extends ConsumerWidget {
         ),
         trailing: const Icon(Icons.chevron_right, color: TraumColors.onBackgroundMuted),
         onTap: () => showNavCustomizationSheet(context, ref),
+      ),
+    );
+  }
+}
+
+// ─── Calendar Sync ───────────────────────────────────────────────────────────
+
+class _CalendarSyncSection extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<_CalendarSyncSection> createState() => _CalendarSyncSectionState();
+}
+
+class _CalendarSyncSectionState extends ConsumerState<_CalendarSyncSection> {
+  List<NativeCalendar>? _availableCalendars;
+  bool _loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCalendars();
+  }
+
+  Future<void> _loadCalendars() async {
+    setState(() => _loading = true);
+    try {
+      final cals = await ref
+          .read(calendarSyncServiceProvider)
+          .getAvailableCalendars();
+      if (mounted) setState(() => _availableCalendars = cals);
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _openPicker() async {
+    final calendars = _availableCalendars;
+    if (calendars == null) return;
+    final currentIds = ref.read(preferencesRepositoryProvider).selectedCalendarIds;
+    final picked = await showCalendarPickerDialog(context, calendars, currentIds);
+    if (picked != null && picked.isNotEmpty && mounted) {
+      await ref.read(preferencesRepositoryProvider).setSelectedCalendarIds(picked);
+      setState(() {}); // refresh subtitle
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedIds =
+        ref.read(preferencesRepositoryProvider).selectedCalendarIds;
+    final calendars = _availableCalendars;
+
+    String subtitle;
+    if (_loading) {
+      subtitle = 'Lade Kalender…';
+    } else if (selectedIds.isEmpty) {
+      subtitle = 'Kein Kalender ausgewählt';
+    } else if (calendars != null) {
+      final names = selectedIds
+          .map((id) => calendars.firstWhere(
+                (c) => c.id == id,
+                orElse: () => NativeCalendar(id: id, name: id),
+              ).name)
+          .join(', ');
+      subtitle = names;
+    } else {
+      subtitle = '${selectedIds.length} Kalender ausgewählt';
+    }
+
+    return _Section(
+      title: 'Kalender-Sync',
+      child: ListTile(
+        leading: Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: TraumColors.lavender.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: _loading
+              ? const Padding(
+                  padding: EdgeInsets.all(8),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: TraumColors.lavender,
+                  ),
+                )
+              : const Icon(Icons.calendar_month_rounded,
+                  color: TraumColors.lavender, size: 18),
+        ),
+        title: const Text(
+          'Synchronisierte Kalender',
+          style: TextStyle(
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            fontSize: 12,
+          ),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: const Icon(Icons.chevron_right,
+            color: TraumColors.onBackgroundMuted),
+        onTap: _loading ? null : _openPicker,
       ),
     );
   }
