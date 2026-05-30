@@ -1,5 +1,6 @@
 import 'package:device_calendar/device_calendar.dart';
 import 'package:drift/drift.dart' show Value;
+import 'package:flutter/services.dart';
 import 'package:timezone/timezone.dart' as tz;
 import '../../data/database/traum_database.dart';
 import '../../data/preferences/preferences_repository.dart';
@@ -18,10 +19,26 @@ class SyncResult {
   });
 }
 
+/// Lightweight calendar descriptor returned by our native channel.
+class NativeCalendar {
+  final String id;
+  final String name;
+  final String? accountName;
+  final int? color;
+
+  const NativeCalendar({
+    required this.id,
+    required this.name,
+    this.accountName,
+    this.color,
+  });
+}
+
 class CalendarSyncService {
   final PlanningDao _dao;
   final PreferencesRepository _prefs;
   final DeviceCalendarPlugin _plugin = DeviceCalendarPlugin();
+  static const _nativeChannel = MethodChannel('traum/calendar');
 
   CalendarSyncService(this._dao, this._prefs);
 
@@ -34,23 +51,37 @@ class CalendarSyncService {
     return result.data == true;
   }
 
-  Future<List<Calendar>> getAvailableCalendars() async {
-    // Retry up to 3x with increasing delays — Android sometimes needs time
-    // to propagate a freshly-granted calendar permission to the content provider.
-    for (int attempt = 0; attempt < 3; attempt++) {
-      if (attempt > 0) {
-        await Future.delayed(const Duration(milliseconds: 1000));
+  /// Queries the Android CalendarContract directly via a native platform channel.
+  /// This bypasses device_calendar's broken Calendar.id serialization on some devices.
+  Future<List<NativeCalendar>> getAvailableCalendars() async {
+    try {
+      final raw = await _nativeChannel.invokeMethod<List<dynamic>>('getCalendars');
+      if (raw != null && raw.isNotEmpty) {
+        return raw
+            .cast<Map<dynamic, dynamic>>()
+            .map((m) => NativeCalendar(
+                  id: m['id'].toString(),
+                  name: m['name']?.toString() ??
+                      m['accountName']?.toString() ??
+                      'Kalender',
+                  accountName: m['accountName']?.toString(),
+                  color: m['color'] as int?,
+                ))
+            .toList();
       }
-      final result = await _plugin.retrieveCalendars();
-      final calendars = result.data
-              ?.where((c) => c.id != null && c.isReadOnly != true)
-              .toList() ??
-          [];
-      if (calendars.isNotEmpty) return calendars;
-    }
-    // Last resort: return any calendar with a non-null id, ignoring isReadOnly
+    } catch (_) {}
+    // Fallback to device_calendar if native channel fails (e.g. on iOS)
     final result = await _plugin.retrieveCalendars();
-    return result.data?.where((c) => c.id != null).toList() ?? [];
+    return result.data
+            ?.where((c) => c.id != null && c.isReadOnly != true)
+            .map((c) => NativeCalendar(
+                  id: c.id!,
+                  name: c.name ?? c.accountName ?? 'Kalender',
+                  accountName: c.accountName,
+                  color: c.color,
+                ))
+            .toList() ??
+        [];
   }
 
   TZDateTime _toTZ(DateTime dt) => TZDateTime.from(dt, tz.local);

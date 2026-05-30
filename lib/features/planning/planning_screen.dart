@@ -1,4 +1,4 @@
-import 'package:device_calendar/device_calendar.dart';
+import '../../core/services/calendar_sync_service.dart' show NativeCalendar;
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,17 +11,7 @@ import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 
-String _calendarDisplayName(Calendar cal, int index) {
-  final name = cal.name?.trim();
-  if (name != null && name.isNotEmpty) return name;
-  final account = cal.accountName?.trim();
-  if (account != null && account.isNotEmpty) return account;
-  final id = cal.id?.trim();
-  if (id != null && id.isNotEmpty) return 'Kalender $id';
-  return 'Kalender ${index + 1}';
-}
-
-Widget _calendarPickerContent(BuildContext ctx, List<Calendar> calendars) {
+Widget _calendarPickerContent(BuildContext ctx, List<NativeCalendar> calendars) {
   if (calendars.isEmpty) {
     return const Padding(
       padding: EdgeInsets.symmetric(vertical: 12),
@@ -42,29 +32,22 @@ Widget _calendarPickerContent(BuildContext ctx, List<Calendar> calendars) {
       itemCount: calendars.length,
       itemBuilder: (_, i) {
         final cal = calendars[i];
-        final displayName = _calendarDisplayName(cal, i);
-        final subtitle = (cal.accountName?.trim().isNotEmpty == true &&
-                cal.accountName != displayName)
+        final subtitle = cal.accountName != null && cal.accountName != cal.name
             ? cal.accountName!
-            : cal.id ?? '';
-        final selectable = cal.id != null;
+            : '';
         return ListTile(
           leading: Container(
             width: 14,
             height: 14,
             decoration: BoxDecoration(
-              color: cal.color != null
-                  ? Color(cal.color!)
-                  : TraumColors.lavender,
+              color: cal.color != null ? Color(cal.color!) : TraumColors.lavender,
               shape: BoxShape.circle,
             ),
           ),
           title: Text(
-            displayName,
-            style: TextStyle(
-              color: selectable
-                  ? TraumColors.onBackground
-                  : TraumColors.onBackgroundSubtle,
+            cal.name,
+            style: const TextStyle(
+              color: TraumColors.onBackground,
               fontFamily: 'DMSans',
               fontSize: 14,
             ),
@@ -79,7 +62,7 @@ Widget _calendarPickerContent(BuildContext ctx, List<Calendar> calendars) {
                   ),
                 )
               : null,
-          onTap: selectable ? () => Navigator.pop(ctx, cal.id) : null,
+          onTap: () => Navigator.pop(ctx, cal.id),
         );
       },
     ),
@@ -88,7 +71,7 @@ Widget _calendarPickerContent(BuildContext ctx, List<Calendar> calendars) {
 
 Future<String?> showCalendarPickerDialog(
   BuildContext context,
-  List<Calendar> calendars,
+  List<NativeCalendar> calendars,
 ) {
   return showDialog<String>(
     context: context,
