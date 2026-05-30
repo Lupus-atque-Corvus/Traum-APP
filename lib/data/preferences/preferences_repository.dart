@@ -32,6 +32,15 @@ class PreferencesRepository {
       '["training","health","nutrition","budget"]';
   Future<void> setNavSlots(String v) => _prefs.setString('nav_slots', v);
 
+  String? get selectedCalendarId => _prefs.getString('calendar_sync_id');
+  Future<void> setSelectedCalendarId(String? v) async {
+    if (v != null) {
+      await _prefs.setString('calendar_sync_id', v);
+    } else {
+      await _prefs.remove('calendar_sync_id');
+    }
+  }
+
   bool get onboardingComplete =>
       _prefs.getBool('onboarding_complete') ?? false;
   Future<void> setOnboardingComplete(bool v) =>

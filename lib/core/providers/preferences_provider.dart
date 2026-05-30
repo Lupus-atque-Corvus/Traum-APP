@@ -346,3 +346,7 @@ class NotifBudgetNotifier extends Notifier<bool> {
 
 final notifBudgetProvider =
     NotifierProvider<NotifBudgetNotifier, bool>(NotifBudgetNotifier.new);
+
+final selectedCalendarIdProvider = Provider<String?>((ref) {
+  return ref.watch(preferencesRepositoryProvider).selectedCalendarId;
+});
