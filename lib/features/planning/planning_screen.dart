@@ -1,13 +1,88 @@
+import 'package:device_calendar/device_calendar.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../core/components/components.dart';
 import '../../core/providers/database_provider.dart';
+import '../../core/services/calendar_sync_service.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+
+Future<String?> showCalendarPickerDialog(
+  BuildContext context,
+  List<Calendar> calendars,
+) {
+  return showDialog<String>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: TraumColors.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: const Text(
+        'Kalender auswählen',
+        style: TextStyle(
+          color: TraumColors.onBackground,
+          fontFamily: 'DMSans',
+          fontWeight: FontWeight.w700,
+          fontSize: 18,
+        ),
+      ),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: calendars.length,
+          itemBuilder: (_, i) {
+            final cal = calendars[i];
+            return ListTile(
+              leading: Container(
+                width: 14,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: cal.color != null
+                      ? Color(cal.color!)
+                      : TraumColors.lavender,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              title: Text(
+                cal.name ?? cal.id ?? 'Unbekannt',
+                style: const TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                  fontSize: 14,
+                ),
+              ),
+              subtitle: Text(
+                cal.accountName ?? '',
+                style: const TextStyle(
+                  color: TraumColors.onBackgroundSubtle,
+                  fontFamily: 'DMSans',
+                  fontSize: 12,
+                ),
+              ),
+              onTap: () => Navigator.pop(ctx, cal.id),
+            );
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx, null),
+          child: const Text(
+            'Abbrechen',
+            style: TextStyle(
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
 class PlanningScreen extends ConsumerStatefulWidget {
   const PlanningScreen({super.key});
