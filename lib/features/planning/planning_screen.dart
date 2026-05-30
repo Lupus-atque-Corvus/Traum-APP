@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../core/components/components.dart';
 import '../../core/providers/database_provider.dart';
+import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
@@ -105,11 +106,44 @@ class PlanningScreen extends ConsumerStatefulWidget {
 class _PlanningScreenState extends ConsumerState<PlanningScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _isSyncing = false;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _runSync());
+  }
+
+  Future<void> _runSync() async {
+    if (!mounted) return;
+    setState(() => _isSyncing = true);
+    try {
+      final syncService = ref.read(calendarSyncServiceProvider);
+      final result = await syncService.sync();
+      if (!mounted) return;
+
+      if (result.permissionDenied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Kalender-Zugriff verweigert — Sync deaktiviert'),
+            duration: Duration(seconds: 4),
+          ),
+        );
+        return;
+      }
+
+      if (result.needsCalendarSelection) {
+        final calendars = await syncService.getAvailableCalendars();
+        if (!mounted || calendars.isEmpty) return;
+        final picked = await showCalendarPickerDialog(context, calendars);
+        if (picked == null || !mounted) return;
+        await ref.read(preferencesRepositoryProvider).setSelectedCalendarId(picked);
+        await _runSync();
+      }
+    } finally {
+      if (mounted) setState(() => _isSyncing = false);
+    }
   }
 
   @override
@@ -128,6 +162,22 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
             style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
         elevation: 0,
+        actions: [
+          if (_isSyncing)
+            const Padding(
+              padding: EdgeInsets.only(right: 16),
+              child: Center(
+                child: SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: TraumColors.lavender,
+                  ),
+                ),
+              ),
+            ),
+        ],
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: TraumColors.lavender,
@@ -262,7 +312,7 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
                         ),
                         child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
                       ),
-                      onDismissed: (_) => ref.read(planningDaoProvider).deleteAppointment(a.id),
+                      onDismissed: (_) => ref.read(calendarSyncServiceProvider).deleteAppointmentWithSync(a.id),
                       child: AppointmentChip(
                         title: a.title,
                         time: '${a.startTime.hour.toString().padLeft(2, '0')}:${a.startTime.minute.toString().padLeft(2, '0')}',
