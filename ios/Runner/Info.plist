@@ -63,5 +63,8 @@
 	<!-- Face ID / Biometrics -->
 	<key>NSFaceIDUsageDescription</key>
 	<string>TRAUM uses Face ID to protect your personal data.</string>
+
+	<key>NSCalendarsUsageDescription</key>
+	<string>TRAUM synchronisiert deine Termine mit dem Kalender.</string>
 </dict>
 </plist>
