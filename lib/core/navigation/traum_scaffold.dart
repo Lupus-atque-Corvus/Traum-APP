@@ -254,14 +254,12 @@ class _NavItem extends StatelessWidget {
         return Icons.restaurant_rounded;
       case 'substances':
         return Icons.medication_liquid_rounded;
-      case 'supplements':
-        return Icons.science_rounded;
       case 'planning':
         return Icons.calendar_today_rounded;
-      case 'medication':
-        return Icons.medication_rounded;
+      case 'diary':
+        return Icons.auto_stories_rounded;
       case 'abstinence':
-        return Icons.block_rounded;
+        return Icons.trending_up_rounded;
       case 'budget':
         return Icons.account_balance_wallet_rounded;
       case 'period':
@@ -385,9 +383,8 @@ class _MoreMenuSheet extends StatelessWidget {
       case 'health':      return Icons.favorite_rounded;
       case 'nutrition':   return Icons.restaurant_rounded;
       case 'substances':  return Icons.medication_liquid_rounded;
-      case 'supplements': return Icons.science_rounded;
       case 'planning':    return Icons.calendar_today_rounded;
-      case 'medication':  return Icons.medication_rounded;
+      case 'diary':       return Icons.auto_stories_rounded;
       case 'abstinence':  return Icons.block_rounded;
       case 'budget':      return Icons.account_balance_wallet_rounded;
       case 'period':      return Icons.water_drop_rounded;

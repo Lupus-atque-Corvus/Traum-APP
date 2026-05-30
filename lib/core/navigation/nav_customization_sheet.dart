@@ -36,8 +36,8 @@ class _NavCustomizationSheetState
   late List<String> _slots;
 
   static const _allModules = [
-    'training', 'health', 'nutrition', 'supplements',
-    'planning', 'medication', 'abstinence', 'budget',
+    'training', 'health', 'nutrition', 'substances',
+    'planning', 'diary', 'abstinence', 'budget',
     'period', 'profile', 'settings',
   ];
 
@@ -76,10 +76,10 @@ class _NavCustomizationSheetState
       case 'training':    return Icons.fitness_center_rounded;
       case 'health':      return Icons.favorite_rounded;
       case 'nutrition':   return Icons.restaurant_rounded;
-      case 'supplements': return Icons.science_rounded;
+      case 'substances':  return Icons.medication_liquid_rounded;
       case 'planning':    return Icons.calendar_today_rounded;
-      case 'medication':  return Icons.medication_rounded;
-      case 'abstinence':  return Icons.block_rounded;
+      case 'diary':       return Icons.auto_stories_rounded;
+      case 'abstinence':  return Icons.trending_up_rounded;
       case 'budget':      return Icons.account_balance_wallet_rounded;
       case 'period':      return Icons.water_drop_rounded;
       case 'profile':     return Icons.person_rounded;

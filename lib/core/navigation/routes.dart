@@ -54,6 +54,7 @@ class Routes {
     'planning': planning,
     'abstinence': abstinence,
     'budget': budget,
+    'diary': diary,
     'period': period,
     'profile': profile,
     'settings': settings,
@@ -74,9 +75,11 @@ class Routes {
       case 'planning':
         return l10n.planning;
       case 'abstinence':
-        return l10n.abstinence;
+        return 'Fortschritt';
       case 'budget':
         return l10n.budget;
+      case 'diary':
+        return l10n.diaryModuleLabel;
       case 'period':
         return l10n.period;
       case 'profile':
