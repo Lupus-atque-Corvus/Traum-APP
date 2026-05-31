@@ -14,22 +14,45 @@ class SubstanceDownloadService {
 
   /// Lädt Medikamente aus openFDA und speichert sie lokal.
   /// Yielded den Fortschritt als Wert zwischen 0.0 und 1.0.
+  /// Wirft eine Exception wenn am Ende 0 Einträge gespeichert wurden.
   Stream<double> download() async* {
-    await _dao.clearAll();
-    for (int page = 0; page < _totalPages; page++) {
-      await _downloadPage(page);
-      yield (page + 1) / _totalPages;
+    final allEntries = <SubstanceDatabaseEntriesCompanion>[];
+    final client = http.Client();
+
+    try {
+      for (int page = 0; page < _totalPages; page++) {
+        final pageEntries = await _downloadPage(page, client);
+        allEntries.addAll(pageEntries);
+        yield (page + 1) / _totalPages;
+        // Kurze Pause um Rate-Limiting zu vermeiden
+        if (page < _totalPages - 1) {
+          await Future.delayed(const Duration(milliseconds: 300));
+        }
+      }
+    } finally {
+      client.close();
     }
+
+    if (allEntries.isEmpty) {
+      throw Exception(
+          'Download fehlgeschlagen: Keine Einträge heruntergeladen. Bitte Internetverbindung prüfen.');
+    }
+
+    // Erst wenn alle Daten da sind: altes DB leeren und neu befüllen
+    await _dao.clearAll();
+    await _dao.bulkInsert(allEntries);
   }
 
-  Future<void> _downloadPage(int page) async {
+  Future<List<SubstanceDatabaseEntriesCompanion>> _downloadPage(
+      int page, http.Client client) async {
     final skip = page * _pageSize;
     final url =
         '$_fdaBase?limit=$_pageSize&skip=$skip&search=_exists_:openfda.generic_name';
     try {
-      final response =
-          await http.get(Uri.parse(url)).timeout(const Duration(seconds: 20));
-      if (response.statusCode != 200) return;
+      final response = await client
+          .get(Uri.parse(url))
+          .timeout(const Duration(seconds: 20));
+      if (response.statusCode != 200) return [];
 
       final data = jsonDecode(response.body) as Map<String, dynamic>;
       final results =
@@ -46,15 +69,19 @@ class SubstanceDownloadService {
         if (name == null || name.trim().isEmpty) continue;
 
         final cleanName = name.trim();
-        final id =
-            'fda_${cleanName.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '_')}';
+        final slug =
+            cleanName.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '_');
+        final id = 'fda_$slug';
 
-        final mechanism = _truncate(_firstString(r['mechanism_of_action']), 500);
+        final mechanism =
+            _truncate(_firstStringSafe(r['mechanism_of_action']), 500);
         final dosage =
-            _truncate(_firstString(r['dosage_and_administration']), 300);
-        final warnings = _truncate(_firstString(r['warnings']), 200);
-        final interactions =
-            _truncate(_firstString(r['drug_interactions']), 300);
+            _truncate(_firstStringSafe(r['dosage_and_administration']), 300);
+        // adverse_reactions ist die Nebenwirkungsliste; warnings ist der Blackbox-Warning
+        final adverseRaw =
+            _truncate(_firstStringSafe(r['adverse_reactions']), 200);
+        final interactionsRaw =
+            _truncate(_firstStringSafe(r['drug_interactions']), 300);
 
         entries.add(SubstanceDatabaseEntriesCompanion.insert(
           id: id,
@@ -64,34 +91,35 @@ class SubstanceDownloadService {
           category: const Value('Medikament'),
           mechanism: Value(mechanism),
           commonDosage: Value(dosage),
-          adverseEventsJson: Value(warnings != null
+          adverseEventsJson: Value(adverseRaw != null
               ? jsonEncode([
-                  {'name': warnings, 'frequencyPercent': null}
+                  {'name': adverseRaw, 'frequencyPercent': null}
                 ])
               : '[]'),
-          interactionsJson: Value(interactions != null
+          interactionsJson: Value(interactionsRaw != null
               ? jsonEncode([
                   {
                     'withId': 'unknown',
                     'withName': 'Verschiedene',
                     'severity': 'moderate',
-                    'description': interactions,
+                    'description': interactionsRaw,
                   }
                 ])
               : '[]'),
         ));
       }
-
-      if (entries.isNotEmpty) {
-        await _dao.bulkInsert(entries);
-      }
+      return entries;
     } catch (_) {
       // Einzelne Seiten-Fehler werden übersprungen — kein Abbruch
+      return [];
     }
   }
 
-  String? _firstString(dynamic value) {
-    if (value is List && value.isNotEmpty) return value.first as String?;
+  String? _firstStringSafe(dynamic value) {
+    if (value is List && value.isNotEmpty) {
+      final first = value.first;
+      return first is String ? first : null;
+    }
     if (value is String) return value;
     return null;
   }
