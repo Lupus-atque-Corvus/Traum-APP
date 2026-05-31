@@ -2216,6 +2216,12 @@ abstract class AppLocalizations {
   /// **'Erinnerungszeiten'**
   String get reminderTimes;
 
+  /// No description provided for @addReminderTime.
+  ///
+  /// In de, this message translates to:
+  /// **'Erinnerungszeit hinzufügen'**
+  String get addReminderTime;
+
   /// No description provided for @allMedications.
   ///
   /// In de, this message translates to:
@@ -5083,6 +5089,390 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Erkannt: {amount} € am {date}'**
   String budgetScanSuccess(String amount, String date);
+
+  /// No description provided for @budgetTotalBalance.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesamtsaldo'**
+  String get budgetTotalBalance;
+
+  /// No description provided for @budgetVsLastMonth.
+  ///
+  /// In de, this message translates to:
+  /// **'vs. letzter Monat'**
+  String get budgetVsLastMonth;
+
+  /// No description provided for @budgetAccounts.
+  ///
+  /// In de, this message translates to:
+  /// **'Konten'**
+  String get budgetAccounts;
+
+  /// No description provided for @budgetAddAccount.
+  ///
+  /// In de, this message translates to:
+  /// **'Konto hinzufügen'**
+  String get budgetAddAccount;
+
+  /// No description provided for @budgetAccountChecking.
+  ///
+  /// In de, this message translates to:
+  /// **'Girokonto'**
+  String get budgetAccountChecking;
+
+  /// No description provided for @budgetAccountSavings.
+  ///
+  /// In de, this message translates to:
+  /// **'Sparkonto'**
+  String get budgetAccountSavings;
+
+  /// No description provided for @budgetAccountCredit.
+  ///
+  /// In de, this message translates to:
+  /// **'Kreditkarte'**
+  String get budgetAccountCredit;
+
+  /// No description provided for @budgetAccountInvestment.
+  ///
+  /// In de, this message translates to:
+  /// **'Investment'**
+  String get budgetAccountInvestment;
+
+  /// No description provided for @budgetAccountPrimary.
+  ///
+  /// In de, this message translates to:
+  /// **'Hauptkonto'**
+  String get budgetAccountPrimary;
+
+  /// No description provided for @budgetAccountPending.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausstehend'**
+  String get budgetAccountPending;
+
+  /// No description provided for @budgetAccountReturn.
+  ///
+  /// In de, this message translates to:
+  /// **'Rendite: {rate}%'**
+  String budgetAccountReturn(Object rate);
+
+  /// No description provided for @budgetOverviewTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Budgetübersicht'**
+  String get budgetOverviewTitle;
+
+  /// No description provided for @budgetRecentTransactions.
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte Transaktionen'**
+  String get budgetRecentTransactions;
+
+  /// No description provided for @budgetCategoryListTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausgaben nach Kategorien'**
+  String get budgetCategoryListTitle;
+
+  /// No description provided for @budgetBalanceHidden.
+  ///
+  /// In de, this message translates to:
+  /// **'Guthaben ausgeblendet'**
+  String get budgetBalanceHidden;
+
+  /// No description provided for @diaryTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Tagebuch'**
+  String get diaryTitle;
+
+  /// No description provided for @diarySubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein visuelles Leben.'**
+  String get diarySubtitle;
+
+  /// No description provided for @diaryTodayEntry.
+  ///
+  /// In de, this message translates to:
+  /// **'Heutiger Eintrag'**
+  String get diaryTodayEntry;
+
+  /// No description provided for @diaryNoEntryToday.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch kein Eintrag heute'**
+  String get diaryNoEntryToday;
+
+  /// No description provided for @diaryTakePhoto.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto aufnehmen'**
+  String get diaryTakePhoto;
+
+  /// No description provided for @diaryTakeVideo.
+  ///
+  /// In de, this message translates to:
+  /// **'Video aufnehmen'**
+  String get diaryTakeVideo;
+
+  /// No description provided for @diaryChooseFromGallery.
+  ///
+  /// In de, this message translates to:
+  /// **'Aus Galerie'**
+  String get diaryChooseFromGallery;
+
+  /// No description provided for @diaryNoteHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Schreib etwas zu diesem Moment... (optional)'**
+  String get diaryNoteHint;
+
+  /// No description provided for @diarySave.
+  ///
+  /// In de, this message translates to:
+  /// **'Speichern'**
+  String get diarySave;
+
+  /// No description provided for @diaryRetake.
+  ///
+  /// In de, this message translates to:
+  /// **'Neu aufnehmen'**
+  String get diaryRetake;
+
+  /// No description provided for @diaryStreak.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} Tage in Folge'**
+  String diaryStreak(int count);
+
+  /// No description provided for @diaryTotalEntries.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} Einträge'**
+  String diaryTotalEntries(int count);
+
+  /// No description provided for @diarySlideshow.
+  ///
+  /// In de, this message translates to:
+  /// **'Slideshow'**
+  String get diarySlideshow;
+
+  /// No description provided for @diaryRecentEntries.
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte Einträge'**
+  String get diaryRecentEntries;
+
+  /// No description provided for @diaryYearOverview.
+  ///
+  /// In de, this message translates to:
+  /// **'Jahresübersicht'**
+  String get diaryYearOverview;
+
+  /// No description provided for @diaryDeleteTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag löschen?'**
+  String get diaryDeleteTitle;
+
+  /// No description provided for @diaryDeleteMessage.
+  ///
+  /// In de, this message translates to:
+  /// **'Der Eintrag und die Mediendatei werden dauerhaft gelöscht.'**
+  String get diaryDeleteMessage;
+
+  /// No description provided for @diaryDeleteConfirm.
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen'**
+  String get diaryDeleteConfirm;
+
+  /// No description provided for @diaryModuleLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Tagebuch'**
+  String get diaryModuleLabel;
+
+  /// No description provided for @homeScreenDiaryCardEmpty.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch kein Eintrag heute'**
+  String get homeScreenDiaryCardEmpty;
+
+  /// No description provided for @homeScreenDiaryCardFilled.
+  ///
+  /// In de, this message translates to:
+  /// **'Heutiger Eintrag'**
+  String get homeScreenDiaryCardFilled;
+
+  /// No description provided for @nutritionTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Ernährung'**
+  String get nutritionTitle;
+
+  /// No description provided for @nutritionToday.
+  ///
+  /// In de, this message translates to:
+  /// **'Heute'**
+  String get nutritionToday;
+
+  /// No description provided for @nutritionWeek.
+  ///
+  /// In de, this message translates to:
+  /// **'Woche'**
+  String get nutritionWeek;
+
+  /// No description provided for @nutritionProducts.
+  ///
+  /// In de, this message translates to:
+  /// **'Produkte'**
+  String get nutritionProducts;
+
+  /// No description provided for @nutritionShopping.
+  ///
+  /// In de, this message translates to:
+  /// **'Einkauf'**
+  String get nutritionShopping;
+
+  /// No description provided for @nutritionCalories.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalorien'**
+  String get nutritionCalories;
+
+  /// No description provided for @nutritionProtein.
+  ///
+  /// In de, this message translates to:
+  /// **'Protein'**
+  String get nutritionProtein;
+
+  /// No description provided for @nutritionCarbs.
+  ///
+  /// In de, this message translates to:
+  /// **'Kohlenhydrate'**
+  String get nutritionCarbs;
+
+  /// No description provided for @nutritionFat.
+  ///
+  /// In de, this message translates to:
+  /// **'Fett'**
+  String get nutritionFat;
+
+  /// No description provided for @nutritionBreakfast.
+  ///
+  /// In de, this message translates to:
+  /// **'Frühstück'**
+  String get nutritionBreakfast;
+
+  /// No description provided for @nutritionLunch.
+  ///
+  /// In de, this message translates to:
+  /// **'Mittag'**
+  String get nutritionLunch;
+
+  /// No description provided for @nutritionDinner.
+  ///
+  /// In de, this message translates to:
+  /// **'Abend'**
+  String get nutritionDinner;
+
+  /// No description provided for @nutritionSnack.
+  ///
+  /// In de, this message translates to:
+  /// **'Snack'**
+  String get nutritionSnack;
+
+  /// No description provided for @nutritionScanBarcode.
+  ///
+  /// In de, this message translates to:
+  /// **'Barcode scannen'**
+  String get nutritionScanBarcode;
+
+  /// No description provided for @nutritionScanHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Halte die Kamera auf den Barcode'**
+  String get nutritionScanHint;
+
+  /// No description provided for @nutritionProductNotFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Produkt nicht gefunden'**
+  String get nutritionProductNotFound;
+
+  /// No description provided for @nutritionEnterAmount.
+  ///
+  /// In de, this message translates to:
+  /// **'Menge eingeben'**
+  String get nutritionEnterAmount;
+
+  /// No description provided for @nutritionPer100g.
+  ///
+  /// In de, this message translates to:
+  /// **'pro 100g'**
+  String get nutritionPer100g;
+
+  /// No description provided for @nutritionAddToMeal.
+  ///
+  /// In de, this message translates to:
+  /// **'Zur Mahlzeit hinzufügen'**
+  String get nutritionAddToMeal;
+
+  /// No description provided for @nutritionSaveAsTemplate.
+  ///
+  /// In de, this message translates to:
+  /// **'Als Vorlage speichern'**
+  String get nutritionSaveAsTemplate;
+
+  /// No description provided for @nutritionTemplates.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlagen'**
+  String get nutritionTemplates;
+
+  /// No description provided for @nutritionRecentProducts.
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt verwendet'**
+  String get nutritionRecentProducts;
+
+  /// No description provided for @nutritionAddCustomProduct.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigenes Produkt anlegen'**
+  String get nutritionAddCustomProduct;
+
+  /// No description provided for @nutritionShoppingListGenerate.
+  ///
+  /// In de, this message translates to:
+  /// **'Einkaufsliste generieren'**
+  String get nutritionShoppingListGenerate;
+
+  /// No description provided for @nutritionShoppingListEmpty.
+  ///
+  /// In de, this message translates to:
+  /// **'Einkaufsliste ist leer'**
+  String get nutritionShoppingListEmpty;
+
+  /// No description provided for @nutritionShoppingListDeleteDone.
+  ///
+  /// In de, this message translates to:
+  /// **'Erledigte löschen'**
+  String get nutritionShoppingListDeleteDone;
+
+  /// No description provided for @nutritionWeeklyPlan.
+  ///
+  /// In de, this message translates to:
+  /// **'Wochenplan'**
+  String get nutritionWeeklyPlan;
+
+  /// No description provided for @nutritionWeeklyChart.
+  ///
+  /// In de, this message translates to:
+  /// **'Wochenverlauf'**
+  String get nutritionWeeklyChart;
 }
 
 class _AppLocalizationsDelegate

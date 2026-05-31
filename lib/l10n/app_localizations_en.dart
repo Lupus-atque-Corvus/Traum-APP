@@ -1110,6 +1110,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reminderTimes => 'Reminder times';
 
   @override
+  String get addReminderTime => 'Add reminder time';
+
+  @override
   String get allMedications => 'All medications';
 
   @override
@@ -2617,4 +2620,203 @@ class AppLocalizationsEn extends AppLocalizations {
   String budgetScanSuccess(String amount, String date) {
     return 'Detected: $amount on $date';
   }
+
+  @override
+  String get budgetTotalBalance => 'Total balance';
+
+  @override
+  String get budgetVsLastMonth => 'vs. last month';
+
+  @override
+  String get budgetAccounts => 'Accounts';
+
+  @override
+  String get budgetAddAccount => 'Add account';
+
+  @override
+  String get budgetAccountChecking => 'Checking account';
+
+  @override
+  String get budgetAccountSavings => 'Savings account';
+
+  @override
+  String get budgetAccountCredit => 'Credit card';
+
+  @override
+  String get budgetAccountInvestment => 'Investment';
+
+  @override
+  String get budgetAccountPrimary => 'Primary';
+
+  @override
+  String get budgetAccountPending => 'Pending';
+
+  @override
+  String budgetAccountReturn(Object rate) {
+    return 'Return: $rate%';
+  }
+
+  @override
+  String get budgetOverviewTitle => 'Budget overview';
+
+  @override
+  String get budgetRecentTransactions => 'Recent transactions';
+
+  @override
+  String get budgetCategoryListTitle => 'Expenses by category';
+
+  @override
+  String get budgetBalanceHidden => 'Balance hidden';
+
+  @override
+  String get diaryTitle => 'Diary';
+
+  @override
+  String get diarySubtitle => 'Your visual life.';
+
+  @override
+  String get diaryTodayEntry => 'Today\'s entry';
+
+  @override
+  String get diaryNoEntryToday => 'No entry yet today';
+
+  @override
+  String get diaryTakePhoto => 'Take photo';
+
+  @override
+  String get diaryTakeVideo => 'Record video';
+
+  @override
+  String get diaryChooseFromGallery => 'From gallery';
+
+  @override
+  String get diaryNoteHint => 'Write something about this moment... (optional)';
+
+  @override
+  String get diarySave => 'Save';
+
+  @override
+  String get diaryRetake => 'Retake';
+
+  @override
+  String diaryStreak(int count) {
+    return '$count days in a row';
+  }
+
+  @override
+  String diaryTotalEntries(int count) {
+    return '$count entries';
+  }
+
+  @override
+  String get diarySlideshow => 'Slideshow';
+
+  @override
+  String get diaryRecentEntries => 'Recent entries';
+
+  @override
+  String get diaryYearOverview => 'Year overview';
+
+  @override
+  String get diaryDeleteTitle => 'Delete entry?';
+
+  @override
+  String get diaryDeleteMessage =>
+      'The entry and media file will be permanently deleted.';
+
+  @override
+  String get diaryDeleteConfirm => 'Delete';
+
+  @override
+  String get diaryModuleLabel => 'Diary';
+
+  @override
+  String get homeScreenDiaryCardEmpty => 'No entry yet today';
+
+  @override
+  String get homeScreenDiaryCardFilled => 'Today\'s entry';
+
+  @override
+  String get nutritionTitle => 'Nutrition';
+
+  @override
+  String get nutritionToday => 'Today';
+
+  @override
+  String get nutritionWeek => 'Week';
+
+  @override
+  String get nutritionProducts => 'Products';
+
+  @override
+  String get nutritionShopping => 'Shopping';
+
+  @override
+  String get nutritionCalories => 'Calories';
+
+  @override
+  String get nutritionProtein => 'Protein';
+
+  @override
+  String get nutritionCarbs => 'Carbohydrates';
+
+  @override
+  String get nutritionFat => 'Fat';
+
+  @override
+  String get nutritionBreakfast => 'Breakfast';
+
+  @override
+  String get nutritionLunch => 'Lunch';
+
+  @override
+  String get nutritionDinner => 'Dinner';
+
+  @override
+  String get nutritionSnack => 'Snack';
+
+  @override
+  String get nutritionScanBarcode => 'Scan barcode';
+
+  @override
+  String get nutritionScanHint => 'Point camera at barcode';
+
+  @override
+  String get nutritionProductNotFound => 'Product not found';
+
+  @override
+  String get nutritionEnterAmount => 'Enter amount';
+
+  @override
+  String get nutritionPer100g => 'per 100g';
+
+  @override
+  String get nutritionAddToMeal => 'Add to meal';
+
+  @override
+  String get nutritionSaveAsTemplate => 'Save as template';
+
+  @override
+  String get nutritionTemplates => 'Templates';
+
+  @override
+  String get nutritionRecentProducts => 'Recently used';
+
+  @override
+  String get nutritionAddCustomProduct => 'Add custom product';
+
+  @override
+  String get nutritionShoppingListGenerate => 'Generate shopping list';
+
+  @override
+  String get nutritionShoppingListEmpty => 'Shopping list is empty';
+
+  @override
+  String get nutritionShoppingListDeleteDone => 'Delete completed';
+
+  @override
+  String get nutritionWeeklyPlan => 'Weekly plan';
+
+  @override
+  String get nutritionWeeklyChart => 'Weekly trend';
 }

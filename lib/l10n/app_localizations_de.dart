@@ -1118,6 +1118,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get reminderTimes => 'Erinnerungszeiten';
 
   @override
+  String get addReminderTime => 'Erinnerungszeit hinzufügen';
+
+  @override
   String get allMedications => 'Alle Medikamente';
 
   @override
@@ -2627,4 +2630,203 @@ class AppLocalizationsDe extends AppLocalizations {
   String budgetScanSuccess(String amount, String date) {
     return 'Erkannt: $amount € am $date';
   }
+
+  @override
+  String get budgetTotalBalance => 'Gesamtsaldo';
+
+  @override
+  String get budgetVsLastMonth => 'vs. letzter Monat';
+
+  @override
+  String get budgetAccounts => 'Konten';
+
+  @override
+  String get budgetAddAccount => 'Konto hinzufügen';
+
+  @override
+  String get budgetAccountChecking => 'Girokonto';
+
+  @override
+  String get budgetAccountSavings => 'Sparkonto';
+
+  @override
+  String get budgetAccountCredit => 'Kreditkarte';
+
+  @override
+  String get budgetAccountInvestment => 'Investment';
+
+  @override
+  String get budgetAccountPrimary => 'Hauptkonto';
+
+  @override
+  String get budgetAccountPending => 'Ausstehend';
+
+  @override
+  String budgetAccountReturn(Object rate) {
+    return 'Rendite: $rate%';
+  }
+
+  @override
+  String get budgetOverviewTitle => 'Budgetübersicht';
+
+  @override
+  String get budgetRecentTransactions => 'Letzte Transaktionen';
+
+  @override
+  String get budgetCategoryListTitle => 'Ausgaben nach Kategorien';
+
+  @override
+  String get budgetBalanceHidden => 'Guthaben ausgeblendet';
+
+  @override
+  String get diaryTitle => 'Tagebuch';
+
+  @override
+  String get diarySubtitle => 'Dein visuelles Leben.';
+
+  @override
+  String get diaryTodayEntry => 'Heutiger Eintrag';
+
+  @override
+  String get diaryNoEntryToday => 'Noch kein Eintrag heute';
+
+  @override
+  String get diaryTakePhoto => 'Foto aufnehmen';
+
+  @override
+  String get diaryTakeVideo => 'Video aufnehmen';
+
+  @override
+  String get diaryChooseFromGallery => 'Aus Galerie';
+
+  @override
+  String get diaryNoteHint => 'Schreib etwas zu diesem Moment... (optional)';
+
+  @override
+  String get diarySave => 'Speichern';
+
+  @override
+  String get diaryRetake => 'Neu aufnehmen';
+
+  @override
+  String diaryStreak(int count) {
+    return '$count Tage in Folge';
+  }
+
+  @override
+  String diaryTotalEntries(int count) {
+    return '$count Einträge';
+  }
+
+  @override
+  String get diarySlideshow => 'Slideshow';
+
+  @override
+  String get diaryRecentEntries => 'Letzte Einträge';
+
+  @override
+  String get diaryYearOverview => 'Jahresübersicht';
+
+  @override
+  String get diaryDeleteTitle => 'Eintrag löschen?';
+
+  @override
+  String get diaryDeleteMessage =>
+      'Der Eintrag und die Mediendatei werden dauerhaft gelöscht.';
+
+  @override
+  String get diaryDeleteConfirm => 'Löschen';
+
+  @override
+  String get diaryModuleLabel => 'Tagebuch';
+
+  @override
+  String get homeScreenDiaryCardEmpty => 'Noch kein Eintrag heute';
+
+  @override
+  String get homeScreenDiaryCardFilled => 'Heutiger Eintrag';
+
+  @override
+  String get nutritionTitle => 'Ernährung';
+
+  @override
+  String get nutritionToday => 'Heute';
+
+  @override
+  String get nutritionWeek => 'Woche';
+
+  @override
+  String get nutritionProducts => 'Produkte';
+
+  @override
+  String get nutritionShopping => 'Einkauf';
+
+  @override
+  String get nutritionCalories => 'Kalorien';
+
+  @override
+  String get nutritionProtein => 'Protein';
+
+  @override
+  String get nutritionCarbs => 'Kohlenhydrate';
+
+  @override
+  String get nutritionFat => 'Fett';
+
+  @override
+  String get nutritionBreakfast => 'Frühstück';
+
+  @override
+  String get nutritionLunch => 'Mittag';
+
+  @override
+  String get nutritionDinner => 'Abend';
+
+  @override
+  String get nutritionSnack => 'Snack';
+
+  @override
+  String get nutritionScanBarcode => 'Barcode scannen';
+
+  @override
+  String get nutritionScanHint => 'Halte die Kamera auf den Barcode';
+
+  @override
+  String get nutritionProductNotFound => 'Produkt nicht gefunden';
+
+  @override
+  String get nutritionEnterAmount => 'Menge eingeben';
+
+  @override
+  String get nutritionPer100g => 'pro 100g';
+
+  @override
+  String get nutritionAddToMeal => 'Zur Mahlzeit hinzufügen';
+
+  @override
+  String get nutritionSaveAsTemplate => 'Als Vorlage speichern';
+
+  @override
+  String get nutritionTemplates => 'Vorlagen';
+
+  @override
+  String get nutritionRecentProducts => 'Zuletzt verwendet';
+
+  @override
+  String get nutritionAddCustomProduct => 'Eigenes Produkt anlegen';
+
+  @override
+  String get nutritionShoppingListGenerate => 'Einkaufsliste generieren';
+
+  @override
+  String get nutritionShoppingListEmpty => 'Einkaufsliste ist leer';
+
+  @override
+  String get nutritionShoppingListDeleteDone => 'Erledigte löschen';
+
+  @override
+  String get nutritionWeeklyPlan => 'Wochenplan';
+
+  @override
+  String get nutritionWeeklyChart => 'Wochenverlauf';
 }

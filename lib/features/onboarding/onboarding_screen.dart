@@ -2493,41 +2493,113 @@ class _DelKey extends StatelessWidget {
 
 // ── Inline add forms ──────────────────────────────────────────────────────────
 
-class _OnboardingAddSupplementSheet extends StatefulWidget {
+class _DbSearchResults extends ConsumerWidget {
+  final String query;
+  final void Function(SubstanceDatabaseEntry) onSelect;
+  const _DbSearchResults({required this.query, required this.onSelect});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dao = ref.watch(substanceDatabaseDaoProvider);
+    return FutureBuilder<List<SubstanceDatabaseEntry>>(
+      future: dao.search(query),
+      builder: (ctx, snap) {
+        final results = snap.data ?? [];
+        if (results.isEmpty && snap.connectionState == ConnectionState.done) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Text('Keine Treffer',
+                style: TextStyle(
+                    color: TraumColors.onBackgroundSubtle,
+                    fontFamily: 'DMSans',
+                    fontSize: 13)),
+          );
+        }
+        return Column(
+          children: results.take(6).map((e) {
+            final isMed = e.type == 'medication';
+            final color = isMed ? TraumColors.roseRed : TraumColors.indigoBlue;
+            return ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Icon(
+                isMed ? Icons.medication_rounded : Icons.science_rounded,
+                color: color,
+                size: 20,
+              ),
+              title: Text(e.name,
+                  style: const TextStyle(
+                      color: TraumColors.onBackground,
+                      fontFamily: 'DMSans',
+                      fontSize: 14)),
+              subtitle: e.category != null
+                  ? Text(e.category!,
+                      style: const TextStyle(
+                          color: TraumColors.onBackgroundSubtle,
+                          fontFamily: 'DMSans',
+                          fontSize: 12))
+                  : null,
+              onTap: () => onSelect(e),
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
+}
+
+class _OnboardingAddSupplementSheet extends ConsumerStatefulWidget {
   final Future<void> Function(SupplementsCompanion) onAdd;
   const _OnboardingAddSupplementSheet({required this.onAdd});
 
   @override
-  State<_OnboardingAddSupplementSheet> createState() =>
+  ConsumerState<_OnboardingAddSupplementSheet> createState() =>
       _OnboardingAddSupplementSheetState();
 }
 
 class _OnboardingAddSupplementSheetState
-    extends State<_OnboardingAddSupplementSheet> {
+    extends ConsumerState<_OnboardingAddSupplementSheet> {
+  final _searchCtrl = TextEditingController();
   final _nameCtrl = TextEditingController();
   final _amountCtrl = TextEditingController();
   String _category = 'Vitamine';
   String _unit = 'mg';
-  bool _saving = false;
+  String _searchQuery = '';
+  bool _showSearch = true;
 
   static const _categories = [
-    'Vitamine', 'Mineralien', 'Aminosäuren', 'Protein', 'Omega-3',
-    'Adaptogene', 'Pre-Workout', 'Darmgesundheit', 'Kreatin', 'Sonstige',
+    'Vitamine', 'Mineralien', 'Aminosäuren', 'Protein',
+    'Omega-3', 'Adaptogene', 'Pre-Workout', 'Darmgesundheit',
+    'Kreatin', 'Sonstige',
   ];
   static const _units = [
-    'mg', 'g', 'µg', 'IU', 'ml', 'Kapsel(n)', 'Tablette(n)', 'Messbecher',
+    'mg', 'g', 'µg', 'IU', 'ml', 'Kapsel(n)', 'Tablette(n)', 'Messbecher'
   ];
 
   @override
   void dispose() {
+    _searchCtrl.dispose();
     _nameCtrl.dispose();
     _amountCtrl.dispose();
     super.dispose();
   }
 
+  void _selectFromDb(SubstanceDatabaseEntry entry) {
+    setState(() {
+      _nameCtrl.text = entry.name;
+      if (entry.category != null && _categories.contains(entry.category)) {
+        _category = entry.category!;
+      }
+      _showSearch = false;
+      _searchCtrl.clear();
+      _searchQuery = '';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final dbAvailable = ref.watch(substanceDbAvailableProvider).valueOrNull ?? false;
+
     return Padding(
       padding: EdgeInsets.only(
         left: 20, right: 20, top: 16,
@@ -2538,174 +2610,269 @@ class _OnboardingAddSupplementSheetState
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Container(
-                width: 40, height: 4,
-                decoration: BoxDecoration(
-                    color: TraumColors.onBackgroundSubtle,
-                    borderRadius: BorderRadius.circular(2)),
-              ),
-            ),
+            Center(child: Container(
+              width: 40, height: 4,
+              decoration: BoxDecoration(
+                color: TraumColors.onBackgroundSubtle,
+                borderRadius: BorderRadius.circular(2)),
+            )),
             const SizedBox(height: 16),
-            Text(l10n.addSupplement,
+            Text(l10n.addSupplementButton,
                 style: const TextStyle(
-                    color: TraumColors.onBackground,
-                    fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18)),
+                  color: TraumColors.onBackground, fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w700, fontSize: 18)),
             const SizedBox(height: 16),
-            _buildField(l10n.fieldName, _nameCtrl, hint: l10n.supplementNameHint),
-            const SizedBox(height: 12),
-            Text(l10n.category,
+
+            // Search (only when DB is available)
+            if (dbAvailable && _showSearch) ...[
+              TextField(
+                controller: _searchCtrl,
                 style: const TextStyle(
-                    color: TraumColors.onBackgroundMuted,
-                    fontFamily: 'DMSans',
-                    fontSize: 13)),
-            const SizedBox(height: 6),
-            DropdownButton<String>(
-              value: _category,
-              dropdownColor: TraumColors.surfaceElevated,
-              isExpanded: true,
-              style: const TextStyle(
-                  color: TraumColors.onBackground, fontFamily: 'DMSans'),
-              underline:
-                  Container(height: 1, color: TraumColors.surfaceVariant),
-              items: _categories
-                  .map((c) => DropdownMenuItem(value: c, child: Text(_categoryLabel(c, l10n))))
-                  .toList(),
-              onChanged: (v) => setState(() => _category = v!),
-            ),
-            const SizedBox(height: 12),
-            Row(children: [
-              Expanded(
-                child: _buildField(l10n.fieldAmount, _amountCtrl,
-                    hint: l10n.amountHint,
-                    keyboardType: TextInputType.number),
+                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                decoration: InputDecoration(
+                  hintText: 'Supplement suchen…',
+                  hintStyle: const TextStyle(
+                      color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
+                  prefixIcon: const Icon(Icons.search_rounded,
+                      color: TraumColors.onBackgroundSubtle),
+                  suffixIcon: _searchQuery.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.close_rounded,
+                              color: TraumColors.onBackgroundSubtle),
+                          onPressed: () {
+                            _searchCtrl.clear();
+                            setState(() => _searchQuery = '');
+                          })
+                      : null,
+                  filled: true,
+                  fillColor: TraumColors.surface,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(TraumRadius.card),
+                      borderSide: BorderSide.none),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
+                onChanged: (v) {
+                  Future.delayed(const Duration(milliseconds: 300), () {
+                    if (mounted && _searchCtrl.text == v) {
+                      setState(() => _searchQuery = v.trim().toLowerCase());
+                    }
+                  });
+                },
               ),
-              const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.fieldUnit,
-                      style: const TextStyle(
+              if (_searchQuery.isNotEmpty)
+                _DbSearchResults(query: _searchQuery, onSelect: _selectFromDb),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () => setState(() => _showSearch = false),
+                child: const Text('Manuell eingeben',
+                    style: TextStyle(
+                        color: TraumColors.onBackgroundSubtle,
+                        fontFamily: 'DMSans', fontSize: 13)),
+              ),
+            ],
+
+            // Manual form
+            if (!_showSearch || !dbAvailable) ...[
+              if (dbAvailable)
+                TextButton(
+                  onPressed: () => setState(() {
+                    _showSearch = true;
+                    _nameCtrl.clear();
+                  }),
+                  child: const Text('← Suche',
+                      style: TextStyle(
+                          color: TraumColors.onBackgroundSubtle,
+                          fontFamily: 'DMSans', fontSize: 13)),
+                ),
+              TextField(
+                controller: _nameCtrl,
+                autofocus: !dbAvailable,
+                style: const TextStyle(
+                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                decoration: InputDecoration(
+                  labelText: l10n.fieldName,
+                  labelStyle: const TextStyle(
+                      color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+                  filled: true, fillColor: TraumColors.surface,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(TraumRadius.card),
+                      borderSide: BorderSide.none),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
+              ),
+              const SizedBox(height: 10),
+              DropdownButtonFormField<String>(
+                value: _category,
+                dropdownColor: TraumColors.surfaceElevated,
+                style: const TextStyle(
+                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                decoration: InputDecoration(
+                  labelText: l10n.category,
+                  labelStyle: const TextStyle(
+                      color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+                  filled: true, fillColor: TraumColors.surface,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(TraumRadius.card),
+                      borderSide: BorderSide.none),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
+                items: _categories
+                    .map((c) => DropdownMenuItem(
+                          value: c,
+                          child: Text(_categoryLabel(c, l10n)),
+                        ))
+                    .toList(),
+                onChanged: (v) => setState(() => _category = v!),
+              ),
+              const SizedBox(height: 10),
+              Row(children: [
+                Expanded(
+                  child: TextField(
+                    controller: _amountCtrl,
+                    keyboardType: TextInputType.number,
+                    style: const TextStyle(
+                        color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                    decoration: InputDecoration(
+                      labelText: l10n.fieldAmount,
+                      labelStyle: const TextStyle(
                           color: TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans',
-                          fontSize: 13)),
-                  const SizedBox(height: 6),
-                  DropdownButton<String>(
+                          fontFamily: 'DMSans'),
+                      filled: true, fillColor: TraumColors.surface,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(TraumRadius.card),
+                          borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: DropdownButtonFormField<String>(
                     value: _unit,
                     dropdownColor: TraumColors.surfaceElevated,
                     style: const TextStyle(
-                        color: TraumColors.onBackground,
-                        fontFamily: 'DMSans'),
-                    underline: Container(
-                        height: 1, color: TraumColors.surfaceVariant),
+                        color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                    decoration: InputDecoration(
+                      labelText: l10n.fieldUnit,
+                      labelStyle: const TextStyle(
+                          color: TraumColors.onBackgroundMuted,
+                          fontFamily: 'DMSans'),
+                      filled: true, fillColor: TraumColors.surface,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(TraumRadius.card),
+                          borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                    ),
                     items: _units
-                        .map((u) =>
-                            DropdownMenuItem(value: u, child: Text(_unitLabel(u, l10n))))
+                        .map((u) => DropdownMenuItem(
+                              value: u,
+                              child: Text(_unitLabel(u, l10n),
+                                  style: const TextStyle(fontSize: 13)),
+                            ))
                         .toList(),
                     onChanged: (v) => setState(() => _unit = v!),
                   ),
-                ],
+                ),
+              ]),
+              const SizedBox(height: 20),
+              GradientButton(
+                label: l10n.save,
+                onPressed: () async {
+                  if (_nameCtrl.text.trim().isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(l10n.nameRequired)));
+                    return;
+                  }
+                  await widget.onAdd(SupplementsCompanion.insert(
+                    name: _nameCtrl.text.trim(),
+                    category: Value(_category),
+                    dosageAmount: Value(_amountCtrl.text.trim().isEmpty
+                        ? null
+                        : _amountCtrl.text.trim()),
+                    dosageUnit: Value(_unit),
+                  ));
+                  if (context.mounted) Navigator.pop(context);
+                },
               ),
-            ]),
-            const SizedBox(height: 20),
-            GradientButton(
-              label: _saving ? l10n.saving : l10n.save,
-              onPressed: _saving ? null : _save,
-            ),
+            ],
             const SizedBox(height: 8),
           ],
         ),
       ),
     );
-  }
-
-  Widget _buildField(String label, TextEditingController ctrl,
-      {String? hint, TextInputType? keyboardType}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label,
-            style: const TextStyle(
-                color: TraumColors.onBackgroundMuted,
-                fontFamily: 'DMSans',
-                fontSize: 13)),
-        const SizedBox(height: 6),
-        TextField(
-          controller: ctrl,
-          keyboardType: keyboardType,
-          style: const TextStyle(
-              color: TraumColors.onBackground, fontFamily: 'DMSans'),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: const TextStyle(
-                color: TraumColors.onBackgroundSubtle,
-                fontFamily: 'DMSans'),
-            filled: true,
-            fillColor: TraumColors.surface,
-            border: OutlineInputBorder(
-                borderRadius:
-                    BorderRadius.circular(TraumRadius.card),
-                borderSide: BorderSide.none),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Future<void> _save() async {
-    if (_nameCtrl.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
-      return;
-    }
-    setState(() => _saving = true);
-    await widget.onAdd(SupplementsCompanion.insert(
-      name: _nameCtrl.text.trim(),
-      category: Value(_category),
-      dosageAmount: Value(
-          _amountCtrl.text.trim().isEmpty ? null : _amountCtrl.text.trim()),
-      dosageUnit: Value(_unit),
-    ));
-    if (mounted) Navigator.pop(context);
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _OnboardingAddMedicationSheet extends StatefulWidget {
+class _OnboardingAddMedicationSheet extends ConsumerStatefulWidget {
   final Future<void> Function(MedicationsCompanion) onAdd;
   const _OnboardingAddMedicationSheet({required this.onAdd});
 
   @override
-  State<_OnboardingAddMedicationSheet> createState() =>
+  ConsumerState<_OnboardingAddMedicationSheet> createState() =>
       _OnboardingAddMedicationSheetState();
 }
 
 class _OnboardingAddMedicationSheetState
-    extends State<_OnboardingAddMedicationSheet> {
+    extends ConsumerState<_OnboardingAddMedicationSheet> {
+  final _searchCtrl = TextEditingController();
   final _nameCtrl = TextEditingController();
   final _dosageCtrl = TextEditingController();
   String _form = 'Tablette';
-  bool _saving = false;
+  final List<TimeOfDay> _times = [const TimeOfDay(hour: 8, minute: 0)];
+  String _searchQuery = '';
+  bool _showSearch = true;
 
   static const _forms = [
-    'Tablette', 'Kapsel', 'Tropfen', 'Injektion', 'Salbe', 'Spray', 'Sonstige',
+    'Tablette', 'Kapsel', 'Tropfen', 'Injektion', 'Salbe', 'Spray', 'Sonstige'
   ];
 
   @override
   void dispose() {
+    _searchCtrl.dispose();
     _nameCtrl.dispose();
     _dosageCtrl.dispose();
     super.dispose();
   }
 
+  void _selectFromDb(SubstanceDatabaseEntry entry) {
+    setState(() {
+      _nameCtrl.text = entry.name;
+      if (entry.commonDosage != null) {
+        final match = RegExp(r'\d+').firstMatch(entry.commonDosage!);
+        if (match != null) _dosageCtrl.text = match.group(0)!;
+      }
+      _showSearch = false;
+      _searchCtrl.clear();
+      _searchQuery = '';
+    });
+  }
+
+  Future<void> _pickTime(int index) async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _times[index],
+      builder: (ctx, child) => Theme(
+        data: ThemeData.dark().copyWith(
+            colorScheme:
+                const ColorScheme.dark(primary: TraumColors.roseRed)),
+        child: child!,
+      ),
+    );
+    if (picked != null && mounted) setState(() => _times[index] = picked);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final dbAvailable = ref.watch(substanceDbAvailableProvider).valueOrNull ?? false;
+
     return Padding(
       padding: EdgeInsets.only(
         left: 20, right: 20, top: 16,
@@ -2716,124 +2883,240 @@ class _OnboardingAddMedicationSheetState
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Container(
-                width: 40, height: 4,
-                decoration: BoxDecoration(
-                    color: TraumColors.onBackgroundSubtle,
-                    borderRadius: BorderRadius.circular(2)),
+            Center(child: Container(
+              width: 40, height: 4,
+              decoration: BoxDecoration(
+                color: TraumColors.onBackgroundSubtle,
+                borderRadius: BorderRadius.circular(2)),
+            )),
+            const SizedBox(height: 16),
+            // Medical disclaimer
+            Container(
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.only(bottom: 14),
+              decoration: BoxDecoration(
+                color: TraumColors.roseRed.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(TraumRadius.card),
+                border: Border.all(
+                    color: TraumColors.roseRed.withValues(alpha: 0.3)),
               ),
-            ),
-            const SizedBox(height: 16),
-            Text(l10n.addMedication,
-                style: const TextStyle(
-                    color: TraumColors.onBackground,
-                    fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18)),
-            const SizedBox(height: 16),
-            _buildField(l10n.fieldName, _nameCtrl, hint: l10n.medicationNameHint),
-            const SizedBox(height: 12),
-            _buildField(l10n.dosage, _dosageCtrl, hint: l10n.dosageHint),
-            const SizedBox(height: 12),
-            Text(l10n.formLabel,
-                style: const TextStyle(
-                    color: TraumColors.onBackgroundMuted,
-                    fontFamily: 'DMSans',
-                    fontSize: 13)),
-            const SizedBox(height: 6),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: _forms.map((f) {
-                final selected = f == _form;
-                return GestureDetector(
-                  onTap: () => setState(() => _form = f),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: selected
-                          ? TraumColors.roseRedDim
-                          : TraumColors.surfaceVariant,
-                      borderRadius:
-                          BorderRadius.circular(TraumRadius.chip),
-                      border: Border.all(
-                          color: selected
-                              ? TraumColors.roseRed
-                              : Colors.transparent),
-                    ),
-                    child: Text(_formLabel(f, l10n),
-                        style: TextStyle(
-                            color: selected
-                                ? TraumColors.roseRed
-                                : TraumColors.onBackgroundMuted,
-                            fontFamily: 'DMSans',
-                            fontSize: 13)),
+              child: Row(children: [
+                const Icon(Icons.warning_amber_rounded,
+                    color: TraumColors.roseRed, size: 16),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l10n.medicalDisclaimerOb,
+                    style: const TextStyle(
+                        color: TraumColors.roseRed,
+                        fontFamily: 'DMSans', fontSize: 11),
                   ),
-                );
-              }).toList(),
+                ),
+              ]),
             ),
-            const SizedBox(height: 20),
-            GradientButton(
-              label: _saving ? l10n.saving : l10n.save,
-              onPressed: _saving ? null : _save,
-            ),
+            Text(l10n.addMedicationButton,
+                style: const TextStyle(
+                  color: TraumColors.onBackground, fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w700, fontSize: 18)),
+            const SizedBox(height: 16),
+
+            // Search
+            if (dbAvailable && _showSearch) ...[
+              TextField(
+                controller: _searchCtrl,
+                style: const TextStyle(
+                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                decoration: InputDecoration(
+                  hintText: 'Medikament suchen…',
+                  hintStyle: const TextStyle(
+                      color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
+                  prefixIcon: const Icon(Icons.search_rounded,
+                      color: TraumColors.onBackgroundSubtle),
+                  suffixIcon: _searchQuery.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.close_rounded,
+                              color: TraumColors.onBackgroundSubtle),
+                          onPressed: () {
+                            _searchCtrl.clear();
+                            setState(() => _searchQuery = '');
+                          })
+                      : null,
+                  filled: true,
+                  fillColor: TraumColors.surface,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(TraumRadius.card),
+                      borderSide: BorderSide.none),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
+                onChanged: (v) {
+                  Future.delayed(const Duration(milliseconds: 300), () {
+                    if (mounted && _searchCtrl.text == v) {
+                      setState(() => _searchQuery = v.trim().toLowerCase());
+                    }
+                  });
+                },
+              ),
+              if (_searchQuery.isNotEmpty)
+                _DbSearchResults(query: _searchQuery, onSelect: _selectFromDb),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () => setState(() => _showSearch = false),
+                child: const Text('Manuell eingeben',
+                    style: TextStyle(
+                        color: TraumColors.onBackgroundSubtle,
+                        fontFamily: 'DMSans', fontSize: 13)),
+              ),
+            ],
+
+            // Manual form
+            if (!_showSearch || !dbAvailable) ...[
+              if (dbAvailable)
+                TextButton(
+                  onPressed: () => setState(() {
+                    _showSearch = true;
+                    _nameCtrl.clear();
+                  }),
+                  child: const Text('← Suche',
+                      style: TextStyle(
+                          color: TraumColors.onBackgroundSubtle,
+                          fontFamily: 'DMSans', fontSize: 13)),
+                ),
+              TextField(
+                controller: _nameCtrl,
+                autofocus: !dbAvailable,
+                style: const TextStyle(
+                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                decoration: InputDecoration(
+                  labelText: l10n.fieldName,
+                  labelStyle: const TextStyle(
+                      color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+                  filled: true, fillColor: TraumColors.surface,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(TraumRadius.card),
+                      borderSide: BorderSide.none),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Row(children: [
+                Expanded(
+                  child: TextField(
+                    controller: _dosageCtrl,
+                    style: const TextStyle(
+                        color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                    decoration: InputDecoration(
+                      labelText: '${l10n.dosage} (mg)',
+                      labelStyle: const TextStyle(
+                          color: TraumColors.onBackgroundMuted,
+                          fontFamily: 'DMSans'),
+                      filled: true, fillColor: TraumColors.surface,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(TraumRadius.card),
+                          borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    value: _form,
+                    dropdownColor: TraumColors.surfaceElevated,
+                    style: const TextStyle(
+                        color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                    decoration: InputDecoration(
+                      labelText: l10n.formLabel,
+                      labelStyle: const TextStyle(
+                          color: TraumColors.onBackgroundMuted,
+                          fontFamily: 'DMSans'),
+                      filled: true, fillColor: TraumColors.surface,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(TraumRadius.card),
+                          borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                    ),
+                    items: _forms
+                        .map((f) => DropdownMenuItem(
+                              value: f,
+                              child: Text(_formLabel(f, l10n),
+                                  style: const TextStyle(fontSize: 13)),
+                            ))
+                        .toList(),
+                    onChanged: (v) => setState(() => _form = v!),
+                  ),
+                ),
+              ]),
+              const SizedBox(height: 14),
+              Text(l10n.reminderTimes,
+                  style: const TextStyle(
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans', fontSize: 13)),
+              const SizedBox(height: 8),
+              ..._times.asMap().entries.map((e) => ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      '${e.value.hour.toString().padLeft(2, '0')}:${e.value.minute.toString().padLeft(2, '0')} Uhr',
+                      style: const TextStyle(
+                          color: TraumColors.coralOrange,
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w600),
+                    ),
+                    trailing: e.key > 0
+                        ? IconButton(
+                            icon: const Icon(Icons.close_rounded,
+                                color: TraumColors.onBackgroundSubtle,
+                                size: 18),
+                            onPressed: () =>
+                                setState(() => _times.removeAt(e.key)),
+                          )
+                        : null,
+                    onTap: () => _pickTime(e.key),
+                  )),
+              if (_times.length < 4)
+                TextButton.icon(
+                  onPressed: () => setState(() =>
+                      _times.add(const TimeOfDay(hour: 12, minute: 0))),
+                  icon: const Icon(Icons.add_rounded, size: 16),
+                  label: Text(l10n.addReminderTime,
+                      style: const TextStyle(
+                          fontFamily: 'DMSans', fontSize: 13)),
+                  style: TextButton.styleFrom(
+                      foregroundColor: TraumColors.coralOrange),
+                ),
+              const SizedBox(height: 20),
+              GradientButton(
+                label: l10n.save,
+                onPressed: () async {
+                  if (_nameCtrl.text.trim().isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(l10n.nameRequired)));
+                    return;
+                  }
+                  final timesJson = _times
+                      .map((t) =>
+                          '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}')
+                      .toList()
+                      .toString();
+                  await widget.onAdd(MedicationsCompanion.insert(
+                    name: _nameCtrl.text.trim(),
+                    dosage: Value(_dosageCtrl.text.trim().isEmpty
+                        ? null
+                        : _dosageCtrl.text.trim()),
+                    form: Value(_form),
+                    timings: Value(timesJson),
+                  ));
+                  if (context.mounted) Navigator.pop(context);
+                },
+              ),
+            ],
             const SizedBox(height: 8),
           ],
         ),
       ),
     );
-  }
-
-  Widget _buildField(String label, TextEditingController ctrl,
-      {String? hint}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label,
-            style: const TextStyle(
-                color: TraumColors.onBackgroundMuted,
-                fontFamily: 'DMSans',
-                fontSize: 13)),
-        const SizedBox(height: 6),
-        TextField(
-          controller: ctrl,
-          style: const TextStyle(
-              color: TraumColors.onBackground, fontFamily: 'DMSans'),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: const TextStyle(
-                color: TraumColors.onBackgroundSubtle,
-                fontFamily: 'DMSans'),
-            filled: true,
-            fillColor: TraumColors.surface,
-            border: OutlineInputBorder(
-                borderRadius:
-                    BorderRadius.circular(TraumRadius.card),
-                borderSide: BorderSide.none),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Future<void> _save() async {
-    if (_nameCtrl.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
-      return;
-    }
-    setState(() => _saving = true);
-    await widget.onAdd(MedicationsCompanion.insert(
-      name: _nameCtrl.text.trim(),
-      dosage:
-          Value(_dosageCtrl.text.trim().isEmpty ? null : _dosageCtrl.text.trim()),
-      form: Value(_form),
-      timings: const Value('[]'),
-    ));
-    if (mounted) Navigator.pop(context);
   }
 }

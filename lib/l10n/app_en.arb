@@ -454,6 +454,7 @@
   "dosage": "Dosage",
   "formLabel": "Form",
   "reminderTimes": "Reminder times",
+  "addReminderTime": "Add reminder time",
   "allMedications": "All medications",
   "timeForMedication": "Time for {name}",
   "@timeForMedication": {
