@@ -15,6 +15,7 @@ import 'tables/budget_tables.dart';
 import 'tables/period_tables.dart';
 import 'tables/substance_tables.dart';
 import 'tables/diary_tables.dart';
+import 'tables/substance_database_table.dart';
 
 import 'daos/planning_dao.dart';
 import 'daos/training_dao.dart';
@@ -30,6 +31,7 @@ import 'daos/substance_dao.dart';
 import 'daos/diary_dao.dart';
 import 'daos/food_products_dao.dart';
 import 'daos/meal_entries_dao.dart';
+import 'daos/substance_database_dao.dart';
 
 // Re-export all table types
 export 'tables/planning_tables.dart';
@@ -43,6 +45,7 @@ export 'tables/budget_tables.dart';
 export 'tables/period_tables.dart';
 export 'tables/substance_tables.dart';
 export 'tables/diary_tables.dart';
+export 'tables/substance_database_table.dart';
 
 // Re-export all DAO types
 export 'daos/planning_dao.dart';
@@ -59,6 +62,7 @@ export 'daos/substance_dao.dart';
 export 'daos/diary_dao.dart';
 export 'daos/food_products_dao.dart';
 export 'daos/meal_entries_dao.dart';
+export 'daos/substance_database_dao.dart';
 
 part 'traum_database.g.dart';
 
@@ -113,6 +117,8 @@ part 'traum_database.g.dart';
     SubstanceCaches,
     // Diary (1)
     DiaryEntries,
+    // Substance offline database (1)
+    SubstanceDatabaseEntries,
     // Nutrition Extended (4)
     FoodProducts,
     MealEntries,
@@ -134,6 +140,7 @@ part 'traum_database.g.dart';
     DiaryDao,
     FoodProductsDao,
     MealEntriesDao,
+    SubstanceDatabaseDao,
   ],
 )
 class TraumDatabase extends _$TraumDatabase {
@@ -153,7 +160,10 @@ class TraumDatabase extends _$TraumDatabase {
   MealEntriesDao get mealEntriesDao => MealEntriesDao(this);
 
   @override
-  int get schemaVersion => 9;
+  SubstanceDatabaseDao get substanceDatabaseDao => SubstanceDatabaseDao(this);
+
+  @override
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -202,6 +212,9 @@ class TraumDatabase extends _$TraumDatabase {
         await migrator.addColumn(appointments, appointments.updatedAt);
         // Seed updatedAt from createdAt so existing rows have a meaningful timestamp
         await customStatement('UPDATE appointments SET updated_at = created_at');
+      }
+      if (from < 10) {
+        await migrator.createTable(substanceDatabaseEntries);
       }
     },
   );
