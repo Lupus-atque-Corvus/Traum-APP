@@ -5,7 +5,6 @@ import '../../data/repositories/substance_repository.dart';
 import '../../data/services/substance_api_service.dart';
 import '../services/calendar_sync_service.dart';
 import '../services/interaction_service.dart';
-import '../services/substance_download_service.dart';
 import 'preferences_provider.dart';
 
 final databaseProvider = Provider<TraumDatabase>((ref) {
@@ -230,11 +229,6 @@ final substanceApiServiceProvider = Provider<SubstanceApiService>((_) =>
 
 final substanceDatabaseDaoProvider = Provider<SubstanceDatabaseDao>((ref) {
   return ref.watch(databaseProvider).substanceDatabaseDao;
-});
-
-final substanceDownloadServiceProvider =
-    Provider<SubstanceDownloadService>((ref) {
-  return SubstanceDownloadService(ref.watch(substanceDatabaseDaoProvider));
 });
 
 final substanceDbAvailableProvider = FutureProvider<bool>((ref) async {

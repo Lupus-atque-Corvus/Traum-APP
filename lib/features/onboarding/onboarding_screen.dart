@@ -1004,28 +1004,11 @@ class _DatabaseDownloadPageState
       _error = null;
       _progress = 0;
     });
-    try {
-      final service = ref.read(substanceDownloadServiceProvider);
-      await for (final p in service.download()) {
-        if (!mounted) return;
-        setState(() => _progress = p);
-      }
-      if (!mounted) return;
-      await ref
-          .read(preferencesRepositoryProvider)
-          .setSubstanceDbDownloaded(true);
-      ref.invalidate(substanceDbCountProvider);
-      ref.invalidate(substanceDbAvailableProvider);
-      ref.invalidate(substanceRepositoryProvider);
-      if (mounted) setState(() { _done = true; _downloading = false; });
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _error = 'Download fehlgeschlagen. Bitte erneut versuchen.';
-          _downloading = false;
-        });
-      }
-    }
+    // Substances are now seeded from a bundled asset — no download needed.
+    ref.invalidate(substanceDbCountProvider);
+    ref.invalidate(substanceDbAvailableProvider);
+    ref.invalidate(substanceRepositoryProvider);
+    if (mounted) setState(() { _done = true; _downloading = false; });
   }
 
   @override
