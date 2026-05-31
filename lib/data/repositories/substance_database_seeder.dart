@@ -39,8 +39,7 @@ class SubstanceDatabaseSeeder {
       await db.substanceDatabaseDao.bulkInsert(companions);
       await prefs.setBool(_seededKey, true);
     } catch (_) {
-      // Seeding failed silently — next start retries
+      // Seed fails atomically (one bad entry aborts all) — next start retries
     }
-
   }
 }

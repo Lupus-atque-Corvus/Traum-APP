@@ -26,9 +26,8 @@ void main() async {
   await Future.wait([
     ExerciseSeeder.seedIfNeeded(db, prefs),
     SupplementSeeder.seedIfNeeded(db, prefs),
+    SubstanceDatabaseSeeder.seedIfNeeded(db, prefs),
   ]);
-
-  await SubstanceDatabaseSeeder.seedIfNeeded(db, prefs);
 
   runApp(
     ProviderScope(
