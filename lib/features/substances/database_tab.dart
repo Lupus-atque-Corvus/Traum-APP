@@ -28,8 +28,9 @@ class _DatabaseTabState extends ConsumerState<DatabaseTab> {
     return Scaffold(
       backgroundColor: TraumColors.background,
       body: Column(children: [
+        _OfflineStatusBanner(),
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: TextField(
             controller: _ctrl,
             style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
@@ -235,6 +236,69 @@ class _ResultCard extends ConsumerWidget {
               color: TraumColors.onBackgroundSubtle, size: 18),
         ]),
       ),
+    );
+  }
+}
+
+class _OfflineStatusBanner extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final countAsync = ref.watch(substanceDbCountProvider);
+
+    return countAsync.when(
+      data: (count) {
+        if (count > 0) {
+          return Container(
+            margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: TraumColors.mintGreen.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(TraumRadius.chip),
+              border: Border.all(
+                  color: TraumColors.mintGreen.withValues(alpha: 0.3)),
+            ),
+            child: Row(children: [
+              const Icon(Icons.offline_bolt_rounded,
+                  color: TraumColors.mintGreen, size: 16),
+              const SizedBox(width: 8),
+              Text(
+                '$count Einträge offline verfügbar',
+                style: const TextStyle(
+                  color: TraumColors.mintGreen,
+                  fontFamily: 'DMSans',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ]),
+          );
+        }
+        return Container(
+          margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: TraumColors.surfaceVariant,
+            borderRadius: BorderRadius.circular(TraumRadius.chip),
+          ),
+          child: Row(children: [
+            const Icon(Icons.wifi_rounded,
+                color: TraumColors.onBackgroundSubtle, size: 16),
+            const SizedBox(width: 8),
+            const Expanded(
+              child: Text(
+                'Online-Suche aktiv — Datenbank nicht heruntergeladen',
+                style: TextStyle(
+                  color: TraumColors.onBackgroundSubtle,
+                  fontFamily: 'DMSans',
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ]),
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
     );
   }
 }
