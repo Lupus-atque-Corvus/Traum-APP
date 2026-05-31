@@ -997,6 +997,7 @@ class _DatabaseDownloadPageState
   String? _error;
 
   Future<void> _startDownload() async {
+    if (_downloading) return;
     setState(() {
       _downloading = true;
       _error = null;
@@ -1008,6 +1009,7 @@ class _DatabaseDownloadPageState
         if (!mounted) return;
         setState(() => _progress = p);
       }
+      if (!mounted) return;
       await ref
           .read(preferencesRepositoryProvider)
           .setSubstanceDbDownloaded(true);
@@ -1099,6 +1101,20 @@ class _DatabaseDownloadPageState
                 backgroundColor: TraumColors.surfaceVariant,
                 color: TraumColors.indigoBlue,
                 minHeight: 8,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Center(
+              child: TextButton(
+                onPressed: widget.onNext,
+                child: const Text(
+                  'Überspringen',
+                  style: TextStyle(
+                    color: TraumColors.onBackgroundSubtle,
+                    fontFamily: 'DMSans',
+                    fontSize: 13,
+                  ),
+                ),
               ),
             ),
           ],
