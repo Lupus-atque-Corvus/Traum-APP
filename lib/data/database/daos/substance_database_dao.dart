@@ -24,6 +24,11 @@ class SubstanceDatabaseDao extends DatabaseAccessor<TraumDatabase>
         .get();
   }
 
+  Future<SubstanceDatabaseEntry?> findById(String id) =>
+      (select(substanceDatabaseEntries)
+            ..where((t) => t.id.equals(id)))
+          .getSingleOrNull();
+
   Future<void> bulkInsert(
       List<SubstanceDatabaseEntriesCompanion> entries) async {
     await batch((b) =>

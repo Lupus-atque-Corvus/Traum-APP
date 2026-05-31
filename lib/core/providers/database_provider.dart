@@ -238,7 +238,7 @@ final substanceDownloadServiceProvider =
 });
 
 final substanceDbAvailableProvider = FutureProvider<bool>((ref) async {
-  final count = await ref.watch(substanceDatabaseDaoProvider).count();
+  final count = await ref.watch(substanceDbCountProvider.future);
   return count > 0;
 });
 

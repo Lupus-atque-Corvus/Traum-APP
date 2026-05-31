@@ -10,6 +10,7 @@ class SubstanceRepository {
   final SubstanceDatabaseDao _db;
   final SubstanceApiService _api;
   List<SubstanceInfo>? _local;
+  bool? _dbPopulated; // null = not yet checked; cached for session lifetime
 
   SubstanceRepository(this._cache, this._db, this._api);
 
@@ -24,16 +25,20 @@ class SubstanceRepository {
     return list.map((j) => SubstanceInfo.fromJson(j)).toList();
   }
 
+  Future<bool> _isDbPopulated() async {
+    _dbPopulated ??= (await _db.count()) > 0;
+    return _dbPopulated!;
+  }
+
   Future<SubstanceInfo?> findById(String id) async {
     final local = await _loadLocal();
     final fromLocal = local.where((s) => s.id == id).firstOrNull;
     if (fromLocal != null) return fromLocal;
 
     // Check offline DB
-    final dbCount = await _db.count();
-    if (dbCount > 0) {
-      final entries = await _db.search(id.toLowerCase());
-      if (entries.isNotEmpty) return _entryToInfo(entries.first);
+    if (await _isDbPopulated()) {
+      final entry = await _db.findById(id);
+      if (entry != null) return _entryToInfo(entry);
     }
 
     final cached = await _cache.findById(id);
@@ -49,9 +54,8 @@ class SubstanceRepository {
     if (query.trim().isEmpty) return [];
     final q = query.trim().toLowerCase();
 
-    // Wenn Offline-DB vorhanden: ausschließlich lokal suchen
-    final dbCount = await _db.count();
-    if (dbCount > 0) {
+    // If offline DB is populated: use it exclusively, no API calls
+    if (await _isDbPopulated()) {
       final entries = await _db.search(q);
       return entries.map(_entryToInfo).toList();
     }
