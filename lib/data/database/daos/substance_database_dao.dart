@@ -15,12 +15,14 @@ class SubstanceDatabaseDao extends DatabaseAccessor<TraumDatabase>
     return (await query.getSingle()).read(countExp) ?? 0;
   }
 
-  Future<List<SubstanceDatabaseEntry>> search(String queryLower) =>
-      (select(substanceDatabaseEntries)
-            ..where((t) => t.nameLower.like('%$queryLower%'))
-            ..orderBy([(t) => OrderingTerm.asc(t.name)])
-            ..limit(30))
-          .get();
+  Future<List<SubstanceDatabaseEntry>> search(String query) {
+    final q = query.trim().toLowerCase();
+    return (select(substanceDatabaseEntries)
+          ..where((t) => t.nameLower.like('%$q%'))
+          ..orderBy([(t) => OrderingTerm.asc(t.name)])
+          ..limit(30))
+        .get();
+  }
 
   Future<void> bulkInsert(
       List<SubstanceDatabaseEntriesCompanion> entries) async {
