@@ -16,9 +16,12 @@ class SubstanceDatabaseDao extends DatabaseAccessor<TraumDatabase>
   }
 
   Future<List<SubstanceDatabaseEntry>> search(String query) {
-    final q = query.trim().toLowerCase();
+    final q = query.trim().toLowerCase()
+        .replaceAll('\\', '\\\\')
+        .replaceAll('%', '\\%')
+        .replaceAll('_', '\\_');
     return (select(substanceDatabaseEntries)
-          ..where((t) => t.nameLower.like('%$q%'))
+          ..where((t) => t.nameLower.like('%$q%', escapeChar: '\\'))
           ..orderBy([(t) => OrderingTerm.asc(t.name)])
           ..limit(30))
         .get();

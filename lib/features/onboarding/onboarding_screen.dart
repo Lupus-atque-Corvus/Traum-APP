@@ -1016,6 +1016,7 @@ class _DatabaseDownloadPageState
           .setSubstanceDbDownloaded(true);
       ref.invalidate(substanceDbCountProvider);
       ref.invalidate(substanceDbAvailableProvider);
+      ref.invalidate(substanceRepositoryProvider);
       if (mounted) setState(() { _done = true; _downloading = false; });
     } catch (e) {
       if (mounted) {
@@ -2737,7 +2738,7 @@ class _OnboardingAddSupplementSheetState
               ),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                value: _category,
+                initialValue: _category,
                 dropdownColor: TraumColors.surfaceElevated,
                 style: const TextStyle(
                     color: TraumColors.onBackground, fontFamily: 'DMSans'),
@@ -2785,7 +2786,7 @@ class _OnboardingAddSupplementSheetState
                 const SizedBox(width: 10),
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _unit,
+                    initialValue: _unit,
                     dropdownColor: TraumColors.surfaceElevated,
                     style: const TextStyle(
                         color: TraumColors.onBackground, fontFamily: 'DMSans'),
@@ -3058,7 +3059,7 @@ class _OnboardingAddMedicationSheetState
                 const SizedBox(width: 10),
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _form,
+                    initialValue: _form,
                     dropdownColor: TraumColors.surfaceElevated,
                     style: const TextStyle(
                         color: TraumColors.onBackground, fontFamily: 'DMSans'),
