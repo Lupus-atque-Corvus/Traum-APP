@@ -1014,6 +1014,8 @@ class _DatabaseDownloadPageState
       await ref
           .read(preferencesRepositoryProvider)
           .setSubstanceDbDownloaded(true);
+      ref.invalidate(substanceDbCountProvider);
+      ref.invalidate(substanceDbAvailableProvider);
       if (mounted) setState(() { _done = true; _downloading = false; });
     } catch (e) {
       if (mounted) {
