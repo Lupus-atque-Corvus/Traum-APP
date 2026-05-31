@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -2493,19 +2494,48 @@ class _DelKey extends StatelessWidget {
 
 // ── Inline add forms ──────────────────────────────────────────────────────────
 
-class _DbSearchResults extends ConsumerWidget {
+class _DbSearchResults extends ConsumerStatefulWidget {
   final String query;
   final void Function(SubstanceDatabaseEntry) onSelect;
   const _DbSearchResults({required this.query, required this.onSelect});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final dao = ref.watch(substanceDatabaseDaoProvider);
+  ConsumerState<_DbSearchResults> createState() => _DbSearchResultsState();
+}
+
+class _DbSearchResultsState extends ConsumerState<_DbSearchResults> {
+  late Future<List<SubstanceDatabaseEntry>> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = ref.read(substanceDatabaseDaoProvider).search(widget.query);
+  }
+
+  @override
+  void didUpdateWidget(_DbSearchResults old) {
+    super.didUpdateWidget(old);
+    if (old.query != widget.query) {
+      _future = ref.read(substanceDatabaseDaoProvider).search(widget.query);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return FutureBuilder<List<SubstanceDatabaseEntry>>(
-      future: dao.search(query),
+      future: _future,
       builder: (ctx, snap) {
+        if (snap.connectionState == ConnectionState.waiting) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: LinearProgressIndicator(
+              color: TraumColors.indigoBlue,
+              backgroundColor: TraumColors.surfaceVariant,
+            ),
+          );
+        }
         final results = snap.data ?? [];
-        if (results.isEmpty && snap.connectionState == ConnectionState.done) {
+        if (results.isEmpty) {
           return const Padding(
             padding: EdgeInsets.symmetric(vertical: 8),
             child: Text('Keine Treffer',
@@ -2538,7 +2568,7 @@ class _DbSearchResults extends ConsumerWidget {
                           fontFamily: 'DMSans',
                           fontSize: 12))
                   : null,
-              onTap: () => onSelect(e),
+              onTap: () => widget.onSelect(e),
             );
           }).toList(),
         );
@@ -2565,6 +2595,7 @@ class _OnboardingAddSupplementSheetState
   String _unit = 'mg';
   String _searchQuery = '';
   bool _showSearch = true;
+  bool _saving = false;
 
   static const _categories = [
     'Vitamine', 'Mineralien', 'Aminosäuren', 'Protein',
@@ -2782,12 +2813,13 @@ class _OnboardingAddSupplementSheetState
               const SizedBox(height: 20),
               GradientButton(
                 label: l10n.save,
-                onPressed: () async {
+                onPressed: _saving ? null : () async {
                   if (_nameCtrl.text.trim().isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(l10n.nameRequired)));
                     return;
                   }
+                  setState(() => _saving = true);
                   await widget.onAdd(SupplementsCompanion.insert(
                     name: _nameCtrl.text.trim(),
                     category: Value(_category),
@@ -2828,6 +2860,7 @@ class _OnboardingAddMedicationSheetState
   final List<TimeOfDay> _times = [const TimeOfDay(hour: 8, minute: 0)];
   String _searchQuery = '';
   bool _showSearch = true;
+  bool _saving = false;
 
   static const _forms = [
     'Tablette', 'Kapsel', 'Tropfen', 'Injektion', 'Salbe', 'Spray', 'Sonstige'
@@ -3090,17 +3123,17 @@ class _OnboardingAddMedicationSheetState
               const SizedBox(height: 20),
               GradientButton(
                 label: l10n.save,
-                onPressed: () async {
+                onPressed: _saving ? null : () async {
                   if (_nameCtrl.text.trim().isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(l10n.nameRequired)));
                     return;
                   }
-                  final timesJson = _times
+                  setState(() => _saving = true);
+                  final timesJson = jsonEncode(_times
                       .map((t) =>
                           '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}')
-                      .toList()
-                      .toString();
+                      .toList());
                   await widget.onAdd(MedicationsCompanion.insert(
                     name: _nameCtrl.text.trim(),
                     dosage: Value(_dosageCtrl.text.trim().isEmpty
