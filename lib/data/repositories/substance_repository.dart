@@ -6,11 +6,12 @@ import '../models/substance_info.dart';
 import '../services/substance_api_service.dart';
 
 class SubstanceRepository {
-  final SubstanceDao _dao;
+  final SubstanceDao _cache;
+  final SubstanceDatabaseDao _db;
   final SubstanceApiService _api;
   List<SubstanceInfo>? _local;
 
-  SubstanceRepository(this._dao, this._api);
+  SubstanceRepository(this._cache, this._db, this._api);
 
   Future<List<SubstanceInfo>> _loadLocal() async {
     _local ??= await _parseAsset();
@@ -27,7 +28,15 @@ class SubstanceRepository {
     final local = await _loadLocal();
     final fromLocal = local.where((s) => s.id == id).firstOrNull;
     if (fromLocal != null) return fromLocal;
-    final cached = await _dao.findById(id);
+
+    // Check offline DB
+    final dbCount = await _db.count();
+    if (dbCount > 0) {
+      final entries = await _db.search(id.toLowerCase());
+      if (entries.isNotEmpty) return _entryToInfo(entries.first);
+    }
+
+    final cached = await _cache.findById(id);
     if (cached != null) {
       return SubstanceInfo.fromJson(
           jsonDecode(cached.dataJson) as Map<String, dynamic>,
@@ -39,12 +48,21 @@ class SubstanceRepository {
   Future<List<SubstanceInfo>> search(String query) async {
     if (query.trim().isEmpty) return [];
     final q = query.trim().toLowerCase();
+
+    // Wenn Offline-DB vorhanden: ausschließlich lokal suchen
+    final dbCount = await _db.count();
+    if (dbCount > 0) {
+      final entries = await _db.search(q);
+      return entries.map(_entryToInfo).toList();
+    }
+
+    // Fallback: alte Logik (lokal JSON → Cache → API)
     final local = await _loadLocal();
     final localResults =
         local.where((s) => s.name.toLowerCase().contains(q)).toList();
     if (localResults.length >= 3) return localResults;
 
-    final cached = await _dao.searchByName(q);
+    final cached = await _cache.searchByName(q);
     final cachedInfos = cached
         .map((c) => SubstanceInfo.fromJson(
             jsonDecode(c.dataJson) as Map<String, dynamic>,
@@ -56,8 +74,8 @@ class SubstanceRepository {
 
     final apiResult = await _fetchAndCache(q);
     if (apiResult != null) {
-      final alreadyPresent =
-          combined.any((s) => s.name.toLowerCase() == apiResult.name.toLowerCase());
+      final alreadyPresent = combined
+          .any((s) => s.name.toLowerCase() == apiResult.name.toLowerCase());
       if (!alreadyPresent) combined.add(apiResult);
     }
     return combined;
@@ -68,7 +86,7 @@ class SubstanceRepository {
     result = await _api.fetchMedication(query);
     result ??= await _api.fetchSupplement(query);
     if (result == null) return null;
-    await _dao.upsert(SubstanceCachesCompanion(
+    await _cache.upsert(SubstanceCachesCompanion(
       substanceId: Value(result.id),
       name: Value(result.name),
       type: Value(result.type),
@@ -79,4 +97,22 @@ class SubstanceRepository {
   }
 
   Future<List<SubstanceInfo>> getAll() => _loadLocal();
+
+  SubstanceInfo _entryToInfo(SubstanceDatabaseEntry e) => SubstanceInfo(
+        id: e.id,
+        name: e.name,
+        type: e.type,
+        category: e.category,
+        mechanism: e.mechanism,
+        commonDosage: e.commonDosage,
+        adverseEvents: (jsonDecode(e.adverseEventsJson) as List)
+            .map((j) =>
+                AdverseEventInfo.fromJson(j as Map<String, dynamic>))
+            .toList(),
+        interactions: (jsonDecode(e.interactionsJson) as List)
+            .map((j) =>
+                InteractionInfo.fromJson(j as Map<String, dynamic>))
+            .toList(),
+        isLocal: true,
+      );
 }

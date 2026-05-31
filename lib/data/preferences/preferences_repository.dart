@@ -53,6 +53,12 @@ class PreferencesRepository {
     await _prefs.setString('calendar_sync_ids', jsonEncode(ids));
   }
 
+  // Substance offline DB
+  bool get substanceDbDownloaded =>
+      _prefs.getBool('substance_db_downloaded') ?? false;
+  Future<void> setSubstanceDbDownloaded(bool v) =>
+      _prefs.setBool('substance_db_downloaded', v);
+
   bool get onboardingComplete =>
       _prefs.getBool('onboarding_complete') ?? false;
   Future<void> setOnboardingComplete(bool v) =>

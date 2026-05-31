@@ -5,6 +5,7 @@ import '../../data/repositories/substance_repository.dart';
 import '../../data/services/substance_api_service.dart';
 import '../services/calendar_sync_service.dart';
 import '../services/interaction_service.dart';
+import '../services/substance_download_service.dart';
 import 'preferences_provider.dart';
 
 final databaseProvider = Provider<TraumDatabase>((ref) {
@@ -227,11 +228,31 @@ final substanceDaoProvider = Provider<SubstanceDao>((ref) =>
 final substanceApiServiceProvider = Provider<SubstanceApiService>((_) =>
     SubstanceApiService());
 
-final substanceRepositoryProvider = Provider<SubstanceRepository>((ref) =>
-    SubstanceRepository(
-      ref.watch(substanceDaoProvider),
-      ref.watch(substanceApiServiceProvider),
-    ));
+final substanceDatabaseDaoProvider = Provider<SubstanceDatabaseDao>((ref) {
+  return ref.watch(databaseProvider).substanceDatabaseDao;
+});
+
+final substanceDownloadServiceProvider =
+    Provider<SubstanceDownloadService>((ref) {
+  return SubstanceDownloadService(ref.watch(substanceDatabaseDaoProvider));
+});
+
+final substanceDbAvailableProvider = FutureProvider<bool>((ref) async {
+  final count = await ref.watch(substanceDatabaseDaoProvider).count();
+  return count > 0;
+});
+
+final substanceDbCountProvider = FutureProvider<int>((ref) {
+  return ref.watch(substanceDatabaseDaoProvider).count();
+});
+
+final substanceRepositoryProvider = Provider<SubstanceRepository>((ref) {
+  return SubstanceRepository(
+    ref.watch(substanceDaoProvider),
+    ref.watch(substanceDatabaseDaoProvider),
+    ref.watch(substanceApiServiceProvider),
+  );
+});
 
 final substanceSearchProvider =
     FutureProvider.autoDispose.family<List<SubstanceInfo>, String>((ref, q) =>
