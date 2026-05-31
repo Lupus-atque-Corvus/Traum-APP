@@ -1,479 +1,110 @@
 [
-  {
-    "id": "ibuprofen",
-    "name": "Ibuprofen",
-    "type": "medication",
-    "category": "Schmerzmittel / Entzündungshemmer",
-    "atcCode": "M01AE01",
-    "mechanism": "Hemmt COX-1 und COX-2, reduziert Prostaglandinsynthese.",
-    "halfLife": "1.8–2.5 h",
-    "commonDosage": "200–400 mg oral alle 6–8 h (max. 2400 mg/Tag)",
-    "evidenceGrade": null,
-    "adverseEvents": [
-      {"name": "Magenbeschwerden", "frequencyPercent": 10.0},
-      {"name": "Übelkeit", "frequencyPercent": 5.0},
-      {"name": "Kopfschmerzen", "frequencyPercent": 3.0},
-      {"name": "Schwindel", "frequencyPercent": 2.0}
-    ],
-    "interactions": [
-      {"withId": "warfarin", "withName": "Warfarin", "severity": "major", "description": "Erhöhtes Blutungsrisiko durch Hemmung der Thrombozytenaggregation und Verdrängung aus Proteinbindung."},
-      {"withId": "aspirin", "withName": "Aspirin", "severity": "moderate", "description": "Gegenseitige Wirkungsabschwächung; erhöhtes GI-Blutungsrisiko."},
-      {"withId": "sertralin", "withName": "Sertralin", "severity": "moderate", "description": "Erhöhtes Risiko für GI-Blutungen bei kombinierter Anwendung."},
-      {"withId": "lisinopril", "withName": "Lisinopril", "severity": "moderate", "description": "NSAIDs können die blutdrucksenkende Wirkung von ACE-Hemmern abschwächen."}
-    ]
-  },
-  {
-    "id": "aspirin",
-    "name": "Aspirin (ASS)",
-    "type": "medication",
-    "category": "Schmerzmittel / Thrombozytenaggregationshemmer",
-    "atcCode": "B01AC06",
-    "mechanism": "Irreversible Hemmung der COX-1 und COX-2; Hemmung der Thrombozytenaggregation.",
-    "halfLife": "15–20 min (ASS); Salicylat 2–30 h",
-    "commonDosage": "100 mg/Tag (kardioprotektiv); 500–1000 mg (Schmerz)",
-    "evidenceGrade": null,
-    "adverseEvents": [
-      {"name": "GI-Blutungen", "frequencyPercent": 2.5},
-      {"name": "Magenschmerzen", "frequencyPercent": 8.0},
-      {"name": "Tinnitus (bei hoher Dosis)", "frequencyPercent": 1.0}
-    ],
-    "interactions": [
-      {"withId": "warfarin", "withName": "Warfarin", "severity": "major", "description": "Stark erhöhtes Blutungsrisiko – Kombination nur unter strenger Überwachung."},
-      {"withId": "ibuprofen", "withName": "Ibuprofen", "severity": "moderate", "description": "Ibuprofen kann die kardioprotektive Wirkung von niedrig-dosierter ASS aufheben."},
-      {"withId": "omega3", "withName": "Omega-3 (Fischöl)", "severity": "moderate", "description": "Additive Hemmung der Thrombozytenaggregation; erhöhtes Blutungsrisiko."}
-    ]
-  },
-  {
-    "id": "paracetamol",
-    "name": "Paracetamol",
-    "type": "medication",
-    "category": "Schmerzmittel / Antipyretika",
-    "atcCode": "N02BE01",
-    "mechanism": "Zentraler Mechanismus nicht vollständig geklärt; COX-3-Hemmung im ZNS.",
-    "halfLife": "2–3 h",
-    "commonDosage": "500–1000 mg oral alle 4–6 h (max. 4000 mg/Tag)",
-    "evidenceGrade": null,
-    "adverseEvents": [
-      {"name": "Hepatotoxizität (Überdosis)", "frequencyPercent": null},
-      {"name": "Hautausschlag", "frequencyPercent": 0.5}
-    ],
-    "interactions": [
-      {"withId": "warfarin", "withName": "Warfarin", "severity": "moderate", "description": "Regelmäßige Einnahme kann INR erhöhen – Monitoring empfohlen."}
-    ]
-  },
-  {
-    "id": "warfarin",
-    "name": "Warfarin",
-    "type": "medication",
-    "category": "Antikoagulanzien",
-    "atcCode": "B01AA03",
-    "mechanism": "Hemmt Vitamin-K-abhängige Gerinnungsfaktoren (II, VII, IX, X).",
-    "halfLife": "36–42 h",
-    "commonDosage": "Individuell (INR-gesteuert, typisch 2–10 mg/Tag)",
-    "evidenceGrade": null,
-    "adverseEvents": [
-      {"name": "Blutungen", "frequencyPercent": 15.0},
-      {"name": "Hautnekrose", "frequencyPercent": 0.1}
-    ],
-    "interactions": [
-      {"withId": "vitamin_k2", "withName": "Vitamin K2", "severity": "major", "description": "Vitamin K antagonisiert direkt die Wirkung von Warfarin – INR kann stark fallen."},
-      {"withId": "omega3", "withName": "Omega-3 (Fischöl)", "severity": "moderate", "description": "Kann die gerinnungshemmende Wirkung verstärken; INR-Kontrolle empfohlen."},
-      {"withId": "johanniskraut", "withName": "Johanniskraut", "severity": "major", "description": "Johanniskraut induziert CYP2C9 und P-gp → stark reduzierte Warfarin-Wirkung."},
-      {"withId": "ibuprofen", "withName": "Ibuprofen", "severity": "major", "description": "Erhöhtes Blutungsrisiko durch additive Wirkung und Proteinbindungsverdrängung."},
-      {"withId": "aspirin", "withName": "Aspirin", "severity": "major", "description": "Stark erhöhtes Blutungsrisiko."},
-      {"withId": "paracetamol", "withName": "Paracetamol", "severity": "moderate", "description": "Regelmäßige Einnahme kann INR erhöhen."}
-    ]
-  },
-  {
-    "id": "metformin",
-    "name": "Metformin",
-    "type": "medication",
-    "category": "Antidiabetika",
-    "atcCode": "A10BA02",
-    "mechanism": "Hemmt hepatische Glukoneogenese; verbessert Insulinsensitivität.",
-    "halfLife": "4–9 h",
-    "commonDosage": "500–2000 mg/Tag in 2–3 Dosen",
-    "evidenceGrade": null,
-    "adverseEvents": [
-      {"name": "Übelkeit / Durchfall", "frequencyPercent": 25.0},
-      {"name": "Vitamin B12 Mangel (langfristig)", "frequencyPercent": 10.0}
-    ],
-    "interactions": [
-      {"withId": "vitamin_b12", "withName": "Vitamin B12", "severity": "moderate", "description": "Metformin reduziert Vitamin-B12-Absorption; Supplementierung empfohlen bei Langzeittherapie."}
-    ]
-  },
-  {
-    "id": "sertralin",
-    "name": "Sertralin",
-    "type": "medication",
-    "category": "Antidepressiva (SSRI)",
-    "atcCode": "N06AB06",
-    "mechanism": "Selektiver Serotonin-Wiederaufnahmehemmer (SSRI).",
-    "halfLife": "26 h",
-    "commonDosage": "50–200 mg/Tag",
-    "evidenceGrade": null,
-    "adverseEvents": [
-      {"name": "Übelkeit", "frequencyPercent": 26.0},
-      {"name": "Schlaflosigkeit", "frequencyPercent": 20.0},
-      {"name": "Sexuelle Dysfunktion", "frequencyPercent": 15.0}
-    ],
-    "interactions": [
-      {"withId": "johanniskraut", "withName": "Johanniskraut", "severity": "major", "description": "Risiko eines Serotonin-Syndroms; Kombination kontraindiziert."},
-      {"withId": "ibuprofen", "withName": "Ibuprofen", "severity": "moderate", "description": "Erhöhtes GI-Blutungsrisiko durch additive Wirkung auf Thrombozytenfunktion."},
-      {"withId": "melatonin", "withName": "Melatonin", "severity": "minor", "description": "SSRIs können Melatonin-Spiegel erhöhen; Kombination generell sicher, aber Schlaf beobachten."}
-    ]
-  },
-  {
-    "id": "lisinopril",
-    "name": "Lisinopril",
-    "type": "medication",
-    "category": "ACE-Hemmer (Antihypertensiva)",
-    "atcCode": "C09AA03",
-    "mechanism": "Hemmt das Angiotensin-Converting-Enzyme (ACE).",
-    "halfLife": "12 h",
-    "commonDosage": "5–40 mg/Tag",
-    "evidenceGrade": null,
-    "adverseEvents": [
-      {"name": "Trockener Husten", "frequencyPercent": 10.0},
-      {"name": "Hyperkaliämie", "frequencyPercent": 3.0},
-      {"name": "Schwindel", "frequencyPercent": 5.0}
-    ],
-    "interactions": [
-      {"withId": "ibuprofen", "withName": "Ibuprofen", "severity": "moderate", "description": "NSAIDs können die blutdrucksenkende Wirkung abschwächen und Nierenfunktion beeinträchtigen."},
-      {"withId": "kalium", "withName": "Kalium", "severity": "moderate", "description": "ACE-Hemmer erhöhen Kaliumspiegel; Kalium-Supplementierung kann zu Hyperkaliämie führen."}
-    ]
-  },
-  {
-    "id": "omeprazol",
-    "name": "Omeprazol",
-    "type": "medication",
-    "category": "Protonenpumpenhemmer",
-    "atcCode": "A02BC01",
-    "mechanism": "Hemmt irreversibel die H+/K+-ATPase der Magenparietalzellen.",
-    "halfLife": "0.5–1 h (Wirkdauer 24 h)",
-    "commonDosage": "20–40 mg/Tag",
-    "evidenceGrade": null,
-    "adverseEvents": [
-      {"name": "Kopfschmerzen", "frequencyPercent": 3.0},
-      {"name": "Magnesiummangel (langfristig)", "frequencyPercent": 2.0},
-      {"name": "Vitamin B12 Mangel (langfristig)", "frequencyPercent": 2.0}
-    ],
-    "interactions": [
-      {"withId": "magnesium", "withName": "Magnesium", "severity": "minor", "description": "Langzeit-PPI-Therapie kann Magnesiumresorption reduzieren; Supplementierung ggf. sinnvoll."},
-      {"withId": "vitamin_b12", "withName": "Vitamin B12", "severity": "minor", "description": "Reduzierte Vitamin-B12-Absorption bei Langzeittherapie."}
-    ]
-  },
-  {
-    "id": "metoprolol",
-    "name": "Metoprolol",
-    "type": "medication",
-    "category": "Betablocker",
-    "atcCode": "C07AB02",
-    "mechanism": "Selektiver β1-Adrenozeptor-Antagonist.",
-    "halfLife": "3–7 h",
-    "commonDosage": "25–200 mg/Tag",
-    "evidenceGrade": null,
-    "adverseEvents": [
-      {"name": "Müdigkeit", "frequencyPercent": 10.0},
-      {"name": "Bradykardie", "frequencyPercent": 5.0},
-      {"name": "Kälte der Extremitäten", "frequencyPercent": 5.0}
-    ],
-    "interactions": []
-  },
-  {
-    "id": "levothyroxin",
-    "name": "Levothyroxin",
-    "type": "medication",
-    "category": "Schilddrüsenhormone",
-    "atcCode": "H03AA01",
-    "mechanism": "Synthetisches T4-Schilddrüsenhormon.",
-    "halfLife": "6–7 Tage",
-    "commonDosage": "25–200 µg/Tag (nüchtern, 30 min vor dem Frühstück)",
-    "evidenceGrade": null,
-    "adverseEvents": [
-      {"name": "Herzrasen (Überdosierung)", "frequencyPercent": null},
-      {"name": "Schlaflosigkeit (Überdosierung)", "frequencyPercent": null}
-    ],
-    "interactions": [
-      {"withId": "calcium", "withName": "Calcium", "severity": "moderate", "description": "Calcium reduziert Levothyroxin-Absorption; mind. 4h Abstand einhalten."},
-      {"withId": "eisen", "withName": "Eisen", "severity": "moderate", "description": "Eisen reduziert Levothyroxin-Absorption; mind. 4h Abstand einhalten."}
-    ]
-  },
-  {
-    "id": "vitamin_d3",
-    "name": "Vitamin D3",
-    "type": "supplement",
-    "category": "Vitamine",
-    "atcCode": null,
-    "mechanism": "Regulator des Calcium- und Phosphatstoffwechsels; immunmodulatorisch.",
-    "halfLife": "14–21 Tage",
-    "commonDosage": "1000–4000 IU/Tag (Erhaltung); bei Mangel bis 10.000 IU/Tag",
-    "evidenceGrade": "B",
-    "adverseEvents": [
-      {"name": "Hyperkalzämie (hohe Dosen)", "frequencyPercent": null}
-    ],
-    "interactions": [
-      {"withId": "calcium", "withName": "Calcium", "severity": "minor", "description": "Vitamin D3 steigert Calciumabsorption; bei hohen Dosen beider Substanzen auf Hyperkalzämie achten."}
-    ]
-  },
-  {
-    "id": "vitamin_c",
-    "name": "Vitamin C",
-    "type": "supplement",
-    "category": "Vitamine",
-    "atcCode": null,
-    "mechanism": "Antioxidans; Cofaktor der Kollagensynthese; verbessert Eisenabsorption.",
-    "halfLife": "30 min – 2 h",
-    "commonDosage": "250–1000 mg/Tag",
-    "evidenceGrade": "A",
-    "adverseEvents": [
-      {"name": "Durchfall (hohe Dosen >2g)", "frequencyPercent": null},
-      {"name": "Nierensteine (prädisponierte Personen)", "frequencyPercent": null}
-    ],
-    "interactions": [
-      {"withId": "eisen", "withName": "Eisen", "severity": "minor", "description": "Vitamin C verbessert die Resorption von nicht-hämalem Eisen – vorteilhafte Interaktion."}
-    ]
-  },
-  {
-    "id": "magnesium",
-    "name": "Magnesium",
-    "type": "supplement",
-    "category": "Mineralien",
-    "atcCode": null,
-    "mechanism": "Cofaktor für >300 Enzyme; wichtig für Muskel- und Nervenfunktion.",
-    "halfLife": null,
-    "commonDosage": "200–400 mg/Tag (elementares Magnesium)",
-    "evidenceGrade": "A",
-    "adverseEvents": [
-      {"name": "Durchfall (hohe Dosen)", "frequencyPercent": 10.0}
-    ],
-    "interactions": [
-      {"withId": "calcium", "withName": "Calcium", "severity": "minor", "description": "Konkurrenz um Absorption; Einnahme zu verschiedenen Zeiten empfohlen bei hohen Dosen."}
-    ]
-  },
-  {
-    "id": "omega3",
-    "name": "Omega-3 (Fischöl)",
-    "type": "supplement",
-    "category": "Fettsäuren",
-    "atcCode": null,
-    "mechanism": "EPA und DHA hemmen Thromboxan-A2-Synthese; entzündungshemmend.",
-    "halfLife": null,
-    "commonDosage": "1000–3000 mg EPA+DHA/Tag",
-    "evidenceGrade": "A",
-    "adverseEvents": [
-      {"name": "Fischiger Nachgeschmack", "frequencyPercent": 15.0},
-      {"name": "GI-Beschwerden", "frequencyPercent": 5.0}
-    ],
-    "interactions": [
-      {"withId": "warfarin", "withName": "Warfarin", "severity": "moderate", "description": "Kann gerinnungshemmende Wirkung von Warfarin verstärken; INR-Monitoring empfohlen."},
-      {"withId": "aspirin", "withName": "Aspirin", "severity": "moderate", "description": "Additive Hemmung der Thrombozytenaggregation; erhöhtes Blutungsrisiko bei hohen Dosen."}
-    ]
-  },
-  {
-    "id": "vitamin_b12",
-    "name": "Vitamin B12",
-    "type": "supplement",
-    "category": "Vitamine",
-    "atcCode": null,
-    "mechanism": "Essenziell für Myelin-Synthese, DNA-Synthese und Erythropoese.",
-    "halfLife": null,
-    "commonDosage": "500–1000 µg/Tag (oral, bei Mangel)",
-    "evidenceGrade": "A",
-    "adverseEvents": [],
-    "interactions": []
-  },
-  {
-    "id": "zink",
-    "name": "Zink",
-    "type": "supplement",
-    "category": "Mineralien",
-    "atcCode": null,
-    "mechanism": "Cofaktor für >200 Enzyme; wichtig für Immunfunktion und Wundheilung.",
-    "halfLife": null,
-    "commonDosage": "15–30 mg/Tag (elementares Zink)",
-    "evidenceGrade": "B",
-    "adverseEvents": [
-      {"name": "Übelkeit (nüchtern)", "frequencyPercent": 10.0},
-      {"name": "Kupfermangel (Langzeit, hohe Dosen)", "frequencyPercent": null}
-    ],
-    "interactions": [
-      {"withId": "eisen", "withName": "Eisen", "severity": "moderate", "description": "Konkurrenz um intestinale Absorption; nicht gleichzeitig einnehmen."}
-    ]
-  },
-  {
-    "id": "melatonin",
-    "name": "Melatonin",
-    "type": "supplement",
-    "category": "Hormone / Schlaf",
-    "atcCode": null,
-    "mechanism": "Endogenes Schlafhormon; reguliert den zirkadianen Rhythmus via MT1/MT2-Rezeptoren.",
-    "halfLife": "0.5–1 h",
-    "commonDosage": "0.5–5 mg, 30–60 min vor dem Schlafen",
-    "evidenceGrade": "B",
-    "adverseEvents": [
-      {"name": "Schläfrigkeit (am nächsten Tag)", "frequencyPercent": 8.0},
-      {"name": "Kopfschmerzen", "frequencyPercent": 3.0}
-    ],
-    "interactions": [
-      {"withId": "sertralin", "withName": "Sertralin", "severity": "minor", "description": "SSRIs können endogene Melatoninspiegel erhöhen; Kombination meist sicher."}
-    ]
-  },
-  {
-    "id": "kreatin",
-    "name": "Kreatin",
-    "type": "supplement",
-    "category": "Sport / Performance",
-    "atcCode": null,
-    "mechanism": "Erhöht intrazelluläre Phosphokreatin-Speicher; verbessert ATP-Regeneration.",
-    "halfLife": null,
-    "commonDosage": "3–5 g/Tag (Erhaltung); Loading: 20 g/Tag für 5–7 Tage",
-    "evidenceGrade": "A",
-    "adverseEvents": [
-      {"name": "Wassereinlagerung", "frequencyPercent": 20.0},
-      {"name": "Magenunverträglichkeit (selten)", "frequencyPercent": 3.0}
-    ],
-    "interactions": []
-  },
-  {
-    "id": "vitamin_k2",
-    "name": "Vitamin K2 (MK-7)",
-    "type": "supplement",
-    "category": "Vitamine",
-    "atcCode": null,
-    "mechanism": "Cofaktor für Carboxylierung von Gerinnungsproteinen und Osteocalcin.",
-    "halfLife": "72 h (MK-7)",
-    "commonDosage": "90–200 µg/Tag",
-    "evidenceGrade": "B",
-    "adverseEvents": [],
-    "interactions": [
-      {"withId": "warfarin", "withName": "Warfarin", "severity": "major", "description": "Vitamin K antagonisiert Warfarin direkt; kann INR stark senken und Thromboserisiko erhöhen."}
-    ]
-  },
-  {
-    "id": "johanniskraut",
-    "name": "Johanniskraut",
-    "type": "supplement",
-    "category": "Pflanzenextrakte",
-    "atcCode": null,
-    "mechanism": "Hemmt Serotonin-, Dopamin- und Noradrenalin-Wiederaufnahme; starker CYP3A4/P-gp-Induktor.",
-    "halfLife": "24–48 h (Hypericin)",
-    "commonDosage": "300 mg 3× täglich (0.3% Hypericin-Extrakt)",
-    "evidenceGrade": "B",
-    "adverseEvents": [
-      {"name": "Photosensitivität", "frequencyPercent": 3.0},
-      {"name": "Schlaflosigkeit", "frequencyPercent": 2.0}
-    ],
-    "interactions": [
-      {"withId": "warfarin", "withName": "Warfarin", "severity": "major", "description": "Starker CYP2C9/P-gp-Induktor – Warfarin-Spiegel können stark fallen; Thromboserisiko."},
-      {"withId": "sertralin", "withName": "Sertralin", "severity": "major", "description": "Risiko eines Serotonin-Syndroms (Agitation, Tremor, Tachykardie) – Kombination kontraindiziert."},
-      {"withId": "paracetamol", "withName": "Paracetamol", "severity": "minor", "description": "Johanniskraut kann Paracetamol-Metabolismus leicht beschleunigen."}
-    ]
-  },
-  {
-    "id": "eisen",
-    "name": "Eisen",
-    "type": "supplement",
-    "category": "Mineralien",
-    "atcCode": null,
-    "mechanism": "Zentrales Atom im Hämoglobin; essenziell für Sauerstofftransport und Elektronentransportkette.",
-    "halfLife": null,
-    "commonDosage": "50–200 mg elementares Eisen/Tag (bei Mangel)",
-    "evidenceGrade": "A",
-    "adverseEvents": [
-      {"name": "Verstopfung", "frequencyPercent": 20.0},
-      {"name": "Übelkeit", "frequencyPercent": 15.0},
-      {"name": "Schwarzer Stuhl", "frequencyPercent": 80.0}
-    ],
-    "interactions": [
-      {"withId": "levothyroxin", "withName": "Levothyroxin", "severity": "moderate", "description": "Eisen reduziert Levothyroxin-Absorption; mind. 4h Abstand einhalten."},
-      {"withId": "vitamin_c", "withName": "Vitamin C", "severity": "minor", "description": "Vitamin C verbessert die Eisenresorption – vorteilhafte Kombination."},
-      {"withId": "zink", "withName": "Zink", "severity": "moderate", "description": "Konkurrieren um Absorption; nicht gleichzeitig einnehmen."}
-    ]
-  },
-  {
-    "id": "calcium",
-    "name": "Calcium",
-    "type": "supplement",
-    "category": "Mineralien",
-    "atcCode": null,
-    "mechanism": "Strukturelles Mineral für Knochen; Second-Messenger in Zellsignalkaskaden.",
-    "halfLife": null,
-    "commonDosage": "500–1000 mg/Tag (elementares Calcium)",
-    "evidenceGrade": "A",
-    "adverseEvents": [
-      {"name": "Verstopfung", "frequencyPercent": 10.0},
-      {"name": "Aufgeblähtes Gefühl", "frequencyPercent": 5.0}
-    ],
-    "interactions": [
-      {"withId": "levothyroxin", "withName": "Levothyroxin", "severity": "moderate", "description": "Calcium reduziert Levothyroxin-Absorption; mind. 4h Abstand."},
-      {"withId": "eisen", "withName": "Eisen", "severity": "moderate", "description": "Calcium hemmt Eisenresorption; nicht gleichzeitig einnehmen."},
-      {"withId": "vitamin_d3", "withName": "Vitamin D3", "severity": "minor", "description": "Vitamin D3 fördert Calciumabsorption – vorteilhafte Kombination, aber bei sehr hohen Dosen beider Hyperkalzämie-Risiko."}
-    ]
-  },
-  {
-    "id": "ashwagandha",
-    "name": "Ashwagandha",
-    "type": "supplement",
-    "category": "Adaptogene",
-    "atcCode": null,
-    "mechanism": "Withanolide modulieren HPA-Achse; adaptogen, anxiolytisch.",
-    "halfLife": null,
-    "commonDosage": "300–600 mg/Tag (KSM-66 oder Sensoril-Extrakt)",
-    "evidenceGrade": "B",
-    "adverseEvents": [
-      {"name": "GI-Beschwerden", "frequencyPercent": 5.0},
-      {"name": "Schläfrigkeit", "frequencyPercent": 5.0}
-    ],
-    "interactions": [
-      {"withId": "metoprolol", "withName": "Metoprolol", "severity": "minor", "description": "Ashwagandha kann blutdrucksenkende Wirkung leicht verstärken."}
-    ]
-  },
-  {
-    "id": "coq10",
-    "name": "Coenzym Q10",
-    "type": "supplement",
-    "category": "Antioxidantien",
-    "atcCode": null,
-    "mechanism": "Cofaktor der Mitochondrialen Atmungskette; Antioxidans.",
-    "halfLife": "33–35 h",
-    "commonDosage": "100–300 mg/Tag",
-    "evidenceGrade": "B",
-    "adverseEvents": [
-      {"name": "Übelkeit", "frequencyPercent": 3.0}
-    ],
-    "interactions": [
-      {"withId": "warfarin", "withName": "Warfarin", "severity": "moderate", "description": "CoQ10 hat strukturelle Ähnlichkeit mit Vitamin K; kann INR beeinflussen."}
-    ]
-  },
-  {
-    "id": "folsaeure",
-    "name": "Folsäure (Vitamin B9)",
-    "type": "supplement",
-    "category": "Vitamine",
-    "atcCode": null,
-    "mechanism": "Essenziell für DNA-Synthese und Ein-Kohlenstoff-Stoffwechsel; wichtig in der Schwangerschaft.",
-    "halfLife": null,
-    "commonDosage": "400 µg/Tag (Prophylaxe); 800–5000 µg (Schwangerschaft/Mangel)",
-    "evidenceGrade": "A",
-    "adverseEvents": [],
-    "interactions": []
-  },
-  {
-    "id": "kalium",
-    "name": "Kalium",
-    "type": "supplement",
-    "category": "Mineralien",
-    "atcCode": null,
-    "mechanism": "Essenzieller Elektrolyt; reguliert Membranpotenzial und Herzrhythmus.",
-    "halfLife": null,
-    "commonDosage": "99–400 mg/Tag (elementares Kalium)",
-    "evidenceGrade": "A",
-    "adverseEvents": [
-      {"name": "Übelkeit / Magenreizung", "frequencyPercent": 5.0}
-    ],
-    "interactions": [
-      {"withId": "lisinopril", "withName": "Lisinopril", "severity": "moderate", "description": "ACE-Hemmer erhöhen Kaliumspiegel; Kalium-Supplementierung kann zu Hyperkaliämie führen."}
-    ]
-  }
+  {"id":"ibuprofen","name":"Ibuprofen","type":"medication","category":"Schmerzmittel","atcCode":"M01AE01","mechanism":"COX-1/COX-2-Hemmer; reduziert Prostaglandinsynthese → Analgesie, Antipyrese, Antiphlogese.","halfLife":"1,8–2,5 h","commonDosage":"200–400 mg oral alle 6–8 h (max. 2.400 mg/Tag)","evidenceGrade":"A","adverseEvents":[{"name":"Magenschmerzen / Übelkeit","frequencyPercent":10.0},{"name":"Kopfschmerzen","frequencyPercent":3.0}],"interactions":[{"withId":"warfarin","withName":"Warfarin","severity":"major","description":"Erhöhtes Blutungsrisiko."},{"withId":"aspirin","withName":"Aspirin","severity":"moderate","description":"Additive GI-Toxizität."}]},
+  {"id":"paracetamol","name":"Paracetamol","type":"medication","category":"Schmerzmittel","atcCode":"N02BE01","mechanism":"Hemmt Prostaglandinsynthese im ZNS; genaue Wirkweise teils ungeklärt.","halfLife":"2–3 h","commonDosage":"500–1.000 mg oral alle 4–6 h (max. 4.000 mg/Tag)","evidenceGrade":"A","adverseEvents":[{"name":"Lebertoxizität (Überdosierung)","frequencyPercent":null}],"interactions":[{"withId":"warfarin","withName":"Warfarin","severity":"moderate","description":"Leichte INR-Erhöhung bei Dauertherapie möglich."}]},
+  {"id":"aspirin","name":"Aspirin (ASS)","type":"medication","category":"Schmerzmittel","atcCode":"N02BA01","mechanism":"Irreversible COX-1/COX-2-Hemmung; Thrombozytenaggregationshemmung durch TXA2-Reduktion.","halfLife":"15–20 min (Acetylsalicylsäure), aktiver Metabolit länger","commonDosage":"Schmerz: 500–1.000 mg; Herzschutz: 100 mg/Tag","evidenceGrade":"A","adverseEvents":[{"name":"GI-Blutung","frequencyPercent":2.0},{"name":"Magenreizung","frequencyPercent":8.0}],"interactions":[{"withId":"ibuprofen","withName":"Ibuprofen","severity":"moderate","description":"Ibuprofen kann antithrombotische Wirkung von ASS abschwächen."}]},
+  {"id":"diclofenac","name":"Diclofenac","type":"medication","category":"Schmerzmittel","atcCode":"M01AB05","mechanism":"Selektiver COX-2-Hemmer (schwach); reduziert Prostaglandine und Leukotriene.","halfLife":"1–2 h","commonDosage":"25–50 mg oral 2–3×/Tag (max. 150 mg/Tag)","evidenceGrade":"A","adverseEvents":[{"name":"GI-Beschwerden","frequencyPercent":10.0},{"name":"Erhöhte Leberwerte","frequencyPercent":4.0}],"interactions":[]},
+  {"id":"naproxen","name":"Naproxen","type":"medication","category":"Schmerzmittel","atcCode":"M01AE02","mechanism":"Nicht-selektiver COX-Hemmer; längere Halbwertszeit als Ibuprofen.","halfLife":"12–17 h","commonDosage":"250–500 mg oral 2×/Tag (max. 1.250 mg/Tag)","evidenceGrade":"A","adverseEvents":[{"name":"Magenbeschwerden","frequencyPercent":8.0}],"interactions":[]},
+  {"id":"metamizol","name":"Metamizol (Novaminsulfon)","type":"medication","category":"Schmerzmittel","atcCode":"N02BB02","mechanism":"Prostaglandinhemmung + zentrale Schmerzmodulation; stark spasmolytisch.","halfLife":"14 h (aktiver Metabolit)","commonDosage":"500–1.000 mg oral bis 4×/Tag (max. 4.000 mg/Tag)","evidenceGrade":"A","adverseEvents":[{"name":"Agranulozytose (selten, schwer)","frequencyPercent":0.003},{"name":"Hypotonie (i.v.)","frequencyPercent":2.0}],"interactions":[]},
+  {"id":"tramadol","name":"Tramadol","type":"medication","category":"Opioide / Analgetika","atcCode":"N02AX02","mechanism":"Schwacher μ-Opioid-Agonist + Serotonin/Noradrenalin-Rückaufnahmehemmer.","halfLife":"5–6 h","commonDosage":"50–100 mg oral alle 4–6 h (max. 400 mg/Tag); BtM-pflichtig","evidenceGrade":"A","adverseEvents":[{"name":"Übelkeit/Erbrechen","frequencyPercent":25.0},{"name":"Schwindel","frequencyPercent":20.0},{"name":"Obstipation","frequencyPercent":15.0}],"interactions":[{"withId":"sertralin","withName":"Sertralin","severity":"major","description":"Serotoninsyndrom-Risiko."}]},
+  {"id":"metoprolol","name":"Metoprolol","type":"medication","category":"Herz-Kreislauf","atcCode":"C07AB02","mechanism":"Selektiver β1-Adrenorezeptor-Blocker; senkt Herzfrequenz und Blutdruck.","halfLife":"3–7 h","commonDosage":"25–100 mg oral 1–2×/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Bradykardie","frequencyPercent":8.0},{"name":"Müdigkeit","frequencyPercent":10.0},{"name":"Kältegefühl Extremitäten","frequencyPercent":5.0}],"interactions":[]},
+  {"id":"bisoprolol","name":"Bisoprolol","type":"medication","category":"Herz-Kreislauf","atcCode":"C07AB07","mechanism":"Hoch-selektiver β1-Blocker; geringere bronchiale Wirkung als nicht-selektive β-Blocker.","halfLife":"10–12 h","commonDosage":"2,5–10 mg oral 1×/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Bradykardie","frequencyPercent":6.0},{"name":"Müdigkeit","frequencyPercent":8.0}],"interactions":[]},
+  {"id":"ramipril","name":"Ramipril","type":"medication","category":"Herz-Kreislauf","atcCode":"C09AA05","mechanism":"ACE-Hemmer; verhindert Angiotensin-I→II-Konversion → Vasodilatation, Preload/Afterload-Senkung.","halfLife":"13–17 h (Ramiprilat)","commonDosage":"2,5–10 mg oral 1×/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Reizhusten","frequencyPercent":15.0},{"name":"Hypotonie (Erstdosis)","frequencyPercent":5.0},{"name":"Hyperkaliämie","frequencyPercent":2.0}],"interactions":[{"withId":"ibuprofen","withName":"Ibuprofen","severity":"moderate","description":"NSAR können blutdrucksenkende Wirkung abschwächen."}]},
+  {"id":"lisinopril","name":"Lisinopril","type":"medication","category":"Herz-Kreislauf","atcCode":"C09AA03","mechanism":"ACE-Hemmer (ohne Prodrug-Aktivierung); direkter aktiver Wirkstoff.","halfLife":"12 h","commonDosage":"5–40 mg oral 1×/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Reizhusten","frequencyPercent":15.0},{"name":"Angioödem (selten)","frequencyPercent":0.1}],"interactions":[]},
+  {"id":"amlodipin","name":"Amlodipin","type":"medication","category":"Herz-Kreislauf","atcCode":"C08CA01","mechanism":"Dihydropyridin-Calciumkanalblocker; Vasodilatation der Koronararterien und peripheren Gefäße.","halfLife":"35–50 h","commonDosage":"5–10 mg oral 1×/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Knöchelödeme","frequencyPercent":8.0},{"name":"Flush","frequencyPercent":3.0}],"interactions":[]},
+  {"id":"atorvastatin","name":"Atorvastatin","type":"medication","category":"Herz-Kreislauf","atcCode":"C10AA05","mechanism":"HMG-CoA-Reduktase-Hemmer; reduziert hepatische Cholesterinsynthese → LDL-Senkung.","halfLife":"14 h","commonDosage":"10–80 mg oral 1×/Tag (abends)","evidenceGrade":"A","adverseEvents":[{"name":"Myopathie/Myalgie","frequencyPercent":5.0},{"name":"Transaminasenanstieg","frequencyPercent":1.0}],"interactions":[]},
+  {"id":"simvastatin","name":"Simvastatin","type":"medication","category":"Herz-Kreislauf","atcCode":"C10AA01","mechanism":"HMG-CoA-Reduktase-Hemmer (Prodrug); stärkere Interaktionen als Atorvastatin.","halfLife":"2 h (aktiv: 1–3 h)","commonDosage":"20–40 mg oral 1×/Tag (abends)","evidenceGrade":"A","adverseEvents":[{"name":"Myopathie","frequencyPercent":3.0},{"name":"Rhabdomyolyse (selten)","frequencyPercent":0.01}],"interactions":[{"withId":"amlodipin","withName":"Amlodipin","severity":"moderate","description":"Erhöhtes Myopathie-Risiko bei >20 mg Simvastatin + Amlodipin."}]},
+  {"id":"losartan","name":"Losartan","type":"medication","category":"Herz-Kreislauf","atcCode":"C09CA01","mechanism":"AT1-Rezeptor-Antagonist (Sartan); blockiert Angiotensin-II → Vasodilatation, kein ACE-Hemmer-Husten.","halfLife":"6–9 h (Metabolit E-3174: 3–4 h)","commonDosage":"25–100 mg oral 1×/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Schwindel","frequencyPercent":3.0},{"name":"Hyperkaliämie","frequencyPercent":2.0}],"interactions":[]},
+  {"id":"furosemid","name":"Furosemid","type":"medication","category":"Herz-Kreislauf","atcCode":"C03CA01","mechanism":"Schleifendiuretikum; hemmt Na-K-2Cl-Transporter in Henle-Schleife → starke Diurese.","halfLife":"1–2 h","commonDosage":"20–80 mg oral 1×/Tag (morgens)","evidenceGrade":"A","adverseEvents":[{"name":"Hypokaliämie","frequencyPercent":15.0},{"name":"Hyponatriämie","frequencyPercent":5.0},{"name":"Ototoxizität (hoch dosiert)","frequencyPercent":1.0}],"interactions":[]},
+  {"id":"metformin","name":"Metformin","type":"medication","category":"Antidiabetika","atcCode":"A10BA02","mechanism":"Biguanid; hemmt hepatische Gluconeogenese, verbessert Insulinsensitivität. Kein Hypoglykämierisiko.","halfLife":"4–9 h","commonDosage":"500–2.000 mg oral 2–3×/Tag (zu den Mahlzeiten)","evidenceGrade":"A","adverseEvents":[{"name":"GI-Beschwerden (Anlaufphase)","frequencyPercent":20.0},{"name":"Laktatazidose (selten)","frequencyPercent":0.001}],"interactions":[]},
+  {"id":"empagliflozin","name":"Empagliflozin (Jardiance)","type":"medication","category":"Antidiabetika","atcCode":"A10BK03","mechanism":"SGLT-2-Hemmer; fördert renale Glucoseausscheidung unabhängig von Insulin.","halfLife":"12 h","commonDosage":"10–25 mg oral 1×/Tag (morgens)","evidenceGrade":"A","adverseEvents":[{"name":"Genitale Mykosen","frequencyPercent":10.0},{"name":"Harnwegsinfekt","frequencyPercent":7.0}],"interactions":[]},
+  {"id":"sitagliptin","name":"Sitagliptin (Januvia)","type":"medication","category":"Antidiabetika","atcCode":"A10BH01","mechanism":"DPP-4-Hemmer; erhöht Incretin-Spiegel (GLP-1/GIP) → Insulinsekretion ↑, Glucagon ↓.","halfLife":"12 h","commonDosage":"100 mg oral 1×/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Nasopharyngitis","frequencyPercent":5.0},{"name":"Pankreatitis (selten)","frequencyPercent":0.1}],"interactions":[]},
+  {"id":"amoxicillin","name":"Amoxicillin","type":"medication","category":"Antibiotika","atcCode":"J01CA04","mechanism":"Aminopenicillin; hemmt bakterielle Zellwandsynthese (Transpeptidase-Hemmung).","halfLife":"1–1,5 h","commonDosage":"500–1.000 mg oral 3×/Tag (7–10 Tage)","evidenceGrade":"A","adverseEvents":[{"name":"Diarrhö","frequencyPercent":10.0},{"name":"Hautausschlag","frequencyPercent":5.0},{"name":"Allergische Reaktion","frequencyPercent":1.0}],"interactions":[]},
+  {"id":"ciprofloxacin","name":"Ciprofloxacin","type":"medication","category":"Antibiotika","atcCode":"J01MA02","mechanism":"Fluorchinolon; hemmt bakterielle DNA-Gyrase und Topoisomerase IV.","halfLife":"3–5 h","commonDosage":"250–750 mg oral 2×/Tag (5–14 Tage)","evidenceGrade":"A","adverseEvents":[{"name":"GI-Störungen","frequencyPercent":8.0},{"name":"Tendopathie (Achillessehne)","frequencyPercent":0.5},{"name":"QT-Verlängerung","frequencyPercent":1.0}],"interactions":[{"withId":"ibuprofen","withName":"Ibuprofen","severity":"minor","description":"Leicht erhöhtes Krampfrisiko."}]},
+  {"id":"azithromycin","name":"Azithromycin","type":"medication","category":"Antibiotika","atcCode":"J01FA10","mechanism":"Makrolid-Antibiotikum; hemmt ribosomale 50S-Untereinheit → Proteinsynthesehemmung.","halfLife":"68 h","commonDosage":"500 mg oral Tag 1, dann 250 mg/Tag (3–5 Tage)","evidenceGrade":"A","adverseEvents":[{"name":"GI-Beschwerden","frequencyPercent":10.0},{"name":"QT-Verlängerung","frequencyPercent":0.5}],"interactions":[]},
+  {"id":"doxycyclin","name":"Doxycyclin","type":"medication","category":"Antibiotika","atcCode":"J01AA02","mechanism":"Tetracyclin; hemmt 30S-Ribosomenuntereinheit → Proteinsynthesehemmung (breites Spektrum).","halfLife":"18–22 h","commonDosage":"100 mg oral 2×/Tag (Tag 1: 200 mg), 7–14 Tage","evidenceGrade":"A","adverseEvents":[{"name":"Ösophagusreizung","frequencyPercent":5.0},{"name":"Photosensibilisierung","frequencyPercent":3.0}],"interactions":[]},
+  {"id":"sertralin","name":"Sertralin","type":"medication","category":"Antidepressiva","atcCode":"N06AB06","mechanism":"SSRI; hemmt präsynaptischen Serotonin-Reuptake-Transporter (SERT).","halfLife":"26 h","commonDosage":"50–200 mg oral 1×/Tag (morgens)","evidenceGrade":"A","adverseEvents":[{"name":"Übelkeit (Anlaufphase)","frequencyPercent":25.0},{"name":"Schlafstörungen","frequencyPercent":15.0},{"name":"Sexuelle Dysfunktion","frequencyPercent":15.0}],"interactions":[{"withId":"tramadol","withName":"Tramadol","severity":"major","description":"Serotoninsyndrom-Risiko."}]},
+  {"id":"escitalopram","name":"Escitalopram","type":"medication","category":"Antidepressiva","atcCode":"N06AB10","mechanism":"S-Enantiomer von Citalopram; selektivster SSRI mit allosterischer SERT-Bindung.","halfLife":"27–32 h","commonDosage":"10–20 mg oral 1×/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Übelkeit","frequencyPercent":15.0},{"name":"QT-Verlängerung","frequencyPercent":0.5}],"interactions":[]},
+  {"id":"venlafaxin","name":"Venlafaxin","type":"medication","category":"Antidepressiva","atcCode":"N06AX16","mechanism":"SNRI; hemmt Serotonin- und Noradrenalin-Reuptake (dosisabhängig).","halfLife":"5 h (O-Desmethylvenlafaxin: 11 h)","commonDosage":"75–225 mg oral 1×/Tag (Retardform)","evidenceGrade":"A","adverseEvents":[{"name":"Blutdruckanstieg","frequencyPercent":5.0},{"name":"Übelkeit","frequencyPercent":20.0},{"name":"Schwitzen","frequencyPercent":10.0}],"interactions":[]},
+  {"id":"mirtazapin","name":"Mirtazapin","type":"medication","category":"Antidepressiva","atcCode":"N06AX11","mechanism":"NaSSA; α2-Blocker + H1-Antagonist; steigert noradrenerge und serotonerge Neurotransmission.","halfLife":"20–40 h","commonDosage":"15–45 mg oral 1×/Tag (abends)","evidenceGrade":"A","adverseEvents":[{"name":"Sedierung","frequencyPercent":25.0},{"name":"Gewichtszunahme","frequencyPercent":20.0}],"interactions":[]},
+  {"id":"omeprazol","name":"Omeprazol","type":"medication","category":"Magen-Darm","atcCode":"A02BC01","mechanism":"Protonenpumpenhemmer (PPI); irreversible Hemmung der H+/K+-ATPase → Magensäurereduktion.","halfLife":"1 h (pharmakodynamisch: 24+ h)","commonDosage":"20–40 mg oral 1×/Tag (nüchtern, 30 min vor Mahlzeit)","evidenceGrade":"A","adverseEvents":[{"name":"Kopfschmerzen","frequencyPercent":3.0},{"name":"Hypomagnesiämie (Langzeit)","frequencyPercent":1.0}],"interactions":[{"withId":"warfarin","withName":"Warfarin","severity":"minor","description":"Leichte INR-Erhöhung möglich."}]},
+  {"id":"pantoprazol","name":"Pantoprazol","type":"medication","category":"Magen-Darm","atcCode":"A02BC02","mechanism":"PPI; selektivere Bindung an H+/K+-ATPase als Omeprazol → weniger Arzneimittelinteraktionen.","halfLife":"1–2 h","commonDosage":"20–40 mg oral 1×/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Kopfschmerzen","frequencyPercent":2.0},{"name":"Diarrhö","frequencyPercent":2.0}],"interactions":[]},
+  {"id":"cetirizin","name":"Cetirizin","type":"medication","category":"Antihistaminika","atcCode":"R06AE07","mechanism":"H1-Antihistaminikum (2. Generation); kaum ZNS-gängig → geringere Sedierung.","halfLife":"7–10 h","commonDosage":"10 mg oral 1×/Tag (abends)","evidenceGrade":"A","adverseEvents":[{"name":"Müdigkeit","frequencyPercent":5.0},{"name":"Mundtrockenheit","frequencyPercent":3.0}],"interactions":[]},
+  {"id":"loratadin","name":"Loratadin","type":"medication","category":"Antihistaminika","atcCode":"R06AX13","mechanism":"Peripherer H1-Antagonist (2. Generation); kein anticholinerger Effekt.","halfLife":"8–12 h","commonDosage":"10 mg oral 1×/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Kopfschmerzen","frequencyPercent":3.0}],"interactions":[]},
+  {"id":"levothyroxin","name":"Levothyroxin (L-Thyroxin)","type":"medication","category":"Hormone","atcCode":"H03AA01","mechanism":"Synthetisches T4; Substitution bei Schilddrüsenunterfunktion; Konversion zu aktivem T3 im Gewebe.","halfLife":"7 Tage","commonDosage":"25–200 µg oral 1×/Tag (nüchtern, 30 min vor Frühstück)","evidenceGrade":"A","adverseEvents":[{"name":"Tachykardie (Überdosierung)","frequencyPercent":null},{"name":"Schlafstörungen (Überdosierung)","frequencyPercent":null}],"interactions":[{"withId":"calcium","withName":"Calcium","severity":"moderate","description":"Calcium reduziert L-T4-Resorption → Einnahme zeitlich trennen (4 h)."}]},
+  {"id":"prednisolon","name":"Prednisolon","type":"medication","category":"Kortikosteroide","atcCode":"H02AB06","mechanism":"Synthetisches Glukokortikoid; bindet GR → antiinflammatorisch, immunsuppressiv.","halfLife":"2–4 h (biologisch: 18–36 h)","commonDosage":"5–60 mg oral 1×/Tag (morgens); schrittweises Ausschleichen","evidenceGrade":"A","adverseEvents":[{"name":"Cushing-Syndrom (Langzeit)","frequencyPercent":null},{"name":"Osteoporose (Langzeit)","frequencyPercent":null},{"name":"Blutzuckeranstieg","frequencyPercent":10.0}],"interactions":[]},
+  {"id":"warfarin","name":"Warfarin (Coumadin)","type":"medication","category":"Antikoagulanzien","atcCode":"B01AA03","mechanism":"Vitamin-K-Antagonist; hemmt Gerinnungsfaktoren II, VII, IX, X. Enge therapeutische Breite (INR-Monitoring!).","halfLife":"20–60 h","commonDosage":"Individuell nach INR-Zielwert; typisch 3–9 mg/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Blutung","frequencyPercent":8.0},{"name":"Hämaturie","frequencyPercent":3.0}],"interactions":[{"withId":"aspirin","withName":"Aspirin","severity":"major","description":"Stark erhöhtes Blutungsrisiko."},{"withId":"ibuprofen","withName":"Ibuprofen","severity":"major","description":"Stark erhöhtes Blutungsrisiko."}]},
+  {"id":"rivaroxaban","name":"Rivaroxaban (Xarelto)","type":"medication","category":"Antikoagulanzien","atcCode":"B01AF01","mechanism":"Direkter Faktor-Xa-Inhibitor; kein INR-Monitoring erforderlich.","halfLife":"5–9 h (jung), 11–13 h (älter)","commonDosage":"10–20 mg oral 1×/Tag (nach Indikation)","evidenceGrade":"A","adverseEvents":[{"name":"Blutung","frequencyPercent":5.0},{"name":"Anämie","frequencyPercent":2.0}],"interactions":[]},
+  {"id":"zolpidem","name":"Zolpidem","type":"medication","category":"Schlafmittel","atcCode":"N05CF02","mechanism":"GABA-A-Modulator (Z-Drug); selektiver Benzodiazepin-Rezeptor-Agonist (ω1) → Hypnose.","halfLife":"2–3 h","commonDosage":"5–10 mg oral kurz vor Schlaf (max. 4 Wochen)","evidenceGrade":"A","adverseEvents":[{"name":"Retrograde Amnesie","frequencyPercent":3.0},{"name":"Tagesmüdigkeit","frequencyPercent":5.0},{"name":"Abhängigkeitspotenzial","frequencyPercent":null}],"interactions":[]},
+  {"id":"melatonin_med","name":"Melatonin (rezeptpflichtig ≥2 mg)","type":"medication","category":"Schlafmittel","atcCode":"N05CH01","mechanism":"Endogenes Schlafhormon-Analogon; bindet MT1/MT2-Rezeptoren → circadiane Rhythmus-Regulierung.","halfLife":"30–50 min","commonDosage":"2 mg oral 1–2 h vor Schlaf (Circadin®)","evidenceGrade":"B","adverseEvents":[{"name":"Kopfschmerzen","frequencyPercent":3.0},{"name":"Schwindel","frequencyPercent":2.0}],"interactions":[]},
+  {"id":"valproat","name":"Valproat / Valproinsäure","type":"medication","category":"Antiepileptika / Psychiatrie","atcCode":"N03AG01","mechanism":"GABA-Transaminase-Hemmer + Na-Kanal-Blockade + GABA-Erhöhung; Stimmungsstabilisator.","halfLife":"9–16 h","commonDosage":"500–2.000 mg oral 2–3×/Tag (retardiert)","evidenceGrade":"A","adverseEvents":[{"name":"Gewichtszunahme","frequencyPercent":15.0},{"name":"Haarausfall","frequencyPercent":8.0},{"name":"Teratogenität","frequencyPercent":null}],"interactions":[]},
+  {"id":"lamotrigin","name":"Lamotrigin","type":"medication","category":"Antiepileptika / Psychiatrie","atcCode":"N03AX09","mechanism":"Spannungsabhängige Na-Kanal-Blockade; hemmt exzitatorische Glutamatfreisetzung.","halfLife":"29 h (Monotherapie); kürzer mit Enzyminduktoren","commonDosage":"100–400 mg oral 2×/Tag (langsame Aufdosierung)","evidenceGrade":"A","adverseEvents":[{"name":"Hautausschlag (Stevens-Johnson selten)","frequencyPercent":5.0},{"name":"Diplopie","frequencyPercent":5.0}],"interactions":[]},
+  {"id":"pregabalin","name":"Pregabalin","type":"medication","category":"Antiepileptika / Psychiatrie","atcCode":"N03AX16","mechanism":"Bindet α2δ-Untereinheit spannungsabhängiger Ca-Kanäle → reduziert Neurotransmitterfreisetzung.","halfLife":"6 h","commonDosage":"75–300 mg oral 2–3×/Tag (Neuropathie, Fibromyalgie, GAD)","evidenceGrade":"A","adverseEvents":[{"name":"Schwindel","frequencyPercent":25.0},{"name":"Somnolenz","frequencyPercent":20.0},{"name":"Gewichtszunahme","frequencyPercent":10.0}],"interactions":[]},
+  {"id":"quetiapun","name":"Quetiapin","type":"medication","category":"Antiepileptika / Psychiatrie","atcCode":"N05AH04","mechanism":"Atypisches Antipsychotikum; D2/D3/5-HT2A/H1-Antagonist; sedierend, stimmungsstabilisierend.","halfLife":"6–7 h","commonDosage":"50–800 mg oral 1–2×/Tag (Indikation-abhängig)","evidenceGrade":"A","adverseEvents":[{"name":"Sedierung","frequencyPercent":30.0},{"name":"Gewichtszunahme","frequencyPercent":15.0},{"name":"Metabolisches Syndrom","frequencyPercent":5.0}],"interactions":[]},
+  {"id":"salbutamol","name":"Salbutamol (Ventolin)","type":"medication","category":"Atemwege","atcCode":"R03AC02","mechanism":"Kurzwirksamer β2-Agonist (SABA); Bronchodilatation bei Asthma/COPD.","halfLife":"4–6 h","commonDosage":"100 µg Inhalation bei Bedarf (2–4 Hübe); max. 8 Hübe/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Tremor","frequencyPercent":10.0},{"name":"Tachykardie","frequencyPercent":5.0},{"name":"Hypokaliämie (hoch dosiert)","frequencyPercent":2.0}],"interactions":[]},
+  {"id":"budesonid","name":"Budesonid (Pulmicort)","type":"medication","category":"Atemwege","atcCode":"R03BA02","mechanism":"Inhalatives Kortikosteroid (ICS); lokale Entzündungshemmung bronchial.","halfLife":"2–3 h (systemisch gering)","commonDosage":"200–800 µg inhalativ 2×/Tag (Asthma)","evidenceGrade":"A","adverseEvents":[{"name":"Oropharyngeale Candidiasis","frequencyPercent":5.0},{"name":"Heiserkeit","frequencyPercent":3.0}],"interactions":[]},
+  {"id":"tamsulosin","name":"Tamsulosin","type":"medication","category":"Urologie","atcCode":"G04CA02","mechanism":"Selektiver α1A-Adrenorezeptor-Blocker; Erschlaffung der Prostata-/Blasenhals-Muskulatur bei BPH.","halfLife":"14–15 h","commonDosage":"0,4 mg oral 1×/Tag (nach Mahlzeit)","evidenceGrade":"A","adverseEvents":[{"name":"Retrograde Ejakulation","frequencyPercent":8.0},{"name":"Schwindel","frequencyPercent":5.0}],"interactions":[]},
+  {"id":"sildenafil","name":"Sildenafil (Viagra)","type":"medication","category":"Urologie","atcCode":"G04BE03","mechanism":"PDE-5-Hemmer; erhöht cGMP in glatten Gefäßmuskelzellen → Erektion/pulmonale Vasodilatation.","halfLife":"3–5 h","commonDosage":"25–100 mg oral 30–60 min vor Aktivität (max. 1×/Tag)","evidenceGrade":"A","adverseEvents":[{"name":"Kopfschmerzen","frequencyPercent":15.0},{"name":"Flush","frequencyPercent":10.0},{"name":"Sehstörungen (Blauton)","frequencyPercent":3.0}],"interactions":[{"withId":"warfarin","withName":"Nitrate","severity":"major","description":"Kontraindiziert: ausgeprägte Hypotonie."}]},
+  {"id":"vitamin_c","name":"Vitamin C (Ascorbinsäure)","type":"supplement","category":"Vitamine","mechanism":"Antioxidans; Kollagensynthese; Immunmodulation; Eisenresorptions-Enhancer.","halfLife":"10–20 Tage (Körperspeicher)","commonDosage":"100–1.000 mg/Tag; Therapeutisch bis 2.000 mg; Tolerable Upper Limit: 2.000 mg/Tag","evidenceGrade":"A","adverseEvents":[{"name":"GI-Beschwerden (>1 g)","frequencyPercent":10.0},{"name":"Oxalatsteine (Risikogruppen)","frequencyPercent":null}],"interactions":[]},
+  {"id":"vitamin_d3","name":"Vitamin D3 (Cholecalciferol)","type":"supplement","category":"Vitamine","mechanism":"Fettlösliches Prohormon; aktiviert zu Calcitriol → Calciumresorption, Immunregulation, Knochengesundheit.","halfLife":"25-Hydroxy-D3: 15 Tage","commonDosage":"1.000–4.000 IE/Tag (Erhaltung); bis 10.000 IE/Tag therapeutisch (Arztüberwachung)","evidenceGrade":"A","adverseEvents":[{"name":"Hyperkalziämie (Überdosierung)","frequencyPercent":null}],"interactions":[{"withId":"calcium","withName":"Calcium","severity":"minor","description":"Synergistisch: Vitamin D fördert Calciumresorption."}]},
+  {"id":"vitamin_b12","name":"Vitamin B12 (Cobalamin)","type":"supplement","category":"Vitamine","mechanism":"Coenzym für Methioninsynthase (Methylierung) und Methylmalonyl-CoA-Mutase; Nervenfunktion, Blutbildung.","halfLife":"Körperspeicher: Monate–Jahre","commonDosage":"250–1.000 µg/Tag oral (Mangel: 1.000 µg/Tag); Sublingual/i.m. für Malabsorption","evidenceGrade":"A","adverseEvents":[],"interactions":[{"withId":"metformin","withName":"Metformin","severity":"moderate","description":"Metformin kann B12-Resorption reduzieren → Supplementierung empfohlen."}]},
+  {"id":"vitamin_b9","name":"Folsäure (Vitamin B9)","type":"supplement","category":"Vitamine","mechanism":"Coenzym in der Ein-Kohlenstoff-Übertragung; DNA-Synthese, Zellteilung, Homocystein-Reduktion.","halfLife":"Körperspeicher: 3–6 Monate","commonDosage":"400–800 µg/Tag (Schwangerschaft: 800 µg); therapeutisch: 1–5 mg/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Maskiert B12-Mangel (hoch dosiert)","frequencyPercent":null}],"interactions":[]},
+  {"id":"vitamin_b6","name":"Vitamin B6 (Pyridoxin)","type":"supplement","category":"Vitamine","mechanism":"Coenzym für >100 Enzymreaktionen; Neurotransmittersynthese (Serotonin, Dopamin), Aminosäuremetabolismus.","halfLife":"15–20 Tage","commonDosage":"1,3–2 mg/Tag; therapeutisch 10–50 mg/Tag; UL: 25–100 mg/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Periphere Neuropathie (>200 mg/Tag langfristig)","frequencyPercent":null}],"interactions":[]},
+  {"id":"vitamin_b1","name":"Vitamin B1 (Thiamin)","type":"supplement","category":"Vitamine","mechanism":"Coenzym im Kohlenhydratstoffwechsel (Pyruvat-Dehydrogenase); Nerven- und Herzfunktion.","commonDosage":"1,1–1,4 mg/Tag; therapeutisch 50–100 mg/Tag (Defizit)","evidenceGrade":"A","adverseEvents":[],"interactions":[]},
+  {"id":"vitamin_b2","name":"Vitamin B2 (Riboflavin)","type":"supplement","category":"Vitamine","mechanism":"FAD/FMN-Komponente; Energiestoffwechsel, Antioxidation (Glutathionreduktase).","commonDosage":"1,1–1,6 mg/Tag; therapeutisch bis 400 mg/Tag (Migräneprophylaxe)","evidenceGrade":"B","adverseEvents":[{"name":"Gelb-orange Verfärbung Urin (harmlos)","frequencyPercent":100.0}],"interactions":[]},
+  {"id":"vitamin_b3","name":"Vitamin B3 (Niacin / Nicotinamid)","type":"supplement","category":"Vitamine","mechanism":"NAD+/NADP+-Vorstufe; Energiestoffwechsel, DNA-Reparatur. Niacin: LDL ↓, HDL ↑ (hoch dosiert).","commonDosage":"14–18 mg/Tag (NE); therapeutisch bis 2.000 mg/Tag; UL: 35 mg/Tag (Niacin, Flush)","evidenceGrade":"A","adverseEvents":[{"name":"Flush (Niacin >50 mg)","frequencyPercent":80.0},{"name":"Lebertoxizität (Langzeit hoch dosiert)","frequencyPercent":null}],"interactions":[]},
+  {"id":"vitamin_b5","name":"Vitamin B5 (Pantothensäure)","type":"supplement","category":"Vitamine","mechanism":"Coenzym-A-Vorstufe; Fettsäuresynthese, Steroidhormonsynthese, Wundheilung.","commonDosage":"5–10 mg/Tag; bis 1.000 mg/Tag (Acne, keine gesicherte Evidenz)","evidenceGrade":"C","adverseEvents":[],"interactions":[]},
+  {"id":"biotin","name":"Biotin (Vitamin B7)","type":"supplement","category":"Vitamine","mechanism":"Coenzym für Carboxylasen; Fettsäure- und Glucosesynthese; Haar/Nagel/Haut-Gesundheit (Evidenz begrenzt).","commonDosage":"30–60 µg/Tag; populär: 1.000–10.000 µg/Tag (Haar/Nagel)","evidenceGrade":"C","adverseEvents":[{"name":"Verfälschung von Labortests (hoch dosiert)","frequencyPercent":null}],"interactions":[]},
+  {"id":"vitamin_a","name":"Vitamin A (Retinol)","type":"supplement","category":"Vitamine","mechanism":"Fettlöslich; Sehzyklus (Rhodopsin), Zelldifferenzierung, Immunfunktion. Teratogen in hohen Dosen.","halfLife":"Körperspeicher: Monate","commonDosage":"700–900 µg RAE/Tag; UL: 3.000 µg RAE/Tag (Retinol)","evidenceGrade":"A","adverseEvents":[{"name":"Teratogenität (>10.000 IE/Tag)","frequencyPercent":null},{"name":"Leberprobleme (chronisch hoch)","frequencyPercent":null}],"interactions":[]},
+  {"id":"vitamin_e","name":"Vitamin E (Tocopherol)","type":"supplement","category":"Vitamine","mechanism":"Fettlösliches Antioxidans; schützt Zellmembranen vor Lipidperoxidation.","halfLife":"Körperspeicher: 20–60 Tage","commonDosage":"12–15 mg/Tag; therapeutisch bis 400 mg/Tag; UL: 300 mg/Tag","evidenceGrade":"B","adverseEvents":[{"name":"Blutungsrisiko (>1.000 mg/Tag)","frequencyPercent":null}],"interactions":[]},
+  {"id":"vitamin_k2","name":"Vitamin K2 (Menaquinon, MK-7)","type":"supplement","category":"Vitamine","mechanism":"Cofaktor für Gamma-Carboxylierung von Osteocalcin und Matrix-Gla-Protein → Knochenmineralisierung, vaskuläre Gesundheit.","halfLife":"MK-7: 72 h (ideal für tägliche Dosierung)","commonDosage":"75–180 µg/Tag MK-7","evidenceGrade":"B","adverseEvents":[],"interactions":[{"withId":"warfarin","withName":"Warfarin","severity":"major","description":"Vitamin K2 antagonisiert Warfarin-Wirkung → INR-Kontrolle."}]},
+  {"id":"magnesium_citrat","name":"Magnesium (Citrat)","type":"supplement","category":"Mineralien","mechanism":"Cofaktor für >300 Enzyme; ATP-Synthese, Muskelfunktion, Nervenerregung, Schlafqualität.","commonDosage":"200–400 mg elementares Mg/Tag (abends); Citrat: bessere Bioverfügbarkeit als Oxid","evidenceGrade":"A","adverseEvents":[{"name":"Diarrhö (>400 mg)","frequencyPercent":10.0}],"interactions":[]},
+  {"id":"calcium","name":"Calcium (Citrat/Carbonat)","type":"supplement","category":"Mineralien","mechanism":"Knochenstruktur (Hydroxylapatit), Muskelkontraktion, Nervenleitung, Blutgerinnung.","commonDosage":"500–1.200 mg/Tag; besser aufgeteilt in 2 Dosen; Citrat: besser auf nüchternen Magen","evidenceGrade":"A","adverseEvents":[{"name":"Nierensteine (hoch dosiert)","frequencyPercent":null},{"name":"Obstipation","frequencyPercent":5.0}],"interactions":[{"withId":"levothyroxin","withName":"Levothyroxin","severity":"moderate","description":"Calcium reduziert T4-Resorption → 4 h Abstand einhalten."}]},
+  {"id":"zink","name":"Zink","type":"supplement","category":"Mineralien","mechanism":"Cofaktor für >200 Enzyme; Immunfunktion, Wundheilung, Proteinsynthese, Hormonstoffwechsel (Testosteron).","commonDosage":"7–10 mg/Tag; therapeutisch 15–50 mg/Tag; UL: 25 mg/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Übelkeit (nüchtern)","frequencyPercent":15.0},{"name":"Kupfermangel (>50 mg/Tag)","frequencyPercent":null}],"interactions":[]},
+  {"id":"eisen","name":"Eisen (Eisensulfat / -fumarat)","type":"supplement","category":"Mineralien","mechanism":"Hämoglobin- und Myoglobin-Bestandteil; Elektronentransport (Cytochrome); Sauerstofftransport.","commonDosage":"Frauen: 18 mg/Tag; therapeutisch 100–200 mg elementares Fe/Tag (Anämie)","evidenceGrade":"A","adverseEvents":[{"name":"Obstipation","frequencyPercent":15.0},{"name":"Schwarzer Stuhl (harmlos)","frequencyPercent":60.0},{"name":"GI-Beschwerden","frequencyPercent":20.0}],"interactions":[{"withId":"vitamin_c","withName":"Vitamin C","severity":"minor","description":"Vitamin C erhöht Eisenresorption um bis zu 3-fach → gleichzeitige Einnahme empfohlen."}]},
+  {"id":"selen","name":"Selen","type":"supplement","category":"Mineralien","mechanism":"Selenocystein-Bestandteil von Glutathionperoxidase und Thioredoxinreduktase; Antioxidation, Schilddrüsenfunktion.","commonDosage":"55–200 µg/Tag; UL: 300–400 µg/Tag","evidenceGrade":"B","adverseEvents":[{"name":"Selenvergiftung (>400 µg/Tag chronisch): Haarausfall, Nagelbrüche","frequencyPercent":null}],"interactions":[]},
+  {"id":"jod","name":"Jod","type":"supplement","category":"Mineralien","mechanism":"Essenzieller Bestandteil von Schilddrüsenhormonen T3 und T4; Synthese in Schilddrüse.","commonDosage":"150–200 µg/Tag; Schwangerschaft: 250 µg/Tag; UL: 600 µg/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Hyperthyreose (Vorbestehende Struma)","frequencyPercent":null}],"interactions":[]},
+  {"id":"omega3","name":"Omega-3-Fettsäuren (EPA/DHA)","type":"supplement","category":"Omega-3 / Fettsäuren","mechanism":"EPA/DHA hemmen Arachidonsäure-Kaskade → antiinflammatorisch; DHA: Hirnstruktur, Membranfunktion; Triglyzerid-Senkung.","commonDosage":"1–3 g EPA+DHA/Tag (Fischöl/Krillöl); kardiovaskulär: 2–4 g/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Fischiger Nachgeschmack","frequencyPercent":20.0},{"name":"Geringe Blutungszeit-Verlängerung (hoch dosiert)","frequencyPercent":null}],"interactions":[]},
+  {"id":"kreatin","name":"Kreatin (Monohydrat)","type":"supplement","category":"Aminosäuren / Pre-Workout","mechanism":"Phosphokreatin-Resynthese in Muskel → schnellere ATP-Regeneration; Kraft/Muskelmasse; neuroprotektiv.","commonDosage":"3–5 g/Tag (kein Loading notwendig); Loading: 20 g/Tag × 5 Tage, dann 3–5 g/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Wassereinlagerung (1–2 kg)","frequencyPercent":30.0},{"name":"GI-Beschwerden (Loading)","frequencyPercent":5.0}],"interactions":[]},
+  {"id":"beta_alanin","name":"Beta-Alanin","type":"supplement","category":"Aminosäuren / Pre-Workout","mechanism":"Carnosin-Vorstufe; Carnosin puffert Muskel-pH bei Laktatanstieg → Ausdauer, Kraftausdauer.","commonDosage":"3,2–6,4 g/Tag (aufgeteilt in 800 mg-Dosen zur Reduktion des Kribbelns)","evidenceGrade":"A","adverseEvents":[{"name":"Kribbeln/Parästhesie (Flush-Effekt, harmlos)","frequencyPercent":70.0}],"interactions":[]},
+  {"id":"l_carnitin","name":"L-Carnitin","type":"supplement","category":"Aminosäuren / Pre-Workout","mechanism":"Transportiert langkettige Fettsäuren in Mitochondrien → Fettoxidation; Evidenz für Fettverbrennung begrenzt.","commonDosage":"1.000–3.000 mg/Tag; L-Carnitin-L-Tartrat: beste Bioverfügbarkeit","evidenceGrade":"B","adverseEvents":[{"name":"Fischartige Körpergeruch (hoch dosiert, TMAO-Bildung)","frequencyPercent":5.0}],"interactions":[]},
+  {"id":"l_glutamin","name":"L-Glutamin","type":"supplement","category":"Aminosäuren","mechanism":"Häufigste Aminosäure im Plasma; Darmbarriere-Integrität, Immunzell-Substrat, Muskelglykogen-Repletion nach Belastung.","commonDosage":"5–10 g/Tag (post-workout oder morgens)","evidenceGrade":"B","adverseEvents":[],"interactions":[]},
+  {"id":"l_arginin","name":"L-Arginin","type":"supplement","category":"Aminosäuren","mechanism":"NO-Vorstufe (Stickstoffmonoxid) → Vasodilatation; Wachstumshormon-Sekretion; Wundheilung.","commonDosage":"3–6 g/Tag; pre-workout: 3–4 g (30 min vorher)","evidenceGrade":"B","adverseEvents":[{"name":"GI-Beschwerden (>10 g)","frequencyPercent":10.0}],"interactions":[]},
+  {"id":"l_citrullin","name":"L-Citrullin (Malat)","type":"supplement","category":"Aminosäuren / Pre-Workout","mechanism":"Überlegener L-Arginin-Vorstufe für NO-Synthese; Malat-Form: Energiestoffwechsel-Cofaktor.","commonDosage":"6–8 g L-Citrullin-Malat vor Training","evidenceGrade":"A","adverseEvents":[{"name":"Magenbeschwerden (hoch)","frequencyPercent":5.0}],"interactions":[]},
+  {"id":"l_tryptophan","name":"L-Tryptophan","type":"supplement","category":"Aminosäuren","mechanism":"Serotonin- und Melatonin-Vorstufe; Schlafqualität, Stimmung.","commonDosage":"500–2.000 mg/Tag (abends, nüchtern)","evidenceGrade":"B","adverseEvents":[{"name":"Übelkeit","frequencyPercent":5.0}],"interactions":[{"withId":"sertralin","withName":"Sertralin/SSRIs","severity":"moderate","description":"Erhöhtes Serotoninsyndrom-Risiko bei Kombination mit SSRIs."}]},
+  {"id":"5htp","name":"5-HTP (5-Hydroxytryptophan)","type":"supplement","category":"Aminosäuren","mechanism":"Direkter Serotonin-Vorläufer; überquert Blut-Hirn-Schranke besser als L-Tryptophan.","commonDosage":"50–300 mg/Tag (abends); immer mit EGCG/Carbidopa bei Langzeitanwendung","evidenceGrade":"B","adverseEvents":[{"name":"Übelkeit","frequencyPercent":10.0},{"name":"Durchfall","frequencyPercent":5.0}],"interactions":[{"withId":"sertralin","withName":"SSRIs","severity":"major","description":"Serotoninsyndrom-Risiko: Kombination vermeiden."}]},
+  {"id":"l_theanin","name":"L-Theanin","type":"supplement","category":"Aminosäuren","mechanism":"Glutamatrezeptor-Modulator; erhöht Alpha-Wellen im EEG → entspannte Aufmerksamkeit; Koffein-Synergist.","commonDosage":"100–400 mg/Tag; mit Koffein: 1:2-Ratio (z.B. 100 mg L-Theanin + 50 mg Koffein)","evidenceGrade":"B","adverseEvents":[],"interactions":[]},
+  {"id":"nac","name":"NAC (N-Acetylcystein)","type":"supplement","category":"Antioxidantien","mechanism":"Glutathion-Vorstufe; Mukolytikum; Antioxidans; Entgiftung (Paracetamol-Antidot in hoher Dosis).","commonDosage":"600–1.800 mg/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Übelkeit","frequencyPercent":8.0},{"name":"GI-Beschwerden","frequencyPercent":5.0}],"interactions":[]},
+  {"id":"coq10","name":"Coenzym Q10 (Ubiquinol/Ubiquinon)","type":"supplement","category":"Antioxidantien","mechanism":"Mitochondriale Elektronentransportkette (Komplex I-III); Antioxidans; bei Statintherapie oft erniedrigt.","commonDosage":"100–300 mg/Tag; Ubiquinol: bessere Bioverfügbarkeit","evidenceGrade":"B","adverseEvents":[{"name":"GI-Beschwerden (selten)","frequencyPercent":3.0}],"interactions":[]},
+  {"id":"alpha_liponsäure","name":"Alpha-Liponsäure (ALA)","type":"supplement","category":"Antioxidantien","mechanism":"Universales Antioxidans (fett- und wasserlöslich); Regeneriert Vitamin C/E; mitochondriale Energie; diabetische Neuropathie.","commonDosage":"300–600 mg/Tag (nüchtern); R-ALA: biologisch aktiver","evidenceGrade":"A","adverseEvents":[{"name":"Hypoglykämie (Diabetiker)","frequencyPercent":null},{"name":"Übelkeit","frequencyPercent":5.0}],"interactions":[]},
+  {"id":"resveratrol","name":"Resveratrol","type":"supplement","category":"Antioxidantien","mechanism":"Polyphenol (Rotwein, Trauben); Sirtuin-Aktivator (SIRT1); AMPK-Aktivierung; antiinflammatorisch; Bioverfügbarkeit gering.","commonDosage":"150–500 mg/Tag (mit Piperin für bessere Absorption)","evidenceGrade":"B","adverseEvents":[{"name":"GI-Beschwerden (hoch dosiert)","frequencyPercent":5.0}],"interactions":[]},
+  {"id":"curcumin","name":"Curcumin (Kurkuma-Extrakt)","type":"supplement","category":"Antioxidantien","mechanism":"NF-κB-Inhibitor; antiinflammatorisch, antioxidativ; Bioverfügbarkeit sehr gering (mit Piperin 20× besser).","commonDosage":"500–2.000 mg/Tag Curcuminextrakt (95%); immer mit Piperin oder liposomal","evidenceGrade":"B","adverseEvents":[{"name":"GI-Beschwerden (hoch)","frequencyPercent":8.0}],"interactions":[{"withId":"warfarin","withName":"Warfarin","severity":"moderate","description":"Kann antikoagulante Wirkung verstärken."}]},
+  {"id":"quercetin","name":"Quercetin","type":"supplement","category":"Antioxidantien","mechanism":"Flavonoid; antihistaminisch, antiinflammatorisch, SIRT2-Aktivator; Zincionophor (erhöht zelluläres Zink mit Zink zusammen).","commonDosage":"500–1.000 mg/Tag","evidenceGrade":"B","adverseEvents":[],"interactions":[]},
+  {"id":"ashwagandha","name":"Ashwagandha (Withania somnifera)","type":"supplement","category":"Adaptogene","mechanism":"Withanolide modulieren HPA-Achse; Cortisol ↓; Testosteron ↑; anxiolytisch, neuroprotektiv, KSM-66-Extrakt am besten belegt.","commonDosage":"300–600 mg KSM-66-Extrakt 2×/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Sedierung (selten)","frequencyPercent":3.0},{"name":"GI-Beschwerden","frequencyPercent":5.0}],"interactions":[{"withId":"prednisolon","withName":"Immunsuppressiva","severity":"minor","description":"Additive Immunmodulation möglich."}]},
+  {"id":"rhodiola","name":"Rhodiola Rosea","type":"supplement","category":"Adaptogene","mechanism":"Rosavine und Salidroside; adaptogene Stresstoleranz; Fatigue-Reduktion; kognitive Leistung.","commonDosage":"200–400 mg/Tag standardisierter Extrakt (3% Rosavine, 1% Salidroside)","evidenceGrade":"B","adverseEvents":[{"name":"Schlafstörungen (bei Abendeinnahme)","frequencyPercent":5.0}],"interactions":[]},
+  {"id":"ginseng","name":"Ginseng (Panax ginseng)","type":"supplement","category":"Adaptogene","mechanism":"Ginsenoside modulieren Neurotransmitter, HPA-Achse, Immunsystem; adaptogen, kognitiv-leistungsfördernd.","commonDosage":"200–400 mg standardisierter Extrakt (4–7% Ginsenoside) 1–2×/Tag","evidenceGrade":"B","adverseEvents":[{"name":"Schlaflosigkeit","frequencyPercent":5.0},{"name":"Hypertonie (hoch dosiert)","frequencyPercent":3.0}],"interactions":[{"withId":"warfarin","withName":"Warfarin","severity":"moderate","description":"Kann antikoagulante Wirkung verstärken/abschwächen."}]},
+  {"id":"maca","name":"Maca (Lepidium meyenii)","type":"supplement","category":"Adaptogene","mechanism":"Glucosinolate und Macamide; adaptogen; Libido ↑, Fertilität; keine direkten Hormonspiegel-Änderungen nachgewiesen.","commonDosage":"1.500–3.000 mg Pulver/Tag oder 500–1.000 mg Extrakt","evidenceGrade":"C","adverseEvents":[],"interactions":[]},
+  {"id":"lions_mane","name":"Lion's Mane (Hericium erinaceus)","type":"supplement","category":"Adaptogene","mechanism":"Hericenone und Erinacine stimulieren NGF (Nerve Growth Factor) → Neuroplastizität, Myelinisierung.","commonDosage":"500–3.000 mg Trockenextrakt/Tag","evidenceGrade":"B","adverseEvents":[],"interactions":[]},
+  {"id":"melatonin_supp","name":"Melatonin (OTC ≤0,5 mg)","type":"supplement","category":"Schlaf / Erholung","mechanism":"Endogenes Schlafhormon; MT1/MT2-Agonist; circadiane Rhythmisierung; antioxidativ.","commonDosage":"0,5–1 mg oral 30–60 min vor Schlaf (niedrige Dosen oft effektiver)","evidenceGrade":"A","adverseEvents":[{"name":"Schläfrigkeit am nächsten Morgen","frequencyPercent":5.0}],"interactions":[]},
+  {"id":"glycin","name":"Glycin","type":"supplement","category":"Aminosäuren","mechanism":"Inhibitorischer Neurotransmitter (Glycinrezeptor); Glutathion-Vorstufe; Schlafqualität ↑; Kollagenbestandteil.","commonDosage":"3–5 g/Tag (30 min vor Schlaf für Schlafqualität)","evidenceGrade":"B","adverseEvents":[],"interactions":[]},
+  {"id":"kollagen","name":"Kollagen (hydrolysiert)","type":"supplement","category":"Knochen / Gelenke","mechanism":"Tri-Peptide stimulieren Kollagen-Typ-II-Synthese in Gelenkknorpel; Haut-Elastizität; Peptide reichen Gelenke.","commonDosage":"5–15 g/Tag hydrolysiertes Kollagen (Typ I/II/III)","evidenceGrade":"B","adverseEvents":[],"interactions":[]},
+  {"id":"glucosamin","name":"Glucosamin","type":"supplement","category":"Knochen / Gelenke","mechanism":"Glykoprotein-Baustein in Gelenkknorpel; antiinflammatorisch, chondroprotektiv (Evidenz moderat).","commonDosage":"1.500 mg/Tag Glucosaminsulfat","evidenceGrade":"B","adverseEvents":[{"name":"GI-Beschwerden","frequencyPercent":5.0}],"interactions":[{"withId":"warfarin","withName":"Warfarin","severity":"moderate","description":"Kann INR erhöhen."}]},
+  {"id":"msm","name":"MSM (Methylsulfonylmethan)","type":"supplement","category":"Knochen / Gelenke","mechanism":"Schwefelspender für Kollagen/Glutathion; antiinflammatorisch (Gelenkschmerz, Sport-Recovery).","commonDosage":"1.000–3.000 mg/Tag","evidenceGrade":"C","adverseEvents":[],"interactions":[]},
+  {"id":"probiotika","name":"Probiotika (Lactobacillus/Bifidobacterium)","type":"supplement","category":"Darmgesundheit","mechanism":"Kolonisationsresistenz gegen Pathogene; Immunmodulation; Schleimhautbarriere-Stärkung; Mikrobiom-Diversität.","commonDosage":"≥5 Mrd. KBE/Tag; diverse Stämme bevorzugen (L. acidophilus, B. longum, L. rhamnosus GG)","evidenceGrade":"A","adverseEvents":[{"name":"Blähungen (Anlaufphase)","frequencyPercent":10.0}],"interactions":[]},
+  {"id":"flohsamenschalen","name":"Flohsamenschalen (Psyllium)","type":"supplement","category":"Darmgesundheit","mechanism":"Lösliche Ballaststoffe (Mucilage); Stuhlvolumen ↑, Cholesterin ↓, postprandiale Glukose ↓.","commonDosage":"5–10 g/Tag in 250 ml Wasser (viel trinken!)","evidenceGrade":"A","adverseEvents":[{"name":"Blähungen","frequencyPercent":10.0},{"name":"Erstickungsgefahr bei zu wenig Wasser","frequencyPercent":null}],"interactions":[]},
+  {"id":"ingwer","name":"Ingwer (Zingiber officinale)","type":"supplement","category":"Pflanzenextrakte","mechanism":"Gingerole hemmen COX/LOX-Enzyme; antiemetisch (Chemotherapie, Reisekrankheit); antiinflammatorisch.","commonDosage":"250–1.000 mg standardisierter Extrakt/Tag; frisch: 2–4 g/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Sodbrennen","frequencyPercent":5.0}],"interactions":[{"withId":"warfarin","withName":"Warfarin","severity":"minor","description":"Leichte Blutungszeitverlängerung möglich."}]},
+  {"id":"kurkuma","name":"Kurkuma (Curcuma longa, Pulver)","type":"supplement","category":"Pflanzenextrakte","mechanism":"Curcuminoide (3–5% in Kurkumapulver); antiinflammatorisch, antioxidativ. Viel weniger wirksam als Curcumin-Extrakt.","commonDosage":"1–3 g Kurkumapulver/Tag (mit schwarzem Pfeffer)","evidenceGrade":"C","adverseEvents":[],"interactions":[]},
+  {"id":"johanniskraut","name":"Johanniskraut (Hypericum perforatum)","type":"supplement","category":"Pflanzenextrakte","mechanism":"Hypericin/Hyperforin: Serotonin/Dopamin/Noradrenalin-Rückaufnahmehemmung + MAO-Hemmung. Bei leichter bis mittlerer Depression wirksam.","commonDosage":"300 mg standardisierter Extrakt (0,3% Hypericin) 3×/Tag","evidenceGrade":"A","adverseEvents":[{"name":"Photosensibilisierung","frequencyPercent":5.0}],"interactions":[{"withId":"sertralin","withName":"SSRIs","severity":"major","description":"Serotoninsyndrom-Risiko."},{"withId":"warfarin","withName":"Warfarin","severity":"major","description":"CYP3A4-Induktion → stark reduzierte Warfarin-Wirkung."}]},
+  {"id":"baldrian","name":"Baldrian (Valeriana officinalis)","type":"supplement","category":"Pflanzenextrakte","mechanism":"GABA-erge Wirkung (Valerensäure); sedierende Anxiolyse; Schlaflatenz ↓.","commonDosage":"300–600 mg Extrakt 30–60 min vor Schlaf","evidenceGrade":"B","adverseEvents":[{"name":"Tagesmüdigkeit","frequencyPercent":5.0}],"interactions":[]},
+  {"id":"mariendistel","name":"Mariendistel (Silymarin)","type":"supplement","category":"Pflanzenextrakte","mechanism":"Silymarin (Silybin): Membranstabilisierung der Hepatozyten; antioxidativ; leberschützend (Alkohol, Toxine).","commonDosage":"140–420 mg Silymarin/Tag","evidenceGrade":"B","adverseEvents":[],"interactions":[]},
+  {"id":"echinacea","name":"Echinacea (Purpursonnenhut)","type":"supplement","category":"Pflanzenextrakte","mechanism":"Polysaccharide und Alkamide stimulieren unspezifische Immunantwort (NK-Zellen, Makrophagen); Erkältungsprävention.","commonDosage":"300–500 mg Extrakt 2–3×/Tag bei akuten Infekten","evidenceGrade":"B","adverseEvents":[{"name":"Allergische Reaktion (Korbblütler-Allergie)","frequencyPercent":2.0}],"interactions":[]},
+  {"id":"ginkgo","name":"Ginkgo biloba","type":"supplement","category":"Pflanzenextrakte","mechanism":"Flavonoide/Terpenoide verbessern zerebralen Blutfluss; Thrombozytenaggregationshemmung; neuroprotektiv.","commonDosage":"120–240 mg standardisierter Extrakt (24% Flavonolglykoside, 6% Terpenoide)/Tag","evidenceGrade":"B","adverseEvents":[{"name":"Kopfschmerzen","frequencyPercent":3.0},{"name":"GI-Beschwerden","frequencyPercent":3.0}],"interactions":[{"withId":"warfarin","withName":"Warfarin","severity":"moderate","description":"Blutungszeit-Verlängerung möglich."}]},
+  {"id":"spirulina","name":"Spirulina","type":"supplement","category":"Superfoods","mechanism":"Cyanobakterium; Phycocyanin (Antioxidans); vollständiges Aminosäureprofil; Eisen, B-Vitamine, Chlorophyll.","commonDosage":"3–10 g/Tag (Pulver oder Tabletten)","evidenceGrade":"B","adverseEvents":[{"name":"GI-Beschwerden","frequencyPercent":5.0},{"name":"Schwermetallkontamination (Qualitätsprodukt wählen)","frequencyPercent":null}],"interactions":[]},
+  {"id":"chlorella","name":"Chlorella","type":"supplement","category":"Superfoods","mechanism":"Grünalge; Chlorophyll (Entgiftung); CGF (Chlorella Growth Factor); Schwermetall-Chelation (begrenzte Evidenz).","commonDosage":"3–10 g/Tag","evidenceGrade":"C","adverseEvents":[{"name":"Blähungen (Anlaufphase)","frequencyPercent":15.0},{"name":"Allergische Reaktion","frequencyPercent":2.0}],"interactions":[]},
+  {"id":"phosphatidylserin","name":"Phosphatidylserin","type":"supplement","category":"Nootropika","mechanism":"Phospholipid in neuronalen Membranen; Cortisol ↓ bei sportlichem Stress; kognitive Funktion (Altersprozesse).","commonDosage":"100–400 mg/Tag (mit Mahlzeit)","evidenceGrade":"B","adverseEvents":[],"interactions":[]},
+  {"id":"alpha_gpc","name":"Alpha-GPC (L-Alpha-Glycerylphosphorylcholin)","type":"supplement","category":"Nootropika","mechanism":"Cholinergiker; erhöht Acetylcholin-Synthese im ZNS; kognitive Funktion, Wachstumshormon-Sekretion.","commonDosage":"300–600 mg/Tag","evidenceGrade":"B","adverseEvents":[{"name":"Kopfschmerzen (selten)","frequencyPercent":3.0}],"interactions":[]},
+  {"id":"bcaa","name":"BCAA (Leucin, Isoleucin, Valin)","type":"supplement","category":"Aminosäuren / Pre-Workout","mechanism":"Verzweigtkettige Aminosäuren; Leucin aktiviert mTOR → Muskelproteinsynthese; anti-katabolisch; Fatigue-Reduktion.","commonDosage":"5–10 g (2:1:1 Ratio Leucin:Isoleucin:Valin) per-/intra-workout; bei ausreichender Proteinzufuhr wenig Zusatznutzen","evidenceGrade":"B","adverseEvents":[],"interactions":[]},
+  {"id":"vitamin_d3_k2","name":"Vitamin D3 + K2 Kombination","type":"supplement","category":"Vitamine","mechanism":"Synergistisch: D3 erhöht Calciumresorption; K2 lenkt Calcium in Knochen (Osteocalcin) statt Gefäße (Matrix-Gla-Protein).","commonDosage":"2.000–5.000 IE D3 + 75–200 µg K2 (MK-7) täglich","evidenceGrade":"A","adverseEvents":[],"interactions":[{"withId":"warfarin","withName":"Warfarin","severity":"major","description":"K2 antagonisiert Warfarin — INR-Monitoring nötig."}]},
+  {"id":"zink_magnesium_b6","name":"ZMA (Zink, Magnesium, B6)","type":"supplement","category":"Mineralien","mechanism":"Kombination optimiert Testosteron-Synthese, Schlaf (Magnesium), Enzymfunktionen (B6). Evidenz für Sportler moderat.","commonDosage":"30 mg Zink + 450 mg Magnesium + 10,5 mg B6 (abends, nüchtern)","evidenceGrade":"C","adverseEvents":[{"name":"Übelkeit (nüchterne Einnahme Zink)","frequencyPercent":10.0}],"interactions":[]},
+  {"id":"hyaluronsäure","name":"Hyaluronsäure","type":"supplement","category":"Haut / Gelenke","mechanism":"Glykosaminoglykan; Gelenkschmierung (Synovialflüssigkeit); Haut-Hydratation. Oral: niedermolekular besser resorbiert.","commonDosage":"80–200 mg/Tag oral (niedermolekular <300 kDa)","evidenceGrade":"B","adverseEvents":[],"interactions":[]},
+  {"id":"astaxanthin","name":"Astaxanthin","type":"supplement","category":"Antioxidantien","mechanism":"Carotenoidertes Karotinoid aus Haematococcus pluvialis; stärkstes bekanntes natürliches Antioxidans (singlet oxygen quenching); UVB-Schutz.","commonDosage":"4–12 mg/Tag (mit fettreicher Mahlzeit)","evidenceGrade":"B","adverseEvents":[{"name":"Orangefärbung Stuhl/Haut (harmlos)","frequencyPercent":5.0}],"interactions":[]}
 ]
