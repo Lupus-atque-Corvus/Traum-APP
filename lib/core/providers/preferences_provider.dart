@@ -141,6 +141,70 @@ class PeriodTrackingNotifier extends Notifier<bool> {
 final isPeriodTrackingEnabledProvider =
     NotifierProvider<PeriodTrackingNotifier, bool>(PeriodTrackingNotifier.new);
 
+// App-Launcher (experimentell)
+class AppLauncherEnabledNotifier extends Notifier<bool> {
+  @override
+  bool build() => ref.watch(preferencesRepositoryProvider).appLauncherEnabled;
+
+  Future<void> set(bool value) async {
+    await ref.read(preferencesRepositoryProvider).setAppLauncherEnabled(value);
+    state = value;
+  }
+}
+
+final appLauncherEnabledProvider =
+    NotifierProvider<AppLauncherEnabledNotifier, bool>(
+        AppLauncherEnabledNotifier.new);
+
+class AppLauncherFavoritesNotifier extends Notifier<List<String>> {
+  @override
+  List<String> build() {
+    final repo = ref.watch(preferencesRepositoryProvider);
+    try {
+      final list = jsonDecode(repo.appLauncherFavorites) as List<dynamic>;
+      return list.cast<String>();
+    } catch (_) {
+      return <String>[];
+    }
+  }
+
+  Future<void> _save(List<String> list) async {
+    await ref
+        .read(preferencesRepositoryProvider)
+        .setAppLauncherFavorites(jsonEncode(list));
+    state = list;
+  }
+
+  Future<void> add(String packageName) async {
+    if (state.contains(packageName)) return;
+    await _save([...state, packageName]);
+  }
+
+  Future<void> remove(String packageName) async {
+    await _save(state.where((p) => p != packageName).toList());
+  }
+
+  Future<void> toggle(String packageName) async {
+    if (state.contains(packageName)) {
+      await remove(packageName);
+    } else {
+      await add(packageName);
+    }
+  }
+
+  Future<void> reorder(int oldIndex, int newIndex) async {
+    final list = List<String>.from(state);
+    if (newIndex > oldIndex) newIndex--;
+    final item = list.removeAt(oldIndex);
+    list.insert(newIndex, item);
+    await _save(list);
+  }
+}
+
+final appLauncherFavoritesProvider =
+    NotifierProvider<AppLauncherFavoritesNotifier, List<String>>(
+        AppLauncherFavoritesNotifier.new);
+
 // Simple derived providers
 final userNameProvider = Provider<String>((ref) {
   return ref.watch(preferencesRepositoryProvider).userName;

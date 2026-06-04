@@ -3021,4 +3021,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String notes_link_count(int count) {
     return '$count notes';
   }
+
+  @override
+  String get experimentalSection => 'Experimental';
+
+  @override
+  String get appLauncher => 'App Launcher';
+
+  @override
+  String get appLauncherSubtitle =>
+      'Launch favorite apps as tiles in the More menu';
+
+  @override
+  String get experimentalBadge => 'EXPERIMENTAL';
+
+  @override
+  String get appsSectionTitle => 'Apps';
+
+  @override
+  String get addApp => 'Add';
+
+  @override
+  String get selectApps => 'Select apps';
+
+  @override
+  String get searchApps => 'Search apps…';
+
+  @override
+  String get noAppsInstalled => 'No apps found';
+
+  @override
+  String get appNotFound => 'App not found';
+
+  @override
+  String get removeFromLauncher => 'Remove from launcher';
 }

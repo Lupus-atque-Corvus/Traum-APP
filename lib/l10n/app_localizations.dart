@@ -5863,6 +5863,72 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'{count} Notizen'**
   String notes_link_count(int count);
+
+  /// No description provided for @experimentalSection.
+  ///
+  /// In de, this message translates to:
+  /// **'Experimentell'**
+  String get experimentalSection;
+
+  /// No description provided for @appLauncher.
+  ///
+  /// In de, this message translates to:
+  /// **'App-Launcher'**
+  String get appLauncher;
+
+  /// No description provided for @appLauncherSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Lieblings-Apps als Kacheln im Mehr-Menü starten'**
+  String get appLauncherSubtitle;
+
+  /// No description provided for @experimentalBadge.
+  ///
+  /// In de, this message translates to:
+  /// **'EXPERIMENTELL'**
+  String get experimentalBadge;
+
+  /// No description provided for @appsSectionTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Apps'**
+  String get appsSectionTitle;
+
+  /// No description provided for @addApp.
+  ///
+  /// In de, this message translates to:
+  /// **'Hinzufügen'**
+  String get addApp;
+
+  /// No description provided for @selectApps.
+  ///
+  /// In de, this message translates to:
+  /// **'Apps auswählen'**
+  String get selectApps;
+
+  /// No description provided for @searchApps.
+  ///
+  /// In de, this message translates to:
+  /// **'Apps suchen…'**
+  String get searchApps;
+
+  /// No description provided for @noAppsInstalled.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Apps gefunden'**
+  String get noAppsInstalled;
+
+  /// No description provided for @appNotFound.
+  ///
+  /// In de, this message translates to:
+  /// **'App nicht gefunden'**
+  String get appNotFound;
+
+  /// No description provided for @removeFromLauncher.
+  ///
+  /// In de, this message translates to:
+  /// **'Aus Launcher entfernen'**
+  String get removeFromLauncher;
 }
 
 class _AppLocalizationsDelegate

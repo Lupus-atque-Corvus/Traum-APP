@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,6 +53,7 @@ class SettingsScreen extends ConsumerWidget {
           _CurrencySection(),
           _PeriodSection(),
           _SecuritySection(),
+          if (Platform.isAndroid) _ExperimentalSection(),
           _LegalSection(),
           _SupportSection(),
           _AccountSection(),
@@ -742,6 +745,58 @@ class _PeriodSection extends ConsumerWidget {
         value: enabled,
         activeThumbColor: TraumColors.periodRose,
         onChanged: (v) => ref.read(isPeriodTrackingEnabledProvider.notifier).set(v),
+      ),
+    );
+  }
+}
+
+// ─── Experimental ────────────────────────────────────────────────────────────
+
+class _ExperimentalSection extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final enabled = ref.watch(appLauncherEnabledProvider);
+    return _Section(
+      title: l10n.experimentalSection,
+      child: SwitchListTile(
+        title: Row(
+          children: [
+            Flexible(
+              child: Text(
+                l10n.appLauncher,
+                style: const TextStyle(
+                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: TraumColors.amberGold.withValues(alpha: 0.18),
+                borderRadius: BorderRadius.circular(TraumRadius.chip),
+              ),
+              child: Text(
+                l10n.experimentalBadge,
+                style: const TextStyle(
+                  color: TraumColors.amberGold,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 9,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+          ],
+        ),
+        subtitle: Text(l10n.appLauncherSubtitle,
+            style: const TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 12)),
+        value: enabled,
+        activeThumbColor: TraumColors.amberGold,
+        onChanged: (v) => ref.read(appLauncherEnabledProvider.notifier).set(v),
       ),
     );
   }

@@ -1258,5 +1258,16 @@
   "notes_link_count": "{count} Notizen",
   "@notes_link_count": {
     "placeholders": { "count": {"type": "int"} }
-  }
+  },
+  "experimentalSection": "Experimentell",
+  "appLauncher": "App-Launcher",
+  "appLauncherSubtitle": "Lieblings-Apps als Kacheln im Mehr-Menü starten",
+  "experimentalBadge": "EXPERIMENTELL",
+  "appsSectionTitle": "Apps",
+  "addApp": "Hinzufügen",
+  "selectApps": "Apps auswählen",
+  "searchApps": "Apps suchen…",
+  "noAppsInstalled": "Keine Apps gefunden",
+  "appNotFound": "App nicht gefunden",
+  "removeFromLauncher": "Aus Launcher entfernen"
 }

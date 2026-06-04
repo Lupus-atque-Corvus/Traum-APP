@@ -1,9 +1,13 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/app_launcher/app_picker_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../providers/preferences_provider.dart';
+import '../services/app_launcher_service.dart';
 import '../theme/colors.dart';
 import '../theme/radius.dart';
 import 'nav_customization_sheet.dart';
@@ -109,6 +113,8 @@ class _TraumScaffoldState extends ConsumerState<TraumScaffold> {
       ),
       builder: (ctx) => _MoreMenuSheet(
         moreModules: moreModules,
+        appLauncherEnabled:
+            Platform.isAndroid && ref.read(appLauncherEnabledProvider),
         onNavigate: (module) {
           Navigator.pop(ctx);
           _navigate(context, module);
@@ -370,11 +376,13 @@ class _MoreButton extends StatelessWidget {
 
 class _MoreMenuSheet extends StatelessWidget {
   final List<String> moreModules;
+  final bool appLauncherEnabled;
   final void Function(String) onNavigate;
   final VoidCallback onCustomize;
 
   const _MoreMenuSheet({
     required this.moreModules,
+    required this.appLauncherEnabled,
     required this.onNavigate,
     required this.onCustomize,
   });
@@ -466,25 +474,29 @@ class _MoreMenuSheet extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: moreModules.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Text(
-                        l10n.allModulesInNav,
-                        style: const TextStyle(
-                          color: TraumColors.onBackgroundSubtle,
-                          fontFamily: 'DMSans',
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.center,
+            child: ListView(
+              controller: controller,
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+              children: [
+                if (moreModules.isEmpty && !appLauncherEnabled)
+                  Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Text(
+                      l10n.allModulesInNav,
+                      style: const TextStyle(
+                        color: TraumColors.onBackgroundSubtle,
+                        fontFamily: 'DMSans',
+                        fontSize: 14,
                       ),
+                      textAlign: TextAlign.center,
                     ),
-                  )
-                : GridView.builder(
-                    controller: controller,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  ),
+                if (moreModules.isNotEmpty)
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       childAspectRatio: 1.0,
                       crossAxisSpacing: 12,
@@ -527,6 +539,245 @@ class _MoreMenuSheet extends StatelessWidget {
                       );
                     },
                   ),
+                if (appLauncherEnabled) const _AppLauncherSection(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── App-Launcher (experimentell) ─────────────────────────────────────────────
+
+class _AppLauncherSection extends ConsumerWidget {
+  const _AppLauncherSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final favorites = ref.watch(appLauncherFavoritesProvider);
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Text(
+              l10n.appsSectionTitle,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: TraumColors.onBackgroundSubtle,
+                fontFamily: 'DMSans',
+                letterSpacing: 0.8,
+              ),
+            ),
+          ),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              childAspectRatio: 0.85,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+            ),
+            itemCount: favorites.length + 1,
+            itemBuilder: (_, i) {
+              if (i == favorites.length) {
+                return _AddAppTile(onTap: () => showAppPickerSheet(context));
+              }
+              return _AppLauncherTile(packageName: favorites[i]);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AppLauncherTile extends ConsumerStatefulWidget {
+  final String packageName;
+  const _AppLauncherTile({required this.packageName});
+
+  @override
+  ConsumerState<_AppLauncherTile> createState() => _AppLauncherTileState();
+}
+
+class _AppLauncherTileState extends ConsumerState<_AppLauncherTile> {
+  LauncherApp? _app;
+  bool _loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final app =
+        await ref.read(appLauncherServiceProvider).getApp(widget.packageName);
+    if (mounted) {
+      setState(() {
+        _app = app;
+        _loaded = true;
+      });
+    }
+  }
+
+  Future<void> _open() async {
+    final ok =
+        await ref.read(appLauncherServiceProvider).launch(widget.packageName);
+    if (!mounted) return;
+    if (ok) {
+      Navigator.of(context).maybePop();
+    } else {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.appNotFound),
+          action: SnackBarAction(
+            label: l10n.removeFromLauncher,
+            onPressed: () => ref
+                .read(appLauncherFavoritesProvider.notifier)
+                .remove(widget.packageName),
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _confirmRemove() async {
+    final l10n = AppLocalizations.of(context)!;
+    HapticFeedback.selectionClick();
+    final remove = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: TraumColors.surfaceElevated,
+        title: Text(
+          _app?.name ?? widget.packageName,
+          style: const TextStyle(
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+        ),
+        content: Text(
+          l10n.removeFromLauncher,
+          style: const TextStyle(
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancel,
+                style: const TextStyle(color: TraumColors.onBackgroundMuted)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.removeFromLauncher,
+                style: const TextStyle(color: TraumColors.coralOrange)),
+          ),
+        ],
+      ),
+    );
+    if (remove == true) {
+      await ref
+          .read(appLauncherFavoritesProvider.notifier)
+          .remove(widget.packageName);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final label = _app?.name ??
+        (_loaded ? widget.packageName.split('.').last : '…');
+    final Uint8List? icon = _app?.icon;
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: _open,
+      onLongPress: _confirmRemove,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: icon != null
+                ? Image.memory(icon, width: 48, height: 48, fit: BoxFit.cover)
+                : Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: TraumColors.surfaceVariant,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(Icons.apps_rounded,
+                        color: TraumColors.onBackgroundMuted, size: 24),
+                  ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 11,
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AddAppTile extends StatelessWidget {
+  final VoidCallback onTap;
+  const _AddAppTile({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.4),
+              ),
+            ),
+            child: const Icon(Icons.add_rounded,
+                color: TraumColors.onBackgroundMuted, size: 24),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            l10n.addApp,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 11,
+              color: TraumColors.onBackgroundSubtle,
+              fontFamily: 'DMSans',
+            ),
           ),
         ],
       ),

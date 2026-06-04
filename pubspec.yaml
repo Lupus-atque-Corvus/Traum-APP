@@ -2,7 +2,7 @@ name: traum
 description: "TRAUM — Dein persönliches Dashboard"
 publish_to: 'none'
 
-version: 0.6.1+35
+version: 0.6.2+36
 
 environment:
   sdk: ^3.9.2
@@ -129,6 +129,9 @@ dependencies:
 
   # Icons
   cupertino_icons: ^1.0.8
+
+  # App-Launcher (experimentell, Android): installierte Apps auflisten/starten
+  installed_apps: ^2.1.1
 
 dev_dependencies:
   flutter_test:

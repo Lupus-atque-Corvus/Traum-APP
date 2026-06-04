@@ -1258,5 +1258,16 @@
   "notes_link_count": "{count} notes",
   "@notes_link_count": {
     "placeholders": { "count": {"type": "int"} }
-  }
+  },
+  "experimentalSection": "Experimental",
+  "appLauncher": "App Launcher",
+  "appLauncherSubtitle": "Launch favorite apps as tiles in the More menu",
+  "experimentalBadge": "EXPERIMENTAL",
+  "appsSectionTitle": "Apps",
+  "addApp": "Add",
+  "selectApps": "Select apps",
+  "searchApps": "Search apps…",
+  "noAppsInstalled": "No apps found",
+  "appNotFound": "App not found",
+  "removeFromLauncher": "Remove from launcher"
 }

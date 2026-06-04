@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.6.2 (2026-06-04) — App-Launcher (experimentell)
+
+### Neues experimentelles Feature
+
+- **App-Launcher:** In den Einstellungen unter **Experimentell** aktivierbar (nur Android). Ist er aktiv, erscheint im **Mehr**-Menü ein Bereich „Apps", in dem sich Lieblings-Apps als Kacheln ablegen und per Tippen direkt starten lassen — wie ein schlanker Launcher
+- App-Auswahl über einen Picker mit Suche; angezeigt werden die **echten** System-Icons der installierten Apps (kein gebündeltes Icon-Set)
+- Favoriten per „+" hinzufügen, per Langdruck entfernen. Wurde eine App deinstalliert, scheitert der Start sanft mit Hinweis und „Entfernen"-Aktion
+- Lokalisiert (de/en); Toggle und Bereich werden auf iOS gar nicht angezeigt (dort technisch nicht möglich)
+
+### Technisches
+
+- Neue Abhängigkeit `installed_apps`; `QUERY_ALL_PACKAGES`-Berechtigung im Android-Manifest (nur Sideload-APK, kein Play-Release)
+- Persistenz über `SharedPreferences` (Aktiv-Flag + Favoriten-Paketliste); Unit-Tests für Repository und Favoriten-Provider
+
+---
+
 ## v0.6.1 (2026-06-04) — Stabilität & Code-Aufräumung
 
 ### Fehlerbehebungen

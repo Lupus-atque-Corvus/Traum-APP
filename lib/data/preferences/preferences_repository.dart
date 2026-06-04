@@ -213,6 +213,17 @@ class PreferencesRepository {
   int get lockTimestamp => _prefs.getInt('lock_timestamp') ?? 0;
   Future<void> setLockTimestamp(int v) => _prefs.setInt('lock_timestamp', v);
 
+  // App-Launcher (experimentell)
+  bool get appLauncherEnabled =>
+      _prefs.getBool('app_launcher_enabled') ?? false;
+  Future<void> setAppLauncherEnabled(bool v) =>
+      _prefs.setBool('app_launcher_enabled', v);
+
+  String get appLauncherFavorites =>
+      _prefs.getString('app_launcher_favorites') ?? '[]';
+  Future<void> setAppLauncherFavorites(String v) =>
+      _prefs.setString('app_launcher_favorites', v);
+
   // Seeder flags
   bool get exercisesSeeded => _prefs.getBool('exercises_seeded') ?? false;
   Future<void> setExercisesSeeded(bool v) =>
