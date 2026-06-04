@@ -900,9 +900,10 @@ class _TrackerCardState extends State<_TrackerCard> {
   }
 
   void _updateElapsed() {
-    if (mounted)
+    if (mounted) {
       setState(() =>
           _elapsed = DateTime.now().difference(widget.tracker.startDate));
+    }
   }
 
   @override

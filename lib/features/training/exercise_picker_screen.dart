@@ -94,7 +94,9 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
     }
     if (_selectedCats.isNotEmpty) {
       final allowed = <String>{};
-      for (final i in _selectedCats) allowed.addAll(_kPickerCats[i].keys);
+      for (final i in _selectedCats) {
+        allowed.addAll(_kPickerCats[i].keys);
+      }
       list = list.where((e) => allowed.contains(e.muscleGroup)).toList();
     }
     return list;
@@ -138,7 +140,11 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                 final active = _selectedCats.contains(i);
                 return GestureDetector(
                   onTap: () => setState(() {
-                    if (active) _selectedCats.remove(i); else _selectedCats.add(i);
+                    if (active) {
+                      _selectedCats.remove(i);
+                    } else {
+                      _selectedCats.add(i);
+                    }
                   }),
                   child: Padding(
                     padding: const EdgeInsets.only(right: 10),

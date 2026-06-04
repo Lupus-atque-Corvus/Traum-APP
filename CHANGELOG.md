@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.6.1 (2026-06-04) — Stabilität & Code-Aufräumung
+
+### Fehlerbehebungen
+
+- **Budget:** Der „+"-Button in der Transaktionsliste führte auf eine nicht registrierte Route ins Leere — öffnet jetzt korrekt die Schnell-Erfassung
+- **Datenbank:** Fehlt das SQLite-FTS5-Modul, blockierte das Anlegen der Notizen-Suchtabelle bisher das Öffnen der **gesamten** App-Datenbank. Die Volltextsuche degradiert nun sanft, statt die App unbrauchbar zu machen
+- **Medikamente/Mittel:** `BuildContext` wurde über asynchrone Lücken hinweg verwendet (Lokalisierung jetzt vorab erfasst)
+
+### Aufräumarbeiten & Wartung
+
+- ~3.900 Zeilen ungenutzten Code entfernt: 3 verwaiste Screens (Medikamente/Supplements/Transaktion-Hinzufügen — durch konsolidierte Ansichten ersetzt), 3 redundante Services, 12 verlassene Budget-Widgets, alter JSON-Substanz-Seeder sowie weitere tote Dateien
+- Veraltete Flutter-APIs migriert (`activeColor` → `activeThumbColor`, `onReorder` → `onReorderItem`)
+- Statische Analyse vollständig bereinigt: **0 Analyzer-Meldungen**, alle Tests grün
+
+---
+
 ## v0.6.0 (2026-06-04) — Notizen-Modul (Obsidian-artiges PKM)
 
 ### Neues Modul „Notizen"

@@ -163,6 +163,7 @@ class MySubstancesTab extends ConsumerWidget {
           borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
       builder: (ctx) => _AddMedSheet(
         onAdd: (companion) async {
+          final l10n = AppLocalizations.of(ctx)!;
           await ref.read(medicationDaoProvider).insertMedication(companion);
           final timesJson = companion.timings.value;
           if (timesJson != '[]') {
@@ -173,7 +174,7 @@ class MySubstancesTab extends ConsumerWidget {
                 await NotificationService.scheduleDailyAt(
                   id: 100 + i,
                   title: companion.name.value,
-                  body: AppLocalizations.of(ctx)!.timeForMedication(companion.name.value),
+                  body: l10n.timeForMedication(companion.name.value),
                   hour: int.parse(parts[0]),
                   minute: int.parse(parts[1]),
                   channelId: 'medication',

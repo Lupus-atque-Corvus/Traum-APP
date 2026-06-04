@@ -257,6 +257,8 @@ class NotesDao extends DatabaseAccessor<TraumDatabase> with _$NotesDaoMixin {
   Future<List<NoteSearchHit>> search(String query) async {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return [];
+    // Ohne fts5-Modul gibt es keine notes_fts-Tabelle → leeres Ergebnis.
+    if (!attachedDatabase.ftsAvailable) return [];
     // Präfix-Match auf das letzte Token für „suche während des Tippens“.
     final match = '${_escapeFts(trimmed)}*';
     final rows = await customSelect(

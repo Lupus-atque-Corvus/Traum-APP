@@ -50,7 +50,6 @@ class _NavCustomizationSheetState
   void _onReorder(int oldIndex, int newIndex) {
     HapticFeedback.selectionClick();
     setState(() {
-      if (newIndex > oldIndex) newIndex--;
       final item = _slots.removeAt(oldIndex);
       _slots.insert(newIndex, item);
     });
@@ -393,7 +392,7 @@ class _NavCustomizationSheetState
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       buildDefaultDragHandles: false,
-                      onReorder: _onReorder,
+                      onReorderItem: _onReorder,
                       children: [
                         for (int i = 0; i < _slots.length; i++)
                           _buildSlotItem(_slots[i], i),

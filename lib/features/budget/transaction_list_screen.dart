@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'quick_entry_bottom_sheet.dart';
 
 class TransactionListScreen extends ConsumerStatefulWidget {
   const TransactionListScreen({super.key});
@@ -38,7 +38,12 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: TraumColors.amberGold,
-        onPressed: () => context.go('/budget/add'),
+        onPressed: () => showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (_) => const QuickEntryBottomSheet(),
+        ),
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),
       body: Column(

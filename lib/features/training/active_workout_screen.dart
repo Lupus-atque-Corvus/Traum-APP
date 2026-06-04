@@ -42,13 +42,12 @@ extension _SetTypeExt on _SetType {
 // ── Data model ────────────────────────────────────────────────────────────────
 class _SetRow {
   int setNumber;
-  _SetType setType;
+  _SetType setType = _SetType.normal;
   final TextEditingController weightCtrl;
   final TextEditingController repsCtrl;
 
   _SetRow({
     required this.setNumber,
-    this.setType = _SetType.normal,
     double? weightKg,
     int? reps,
   })  : weightCtrl = TextEditingController(
@@ -68,21 +67,21 @@ class _SetRow {
 class _ExerciseBlock {
   final Exercise exercise;
   String equipment;
-  String mode;
+  String mode = 'Bilateral';
   String? note;
   final List<_SetRow> sets;
 
   _ExerciseBlock({
     required this.exercise,
     String? equipment,
-    this.mode = 'Bilateral',
-    this.note,
     List<_SetRow>? sets,
   })  : equipment = equipment ?? exercise.equipment ?? '',
         sets = sets ?? [_SetRow(setNumber: 1)];
 
   void dispose() {
-    for (final s in sets) s.dispose();
+    for (final s in sets) {
+      s.dispose();
+    }
   }
 }
 
@@ -149,7 +148,9 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
   void dispose() {
     _timer.cancel();
     WakelockPlus.disable();
-    for (final b in _blocks) b.dispose();
+    for (final b in _blocks) {
+      b.dispose();
+    }
     _mainScrollCtrl.dispose();
     _sidebarScrollCtrl.dispose();
     super.dispose();

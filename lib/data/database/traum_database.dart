@@ -254,11 +254,28 @@ class TraumDatabase extends _$TraumDatabase {
     },
   );
 
+  /// Ob die FTS5-Volltextsuche in dieser SQLite-Laufzeit verfügbar ist.
+  /// Auf Android/iOS (gebündeltes sqlite3 mit fts5) immer true; manche
+  /// Desktop-/Test-Umgebungen ohne fts5-Modul setzen das auf false, ohne
+  /// dass das Öffnen der Datenbank scheitert.
+  bool ftsAvailable = true;
+
   /// Legt die FTS5-Virtual-Table `notes_fts` und die Sync-Trigger an.
   /// Idempotent (IF NOT EXISTS), wird bei jedem Öffnen aufgerufen, damit
   /// auch frische Installationen (onCreate via createAll, ohne Virtual-Table)
-  /// die Suchinfrastruktur erhalten.
+  /// die Suchinfrastruktur erhalten. Fehlt das fts5-Modul, degradiert die
+  /// Suche sanft statt die gesamte App-Datenbank unbrauchbar zu machen.
   Future<void> _createNotesFtsObjects() async {
+    try {
+      await _createNotesFtsObjectsUnsafe();
+      ftsAvailable = true;
+    } catch (_) {
+      // fts5 nicht verfügbar (z. B. System-SQLite ohne Modul) → Suche aus.
+      ftsAvailable = false;
+    }
+  }
+
+  Future<void> _createNotesFtsObjectsUnsafe() async {
     final existing = await customSelect(
       "SELECT name FROM sqlite_master WHERE type='table' AND name='notes_fts'",
     ).get();

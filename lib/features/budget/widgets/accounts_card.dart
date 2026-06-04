@@ -382,7 +382,7 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
             Switch(
               value: _isPrimary,
               onChanged: (v) => setState(() => _isPrimary = v),
-              activeColor: TraumColors.amberGold,
+              activeThumbColor: TraumColors.amberGold,
             ),
           ]),
           const SizedBox(height: 16),
