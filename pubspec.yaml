@@ -2,7 +2,7 @@ name: traum
 description: "TRAUM — Dein persönliches Dashboard"
 publish_to: 'none'
 
-version: 0.5.20+33
+version: 0.6.0+34
 
 environment:
   sdk: ^3.9.2
@@ -69,6 +69,9 @@ dependencies:
   # Archiv
   archive: ^3.6.0
 
+  # Datei-Auswahl (Vault-Import)
+  file_picker: ^8.1.2
+
   # Links
   url_launcher: ^6.3.0
 
@@ -101,8 +104,19 @@ dependencies:
   # Verbindung
   connectivity_plus: ^6.1.0
 
-  # Markdown
-  flutter_markdown: ^0.7.4+1
+  # Markdown (flutter_markdown ist eingestellt; flutter_markdown_plus ist der
+  # aktiv gepflegte Nachfolger mit kompatibler API. LaTeX über die _latex-
+  # Erweiterung, Mathe-Rendering über flutter_math_fork.)
+  flutter_markdown_plus: ^1.0.3
+  flutter_markdown_plus_latex: ^1.0.1
+  markdown: ^7.2.1
+  flutter_math_fork: ^0.7.3
+
+  # YAML (Frontmatter-Parsing für Notiz-Properties)
+  yaml: ^3.1.2
+
+  # Graph View (kraftgerichteter Graph für Notiz-Verlinkungen)
+  graphview: ^1.2.0
 
   # i18n
   intl: ^0.20.0

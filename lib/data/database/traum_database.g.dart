@@ -20939,6 +20939,2238 @@ class WeeklyMealPlanCompanion extends UpdateCompanion<WeeklyMealPlanData> {
   }
 }
 
+class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NotesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _folderIdMeta = const VerificationMeta(
+    'folderId',
+  );
+  @override
+  late final GeneratedColumn<int> folderId = GeneratedColumn<int>(
+    'folder_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isDailyMeta = const VerificationMeta(
+    'isDaily',
+  );
+  @override
+  late final GeneratedColumn<bool> isDaily = GeneratedColumn<bool>(
+    'is_daily',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_daily" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _dailyDateMeta = const VerificationMeta(
+    'dailyDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> dailyDate = GeneratedColumn<DateTime>(
+    'daily_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isBookmarkedMeta = const VerificationMeta(
+    'isBookmarked',
+  );
+  @override
+  late final GeneratedColumn<bool> isBookmarked = GeneratedColumn<bool>(
+    'is_bookmarked',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_bookmarked" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _isPinnedMeta = const VerificationMeta(
+    'isPinned',
+  );
+  @override
+  late final GeneratedColumn<bool> isPinned = GeneratedColumn<bool>(
+    'is_pinned',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_pinned" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _propertiesJsonMeta = const VerificationMeta(
+    'propertiesJson',
+  );
+  @override
+  late final GeneratedColumn<String> propertiesJson = GeneratedColumn<String>(
+    'properties_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('{}'),
+  );
+  static const VerificationMeta _wordCountMeta = const VerificationMeta(
+    'wordCount',
+  );
+  @override
+  late final GeneratedColumn<int> wordCount = GeneratedColumn<int>(
+    'word_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    title,
+    content,
+    folderId,
+    isDaily,
+    dailyDate,
+    isBookmarked,
+    isPinned,
+    propertiesJson,
+    wordCount,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'notes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Note> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    }
+    if (data.containsKey('folder_id')) {
+      context.handle(
+        _folderIdMeta,
+        folderId.isAcceptableOrUnknown(data['folder_id']!, _folderIdMeta),
+      );
+    }
+    if (data.containsKey('is_daily')) {
+      context.handle(
+        _isDailyMeta,
+        isDaily.isAcceptableOrUnknown(data['is_daily']!, _isDailyMeta),
+      );
+    }
+    if (data.containsKey('daily_date')) {
+      context.handle(
+        _dailyDateMeta,
+        dailyDate.isAcceptableOrUnknown(data['daily_date']!, _dailyDateMeta),
+      );
+    }
+    if (data.containsKey('is_bookmarked')) {
+      context.handle(
+        _isBookmarkedMeta,
+        isBookmarked.isAcceptableOrUnknown(
+          data['is_bookmarked']!,
+          _isBookmarkedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_pinned')) {
+      context.handle(
+        _isPinnedMeta,
+        isPinned.isAcceptableOrUnknown(data['is_pinned']!, _isPinnedMeta),
+      );
+    }
+    if (data.containsKey('properties_json')) {
+      context.handle(
+        _propertiesJsonMeta,
+        propertiesJson.isAcceptableOrUnknown(
+          data['properties_json']!,
+          _propertiesJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('word_count')) {
+      context.handle(
+        _wordCountMeta,
+        wordCount.isAcceptableOrUnknown(data['word_count']!, _wordCountMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Note map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Note(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      folderId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}folder_id'],
+      ),
+      isDaily: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_daily'],
+      )!,
+      dailyDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}daily_date'],
+      ),
+      isBookmarked: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_bookmarked'],
+      )!,
+      isPinned: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_pinned'],
+      )!,
+      propertiesJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}properties_json'],
+      )!,
+      wordCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}word_count'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+    );
+  }
+
+  @override
+  $NotesTable createAlias(String alias) {
+    return $NotesTable(attachedDatabase, alias);
+  }
+}
+
+class Note extends DataClass implements Insertable<Note> {
+  final int id;
+  final String title;
+  final String content;
+
+  /// FK auf [NoteFolders.id]; NULL = Wurzelebene.
+  final int? folderId;
+  final bool isDaily;
+
+  /// Gesetzt wenn [isDaily]; ISO-Datum als reines Datum.
+  final DateTime? dailyDate;
+  final bool isBookmarked;
+  final bool isPinned;
+
+  /// YAML-Frontmatter als JSON gespeichert.
+  final String propertiesJson;
+  final int wordCount;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  /// Soft-Delete für den Papierkorb.
+  final DateTime? deletedAt;
+  const Note({
+    required this.id,
+    required this.title,
+    required this.content,
+    this.folderId,
+    required this.isDaily,
+    this.dailyDate,
+    required this.isBookmarked,
+    required this.isPinned,
+    required this.propertiesJson,
+    required this.wordCount,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['title'] = Variable<String>(title);
+    map['content'] = Variable<String>(content);
+    if (!nullToAbsent || folderId != null) {
+      map['folder_id'] = Variable<int>(folderId);
+    }
+    map['is_daily'] = Variable<bool>(isDaily);
+    if (!nullToAbsent || dailyDate != null) {
+      map['daily_date'] = Variable<DateTime>(dailyDate);
+    }
+    map['is_bookmarked'] = Variable<bool>(isBookmarked);
+    map['is_pinned'] = Variable<bool>(isPinned);
+    map['properties_json'] = Variable<String>(propertiesJson);
+    map['word_count'] = Variable<int>(wordCount);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    return map;
+  }
+
+  NotesCompanion toCompanion(bool nullToAbsent) {
+    return NotesCompanion(
+      id: Value(id),
+      title: Value(title),
+      content: Value(content),
+      folderId: folderId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(folderId),
+      isDaily: Value(isDaily),
+      dailyDate: dailyDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dailyDate),
+      isBookmarked: Value(isBookmarked),
+      isPinned: Value(isPinned),
+      propertiesJson: Value(propertiesJson),
+      wordCount: Value(wordCount),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+    );
+  }
+
+  factory Note.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Note(
+      id: serializer.fromJson<int>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      content: serializer.fromJson<String>(json['content']),
+      folderId: serializer.fromJson<int?>(json['folderId']),
+      isDaily: serializer.fromJson<bool>(json['isDaily']),
+      dailyDate: serializer.fromJson<DateTime?>(json['dailyDate']),
+      isBookmarked: serializer.fromJson<bool>(json['isBookmarked']),
+      isPinned: serializer.fromJson<bool>(json['isPinned']),
+      propertiesJson: serializer.fromJson<String>(json['propertiesJson']),
+      wordCount: serializer.fromJson<int>(json['wordCount']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'title': serializer.toJson<String>(title),
+      'content': serializer.toJson<String>(content),
+      'folderId': serializer.toJson<int?>(folderId),
+      'isDaily': serializer.toJson<bool>(isDaily),
+      'dailyDate': serializer.toJson<DateTime?>(dailyDate),
+      'isBookmarked': serializer.toJson<bool>(isBookmarked),
+      'isPinned': serializer.toJson<bool>(isPinned),
+      'propertiesJson': serializer.toJson<String>(propertiesJson),
+      'wordCount': serializer.toJson<int>(wordCount),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+    };
+  }
+
+  Note copyWith({
+    int? id,
+    String? title,
+    String? content,
+    Value<int?> folderId = const Value.absent(),
+    bool? isDaily,
+    Value<DateTime?> dailyDate = const Value.absent(),
+    bool? isBookmarked,
+    bool? isPinned,
+    String? propertiesJson,
+    int? wordCount,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+  }) => Note(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    content: content ?? this.content,
+    folderId: folderId.present ? folderId.value : this.folderId,
+    isDaily: isDaily ?? this.isDaily,
+    dailyDate: dailyDate.present ? dailyDate.value : this.dailyDate,
+    isBookmarked: isBookmarked ?? this.isBookmarked,
+    isPinned: isPinned ?? this.isPinned,
+    propertiesJson: propertiesJson ?? this.propertiesJson,
+    wordCount: wordCount ?? this.wordCount,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+  );
+  Note copyWithCompanion(NotesCompanion data) {
+    return Note(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      content: data.content.present ? data.content.value : this.content,
+      folderId: data.folderId.present ? data.folderId.value : this.folderId,
+      isDaily: data.isDaily.present ? data.isDaily.value : this.isDaily,
+      dailyDate: data.dailyDate.present ? data.dailyDate.value : this.dailyDate,
+      isBookmarked: data.isBookmarked.present
+          ? data.isBookmarked.value
+          : this.isBookmarked,
+      isPinned: data.isPinned.present ? data.isPinned.value : this.isPinned,
+      propertiesJson: data.propertiesJson.present
+          ? data.propertiesJson.value
+          : this.propertiesJson,
+      wordCount: data.wordCount.present ? data.wordCount.value : this.wordCount,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Note(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('folderId: $folderId, ')
+          ..write('isDaily: $isDaily, ')
+          ..write('dailyDate: $dailyDate, ')
+          ..write('isBookmarked: $isBookmarked, ')
+          ..write('isPinned: $isPinned, ')
+          ..write('propertiesJson: $propertiesJson, ')
+          ..write('wordCount: $wordCount, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    title,
+    content,
+    folderId,
+    isDaily,
+    dailyDate,
+    isBookmarked,
+    isPinned,
+    propertiesJson,
+    wordCount,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Note &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.content == this.content &&
+          other.folderId == this.folderId &&
+          other.isDaily == this.isDaily &&
+          other.dailyDate == this.dailyDate &&
+          other.isBookmarked == this.isBookmarked &&
+          other.isPinned == this.isPinned &&
+          other.propertiesJson == this.propertiesJson &&
+          other.wordCount == this.wordCount &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt);
+}
+
+class NotesCompanion extends UpdateCompanion<Note> {
+  final Value<int> id;
+  final Value<String> title;
+  final Value<String> content;
+  final Value<int?> folderId;
+  final Value<bool> isDaily;
+  final Value<DateTime?> dailyDate;
+  final Value<bool> isBookmarked;
+  final Value<bool> isPinned;
+  final Value<String> propertiesJson;
+  final Value<int> wordCount;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  const NotesCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.content = const Value.absent(),
+    this.folderId = const Value.absent(),
+    this.isDaily = const Value.absent(),
+    this.dailyDate = const Value.absent(),
+    this.isBookmarked = const Value.absent(),
+    this.isPinned = const Value.absent(),
+    this.propertiesJson = const Value.absent(),
+    this.wordCount = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+  });
+  NotesCompanion.insert({
+    this.id = const Value.absent(),
+    required String title,
+    this.content = const Value.absent(),
+    this.folderId = const Value.absent(),
+    this.isDaily = const Value.absent(),
+    this.dailyDate = const Value.absent(),
+    this.isBookmarked = const Value.absent(),
+    this.isPinned = const Value.absent(),
+    this.propertiesJson = const Value.absent(),
+    this.wordCount = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+  }) : title = Value(title),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<Note> custom({
+    Expression<int>? id,
+    Expression<String>? title,
+    Expression<String>? content,
+    Expression<int>? folderId,
+    Expression<bool>? isDaily,
+    Expression<DateTime>? dailyDate,
+    Expression<bool>? isBookmarked,
+    Expression<bool>? isPinned,
+    Expression<String>? propertiesJson,
+    Expression<int>? wordCount,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (content != null) 'content': content,
+      if (folderId != null) 'folder_id': folderId,
+      if (isDaily != null) 'is_daily': isDaily,
+      if (dailyDate != null) 'daily_date': dailyDate,
+      if (isBookmarked != null) 'is_bookmarked': isBookmarked,
+      if (isPinned != null) 'is_pinned': isPinned,
+      if (propertiesJson != null) 'properties_json': propertiesJson,
+      if (wordCount != null) 'word_count': wordCount,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+    });
+  }
+
+  NotesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? title,
+    Value<String>? content,
+    Value<int?>? folderId,
+    Value<bool>? isDaily,
+    Value<DateTime?>? dailyDate,
+    Value<bool>? isBookmarked,
+    Value<bool>? isPinned,
+    Value<String>? propertiesJson,
+    Value<int>? wordCount,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+  }) {
+    return NotesCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      folderId: folderId ?? this.folderId,
+      isDaily: isDaily ?? this.isDaily,
+      dailyDate: dailyDate ?? this.dailyDate,
+      isBookmarked: isBookmarked ?? this.isBookmarked,
+      isPinned: isPinned ?? this.isPinned,
+      propertiesJson: propertiesJson ?? this.propertiesJson,
+      wordCount: wordCount ?? this.wordCount,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (folderId.present) {
+      map['folder_id'] = Variable<int>(folderId.value);
+    }
+    if (isDaily.present) {
+      map['is_daily'] = Variable<bool>(isDaily.value);
+    }
+    if (dailyDate.present) {
+      map['daily_date'] = Variable<DateTime>(dailyDate.value);
+    }
+    if (isBookmarked.present) {
+      map['is_bookmarked'] = Variable<bool>(isBookmarked.value);
+    }
+    if (isPinned.present) {
+      map['is_pinned'] = Variable<bool>(isPinned.value);
+    }
+    if (propertiesJson.present) {
+      map['properties_json'] = Variable<String>(propertiesJson.value);
+    }
+    if (wordCount.present) {
+      map['word_count'] = Variable<int>(wordCount.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NotesCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('folderId: $folderId, ')
+          ..write('isDaily: $isDaily, ')
+          ..write('dailyDate: $dailyDate, ')
+          ..write('isBookmarked: $isBookmarked, ')
+          ..write('isPinned: $isPinned, ')
+          ..write('propertiesJson: $propertiesJson, ')
+          ..write('wordCount: $wordCount, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $NoteFoldersTable extends NoteFolders
+    with TableInfo<$NoteFoldersTable, NoteFolder> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NoteFoldersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _parentIdMeta = const VerificationMeta(
+    'parentId',
+  );
+  @override
+  late final GeneratedColumn<int> parentId = GeneratedColumn<int>(
+    'parent_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    parentId,
+    sortOrder,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'note_folders';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<NoteFolder> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('parent_id')) {
+      context.handle(
+        _parentIdMeta,
+        parentId.isAcceptableOrUnknown(data['parent_id']!, _parentIdMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  NoteFolder map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NoteFolder(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      parentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}parent_id'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $NoteFoldersTable createAlias(String alias) {
+    return $NoteFoldersTable(attachedDatabase, alias);
+  }
+}
+
+class NoteFolder extends DataClass implements Insertable<NoteFolder> {
+  final int id;
+  final String name;
+
+  /// Selbstreferenz für den Ordnerbaum; NULL = Wurzel.
+  final int? parentId;
+  final int sortOrder;
+  final DateTime createdAt;
+  const NoteFolder({
+    required this.id,
+    required this.name,
+    this.parentId,
+    required this.sortOrder,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || parentId != null) {
+      map['parent_id'] = Variable<int>(parentId);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  NoteFoldersCompanion toCompanion(bool nullToAbsent) {
+    return NoteFoldersCompanion(
+      id: Value(id),
+      name: Value(name),
+      parentId: parentId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(parentId),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory NoteFolder.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NoteFolder(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      parentId: serializer.fromJson<int?>(json['parentId']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'parentId': serializer.toJson<int?>(parentId),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  NoteFolder copyWith({
+    int? id,
+    String? name,
+    Value<int?> parentId = const Value.absent(),
+    int? sortOrder,
+    DateTime? createdAt,
+  }) => NoteFolder(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    parentId: parentId.present ? parentId.value : this.parentId,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  NoteFolder copyWithCompanion(NoteFoldersCompanion data) {
+    return NoteFolder(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      parentId: data.parentId.present ? data.parentId.value : this.parentId,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteFolder(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('parentId: $parentId, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, parentId, sortOrder, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NoteFolder &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.parentId == this.parentId &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt);
+}
+
+class NoteFoldersCompanion extends UpdateCompanion<NoteFolder> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<int?> parentId;
+  final Value<int> sortOrder;
+  final Value<DateTime> createdAt;
+  const NoteFoldersCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.parentId = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  NoteFoldersCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    this.parentId = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    required DateTime createdAt,
+  }) : name = Value(name),
+       createdAt = Value(createdAt);
+  static Insertable<NoteFolder> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<int>? parentId,
+    Expression<int>? sortOrder,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (parentId != null) 'parent_id': parentId,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  NoteFoldersCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<int?>? parentId,
+    Value<int>? sortOrder,
+    Value<DateTime>? createdAt,
+  }) {
+    return NoteFoldersCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      parentId: parentId ?? this.parentId,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (parentId.present) {
+      map['parent_id'] = Variable<int>(parentId.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteFoldersCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('parentId: $parentId, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $NoteLinksTable extends NoteLinks
+    with TableInfo<$NoteLinksTable, NoteLink> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NoteLinksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _sourceNoteIdMeta = const VerificationMeta(
+    'sourceNoteId',
+  );
+  @override
+  late final GeneratedColumn<int> sourceNoteId = GeneratedColumn<int>(
+    'source_note_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetNoteIdMeta = const VerificationMeta(
+    'targetNoteId',
+  );
+  @override
+  late final GeneratedColumn<int> targetNoteId = GeneratedColumn<int>(
+    'target_note_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _targetTitleRawMeta = const VerificationMeta(
+    'targetTitleRaw',
+  );
+  @override
+  late final GeneratedColumn<String> targetTitleRaw = GeneratedColumn<String>(
+    'target_title_raw',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _linkTypeMeta = const VerificationMeta(
+    'linkType',
+  );
+  @override
+  late final GeneratedColumn<String> linkType = GeneratedColumn<String>(
+    'link_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('link'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sourceNoteId,
+    targetNoteId,
+    targetTitleRaw,
+    linkType,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'note_links';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<NoteLink> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('source_note_id')) {
+      context.handle(
+        _sourceNoteIdMeta,
+        sourceNoteId.isAcceptableOrUnknown(
+          data['source_note_id']!,
+          _sourceNoteIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceNoteIdMeta);
+    }
+    if (data.containsKey('target_note_id')) {
+      context.handle(
+        _targetNoteIdMeta,
+        targetNoteId.isAcceptableOrUnknown(
+          data['target_note_id']!,
+          _targetNoteIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('target_title_raw')) {
+      context.handle(
+        _targetTitleRawMeta,
+        targetTitleRaw.isAcceptableOrUnknown(
+          data['target_title_raw']!,
+          _targetTitleRawMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_targetTitleRawMeta);
+    }
+    if (data.containsKey('link_type')) {
+      context.handle(
+        _linkTypeMeta,
+        linkType.isAcceptableOrUnknown(data['link_type']!, _linkTypeMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  NoteLink map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NoteLink(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      sourceNoteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}source_note_id'],
+      )!,
+      targetNoteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}target_note_id'],
+      ),
+      targetTitleRaw: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target_title_raw'],
+      )!,
+      linkType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}link_type'],
+      )!,
+    );
+  }
+
+  @override
+  $NoteLinksTable createAlias(String alias) {
+    return $NoteLinksTable(attachedDatabase, alias);
+  }
+}
+
+class NoteLink extends DataClass implements Insertable<NoteLink> {
+  final int id;
+  final int sourceNoteId;
+
+  /// NULL = unaufgelöste Verlinkung.
+  final int? targetNoteId;
+
+  /// Der im `[[...]]` geschriebene Name (inkl. evtl. Heading/Block-Anker).
+  final String targetTitleRaw;
+
+  /// 'link' | 'embed'.
+  final String linkType;
+  const NoteLink({
+    required this.id,
+    required this.sourceNoteId,
+    this.targetNoteId,
+    required this.targetTitleRaw,
+    required this.linkType,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['source_note_id'] = Variable<int>(sourceNoteId);
+    if (!nullToAbsent || targetNoteId != null) {
+      map['target_note_id'] = Variable<int>(targetNoteId);
+    }
+    map['target_title_raw'] = Variable<String>(targetTitleRaw);
+    map['link_type'] = Variable<String>(linkType);
+    return map;
+  }
+
+  NoteLinksCompanion toCompanion(bool nullToAbsent) {
+    return NoteLinksCompanion(
+      id: Value(id),
+      sourceNoteId: Value(sourceNoteId),
+      targetNoteId: targetNoteId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(targetNoteId),
+      targetTitleRaw: Value(targetTitleRaw),
+      linkType: Value(linkType),
+    );
+  }
+
+  factory NoteLink.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NoteLink(
+      id: serializer.fromJson<int>(json['id']),
+      sourceNoteId: serializer.fromJson<int>(json['sourceNoteId']),
+      targetNoteId: serializer.fromJson<int?>(json['targetNoteId']),
+      targetTitleRaw: serializer.fromJson<String>(json['targetTitleRaw']),
+      linkType: serializer.fromJson<String>(json['linkType']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'sourceNoteId': serializer.toJson<int>(sourceNoteId),
+      'targetNoteId': serializer.toJson<int?>(targetNoteId),
+      'targetTitleRaw': serializer.toJson<String>(targetTitleRaw),
+      'linkType': serializer.toJson<String>(linkType),
+    };
+  }
+
+  NoteLink copyWith({
+    int? id,
+    int? sourceNoteId,
+    Value<int?> targetNoteId = const Value.absent(),
+    String? targetTitleRaw,
+    String? linkType,
+  }) => NoteLink(
+    id: id ?? this.id,
+    sourceNoteId: sourceNoteId ?? this.sourceNoteId,
+    targetNoteId: targetNoteId.present ? targetNoteId.value : this.targetNoteId,
+    targetTitleRaw: targetTitleRaw ?? this.targetTitleRaw,
+    linkType: linkType ?? this.linkType,
+  );
+  NoteLink copyWithCompanion(NoteLinksCompanion data) {
+    return NoteLink(
+      id: data.id.present ? data.id.value : this.id,
+      sourceNoteId: data.sourceNoteId.present
+          ? data.sourceNoteId.value
+          : this.sourceNoteId,
+      targetNoteId: data.targetNoteId.present
+          ? data.targetNoteId.value
+          : this.targetNoteId,
+      targetTitleRaw: data.targetTitleRaw.present
+          ? data.targetTitleRaw.value
+          : this.targetTitleRaw,
+      linkType: data.linkType.present ? data.linkType.value : this.linkType,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteLink(')
+          ..write('id: $id, ')
+          ..write('sourceNoteId: $sourceNoteId, ')
+          ..write('targetNoteId: $targetNoteId, ')
+          ..write('targetTitleRaw: $targetTitleRaw, ')
+          ..write('linkType: $linkType')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, sourceNoteId, targetNoteId, targetTitleRaw, linkType);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NoteLink &&
+          other.id == this.id &&
+          other.sourceNoteId == this.sourceNoteId &&
+          other.targetNoteId == this.targetNoteId &&
+          other.targetTitleRaw == this.targetTitleRaw &&
+          other.linkType == this.linkType);
+}
+
+class NoteLinksCompanion extends UpdateCompanion<NoteLink> {
+  final Value<int> id;
+  final Value<int> sourceNoteId;
+  final Value<int?> targetNoteId;
+  final Value<String> targetTitleRaw;
+  final Value<String> linkType;
+  const NoteLinksCompanion({
+    this.id = const Value.absent(),
+    this.sourceNoteId = const Value.absent(),
+    this.targetNoteId = const Value.absent(),
+    this.targetTitleRaw = const Value.absent(),
+    this.linkType = const Value.absent(),
+  });
+  NoteLinksCompanion.insert({
+    this.id = const Value.absent(),
+    required int sourceNoteId,
+    this.targetNoteId = const Value.absent(),
+    required String targetTitleRaw,
+    this.linkType = const Value.absent(),
+  }) : sourceNoteId = Value(sourceNoteId),
+       targetTitleRaw = Value(targetTitleRaw);
+  static Insertable<NoteLink> custom({
+    Expression<int>? id,
+    Expression<int>? sourceNoteId,
+    Expression<int>? targetNoteId,
+    Expression<String>? targetTitleRaw,
+    Expression<String>? linkType,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sourceNoteId != null) 'source_note_id': sourceNoteId,
+      if (targetNoteId != null) 'target_note_id': targetNoteId,
+      if (targetTitleRaw != null) 'target_title_raw': targetTitleRaw,
+      if (linkType != null) 'link_type': linkType,
+    });
+  }
+
+  NoteLinksCompanion copyWith({
+    Value<int>? id,
+    Value<int>? sourceNoteId,
+    Value<int?>? targetNoteId,
+    Value<String>? targetTitleRaw,
+    Value<String>? linkType,
+  }) {
+    return NoteLinksCompanion(
+      id: id ?? this.id,
+      sourceNoteId: sourceNoteId ?? this.sourceNoteId,
+      targetNoteId: targetNoteId ?? this.targetNoteId,
+      targetTitleRaw: targetTitleRaw ?? this.targetTitleRaw,
+      linkType: linkType ?? this.linkType,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (sourceNoteId.present) {
+      map['source_note_id'] = Variable<int>(sourceNoteId.value);
+    }
+    if (targetNoteId.present) {
+      map['target_note_id'] = Variable<int>(targetNoteId.value);
+    }
+    if (targetTitleRaw.present) {
+      map['target_title_raw'] = Variable<String>(targetTitleRaw.value);
+    }
+    if (linkType.present) {
+      map['link_type'] = Variable<String>(linkType.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteLinksCompanion(')
+          ..write('id: $id, ')
+          ..write('sourceNoteId: $sourceNoteId, ')
+          ..write('targetNoteId: $targetNoteId, ')
+          ..write('targetTitleRaw: $targetTitleRaw, ')
+          ..write('linkType: $linkType')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TagsTable extends Tags with TableInfo<$TagsTable, Tag> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TagsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'tags';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Tag> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Tag map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Tag(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $TagsTable createAlias(String alias) {
+    return $TagsTable(attachedDatabase, alias);
+  }
+}
+
+class Tag extends DataClass implements Insertable<Tag> {
+  final int id;
+
+  /// Vollständiger Pfad, z. B. `projekt/traum`.
+  final String name;
+  final DateTime createdAt;
+  const Tag({required this.id, required this.name, required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  TagsCompanion toCompanion(bool nullToAbsent) {
+    return TagsCompanion(
+      id: Value(id),
+      name: Value(name),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory Tag.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Tag(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  Tag copyWith({int? id, String? name, DateTime? createdAt}) => Tag(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  Tag copyWithCompanion(TagsCompanion data) {
+    return Tag(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Tag(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Tag &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.createdAt == this.createdAt);
+}
+
+class TagsCompanion extends UpdateCompanion<Tag> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<DateTime> createdAt;
+  const TagsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  TagsCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required DateTime createdAt,
+  }) : name = Value(name),
+       createdAt = Value(createdAt);
+  static Insertable<Tag> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  TagsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<DateTime>? createdAt,
+  }) {
+    return TagsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TagsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $NoteTagsTable extends NoteTags with TableInfo<$NoteTagsTable, NoteTag> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NoteTagsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _noteIdMeta = const VerificationMeta('noteId');
+  @override
+  late final GeneratedColumn<int> noteId = GeneratedColumn<int>(
+    'note_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
+  @override
+  late final GeneratedColumn<int> tagId = GeneratedColumn<int>(
+    'tag_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [noteId, tagId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'note_tags';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<NoteTag> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('note_id')) {
+      context.handle(
+        _noteIdMeta,
+        noteId.isAcceptableOrUnknown(data['note_id']!, _noteIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_noteIdMeta);
+    }
+    if (data.containsKey('tag_id')) {
+      context.handle(
+        _tagIdMeta,
+        tagId.isAcceptableOrUnknown(data['tag_id']!, _tagIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tagIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {noteId, tagId};
+  @override
+  NoteTag map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NoteTag(
+      noteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}note_id'],
+      )!,
+      tagId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}tag_id'],
+      )!,
+    );
+  }
+
+  @override
+  $NoteTagsTable createAlias(String alias) {
+    return $NoteTagsTable(attachedDatabase, alias);
+  }
+}
+
+class NoteTag extends DataClass implements Insertable<NoteTag> {
+  final int noteId;
+  final int tagId;
+  const NoteTag({required this.noteId, required this.tagId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['note_id'] = Variable<int>(noteId);
+    map['tag_id'] = Variable<int>(tagId);
+    return map;
+  }
+
+  NoteTagsCompanion toCompanion(bool nullToAbsent) {
+    return NoteTagsCompanion(noteId: Value(noteId), tagId: Value(tagId));
+  }
+
+  factory NoteTag.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NoteTag(
+      noteId: serializer.fromJson<int>(json['noteId']),
+      tagId: serializer.fromJson<int>(json['tagId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'noteId': serializer.toJson<int>(noteId),
+      'tagId': serializer.toJson<int>(tagId),
+    };
+  }
+
+  NoteTag copyWith({int? noteId, int? tagId}) =>
+      NoteTag(noteId: noteId ?? this.noteId, tagId: tagId ?? this.tagId);
+  NoteTag copyWithCompanion(NoteTagsCompanion data) {
+    return NoteTag(
+      noteId: data.noteId.present ? data.noteId.value : this.noteId,
+      tagId: data.tagId.present ? data.tagId.value : this.tagId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteTag(')
+          ..write('noteId: $noteId, ')
+          ..write('tagId: $tagId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(noteId, tagId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NoteTag &&
+          other.noteId == this.noteId &&
+          other.tagId == this.tagId);
+}
+
+class NoteTagsCompanion extends UpdateCompanion<NoteTag> {
+  final Value<int> noteId;
+  final Value<int> tagId;
+  final Value<int> rowid;
+  const NoteTagsCompanion({
+    this.noteId = const Value.absent(),
+    this.tagId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  NoteTagsCompanion.insert({
+    required int noteId,
+    required int tagId,
+    this.rowid = const Value.absent(),
+  }) : noteId = Value(noteId),
+       tagId = Value(tagId);
+  static Insertable<NoteTag> custom({
+    Expression<int>? noteId,
+    Expression<int>? tagId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (noteId != null) 'note_id': noteId,
+      if (tagId != null) 'tag_id': tagId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  NoteTagsCompanion copyWith({
+    Value<int>? noteId,
+    Value<int>? tagId,
+    Value<int>? rowid,
+  }) {
+    return NoteTagsCompanion(
+      noteId: noteId ?? this.noteId,
+      tagId: tagId ?? this.tagId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (noteId.present) {
+      map['note_id'] = Variable<int>(noteId.value);
+    }
+    if (tagId.present) {
+      map['tag_id'] = Variable<int>(tagId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteTagsCompanion(')
+          ..write('noteId: $noteId, ')
+          ..write('tagId: $tagId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $NoteTemplatesTable extends NoteTemplates
+    with TableInfo<$NoteTemplatesTable, NoteTemplate> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NoteTemplatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name, content, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'note_templates';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<NoteTemplate> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  NoteTemplate map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NoteTemplate(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $NoteTemplatesTable createAlias(String alias) {
+    return $NoteTemplatesTable(attachedDatabase, alias);
+  }
+}
+
+class NoteTemplate extends DataClass implements Insertable<NoteTemplate> {
+  final int id;
+  final String name;
+
+  /// Markdown mit Platzhaltern (siehe Vorlagen-Service).
+  final String content;
+  final DateTime createdAt;
+  const NoteTemplate({
+    required this.id,
+    required this.name,
+    required this.content,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['content'] = Variable<String>(content);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  NoteTemplatesCompanion toCompanion(bool nullToAbsent) {
+    return NoteTemplatesCompanion(
+      id: Value(id),
+      name: Value(name),
+      content: Value(content),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory NoteTemplate.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NoteTemplate(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      content: serializer.fromJson<String>(json['content']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'content': serializer.toJson<String>(content),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  NoteTemplate copyWith({
+    int? id,
+    String? name,
+    String? content,
+    DateTime? createdAt,
+  }) => NoteTemplate(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    content: content ?? this.content,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  NoteTemplate copyWithCompanion(NoteTemplatesCompanion data) {
+    return NoteTemplate(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      content: data.content.present ? data.content.value : this.content,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteTemplate(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('content: $content, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, content, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NoteTemplate &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.content == this.content &&
+          other.createdAt == this.createdAt);
+}
+
+class NoteTemplatesCompanion extends UpdateCompanion<NoteTemplate> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> content;
+  final Value<DateTime> createdAt;
+  const NoteTemplatesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.content = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  NoteTemplatesCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    this.content = const Value.absent(),
+    required DateTime createdAt,
+  }) : name = Value(name),
+       createdAt = Value(createdAt);
+  static Insertable<NoteTemplate> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? content,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (content != null) 'content': content,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  NoteTemplatesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<String>? content,
+    Value<DateTime>? createdAt,
+  }) {
+    return NoteTemplatesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      content: content ?? this.content,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteTemplatesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('content: $content, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$TraumDatabase extends GeneratedDatabase {
   _$TraumDatabase(QueryExecutor e) : super(e);
   $TraumDatabaseManager get managers => $TraumDatabaseManager(this);
@@ -21001,6 +23233,12 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   late final $MealTemplateItemsTable mealTemplateItems =
       $MealTemplateItemsTable(this);
   late final $WeeklyMealPlanTable weeklyMealPlan = $WeeklyMealPlanTable(this);
+  late final $NotesTable notes = $NotesTable(this);
+  late final $NoteFoldersTable noteFolders = $NoteFoldersTable(this);
+  late final $NoteLinksTable noteLinks = $NoteLinksTable(this);
+  late final $TagsTable tags = $TagsTable(this);
+  late final $NoteTagsTable noteTags = $NoteTagsTable(this);
+  late final $NoteTemplatesTable noteTemplates = $NoteTemplatesTable(this);
   late final PlanningDao planningDao = PlanningDao(this as TraumDatabase);
   late final TrainingDao trainingDao = TrainingDao(this as TraumDatabase);
   late final HealthDao healthDao = HealthDao(this as TraumDatabase);
@@ -21022,6 +23260,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   late final SubstanceDatabaseDao substanceDatabaseDao = SubstanceDatabaseDao(
     this as TraumDatabase,
   );
+  late final NotesDao notesDao = NotesDao(this as TraumDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -21070,6 +23309,12 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
     mealEntries,
     mealTemplateItems,
     weeklyMealPlan,
+    notes,
+    noteFolders,
+    noteLinks,
+    tags,
+    noteTags,
+    noteTemplates,
   ];
 }
 
@@ -34267,6 +36512,1197 @@ typedef $$WeeklyMealPlanTableProcessedTableManager =
       WeeklyMealPlanData,
       PrefetchHooks Function()
     >;
+typedef $$NotesTableCreateCompanionBuilder =
+    NotesCompanion Function({
+      Value<int> id,
+      required String title,
+      Value<String> content,
+      Value<int?> folderId,
+      Value<bool> isDaily,
+      Value<DateTime?> dailyDate,
+      Value<bool> isBookmarked,
+      Value<bool> isPinned,
+      Value<String> propertiesJson,
+      Value<int> wordCount,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+    });
+typedef $$NotesTableUpdateCompanionBuilder =
+    NotesCompanion Function({
+      Value<int> id,
+      Value<String> title,
+      Value<String> content,
+      Value<int?> folderId,
+      Value<bool> isDaily,
+      Value<DateTime?> dailyDate,
+      Value<bool> isBookmarked,
+      Value<bool> isPinned,
+      Value<String> propertiesJson,
+      Value<int> wordCount,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+    });
+
+class $$NotesTableFilterComposer
+    extends Composer<_$TraumDatabase, $NotesTable> {
+  $$NotesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get folderId => $composableBuilder(
+    column: $table.folderId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDaily => $composableBuilder(
+    column: $table.isDaily,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get dailyDate => $composableBuilder(
+    column: $table.dailyDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isBookmarked => $composableBuilder(
+    column: $table.isBookmarked,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isPinned => $composableBuilder(
+    column: $table.isPinned,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get propertiesJson => $composableBuilder(
+    column: $table.propertiesJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get wordCount => $composableBuilder(
+    column: $table.wordCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$NotesTableOrderingComposer
+    extends Composer<_$TraumDatabase, $NotesTable> {
+  $$NotesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get folderId => $composableBuilder(
+    column: $table.folderId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDaily => $composableBuilder(
+    column: $table.isDaily,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get dailyDate => $composableBuilder(
+    column: $table.dailyDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isBookmarked => $composableBuilder(
+    column: $table.isBookmarked,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isPinned => $composableBuilder(
+    column: $table.isPinned,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get propertiesJson => $composableBuilder(
+    column: $table.propertiesJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get wordCount => $composableBuilder(
+    column: $table.wordCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$NotesTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $NotesTable> {
+  $$NotesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<int> get folderId =>
+      $composableBuilder(column: $table.folderId, builder: (column) => column);
+
+  GeneratedColumn<bool> get isDaily =>
+      $composableBuilder(column: $table.isDaily, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get dailyDate =>
+      $composableBuilder(column: $table.dailyDate, builder: (column) => column);
+
+  GeneratedColumn<bool> get isBookmarked => $composableBuilder(
+    column: $table.isBookmarked,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isPinned =>
+      $composableBuilder(column: $table.isPinned, builder: (column) => column);
+
+  GeneratedColumn<String> get propertiesJson => $composableBuilder(
+    column: $table.propertiesJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get wordCount =>
+      $composableBuilder(column: $table.wordCount, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+}
+
+class $$NotesTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $NotesTable,
+          Note,
+          $$NotesTableFilterComposer,
+          $$NotesTableOrderingComposer,
+          $$NotesTableAnnotationComposer,
+          $$NotesTableCreateCompanionBuilder,
+          $$NotesTableUpdateCompanionBuilder,
+          (Note, BaseReferences<_$TraumDatabase, $NotesTable, Note>),
+          Note,
+          PrefetchHooks Function()
+        > {
+  $$NotesTableTableManager(_$TraumDatabase db, $NotesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NotesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NotesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NotesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<int?> folderId = const Value.absent(),
+                Value<bool> isDaily = const Value.absent(),
+                Value<DateTime?> dailyDate = const Value.absent(),
+                Value<bool> isBookmarked = const Value.absent(),
+                Value<bool> isPinned = const Value.absent(),
+                Value<String> propertiesJson = const Value.absent(),
+                Value<int> wordCount = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+              }) => NotesCompanion(
+                id: id,
+                title: title,
+                content: content,
+                folderId: folderId,
+                isDaily: isDaily,
+                dailyDate: dailyDate,
+                isBookmarked: isBookmarked,
+                isPinned: isPinned,
+                propertiesJson: propertiesJson,
+                wordCount: wordCount,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String title,
+                Value<String> content = const Value.absent(),
+                Value<int?> folderId = const Value.absent(),
+                Value<bool> isDaily = const Value.absent(),
+                Value<DateTime?> dailyDate = const Value.absent(),
+                Value<bool> isBookmarked = const Value.absent(),
+                Value<bool> isPinned = const Value.absent(),
+                Value<String> propertiesJson = const Value.absent(),
+                Value<int> wordCount = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+              }) => NotesCompanion.insert(
+                id: id,
+                title: title,
+                content: content,
+                folderId: folderId,
+                isDaily: isDaily,
+                dailyDate: dailyDate,
+                isBookmarked: isBookmarked,
+                isPinned: isPinned,
+                propertiesJson: propertiesJson,
+                wordCount: wordCount,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$NotesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $NotesTable,
+      Note,
+      $$NotesTableFilterComposer,
+      $$NotesTableOrderingComposer,
+      $$NotesTableAnnotationComposer,
+      $$NotesTableCreateCompanionBuilder,
+      $$NotesTableUpdateCompanionBuilder,
+      (Note, BaseReferences<_$TraumDatabase, $NotesTable, Note>),
+      Note,
+      PrefetchHooks Function()
+    >;
+typedef $$NoteFoldersTableCreateCompanionBuilder =
+    NoteFoldersCompanion Function({
+      Value<int> id,
+      required String name,
+      Value<int?> parentId,
+      Value<int> sortOrder,
+      required DateTime createdAt,
+    });
+typedef $$NoteFoldersTableUpdateCompanionBuilder =
+    NoteFoldersCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<int?> parentId,
+      Value<int> sortOrder,
+      Value<DateTime> createdAt,
+    });
+
+class $$NoteFoldersTableFilterComposer
+    extends Composer<_$TraumDatabase, $NoteFoldersTable> {
+  $$NoteFoldersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get parentId => $composableBuilder(
+    column: $table.parentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$NoteFoldersTableOrderingComposer
+    extends Composer<_$TraumDatabase, $NoteFoldersTable> {
+  $$NoteFoldersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get parentId => $composableBuilder(
+    column: $table.parentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$NoteFoldersTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $NoteFoldersTable> {
+  $$NoteFoldersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get parentId =>
+      $composableBuilder(column: $table.parentId, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$NoteFoldersTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $NoteFoldersTable,
+          NoteFolder,
+          $$NoteFoldersTableFilterComposer,
+          $$NoteFoldersTableOrderingComposer,
+          $$NoteFoldersTableAnnotationComposer,
+          $$NoteFoldersTableCreateCompanionBuilder,
+          $$NoteFoldersTableUpdateCompanionBuilder,
+          (
+            NoteFolder,
+            BaseReferences<_$TraumDatabase, $NoteFoldersTable, NoteFolder>,
+          ),
+          NoteFolder,
+          PrefetchHooks Function()
+        > {
+  $$NoteFoldersTableTableManager(_$TraumDatabase db, $NoteFoldersTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NoteFoldersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NoteFoldersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NoteFoldersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int?> parentId = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => NoteFoldersCompanion(
+                id: id,
+                name: name,
+                parentId: parentId,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                Value<int?> parentId = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                required DateTime createdAt,
+              }) => NoteFoldersCompanion.insert(
+                id: id,
+                name: name,
+                parentId: parentId,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$NoteFoldersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $NoteFoldersTable,
+      NoteFolder,
+      $$NoteFoldersTableFilterComposer,
+      $$NoteFoldersTableOrderingComposer,
+      $$NoteFoldersTableAnnotationComposer,
+      $$NoteFoldersTableCreateCompanionBuilder,
+      $$NoteFoldersTableUpdateCompanionBuilder,
+      (
+        NoteFolder,
+        BaseReferences<_$TraumDatabase, $NoteFoldersTable, NoteFolder>,
+      ),
+      NoteFolder,
+      PrefetchHooks Function()
+    >;
+typedef $$NoteLinksTableCreateCompanionBuilder =
+    NoteLinksCompanion Function({
+      Value<int> id,
+      required int sourceNoteId,
+      Value<int?> targetNoteId,
+      required String targetTitleRaw,
+      Value<String> linkType,
+    });
+typedef $$NoteLinksTableUpdateCompanionBuilder =
+    NoteLinksCompanion Function({
+      Value<int> id,
+      Value<int> sourceNoteId,
+      Value<int?> targetNoteId,
+      Value<String> targetTitleRaw,
+      Value<String> linkType,
+    });
+
+class $$NoteLinksTableFilterComposer
+    extends Composer<_$TraumDatabase, $NoteLinksTable> {
+  $$NoteLinksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sourceNoteId => $composableBuilder(
+    column: $table.sourceNoteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get targetNoteId => $composableBuilder(
+    column: $table.targetNoteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get targetTitleRaw => $composableBuilder(
+    column: $table.targetTitleRaw,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get linkType => $composableBuilder(
+    column: $table.linkType,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$NoteLinksTableOrderingComposer
+    extends Composer<_$TraumDatabase, $NoteLinksTable> {
+  $$NoteLinksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sourceNoteId => $composableBuilder(
+    column: $table.sourceNoteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get targetNoteId => $composableBuilder(
+    column: $table.targetNoteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get targetTitleRaw => $composableBuilder(
+    column: $table.targetTitleRaw,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get linkType => $composableBuilder(
+    column: $table.linkType,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$NoteLinksTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $NoteLinksTable> {
+  $$NoteLinksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get sourceNoteId => $composableBuilder(
+    column: $table.sourceNoteId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get targetNoteId => $composableBuilder(
+    column: $table.targetNoteId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get targetTitleRaw => $composableBuilder(
+    column: $table.targetTitleRaw,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get linkType =>
+      $composableBuilder(column: $table.linkType, builder: (column) => column);
+}
+
+class $$NoteLinksTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $NoteLinksTable,
+          NoteLink,
+          $$NoteLinksTableFilterComposer,
+          $$NoteLinksTableOrderingComposer,
+          $$NoteLinksTableAnnotationComposer,
+          $$NoteLinksTableCreateCompanionBuilder,
+          $$NoteLinksTableUpdateCompanionBuilder,
+          (
+            NoteLink,
+            BaseReferences<_$TraumDatabase, $NoteLinksTable, NoteLink>,
+          ),
+          NoteLink,
+          PrefetchHooks Function()
+        > {
+  $$NoteLinksTableTableManager(_$TraumDatabase db, $NoteLinksTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NoteLinksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NoteLinksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NoteLinksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> sourceNoteId = const Value.absent(),
+                Value<int?> targetNoteId = const Value.absent(),
+                Value<String> targetTitleRaw = const Value.absent(),
+                Value<String> linkType = const Value.absent(),
+              }) => NoteLinksCompanion(
+                id: id,
+                sourceNoteId: sourceNoteId,
+                targetNoteId: targetNoteId,
+                targetTitleRaw: targetTitleRaw,
+                linkType: linkType,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int sourceNoteId,
+                Value<int?> targetNoteId = const Value.absent(),
+                required String targetTitleRaw,
+                Value<String> linkType = const Value.absent(),
+              }) => NoteLinksCompanion.insert(
+                id: id,
+                sourceNoteId: sourceNoteId,
+                targetNoteId: targetNoteId,
+                targetTitleRaw: targetTitleRaw,
+                linkType: linkType,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$NoteLinksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $NoteLinksTable,
+      NoteLink,
+      $$NoteLinksTableFilterComposer,
+      $$NoteLinksTableOrderingComposer,
+      $$NoteLinksTableAnnotationComposer,
+      $$NoteLinksTableCreateCompanionBuilder,
+      $$NoteLinksTableUpdateCompanionBuilder,
+      (NoteLink, BaseReferences<_$TraumDatabase, $NoteLinksTable, NoteLink>),
+      NoteLink,
+      PrefetchHooks Function()
+    >;
+typedef $$TagsTableCreateCompanionBuilder =
+    TagsCompanion Function({
+      Value<int> id,
+      required String name,
+      required DateTime createdAt,
+    });
+typedef $$TagsTableUpdateCompanionBuilder =
+    TagsCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<DateTime> createdAt,
+    });
+
+class $$TagsTableFilterComposer extends Composer<_$TraumDatabase, $TagsTable> {
+  $$TagsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TagsTableOrderingComposer
+    extends Composer<_$TraumDatabase, $TagsTable> {
+  $$TagsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TagsTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $TagsTable> {
+  $$TagsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$TagsTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $TagsTable,
+          Tag,
+          $$TagsTableFilterComposer,
+          $$TagsTableOrderingComposer,
+          $$TagsTableAnnotationComposer,
+          $$TagsTableCreateCompanionBuilder,
+          $$TagsTableUpdateCompanionBuilder,
+          (Tag, BaseReferences<_$TraumDatabase, $TagsTable, Tag>),
+          Tag,
+          PrefetchHooks Function()
+        > {
+  $$TagsTableTableManager(_$TraumDatabase db, $TagsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TagsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TagsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TagsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => TagsCompanion(id: id, name: name, createdAt: createdAt),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                required DateTime createdAt,
+              }) => TagsCompanion.insert(
+                id: id,
+                name: name,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TagsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $TagsTable,
+      Tag,
+      $$TagsTableFilterComposer,
+      $$TagsTableOrderingComposer,
+      $$TagsTableAnnotationComposer,
+      $$TagsTableCreateCompanionBuilder,
+      $$TagsTableUpdateCompanionBuilder,
+      (Tag, BaseReferences<_$TraumDatabase, $TagsTable, Tag>),
+      Tag,
+      PrefetchHooks Function()
+    >;
+typedef $$NoteTagsTableCreateCompanionBuilder =
+    NoteTagsCompanion Function({
+      required int noteId,
+      required int tagId,
+      Value<int> rowid,
+    });
+typedef $$NoteTagsTableUpdateCompanionBuilder =
+    NoteTagsCompanion Function({
+      Value<int> noteId,
+      Value<int> tagId,
+      Value<int> rowid,
+    });
+
+class $$NoteTagsTableFilterComposer
+    extends Composer<_$TraumDatabase, $NoteTagsTable> {
+  $$NoteTagsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get noteId => $composableBuilder(
+    column: $table.noteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get tagId => $composableBuilder(
+    column: $table.tagId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$NoteTagsTableOrderingComposer
+    extends Composer<_$TraumDatabase, $NoteTagsTable> {
+  $$NoteTagsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get noteId => $composableBuilder(
+    column: $table.noteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get tagId => $composableBuilder(
+    column: $table.tagId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$NoteTagsTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $NoteTagsTable> {
+  $$NoteTagsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get noteId =>
+      $composableBuilder(column: $table.noteId, builder: (column) => column);
+
+  GeneratedColumn<int> get tagId =>
+      $composableBuilder(column: $table.tagId, builder: (column) => column);
+}
+
+class $$NoteTagsTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $NoteTagsTable,
+          NoteTag,
+          $$NoteTagsTableFilterComposer,
+          $$NoteTagsTableOrderingComposer,
+          $$NoteTagsTableAnnotationComposer,
+          $$NoteTagsTableCreateCompanionBuilder,
+          $$NoteTagsTableUpdateCompanionBuilder,
+          (NoteTag, BaseReferences<_$TraumDatabase, $NoteTagsTable, NoteTag>),
+          NoteTag,
+          PrefetchHooks Function()
+        > {
+  $$NoteTagsTableTableManager(_$TraumDatabase db, $NoteTagsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NoteTagsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NoteTagsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NoteTagsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> noteId = const Value.absent(),
+                Value<int> tagId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) =>
+                  NoteTagsCompanion(noteId: noteId, tagId: tagId, rowid: rowid),
+          createCompanionCallback:
+              ({
+                required int noteId,
+                required int tagId,
+                Value<int> rowid = const Value.absent(),
+              }) => NoteTagsCompanion.insert(
+                noteId: noteId,
+                tagId: tagId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$NoteTagsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $NoteTagsTable,
+      NoteTag,
+      $$NoteTagsTableFilterComposer,
+      $$NoteTagsTableOrderingComposer,
+      $$NoteTagsTableAnnotationComposer,
+      $$NoteTagsTableCreateCompanionBuilder,
+      $$NoteTagsTableUpdateCompanionBuilder,
+      (NoteTag, BaseReferences<_$TraumDatabase, $NoteTagsTable, NoteTag>),
+      NoteTag,
+      PrefetchHooks Function()
+    >;
+typedef $$NoteTemplatesTableCreateCompanionBuilder =
+    NoteTemplatesCompanion Function({
+      Value<int> id,
+      required String name,
+      Value<String> content,
+      required DateTime createdAt,
+    });
+typedef $$NoteTemplatesTableUpdateCompanionBuilder =
+    NoteTemplatesCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<String> content,
+      Value<DateTime> createdAt,
+    });
+
+class $$NoteTemplatesTableFilterComposer
+    extends Composer<_$TraumDatabase, $NoteTemplatesTable> {
+  $$NoteTemplatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$NoteTemplatesTableOrderingComposer
+    extends Composer<_$TraumDatabase, $NoteTemplatesTable> {
+  $$NoteTemplatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$NoteTemplatesTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $NoteTemplatesTable> {
+  $$NoteTemplatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$NoteTemplatesTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $NoteTemplatesTable,
+          NoteTemplate,
+          $$NoteTemplatesTableFilterComposer,
+          $$NoteTemplatesTableOrderingComposer,
+          $$NoteTemplatesTableAnnotationComposer,
+          $$NoteTemplatesTableCreateCompanionBuilder,
+          $$NoteTemplatesTableUpdateCompanionBuilder,
+          (
+            NoteTemplate,
+            BaseReferences<_$TraumDatabase, $NoteTemplatesTable, NoteTemplate>,
+          ),
+          NoteTemplate,
+          PrefetchHooks Function()
+        > {
+  $$NoteTemplatesTableTableManager(
+    _$TraumDatabase db,
+    $NoteTemplatesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NoteTemplatesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NoteTemplatesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NoteTemplatesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => NoteTemplatesCompanion(
+                id: id,
+                name: name,
+                content: content,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                Value<String> content = const Value.absent(),
+                required DateTime createdAt,
+              }) => NoteTemplatesCompanion.insert(
+                id: id,
+                name: name,
+                content: content,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$NoteTemplatesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $NoteTemplatesTable,
+      NoteTemplate,
+      $$NoteTemplatesTableFilterComposer,
+      $$NoteTemplatesTableOrderingComposer,
+      $$NoteTemplatesTableAnnotationComposer,
+      $$NoteTemplatesTableCreateCompanionBuilder,
+      $$NoteTemplatesTableUpdateCompanionBuilder,
+      (
+        NoteTemplate,
+        BaseReferences<_$TraumDatabase, $NoteTemplatesTable, NoteTemplate>,
+      ),
+      NoteTemplate,
+      PrefetchHooks Function()
+    >;
 
 class $TraumDatabaseManager {
   final _$TraumDatabase _db;
@@ -34360,4 +37796,15 @@ class $TraumDatabaseManager {
       $$MealTemplateItemsTableTableManager(_db, _db.mealTemplateItems);
   $$WeeklyMealPlanTableTableManager get weeklyMealPlan =>
       $$WeeklyMealPlanTableTableManager(_db, _db.weeklyMealPlan);
+  $$NotesTableTableManager get notes =>
+      $$NotesTableTableManager(_db, _db.notes);
+  $$NoteFoldersTableTableManager get noteFolders =>
+      $$NoteFoldersTableTableManager(_db, _db.noteFolders);
+  $$NoteLinksTableTableManager get noteLinks =>
+      $$NoteLinksTableTableManager(_db, _db.noteLinks);
+  $$TagsTableTableManager get tags => $$TagsTableTableManager(_db, _db.tags);
+  $$NoteTagsTableTableManager get noteTags =>
+      $$NoteTagsTableTableManager(_db, _db.noteTags);
+  $$NoteTemplatesTableTableManager get noteTemplates =>
+      $$NoteTemplatesTableTableManager(_db, _db.noteTemplates);
 }

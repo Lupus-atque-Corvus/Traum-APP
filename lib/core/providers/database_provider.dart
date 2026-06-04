@@ -283,6 +283,11 @@ final mealEntriesDaoProvider = Provider<MealEntriesDao>((ref) {
   return ref.watch(databaseProvider).mealEntriesDao;
 });
 
+// ─── Notes ────────────────────────────────────────────────────────────────────
+final notesDaoProvider = Provider<NotesDao>((ref) {
+  return ref.watch(databaseProvider).notesDao;
+});
+
 // ─── Calendar Sync ────────────────────────────────────────────────────────────
 final calendarSyncServiceProvider = Provider<CalendarSyncService>((ref) {
   return CalendarSyncService(

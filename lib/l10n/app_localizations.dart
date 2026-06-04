@@ -5473,6 +5473,396 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Wochenverlauf'**
   String get nutritionWeeklyChart;
+
+  /// No description provided for @notes_title.
+  ///
+  /// In de, this message translates to:
+  /// **'Notizen'**
+  String get notes_title;
+
+  /// No description provided for @notes_new_note.
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Notiz'**
+  String get notes_new_note;
+
+  /// No description provided for @notes_new_folder.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuer Ordner'**
+  String get notes_new_folder;
+
+  /// No description provided for @notes_recent.
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt bearbeitet'**
+  String get notes_recent;
+
+  /// No description provided for @notes_bookmarks.
+  ///
+  /// In de, this message translates to:
+  /// **'Lesezeichen'**
+  String get notes_bookmarks;
+
+  /// No description provided for @notes_graph.
+  ///
+  /// In de, this message translates to:
+  /// **'Graph'**
+  String get notes_graph;
+
+  /// No description provided for @notes_tags.
+  ///
+  /// In de, this message translates to:
+  /// **'Tags'**
+  String get notes_tags;
+
+  /// No description provided for @notes_search.
+  ///
+  /// In de, this message translates to:
+  /// **'Suche'**
+  String get notes_search;
+
+  /// No description provided for @notes_daily.
+  ///
+  /// In de, this message translates to:
+  /// **'Tagesnotizen'**
+  String get notes_daily;
+
+  /// No description provided for @notes_templates.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlagen'**
+  String get notes_templates;
+
+  /// No description provided for @notes_trash.
+  ///
+  /// In de, this message translates to:
+  /// **'Papierkorb'**
+  String get notes_trash;
+
+  /// No description provided for @notes_edit_mode.
+  ///
+  /// In de, this message translates to:
+  /// **'Bearbeiten'**
+  String get notes_edit_mode;
+
+  /// No description provided for @notes_reading_mode.
+  ///
+  /// In de, this message translates to:
+  /// **'Lesen'**
+  String get notes_reading_mode;
+
+  /// No description provided for @notes_backlinks.
+  ///
+  /// In de, this message translates to:
+  /// **'Backlinks'**
+  String get notes_backlinks;
+
+  /// No description provided for @notes_outgoing_links.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausgehende Links'**
+  String get notes_outgoing_links;
+
+  /// No description provided for @notes_outline.
+  ///
+  /// In de, this message translates to:
+  /// **'Gliederung'**
+  String get notes_outline;
+
+  /// No description provided for @notes_unresolved_links.
+  ///
+  /// In de, this message translates to:
+  /// **'Unaufgelöste Links'**
+  String get notes_unresolved_links;
+
+  /// No description provided for @notes_no_backlinks.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Backlinks'**
+  String get notes_no_backlinks;
+
+  /// No description provided for @notes_no_outgoing_links.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine ausgehenden Links'**
+  String get notes_no_outgoing_links;
+
+  /// No description provided for @notes_no_outline.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Überschriften'**
+  String get notes_no_outline;
+
+  /// No description provided for @notes_move_to_folder.
+  ///
+  /// In de, this message translates to:
+  /// **'In Ordner verschieben'**
+  String get notes_move_to_folder;
+
+  /// No description provided for @notes_delete.
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen'**
+  String get notes_delete;
+
+  /// No description provided for @notes_restore.
+  ///
+  /// In de, this message translates to:
+  /// **'Wiederherstellen'**
+  String get notes_restore;
+
+  /// No description provided for @notes_delete_permanently.
+  ///
+  /// In de, this message translates to:
+  /// **'Endgültig löschen'**
+  String get notes_delete_permanently;
+
+  /// No description provided for @notes_word_count.
+  ///
+  /// In de, this message translates to:
+  /// **'Wörter'**
+  String get notes_word_count;
+
+  /// No description provided for @notes_insert_template.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlage einfügen'**
+  String get notes_insert_template;
+
+  /// No description provided for @notes_export_md.
+  ///
+  /// In de, this message translates to:
+  /// **'Als .md exportieren'**
+  String get notes_export_md;
+
+  /// No description provided for @notes_create_note_named.
+  ///
+  /// In de, this message translates to:
+  /// **'„{title}\" anlegen'**
+  String notes_create_note_named(String title);
+
+  /// No description provided for @notes_rename.
+  ///
+  /// In de, this message translates to:
+  /// **'Umbenennen'**
+  String get notes_rename;
+
+  /// No description provided for @notes_pin.
+  ///
+  /// In de, this message translates to:
+  /// **'Anheften'**
+  String get notes_pin;
+
+  /// No description provided for @notes_unpin.
+  ///
+  /// In de, this message translates to:
+  /// **'Lösen'**
+  String get notes_unpin;
+
+  /// No description provided for @notes_pinned.
+  ///
+  /// In de, this message translates to:
+  /// **'Angeheftet'**
+  String get notes_pinned;
+
+  /// No description provided for @notes_no_notes.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Notizen'**
+  String get notes_no_notes;
+
+  /// No description provided for @notes_root.
+  ///
+  /// In de, this message translates to:
+  /// **'Wurzel'**
+  String get notes_root;
+
+  /// No description provided for @notes_folder_name.
+  ///
+  /// In de, this message translates to:
+  /// **'Ordnername'**
+  String get notes_folder_name;
+
+  /// No description provided for @notes_note_title.
+  ///
+  /// In de, this message translates to:
+  /// **'Titel'**
+  String get notes_note_title;
+
+  /// No description provided for @notes_template_name.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlagenname'**
+  String get notes_template_name;
+
+  /// No description provided for @notes_new_template.
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Vorlage'**
+  String get notes_new_template;
+
+  /// No description provided for @notes_no_tags.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Tags'**
+  String get notes_no_tags;
+
+  /// No description provided for @notes_no_templates.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Vorlagen'**
+  String get notes_no_templates;
+
+  /// No description provided for @notes_search_hint.
+  ///
+  /// In de, this message translates to:
+  /// **'Notizen durchsuchen…'**
+  String get notes_search_hint;
+
+  /// No description provided for @notes_quick_switcher_hint.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz suchen oder anlegen…'**
+  String get notes_quick_switcher_hint;
+
+  /// No description provided for @notes_untitled.
+  ///
+  /// In de, this message translates to:
+  /// **'Unbenannt'**
+  String get notes_untitled;
+
+  /// No description provided for @notes_import_vault.
+  ///
+  /// In de, this message translates to:
+  /// **'Vault importieren'**
+  String get notes_import_vault;
+
+  /// No description provided for @notes_export_vault.
+  ///
+  /// In de, this message translates to:
+  /// **'Vault exportieren'**
+  String get notes_export_vault;
+
+  /// No description provided for @notes_empty_trash.
+  ///
+  /// In de, this message translates to:
+  /// **'Papierkorb leeren'**
+  String get notes_empty_trash;
+
+  /// No description provided for @notes_local_graph.
+  ///
+  /// In de, this message translates to:
+  /// **'Lokaler Graph'**
+  String get notes_local_graph;
+
+  /// No description provided for @notes_full_graph.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesamtgraph'**
+  String get notes_full_graph;
+
+  /// No description provided for @notes_neighbor_depth.
+  ///
+  /// In de, this message translates to:
+  /// **'Nachbartiefe'**
+  String get notes_neighbor_depth;
+
+  /// No description provided for @notes_no_daily.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Tagesnotiz für diesen Tag'**
+  String get notes_no_daily;
+
+  /// No description provided for @notes_open_or_create.
+  ///
+  /// In de, this message translates to:
+  /// **'Öffnen oder anlegen'**
+  String get notes_open_or_create;
+
+  /// No description provided for @notes_today.
+  ///
+  /// In de, this message translates to:
+  /// **'Heute'**
+  String get notes_today;
+
+  /// No description provided for @notes_cancel.
+  ///
+  /// In de, this message translates to:
+  /// **'Abbrechen'**
+  String get notes_cancel;
+
+  /// No description provided for @notes_save.
+  ///
+  /// In de, this message translates to:
+  /// **'Speichern'**
+  String get notes_save;
+
+  /// No description provided for @notes_create.
+  ///
+  /// In de, this message translates to:
+  /// **'Anlegen'**
+  String get notes_create;
+
+  /// No description provided for @notes_no_results.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Treffer'**
+  String get notes_no_results;
+
+  /// No description provided for @notes_confirm_delete.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz in den Papierkorb verschieben?'**
+  String get notes_confirm_delete;
+
+  /// No description provided for @notes_confirm_delete_permanently.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz endgültig löschen? Das kann nicht rückgängig gemacht werden.'**
+  String get notes_confirm_delete_permanently;
+
+  /// No description provided for @notes_no_trash.
+  ///
+  /// In de, this message translates to:
+  /// **'Papierkorb ist leer'**
+  String get notes_no_trash;
+
+  /// No description provided for @notes_preview.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorschau'**
+  String get notes_preview;
+
+  /// No description provided for @notes_properties.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigenschaften'**
+  String get notes_properties;
+
+  /// No description provided for @notes_empty_note_hint.
+  ///
+  /// In de, this message translates to:
+  /// **'Schreibe etwas in Markdown…'**
+  String get notes_empty_note_hint;
+
+  /// No description provided for @notes_export_done.
+  ///
+  /// In de, this message translates to:
+  /// **'Vault exportiert'**
+  String get notes_export_done;
+
+  /// No description provided for @notes_import_done.
+  ///
+  /// In de, this message translates to:
+  /// **'Vault importiert: {count} Notizen'**
+  String notes_import_done(int count);
+
+  /// No description provided for @notes_link_count.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} Notizen'**
+  String notes_link_count(int count);
 }
 
 class _AppLocalizationsDelegate

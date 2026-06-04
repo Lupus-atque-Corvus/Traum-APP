@@ -2819,4 +2819,206 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nutritionWeeklyChart => 'Weekly trend';
+
+  @override
+  String get notes_title => 'Notes';
+
+  @override
+  String get notes_new_note => 'New note';
+
+  @override
+  String get notes_new_folder => 'New folder';
+
+  @override
+  String get notes_recent => 'Recently edited';
+
+  @override
+  String get notes_bookmarks => 'Bookmarks';
+
+  @override
+  String get notes_graph => 'Graph';
+
+  @override
+  String get notes_tags => 'Tags';
+
+  @override
+  String get notes_search => 'Search';
+
+  @override
+  String get notes_daily => 'Daily notes';
+
+  @override
+  String get notes_templates => 'Templates';
+
+  @override
+  String get notes_trash => 'Trash';
+
+  @override
+  String get notes_edit_mode => 'Edit';
+
+  @override
+  String get notes_reading_mode => 'Read';
+
+  @override
+  String get notes_backlinks => 'Backlinks';
+
+  @override
+  String get notes_outgoing_links => 'Outgoing links';
+
+  @override
+  String get notes_outline => 'Outline';
+
+  @override
+  String get notes_unresolved_links => 'Unresolved links';
+
+  @override
+  String get notes_no_backlinks => 'No backlinks';
+
+  @override
+  String get notes_no_outgoing_links => 'No outgoing links';
+
+  @override
+  String get notes_no_outline => 'No headings';
+
+  @override
+  String get notes_move_to_folder => 'Move to folder';
+
+  @override
+  String get notes_delete => 'Delete';
+
+  @override
+  String get notes_restore => 'Restore';
+
+  @override
+  String get notes_delete_permanently => 'Delete permanently';
+
+  @override
+  String get notes_word_count => 'words';
+
+  @override
+  String get notes_insert_template => 'Insert template';
+
+  @override
+  String get notes_export_md => 'Export as .md';
+
+  @override
+  String notes_create_note_named(String title) {
+    return 'Create \"$title\"';
+  }
+
+  @override
+  String get notes_rename => 'Rename';
+
+  @override
+  String get notes_pin => 'Pin';
+
+  @override
+  String get notes_unpin => 'Unpin';
+
+  @override
+  String get notes_pinned => 'Pinned';
+
+  @override
+  String get notes_no_notes => 'No notes yet';
+
+  @override
+  String get notes_root => 'Root';
+
+  @override
+  String get notes_folder_name => 'Folder name';
+
+  @override
+  String get notes_note_title => 'Title';
+
+  @override
+  String get notes_template_name => 'Template name';
+
+  @override
+  String get notes_new_template => 'New template';
+
+  @override
+  String get notes_no_tags => 'No tags';
+
+  @override
+  String get notes_no_templates => 'No templates';
+
+  @override
+  String get notes_search_hint => 'Search notes…';
+
+  @override
+  String get notes_quick_switcher_hint => 'Find or create note…';
+
+  @override
+  String get notes_untitled => 'Untitled';
+
+  @override
+  String get notes_import_vault => 'Import vault';
+
+  @override
+  String get notes_export_vault => 'Export vault';
+
+  @override
+  String get notes_empty_trash => 'Empty trash';
+
+  @override
+  String get notes_local_graph => 'Local graph';
+
+  @override
+  String get notes_full_graph => 'Full graph';
+
+  @override
+  String get notes_neighbor_depth => 'Neighbor depth';
+
+  @override
+  String get notes_no_daily => 'No daily note for this day';
+
+  @override
+  String get notes_open_or_create => 'Open or create';
+
+  @override
+  String get notes_today => 'Today';
+
+  @override
+  String get notes_cancel => 'Cancel';
+
+  @override
+  String get notes_save => 'Save';
+
+  @override
+  String get notes_create => 'Create';
+
+  @override
+  String get notes_no_results => 'No results';
+
+  @override
+  String get notes_confirm_delete => 'Move note to trash?';
+
+  @override
+  String get notes_confirm_delete_permanently =>
+      'Delete note permanently? This cannot be undone.';
+
+  @override
+  String get notes_no_trash => 'Trash is empty';
+
+  @override
+  String get notes_preview => 'Preview';
+
+  @override
+  String get notes_properties => 'Properties';
+
+  @override
+  String get notes_empty_note_hint => 'Write something in Markdown…';
+
+  @override
+  String get notes_export_done => 'Vault exported';
+
+  @override
+  String notes_import_done(int count) {
+    return 'Vault imported: $count notes';
+  }
+
+  @override
+  String notes_link_count(int count) {
+    return '$count notes';
+  }
 }

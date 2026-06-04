@@ -113,11 +113,14 @@ class TraumColors {
         return cyanBlue;
       case 'nutrition':
         return mintGreen;
-      case 'supplements':
+      case 'substances':
         return indigoBlue;
       case 'planning':
         return lavender;
-      case 'medication':
+      case 'diary':
+        return peachOrange;
+      case 'notes':
+        return lavender;
       case 'abstinence':
         return roseRed;
       case 'budget':

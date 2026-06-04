@@ -2829,4 +2829,206 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get nutritionWeeklyChart => 'Wochenverlauf';
+
+  @override
+  String get notes_title => 'Notizen';
+
+  @override
+  String get notes_new_note => 'Neue Notiz';
+
+  @override
+  String get notes_new_folder => 'Neuer Ordner';
+
+  @override
+  String get notes_recent => 'Zuletzt bearbeitet';
+
+  @override
+  String get notes_bookmarks => 'Lesezeichen';
+
+  @override
+  String get notes_graph => 'Graph';
+
+  @override
+  String get notes_tags => 'Tags';
+
+  @override
+  String get notes_search => 'Suche';
+
+  @override
+  String get notes_daily => 'Tagesnotizen';
+
+  @override
+  String get notes_templates => 'Vorlagen';
+
+  @override
+  String get notes_trash => 'Papierkorb';
+
+  @override
+  String get notes_edit_mode => 'Bearbeiten';
+
+  @override
+  String get notes_reading_mode => 'Lesen';
+
+  @override
+  String get notes_backlinks => 'Backlinks';
+
+  @override
+  String get notes_outgoing_links => 'Ausgehende Links';
+
+  @override
+  String get notes_outline => 'Gliederung';
+
+  @override
+  String get notes_unresolved_links => 'Unaufgelöste Links';
+
+  @override
+  String get notes_no_backlinks => 'Keine Backlinks';
+
+  @override
+  String get notes_no_outgoing_links => 'Keine ausgehenden Links';
+
+  @override
+  String get notes_no_outline => 'Keine Überschriften';
+
+  @override
+  String get notes_move_to_folder => 'In Ordner verschieben';
+
+  @override
+  String get notes_delete => 'Löschen';
+
+  @override
+  String get notes_restore => 'Wiederherstellen';
+
+  @override
+  String get notes_delete_permanently => 'Endgültig löschen';
+
+  @override
+  String get notes_word_count => 'Wörter';
+
+  @override
+  String get notes_insert_template => 'Vorlage einfügen';
+
+  @override
+  String get notes_export_md => 'Als .md exportieren';
+
+  @override
+  String notes_create_note_named(String title) {
+    return '„$title\" anlegen';
+  }
+
+  @override
+  String get notes_rename => 'Umbenennen';
+
+  @override
+  String get notes_pin => 'Anheften';
+
+  @override
+  String get notes_unpin => 'Lösen';
+
+  @override
+  String get notes_pinned => 'Angeheftet';
+
+  @override
+  String get notes_no_notes => 'Noch keine Notizen';
+
+  @override
+  String get notes_root => 'Wurzel';
+
+  @override
+  String get notes_folder_name => 'Ordnername';
+
+  @override
+  String get notes_note_title => 'Titel';
+
+  @override
+  String get notes_template_name => 'Vorlagenname';
+
+  @override
+  String get notes_new_template => 'Neue Vorlage';
+
+  @override
+  String get notes_no_tags => 'Keine Tags';
+
+  @override
+  String get notes_no_templates => 'Keine Vorlagen';
+
+  @override
+  String get notes_search_hint => 'Notizen durchsuchen…';
+
+  @override
+  String get notes_quick_switcher_hint => 'Notiz suchen oder anlegen…';
+
+  @override
+  String get notes_untitled => 'Unbenannt';
+
+  @override
+  String get notes_import_vault => 'Vault importieren';
+
+  @override
+  String get notes_export_vault => 'Vault exportieren';
+
+  @override
+  String get notes_empty_trash => 'Papierkorb leeren';
+
+  @override
+  String get notes_local_graph => 'Lokaler Graph';
+
+  @override
+  String get notes_full_graph => 'Gesamtgraph';
+
+  @override
+  String get notes_neighbor_depth => 'Nachbartiefe';
+
+  @override
+  String get notes_no_daily => 'Keine Tagesnotiz für diesen Tag';
+
+  @override
+  String get notes_open_or_create => 'Öffnen oder anlegen';
+
+  @override
+  String get notes_today => 'Heute';
+
+  @override
+  String get notes_cancel => 'Abbrechen';
+
+  @override
+  String get notes_save => 'Speichern';
+
+  @override
+  String get notes_create => 'Anlegen';
+
+  @override
+  String get notes_no_results => 'Keine Treffer';
+
+  @override
+  String get notes_confirm_delete => 'Notiz in den Papierkorb verschieben?';
+
+  @override
+  String get notes_confirm_delete_permanently =>
+      'Notiz endgültig löschen? Das kann nicht rückgängig gemacht werden.';
+
+  @override
+  String get notes_no_trash => 'Papierkorb ist leer';
+
+  @override
+  String get notes_preview => 'Vorschau';
+
+  @override
+  String get notes_properties => 'Eigenschaften';
+
+  @override
+  String get notes_empty_note_hint => 'Schreibe etwas in Markdown…';
+
+  @override
+  String get notes_export_done => 'Vault exportiert';
+
+  @override
+  String notes_import_done(int count) {
+    return 'Vault importiert: $count Notizen';
+  }
+
+  @override
+  String notes_link_count(int count) {
+    return '$count Notizen';
+  }
 }

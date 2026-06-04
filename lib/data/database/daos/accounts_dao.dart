@@ -23,7 +23,7 @@ class AccountsDao extends DatabaseAccessor<TraumDatabase>
 
   Future<double> getTotalBalance() async {
     final all = await getAll();
-    return all.fold(0.0, (sum, a) {
+    return all.fold<double>(0.0, (sum, a) {
       final contribution = a.type == 'credit' ? -a.balance.abs() : a.balance;
       return sum + contribution;
     });

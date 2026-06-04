@@ -36,11 +36,20 @@ class Routes {
   static const String period = '/period';
   static const String periodCalendar = '/period/calendar';
   static const String cycleHistory = '/period/history';
+  static const String notes = '/notes';
+  static const String noteDetail = '/notes/note/:id';
+  static const String notesGraph = '/notes/graph';
+  static const String notesTags = '/notes/tags';
+  static const String notesSearch = '/notes/search';
+  static const String notesDaily = '/notes/daily';
+  static const String notesTemplates = '/notes/templates';
+  static const String notesTrash = '/notes/trash';
   static const String settings = '/settings';
   static const String profile = '/profile';
   static const String biometricLock = '/biometric-lock';
   static const String pinEntry = '/pin-entry';
 
+  static String noteDetailPath(int id) => '/notes/note/$id';
   static String workoutDetailPath(int id) => '/training/session/$id';
   static String exerciseProgressPath(int id) => '/training/exercise/$id/progress';
   static String workoutPlanPath(int id) => '/training/plan/$id';
@@ -55,6 +64,7 @@ class Routes {
     'abstinence': abstinence,
     'budget': budget,
     'diary': diary,
+    'notes': notes,
     'period': period,
     'profile': profile,
     'settings': settings,
@@ -80,6 +90,8 @@ class Routes {
         return l10n.budget;
       case 'diary':
         return l10n.diaryModuleLabel;
+      case 'notes':
+        return l10n.notes_title;
       case 'period':
         return l10n.period;
       case 'profile':

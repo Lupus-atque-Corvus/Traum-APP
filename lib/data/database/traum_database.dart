@@ -16,6 +16,7 @@ import 'tables/period_tables.dart';
 import 'tables/substance_tables.dart';
 import 'tables/diary_tables.dart';
 import 'tables/substance_database_table.dart';
+import 'tables/notes_tables.dart';
 
 import 'daos/planning_dao.dart';
 import 'daos/training_dao.dart';
@@ -32,6 +33,7 @@ import 'daos/diary_dao.dart';
 import 'daos/food_products_dao.dart';
 import 'daos/meal_entries_dao.dart';
 import 'daos/substance_database_dao.dart';
+import 'daos/notes_dao.dart';
 
 // Re-export all table types
 export 'tables/planning_tables.dart';
@@ -46,6 +48,7 @@ export 'tables/period_tables.dart';
 export 'tables/substance_tables.dart';
 export 'tables/diary_tables.dart';
 export 'tables/substance_database_table.dart';
+export 'tables/notes_tables.dart';
 
 // Re-export all DAO types
 export 'daos/planning_dao.dart';
@@ -63,6 +66,7 @@ export 'daos/diary_dao.dart';
 export 'daos/food_products_dao.dart';
 export 'daos/meal_entries_dao.dart';
 export 'daos/substance_database_dao.dart';
+export 'daos/notes_dao.dart';
 
 part 'traum_database.g.dart';
 
@@ -124,6 +128,13 @@ part 'traum_database.g.dart';
     MealEntries,
     MealTemplateItems,
     WeeklyMealPlan,
+    // Notes (6)
+    Notes,
+    NoteFolders,
+    NoteLinks,
+    Tags,
+    NoteTags,
+    NoteTemplates,
   ],
   daos: [
     PlanningDao,
@@ -141,6 +152,7 @@ part 'traum_database.g.dart';
     FoodProductsDao,
     MealEntriesDao,
     SubstanceDatabaseDao,
+    NotesDao,
   ],
 )
 class TraumDatabase extends _$TraumDatabase {
@@ -163,10 +175,17 @@ class TraumDatabase extends _$TraumDatabase {
   SubstanceDatabaseDao get substanceDatabaseDao => SubstanceDatabaseDao(this);
 
   @override
-  int get schemaVersion => 10;
+  NotesDao get notesDao => NotesDao(this);
+
+  @override
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+    beforeOpen: (details) async {
+      await customStatement('PRAGMA foreign_keys = ON');
+      await _createNotesFtsObjects();
+    },
     onUpgrade: (migrator, from, to) async {
       if (from < 2) {
         await migrator.createTable(workoutDayExercises);
@@ -216,8 +235,63 @@ class TraumDatabase extends _$TraumDatabase {
       if (from < 10) {
         await migrator.createTable(substanceDatabaseEntries);
       }
+      if (from < 11) {
+        await migrator.createTable(notes);
+        await migrator.createTable(noteFolders);
+        await migrator.createTable(noteLinks);
+        await migrator.createTable(tags);
+        await migrator.createTable(noteTags);
+        await migrator.createTable(noteTemplates);
+        await customStatement(
+            'CREATE INDEX IF NOT EXISTS idx_note_links_source ON note_links (source_note_id)');
+        await customStatement(
+            'CREATE INDEX IF NOT EXISTS idx_note_links_target ON note_links (target_note_id)');
+        await customStatement(
+            'CREATE INDEX IF NOT EXISTS idx_note_tags_note ON note_tags (note_id)');
+        await customStatement(
+            'CREATE INDEX IF NOT EXISTS idx_note_tags_tag ON note_tags (tag_id)');
+      }
     },
   );
+
+  /// Legt die FTS5-Virtual-Table `notes_fts` und die Sync-Trigger an.
+  /// Idempotent (IF NOT EXISTS), wird bei jedem Öffnen aufgerufen, damit
+  /// auch frische Installationen (onCreate via createAll, ohne Virtual-Table)
+  /// die Suchinfrastruktur erhalten.
+  Future<void> _createNotesFtsObjects() async {
+    final existing = await customSelect(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='notes_fts'",
+    ).get();
+    final ftsExisted = existing.isNotEmpty;
+
+    await customStatement(
+      "CREATE VIRTUAL TABLE IF NOT EXISTS notes_fts USING fts5("
+      "title, content, content='notes', content_rowid='id', "
+      "tokenize='unicode61 remove_diacritics 2')",
+    );
+    // Wurde die FTS-Tabelle gerade erst erstellt, einmalig aus den bereits
+    // vorhandenen Notizen befüllen (Upgrade-Pfad mit Bestandsnotizen).
+    if (!ftsExisted) {
+      await customStatement("INSERT INTO notes_fts(notes_fts) VALUES('rebuild')");
+    }
+    await customStatement(
+      "CREATE TRIGGER IF NOT EXISTS notes_fts_ai AFTER INSERT ON notes BEGIN "
+      "INSERT INTO notes_fts(rowid, title, content) "
+      "VALUES (new.id, new.title, new.content); END",
+    );
+    await customStatement(
+      "CREATE TRIGGER IF NOT EXISTS notes_fts_ad AFTER DELETE ON notes BEGIN "
+      "INSERT INTO notes_fts(notes_fts, rowid, title, content) "
+      "VALUES ('delete', old.id, old.title, old.content); END",
+    );
+    await customStatement(
+      "CREATE TRIGGER IF NOT EXISTS notes_fts_au AFTER UPDATE ON notes BEGIN "
+      "INSERT INTO notes_fts(notes_fts, rowid, title, content) "
+      "VALUES ('delete', old.id, old.title, old.content); "
+      "INSERT INTO notes_fts(rowid, title, content) "
+      "VALUES (new.id, new.title, new.content); END",
+    );
+  }
 }
 
 LazyDatabase _openConnection() {

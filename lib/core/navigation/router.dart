@@ -40,6 +40,14 @@ import '../../features/lock/pin_lock_screen.dart';
 import '../../features/diary/diary_screen.dart';
 import '../../features/diary/diary_entry_screen.dart';
 import '../../features/diary/diary_slideshow_screen.dart';
+import '../../features/notes/notes_screen.dart';
+import '../../features/notes/note_detail_screen.dart';
+import '../../features/notes/notes_graph_screen.dart';
+import '../../features/notes/notes_tags_screen.dart';
+import '../../features/notes/notes_search_screen.dart';
+import '../../features/notes/notes_daily_screen.dart';
+import '../../features/notes/notes_templates_screen.dart';
+import '../../features/notes/notes_trash_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final prefs = ref.watch(preferencesRepositoryProvider);
@@ -236,6 +244,42 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'history',
                 builder: (_, __) => const CycleHistoryScreen(),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: Routes.notes,
+            builder: (_, __) => const NotesScreen(),
+            routes: [
+              GoRoute(
+                path: 'note/:id',
+                builder: (_, state) => NoteDetailScreen(
+                  noteId: int.parse(state.pathParameters['id']!),
+                ),
+              ),
+              GoRoute(
+                path: 'graph',
+                builder: (_, __) => const NotesGraphScreen(),
+              ),
+              GoRoute(
+                path: 'tags',
+                builder: (_, __) => const NotesTagsScreen(),
+              ),
+              GoRoute(
+                path: 'search',
+                builder: (_, __) => const NotesSearchScreen(),
+              ),
+              GoRoute(
+                path: 'daily',
+                builder: (_, __) => const NotesDailyScreen(),
+              ),
+              GoRoute(
+                path: 'templates',
+                builder: (_, __) => const NotesTemplatesScreen(),
+              ),
+              GoRoute(
+                path: 'trash',
+                builder: (_, __) => const NotesTrashScreen(),
               ),
             ],
           ),

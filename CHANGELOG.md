@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.6.0 (2026-06-04) — Notizen-Modul (Obsidian-artiges PKM)
+
+### Neues Modul „Notizen"
+
+- Vollständiges Personal-Knowledge-Management-Modul, als zuweisbares Nav-Slot-Modul registriert und über „Mehr" erreichbar
+- **Datenmodell:** Drift als Source of Truth (Notizen, Ordner, Links, Tags, Vorlagen); Schemaversion 11 mit Migration. Volltextsuche über **SQLite FTS5** inkl. Sync-Triggern
+- **Editor:** Edit-/Reading-Toggle (Pill), automatisches Speichern mit Debounce, Syntax-Highlighting im Roh-Editor
+- **Markdown:** CommonMark + GFM plus Obsidian-Erweiterungen — `[[Wikilinks]]`, Embeds `![[…]]`, Callouts `> [!type]`, `#tags` (verschachtelt), Highlights `==…==`, Kommentare `%% … %%`, abhakbare Aufgabenlisten, LaTeX (`$…$`, `$$…$$`), YAML-Frontmatter/Properties. Mermaid-Blöcke werden als formatierte Codeblöcke dargestellt
+- **Verlinkung:** Wikilink-/Tag-Index beim Speichern; Backlinks-, Outgoing- und Outline-Panel; unaufgelöste Links werden markiert
+- **Suche & Navigation:** Volltextsuche mit Treffer-Hervorhebung, Quick-Switcher mit „Notiz anlegen"
+- **Weitere Ansichten:** Tag-Browser (verschachtelter Baum), Tagesnotizen über `table_calendar`, Vorlagen mit Platzhaltern (`{{title}}`, `{{date:FORMAT}}`, `{{time}}`), kraftgerichteter **Graph View** (Knotengröße nach eingehenden Links, lokaler Graph), Papierkorb (Soft-Delete), Vault-Import/-Export als `.md`-ZIP
+- Vollständig lokalisiert (de/en); Soft-UI im bestehenden Dark-Theme und Gradient-Akzenten
+
+### Technisches
+
+- Markdown-Engine von `flutter_markdown` (eingestellt) auf den gepflegten Nachfolger `flutter_markdown_plus` (+ LaTeX) migriert
+- Neue Abhängigkeiten: `flutter_markdown_plus`, `flutter_markdown_plus_latex`, `flutter_math_fork`, `markdown`, `yaml`, `graphview`, `file_picker`
+
+---
+
 ## v0.0.2 (2026-05-16) — Bugfix-Release
 
 ### Fehlerbehebungen

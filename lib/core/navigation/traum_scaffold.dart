@@ -258,6 +258,8 @@ class _NavItem extends StatelessWidget {
         return Icons.calendar_today_rounded;
       case 'diary':
         return Icons.auto_stories_rounded;
+      case 'notes':
+        return Icons.notes_rounded;
       case 'abstinence':
         return Icons.trending_up_rounded;
       case 'budget':
@@ -385,6 +387,7 @@ class _MoreMenuSheet extends StatelessWidget {
       case 'substances':  return Icons.medication_liquid_rounded;
       case 'planning':    return Icons.calendar_today_rounded;
       case 'diary':       return Icons.auto_stories_rounded;
+      case 'notes':       return Icons.notes_rounded;
       case 'abstinence':  return Icons.block_rounded;
       case 'budget':      return Icons.account_balance_wallet_rounded;
       case 'period':      return Icons.water_drop_rounded;
