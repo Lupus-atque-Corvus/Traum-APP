@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.6.4 (2026-06-05) — Fix: Standard-Launcher-Button
+
+### Fehlerbehebung
+
+- **Standard-Launcher:** Der Eintrag im experimentellen Bereich öffnete auf den meisten Geräten nichts. Ursache: `RoleManager.ROLE_HOME` lässt sich nicht über den Rollen-Dialog vergeben, sodass keine sichtbare Oberfläche erschien. Der Button öffnet jetzt zuverlässig die System-Einstellung „Standard-Home-App", in der TRAUM auswählbar ist
+- Lässt sich die Einstellungsseite nicht öffnen, erscheint nun ein Hinweis (statt stiller Stille)
+
+---
+
 ## v0.6.3 (2026-06-05) — Standard-Launcher (experimentell)
 
 ### Neues experimentelles Feature
