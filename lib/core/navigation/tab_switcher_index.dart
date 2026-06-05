@@ -6,7 +6,8 @@
 ///
 /// Kennlinie (zwei Gänge):
 /// - Präzise (|dx| <= [threshold]): 1 Tab pro [base] px.
-/// - Schnell (|dx| > [threshold]): zusätzlich 1 Tab pro [fastStep] px.
+/// - Schnell (|dx| > [threshold]): für die Strecke jenseits der Schwelle
+///   1 Tab pro [fastStep] px (zusätzlich zu den im Präzisions-Gang erreichten).
 ///
 /// Das Ergebnis ist auf `[0, count-1]` begrenzt (kein Umlauf). Bei
 /// [count] <= 0 wird 0 zurückgegeben.

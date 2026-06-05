@@ -20,8 +20,18 @@ void main() {
       expect(switcherIndexFor(dx: 146, startIndex: 0, count: 20), 9);
     });
 
+    test('rounds half away from zero at a half-step boundary', () {
+      // 36 / 24 = 1.5 -> rounds to 2
+      expect(switcherIndexFor(dx: 36, startIndex: 0, count: 20), 2);
+    });
+
     test('works backward (negative dx)', () {
       expect(switcherIndexFor(dx: -96, startIndex: 8, count: 20), 4);
+    });
+
+    test('fast gear works backward', () {
+      // mag 120 -> 4 + 24/10 = 6.4 -> 6; 8 - 6 = 2
+      expect(switcherIndexFor(dx: -120, startIndex: 8, count: 20), 2);
     });
 
     test('clamps at the upper end', () {
