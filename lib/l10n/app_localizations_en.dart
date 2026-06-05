@@ -3055,4 +3055,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get removeFromLauncher => 'Remove from launcher';
+
+  @override
+  String get setAsLauncher => 'Set as default launcher';
+
+  @override
+  String get setAsLauncherActive => 'TRAUM is your default home app';
+
+  @override
+  String get setAsLauncherInactive => 'Tap to set TRAUM as your home screen';
 }

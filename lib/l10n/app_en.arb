@@ -1269,5 +1269,8 @@
   "searchApps": "Search apps…",
   "noAppsInstalled": "No apps found",
   "appNotFound": "App not found",
-  "removeFromLauncher": "Remove from launcher"
+  "removeFromLauncher": "Remove from launcher",
+  "setAsLauncher": "Set as default launcher",
+  "setAsLauncherActive": "TRAUM is your default home app",
+  "setAsLauncherInactive": "Tap to set TRAUM as your home screen"
 }

@@ -3065,4 +3065,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get removeFromLauncher => 'Aus Launcher entfernen';
+
+  @override
+  String get setAsLauncher => 'Als Standard-Launcher';
+
+  @override
+  String get setAsLauncherActive => 'TRAUM ist deine Standard-Home-App';
+
+  @override
+  String get setAsLauncherInactive =>
+      'Tippen, um TRAUM als Startbildschirm festzulegen';
 }

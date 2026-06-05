@@ -1269,5 +1269,8 @@
   "searchApps": "Apps suchen…",
   "noAppsInstalled": "Keine Apps gefunden",
   "appNotFound": "App nicht gefunden",
-  "removeFromLauncher": "Aus Launcher entfernen"
+  "removeFromLauncher": "Aus Launcher entfernen",
+  "setAsLauncher": "Als Standard-Launcher",
+  "setAsLauncherActive": "TRAUM ist deine Standard-Home-App",
+  "setAsLauncherInactive": "Tippen, um TRAUM als Startbildschirm festzulegen"
 }

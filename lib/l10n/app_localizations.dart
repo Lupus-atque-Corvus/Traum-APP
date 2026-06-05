@@ -5929,6 +5929,24 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Aus Launcher entfernen'**
   String get removeFromLauncher;
+
+  /// No description provided for @setAsLauncher.
+  ///
+  /// In de, this message translates to:
+  /// **'Als Standard-Launcher'**
+  String get setAsLauncher;
+
+  /// No description provided for @setAsLauncherActive.
+  ///
+  /// In de, this message translates to:
+  /// **'TRAUM ist deine Standard-Home-App'**
+  String get setAsLauncherActive;
+
+  /// No description provided for @setAsLauncherInactive.
+  ///
+  /// In de, this message translates to:
+  /// **'Tippen, um TRAUM als Startbildschirm festzulegen'**
+  String get setAsLauncherInactive;
 }
 
 class _AppLocalizationsDelegate
