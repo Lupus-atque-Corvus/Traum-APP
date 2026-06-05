@@ -72,6 +72,14 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Optional: TRAUM als Standard-Home-App (experimentell). Macht die
+                 App in der System-Auswahl der Home-App auswählbar. Die App bleibt
+                 unverändert; als Home gestartet öffnet sich das normale Dashboard. -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.HOME"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
             <!-- Required for Health Connect permission rationale -->
             <intent-filter>
                 <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />
