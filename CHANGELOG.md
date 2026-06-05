@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.6.5 (2026-06-05) — Pflicht-Updates
+
+### Änderung
+
+- **Updates sind jetzt verpflichtend:** Ist eine neuere Version verfügbar, lässt sich der Update-Dialog nicht mehr mit „Später" oder der Zurück-Taste schließen. TRAUM ist erst nach dem Update wieder nutzbar
+- Offline bleibt die App wie bisher uneingeschränkt nutzbar (die Update-Prüfung schlägt dann still fehl)
+
+---
+
 ## v0.6.4 (2026-06-05) — Fix: Standard-Launcher-Button
 
 ### Fehlerbehebung

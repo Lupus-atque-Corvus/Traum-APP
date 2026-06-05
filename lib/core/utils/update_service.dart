@@ -133,8 +133,11 @@ class _UpdateDialogState extends State<_UpdateDialog> {
       client.close();
 
       if (mounted) {
-        Navigator.pop(context);
+        // Pflicht-Update: Dialog NICHT schließen. Öffnet den System-Installer;
+        // bricht der Nutzer ihn ab, bleibt der blockierende Dialog bestehen und
+        // „Jetzt aktualisieren" ist erneut auswählbar.
         await OpenFile.open(file.path);
+        if (mounted) setState(() => _downloading = false);
       }
     } catch (e) {
       setState(() { _downloading = false; _errorMsg = 'Download fehlgeschlagen'; });
@@ -143,7 +146,12 @@ class _UpdateDialogState extends State<_UpdateDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    // Pflicht-Update: Der Dialog ist nicht abbrechbar. `barrierDismissible`
+    // ist bereits false; `PopScope(canPop: false)` blockiert zusätzlich die
+    // Android-Zurück-Taste, sodass die App erst nach dem Update nutzbar ist.
+    return PopScope(
+      canPop: false,
+      child: AlertDialog(
       backgroundColor: TraumColors.surfaceElevated,
       title: Text(
         'Update verfügbar — v${widget.version}',
@@ -192,14 +200,11 @@ class _UpdateDialogState extends State<_UpdateDialog> {
           ? []
           : [
               TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Später', style: TextStyle(color: TraumColors.onBackgroundMuted)),
-              ),
-              TextButton(
                 onPressed: _download,
                 child: const Text('Jetzt aktualisieren', style: TextStyle(color: TraumColors.coralOrange, fontWeight: FontWeight.w700)),
               ),
             ],
+    ),
     );
   }
 }
