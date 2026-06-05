@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -268,11 +269,22 @@ class _TraumNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RawGestureDetector(
       behavior: HitTestBehavior.opaque,
-      onLongPressStart: onSwitchStart,
-      onLongPressMoveUpdate: onSwitchUpdate,
-      onLongPressEnd: onSwitchEnd,
+      gestures: <Type, GestureRecognizerFactory>{
+        LongPressGestureRecognizer:
+            GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(
+              () => LongPressGestureRecognizer(
+                duration: const Duration(milliseconds: 200),
+              ),
+              (LongPressGestureRecognizer recognizer) {
+                recognizer
+                  ..onLongPressStart = onSwitchStart
+                  ..onLongPressMoveUpdate = onSwitchUpdate
+                  ..onLongPressEnd = onSwitchEnd;
+              },
+            ),
+      },
       child: Container(
         height: 64,
         decoration: BoxDecoration(
