@@ -237,6 +237,40 @@ class _TraumNavBar extends StatelessWidget {
   }
 }
 
+/// Modul-Icon für Navigationsleiste, „Mehr"-Menü und Tab-Switcher (geteilt).
+IconData moduleIcon(String module) {
+  switch (module) {
+    case 'home':
+      return Icons.home_rounded;
+    case 'training':
+      return Icons.fitness_center_rounded;
+    case 'health':
+      return Icons.favorite_rounded;
+    case 'nutrition':
+      return Icons.restaurant_rounded;
+    case 'substances':
+      return Icons.medication_liquid_rounded;
+    case 'planning':
+      return Icons.calendar_today_rounded;
+    case 'diary':
+      return Icons.auto_stories_rounded;
+    case 'notes':
+      return Icons.notes_rounded;
+    case 'abstinence':
+      return Icons.trending_up_rounded;
+    case 'budget':
+      return Icons.account_balance_wallet_rounded;
+    case 'period':
+      return Icons.water_drop_rounded;
+    case 'profile':
+      return Icons.person_rounded;
+    case 'settings':
+      return Icons.settings_rounded;
+    default:
+      return Icons.circle;
+  }
+}
+
 class _NavItem extends StatelessWidget {
   final String module;
   final bool isActive;
@@ -247,39 +281,6 @@ class _NavItem extends StatelessWidget {
     required this.isActive,
     required this.onTap,
   });
-
-  IconData _iconFor(String module) {
-    switch (module) {
-      case 'home':
-        return Icons.home_rounded;
-      case 'training':
-        return Icons.fitness_center_rounded;
-      case 'health':
-        return Icons.favorite_rounded;
-      case 'nutrition':
-        return Icons.restaurant_rounded;
-      case 'substances':
-        return Icons.medication_liquid_rounded;
-      case 'planning':
-        return Icons.calendar_today_rounded;
-      case 'diary':
-        return Icons.auto_stories_rounded;
-      case 'notes':
-        return Icons.notes_rounded;
-      case 'abstinence':
-        return Icons.trending_up_rounded;
-      case 'budget':
-        return Icons.account_balance_wallet_rounded;
-      case 'period':
-        return Icons.water_drop_rounded;
-      case 'profile':
-        return Icons.person_rounded;
-      case 'settings':
-        return Icons.settings_rounded;
-      default:
-        return Icons.circle;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -313,7 +314,7 @@ class _NavItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                _iconFor(module),
+                moduleIcon(module),
                 color: color,
                 size: 18,
               ),
@@ -339,7 +340,7 @@ class _NavItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         child: Icon(
-          _iconFor(module),
+          moduleIcon(module),
           color: Colors.white.withValues(alpha: 0.85),
           size: 22,
         ),
@@ -386,24 +387,6 @@ class _MoreMenuSheet extends StatelessWidget {
     required this.onNavigate,
     required this.onCustomize,
   });
-
-  static IconData _iconFor(String module) {
-    switch (module) {
-      case 'training':    return Icons.fitness_center_rounded;
-      case 'health':      return Icons.favorite_rounded;
-      case 'nutrition':   return Icons.restaurant_rounded;
-      case 'substances':  return Icons.medication_liquid_rounded;
-      case 'planning':    return Icons.calendar_today_rounded;
-      case 'diary':       return Icons.auto_stories_rounded;
-      case 'notes':       return Icons.notes_rounded;
-      case 'abstinence':  return Icons.block_rounded;
-      case 'budget':      return Icons.account_balance_wallet_rounded;
-      case 'period':      return Icons.water_drop_rounded;
-      case 'profile':     return Icons.person_rounded;
-      case 'settings':    return Icons.settings_rounded;
-      default:            return Icons.circle;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -521,7 +504,7 @@ class _MoreMenuSheet extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(_iconFor(module), color: color, size: 28),
+                              Icon(moduleIcon(module), color: color, size: 28),
                               const SizedBox(height: 8),
                               Text(
                                 label,
