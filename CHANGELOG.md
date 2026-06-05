@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.6.7 (2026-06-05) — Tab-Switcher schneller
+
+### Verbesserung
+
+- **Schnelleres Ansprechen:** Der Gesten-Tab-Switcher startet jetzt nach 200 ms Halten (statt 500 ms) — deutlich direkter
+- **Beschleunigtes Durchblättern:** Kleine, langsame Wischer blättern weiterhin präzise Tab für Tab; größere/schnellere Wischer beschleunigen und springen durch viele Tabs auf einmal
+
+---
+
 ## v0.6.6 (2026-06-05) — Gesten-Tab-Switcher
 
 ### Neue Funktion
