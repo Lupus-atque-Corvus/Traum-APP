@@ -31,5 +31,13 @@ void main() {
     test('count <= 0 returns 0', () {
       expect(switcherIndexFor(dx: 100, startIndex: 0, count: 0, step: 32), 0);
     });
+
+    test('clamps an out-of-range high startIndex', () {
+      expect(switcherIndexFor(dx: 0, startIndex: 99, count: 5, step: 32), 4);
+    });
+
+    test('clamps a negative startIndex', () {
+      expect(switcherIndexFor(dx: 0, startIndex: -1, count: 5, step: 32), 0);
+    });
   });
 }

@@ -82,10 +82,11 @@ class _TraumScaffoldState extends ConsumerState<TraumScaffold> {
   int _switcherStartIndex = 0;
   List<String> _switcherModules = const [];
 
-  List<String> _buildSwitcherModules(bool isPeriodEnabled) =>
-      Routes.moduleRoutes.keys
-          .where((m) => m != 'period' || isPeriodEnabled)
-          .toList();
+  List<String> _buildSwitcherModules(bool isPeriodEnabled) => Routes
+      .moduleRoutes
+      .keys
+      .where((m) => m != 'period' || isPeriodEnabled)
+      .toList();
 
   void _onSwitchStart(LongPressStartDetails _) {
     final isPeriodEnabled = ref.read(isPeriodTrackingEnabledProvider);
@@ -117,13 +118,13 @@ class _TraumScaffoldState extends ConsumerState<TraumScaffold> {
     if (!_switcherActive) return;
     final modules = _switcherModules;
     final index = _switcherIndex;
-    setState(() => _switcherActive = false);
     if (index >= 0 && index < modules.length) {
       final target = modules[index];
       if (target != _currentRoute(context)) {
         _navigate(context, target);
       }
     }
+    setState(() => _switcherActive = false);
   }
 
   String _currentRoute(BuildContext context) {
@@ -273,41 +274,43 @@ class _TraumNavBar extends StatelessWidget {
       onLongPressMoveUpdate: onSwitchUpdate,
       onLongPressEnd: onSwitchEnd,
       child: Container(
-      height: 64,
-      decoration: BoxDecoration(
-        color: const Color(0xFF0F1115),
-        borderRadius: BorderRadius.circular(50),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.10),
-          width: 1,
+        height: 64,
+        decoration: BoxDecoration(
+          color: const Color(0xFF0F1115),
+          borderRadius: BorderRadius.circular(50),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.10),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.4),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+            ),
+          ],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.4),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          // Home (fixed left)
-          _NavItem(
-            module: 'home',
-            isActive: currentModule == 'home',
-            onTap: () => onTap('home'),
-          ),
-          // Free slots
-          ...navSlots.map((module) => _NavItem(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            // Home (fixed left)
+            _NavItem(
+              module: 'home',
+              isActive: currentModule == 'home',
+              onTap: () => onTap('home'),
+            ),
+            // Free slots
+            ...navSlots.map(
+              (module) => _NavItem(
                 module: module,
                 isActive: currentModule == module,
                 onTap: () => onTap(module),
-              )),
-          // More (fixed right)
-          _MoreButton(onTap: onMoreTap),
-        ],
-      ),
+              ),
+            ),
+            // More (fixed right)
+            _MoreButton(onTap: onMoreTap),
+          ],
+        ),
       ),
     );
   }
@@ -389,11 +392,7 @@ class _NavItem extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                moduleIcon(module),
-                color: color,
-                size: 18,
-              ),
+              Icon(moduleIcon(module), color: color, size: 18),
               const SizedBox(width: 6),
               Text(
                 label,
@@ -505,7 +504,10 @@ class _MoreMenuSheet extends StatelessWidget {
                   behavior: HitTestBehavior.opaque,
                   onTap: onCustomize,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: TraumColors.surface,
                       borderRadius: BorderRadius.circular(TraumRadius.chip),
@@ -514,7 +516,11 @@ class _MoreMenuSheet extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.tune_rounded, color: TraumColors.onBackgroundMuted, size: 15),
+                        const Icon(
+                          Icons.tune_rounded,
+                          color: TraumColors.onBackgroundMuted,
+                          size: 15,
+                        ),
                         const SizedBox(width: 6),
                         Text(
                           l10n.customize,
@@ -556,11 +562,11 @@ class _MoreMenuSheet extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 1.0,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                    ),
+                          crossAxisCount: 3,
+                          childAspectRatio: 1.0,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                        ),
                     itemCount: moreModules.length,
                     itemBuilder: (_, i) {
                       final module = moreModules[i];
@@ -678,8 +684,9 @@ class _AppLauncherTileState extends ConsumerState<_AppLauncherTile> {
   }
 
   Future<void> _load() async {
-    final app =
-        await ref.read(appLauncherServiceProvider).getApp(widget.packageName);
+    final app = await ref
+        .read(appLauncherServiceProvider)
+        .getApp(widget.packageName);
     if (mounted) {
       setState(() {
         _app = app;
@@ -689,8 +696,9 @@ class _AppLauncherTileState extends ConsumerState<_AppLauncherTile> {
   }
 
   Future<void> _open() async {
-    final ok =
-        await ref.read(appLauncherServiceProvider).launch(widget.packageName);
+    final ok = await ref
+        .read(appLauncherServiceProvider)
+        .launch(widget.packageName);
     if (!mounted) return;
     if (ok) {
       Navigator.of(context).maybePop();
@@ -736,13 +744,17 @@ class _AppLauncherTileState extends ConsumerState<_AppLauncherTile> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.cancel,
-                style: const TextStyle(color: TraumColors.onBackgroundMuted)),
+            child: Text(
+              l10n.cancel,
+              style: const TextStyle(color: TraumColors.onBackgroundMuted),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l10n.removeFromLauncher,
-                style: const TextStyle(color: TraumColors.coralOrange)),
+            child: Text(
+              l10n.removeFromLauncher,
+              style: const TextStyle(color: TraumColors.coralOrange),
+            ),
           ),
         ],
       ),
@@ -756,8 +768,8 @@ class _AppLauncherTileState extends ConsumerState<_AppLauncherTile> {
 
   @override
   Widget build(BuildContext context) {
-    final label = _app?.name ??
-        (_loaded ? widget.packageName.split('.').last : '…');
+    final label =
+        _app?.name ?? (_loaded ? widget.packageName.split('.').last : '…');
     final Uint8List? icon = _app?.icon;
 
     return GestureDetector(
@@ -778,8 +790,11 @@ class _AppLauncherTileState extends ConsumerState<_AppLauncherTile> {
                       color: TraumColors.surfaceVariant,
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: const Icon(Icons.apps_rounded,
-                        color: TraumColors.onBackgroundMuted, size: 24),
+                    child: const Icon(
+                      Icons.apps_rounded,
+                      color: TraumColors.onBackgroundMuted,
+                      size: 24,
+                    ),
                   ),
           ),
           const SizedBox(height: 6),
@@ -823,8 +838,11 @@ class _AddAppTile extends StatelessWidget {
                 color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.4),
               ),
             ),
-            child: const Icon(Icons.add_rounded,
-                color: TraumColors.onBackgroundMuted, size: 24),
+            child: const Icon(
+              Icons.add_rounded,
+              color: TraumColors.onBackgroundMuted,
+              size: 24,
+            ),
           ),
           const SizedBox(height: 6),
           Text(
@@ -871,10 +889,7 @@ class _TabSwitcherOverlay extends StatelessWidget {
           decoration: BoxDecoration(
             color: TraumColors.surfaceElevated,
             borderRadius: BorderRadius.circular(28),
-            border: Border.all(
-              color: color.withValues(alpha: 0.5),
-              width: 1.5,
-            ),
+            border: Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
             boxShadow: [
               BoxShadow(
                 color: color.withValues(alpha: 0.35),
