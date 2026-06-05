@@ -12,6 +12,7 @@ import '../theme/colors.dart';
 import '../theme/radius.dart';
 import 'nav_customization_sheet.dart';
 import 'routes.dart';
+import 'tab_switcher_index.dart';
 
 Future<bool> _showExitDialog(BuildContext context) async {
   final l10n = AppLocalizations.of(context)!;
@@ -75,6 +76,55 @@ class TraumScaffold extends ConsumerStatefulWidget {
 
 class _TraumScaffoldState extends ConsumerState<TraumScaffold> {
   static const double _navBarHeight = 64.0;
+
+  bool _switcherActive = false;
+  int _switcherIndex = 0;
+  int _switcherStartIndex = 0;
+  List<String> _switcherModules = const [];
+
+  List<String> _buildSwitcherModules(bool isPeriodEnabled) =>
+      Routes.moduleRoutes.keys
+          .where((m) => m != 'period' || isPeriodEnabled)
+          .toList();
+
+  void _onSwitchStart(LongPressStartDetails _) {
+    final isPeriodEnabled = ref.read(isPeriodTrackingEnabledProvider);
+    final modules = _buildSwitcherModules(isPeriodEnabled);
+    final start = modules.indexOf(_currentRoute(context));
+    setState(() {
+      _switcherModules = modules;
+      _switcherStartIndex = start < 0 ? 0 : start;
+      _switcherIndex = _switcherStartIndex;
+      _switcherActive = true;
+    });
+    HapticFeedback.mediumImpact();
+  }
+
+  void _onSwitchUpdate(LongPressMoveUpdateDetails details) {
+    if (!_switcherActive) return;
+    final next = switcherIndexFor(
+      dx: details.offsetFromOrigin.dx,
+      startIndex: _switcherStartIndex,
+      count: _switcherModules.length,
+    );
+    if (next != _switcherIndex) {
+      setState(() => _switcherIndex = next);
+      HapticFeedback.selectionClick();
+    }
+  }
+
+  void _onSwitchEnd(LongPressEndDetails _) {
+    if (!_switcherActive) return;
+    final modules = _switcherModules;
+    final index = _switcherIndex;
+    setState(() => _switcherActive = false);
+    if (index >= 0 && index < modules.length) {
+      final target = modules[index];
+      if (target != _currentRoute(context)) {
+        _navigate(context, target);
+      }
+    }
+  }
 
   String _currentRoute(BuildContext context) {
     final loc = GoRouterState.of(context).matchedLocation;
@@ -171,6 +221,20 @@ class _TraumScaffoldState extends ConsumerState<TraumScaffold> {
                   safeBottom: safeBottom,
                   onTap: (module) => _navigate(context, module),
                   onMoreTap: () => _showMoreMenu(context, filteredSlots),
+                  onSwitchStart: _onSwitchStart,
+                  onSwitchUpdate: _onSwitchUpdate,
+                  onSwitchEnd: _onSwitchEnd,
+                ),
+              ),
+            if (!keyboardOpen && _switcherActive && _switcherModules.isNotEmpty)
+              Positioned(
+                bottom: _navBarHeight + 12 + safeBottom + 16,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: _TabSwitcherOverlay(
+                    module: _switcherModules[_switcherIndex],
+                  ),
                 ),
               ),
           ],
@@ -186,6 +250,9 @@ class _TraumNavBar extends StatelessWidget {
   final double safeBottom;
   final void Function(String) onTap;
   final VoidCallback onMoreTap;
+  final void Function(LongPressStartDetails)? onSwitchStart;
+  final void Function(LongPressMoveUpdateDetails)? onSwitchUpdate;
+  final void Function(LongPressEndDetails)? onSwitchEnd;
 
   const _TraumNavBar({
     required this.navSlots,
@@ -193,11 +260,19 @@ class _TraumNavBar extends StatelessWidget {
     required this.safeBottom,
     required this.onTap,
     required this.onMoreTap,
+    this.onSwitchStart,
+    this.onSwitchUpdate,
+    this.onSwitchEnd,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onLongPressStart: onSwitchStart,
+      onLongPressMoveUpdate: onSwitchUpdate,
+      onLongPressEnd: onSwitchEnd,
+      child: Container(
       height: 64,
       decoration: BoxDecoration(
         color: const Color(0xFF0F1115),
@@ -232,6 +307,7 @@ class _TraumNavBar extends StatelessWidget {
           // More (fixed right)
           _MoreButton(onTap: onMoreTap),
         ],
+      ),
       ),
     );
   }
@@ -763,6 +839,52 @@ class _AddAppTile extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Große Icon-Vorschau des aktuell gewählten Moduls während der
+/// Switcher-Geste. Zeigt bewusst nur das Icon (Modulfarbe), keinen Text.
+class _TabSwitcherOverlay extends StatelessWidget {
+  final String module;
+  const _TabSwitcherOverlay({required this.module});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = TraumColors.moduleColor(module);
+    return IgnorePointer(
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 150),
+        transitionBuilder: (child, anim) => FadeTransition(
+          opacity: anim,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.85, end: 1.0).animate(anim),
+            child: child,
+          ),
+        ),
+        child: Container(
+          key: ValueKey(module),
+          width: 96,
+          height: 96,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: TraumColors.surfaceElevated,
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(
+              color: color.withValues(alpha: 0.5),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 0.35),
+                blurRadius: 24,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: Icon(moduleIcon(module), color: color, size: 56),
+        ),
       ),
     );
   }
