@@ -1,6 +1,11 @@
 package de.traum.traum
 
+import android.app.role.RoleManager
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.provider.CalendarContract
+import android.provider.Settings
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -105,6 +110,51 @@ class MainActivity : FlutterFragmentActivity() {
                         result.success(calendars)
                     } catch (e: Exception) {
                         result.error("CALENDAR_ERROR", e.message, null)
+                    }
+                }
+                else -> result.notImplemented()
+            }
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            "traum/launcher"
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "isDefaultLauncher" -> {
+                    try {
+                        val intent = Intent(Intent.ACTION_MAIN)
+                            .addCategory(Intent.CATEGORY_HOME)
+                        val resolved = packageManager.resolveActivity(
+                            intent, PackageManager.MATCH_DEFAULT_ONLY
+                        )
+                        val current = resolved?.activityInfo?.packageName
+                        result.success(current == packageName)
+                    } catch (e: Exception) {
+                        result.error("LAUNCHER_ERROR", e.message, null)
+                    }
+                }
+                "requestSetDefaultLauncher" -> {
+                    try {
+                        var launched = false
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            val roleManager = getSystemService(RoleManager::class.java)
+                            if (roleManager != null &&
+                                roleManager.isRoleAvailable(RoleManager.ROLE_HOME) &&
+                                !roleManager.isRoleHeld(RoleManager.ROLE_HOME)
+                            ) {
+                                startActivity(
+                                    roleManager.createRequestRoleIntent(RoleManager.ROLE_HOME)
+                                )
+                                launched = true
+                            }
+                        }
+                        if (!launched) {
+                            startActivity(Intent(Settings.ACTION_HOME_SETTINGS))
+                        }
+                        result.success(null)
+                    } catch (e: Exception) {
+                        result.error("LAUNCHER_ERROR", e.message, null)
                     }
                 }
                 else -> result.notImplemented()
