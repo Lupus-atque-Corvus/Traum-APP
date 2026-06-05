@@ -16,6 +16,7 @@ import '../../core/navigation/routes.dart';
 import '../../core/notifications/notification_service.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/security/pin_service.dart';
+import '../../core/services/launcher_service.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../l10n/app_localizations.dart';
@@ -752,51 +753,125 @@ class _PeriodSection extends ConsumerWidget {
 
 // ─── Experimental ────────────────────────────────────────────────────────────
 
-class _ExperimentalSection extends ConsumerWidget {
+class _ExperimentalSection extends ConsumerStatefulWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_ExperimentalSection> createState() =>
+      _ExperimentalSectionState();
+}
+
+class _ExperimentalSectionState extends ConsumerState<_ExperimentalSection> {
+  bool _isDefaultLauncher = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshLauncherStatus();
+  }
+
+  Future<void> _refreshLauncherStatus() async {
+    final isDefault =
+        await ref.read(launcherServiceProvider).isDefaultLauncher();
+    if (mounted) setState(() => _isDefaultLauncher = isDefault);
+  }
+
+  Future<void> _onSetLauncher() async {
+    await ref.read(launcherServiceProvider).requestSetDefault();
+    await _refreshLauncherStatus();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final enabled = ref.watch(appLauncherEnabledProvider);
     return _Section(
       title: l10n.experimentalSection,
-      child: SwitchListTile(
-        title: Row(
-          children: [
-            Flexible(
-              child: Text(
-                l10n.appLauncher,
-                style: const TextStyle(
-                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: TraumColors.amberGold.withValues(alpha: 0.18),
-                borderRadius: BorderRadius.circular(TraumRadius.chip),
-              ),
-              child: Text(
-                l10n.experimentalBadge,
-                style: const TextStyle(
-                  color: TraumColors.amberGold,
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 9,
-                  letterSpacing: 0.5,
+      child: Column(
+        children: [
+          SwitchListTile(
+            title: Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    l10n.appLauncher,
+                    style: const TextStyle(
+                        color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                  ),
                 ),
-              ),
+                const SizedBox(width: 8),
+                const _ExperimentalBadge(),
+              ],
             ),
-          ],
+            subtitle: Text(l10n.appLauncherSubtitle,
+                style: const TextStyle(
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                    fontSize: 12)),
+            value: enabled,
+            activeThumbColor: TraumColors.amberGold,
+            onChanged: (v) =>
+                ref.read(appLauncherEnabledProvider.notifier).set(v),
+          ),
+          ListTile(
+            title: Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    l10n.setAsLauncher,
+                    style: const TextStyle(
+                        color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const _ExperimentalBadge(),
+              ],
+            ),
+            subtitle: Text(
+                _isDefaultLauncher
+                    ? l10n.setAsLauncherActive
+                    : l10n.setAsLauncherInactive,
+                style: const TextStyle(
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                    fontSize: 12)),
+            trailing: Icon(
+              _isDefaultLauncher
+                  ? Icons.check_circle_rounded
+                  : Icons.chevron_right_rounded,
+              color: _isDefaultLauncher
+                  ? TraumColors.amberGold
+                  : TraumColors.onBackgroundSubtle,
+            ),
+            onTap: _onSetLauncher,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Kleines „Experimentell"-Badge, geteilt von den Einträgen im
+/// experimentellen Bereich.
+class _ExperimentalBadge extends StatelessWidget {
+  const _ExperimentalBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: TraumColors.amberGold.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(TraumRadius.chip),
+      ),
+      child: Text(
+        l10n.experimentalBadge,
+        style: const TextStyle(
+          color: TraumColors.amberGold,
+          fontFamily: 'DMSans',
+          fontWeight: FontWeight.w700,
+          fontSize: 9,
+          letterSpacing: 0.5,
         ),
-        subtitle: Text(l10n.appLauncherSubtitle,
-            style: const TextStyle(
-                color: TraumColors.onBackgroundMuted,
-                fontFamily: 'DMSans',
-                fontSize: 12)),
-        value: enabled,
-        activeThumbColor: TraumColors.amberGold,
-        onChanged: (v) => ref.read(appLauncherEnabledProvider.notifier).set(v),
       ),
     );
   }
