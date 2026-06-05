@@ -38,4 +38,16 @@ void main() {
     await service.requestSetDefault();
     expect(called, 'requestSetDefaultLauncher');
   });
+
+  test('isDefaultLauncher returns native false', () async {
+    messenger.setMockMethodCallHandler(channel, (call) async => false);
+    expect(await service.isDefaultLauncher(), isFalse);
+  });
+
+  test('requestSetDefault swallows platform error', () async {
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      throw PlatformException(code: 'LAUNCHER_ERROR');
+    });
+    await expectLater(service.requestSetDefault(), completes);
+  });
 }

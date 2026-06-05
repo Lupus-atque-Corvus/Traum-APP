@@ -759,13 +759,26 @@ class _ExperimentalSection extends ConsumerStatefulWidget {
       _ExperimentalSectionState();
 }
 
-class _ExperimentalSectionState extends ConsumerState<_ExperimentalSection> {
+class _ExperimentalSectionState extends ConsumerState<_ExperimentalSection>
+    with WidgetsBindingObserver {
   bool _isDefaultLauncher = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _refreshLauncherStatus();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _refreshLauncherStatus();
   }
 
   Future<void> _refreshLauncherStatus() async {
