@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.6.6 (2026-06-05) — Gesten-Tab-Switcher
+
+### Neue Funktion
+
+- **Schneller Tab-Wechsel per Geste:** Die Navigationsleiste **gedrückt halten** und nach **links/rechts wischen** blättert durch **alle** App-Module. Oberhalb der Leiste erscheint dabei groß das Icon des jeweiligen Moduls (in Modulfarbe); **Loslassen** wechselt zum gewählten Modul
+- Haptisches Feedback beim Start und bei jedem Modulwechsel; kein Umlauf an den Listenenden
+- Normale Einzel-Taps auf die Tabs funktionieren unverändert
+
+### Technisches
+
+- Modul-Icon-Zuordnung vereinheitlicht (geteilte `moduleIcon`-Funktion für Leiste, „Mehr"-Menü und Switcher)
+- Reine, unit-getestete Index-Logik für das Wischen (`switcherIndexFor`)
+
+---
+
 ## v0.6.5 (2026-06-05) — Pflicht-Updates
 
 ### Änderung
