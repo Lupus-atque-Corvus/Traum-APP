@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.6.3 (2026-06-05) — Standard-Launcher (experimentell)
+
+### Neues experimentelles Feature
+
+- **Als Standard-Launcher festlegen:** In den Einstellungen unter **Experimentell** (nur Android) lässt sich TRAUM jetzt als Standard-Home-App des Geräts auswählen. Ein Tipp öffnet den System-Auswahldialog; die Statuszeile zeigt live, ob TRAUM aktuell die Home-App ist
+- Die App bleibt unverändert: Wird TRAUM als Home gewählt und die Home-Taste gedrückt, öffnet sich das normale Dashboard — keine separate Launcher-Oberfläche
+- Lokalisiert (de/en); der Eintrag erscheint nur auf Android
+
+### Technisches
+
+- `CATEGORY_HOME`-Intent-Filter im Android-Manifest, damit TRAUM in der System-Launcher-Auswahl erscheint
+- Neuer nativer `traum/launcher`-MethodChannel: System-Auswahldialog via `RoleManager` (Android 10+) mit Fallback auf die Home-Einstellungen; Live-Statusabfrage über `PackageManager`
+- Status aktualisiert sich beim Zurückkehren in die App (App-Resume); Unit-Tests für den `LauncherService`
+
+---
+
 ## v0.6.2 (2026-06-04) — App-Launcher (experimentell)
 
 ### Neues experimentelles Feature
