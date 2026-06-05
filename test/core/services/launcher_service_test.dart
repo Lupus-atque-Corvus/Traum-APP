@@ -29,14 +29,19 @@ void main() {
     expect(await service.isDefaultLauncher(), isFalse);
   });
 
-  test('requestSetDefault invokes native method', () async {
+  test('requestSetDefault invokes native method and returns true', () async {
     String? called;
     messenger.setMockMethodCallHandler(channel, (call) async {
       called = call.method;
-      return null;
+      return true;
     });
-    await service.requestSetDefault();
+    expect(await service.requestSetDefault(), isTrue);
     expect(called, 'requestSetDefaultLauncher');
+  });
+
+  test('requestSetDefault returns false when settings cannot open', () async {
+    messenger.setMockMethodCallHandler(channel, (call) async => false);
+    expect(await service.requestSetDefault(), isFalse);
   });
 
   test('isDefaultLauncher returns native false', () async {
@@ -44,10 +49,10 @@ void main() {
     expect(await service.isDefaultLauncher(), isFalse);
   });
 
-  test('requestSetDefault swallows platform error', () async {
+  test('requestSetDefault returns false on platform error', () async {
     messenger.setMockMethodCallHandler(channel, (call) async {
       throw PlatformException(code: 'LAUNCHER_ERROR');
     });
-    await expectLater(service.requestSetDefault(), completes);
+    expect(await service.requestSetDefault(), isFalse);
   });
 }

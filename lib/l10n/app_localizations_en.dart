@@ -3064,4 +3064,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get setAsLauncherInactive => 'Tap to set TRAUM as your home screen';
+
+  @override
+  String get setAsLauncherFailed => 'Couldn\'t open launcher settings';
 }

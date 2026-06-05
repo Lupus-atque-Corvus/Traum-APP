@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 ///
 /// Alle Aufrufe sind fehlertolerant: Bei Plattformfehlern oder auf
 /// Nicht-Android-Plattformen liefert [isDefaultLauncher] `false` und
-/// [requestSetDefault] ist ein No-op.
+/// [requestSetDefault] `false`.
 class LauncherService {
   static const _channel = MethodChannel('traum/launcher');
 
@@ -20,12 +20,15 @@ class LauncherService {
     }
   }
 
-  /// Öffnet den System-Auswahldialog, um TRAUM als Home-App festzulegen.
-  Future<void> requestSetDefault() async {
+  /// Öffnet die System-Einstellung zur Auswahl der Standard-Home-App.
+  /// `true`, wenn die Einstellungsseite geöffnet werden konnte; sonst `false`
+  /// (z. B. Plattformfehler oder keine passende Einstellungsseite vorhanden).
+  Future<bool> requestSetDefault() async {
     try {
-      await _channel.invokeMethod<void>('requestSetDefaultLauncher');
+      final ok = await _channel.invokeMethod<bool>('requestSetDefaultLauncher');
+      return ok ?? false;
     } catch (_) {
-      // Bewusst geschluckt — UI bleibt robust.
+      return false;
     }
   }
 }

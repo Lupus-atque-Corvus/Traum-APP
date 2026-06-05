@@ -5947,6 +5947,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Tippen, um TRAUM als Startbildschirm festzulegen'**
   String get setAsLauncherInactive;
+
+  /// No description provided for @setAsLauncherFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Launcher-Einstellungen konnten nicht geöffnet werden'**
+  String get setAsLauncherFailed;
 }
 
 class _AppLocalizationsDelegate

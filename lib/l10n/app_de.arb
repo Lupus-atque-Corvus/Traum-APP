@@ -1272,5 +1272,6 @@
   "removeFromLauncher": "Aus Launcher entfernen",
   "setAsLauncher": "Als Standard-Launcher",
   "setAsLauncherActive": "TRAUM ist deine Standard-Home-App",
-  "setAsLauncherInactive": "Tippen, um TRAUM als Startbildschirm festzulegen"
+  "setAsLauncherInactive": "Tippen, um TRAUM als Startbildschirm festzulegen",
+  "setAsLauncherFailed": "Launcher-Einstellungen konnten nicht geöffnet werden"
 }

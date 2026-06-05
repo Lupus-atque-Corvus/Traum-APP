@@ -1,9 +1,7 @@
 package de.traum.traum
 
-import android.app.role.RoleManager
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.provider.CalendarContract
 import android.provider.Settings
 import io.flutter.embedding.android.FlutterFragmentActivity
@@ -136,23 +134,28 @@ class MainActivity : FlutterFragmentActivity() {
                 }
                 "requestSetDefaultLauncher" -> {
                     try {
-                        var launched = false
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            val roleManager = getSystemService(RoleManager::class.java)
-                            if (roleManager != null &&
-                                roleManager.isRoleAvailable(RoleManager.ROLE_HOME) &&
-                                !roleManager.isRoleHeld(RoleManager.ROLE_HOME)
-                            ) {
-                                startActivity(
-                                    roleManager.createRequestRoleIntent(RoleManager.ROLE_HOME)
-                                )
-                                launched = true
+                        // Die "Standard-Home-App"-Auswahl der Systemeinstellungen
+                        // öffnen. Das funktioniert zuverlässig über alle Hersteller/
+                        // Android-Versionen — anders als RoleManager.ROLE_HOME, das
+                        // sich nicht über den Rollen-Dialog vergeben lässt (zeigt auf
+                        // vielen Geräten keine UI). TRAUM ist dort dank des
+                        // CATEGORY_HOME-Intent-Filters auswählbar.
+                        val home = Intent(Settings.ACTION_HOME_SETTINGS)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        val target = when {
+                            home.resolveActivity(packageManager) != null -> home
+                            else -> {
+                                val all = Intent(Settings.ACTION_SETTINGS)
+                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                if (all.resolveActivity(packageManager) != null) all else null
                             }
                         }
-                        if (!launched) {
-                            startActivity(Intent(Settings.ACTION_HOME_SETTINGS))
+                        if (target != null) {
+                            startActivity(target)
+                            result.success(true)
+                        } else {
+                            result.success(false)
                         }
-                        result.success(null)
                     } catch (e: Exception) {
                         result.error("LAUNCHER_ERROR", e.message, null)
                     }

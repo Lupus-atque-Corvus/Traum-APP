@@ -3075,4 +3075,8 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get setAsLauncherInactive =>
       'Tippen, um TRAUM als Startbildschirm festzulegen';
+
+  @override
+  String get setAsLauncherFailed =>
+      'Launcher-Einstellungen konnten nicht geöffnet werden';
 }

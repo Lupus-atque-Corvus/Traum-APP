@@ -788,7 +788,14 @@ class _ExperimentalSectionState extends ConsumerState<_ExperimentalSection>
   }
 
   Future<void> _onSetLauncher() async {
-    await ref.read(launcherServiceProvider).requestSetDefault();
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final ok = await ref.read(launcherServiceProvider).requestSetDefault();
+    if (!ok) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.setAsLauncherFailed)),
+      );
+    }
     await _refreshLauncherStatus();
   }
 

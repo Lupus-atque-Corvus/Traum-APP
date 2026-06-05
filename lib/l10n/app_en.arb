@@ -1272,5 +1272,6 @@
   "removeFromLauncher": "Remove from launcher",
   "setAsLauncher": "Set as default launcher",
   "setAsLauncherActive": "TRAUM is your default home app",
-  "setAsLauncherInactive": "Tap to set TRAUM as your home screen"
+  "setAsLauncherInactive": "Tap to set TRAUM as your home screen",
+  "setAsLauncherFailed": "Couldn't open launcher settings"
 }
