@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
@@ -11,6 +12,7 @@ import '../../core/theme/colors.dart';
 import 'dynamic_marker_sheet.dart';
 import 'graffiti_map_provider.dart';
 import 'map_export_service.dart';
+import 'map_tile_config.dart';
 import 'map_visuals.dart';
 import 'photo_metadata_service.dart';
 
@@ -37,6 +39,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final viewMode = ref.watch(mapViewModeProvider);
     final collectionInfo = ref.watch(activeCollectionInfoProvider);
     final hashtagFilter = ref.watch(activeHashtagFilterProvider);
     final markersAsync = _query.isEmpty
@@ -70,22 +73,31 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
             options: MapOptions(
               initialCenter: initialCenter,
               initialZoom: withCoords.isNotEmpty ? 12 : 5,
+              interactionOptions:
+                  const InteractionOptions(flags: InteractiveFlag.all),
             ),
             children: [
-              TileLayer(
-                urlTemplate:
-                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.traum.app',
-                tileBuilder: (context, widget, tile) => ColorFiltered(
-                  colorFilter: const ColorFilter.matrix([
-                    -0.6, 0, 0, 0, 255, //
-                    0, -0.6, 0, 0, 255, //
-                    0, 0, -0.6, 0, 255, //
-                    0, 0, 0, 1, 0, //
-                  ]),
-                  child: widget,
-                ),
-              ),
+              ...tileUrlTemplatesFor(viewMode).map((url) {
+                if (mapModeUsesDarkFilter(viewMode)) {
+                  return TileLayer(
+                    urlTemplate: url,
+                    userAgentPackageName: 'com.traum.app',
+                    tileBuilder: (context, widget, tile) => ColorFiltered(
+                      colorFilter: const ColorFilter.matrix([
+                        -0.6, 0, 0, 0, 255, //
+                        0, -0.6, 0, 0, 255, //
+                        0, 0, -0.6, 0, 255, //
+                        0, 0, 0, 1, 0, //
+                      ]),
+                      child: widget,
+                    ),
+                  );
+                }
+                return TileLayer(
+                  urlTemplate: url,
+                  userAgentPackageName: 'com.traum.app',
+                );
+              }),
               MarkerClusterLayerWidget(
                 options: MarkerClusterLayerOptions(
                   maxClusterRadius: 50,
@@ -125,7 +137,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                   ),
                 ),
               ),
-              const _OsmAttribution(),
+              _Attribution(viewMode),
             ],
           ),
 
@@ -143,6 +155,15 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                     _circleButton(
                       icon: Icons.layers_outlined,
                       onTap: () => _showMapSwitcher(context),
+                    ),
+                    const SizedBox(width: 8),
+                    _circleButton(
+                      icon: switch (ref.watch(mapViewModeProvider)) {
+                        MapViewMode.standard => Icons.map_outlined,
+                        MapViewMode.satellite => Icons.satellite_alt_outlined,
+                        MapViewMode.hybrid => Icons.layers_outlined,
+                      },
+                      onTap: _cycleViewMode,
                     ),
                   ],
                 ),
@@ -201,9 +222,55 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
               ],
             ),
           ),
+
+          // Standort-Button
+          Positioned(
+            right: 16,
+            bottom: MediaQuery.of(context).padding.bottom + 150,
+            child: Column(
+              children: [
+                _circleButton(icon: Icons.my_location, onTap: _goToMyLocation),
+              ],
+            ),
+          ),
         ],
       ),
     );
+  }
+
+  void _cycleViewMode() {
+    final notifier = ref.read(mapViewModeProvider.notifier);
+    notifier.state = switch (notifier.state) {
+      MapViewMode.standard => MapViewMode.satellite,
+      MapViewMode.satellite => MapViewMode.hybrid,
+      MapViewMode.hybrid => MapViewMode.standard,
+    };
+  }
+
+  Future<void> _goToMyLocation() async {
+    try {
+      var perm = await Geolocator.checkPermission();
+      if (perm == LocationPermission.denied) {
+        perm = await Geolocator.requestPermission();
+      }
+      if (perm == LocationPermission.denied ||
+          perm == LocationPermission.deniedForever) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Standortberechtigung fehlt')),
+          );
+        }
+        return;
+      }
+      final pos = await Geolocator.getCurrentPosition();
+      _mapController.move(LatLng(pos.latitude, pos.longitude), 15);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Standort nicht verfügbar')),
+        );
+      }
+    }
   }
 
   Widget _searchBar() {
@@ -475,16 +542,13 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
   }
 }
 
-class _OsmAttribution extends StatelessWidget {
-  const _OsmAttribution();
+class _Attribution extends StatelessWidget {
+  final MapViewMode mode;
+  const _Attribution(this.mode);
   @override
-  Widget build(BuildContext context) {
-    return const RichAttributionWidget(
-      attributions: [
-        TextSourceAttribution('OpenStreetMap contributors'),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => RichAttributionWidget(
+        attributions: [TextSourceAttribution(mapModeAttribution(mode))],
+      );
 }
 
 class _MapMarkerWidget extends StatelessWidget {
