@@ -21,10 +21,15 @@ List<String> tileUrlTemplatesFor(MapViewMode mode) => switch (mode) {
 /// Only the standard OSM layer gets the dark invert filter.
 bool mapModeUsesDarkFilter(MapViewMode mode) => mode == MapViewMode.standard;
 
-String mapModeAttribution(MapViewMode mode) => mode == MapViewMode.standard
-    ? 'OpenStreetMap contributors'
-    : 'Esri, Maxar, Earthstar Geographics';
+/// Attribution string shown on the map for the given mode.
+String mapModeAttribution(MapViewMode mode) => switch (mode) {
+      MapViewMode.standard => 'OpenStreetMap contributors',
+      MapViewMode.satellite ||
+      MapViewMode.hybrid =>
+        'Esri, Maxar, Earthstar Geographics',
+    };
 
+/// Short human label for the mode switcher.
 String mapModeLabel(MapViewMode mode) => switch (mode) {
       MapViewMode.standard => 'Standard',
       MapViewMode.satellite => 'Satellit',
