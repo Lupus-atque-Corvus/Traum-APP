@@ -11,6 +11,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import 'dynamic_marker_sheet.dart';
 import 'graffiti_map_provider.dart';
+import 'map_config.dart';
 import 'map_export_service.dart';
 import 'map_tile_config.dart';
 import 'map_visuals.dart';
@@ -432,12 +433,26 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     );
     final result = await PhotoMetadataService.captureWithMetadata(source);
     if (result == null || !mounted) return;
+    int? attachId;
+    if (collection.multiPhoto && result.latitude != null) {
+      final markers = await ref.read(mapMarkersDaoProvider).getByCollection(id);
+      final pts = markers
+          .where((m) => m.latitude != null)
+          .map((m) => (m.id, m.latitude!, m.longitude!))
+          .toList();
+      attachId = nearestMarkerWithin(
+          pts, result.latitude!, result.longitude!,
+          groupRadiusFromConfig(collection.fieldConfig));
+    }
+    if (!mounted) return;
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) =>
-          DynamicMarkerSheet(captureResult: result, collection: collection),
+      builder: (_) => DynamicMarkerSheet(
+          captureResult: result,
+          collection: collection,
+          initialAttachMarkerId: attachId),
     );
     ref.invalidate(activeMarkersProvider);
     ref.invalidate(allHashtagsProvider);

@@ -17,10 +17,12 @@ import 'photo_metadata_service.dart';
 class DynamicMarkerSheet extends ConsumerStatefulWidget {
   final PhotoCaptureResult captureResult;
   final MapCollection collection;
+  final int? initialAttachMarkerId;
   const DynamicMarkerSheet({
     super.key,
     required this.captureResult,
     required this.collection,
+    this.initialAttachMarkerId,
   });
 
   @override
@@ -56,6 +58,7 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
         .map((f) => MapField.fromJson(f as Map<String, dynamic>))
         .toList();
     if (_multiPhoto) _loadExisting();
+    _attachToMarkerId = widget.initialAttachMarkerId;
   }
 
   Future<void> _loadExisting() async {
