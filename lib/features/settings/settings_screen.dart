@@ -1620,8 +1620,9 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
             onSelectionChanged: (s) => setState(() => _format = s.first),
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.selected))
+                if (states.contains(WidgetState.selected)) {
                   return TraumColors.cyanBlue;
+                }
                 return TraumColors.surfaceVariant;
               }),
             ),
