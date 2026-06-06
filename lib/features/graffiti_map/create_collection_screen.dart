@@ -27,6 +27,7 @@ class _CreateCollectionScreenState
   String _selectedColor = '3DD68C';
   bool _hasRating = false;
   bool _multiPhoto = false;
+  int _groupRadius = 50;
   final List<MapField> _selectedFields = [];
 
   @override
@@ -42,6 +43,7 @@ class _CreateCollectionScreenState
       _selectedColor = t.colorHex;
       _hasRating = t.hasRating;
       _multiPhoto = t.multiPhoto;
+      _groupRadius = t.groupRadius;
       _selectedFields
         ..clear()
         ..addAll(t.fields);
@@ -78,6 +80,7 @@ class _CreateCollectionScreenState
     final config = jsonEncode({
       'rating': _hasRating,
       'multiPhoto': _multiPhoto,
+      'groupRadius': _groupRadius,
       'fields': _selectedFields.map((f) => f.toJson()).toList(),
     });
     final dao = ref.read(mapCollectionsDaoProvider);
@@ -254,6 +257,38 @@ class _CreateCollectionScreenState
                 style: TextStyle(
                     fontFamily: 'DMSans', color: TraumColors.onBackground)),
           ),
+          if (_multiPhoto) ...[
+            const SizedBox(height: 12),
+            _sectionLabel('Gruppierungs-Radius'),
+            const SizedBox(height: 4),
+            const Text(
+              'Fotos innerhalb dieses Radius werden automatisch zu einem Ort gruppiert.',
+              style: TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundMuted,
+                  fontSize: 12),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              children: [25, 50, 100, 200].map((m) {
+                final sel = _groupRadius == m;
+                return ChoiceChip(
+                  label: Text('$m m'),
+                  selected: sel,
+                  labelStyle: TextStyle(
+                    fontFamily: 'DMSans',
+                    color: sel ? TraumColors.cyanBlue : TraumColors.onBackgroundMuted,
+                  ),
+                  backgroundColor: TraumColors.surface,
+                  selectedColor: TraumColors.cyanDim,
+                  side: BorderSide(
+                      color: sel ? TraumColors.cyanBlue : Colors.transparent),
+                  onSelected: (_) => setState(() => _groupRadius = m),
+                );
+              }).toList(),
+            ),
+          ],
           const SizedBox(height: 12),
 
           _sectionLabel('Felder'),

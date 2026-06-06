@@ -5,6 +5,7 @@ import 'predefined_fields.dart';
 class MapTemplate {
   final String name, iconName, colorHex;
   final bool hasRating, multiPhoto;
+  final int groupRadius;
   final List<MapField> fields;
   const MapTemplate({
     required this.name,
@@ -12,12 +13,14 @@ class MapTemplate {
     required this.colorHex,
     required this.hasRating,
     required this.multiPhoto,
+    this.groupRadius = 50,
     required this.fields,
   });
 
   String buildFieldConfig() => jsonEncode({
         'rating': hasRating,
         'multiPhoto': multiPhoto,
+        'groupRadius': groupRadius,
         'fields': fields.map((f) => f.toJson()).toList(),
       });
 }
