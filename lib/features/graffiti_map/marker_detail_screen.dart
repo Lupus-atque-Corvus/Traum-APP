@@ -229,16 +229,24 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
               color: TraumColors.surfaceVariant,
               onSelected: (v) {
                 if (v == 'share') _share();
+                if (v == 'location') {
+                  context.push('/graffitimap/marker/${marker.id}/location');
+                }
                 if (v == 'delete') _delete();
               },
-              itemBuilder: (_) => const [
-                PopupMenuItem(
+              itemBuilder: (_) => [
+                const PopupMenuItem(
                     value: 'share',
                     child: Text('Teilen',
                         style: TextStyle(
                             fontFamily: 'DMSans',
                             color: TraumColors.onBackground))),
                 PopupMenuItem(
+                    value: 'location',
+                    child: Text('Standort anpassen',
+                        style: TextStyle(
+                            fontFamily: 'DMSans', color: TraumColors.onBackground))),
+                const PopupMenuItem(
                     value: 'delete',
                     child: Text('Löschen',
                         style: TextStyle(
