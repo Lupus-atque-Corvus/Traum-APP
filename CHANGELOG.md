@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.6.9 (2026-06-06) — Graffiti Map: Karten-Verbesserungen
+
+### Verbesserung
+
+- **Karten-Ansichten:** Umschalter über der Karte für **Standard / Satellit / Hybrid** (Satellit & Hybrid über kostenloses Esri-Imagery, kein Konto nötig)
+- **Navigation wie gewohnt:** Karte lässt sich mit zwei Fingern **drehen**, flüssiges Zoomen; neuer **Standort-Button** zentriert auf deine Position, ein **Kompass** erscheint bei gedrehter Karte und stellt Norden wieder her
+- **Suchleiste:** Tippen an beliebiger Stelle der Leiste öffnet jetzt die Eingabe (vorher nur die Mitte)
+- **Aktions-Buttons** (Foto/Galerie/Import/Stitch) sitzen weiter unten am Rand; **Stitch** erscheint nur noch bei Graffiti-Karten
+- **Export** der Karten (GPX/JSON) ist in die **Einstellungen** zum übrigen Export gewandert
+
+### Neue Funktion
+
+- **Mehrere Fotos pro Ort:** Neue Fotos innerhalb eines einstellbaren **Radius** (Standard 50 m) werden automatisch demselben Ort zugeordnet; im Eintrag-Dialog umschaltbar auf „Neuer Eintrag"
+- **Standort nachträglich anpassen:** Im Detail eines Ortes lässt sich die Position über eine Vollbild-Karte mit Fadenkreuz neu setzen
+
+---
+
 ## v0.6.8 (2026-06-06) — Graffiti Map
 
 ### Neue Funktion
