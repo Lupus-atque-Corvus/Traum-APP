@@ -27,6 +27,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
   final _searchController = TextEditingController();
   final _searchFocus = FocusNode();
   String _query = '';
+  double _rotation = 0;
 
   static const _fallbackCenter = LatLng(51.1657, 10.4515); // Deutschland
 
@@ -82,6 +83,11 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
               interactionOptions: const InteractionOptions(
                 flags: InteractiveFlag.all,
               ),
+              onPositionChanged: (camera, hasGesture) {
+                if (camera.rotation != _rotation) {
+                  setState(() => _rotation = camera.rotation);
+                }
+              },
             ),
             children: [
               ...tileUrlTemplatesFor(viewMode).map((url) {
@@ -241,13 +247,24 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
             ),
           ),
 
-          // Standort-Button
+          // Kompass (nur bei gedrehter Karte) + Standort-Button
           Positioned(
             right: 16,
             bottom: MediaQuery.of(context).padding.bottom + 138,
-            child: _circleButton(
-              icon: Icons.my_location,
-              onTap: _goToMyLocation,
+            child: Column(
+              children: [
+                if (_rotation != 0) ...[
+                  _circleButton(
+                    icon: Icons.explore_outlined,
+                    onTap: () => _mapController.rotate(0),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+                _circleButton(
+                  icon: Icons.my_location,
+                  onTap: _goToMyLocation,
+                ),
+              ],
             ),
           ),
         ],
