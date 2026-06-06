@@ -158,10 +158,10 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                     ),
                     const SizedBox(width: 8),
                     _circleButton(
-                      icon: switch (ref.watch(mapViewModeProvider)) {
+                      icon: switch (viewMode) {
                         MapViewMode.standard => Icons.map_outlined,
                         MapViewMode.satellite => Icons.satellite_alt_outlined,
-                        MapViewMode.hybrid => Icons.layers_outlined,
+                        MapViewMode.hybrid => Icons.public,
                       },
                       onTap: _cycleViewMode,
                     ),
@@ -227,11 +227,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
           Positioned(
             right: 16,
             bottom: MediaQuery.of(context).padding.bottom + 150,
-            child: Column(
-              children: [
-                _circleButton(icon: Icons.my_location, onTap: _goToMyLocation),
-              ],
-            ),
+            child: _circleButton(icon: Icons.my_location, onTap: _goToMyLocation),
           ),
         ],
       ),
