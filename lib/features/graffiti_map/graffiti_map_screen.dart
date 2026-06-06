@@ -46,6 +46,8 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
         ? ref.watch(activeMarkersProvider)
         : ref.watch(markerSearchProvider(_query));
     final hasRating = collectionInfo.valueOrNull?.hasRating ?? false;
+    final isGraffiti =
+        (collectionInfo.valueOrNull?.iconName ?? 'spray') == 'spray';
 
     final all = markersAsync.valueOrNull ?? const [];
     final filtered = hashtagFilter == null
@@ -194,7 +196,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
           Positioned(
             left: 16,
             right: 16,
-            bottom: MediaQuery.of(context).padding.bottom + 90,
+            bottom: MediaQuery.of(context).padding.bottom + 78,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -214,11 +216,12 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                   label: 'Import',
                   onTap: () => _capturePhoto(ImageSource.gallery),
                 ),
-                _actionButton(
-                  icon: Icons.auto_awesome_mosaic_outlined,
-                  label: 'Stitch',
-                  onTap: () => context.go('/graffitimap/stitch'),
-                ),
+                if (isGraffiti)
+                  _actionButton(
+                    icon: Icons.auto_awesome_mosaic_outlined,
+                    label: 'Stitch',
+                    onTap: () => context.go('/graffitimap/stitch'),
+                  ),
               ],
             ),
           ),
@@ -226,7 +229,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
           // Standort-Button
           Positioned(
             right: 16,
-            bottom: MediaQuery.of(context).padding.bottom + 150,
+            bottom: MediaQuery.of(context).padding.bottom + 138,
             child: _circleButton(icon: Icons.my_location, onTap: _goToMyLocation),
           ),
         ],
