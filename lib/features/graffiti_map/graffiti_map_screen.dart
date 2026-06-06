@@ -61,11 +61,14 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
             return tags.contains(hashtagFilter.toLowerCase());
           }).toList();
 
-    final withCoords =
-        filtered.where((d) => d.marker.latitude != null).toList();
+    final withCoords = filtered
+        .where((d) => d.marker.latitude != null)
+        .toList();
     final initialCenter = withCoords.isNotEmpty
-        ? LatLng(withCoords.first.marker.latitude!,
-            withCoords.first.marker.longitude!)
+        ? LatLng(
+            withCoords.first.marker.latitude!,
+            withCoords.first.marker.longitude!,
+          )
         : _fallbackCenter;
 
     return Scaffold(
@@ -77,8 +80,9 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
             options: MapOptions(
               initialCenter: initialCenter,
               initialZoom: withCoords.isNotEmpty ? 12 : 5,
-              interactionOptions:
-                  const InteractionOptions(flags: InteractiveFlag.all),
+              interactionOptions: const InteractionOptions(
+                flags: InteractiveFlag.all,
+              ),
             ),
             children: [
               ...tileUrlTemplatesFor(viewMode).map((url) {
@@ -107,25 +111,34 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                   maxClusterRadius: 50,
                   size: const Size(44, 44),
                   markers: withCoords
-                      .map((data) => Marker(
-                            point: LatLng(data.marker.latitude!,
-                                data.marker.longitude!),
-                            width: 56,
-                            height: 56,
-                            child: GestureDetector(
-                              onTap: () => context.go(
-                                  '/graffitimap/marker/${data.marker.id}'),
-                              child: _MapMarkerWidget(
-                                  data: data, showRating: hasRating),
+                      .map(
+                        (data) => Marker(
+                          point: LatLng(
+                            data.marker.latitude!,
+                            data.marker.longitude!,
+                          ),
+                          width: 56,
+                          height: 56,
+                          child: GestureDetector(
+                            onTap: () => context.go(
+                              '/graffitimap/marker/${data.marker.id}',
                             ),
-                          ))
+                            child: _MapMarkerWidget(
+                              data: data,
+                              showRating: hasRating,
+                            ),
+                          ),
+                        ),
+                      )
                       .toList(),
                   builder: (context, markers) => Container(
                     decoration: BoxDecoration(
                       color: TraumColors.cyanBlue,
                       shape: BoxShape.circle,
                       border: Border.all(
-                          color: TraumColors.background, width: 2),
+                        color: TraumColors.background,
+                        width: 2,
+                      ),
                     ),
                     child: Center(
                       child: Text(
@@ -178,15 +191,16 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                     child: InputChip(
                       label: Text('#$hashtagFilter'),
                       labelStyle: const TextStyle(
-                          fontFamily: 'DMSans',
-                          color: TraumColors.cyanBlue,
-                          fontSize: 12),
+                        fontFamily: 'DMSans',
+                        color: TraumColors.cyanBlue,
+                        fontSize: 12,
+                      ),
                       backgroundColor: TraumColors.surface,
                       side: const BorderSide(color: TraumColors.cyanBlue),
                       deleteIconColor: TraumColors.cyanBlue,
-                      onDeleted: () => ref
-                          .read(activeHashtagFilterProvider.notifier)
-                          .state = null,
+                      onDeleted: () =>
+                          ref.read(activeHashtagFilterProvider.notifier).state =
+                              null,
                     ),
                   ),
                 ],
@@ -232,7 +246,10 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
           Positioned(
             right: 16,
             bottom: MediaQuery.of(context).padding.bottom + 138,
-            child: _circleButton(icon: Icons.my_location, onTap: _goToMyLocation),
+            child: _circleButton(
+              icon: Icons.my_location,
+              onTap: _goToMyLocation,
+            ),
           ),
         ],
       ),
@@ -279,57 +296,66 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
       behavior: HitTestBehavior.opaque,
       onTap: () => _searchFocus.requestFocus(),
       child: Container(
-      height: 48,
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      decoration: BoxDecoration(
-        color: TraumColors.surface,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 8,
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.search, color: TraumColors.onBackgroundMuted, size: 20),
-          const SizedBox(width: 8),
-          Expanded(
-            child: TextField(
-              controller: _searchController,
-              focusNode: _searchFocus,
-              onChanged: (v) => setState(() => _query = v),
-              style: const TextStyle(
-                  fontFamily: 'DMSans', color: TraumColors.onBackground),
-              decoration: const InputDecoration(
-                isCollapsed: true,
-                border: InputBorder.none,
-                hintText: 'Nach #Hashtag suchen…',
-                hintStyle: TextStyle(
+        height: 48,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        decoration: BoxDecoration(
+          color: TraumColors.surface,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 8,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.search,
+              color: TraumColors.onBackgroundMuted,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: TextField(
+                controller: _searchController,
+                focusNode: _searchFocus,
+                onChanged: (v) => setState(() => _query = v),
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                ),
+                decoration: const InputDecoration(
+                  isCollapsed: true,
+                  border: InputBorder.none,
+                  hintText: 'Nach #Hashtag suchen…',
+                  hintStyle: TextStyle(
                     fontFamily: 'DMSans',
                     color: TraumColors.onBackgroundSubtle,
-                    fontSize: 14),
+                    fontSize: 14,
+                  ),
+                ),
               ),
             ),
-          ),
-          if (_query.isNotEmpty)
-            GestureDetector(
-              onTap: () {
-                _searchController.clear();
-                setState(() => _query = '');
-              },
-              child: const Icon(Icons.close,
-                  color: TraumColors.onBackgroundMuted, size: 18),
-            ),
-        ],
-      ),
+            if (_query.isNotEmpty)
+              GestureDetector(
+                onTap: () {
+                  _searchController.clear();
+                  setState(() => _query = '');
+                },
+                child: const Icon(
+                  Icons.close,
+                  color: TraumColors.onBackgroundMuted,
+                  size: 18,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _circleButton(
-      {required IconData icon, required VoidCallback onTap}) {
+  Widget _circleButton({required IconData icon, required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -340,7 +366,9 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withValues(alpha: 0.3), blurRadius: 8),
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 8,
+            ),
           ],
         ),
         child: Icon(icon, color: TraumColors.cyanBlue, size: 22),
@@ -368,13 +396,16 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 8),
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                ),
               ],
             ),
-            child: Icon(icon,
-                color: primary ? Colors.white : TraumColors.cyanBlue,
-                size: 24),
+            child: Icon(
+              icon,
+              color: primary ? Colors.white : TraumColors.cyanBlue,
+              size: 24,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
@@ -395,8 +426,10 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     final id = ref.read(activeCollectionProvider);
     final collections = await ref.read(mapCollectionsDaoProvider).getAll();
     if (collections.isEmpty) return;
-    final collection = collections.firstWhere((c) => c.id == id,
-        orElse: () => collections.first);
+    final collection = collections.firstWhere(
+      (c) => c.id == id,
+      orElse: () => collections.first,
+    );
     final result = await PhotoMetadataService.captureWithMetadata(source);
     if (result == null || !mounted) return;
     await showModalBottomSheet(
@@ -417,35 +450,37 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (_) => Consumer(builder: (ctx, ref, _) {
-        final collections = ref.watch(mapCollectionsProvider);
-        final active = ref.watch(activeCollectionProvider);
-        return collections.when(
-          data: (list) => SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: 12),
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: TraumColors.onBackgroundSubtle,
-                    borderRadius: BorderRadius.circular(2),
+      builder: (_) => Consumer(
+        builder: (ctx, ref, _) {
+          final collections = ref.watch(mapCollectionsProvider);
+          final active = ref.watch(activeCollectionProvider);
+          return collections.when(
+            data: (list) => SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 12),
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: TraumColors.onBackgroundSubtle,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Karte wählen',
-                  style: TextStyle(
-                    fontFamily: 'DMSans',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: TraumColors.onBackground,
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Karte wählen',
+                    style: TextStyle(
+                      fontFamily: 'DMSans',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: TraumColors.onBackground,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                ...list.map((c) => ListTile(
+                  const SizedBox(height: 16),
+                  ...list.map(
+                    (c) => ListTile(
                       leading: Container(
                         width: 44,
                         height: 44,
@@ -453,32 +488,43 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                           color: mapCollectionColor(c).withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Icon(mapCollectionIcon(c.iconName),
-                            color: mapCollectionColor(c), size: 22),
+                        child: Icon(
+                          mapCollectionIcon(c.iconName),
+                          color: mapCollectionColor(c),
+                          size: 22,
+                        ),
                       ),
-                      title: Text(c.name,
-                          style: const TextStyle(
-                              fontFamily: 'DMSans',
-                              color: TraumColors.onBackground,
-                              fontWeight: FontWeight.w600)),
+                      title: Text(
+                        c.name,
+                        style: const TextStyle(
+                          fontFamily: 'DMSans',
+                          color: TraumColors.onBackground,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       subtitle: Text(
                         c.hasRating
                             ? 'Mit Bewertung · mehrere Fotos'
                             : 'Einzelfotos',
                         style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            color: TraumColors.onBackgroundMuted,
-                            fontSize: 12),
+                          fontFamily: 'DMSans',
+                          color: TraumColors.onBackgroundMuted,
+                          fontSize: 12,
+                        ),
                       ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (active == c.id)
-                            const Icon(Icons.check_circle,
-                                color: TraumColors.cyanBlue),
+                            const Icon(
+                              Icons.check_circle,
+                              color: TraumColors.cyanBlue,
+                            ),
                           PopupMenuButton<String>(
-                            icon: const Icon(Icons.more_vert,
-                                color: TraumColors.onBackgroundMuted),
+                            icon: const Icon(
+                              Icons.more_vert,
+                              color: TraumColors.onBackgroundMuted,
+                            ),
                             color: TraumColors.surfaceVariant,
                             onSelected: (v) async {
                               final db = ref.read(databaseProvider);
@@ -490,17 +536,25 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                             },
                             itemBuilder: (_) => const [
                               PopupMenuItem(
-                                  value: 'gpx',
-                                  child: Text('Als GPX exportieren',
-                                      style: TextStyle(
-                                          fontFamily: 'DMSans',
-                                          color: TraumColors.onBackground))),
+                                value: 'gpx',
+                                child: Text(
+                                  'Als GPX exportieren',
+                                  style: TextStyle(
+                                    fontFamily: 'DMSans',
+                                    color: TraumColors.onBackground,
+                                  ),
+                                ),
+                              ),
                               PopupMenuItem(
-                                  value: 'json',
-                                  child: Text('Als JSON exportieren',
-                                      style: TextStyle(
-                                          fontFamily: 'DMSans',
-                                          color: TraumColors.onBackground))),
+                                value: 'json',
+                                child: Text(
+                                  'Als JSON exportieren',
+                                  style: TextStyle(
+                                    fontFamily: 'DMSans',
+                                    color: TraumColors.onBackground,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -512,38 +566,45 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                             null;
                         Navigator.pop(ctx);
                       },
-                    )),
-                ListTile(
-                  leading: Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: TraumColors.surfaceVariant,
-                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.add,
-                        color: TraumColors.onBackgroundMuted),
                   ),
-                  title: const Text('Neue Karte erstellen',
+                  ListTile(
+                    leading: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: TraumColors.surfaceVariant,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.add,
+                        color: TraumColors.onBackgroundMuted,
+                      ),
+                    ),
+                    title: const Text(
+                      'Neue Karte erstellen',
                       style: TextStyle(
-                          fontFamily: 'DMSans',
-                          color: TraumColors.onBackgroundMuted)),
-                  onTap: () {
-                    Navigator.pop(ctx);
-                    context.go('/graffitimap/create');
-                  },
-                ),
-                const SizedBox(height: 24),
-              ],
+                        fontFamily: 'DMSans',
+                        color: TraumColors.onBackgroundMuted,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      context.go('/graffitimap/create');
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                ],
+              ),
             ),
-          ),
-          loading: () => const Padding(
-            padding: EdgeInsets.all(32),
-            child: CircularProgressIndicator(color: TraumColors.cyanBlue),
-          ),
-          error: (_, __) => const SizedBox.shrink(),
-        );
-      }),
+            loading: () => const Padding(
+              padding: EdgeInsets.all(32),
+              child: CircularProgressIndicator(color: TraumColors.cyanBlue),
+            ),
+            error: (_, __) => const SizedBox.shrink(),
+          );
+        },
+      ),
     );
   }
 }
@@ -553,8 +614,8 @@ class _Attribution extends StatelessWidget {
   const _Attribution(this.mode);
   @override
   Widget build(BuildContext context) => RichAttributionWidget(
-        attributions: [TextSourceAttribution(mapModeAttribution(mode))],
-      );
+    attributions: [TextSourceAttribution(mapModeAttribution(mode))],
+  );
 }
 
 class _MapMarkerWidget extends StatelessWidget {
@@ -573,14 +634,18 @@ class _MapMarkerWidget extends StatelessWidget {
             border: Border.all(color: TraumColors.cyanBlue, width: 2.5),
             boxShadow: [
               BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.4), blurRadius: 6),
+                color: Colors.black.withValues(alpha: 0.4),
+                blurRadius: 6,
+              ),
             ],
           ),
           child: ClipOval(
             child: data.firstPhoto != null
                 ? Image.file(
-                    File(data.firstPhoto!.thumbnailPath ??
-                        data.firstPhoto!.photoPath),
+                    File(
+                      data.firstPhoto!.thumbnailPath ??
+                          data.firstPhoto!.photoPath,
+                    ),
                     width: 48,
                     height: 48,
                     fit: BoxFit.cover,
@@ -589,8 +654,11 @@ class _MapMarkerWidget extends StatelessWidget {
                     width: 48,
                     height: 48,
                     color: TraumColors.surfaceVariant,
-                    child: const Icon(Icons.image,
-                        color: TraumColors.cyanBlue, size: 20),
+                    child: const Icon(
+                      Icons.image,
+                      color: TraumColors.cyanBlue,
+                      size: 20,
+                    ),
                   ),
           ),
         ),
@@ -599,8 +667,7 @@ class _MapMarkerWidget extends StatelessWidget {
             bottom: -4,
             right: -4,
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
               decoration: BoxDecoration(
                 color: TraumColors.amberGold,
                 borderRadius: BorderRadius.circular(8),
