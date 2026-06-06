@@ -97,8 +97,10 @@ class _EditLocationScreenState extends ConsumerState<EditLocationScreen> {
                   options: MapOptions(
                     initialCenter: _center,
                     initialZoom: 15,
-                    interactionOptions:
-                        const InteractionOptions(flags: InteractiveFlag.all),
+                    interactionOptions: const InteractionOptions(
+                      flags: InteractiveFlag.all,
+                      enableMultiFingerGestureRace: true,
+                    ),
                   ),
                   children: [
                     TileLayer(
