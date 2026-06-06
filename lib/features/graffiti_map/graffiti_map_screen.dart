@@ -26,6 +26,7 @@ class GraffitiMapScreen extends ConsumerStatefulWidget {
 class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
   final _mapController = MapController();
   final _searchController = TextEditingController();
+  final _searchFocus = FocusNode();
   String _query = '';
 
   static const _fallbackCenter = LatLng(51.1657, 10.4515); // Deutschland
@@ -34,6 +35,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
   void dispose() {
     _mapController.dispose();
     _searchController.dispose();
+    _searchFocus.dispose();
     super.dispose();
   }
 
@@ -273,7 +275,10 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
   }
 
   Widget _searchBar() {
-    return Container(
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => _searchFocus.requestFocus(),
+      child: Container(
       height: 48,
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
@@ -293,6 +298,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
           Expanded(
             child: TextField(
               controller: _searchController,
+              focusNode: _searchFocus,
               onChanged: (v) => setState(() => _query = v),
               style: const TextStyle(
                   fontFamily: 'DMSans', color: TraumColors.onBackground),
@@ -317,6 +323,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                   color: TraumColors.onBackgroundMuted, size: 18),
             ),
         ],
+      ),
       ),
     );
   }
