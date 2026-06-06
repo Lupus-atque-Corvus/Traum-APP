@@ -9,6 +9,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import '../../core/navigation/nav_customization_sheet.dart';
 import '../../core/providers/database_provider.dart';
+import '../graffiti_map/graffiti_map_provider.dart';
+import '../graffiti_map/map_export_service.dart';
+import '../graffiti_map/map_visuals.dart';
 import '../../core/services/calendar_sync_service.dart' show NativeCalendar;
 import '../planning/calendar_picker_dialog.dart';
 import 'feedback/feedback_bottom_sheet.dart';
@@ -1129,14 +1132,14 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
   }
 }
 
-class _ExportSheet extends StatefulWidget {
+class _ExportSheet extends ConsumerStatefulWidget {
   const _ExportSheet();
 
   @override
-  State<_ExportSheet> createState() => _ExportSheetState();
+  ConsumerState<_ExportSheet> createState() => _ExportSheetState();
 }
 
-class _ExportSheetState extends State<_ExportSheet> {
+class _ExportSheetState extends ConsumerState<_ExportSheet> {
   String _format = 'json';
   // Keys are module ids; labels come from l10n at build time.
   final Map<String, bool> _modules = {
@@ -1269,6 +1272,57 @@ class _ExportSheetState extends State<_ExportSheet> {
                   }
                 : null,
           ),
+          const SizedBox(height: 8),
+          const SizedBox(height: 20),
+          const Text('Graffiti Map',
+              style: TextStyle(
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          Consumer(builder: (context, ref, _) {
+            final collections = ref.watch(mapCollectionsProvider);
+            return collections.when(
+              data: (list) => Column(
+                children: list
+                    .map((c) => ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(mapCollectionIcon(c.iconName),
+                              color: mapCollectionColor(c)),
+                          title: Text(c.name,
+                              style: const TextStyle(
+                                  color: TraumColors.onBackground,
+                                  fontFamily: 'DMSans')),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextButton(
+                                onPressed: () => MapExportService.exportGpx(
+                                    ref.read(databaseProvider), c),
+                                child: const Text('GPX',
+                                    style: TextStyle(
+                                        color: TraumColors.cyanBlue)),
+                              ),
+                              TextButton(
+                                onPressed: () => MapExportService.exportJson(
+                                    ref.read(databaseProvider), c),
+                                child: const Text('JSON',
+                                    style: TextStyle(
+                                        color: TraumColors.cyanBlue)),
+                              ),
+                            ],
+                          ),
+                        ))
+                    .toList(),
+              ),
+              loading: () => const Padding(
+                padding: EdgeInsets.all(8),
+                child:
+                    CircularProgressIndicator(color: TraumColors.cyanBlue),
+              ),
+              error: (_, __) => const SizedBox.shrink(),
+            );
+          }),
           const SizedBox(height: 8),
         ],
       ),

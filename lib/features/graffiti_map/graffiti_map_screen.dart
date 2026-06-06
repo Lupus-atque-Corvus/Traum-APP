@@ -7,12 +7,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
-import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import 'dynamic_marker_sheet.dart';
 import 'graffiti_map_provider.dart';
 import 'map_config.dart';
-import 'map_export_service.dart';
 import 'map_tile_config.dart';
 import 'map_visuals.dart';
 import 'photo_metadata_service.dart';
@@ -527,53 +525,10 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                           fontSize: 12,
                         ),
                       ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (active == c.id)
-                            const Icon(
-                              Icons.check_circle,
-                              color: TraumColors.cyanBlue,
-                            ),
-                          PopupMenuButton<String>(
-                            icon: const Icon(
-                              Icons.more_vert,
-                              color: TraumColors.onBackgroundMuted,
-                            ),
-                            color: TraumColors.surfaceVariant,
-                            onSelected: (v) async {
-                              final db = ref.read(databaseProvider);
-                              if (v == 'gpx') {
-                                await MapExportService.exportGpx(db, c);
-                              } else if (v == 'json') {
-                                await MapExportService.exportJson(db, c);
-                              }
-                            },
-                            itemBuilder: (_) => const [
-                              PopupMenuItem(
-                                value: 'gpx',
-                                child: Text(
-                                  'Als GPX exportieren',
-                                  style: TextStyle(
-                                    fontFamily: 'DMSans',
-                                    color: TraumColors.onBackground,
-                                  ),
-                                ),
-                              ),
-                              PopupMenuItem(
-                                value: 'json',
-                                child: Text(
-                                  'Als JSON exportieren',
-                                  style: TextStyle(
-                                    fontFamily: 'DMSans',
-                                    color: TraumColors.onBackground,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                      trailing: active == c.id
+                          ? const Icon(Icons.check_circle,
+                              color: TraumColors.cyanBlue)
+                          : null,
                       onTap: () {
                         ref.read(activeCollectionProvider.notifier).state =
                             c.id;
