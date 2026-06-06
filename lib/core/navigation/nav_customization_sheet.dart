@@ -37,7 +37,7 @@ class _NavCustomizationSheetState
 
   static const _allModules = [
     'training', 'health', 'nutrition', 'substances',
-    'planning', 'diary', 'abstinence', 'budget',
+    'planning', 'diary', 'graffitiMap', 'abstinence', 'budget',
     'period', 'profile', 'settings',
   ];
 
@@ -78,6 +78,7 @@ class _NavCustomizationSheetState
       case 'substances':  return Icons.medication_liquid_rounded;
       case 'planning':    return Icons.calendar_today_rounded;
       case 'diary':       return Icons.auto_stories_rounded;
+      case 'graffitiMap': return Icons.location_on_outlined;
       case 'abstinence':  return Icons.trending_up_rounded;
       case 'budget':      return Icons.account_balance_wallet_rounded;
       case 'period':      return Icons.water_drop_rounded;

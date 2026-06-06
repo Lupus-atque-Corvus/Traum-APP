@@ -23171,6 +23171,1778 @@ class NoteTemplatesCompanion extends UpdateCompanion<NoteTemplate> {
   }
 }
 
+class $MapCollectionsTable extends MapCollections
+    with TableInfo<$MapCollectionsTable, MapCollection> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MapCollectionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _iconNameMeta = const VerificationMeta(
+    'iconName',
+  );
+  @override
+  late final GeneratedColumn<String> iconName = GeneratedColumn<String>(
+    'icon_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _colorHexMeta = const VerificationMeta(
+    'colorHex',
+  );
+  @override
+  late final GeneratedColumn<String> colorHex = GeneratedColumn<String>(
+    'color_hex',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _hasRatingMeta = const VerificationMeta(
+    'hasRating',
+  );
+  @override
+  late final GeneratedColumn<bool> hasRating = GeneratedColumn<bool>(
+    'has_rating',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("has_rating" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _multiPhotoMeta = const VerificationMeta(
+    'multiPhoto',
+  );
+  @override
+  late final GeneratedColumn<bool> multiPhoto = GeneratedColumn<bool>(
+    'multi_photo',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("multi_photo" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _fieldConfigMeta = const VerificationMeta(
+    'fieldConfig',
+  );
+  @override
+  late final GeneratedColumn<String> fieldConfig = GeneratedColumn<String>(
+    'field_config',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('{}'),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    iconName,
+    colorHex,
+    hasRating,
+    multiPhoto,
+    fieldConfig,
+    sortOrder,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'map_collections';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MapCollection> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('icon_name')) {
+      context.handle(
+        _iconNameMeta,
+        iconName.isAcceptableOrUnknown(data['icon_name']!, _iconNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_iconNameMeta);
+    }
+    if (data.containsKey('color_hex')) {
+      context.handle(
+        _colorHexMeta,
+        colorHex.isAcceptableOrUnknown(data['color_hex']!, _colorHexMeta),
+      );
+    }
+    if (data.containsKey('has_rating')) {
+      context.handle(
+        _hasRatingMeta,
+        hasRating.isAcceptableOrUnknown(data['has_rating']!, _hasRatingMeta),
+      );
+    }
+    if (data.containsKey('multi_photo')) {
+      context.handle(
+        _multiPhotoMeta,
+        multiPhoto.isAcceptableOrUnknown(data['multi_photo']!, _multiPhotoMeta),
+      );
+    }
+    if (data.containsKey('field_config')) {
+      context.handle(
+        _fieldConfigMeta,
+        fieldConfig.isAcceptableOrUnknown(
+          data['field_config']!,
+          _fieldConfigMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MapCollection map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MapCollection(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      iconName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}icon_name'],
+      )!,
+      colorHex: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}color_hex'],
+      ),
+      hasRating: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}has_rating'],
+      )!,
+      multiPhoto: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}multi_photo'],
+      )!,
+      fieldConfig: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}field_config'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MapCollectionsTable createAlias(String alias) {
+    return $MapCollectionsTable(attachedDatabase, alias);
+  }
+}
+
+class MapCollection extends DataClass implements Insertable<MapCollection> {
+  final int id;
+  final String name;
+  final String iconName;
+  final String? colorHex;
+  final bool hasRating;
+  final bool multiPhoto;
+  final String fieldConfig;
+  final int sortOrder;
+  final DateTime createdAt;
+  const MapCollection({
+    required this.id,
+    required this.name,
+    required this.iconName,
+    this.colorHex,
+    required this.hasRating,
+    required this.multiPhoto,
+    required this.fieldConfig,
+    required this.sortOrder,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['icon_name'] = Variable<String>(iconName);
+    if (!nullToAbsent || colorHex != null) {
+      map['color_hex'] = Variable<String>(colorHex);
+    }
+    map['has_rating'] = Variable<bool>(hasRating);
+    map['multi_photo'] = Variable<bool>(multiPhoto);
+    map['field_config'] = Variable<String>(fieldConfig);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  MapCollectionsCompanion toCompanion(bool nullToAbsent) {
+    return MapCollectionsCompanion(
+      id: Value(id),
+      name: Value(name),
+      iconName: Value(iconName),
+      colorHex: colorHex == null && nullToAbsent
+          ? const Value.absent()
+          : Value(colorHex),
+      hasRating: Value(hasRating),
+      multiPhoto: Value(multiPhoto),
+      fieldConfig: Value(fieldConfig),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory MapCollection.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MapCollection(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      iconName: serializer.fromJson<String>(json['iconName']),
+      colorHex: serializer.fromJson<String?>(json['colorHex']),
+      hasRating: serializer.fromJson<bool>(json['hasRating']),
+      multiPhoto: serializer.fromJson<bool>(json['multiPhoto']),
+      fieldConfig: serializer.fromJson<String>(json['fieldConfig']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'iconName': serializer.toJson<String>(iconName),
+      'colorHex': serializer.toJson<String?>(colorHex),
+      'hasRating': serializer.toJson<bool>(hasRating),
+      'multiPhoto': serializer.toJson<bool>(multiPhoto),
+      'fieldConfig': serializer.toJson<String>(fieldConfig),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  MapCollection copyWith({
+    int? id,
+    String? name,
+    String? iconName,
+    Value<String?> colorHex = const Value.absent(),
+    bool? hasRating,
+    bool? multiPhoto,
+    String? fieldConfig,
+    int? sortOrder,
+    DateTime? createdAt,
+  }) => MapCollection(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    iconName: iconName ?? this.iconName,
+    colorHex: colorHex.present ? colorHex.value : this.colorHex,
+    hasRating: hasRating ?? this.hasRating,
+    multiPhoto: multiPhoto ?? this.multiPhoto,
+    fieldConfig: fieldConfig ?? this.fieldConfig,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  MapCollection copyWithCompanion(MapCollectionsCompanion data) {
+    return MapCollection(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      iconName: data.iconName.present ? data.iconName.value : this.iconName,
+      colorHex: data.colorHex.present ? data.colorHex.value : this.colorHex,
+      hasRating: data.hasRating.present ? data.hasRating.value : this.hasRating,
+      multiPhoto: data.multiPhoto.present
+          ? data.multiPhoto.value
+          : this.multiPhoto,
+      fieldConfig: data.fieldConfig.present
+          ? data.fieldConfig.value
+          : this.fieldConfig,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MapCollection(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('iconName: $iconName, ')
+          ..write('colorHex: $colorHex, ')
+          ..write('hasRating: $hasRating, ')
+          ..write('multiPhoto: $multiPhoto, ')
+          ..write('fieldConfig: $fieldConfig, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    iconName,
+    colorHex,
+    hasRating,
+    multiPhoto,
+    fieldConfig,
+    sortOrder,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MapCollection &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.iconName == this.iconName &&
+          other.colorHex == this.colorHex &&
+          other.hasRating == this.hasRating &&
+          other.multiPhoto == this.multiPhoto &&
+          other.fieldConfig == this.fieldConfig &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt);
+}
+
+class MapCollectionsCompanion extends UpdateCompanion<MapCollection> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> iconName;
+  final Value<String?> colorHex;
+  final Value<bool> hasRating;
+  final Value<bool> multiPhoto;
+  final Value<String> fieldConfig;
+  final Value<int> sortOrder;
+  final Value<DateTime> createdAt;
+  const MapCollectionsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.iconName = const Value.absent(),
+    this.colorHex = const Value.absent(),
+    this.hasRating = const Value.absent(),
+    this.multiPhoto = const Value.absent(),
+    this.fieldConfig = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  MapCollectionsCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required String iconName,
+    this.colorHex = const Value.absent(),
+    this.hasRating = const Value.absent(),
+    this.multiPhoto = const Value.absent(),
+    this.fieldConfig = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    required DateTime createdAt,
+  }) : name = Value(name),
+       iconName = Value(iconName),
+       createdAt = Value(createdAt);
+  static Insertable<MapCollection> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? iconName,
+    Expression<String>? colorHex,
+    Expression<bool>? hasRating,
+    Expression<bool>? multiPhoto,
+    Expression<String>? fieldConfig,
+    Expression<int>? sortOrder,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (iconName != null) 'icon_name': iconName,
+      if (colorHex != null) 'color_hex': colorHex,
+      if (hasRating != null) 'has_rating': hasRating,
+      if (multiPhoto != null) 'multi_photo': multiPhoto,
+      if (fieldConfig != null) 'field_config': fieldConfig,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  MapCollectionsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<String>? iconName,
+    Value<String?>? colorHex,
+    Value<bool>? hasRating,
+    Value<bool>? multiPhoto,
+    Value<String>? fieldConfig,
+    Value<int>? sortOrder,
+    Value<DateTime>? createdAt,
+  }) {
+    return MapCollectionsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      iconName: iconName ?? this.iconName,
+      colorHex: colorHex ?? this.colorHex,
+      hasRating: hasRating ?? this.hasRating,
+      multiPhoto: multiPhoto ?? this.multiPhoto,
+      fieldConfig: fieldConfig ?? this.fieldConfig,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (iconName.present) {
+      map['icon_name'] = Variable<String>(iconName.value);
+    }
+    if (colorHex.present) {
+      map['color_hex'] = Variable<String>(colorHex.value);
+    }
+    if (hasRating.present) {
+      map['has_rating'] = Variable<bool>(hasRating.value);
+    }
+    if (multiPhoto.present) {
+      map['multi_photo'] = Variable<bool>(multiPhoto.value);
+    }
+    if (fieldConfig.present) {
+      map['field_config'] = Variable<String>(fieldConfig.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MapCollectionsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('iconName: $iconName, ')
+          ..write('colorHex: $colorHex, ')
+          ..write('hasRating: $hasRating, ')
+          ..write('multiPhoto: $multiPhoto, ')
+          ..write('fieldConfig: $fieldConfig, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MapMarkersTable extends MapMarkers
+    with TableInfo<$MapMarkersTable, MapMarker> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MapMarkersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _collectionIdMeta = const VerificationMeta(
+    'collectionId',
+  );
+  @override
+  late final GeneratedColumn<int> collectionId = GeneratedColumn<int>(
+    'collection_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES map_collections (id)',
+    ),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _latitudeMeta = const VerificationMeta(
+    'latitude',
+  );
+  @override
+  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
+    'latitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _longitudeMeta = const VerificationMeta(
+    'longitude',
+  );
+  @override
+  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
+    'longitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _locationNameMeta = const VerificationMeta(
+    'locationName',
+  );
+  @override
+  late final GeneratedColumn<String> locationName = GeneratedColumn<String>(
+    'location_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _hashtagsMeta = const VerificationMeta(
+    'hashtags',
+  );
+  @override
+  late final GeneratedColumn<String> hashtags = GeneratedColumn<String>(
+    'hashtags',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _ratingMeta = const VerificationMeta('rating');
+  @override
+  late final GeneratedColumn<double> rating = GeneratedColumn<double>(
+    'rating',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _customFieldsMeta = const VerificationMeta(
+    'customFields',
+  );
+  @override
+  late final GeneratedColumn<String> customFields = GeneratedColumn<String>(
+    'custom_fields',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('{}'),
+  );
+  static const VerificationMeta _isHiddenMeta = const VerificationMeta(
+    'isHidden',
+  );
+  @override
+  late final GeneratedColumn<bool> isHidden = GeneratedColumn<bool>(
+    'is_hidden',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_hidden" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    collectionId,
+    title,
+    latitude,
+    longitude,
+    locationName,
+    note,
+    hashtags,
+    rating,
+    customFields,
+    isHidden,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'map_markers';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MapMarker> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('collection_id')) {
+      context.handle(
+        _collectionIdMeta,
+        collectionId.isAcceptableOrUnknown(
+          data['collection_id']!,
+          _collectionIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_collectionIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    }
+    if (data.containsKey('latitude')) {
+      context.handle(
+        _latitudeMeta,
+        latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta),
+      );
+    }
+    if (data.containsKey('longitude')) {
+      context.handle(
+        _longitudeMeta,
+        longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta),
+      );
+    }
+    if (data.containsKey('location_name')) {
+      context.handle(
+        _locationNameMeta,
+        locationName.isAcceptableOrUnknown(
+          data['location_name']!,
+          _locationNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('hashtags')) {
+      context.handle(
+        _hashtagsMeta,
+        hashtags.isAcceptableOrUnknown(data['hashtags']!, _hashtagsMeta),
+      );
+    }
+    if (data.containsKey('rating')) {
+      context.handle(
+        _ratingMeta,
+        rating.isAcceptableOrUnknown(data['rating']!, _ratingMeta),
+      );
+    }
+    if (data.containsKey('custom_fields')) {
+      context.handle(
+        _customFieldsMeta,
+        customFields.isAcceptableOrUnknown(
+          data['custom_fields']!,
+          _customFieldsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_hidden')) {
+      context.handle(
+        _isHiddenMeta,
+        isHidden.isAcceptableOrUnknown(data['is_hidden']!, _isHiddenMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MapMarker map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MapMarker(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      collectionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}collection_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      ),
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      ),
+      locationName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}location_name'],
+      ),
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      )!,
+      hashtags: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hashtags'],
+      )!,
+      rating: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rating'],
+      ),
+      customFields: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}custom_fields'],
+      )!,
+      isHidden: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_hidden'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MapMarkersTable createAlias(String alias) {
+    return $MapMarkersTable(attachedDatabase, alias);
+  }
+}
+
+class MapMarker extends DataClass implements Insertable<MapMarker> {
+  final int id;
+  final int collectionId;
+  final String title;
+  final double? latitude;
+  final double? longitude;
+  final String? locationName;
+  final String note;
+  final String hashtags;
+  final double? rating;
+  final String customFields;
+  final bool isHidden;
+  final DateTime createdAt;
+  const MapMarker({
+    required this.id,
+    required this.collectionId,
+    required this.title,
+    this.latitude,
+    this.longitude,
+    this.locationName,
+    required this.note,
+    required this.hashtags,
+    this.rating,
+    required this.customFields,
+    required this.isHidden,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['collection_id'] = Variable<int>(collectionId);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || latitude != null) {
+      map['latitude'] = Variable<double>(latitude);
+    }
+    if (!nullToAbsent || longitude != null) {
+      map['longitude'] = Variable<double>(longitude);
+    }
+    if (!nullToAbsent || locationName != null) {
+      map['location_name'] = Variable<String>(locationName);
+    }
+    map['note'] = Variable<String>(note);
+    map['hashtags'] = Variable<String>(hashtags);
+    if (!nullToAbsent || rating != null) {
+      map['rating'] = Variable<double>(rating);
+    }
+    map['custom_fields'] = Variable<String>(customFields);
+    map['is_hidden'] = Variable<bool>(isHidden);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  MapMarkersCompanion toCompanion(bool nullToAbsent) {
+    return MapMarkersCompanion(
+      id: Value(id),
+      collectionId: Value(collectionId),
+      title: Value(title),
+      latitude: latitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(latitude),
+      longitude: longitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(longitude),
+      locationName: locationName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(locationName),
+      note: Value(note),
+      hashtags: Value(hashtags),
+      rating: rating == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rating),
+      customFields: Value(customFields),
+      isHidden: Value(isHidden),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory MapMarker.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MapMarker(
+      id: serializer.fromJson<int>(json['id']),
+      collectionId: serializer.fromJson<int>(json['collectionId']),
+      title: serializer.fromJson<String>(json['title']),
+      latitude: serializer.fromJson<double?>(json['latitude']),
+      longitude: serializer.fromJson<double?>(json['longitude']),
+      locationName: serializer.fromJson<String?>(json['locationName']),
+      note: serializer.fromJson<String>(json['note']),
+      hashtags: serializer.fromJson<String>(json['hashtags']),
+      rating: serializer.fromJson<double?>(json['rating']),
+      customFields: serializer.fromJson<String>(json['customFields']),
+      isHidden: serializer.fromJson<bool>(json['isHidden']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'collectionId': serializer.toJson<int>(collectionId),
+      'title': serializer.toJson<String>(title),
+      'latitude': serializer.toJson<double?>(latitude),
+      'longitude': serializer.toJson<double?>(longitude),
+      'locationName': serializer.toJson<String?>(locationName),
+      'note': serializer.toJson<String>(note),
+      'hashtags': serializer.toJson<String>(hashtags),
+      'rating': serializer.toJson<double?>(rating),
+      'customFields': serializer.toJson<String>(customFields),
+      'isHidden': serializer.toJson<bool>(isHidden),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  MapMarker copyWith({
+    int? id,
+    int? collectionId,
+    String? title,
+    Value<double?> latitude = const Value.absent(),
+    Value<double?> longitude = const Value.absent(),
+    Value<String?> locationName = const Value.absent(),
+    String? note,
+    String? hashtags,
+    Value<double?> rating = const Value.absent(),
+    String? customFields,
+    bool? isHidden,
+    DateTime? createdAt,
+  }) => MapMarker(
+    id: id ?? this.id,
+    collectionId: collectionId ?? this.collectionId,
+    title: title ?? this.title,
+    latitude: latitude.present ? latitude.value : this.latitude,
+    longitude: longitude.present ? longitude.value : this.longitude,
+    locationName: locationName.present ? locationName.value : this.locationName,
+    note: note ?? this.note,
+    hashtags: hashtags ?? this.hashtags,
+    rating: rating.present ? rating.value : this.rating,
+    customFields: customFields ?? this.customFields,
+    isHidden: isHidden ?? this.isHidden,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  MapMarker copyWithCompanion(MapMarkersCompanion data) {
+    return MapMarker(
+      id: data.id.present ? data.id.value : this.id,
+      collectionId: data.collectionId.present
+          ? data.collectionId.value
+          : this.collectionId,
+      title: data.title.present ? data.title.value : this.title,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
+      locationName: data.locationName.present
+          ? data.locationName.value
+          : this.locationName,
+      note: data.note.present ? data.note.value : this.note,
+      hashtags: data.hashtags.present ? data.hashtags.value : this.hashtags,
+      rating: data.rating.present ? data.rating.value : this.rating,
+      customFields: data.customFields.present
+          ? data.customFields.value
+          : this.customFields,
+      isHidden: data.isHidden.present ? data.isHidden.value : this.isHidden,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MapMarker(')
+          ..write('id: $id, ')
+          ..write('collectionId: $collectionId, ')
+          ..write('title: $title, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('locationName: $locationName, ')
+          ..write('note: $note, ')
+          ..write('hashtags: $hashtags, ')
+          ..write('rating: $rating, ')
+          ..write('customFields: $customFields, ')
+          ..write('isHidden: $isHidden, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    collectionId,
+    title,
+    latitude,
+    longitude,
+    locationName,
+    note,
+    hashtags,
+    rating,
+    customFields,
+    isHidden,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MapMarker &&
+          other.id == this.id &&
+          other.collectionId == this.collectionId &&
+          other.title == this.title &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude &&
+          other.locationName == this.locationName &&
+          other.note == this.note &&
+          other.hashtags == this.hashtags &&
+          other.rating == this.rating &&
+          other.customFields == this.customFields &&
+          other.isHidden == this.isHidden &&
+          other.createdAt == this.createdAt);
+}
+
+class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
+  final Value<int> id;
+  final Value<int> collectionId;
+  final Value<String> title;
+  final Value<double?> latitude;
+  final Value<double?> longitude;
+  final Value<String?> locationName;
+  final Value<String> note;
+  final Value<String> hashtags;
+  final Value<double?> rating;
+  final Value<String> customFields;
+  final Value<bool> isHidden;
+  final Value<DateTime> createdAt;
+  const MapMarkersCompanion({
+    this.id = const Value.absent(),
+    this.collectionId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.locationName = const Value.absent(),
+    this.note = const Value.absent(),
+    this.hashtags = const Value.absent(),
+    this.rating = const Value.absent(),
+    this.customFields = const Value.absent(),
+    this.isHidden = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  MapMarkersCompanion.insert({
+    this.id = const Value.absent(),
+    required int collectionId,
+    this.title = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.locationName = const Value.absent(),
+    this.note = const Value.absent(),
+    this.hashtags = const Value.absent(),
+    this.rating = const Value.absent(),
+    this.customFields = const Value.absent(),
+    this.isHidden = const Value.absent(),
+    required DateTime createdAt,
+  }) : collectionId = Value(collectionId),
+       createdAt = Value(createdAt);
+  static Insertable<MapMarker> custom({
+    Expression<int>? id,
+    Expression<int>? collectionId,
+    Expression<String>? title,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
+    Expression<String>? locationName,
+    Expression<String>? note,
+    Expression<String>? hashtags,
+    Expression<double>? rating,
+    Expression<String>? customFields,
+    Expression<bool>? isHidden,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (collectionId != null) 'collection_id': collectionId,
+      if (title != null) 'title': title,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (locationName != null) 'location_name': locationName,
+      if (note != null) 'note': note,
+      if (hashtags != null) 'hashtags': hashtags,
+      if (rating != null) 'rating': rating,
+      if (customFields != null) 'custom_fields': customFields,
+      if (isHidden != null) 'is_hidden': isHidden,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  MapMarkersCompanion copyWith({
+    Value<int>? id,
+    Value<int>? collectionId,
+    Value<String>? title,
+    Value<double?>? latitude,
+    Value<double?>? longitude,
+    Value<String?>? locationName,
+    Value<String>? note,
+    Value<String>? hashtags,
+    Value<double?>? rating,
+    Value<String>? customFields,
+    Value<bool>? isHidden,
+    Value<DateTime>? createdAt,
+  }) {
+    return MapMarkersCompanion(
+      id: id ?? this.id,
+      collectionId: collectionId ?? this.collectionId,
+      title: title ?? this.title,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      locationName: locationName ?? this.locationName,
+      note: note ?? this.note,
+      hashtags: hashtags ?? this.hashtags,
+      rating: rating ?? this.rating,
+      customFields: customFields ?? this.customFields,
+      isHidden: isHidden ?? this.isHidden,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (collectionId.present) {
+      map['collection_id'] = Variable<int>(collectionId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    if (locationName.present) {
+      map['location_name'] = Variable<String>(locationName.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (hashtags.present) {
+      map['hashtags'] = Variable<String>(hashtags.value);
+    }
+    if (rating.present) {
+      map['rating'] = Variable<double>(rating.value);
+    }
+    if (customFields.present) {
+      map['custom_fields'] = Variable<String>(customFields.value);
+    }
+    if (isHidden.present) {
+      map['is_hidden'] = Variable<bool>(isHidden.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MapMarkersCompanion(')
+          ..write('id: $id, ')
+          ..write('collectionId: $collectionId, ')
+          ..write('title: $title, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('locationName: $locationName, ')
+          ..write('note: $note, ')
+          ..write('hashtags: $hashtags, ')
+          ..write('rating: $rating, ')
+          ..write('customFields: $customFields, ')
+          ..write('isHidden: $isHidden, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MarkerPhotosTable extends MarkerPhotos
+    with TableInfo<$MarkerPhotosTable, MarkerPhoto> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MarkerPhotosTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _markerIdMeta = const VerificationMeta(
+    'markerId',
+  );
+  @override
+  late final GeneratedColumn<int> markerId = GeneratedColumn<int>(
+    'marker_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES map_markers (id)',
+    ),
+  );
+  static const VerificationMeta _photoPathMeta = const VerificationMeta(
+    'photoPath',
+  );
+  @override
+  late final GeneratedColumn<String> photoPath = GeneratedColumn<String>(
+    'photo_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _thumbnailPathMeta = const VerificationMeta(
+    'thumbnailPath',
+  );
+  @override
+  late final GeneratedColumn<String> thumbnailPath = GeneratedColumn<String>(
+    'thumbnail_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _widthPxMeta = const VerificationMeta(
+    'widthPx',
+  );
+  @override
+  late final GeneratedColumn<int> widthPx = GeneratedColumn<int>(
+    'width_px',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightPxMeta = const VerificationMeta(
+    'heightPx',
+  );
+  @override
+  late final GeneratedColumn<int> heightPx = GeneratedColumn<int>(
+    'height_px',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _takenAtMeta = const VerificationMeta(
+    'takenAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> takenAt = GeneratedColumn<DateTime>(
+    'taken_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    markerId,
+    photoPath,
+    thumbnailPath,
+    widthPx,
+    heightPx,
+    takenAt,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'marker_photos';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MarkerPhoto> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('marker_id')) {
+      context.handle(
+        _markerIdMeta,
+        markerId.isAcceptableOrUnknown(data['marker_id']!, _markerIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_markerIdMeta);
+    }
+    if (data.containsKey('photo_path')) {
+      context.handle(
+        _photoPathMeta,
+        photoPath.isAcceptableOrUnknown(data['photo_path']!, _photoPathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_photoPathMeta);
+    }
+    if (data.containsKey('thumbnail_path')) {
+      context.handle(
+        _thumbnailPathMeta,
+        thumbnailPath.isAcceptableOrUnknown(
+          data['thumbnail_path']!,
+          _thumbnailPathMeta,
+        ),
+      );
+    }
+    if (data.containsKey('width_px')) {
+      context.handle(
+        _widthPxMeta,
+        widthPx.isAcceptableOrUnknown(data['width_px']!, _widthPxMeta),
+      );
+    }
+    if (data.containsKey('height_px')) {
+      context.handle(
+        _heightPxMeta,
+        heightPx.isAcceptableOrUnknown(data['height_px']!, _heightPxMeta),
+      );
+    }
+    if (data.containsKey('taken_at')) {
+      context.handle(
+        _takenAtMeta,
+        takenAt.isAcceptableOrUnknown(data['taken_at']!, _takenAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_takenAtMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MarkerPhoto map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MarkerPhoto(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      markerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}marker_id'],
+      )!,
+      photoPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}photo_path'],
+      )!,
+      thumbnailPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}thumbnail_path'],
+      ),
+      widthPx: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}width_px'],
+      ),
+      heightPx: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}height_px'],
+      ),
+      takenAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}taken_at'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MarkerPhotosTable createAlias(String alias) {
+    return $MarkerPhotosTable(attachedDatabase, alias);
+  }
+}
+
+class MarkerPhoto extends DataClass implements Insertable<MarkerPhoto> {
+  final int id;
+  final int markerId;
+  final String photoPath;
+  final String? thumbnailPath;
+  final int? widthPx;
+  final int? heightPx;
+  final DateTime takenAt;
+  final DateTime createdAt;
+  const MarkerPhoto({
+    required this.id,
+    required this.markerId,
+    required this.photoPath,
+    this.thumbnailPath,
+    this.widthPx,
+    this.heightPx,
+    required this.takenAt,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['marker_id'] = Variable<int>(markerId);
+    map['photo_path'] = Variable<String>(photoPath);
+    if (!nullToAbsent || thumbnailPath != null) {
+      map['thumbnail_path'] = Variable<String>(thumbnailPath);
+    }
+    if (!nullToAbsent || widthPx != null) {
+      map['width_px'] = Variable<int>(widthPx);
+    }
+    if (!nullToAbsent || heightPx != null) {
+      map['height_px'] = Variable<int>(heightPx);
+    }
+    map['taken_at'] = Variable<DateTime>(takenAt);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  MarkerPhotosCompanion toCompanion(bool nullToAbsent) {
+    return MarkerPhotosCompanion(
+      id: Value(id),
+      markerId: Value(markerId),
+      photoPath: Value(photoPath),
+      thumbnailPath: thumbnailPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(thumbnailPath),
+      widthPx: widthPx == null && nullToAbsent
+          ? const Value.absent()
+          : Value(widthPx),
+      heightPx: heightPx == null && nullToAbsent
+          ? const Value.absent()
+          : Value(heightPx),
+      takenAt: Value(takenAt),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory MarkerPhoto.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MarkerPhoto(
+      id: serializer.fromJson<int>(json['id']),
+      markerId: serializer.fromJson<int>(json['markerId']),
+      photoPath: serializer.fromJson<String>(json['photoPath']),
+      thumbnailPath: serializer.fromJson<String?>(json['thumbnailPath']),
+      widthPx: serializer.fromJson<int?>(json['widthPx']),
+      heightPx: serializer.fromJson<int?>(json['heightPx']),
+      takenAt: serializer.fromJson<DateTime>(json['takenAt']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'markerId': serializer.toJson<int>(markerId),
+      'photoPath': serializer.toJson<String>(photoPath),
+      'thumbnailPath': serializer.toJson<String?>(thumbnailPath),
+      'widthPx': serializer.toJson<int?>(widthPx),
+      'heightPx': serializer.toJson<int?>(heightPx),
+      'takenAt': serializer.toJson<DateTime>(takenAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  MarkerPhoto copyWith({
+    int? id,
+    int? markerId,
+    String? photoPath,
+    Value<String?> thumbnailPath = const Value.absent(),
+    Value<int?> widthPx = const Value.absent(),
+    Value<int?> heightPx = const Value.absent(),
+    DateTime? takenAt,
+    DateTime? createdAt,
+  }) => MarkerPhoto(
+    id: id ?? this.id,
+    markerId: markerId ?? this.markerId,
+    photoPath: photoPath ?? this.photoPath,
+    thumbnailPath: thumbnailPath.present
+        ? thumbnailPath.value
+        : this.thumbnailPath,
+    widthPx: widthPx.present ? widthPx.value : this.widthPx,
+    heightPx: heightPx.present ? heightPx.value : this.heightPx,
+    takenAt: takenAt ?? this.takenAt,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  MarkerPhoto copyWithCompanion(MarkerPhotosCompanion data) {
+    return MarkerPhoto(
+      id: data.id.present ? data.id.value : this.id,
+      markerId: data.markerId.present ? data.markerId.value : this.markerId,
+      photoPath: data.photoPath.present ? data.photoPath.value : this.photoPath,
+      thumbnailPath: data.thumbnailPath.present
+          ? data.thumbnailPath.value
+          : this.thumbnailPath,
+      widthPx: data.widthPx.present ? data.widthPx.value : this.widthPx,
+      heightPx: data.heightPx.present ? data.heightPx.value : this.heightPx,
+      takenAt: data.takenAt.present ? data.takenAt.value : this.takenAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MarkerPhoto(')
+          ..write('id: $id, ')
+          ..write('markerId: $markerId, ')
+          ..write('photoPath: $photoPath, ')
+          ..write('thumbnailPath: $thumbnailPath, ')
+          ..write('widthPx: $widthPx, ')
+          ..write('heightPx: $heightPx, ')
+          ..write('takenAt: $takenAt, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    markerId,
+    photoPath,
+    thumbnailPath,
+    widthPx,
+    heightPx,
+    takenAt,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MarkerPhoto &&
+          other.id == this.id &&
+          other.markerId == this.markerId &&
+          other.photoPath == this.photoPath &&
+          other.thumbnailPath == this.thumbnailPath &&
+          other.widthPx == this.widthPx &&
+          other.heightPx == this.heightPx &&
+          other.takenAt == this.takenAt &&
+          other.createdAt == this.createdAt);
+}
+
+class MarkerPhotosCompanion extends UpdateCompanion<MarkerPhoto> {
+  final Value<int> id;
+  final Value<int> markerId;
+  final Value<String> photoPath;
+  final Value<String?> thumbnailPath;
+  final Value<int?> widthPx;
+  final Value<int?> heightPx;
+  final Value<DateTime> takenAt;
+  final Value<DateTime> createdAt;
+  const MarkerPhotosCompanion({
+    this.id = const Value.absent(),
+    this.markerId = const Value.absent(),
+    this.photoPath = const Value.absent(),
+    this.thumbnailPath = const Value.absent(),
+    this.widthPx = const Value.absent(),
+    this.heightPx = const Value.absent(),
+    this.takenAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  MarkerPhotosCompanion.insert({
+    this.id = const Value.absent(),
+    required int markerId,
+    required String photoPath,
+    this.thumbnailPath = const Value.absent(),
+    this.widthPx = const Value.absent(),
+    this.heightPx = const Value.absent(),
+    required DateTime takenAt,
+    required DateTime createdAt,
+  }) : markerId = Value(markerId),
+       photoPath = Value(photoPath),
+       takenAt = Value(takenAt),
+       createdAt = Value(createdAt);
+  static Insertable<MarkerPhoto> custom({
+    Expression<int>? id,
+    Expression<int>? markerId,
+    Expression<String>? photoPath,
+    Expression<String>? thumbnailPath,
+    Expression<int>? widthPx,
+    Expression<int>? heightPx,
+    Expression<DateTime>? takenAt,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (markerId != null) 'marker_id': markerId,
+      if (photoPath != null) 'photo_path': photoPath,
+      if (thumbnailPath != null) 'thumbnail_path': thumbnailPath,
+      if (widthPx != null) 'width_px': widthPx,
+      if (heightPx != null) 'height_px': heightPx,
+      if (takenAt != null) 'taken_at': takenAt,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  MarkerPhotosCompanion copyWith({
+    Value<int>? id,
+    Value<int>? markerId,
+    Value<String>? photoPath,
+    Value<String?>? thumbnailPath,
+    Value<int?>? widthPx,
+    Value<int?>? heightPx,
+    Value<DateTime>? takenAt,
+    Value<DateTime>? createdAt,
+  }) {
+    return MarkerPhotosCompanion(
+      id: id ?? this.id,
+      markerId: markerId ?? this.markerId,
+      photoPath: photoPath ?? this.photoPath,
+      thumbnailPath: thumbnailPath ?? this.thumbnailPath,
+      widthPx: widthPx ?? this.widthPx,
+      heightPx: heightPx ?? this.heightPx,
+      takenAt: takenAt ?? this.takenAt,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (markerId.present) {
+      map['marker_id'] = Variable<int>(markerId.value);
+    }
+    if (photoPath.present) {
+      map['photo_path'] = Variable<String>(photoPath.value);
+    }
+    if (thumbnailPath.present) {
+      map['thumbnail_path'] = Variable<String>(thumbnailPath.value);
+    }
+    if (widthPx.present) {
+      map['width_px'] = Variable<int>(widthPx.value);
+    }
+    if (heightPx.present) {
+      map['height_px'] = Variable<int>(heightPx.value);
+    }
+    if (takenAt.present) {
+      map['taken_at'] = Variable<DateTime>(takenAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MarkerPhotosCompanion(')
+          ..write('id: $id, ')
+          ..write('markerId: $markerId, ')
+          ..write('photoPath: $photoPath, ')
+          ..write('thumbnailPath: $thumbnailPath, ')
+          ..write('widthPx: $widthPx, ')
+          ..write('heightPx: $heightPx, ')
+          ..write('takenAt: $takenAt, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$TraumDatabase extends GeneratedDatabase {
   _$TraumDatabase(QueryExecutor e) : super(e);
   $TraumDatabaseManager get managers => $TraumDatabaseManager(this);
@@ -23239,6 +25011,9 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   late final $TagsTable tags = $TagsTable(this);
   late final $NoteTagsTable noteTags = $NoteTagsTable(this);
   late final $NoteTemplatesTable noteTemplates = $NoteTemplatesTable(this);
+  late final $MapCollectionsTable mapCollections = $MapCollectionsTable(this);
+  late final $MapMarkersTable mapMarkers = $MapMarkersTable(this);
+  late final $MarkerPhotosTable markerPhotos = $MarkerPhotosTable(this);
   late final PlanningDao planningDao = PlanningDao(this as TraumDatabase);
   late final TrainingDao trainingDao = TrainingDao(this as TraumDatabase);
   late final HealthDao healthDao = HealthDao(this as TraumDatabase);
@@ -23261,6 +25036,13 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
     this as TraumDatabase,
   );
   late final NotesDao notesDao = NotesDao(this as TraumDatabase);
+  late final MapCollectionsDao mapCollectionsDao = MapCollectionsDao(
+    this as TraumDatabase,
+  );
+  late final MapMarkersDao mapMarkersDao = MapMarkersDao(this as TraumDatabase);
+  late final MarkerPhotosDao markerPhotosDao = MarkerPhotosDao(
+    this as TraumDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -23315,6 +25097,9 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
     tags,
     noteTags,
     noteTemplates,
+    mapCollections,
+    mapMarkers,
+    markerPhotos,
   ];
 }
 
@@ -37703,6 +39488,1309 @@ typedef $$NoteTemplatesTableProcessedTableManager =
       NoteTemplate,
       PrefetchHooks Function()
     >;
+typedef $$MapCollectionsTableCreateCompanionBuilder =
+    MapCollectionsCompanion Function({
+      Value<int> id,
+      required String name,
+      required String iconName,
+      Value<String?> colorHex,
+      Value<bool> hasRating,
+      Value<bool> multiPhoto,
+      Value<String> fieldConfig,
+      Value<int> sortOrder,
+      required DateTime createdAt,
+    });
+typedef $$MapCollectionsTableUpdateCompanionBuilder =
+    MapCollectionsCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<String> iconName,
+      Value<String?> colorHex,
+      Value<bool> hasRating,
+      Value<bool> multiPhoto,
+      Value<String> fieldConfig,
+      Value<int> sortOrder,
+      Value<DateTime> createdAt,
+    });
+
+final class $$MapCollectionsTableReferences
+    extends
+        BaseReferences<_$TraumDatabase, $MapCollectionsTable, MapCollection> {
+  $$MapCollectionsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$MapMarkersTable, List<MapMarker>>
+  _mapMarkersRefsTable(_$TraumDatabase db) => MultiTypedResultKey.fromTable(
+    db.mapMarkers,
+    aliasName: $_aliasNameGenerator(
+      db.mapCollections.id,
+      db.mapMarkers.collectionId,
+    ),
+  );
+
+  $$MapMarkersTableProcessedTableManager get mapMarkersRefs {
+    final manager = $$MapMarkersTableTableManager(
+      $_db,
+      $_db.mapMarkers,
+    ).filter((f) => f.collectionId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_mapMarkersRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$MapCollectionsTableFilterComposer
+    extends Composer<_$TraumDatabase, $MapCollectionsTable> {
+  $$MapCollectionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get iconName => $composableBuilder(
+    column: $table.iconName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get colorHex => $composableBuilder(
+    column: $table.colorHex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get hasRating => $composableBuilder(
+    column: $table.hasRating,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get multiPhoto => $composableBuilder(
+    column: $table.multiPhoto,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fieldConfig => $composableBuilder(
+    column: $table.fieldConfig,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> mapMarkersRefs(
+    Expression<bool> Function($$MapMarkersTableFilterComposer f) f,
+  ) {
+    final $$MapMarkersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.mapMarkers,
+      getReferencedColumn: (t) => t.collectionId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MapMarkersTableFilterComposer(
+            $db: $db,
+            $table: $db.mapMarkers,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$MapCollectionsTableOrderingComposer
+    extends Composer<_$TraumDatabase, $MapCollectionsTable> {
+  $$MapCollectionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get iconName => $composableBuilder(
+    column: $table.iconName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get colorHex => $composableBuilder(
+    column: $table.colorHex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get hasRating => $composableBuilder(
+    column: $table.hasRating,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get multiPhoto => $composableBuilder(
+    column: $table.multiPhoto,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fieldConfig => $composableBuilder(
+    column: $table.fieldConfig,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MapCollectionsTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $MapCollectionsTable> {
+  $$MapCollectionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get iconName =>
+      $composableBuilder(column: $table.iconName, builder: (column) => column);
+
+  GeneratedColumn<String> get colorHex =>
+      $composableBuilder(column: $table.colorHex, builder: (column) => column);
+
+  GeneratedColumn<bool> get hasRating =>
+      $composableBuilder(column: $table.hasRating, builder: (column) => column);
+
+  GeneratedColumn<bool> get multiPhoto => $composableBuilder(
+    column: $table.multiPhoto,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get fieldConfig => $composableBuilder(
+    column: $table.fieldConfig,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  Expression<T> mapMarkersRefs<T extends Object>(
+    Expression<T> Function($$MapMarkersTableAnnotationComposer a) f,
+  ) {
+    final $$MapMarkersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.mapMarkers,
+      getReferencedColumn: (t) => t.collectionId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MapMarkersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.mapMarkers,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$MapCollectionsTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $MapCollectionsTable,
+          MapCollection,
+          $$MapCollectionsTableFilterComposer,
+          $$MapCollectionsTableOrderingComposer,
+          $$MapCollectionsTableAnnotationComposer,
+          $$MapCollectionsTableCreateCompanionBuilder,
+          $$MapCollectionsTableUpdateCompanionBuilder,
+          (MapCollection, $$MapCollectionsTableReferences),
+          MapCollection,
+          PrefetchHooks Function({bool mapMarkersRefs})
+        > {
+  $$MapCollectionsTableTableManager(
+    _$TraumDatabase db,
+    $MapCollectionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MapCollectionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MapCollectionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MapCollectionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> iconName = const Value.absent(),
+                Value<String?> colorHex = const Value.absent(),
+                Value<bool> hasRating = const Value.absent(),
+                Value<bool> multiPhoto = const Value.absent(),
+                Value<String> fieldConfig = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => MapCollectionsCompanion(
+                id: id,
+                name: name,
+                iconName: iconName,
+                colorHex: colorHex,
+                hasRating: hasRating,
+                multiPhoto: multiPhoto,
+                fieldConfig: fieldConfig,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                required String iconName,
+                Value<String?> colorHex = const Value.absent(),
+                Value<bool> hasRating = const Value.absent(),
+                Value<bool> multiPhoto = const Value.absent(),
+                Value<String> fieldConfig = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                required DateTime createdAt,
+              }) => MapCollectionsCompanion.insert(
+                id: id,
+                name: name,
+                iconName: iconName,
+                colorHex: colorHex,
+                hasRating: hasRating,
+                multiPhoto: multiPhoto,
+                fieldConfig: fieldConfig,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$MapCollectionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({mapMarkersRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (mapMarkersRefs) db.mapMarkers],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (mapMarkersRefs)
+                    await $_getPrefetchedData<
+                      MapCollection,
+                      $MapCollectionsTable,
+                      MapMarker
+                    >(
+                      currentTable: table,
+                      referencedTable: $$MapCollectionsTableReferences
+                          ._mapMarkersRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$MapCollectionsTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).mapMarkersRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where(
+                            (e) => e.collectionId == item.id,
+                          ),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$MapCollectionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $MapCollectionsTable,
+      MapCollection,
+      $$MapCollectionsTableFilterComposer,
+      $$MapCollectionsTableOrderingComposer,
+      $$MapCollectionsTableAnnotationComposer,
+      $$MapCollectionsTableCreateCompanionBuilder,
+      $$MapCollectionsTableUpdateCompanionBuilder,
+      (MapCollection, $$MapCollectionsTableReferences),
+      MapCollection,
+      PrefetchHooks Function({bool mapMarkersRefs})
+    >;
+typedef $$MapMarkersTableCreateCompanionBuilder =
+    MapMarkersCompanion Function({
+      Value<int> id,
+      required int collectionId,
+      Value<String> title,
+      Value<double?> latitude,
+      Value<double?> longitude,
+      Value<String?> locationName,
+      Value<String> note,
+      Value<String> hashtags,
+      Value<double?> rating,
+      Value<String> customFields,
+      Value<bool> isHidden,
+      required DateTime createdAt,
+    });
+typedef $$MapMarkersTableUpdateCompanionBuilder =
+    MapMarkersCompanion Function({
+      Value<int> id,
+      Value<int> collectionId,
+      Value<String> title,
+      Value<double?> latitude,
+      Value<double?> longitude,
+      Value<String?> locationName,
+      Value<String> note,
+      Value<String> hashtags,
+      Value<double?> rating,
+      Value<String> customFields,
+      Value<bool> isHidden,
+      Value<DateTime> createdAt,
+    });
+
+final class $$MapMarkersTableReferences
+    extends BaseReferences<_$TraumDatabase, $MapMarkersTable, MapMarker> {
+  $$MapMarkersTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $MapCollectionsTable _collectionIdTable(_$TraumDatabase db) =>
+      db.mapCollections.createAlias(
+        $_aliasNameGenerator(db.mapMarkers.collectionId, db.mapCollections.id),
+      );
+
+  $$MapCollectionsTableProcessedTableManager get collectionId {
+    final $_column = $_itemColumn<int>('collection_id')!;
+
+    final manager = $$MapCollectionsTableTableManager(
+      $_db,
+      $_db.mapCollections,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_collectionIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$MarkerPhotosTable, List<MarkerPhoto>>
+  _markerPhotosRefsTable(_$TraumDatabase db) => MultiTypedResultKey.fromTable(
+    db.markerPhotos,
+    aliasName: $_aliasNameGenerator(db.mapMarkers.id, db.markerPhotos.markerId),
+  );
+
+  $$MarkerPhotosTableProcessedTableManager get markerPhotosRefs {
+    final manager = $$MarkerPhotosTableTableManager(
+      $_db,
+      $_db.markerPhotos,
+    ).filter((f) => f.markerId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_markerPhotosRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$MapMarkersTableFilterComposer
+    extends Composer<_$TraumDatabase, $MapMarkersTable> {
+  $$MapMarkersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get locationName => $composableBuilder(
+    column: $table.locationName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hashtags => $composableBuilder(
+    column: $table.hashtags,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rating => $composableBuilder(
+    column: $table.rating,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get customFields => $composableBuilder(
+    column: $table.customFields,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isHidden => $composableBuilder(
+    column: $table.isHidden,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$MapCollectionsTableFilterComposer get collectionId {
+    final $$MapCollectionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.collectionId,
+      referencedTable: $db.mapCollections,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MapCollectionsTableFilterComposer(
+            $db: $db,
+            $table: $db.mapCollections,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> markerPhotosRefs(
+    Expression<bool> Function($$MarkerPhotosTableFilterComposer f) f,
+  ) {
+    final $$MarkerPhotosTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.markerPhotos,
+      getReferencedColumn: (t) => t.markerId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MarkerPhotosTableFilterComposer(
+            $db: $db,
+            $table: $db.markerPhotos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$MapMarkersTableOrderingComposer
+    extends Composer<_$TraumDatabase, $MapMarkersTable> {
+  $$MapMarkersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get locationName => $composableBuilder(
+    column: $table.locationName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hashtags => $composableBuilder(
+    column: $table.hashtags,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rating => $composableBuilder(
+    column: $table.rating,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get customFields => $composableBuilder(
+    column: $table.customFields,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isHidden => $composableBuilder(
+    column: $table.isHidden,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$MapCollectionsTableOrderingComposer get collectionId {
+    final $$MapCollectionsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.collectionId,
+      referencedTable: $db.mapCollections,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MapCollectionsTableOrderingComposer(
+            $db: $db,
+            $table: $db.mapCollections,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MapMarkersTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $MapMarkersTable> {
+  $$MapMarkersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<double> get latitude =>
+      $composableBuilder(column: $table.latitude, builder: (column) => column);
+
+  GeneratedColumn<double> get longitude =>
+      $composableBuilder(column: $table.longitude, builder: (column) => column);
+
+  GeneratedColumn<String> get locationName => $composableBuilder(
+    column: $table.locationName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<String> get hashtags =>
+      $composableBuilder(column: $table.hashtags, builder: (column) => column);
+
+  GeneratedColumn<double> get rating =>
+      $composableBuilder(column: $table.rating, builder: (column) => column);
+
+  GeneratedColumn<String> get customFields => $composableBuilder(
+    column: $table.customFields,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isHidden =>
+      $composableBuilder(column: $table.isHidden, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$MapCollectionsTableAnnotationComposer get collectionId {
+    final $$MapCollectionsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.collectionId,
+      referencedTable: $db.mapCollections,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MapCollectionsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.mapCollections,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> markerPhotosRefs<T extends Object>(
+    Expression<T> Function($$MarkerPhotosTableAnnotationComposer a) f,
+  ) {
+    final $$MarkerPhotosTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.markerPhotos,
+      getReferencedColumn: (t) => t.markerId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MarkerPhotosTableAnnotationComposer(
+            $db: $db,
+            $table: $db.markerPhotos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$MapMarkersTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $MapMarkersTable,
+          MapMarker,
+          $$MapMarkersTableFilterComposer,
+          $$MapMarkersTableOrderingComposer,
+          $$MapMarkersTableAnnotationComposer,
+          $$MapMarkersTableCreateCompanionBuilder,
+          $$MapMarkersTableUpdateCompanionBuilder,
+          (MapMarker, $$MapMarkersTableReferences),
+          MapMarker,
+          PrefetchHooks Function({bool collectionId, bool markerPhotosRefs})
+        > {
+  $$MapMarkersTableTableManager(_$TraumDatabase db, $MapMarkersTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MapMarkersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MapMarkersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MapMarkersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> collectionId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<double?> latitude = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
+                Value<String?> locationName = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<String> hashtags = const Value.absent(),
+                Value<double?> rating = const Value.absent(),
+                Value<String> customFields = const Value.absent(),
+                Value<bool> isHidden = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => MapMarkersCompanion(
+                id: id,
+                collectionId: collectionId,
+                title: title,
+                latitude: latitude,
+                longitude: longitude,
+                locationName: locationName,
+                note: note,
+                hashtags: hashtags,
+                rating: rating,
+                customFields: customFields,
+                isHidden: isHidden,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int collectionId,
+                Value<String> title = const Value.absent(),
+                Value<double?> latitude = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
+                Value<String?> locationName = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<String> hashtags = const Value.absent(),
+                Value<double?> rating = const Value.absent(),
+                Value<String> customFields = const Value.absent(),
+                Value<bool> isHidden = const Value.absent(),
+                required DateTime createdAt,
+              }) => MapMarkersCompanion.insert(
+                id: id,
+                collectionId: collectionId,
+                title: title,
+                latitude: latitude,
+                longitude: longitude,
+                locationName: locationName,
+                note: note,
+                hashtags: hashtags,
+                rating: rating,
+                customFields: customFields,
+                isHidden: isHidden,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$MapMarkersTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({collectionId = false, markerPhotosRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (markerPhotosRefs) db.markerPhotos,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (collectionId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.collectionId,
+                                    referencedTable: $$MapMarkersTableReferences
+                                        ._collectionIdTable(db),
+                                    referencedColumn:
+                                        $$MapMarkersTableReferences
+                                            ._collectionIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (markerPhotosRefs)
+                        await $_getPrefetchedData<
+                          MapMarker,
+                          $MapMarkersTable,
+                          MarkerPhoto
+                        >(
+                          currentTable: table,
+                          referencedTable: $$MapMarkersTableReferences
+                              ._markerPhotosRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$MapMarkersTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).markerPhotosRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.markerId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$MapMarkersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $MapMarkersTable,
+      MapMarker,
+      $$MapMarkersTableFilterComposer,
+      $$MapMarkersTableOrderingComposer,
+      $$MapMarkersTableAnnotationComposer,
+      $$MapMarkersTableCreateCompanionBuilder,
+      $$MapMarkersTableUpdateCompanionBuilder,
+      (MapMarker, $$MapMarkersTableReferences),
+      MapMarker,
+      PrefetchHooks Function({bool collectionId, bool markerPhotosRefs})
+    >;
+typedef $$MarkerPhotosTableCreateCompanionBuilder =
+    MarkerPhotosCompanion Function({
+      Value<int> id,
+      required int markerId,
+      required String photoPath,
+      Value<String?> thumbnailPath,
+      Value<int?> widthPx,
+      Value<int?> heightPx,
+      required DateTime takenAt,
+      required DateTime createdAt,
+    });
+typedef $$MarkerPhotosTableUpdateCompanionBuilder =
+    MarkerPhotosCompanion Function({
+      Value<int> id,
+      Value<int> markerId,
+      Value<String> photoPath,
+      Value<String?> thumbnailPath,
+      Value<int?> widthPx,
+      Value<int?> heightPx,
+      Value<DateTime> takenAt,
+      Value<DateTime> createdAt,
+    });
+
+final class $$MarkerPhotosTableReferences
+    extends BaseReferences<_$TraumDatabase, $MarkerPhotosTable, MarkerPhoto> {
+  $$MarkerPhotosTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $MapMarkersTable _markerIdTable(_$TraumDatabase db) =>
+      db.mapMarkers.createAlias(
+        $_aliasNameGenerator(db.markerPhotos.markerId, db.mapMarkers.id),
+      );
+
+  $$MapMarkersTableProcessedTableManager get markerId {
+    final $_column = $_itemColumn<int>('marker_id')!;
+
+    final manager = $$MapMarkersTableTableManager(
+      $_db,
+      $_db.mapMarkers,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_markerIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$MarkerPhotosTableFilterComposer
+    extends Composer<_$TraumDatabase, $MarkerPhotosTable> {
+  $$MarkerPhotosTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get photoPath => $composableBuilder(
+    column: $table.photoPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get thumbnailPath => $composableBuilder(
+    column: $table.thumbnailPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get widthPx => $composableBuilder(
+    column: $table.widthPx,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get heightPx => $composableBuilder(
+    column: $table.heightPx,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get takenAt => $composableBuilder(
+    column: $table.takenAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$MapMarkersTableFilterComposer get markerId {
+    final $$MapMarkersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.markerId,
+      referencedTable: $db.mapMarkers,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MapMarkersTableFilterComposer(
+            $db: $db,
+            $table: $db.mapMarkers,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MarkerPhotosTableOrderingComposer
+    extends Composer<_$TraumDatabase, $MarkerPhotosTable> {
+  $$MarkerPhotosTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get photoPath => $composableBuilder(
+    column: $table.photoPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get thumbnailPath => $composableBuilder(
+    column: $table.thumbnailPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get widthPx => $composableBuilder(
+    column: $table.widthPx,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get heightPx => $composableBuilder(
+    column: $table.heightPx,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get takenAt => $composableBuilder(
+    column: $table.takenAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$MapMarkersTableOrderingComposer get markerId {
+    final $$MapMarkersTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.markerId,
+      referencedTable: $db.mapMarkers,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MapMarkersTableOrderingComposer(
+            $db: $db,
+            $table: $db.mapMarkers,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MarkerPhotosTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $MarkerPhotosTable> {
+  $$MarkerPhotosTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get photoPath =>
+      $composableBuilder(column: $table.photoPath, builder: (column) => column);
+
+  GeneratedColumn<String> get thumbnailPath => $composableBuilder(
+    column: $table.thumbnailPath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get widthPx =>
+      $composableBuilder(column: $table.widthPx, builder: (column) => column);
+
+  GeneratedColumn<int> get heightPx =>
+      $composableBuilder(column: $table.heightPx, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get takenAt =>
+      $composableBuilder(column: $table.takenAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$MapMarkersTableAnnotationComposer get markerId {
+    final $$MapMarkersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.markerId,
+      referencedTable: $db.mapMarkers,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MapMarkersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.mapMarkers,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MarkerPhotosTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $MarkerPhotosTable,
+          MarkerPhoto,
+          $$MarkerPhotosTableFilterComposer,
+          $$MarkerPhotosTableOrderingComposer,
+          $$MarkerPhotosTableAnnotationComposer,
+          $$MarkerPhotosTableCreateCompanionBuilder,
+          $$MarkerPhotosTableUpdateCompanionBuilder,
+          (MarkerPhoto, $$MarkerPhotosTableReferences),
+          MarkerPhoto,
+          PrefetchHooks Function({bool markerId})
+        > {
+  $$MarkerPhotosTableTableManager(_$TraumDatabase db, $MarkerPhotosTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MarkerPhotosTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MarkerPhotosTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MarkerPhotosTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> markerId = const Value.absent(),
+                Value<String> photoPath = const Value.absent(),
+                Value<String?> thumbnailPath = const Value.absent(),
+                Value<int?> widthPx = const Value.absent(),
+                Value<int?> heightPx = const Value.absent(),
+                Value<DateTime> takenAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => MarkerPhotosCompanion(
+                id: id,
+                markerId: markerId,
+                photoPath: photoPath,
+                thumbnailPath: thumbnailPath,
+                widthPx: widthPx,
+                heightPx: heightPx,
+                takenAt: takenAt,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int markerId,
+                required String photoPath,
+                Value<String?> thumbnailPath = const Value.absent(),
+                Value<int?> widthPx = const Value.absent(),
+                Value<int?> heightPx = const Value.absent(),
+                required DateTime takenAt,
+                required DateTime createdAt,
+              }) => MarkerPhotosCompanion.insert(
+                id: id,
+                markerId: markerId,
+                photoPath: photoPath,
+                thumbnailPath: thumbnailPath,
+                widthPx: widthPx,
+                heightPx: heightPx,
+                takenAt: takenAt,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$MarkerPhotosTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({markerId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (markerId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.markerId,
+                                referencedTable: $$MarkerPhotosTableReferences
+                                    ._markerIdTable(db),
+                                referencedColumn: $$MarkerPhotosTableReferences
+                                    ._markerIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$MarkerPhotosTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $MarkerPhotosTable,
+      MarkerPhoto,
+      $$MarkerPhotosTableFilterComposer,
+      $$MarkerPhotosTableOrderingComposer,
+      $$MarkerPhotosTableAnnotationComposer,
+      $$MarkerPhotosTableCreateCompanionBuilder,
+      $$MarkerPhotosTableUpdateCompanionBuilder,
+      (MarkerPhoto, $$MarkerPhotosTableReferences),
+      MarkerPhoto,
+      PrefetchHooks Function({bool markerId})
+    >;
 
 class $TraumDatabaseManager {
   final _$TraumDatabase _db;
@@ -37807,4 +40895,10 @@ class $TraumDatabaseManager {
       $$NoteTagsTableTableManager(_db, _db.noteTags);
   $$NoteTemplatesTableTableManager get noteTemplates =>
       $$NoteTemplatesTableTableManager(_db, _db.noteTemplates);
+  $$MapCollectionsTableTableManager get mapCollections =>
+      $$MapCollectionsTableTableManager(_db, _db.mapCollections);
+  $$MapMarkersTableTableManager get mapMarkers =>
+      $$MapMarkersTableTableManager(_db, _db.mapMarkers);
+  $$MarkerPhotosTableTableManager get markerPhotos =>
+      $$MarkerPhotosTableTableManager(_db, _db.markerPhotos);
 }

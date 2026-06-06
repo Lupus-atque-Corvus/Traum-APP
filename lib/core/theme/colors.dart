@@ -119,6 +119,8 @@ class TraumColors {
         return lavender;
       case 'diary':
         return peachOrange;
+      case 'graffitiMap':
+        return cyanBlue;
       case 'notes':
         return lavender;
       case 'abstinence':

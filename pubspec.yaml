@@ -2,7 +2,7 @@ name: traum
 description: "TRAUM — Dein persönliches Dashboard"
 publish_to: 'none'
 
-version: 0.6.7+41
+version: 0.6.8+42
 
 environment:
   sdk: ^3.9.2
@@ -132,6 +132,15 @@ dependencies:
 
   # App-Launcher (experimentell, Android): installierte Apps auflisten/starten
   installed_apps: ^2.1.1
+
+  # Graffiti Map — Karte, Marker-Clustering, Geo, EXIF, Export
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+  flutter_map_marker_cluster: ^1.4.0
+  geocoding: ^3.0.0
+  exif: ^3.3.0
+  image: ^4.2.0
+  gpx: ^2.2.2
 
 dev_dependencies:
   flutter_test:

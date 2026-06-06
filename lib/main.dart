@@ -8,6 +8,7 @@ import 'core/providers/database_provider.dart';
 import 'core/providers/preferences_provider.dart';
 import 'data/database/traum_database.dart';
 import 'data/repositories/exercise_seeder.dart';
+import 'data/repositories/map_collection_seeder.dart';
 import 'data/repositories/substance_database_copier.dart';
 import 'data/repositories/supplement_seeder.dart';
 import 'widget/widget_data_service.dart';
@@ -27,6 +28,7 @@ void main() async {
     ExerciseSeeder.seedIfNeeded(db, prefs),
     SupplementSeeder.seedIfNeeded(db, prefs),
     SubstanceDatabaseCopier.copyIfNeeded(db, prefs),
+    MapCollectionSeeder.seedIfNeeded(db, prefs),
   ]);
 
   runApp(

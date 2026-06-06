@@ -40,6 +40,11 @@ import '../../features/lock/pin_lock_screen.dart';
 import '../../features/diary/diary_screen.dart';
 import '../../features/diary/diary_entry_screen.dart';
 import '../../features/diary/diary_slideshow_screen.dart';
+import '../../features/graffiti_map/graffiti_map_screen.dart';
+import '../../features/graffiti_map/map_gallery_screen.dart';
+import '../../features/graffiti_map/marker_detail_screen.dart';
+import '../../features/graffiti_map/create_collection_screen.dart';
+import '../../features/graffiti_map/photo_stitch_screen.dart';
 import '../../features/notes/notes_screen.dart';
 import '../../features/notes/note_detail_screen.dart';
 import '../../features/notes/notes_graph_screen.dart';
@@ -244,6 +249,30 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'history',
                 builder: (_, __) => const CycleHistoryScreen(),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: Routes.graffitiMap,
+            builder: (_, __) => const GraffitiMapScreen(),
+            routes: [
+              GoRoute(
+                path: 'marker/:id',
+                builder: (_, state) => MarkerDetailScreen(
+                  markerId: int.parse(state.pathParameters['id']!),
+                ),
+              ),
+              GoRoute(
+                path: 'gallery',
+                builder: (_, __) => const MapGalleryScreen(),
+              ),
+              GoRoute(
+                path: 'create',
+                builder: (_, __) => const CreateCollectionScreen(),
+              ),
+              GoRoute(
+                path: 'stitch',
+                builder: (_, __) => const PhotoStitchScreen(),
               ),
             ],
           ),

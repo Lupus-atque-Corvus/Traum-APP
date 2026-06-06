@@ -5953,6 +5953,252 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Launcher-Einstellungen konnten nicht geöffnet werden'**
   String get setAsLauncherFailed;
+
+  /// No description provided for @graffitiMapTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Graffiti Map'**
+  String get graffitiMapTitle;
+
+  /// No description provided for @graffitiMapChooseMap.
+  ///
+  /// In de, this message translates to:
+  /// **'Karte wählen'**
+  String get graffitiMapChooseMap;
+
+  /// No description provided for @graffitiMapNewMap.
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Karte erstellen'**
+  String get graffitiMapNewMap;
+
+  /// No description provided for @graffitiMapSinglePhotos.
+  ///
+  /// In de, this message translates to:
+  /// **'Einzelfotos'**
+  String get graffitiMapSinglePhotos;
+
+  /// No description provided for @graffitiMapWithRating.
+  ///
+  /// In de, this message translates to:
+  /// **'Mit Bewertung · mehrere Fotos'**
+  String get graffitiMapWithRating;
+
+  /// No description provided for @graffitiMapSearchHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Nach #Hashtag suchen...'**
+  String get graffitiMapSearchHint;
+
+  /// No description provided for @graffitiMapMegapixels.
+  ///
+  /// In de, this message translates to:
+  /// **'{mp} MP'**
+  String graffitiMapMegapixels(String mp);
+
+  /// No description provided for @graffitiMapNote.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz hinzufügen...'**
+  String get graffitiMapNote;
+
+  /// No description provided for @graffitiMapHashtag.
+  ///
+  /// In de, this message translates to:
+  /// **'Hashtag eingeben'**
+  String get graffitiMapHashtag;
+
+  /// No description provided for @graffitiMapSave.
+  ///
+  /// In de, this message translates to:
+  /// **'Speichern'**
+  String get graffitiMapSave;
+
+  /// No description provided for @graffitiMapOverview.
+  ///
+  /// In de, this message translates to:
+  /// **'Übersicht'**
+  String get graffitiMapOverview;
+
+  /// No description provided for @graffitiMapNoLocation.
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Standort'**
+  String get graffitiMapNoLocation;
+
+  /// No description provided for @mapCreateTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Karte erstellen'**
+  String get mapCreateTitle;
+
+  /// No description provided for @mapTemplate.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlage wählen'**
+  String get mapTemplate;
+
+  /// No description provided for @mapTemplateGraffiti.
+  ///
+  /// In de, this message translates to:
+  /// **'Graffiti'**
+  String get mapTemplateGraffiti;
+
+  /// No description provided for @mapTemplateTowers.
+  ///
+  /// In de, this message translates to:
+  /// **'Türme'**
+  String get mapTemplateTowers;
+
+  /// No description provided for @mapTemplateLostPlaces.
+  ///
+  /// In de, this message translates to:
+  /// **'Lost Places'**
+  String get mapTemplateLostPlaces;
+
+  /// No description provided for @mapTemplateCustom.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigene Karte'**
+  String get mapTemplateCustom;
+
+  /// No description provided for @mapFunctions.
+  ///
+  /// In de, this message translates to:
+  /// **'Funktionen'**
+  String get mapFunctions;
+
+  /// No description provided for @mapFunctionRating.
+  ///
+  /// In de, this message translates to:
+  /// **'Sterne-Bewertung'**
+  String get mapFunctionRating;
+
+  /// No description provided for @mapFunctionMultiPhoto.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrere Fotos pro Punkt'**
+  String get mapFunctionMultiPhoto;
+
+  /// No description provided for @mapFields.
+  ///
+  /// In de, this message translates to:
+  /// **'Felder'**
+  String get mapFields;
+
+  /// No description provided for @mapFieldCondition.
+  ///
+  /// In de, this message translates to:
+  /// **'Zustand'**
+  String get mapFieldCondition;
+
+  /// No description provided for @mapFieldAccess.
+  ///
+  /// In de, this message translates to:
+  /// **'Zugänglichkeit'**
+  String get mapFieldAccess;
+
+  /// No description provided for @mapFieldVisited.
+  ///
+  /// In de, this message translates to:
+  /// **'Besucht-Status'**
+  String get mapFieldVisited;
+
+  /// No description provided for @mapFieldDanger.
+  ///
+  /// In de, this message translates to:
+  /// **'Gefahren-Hinweis'**
+  String get mapFieldDanger;
+
+  /// No description provided for @mapFieldHidden.
+  ///
+  /// In de, this message translates to:
+  /// **'Privat-Markierung'**
+  String get mapFieldHidden;
+
+  /// No description provided for @mapAddCustomField.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigenes Feld hinzufügen'**
+  String get mapAddCustomField;
+
+  /// No description provided for @mapCreateButton.
+  ///
+  /// In de, this message translates to:
+  /// **'Karte erstellen'**
+  String get mapCreateButton;
+
+  /// No description provided for @mapDistanceFromYou.
+  ///
+  /// In de, this message translates to:
+  /// **'{distance} von dir'**
+  String mapDistanceFromYou(String distance);
+
+  /// No description provided for @mapStartNavigation.
+  ///
+  /// In de, this message translates to:
+  /// **'Navigation starten'**
+  String get mapStartNavigation;
+
+  /// No description provided for @mapExportGpx.
+  ///
+  /// In de, this message translates to:
+  /// **'Als GPX exportieren'**
+  String get mapExportGpx;
+
+  /// No description provided for @mapExportJson.
+  ///
+  /// In de, this message translates to:
+  /// **'Als JSON exportieren'**
+  String get mapExportJson;
+
+  /// No description provided for @mapNewEntry.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuer Eintrag'**
+  String get mapNewEntry;
+
+  /// No description provided for @mapAddToExisting.
+  ///
+  /// In de, this message translates to:
+  /// **'Zu bestehendem hinzufügen'**
+  String get mapAddToExisting;
+
+  /// No description provided for @mapTowerName.
+  ///
+  /// In de, this message translates to:
+  /// **'Name'**
+  String get mapTowerName;
+
+  /// No description provided for @mapRating.
+  ///
+  /// In de, this message translates to:
+  /// **'Bewertung'**
+  String get mapRating;
+
+  /// No description provided for @mapAddPhoto.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto hinzufügen'**
+  String get mapAddPhoto;
+
+  /// No description provided for @mapStitchHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Fotos sollten 30% überlappen, gleiche Belichtung, horizontal.'**
+  String get mapStitchHint;
+
+  /// No description provided for @mapStitchProcessing.
+  ///
+  /// In de, this message translates to:
+  /// **'Panorama wird berechnet...'**
+  String get mapStitchProcessing;
+
+  /// No description provided for @mapStitchFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Konnte nicht zusammengefügt werden — mehr Überlappung nötig.'**
+  String get mapStitchFailed;
 }
 
 class _AppLocalizationsDelegate

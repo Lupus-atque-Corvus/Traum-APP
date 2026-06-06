@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.6.8 (2026-06-06) — Graffiti Map
+
+### Neue Funktion
+
+- **Graffiti Map:** Neues Modul mit Foto-Markern auf einer OpenStreetMap-Karte (dunkles Design, Marker-Clustering bei vielen Punkten). Alle Fotos und Daten bleiben **lokal** auf dem Gerät
+- **Mehrere Karten-Typen:** Über das Karten-Menü oben rechts zwischen beliebig vielen Karten wechseln. Mitgeliefert: **Graffiti** (Einzelfotos), **Türme** (Sterne-Bewertung + mehrere Fotos) und **Lost Places** (Zustand, Zugänglichkeit, Besucht-Status, Gefahren-Hinweis, Privat-Markierung)
+- **Eigene Karten:** Frei konfigurierbar mit Name, Icon, Farbe, Funktionen und eigenen Feldern (Auswahl/Text/Schalter/Zahl)
+- **Foto-Metadaten:** Standort und Datum werden aus den EXIF-Daten gelesen (Fallback auf aktuelle GPS-Position), Ort per Reverse-Geocoding
+- **Megapixel-Anzeige** bei jedem Foto, **Hashtag- und Volltextsuche**, **Entfernungsanzeige** und **Navigations-Button** (öffnet Google Maps)
+- **Export:** Karten als **GPX** oder **JSON** teilen (privat markierte Punkte werden ausgelassen)
+- **Panorama-Stitching:** UI vorhanden (experimentell; das Zusammenfügen ist in diesem Build noch deaktiviert)
+
+---
+
 ## v0.6.7 (2026-06-05) — Tab-Switcher schneller
 
 ### Verbesserung

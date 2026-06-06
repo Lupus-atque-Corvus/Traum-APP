@@ -17,6 +17,7 @@ import 'tables/substance_tables.dart';
 import 'tables/diary_tables.dart';
 import 'tables/substance_database_table.dart';
 import 'tables/notes_tables.dart';
+import 'tables/graffiti_map_tables.dart';
 
 import 'daos/planning_dao.dart';
 import 'daos/training_dao.dart';
@@ -34,6 +35,9 @@ import 'daos/food_products_dao.dart';
 import 'daos/meal_entries_dao.dart';
 import 'daos/substance_database_dao.dart';
 import 'daos/notes_dao.dart';
+import 'daos/map_collections_dao.dart';
+import 'daos/map_markers_dao.dart';
+import 'daos/marker_photos_dao.dart';
 
 // Re-export all table types
 export 'tables/planning_tables.dart';
@@ -49,6 +53,7 @@ export 'tables/substance_tables.dart';
 export 'tables/diary_tables.dart';
 export 'tables/substance_database_table.dart';
 export 'tables/notes_tables.dart';
+export 'tables/graffiti_map_tables.dart';
 
 // Re-export all DAO types
 export 'daos/planning_dao.dart';
@@ -67,6 +72,9 @@ export 'daos/food_products_dao.dart';
 export 'daos/meal_entries_dao.dart';
 export 'daos/substance_database_dao.dart';
 export 'daos/notes_dao.dart';
+export 'daos/map_collections_dao.dart';
+export 'daos/map_markers_dao.dart';
+export 'daos/marker_photos_dao.dart';
 
 part 'traum_database.g.dart';
 
@@ -135,6 +143,10 @@ part 'traum_database.g.dart';
     Tags,
     NoteTags,
     NoteTemplates,
+    // Graffiti Map (3)
+    MapCollections,
+    MapMarkers,
+    MarkerPhotos,
   ],
   daos: [
     PlanningDao,
@@ -153,6 +165,9 @@ part 'traum_database.g.dart';
     MealEntriesDao,
     SubstanceDatabaseDao,
     NotesDao,
+    MapCollectionsDao,
+    MapMarkersDao,
+    MarkerPhotosDao,
   ],
 )
 class TraumDatabase extends _$TraumDatabase {
@@ -178,7 +193,16 @@ class TraumDatabase extends _$TraumDatabase {
   NotesDao get notesDao => NotesDao(this);
 
   @override
-  int get schemaVersion => 11;
+  MapCollectionsDao get mapCollectionsDao => MapCollectionsDao(this);
+
+  @override
+  MapMarkersDao get mapMarkersDao => MapMarkersDao(this);
+
+  @override
+  MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
+
+  @override
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -250,6 +274,11 @@ class TraumDatabase extends _$TraumDatabase {
             'CREATE INDEX IF NOT EXISTS idx_note_tags_note ON note_tags (note_id)');
         await customStatement(
             'CREATE INDEX IF NOT EXISTS idx_note_tags_tag ON note_tags (tag_id)');
+      }
+      if (from < 12) {
+        await migrator.createTable(mapCollections);
+        await migrator.createTable(mapMarkers);
+        await migrator.createTable(markerPhotos);
       }
     },
   );

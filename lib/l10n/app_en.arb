@@ -1273,5 +1273,57 @@
   "setAsLauncher": "Set as default launcher",
   "setAsLauncherActive": "TRAUM is your default home app",
   "setAsLauncherInactive": "Tap to set TRAUM as your home screen",
-  "setAsLauncherFailed": "Couldn't open launcher settings"
+  "setAsLauncherFailed": "Couldn't open launcher settings",
+
+  "graffitiMapTitle": "Graffiti Map",
+  "graffitiMapChooseMap": "Choose map",
+  "graffitiMapNewMap": "Create new map",
+  "graffitiMapSinglePhotos": "Single photos",
+  "graffitiMapWithRating": "With rating · multiple photos",
+  "graffitiMapSearchHint": "Search by #hashtag...",
+  "graffitiMapMegapixels": "{mp} MP",
+  "@graffitiMapMegapixels": {
+    "placeholders": {
+      "mp": {"type": "String"}
+    }
+  },
+  "graffitiMapNote": "Add note...",
+  "graffitiMapHashtag": "Enter hashtag",
+  "graffitiMapSave": "Save",
+  "graffitiMapOverview": "Overview",
+  "graffitiMapNoLocation": "No location",
+  "mapCreateTitle": "Create new map",
+  "mapTemplate": "Choose template",
+  "mapTemplateGraffiti": "Graffiti",
+  "mapTemplateTowers": "Towers",
+  "mapTemplateLostPlaces": "Lost Places",
+  "mapTemplateCustom": "Custom map",
+  "mapFunctions": "Functions",
+  "mapFunctionRating": "Star rating",
+  "mapFunctionMultiPhoto": "Multiple photos per point",
+  "mapFields": "Fields",
+  "mapFieldCondition": "Condition",
+  "mapFieldAccess": "Accessibility",
+  "mapFieldVisited": "Visit status",
+  "mapFieldDanger": "Danger warning",
+  "mapFieldHidden": "Private marker",
+  "mapAddCustomField": "Add custom field",
+  "mapCreateButton": "Create map",
+  "mapDistanceFromYou": "{distance} from you",
+  "@mapDistanceFromYou": {
+    "placeholders": {
+      "distance": {"type": "String"}
+    }
+  },
+  "mapStartNavigation": "Start navigation",
+  "mapExportGpx": "Export as GPX",
+  "mapExportJson": "Export as JSON",
+  "mapNewEntry": "New entry",
+  "mapAddToExisting": "Add to existing",
+  "mapTowerName": "Name",
+  "mapRating": "Rating",
+  "mapAddPhoto": "Add photo",
+  "mapStitchHint": "Photos should overlap 30%, same exposure, horizontal.",
+  "mapStitchProcessing": "Computing panorama...",
+  "mapStitchFailed": "Could not stitch — more overlap needed."
 }

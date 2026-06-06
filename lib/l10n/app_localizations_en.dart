@@ -3067,4 +3067,132 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get setAsLauncherFailed => 'Couldn\'t open launcher settings';
+
+  @override
+  String get graffitiMapTitle => 'Graffiti Map';
+
+  @override
+  String get graffitiMapChooseMap => 'Choose map';
+
+  @override
+  String get graffitiMapNewMap => 'Create new map';
+
+  @override
+  String get graffitiMapSinglePhotos => 'Single photos';
+
+  @override
+  String get graffitiMapWithRating => 'With rating · multiple photos';
+
+  @override
+  String get graffitiMapSearchHint => 'Search by #hashtag...';
+
+  @override
+  String graffitiMapMegapixels(String mp) {
+    return '$mp MP';
+  }
+
+  @override
+  String get graffitiMapNote => 'Add note...';
+
+  @override
+  String get graffitiMapHashtag => 'Enter hashtag';
+
+  @override
+  String get graffitiMapSave => 'Save';
+
+  @override
+  String get graffitiMapOverview => 'Overview';
+
+  @override
+  String get graffitiMapNoLocation => 'No location';
+
+  @override
+  String get mapCreateTitle => 'Create new map';
+
+  @override
+  String get mapTemplate => 'Choose template';
+
+  @override
+  String get mapTemplateGraffiti => 'Graffiti';
+
+  @override
+  String get mapTemplateTowers => 'Towers';
+
+  @override
+  String get mapTemplateLostPlaces => 'Lost Places';
+
+  @override
+  String get mapTemplateCustom => 'Custom map';
+
+  @override
+  String get mapFunctions => 'Functions';
+
+  @override
+  String get mapFunctionRating => 'Star rating';
+
+  @override
+  String get mapFunctionMultiPhoto => 'Multiple photos per point';
+
+  @override
+  String get mapFields => 'Fields';
+
+  @override
+  String get mapFieldCondition => 'Condition';
+
+  @override
+  String get mapFieldAccess => 'Accessibility';
+
+  @override
+  String get mapFieldVisited => 'Visit status';
+
+  @override
+  String get mapFieldDanger => 'Danger warning';
+
+  @override
+  String get mapFieldHidden => 'Private marker';
+
+  @override
+  String get mapAddCustomField => 'Add custom field';
+
+  @override
+  String get mapCreateButton => 'Create map';
+
+  @override
+  String mapDistanceFromYou(String distance) {
+    return '$distance from you';
+  }
+
+  @override
+  String get mapStartNavigation => 'Start navigation';
+
+  @override
+  String get mapExportGpx => 'Export as GPX';
+
+  @override
+  String get mapExportJson => 'Export as JSON';
+
+  @override
+  String get mapNewEntry => 'New entry';
+
+  @override
+  String get mapAddToExisting => 'Add to existing';
+
+  @override
+  String get mapTowerName => 'Name';
+
+  @override
+  String get mapRating => 'Rating';
+
+  @override
+  String get mapAddPhoto => 'Add photo';
+
+  @override
+  String get mapStitchHint =>
+      'Photos should overlap 30%, same exposure, horizontal.';
+
+  @override
+  String get mapStitchProcessing => 'Computing panorama...';
+
+  @override
+  String get mapStitchFailed => 'Could not stitch — more overlap needed.';
 }

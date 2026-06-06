@@ -345,6 +345,8 @@ IconData moduleIcon(String module) {
       return Icons.calendar_today_rounded;
     case 'diary':
       return Icons.auto_stories_rounded;
+    case 'graffitiMap':
+      return Icons.location_on_outlined;
     case 'notes':
       return Icons.notes_rounded;
     case 'abstinence':

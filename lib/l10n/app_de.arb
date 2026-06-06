@@ -1273,5 +1273,57 @@
   "setAsLauncher": "Als Standard-Launcher",
   "setAsLauncherActive": "TRAUM ist deine Standard-Home-App",
   "setAsLauncherInactive": "Tippen, um TRAUM als Startbildschirm festzulegen",
-  "setAsLauncherFailed": "Launcher-Einstellungen konnten nicht geöffnet werden"
+  "setAsLauncherFailed": "Launcher-Einstellungen konnten nicht geöffnet werden",
+
+  "graffitiMapTitle": "Graffiti Map",
+  "graffitiMapChooseMap": "Karte wählen",
+  "graffitiMapNewMap": "Neue Karte erstellen",
+  "graffitiMapSinglePhotos": "Einzelfotos",
+  "graffitiMapWithRating": "Mit Bewertung · mehrere Fotos",
+  "graffitiMapSearchHint": "Nach #Hashtag suchen...",
+  "graffitiMapMegapixels": "{mp} MP",
+  "@graffitiMapMegapixels": {
+    "placeholders": {
+      "mp": {"type": "String"}
+    }
+  },
+  "graffitiMapNote": "Notiz hinzufügen...",
+  "graffitiMapHashtag": "Hashtag eingeben",
+  "graffitiMapSave": "Speichern",
+  "graffitiMapOverview": "Übersicht",
+  "graffitiMapNoLocation": "Kein Standort",
+  "mapCreateTitle": "Neue Karte erstellen",
+  "mapTemplate": "Vorlage wählen",
+  "mapTemplateGraffiti": "Graffiti",
+  "mapTemplateTowers": "Türme",
+  "mapTemplateLostPlaces": "Lost Places",
+  "mapTemplateCustom": "Eigene Karte",
+  "mapFunctions": "Funktionen",
+  "mapFunctionRating": "Sterne-Bewertung",
+  "mapFunctionMultiPhoto": "Mehrere Fotos pro Punkt",
+  "mapFields": "Felder",
+  "mapFieldCondition": "Zustand",
+  "mapFieldAccess": "Zugänglichkeit",
+  "mapFieldVisited": "Besucht-Status",
+  "mapFieldDanger": "Gefahren-Hinweis",
+  "mapFieldHidden": "Privat-Markierung",
+  "mapAddCustomField": "Eigenes Feld hinzufügen",
+  "mapCreateButton": "Karte erstellen",
+  "mapDistanceFromYou": "{distance} von dir",
+  "@mapDistanceFromYou": {
+    "placeholders": {
+      "distance": {"type": "String"}
+    }
+  },
+  "mapStartNavigation": "Navigation starten",
+  "mapExportGpx": "Als GPX exportieren",
+  "mapExportJson": "Als JSON exportieren",
+  "mapNewEntry": "Neuer Eintrag",
+  "mapAddToExisting": "Zu bestehendem hinzufügen",
+  "mapTowerName": "Name",
+  "mapRating": "Bewertung",
+  "mapAddPhoto": "Foto hinzufügen",
+  "mapStitchHint": "Fotos sollten 30% überlappen, gleiche Belichtung, horizontal.",
+  "mapStitchProcessing": "Panorama wird berechnet...",
+  "mapStitchFailed": "Konnte nicht zusammengefügt werden — mehr Überlappung nötig."
 }

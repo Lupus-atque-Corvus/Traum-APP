@@ -1,0 +1,580 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart';
+import '../../core/providers/database_provider.dart';
+import '../../core/theme/colors.dart';
+import 'dynamic_marker_sheet.dart';
+import 'graffiti_map_provider.dart';
+import 'map_export_service.dart';
+import 'map_visuals.dart';
+import 'photo_metadata_service.dart';
+
+class GraffitiMapScreen extends ConsumerStatefulWidget {
+  const GraffitiMapScreen({super.key});
+
+  @override
+  ConsumerState<GraffitiMapScreen> createState() => _GraffitiMapScreenState();
+}
+
+class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
+  final _mapController = MapController();
+  final _searchController = TextEditingController();
+  String _query = '';
+
+  static const _fallbackCenter = LatLng(51.1657, 10.4515); // Deutschland
+
+  @override
+  void dispose() {
+    _mapController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final collectionInfo = ref.watch(activeCollectionInfoProvider);
+    final hashtagFilter = ref.watch(activeHashtagFilterProvider);
+    final markersAsync = _query.isEmpty
+        ? ref.watch(activeMarkersProvider)
+        : ref.watch(markerSearchProvider(_query));
+    final hasRating = collectionInfo.valueOrNull?.hasRating ?? false;
+
+    final all = markersAsync.valueOrNull ?? const [];
+    final filtered = hashtagFilter == null
+        ? all
+        : all.where((d) {
+            final tags = d.marker.hashtags
+                .split(',')
+                .map((t) => t.trim().toLowerCase());
+            return tags.contains(hashtagFilter.toLowerCase());
+          }).toList();
+
+    final withCoords =
+        filtered.where((d) => d.marker.latitude != null).toList();
+    final initialCenter = withCoords.isNotEmpty
+        ? LatLng(withCoords.first.marker.latitude!,
+            withCoords.first.marker.longitude!)
+        : _fallbackCenter;
+
+    return Scaffold(
+      backgroundColor: TraumColors.background,
+      body: Stack(
+        children: [
+          FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+              initialCenter: initialCenter,
+              initialZoom: withCoords.isNotEmpty ? 12 : 5,
+            ),
+            children: [
+              TileLayer(
+                urlTemplate:
+                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.traum.app',
+                tileBuilder: (context, widget, tile) => ColorFiltered(
+                  colorFilter: const ColorFilter.matrix([
+                    -0.6, 0, 0, 0, 255, //
+                    0, -0.6, 0, 0, 255, //
+                    0, 0, -0.6, 0, 255, //
+                    0, 0, 0, 1, 0, //
+                  ]),
+                  child: widget,
+                ),
+              ),
+              MarkerClusterLayerWidget(
+                options: MarkerClusterLayerOptions(
+                  maxClusterRadius: 50,
+                  size: const Size(44, 44),
+                  markers: withCoords
+                      .map((data) => Marker(
+                            point: LatLng(data.marker.latitude!,
+                                data.marker.longitude!),
+                            width: 56,
+                            height: 56,
+                            child: GestureDetector(
+                              onTap: () => context.go(
+                                  '/graffitimap/marker/${data.marker.id}'),
+                              child: _MapMarkerWidget(
+                                  data: data, showRating: hasRating),
+                            ),
+                          ))
+                      .toList(),
+                  builder: (context, markers) => Container(
+                    decoration: BoxDecoration(
+                      color: TraumColors.cyanBlue,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                          color: TraumColors.background, width: 2),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${markers.length}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const _OsmAttribution(),
+            ],
+          ),
+
+          // Suchleiste + Karten-Menü
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 8,
+            left: 16,
+            right: 16,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(child: _searchBar()),
+                    const SizedBox(width: 8),
+                    _circleButton(
+                      icon: Icons.layers_outlined,
+                      onTap: () => _showMapSwitcher(context),
+                    ),
+                  ],
+                ),
+                if (hashtagFilter != null) ...[
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: InputChip(
+                      label: Text('#$hashtagFilter'),
+                      labelStyle: const TextStyle(
+                          fontFamily: 'DMSans',
+                          color: TraumColors.cyanBlue,
+                          fontSize: 12),
+                      backgroundColor: TraumColors.surface,
+                      side: const BorderSide(color: TraumColors.cyanBlue),
+                      deleteIconColor: TraumColors.cyanBlue,
+                      onDeleted: () => ref
+                          .read(activeHashtagFilterProvider.notifier)
+                          .state = null,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+
+          // Aktions-Buttons unten
+          Positioned(
+            left: 16,
+            right: 16,
+            bottom: MediaQuery.of(context).padding.bottom + 90,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _actionButton(
+                  icon: Icons.photo_camera_rounded,
+                  label: 'Foto',
+                  primary: true,
+                  onTap: () => _capturePhoto(ImageSource.camera),
+                ),
+                _actionButton(
+                  icon: Icons.photo_library_outlined,
+                  label: 'Galerie',
+                  onTap: () => context.go('/graffitimap/gallery'),
+                ),
+                _actionButton(
+                  icon: Icons.add_photo_alternate_outlined,
+                  label: 'Import',
+                  onTap: () => _capturePhoto(ImageSource.gallery),
+                ),
+                _actionButton(
+                  icon: Icons.auto_awesome_mosaic_outlined,
+                  label: 'Stitch',
+                  onTap: () => context.go('/graffitimap/stitch'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _searchBar() {
+    return Container(
+      height: 48,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      decoration: BoxDecoration(
+        color: TraumColors.surface,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.search, color: TraumColors.onBackgroundMuted, size: 20),
+          const SizedBox(width: 8),
+          Expanded(
+            child: TextField(
+              controller: _searchController,
+              onChanged: (v) => setState(() => _query = v),
+              style: const TextStyle(
+                  fontFamily: 'DMSans', color: TraumColors.onBackground),
+              decoration: const InputDecoration(
+                isCollapsed: true,
+                border: InputBorder.none,
+                hintText: 'Nach #Hashtag suchen…',
+                hintStyle: TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackgroundSubtle,
+                    fontSize: 14),
+              ),
+            ),
+          ),
+          if (_query.isNotEmpty)
+            GestureDetector(
+              onTap: () {
+                _searchController.clear();
+                setState(() => _query = '');
+              },
+              child: const Icon(Icons.close,
+                  color: TraumColors.onBackgroundMuted, size: 18),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _circleButton(
+      {required IconData icon, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color: TraumColors.surface,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withValues(alpha: 0.3), blurRadius: 8),
+          ],
+        ),
+        child: Icon(icon, color: TraumColors.cyanBlue, size: 22),
+      ),
+    );
+  }
+
+  Widget _actionButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+    bool primary = false,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              gradient: primary ? TraumColors.gradientCool : null,
+              color: primary ? null : TraumColors.surface,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    blurRadius: 8),
+              ],
+            ),
+            child: Icon(icon,
+                color: primary ? Colors.white : TraumColors.cyanBlue,
+                size: 24),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(
+              fontFamily: 'DMSans',
+              color: TraumColors.onBackground,
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _capturePhoto(ImageSource source) async {
+    final id = ref.read(activeCollectionProvider);
+    final collections = await ref.read(mapCollectionsDaoProvider).getAll();
+    if (collections.isEmpty) return;
+    final collection = collections.firstWhere((c) => c.id == id,
+        orElse: () => collections.first);
+    final result = await PhotoMetadataService.captureWithMetadata(source);
+    if (result == null || !mounted) return;
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) =>
+          DynamicMarkerSheet(captureResult: result, collection: collection),
+    );
+    ref.invalidate(activeMarkersProvider);
+    ref.invalidate(allHashtagsProvider);
+  }
+
+  void _showMapSwitcher(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: TraumColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) => Consumer(builder: (ctx, ref, _) {
+        final collections = ref.watch(mapCollectionsProvider);
+        final active = ref.watch(activeCollectionProvider);
+        return collections.when(
+          data: (list) => SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 12),
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: TraumColors.onBackgroundSubtle,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Karte wählen',
+                  style: TextStyle(
+                    fontFamily: 'DMSans',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: TraumColors.onBackground,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ...list.map((c) => ListTile(
+                      leading: Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: mapCollectionColor(c).withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(mapCollectionIcon(c.iconName),
+                            color: mapCollectionColor(c), size: 22),
+                      ),
+                      title: Text(c.name,
+                          style: const TextStyle(
+                              fontFamily: 'DMSans',
+                              color: TraumColors.onBackground,
+                              fontWeight: FontWeight.w600)),
+                      subtitle: Text(
+                        c.hasRating
+                            ? 'Mit Bewertung · mehrere Fotos'
+                            : 'Einzelfotos',
+                        style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            color: TraumColors.onBackgroundMuted,
+                            fontSize: 12),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (active == c.id)
+                            const Icon(Icons.check_circle,
+                                color: TraumColors.cyanBlue),
+                          PopupMenuButton<String>(
+                            icon: const Icon(Icons.more_vert,
+                                color: TraumColors.onBackgroundMuted),
+                            color: TraumColors.surfaceVariant,
+                            onSelected: (v) async {
+                              final db = ref.read(databaseProvider);
+                              if (v == 'gpx') {
+                                await MapExportService.exportGpx(db, c);
+                              } else if (v == 'json') {
+                                await MapExportService.exportJson(db, c);
+                              }
+                            },
+                            itemBuilder: (_) => const [
+                              PopupMenuItem(
+                                  value: 'gpx',
+                                  child: Text('Als GPX exportieren',
+                                      style: TextStyle(
+                                          fontFamily: 'DMSans',
+                                          color: TraumColors.onBackground))),
+                              PopupMenuItem(
+                                  value: 'json',
+                                  child: Text('Als JSON exportieren',
+                                      style: TextStyle(
+                                          fontFamily: 'DMSans',
+                                          color: TraumColors.onBackground))),
+                            ],
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        ref.read(activeCollectionProvider.notifier).state =
+                            c.id;
+                        ref.read(activeHashtagFilterProvider.notifier).state =
+                            null;
+                        Navigator.pop(ctx);
+                      },
+                    )),
+                ListTile(
+                  leading: Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: TraumColors.surfaceVariant,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(Icons.add,
+                        color: TraumColors.onBackgroundMuted),
+                  ),
+                  title: const Text('Neue Karte erstellen',
+                      style: TextStyle(
+                          fontFamily: 'DMSans',
+                          color: TraumColors.onBackgroundMuted)),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    context.go('/graffitimap/create');
+                  },
+                ),
+                const SizedBox(height: 24),
+              ],
+            ),
+          ),
+          loading: () => const Padding(
+            padding: EdgeInsets.all(32),
+            child: CircularProgressIndicator(color: TraumColors.cyanBlue),
+          ),
+          error: (_, __) => const SizedBox.shrink(),
+        );
+      }),
+    );
+  }
+}
+
+class _OsmAttribution extends StatelessWidget {
+  const _OsmAttribution();
+  @override
+  Widget build(BuildContext context) {
+    return const RichAttributionWidget(
+      attributions: [
+        TextSourceAttribution('OpenStreetMap contributors'),
+      ],
+    );
+  }
+}
+
+class _MapMarkerWidget extends StatelessWidget {
+  final MarkerWithPhotos data;
+  final bool showRating;
+  const _MapMarkerWidget({required this.data, required this.showRating});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: TraumColors.cyanBlue, width: 2.5),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.4), blurRadius: 6),
+            ],
+          ),
+          child: ClipOval(
+            child: data.firstPhoto != null
+                ? Image.file(
+                    File(data.firstPhoto!.thumbnailPath ??
+                        data.firstPhoto!.photoPath),
+                    width: 48,
+                    height: 48,
+                    fit: BoxFit.cover,
+                  )
+                : Container(
+                    width: 48,
+                    height: 48,
+                    color: TraumColors.surfaceVariant,
+                    child: const Icon(Icons.image,
+                        color: TraumColors.cyanBlue, size: 20),
+                  ),
+          ),
+        ),
+        if (showRating && data.marker.rating != null)
+          Positioned(
+            bottom: -4,
+            right: -4,
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+              decoration: BoxDecoration(
+                color: TraumColors.amberGold,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.star, color: Colors.white, size: 9),
+                  const SizedBox(width: 1),
+                  Text(
+                    data.marker.rating!.toStringAsFixed(1),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'DMSans',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        if (data.photos.length > 1)
+          Positioned(
+            top: -4,
+            right: -4,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                color: TraumColors.cyanBlue,
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                '${data.photos.length}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}

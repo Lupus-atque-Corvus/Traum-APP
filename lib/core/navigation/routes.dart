@@ -35,6 +35,7 @@ class Routes {
   static const String period = '/period';
   static const String periodCalendar = '/period/calendar';
   static const String cycleHistory = '/period/history';
+  static const String graffitiMap = '/graffitimap';
   static const String notes = '/notes';
   static const String noteDetail = '/notes/note/:id';
   static const String notesGraph = '/notes/graph';
@@ -63,6 +64,7 @@ class Routes {
     'abstinence': abstinence,
     'budget': budget,
     'diary': diary,
+    'graffitiMap': graffitiMap,
     'notes': notes,
     'period': period,
     'profile': profile,
@@ -89,6 +91,8 @@ class Routes {
         return l10n.budget;
       case 'diary':
         return l10n.diaryModuleLabel;
+      case 'graffitiMap':
+        return 'Graffiti Map';
       case 'notes':
         return l10n.notes_title;
       case 'period':

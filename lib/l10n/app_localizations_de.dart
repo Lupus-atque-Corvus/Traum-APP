@@ -3079,4 +3079,133 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get setAsLauncherFailed =>
       'Launcher-Einstellungen konnten nicht geöffnet werden';
+
+  @override
+  String get graffitiMapTitle => 'Graffiti Map';
+
+  @override
+  String get graffitiMapChooseMap => 'Karte wählen';
+
+  @override
+  String get graffitiMapNewMap => 'Neue Karte erstellen';
+
+  @override
+  String get graffitiMapSinglePhotos => 'Einzelfotos';
+
+  @override
+  String get graffitiMapWithRating => 'Mit Bewertung · mehrere Fotos';
+
+  @override
+  String get graffitiMapSearchHint => 'Nach #Hashtag suchen...';
+
+  @override
+  String graffitiMapMegapixels(String mp) {
+    return '$mp MP';
+  }
+
+  @override
+  String get graffitiMapNote => 'Notiz hinzufügen...';
+
+  @override
+  String get graffitiMapHashtag => 'Hashtag eingeben';
+
+  @override
+  String get graffitiMapSave => 'Speichern';
+
+  @override
+  String get graffitiMapOverview => 'Übersicht';
+
+  @override
+  String get graffitiMapNoLocation => 'Kein Standort';
+
+  @override
+  String get mapCreateTitle => 'Neue Karte erstellen';
+
+  @override
+  String get mapTemplate => 'Vorlage wählen';
+
+  @override
+  String get mapTemplateGraffiti => 'Graffiti';
+
+  @override
+  String get mapTemplateTowers => 'Türme';
+
+  @override
+  String get mapTemplateLostPlaces => 'Lost Places';
+
+  @override
+  String get mapTemplateCustom => 'Eigene Karte';
+
+  @override
+  String get mapFunctions => 'Funktionen';
+
+  @override
+  String get mapFunctionRating => 'Sterne-Bewertung';
+
+  @override
+  String get mapFunctionMultiPhoto => 'Mehrere Fotos pro Punkt';
+
+  @override
+  String get mapFields => 'Felder';
+
+  @override
+  String get mapFieldCondition => 'Zustand';
+
+  @override
+  String get mapFieldAccess => 'Zugänglichkeit';
+
+  @override
+  String get mapFieldVisited => 'Besucht-Status';
+
+  @override
+  String get mapFieldDanger => 'Gefahren-Hinweis';
+
+  @override
+  String get mapFieldHidden => 'Privat-Markierung';
+
+  @override
+  String get mapAddCustomField => 'Eigenes Feld hinzufügen';
+
+  @override
+  String get mapCreateButton => 'Karte erstellen';
+
+  @override
+  String mapDistanceFromYou(String distance) {
+    return '$distance von dir';
+  }
+
+  @override
+  String get mapStartNavigation => 'Navigation starten';
+
+  @override
+  String get mapExportGpx => 'Als GPX exportieren';
+
+  @override
+  String get mapExportJson => 'Als JSON exportieren';
+
+  @override
+  String get mapNewEntry => 'Neuer Eintrag';
+
+  @override
+  String get mapAddToExisting => 'Zu bestehendem hinzufügen';
+
+  @override
+  String get mapTowerName => 'Name';
+
+  @override
+  String get mapRating => 'Bewertung';
+
+  @override
+  String get mapAddPhoto => 'Foto hinzufügen';
+
+  @override
+  String get mapStitchHint =>
+      'Fotos sollten 30% überlappen, gleiche Belichtung, horizontal.';
+
+  @override
+  String get mapStitchProcessing => 'Panorama wird berechnet...';
+
+  @override
+  String get mapStitchFailed =>
+      'Konnte nicht zusammengefügt werden — mehr Überlappung nötig.';
 }
