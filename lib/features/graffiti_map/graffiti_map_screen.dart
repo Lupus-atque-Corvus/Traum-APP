@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -114,6 +115,16 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                   subdomains: const ['a', 'b', 'c', 'd'],
                   retinaMode: RetinaMode.isHighDensity(context),
                   tileBounds: _worldBounds,
+                ),
+              ),
+              CurrentLocationLayer(
+                style: const LocationMarkerStyle(
+                  marker: DefaultLocationMarker(
+                    color: TraumColors.cyanBlue,
+                  ),
+                  markerSize: Size(20, 20),
+                  accuracyCircleColor: Color(0x2600D4D4), // cyanBlue ~15%
+                  headingSectorColor: Color(0x8000D4D4), // cyanBlue ~50%
                 ),
               ),
               MarkerClusterLayerWidget(
