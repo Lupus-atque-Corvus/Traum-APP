@@ -3,14 +3,18 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
 import 'field_system/map_field.dart';
 import 'field_system/map_templates.dart';
 import 'field_system/predefined_fields.dart';
 import 'graffiti_map_provider.dart';
+import 'map_config.dart';
 import 'map_visuals.dart';
 import 'map_widgets.dart';
+import 'photo_grouping.dart';
+import 'photo_grouping_service.dart';
 
 class CreateCollectionScreen extends ConsumerStatefulWidget {
   /// Wenn gesetzt, arbeitet der Screen im Bearbeiten-Modus.
@@ -30,6 +34,8 @@ class _CreateCollectionScreenState
   bool _hasRating = false;
   bool _multiPhoto = false;
   int _groupRadius = 50;
+  bool _autoGroup = false;
+  List<PhotoPoint> _points = const []; // vorhandene Fotos (nur Bearbeiten-Modus)
   final List<MapField> _selectedFields = [];
 
   bool get _isEditing => widget.collection != null;
@@ -51,13 +57,35 @@ class _CreateCollectionScreenState
         _selectedFields.addAll((cfg['fields'] as List? ?? [])
             .map((f) => MapField.fromJson(f as Map<String, dynamic>)));
       } catch (_) {}
+      _autoGroup = autoGroupFromConfig(c.fieldConfig);
     }
+    if (widget.collection != null) _loadPoints(widget.collection!.id);
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadPoints(int collectionId) async {
+    final db = ref.read(databaseProvider);
+    final markers = await db.mapMarkersDao.getByCollection(collectionId);
+    final photos = await db.markerPhotosDao.getByCollection(collectionId);
+    final byId = {for (final m in markers) m.id: m};
+    final pts = <PhotoPoint>[];
+    for (final p in photos) {
+      final lat = p.latitude ?? byId[p.markerId]?.latitude;
+      final lon = p.longitude ?? byId[p.markerId]?.longitude;
+      if (lat == null || lon == null) continue;
+      pts.add(PhotoPoint(
+          id: p.id,
+          markerId: p.markerId,
+          lat: lat,
+          lon: lon,
+          createdAt: p.createdAt));
+    }
+    if (mounted) setState(() => _points = pts);
   }
 
   void _applyTemplate(MapTemplate t) {
@@ -101,9 +129,11 @@ class _CreateCollectionScreenState
       );
       return;
     }
+    final multiPhoto = _multiPhoto || _autoGroup;
     final config = jsonEncode({
       'rating': _hasRating,
-      'multiPhoto': _multiPhoto,
+      'multiPhoto': multiPhoto,
+      'autoGroup': _autoGroup,
       'groupRadius': _groupRadius,
       'fields': _selectedFields.map((f) => f.toJson()).toList(),
     });
@@ -115,19 +145,24 @@ class _CreateCollectionScreenState
         iconName: _selectedIcon,
         colorHex: Value(_selectedColor),
         hasRating: _hasRating,
-        multiPhoto: _multiPhoto,
+        multiPhoto: multiPhoto,
         fieldConfig: config,
       ));
       ref.invalidate(collectionByIdProvider(existing.id));
       ref.invalidate(activeCollectionInfoProvider);
       ref.invalidate(activeMarkersProvider);
+      if (_autoGroup) {
+        await regroupCollection(
+            ref.read(databaseProvider), existing.id, _groupRadius.toDouble());
+        ref.invalidate(activeMarkersProvider);
+      }
     } else {
       await dao.insert(MapCollectionsCompanion.insert(
         name: name,
         iconName: _selectedIcon,
         colorHex: Value(_selectedColor),
         hasRating: Value(_hasRating),
-        multiPhoto: Value(_multiPhoto),
+        multiPhoto: Value(multiPhoto),
         fieldConfig: Value(config),
         sortOrder: Value(await dao.nextSortOrder()),
         createdAt: DateTime.now(),
@@ -298,17 +333,24 @@ class _CreateCollectionScreenState
                 style: TextStyle(
                     fontFamily: 'DMSans', color: TraumColors.onBackground)),
           ),
-          if (_multiPhoto) ...[
-            const SizedBox(height: 12),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            activeThumbColor: accent,
+            value: _autoGroup,
+            onChanged: (v) => setState(() => _autoGroup = v),
+            title: const Text('Fotos automatisch gruppieren',
+                style: TextStyle(
+                    fontFamily: 'DMSans', color: TraumColors.onBackground)),
+            subtitle: const Text(
+                'Fotos im Umkreis werden zu einem Ort zusammengefasst',
+                style: TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackgroundMuted,
+                    fontSize: 12)),
+          ),
+          if (_autoGroup) ...[
+            const SizedBox(height: 8),
             _sectionLabel('Gruppierungs-Radius'),
-            const SizedBox(height: 4),
-            const Text(
-              'Fotos innerhalb dieses Radius werden automatisch zu einem Ort gruppiert.',
-              style: TextStyle(
-                  fontFamily: 'DMSans',
-                  color: TraumColors.onBackgroundMuted,
-                  fontSize: 12),
-            ),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -317,7 +359,7 @@ class _CreateCollectionScreenState
                     value: _groupRadius.toDouble().clamp(10, 200).toDouble(),
                     min: 10,
                     max: 200,
-                    divisions: 38, // 5-m-Schritte
+                    divisions: 38,
                     label: '$_groupRadius m',
                     activeColor: accent,
                     onChanged: (v) =>
@@ -338,6 +380,19 @@ class _CreateCollectionScreenState
                 ),
               ],
             ),
+            if (_points.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  '${_points.length} Fotos → '
+                  '${groupPhotos(_points, _groupRadius.toDouble()).length} Orte',
+                  style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.cyanBlue,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
           ],
           const SizedBox(height: 12),
 
