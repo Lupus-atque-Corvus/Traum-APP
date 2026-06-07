@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.6.10 (2026-06-07) — Graffiti Map: Karten-Steuerung
+
+### Verbesserung
+
+- **Rotations-Sperre beim Zoomen:** Beim Pinch-Zoom dreht sich die Karte nicht mehr versehentlich mit — Zoom und Drehung schließen sich pro Geste gegenseitig aus (wer zuerst auslöst, gewinnt)
+- **Freies Drehen:** Bewusstes Drehen mit zwei Fingern bleibt unbegrenzt in beide Richtungen möglich
+
+---
+
 ## v0.6.9 (2026-06-06) — Graffiti Map: Karten-Verbesserungen
 
 ### Verbesserung
