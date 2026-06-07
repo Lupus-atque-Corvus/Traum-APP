@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.6.12 (2026-06-07) — Graffiti Map: Verbesserungen
+
+### Neu
+
+- **Punkte ohne Foto:** Lange auf die Karte drücken oder der neue „Ort"-Button erstellt einen Punkt auch ohne Foto — Fotos lassen sich später in der Detail-Ansicht hinzufügen
+- **Karte bearbeiten:** Jede Karte hat im Karten-Wähler ein Stift-Symbol; Name, Icon, Farbe, Bewertung, Mehrfoto und Felder lassen sich nachträglich ändern
+- **Gruppierungs-Radius per Slider:** Der Radius fürs automatische Gruppieren von Fotos (10–200 m) ist jetzt frei einstellbar — auch nachträglich
+
+### Verbesserung
+
+- **Normale Kartenfarben:** Die Standard-Ansicht nutzt jetzt eine farbige, gut lesbare Karte (CartoDB Voyager) statt der invertierten Farben
+- **Weicherer Gesten-Übergang:** Zoom „gewinnt" leichter gegen versehentliches Drehen (angepasste Schwellen)
+- **Aktions-Buttons:** Sitzen noch näher an der Navigationsleiste
+
+### Entfernt
+
+- **Stitch/Panorama:** Die experimentelle Funktion wurde komplett entfernt
+
+---
+
 ## v0.6.11 (2026-06-07) — Graffiti Map: UI-Korrekturen
 
 ### Fehlerbehebung
