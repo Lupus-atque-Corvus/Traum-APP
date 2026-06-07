@@ -218,11 +218,12 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
             ),
           ),
 
-          // Aktions-Buttons unten
+          // Aktions-Buttons unten (nah an der Navbar; der Screen ist bereits
+          // durch TraumScaffold über der Navbar eingerückt)
           Positioned(
             left: 16,
             right: 16,
-            bottom: MediaQuery.of(context).padding.bottom + 16,
+            bottom: 12,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -254,7 +255,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
           // Kompass (nur bei gedrehter Karte) + Standort-Button
           Positioned(
             right: 16,
-            bottom: MediaQuery.of(context).padding.bottom + 86,
+            bottom: 82,
             child: Column(
               children: [
                 if (_rotation != 0) ...[
