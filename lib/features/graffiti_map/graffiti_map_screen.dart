@@ -583,10 +583,23 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                           fontSize: 12,
                         ),
                       ),
-                      trailing: active == c.id
-                          ? const Icon(Icons.check_circle,
-                              color: TraumColors.cyanBlue)
-                          : null,
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (active == c.id)
+                            const Icon(Icons.check_circle,
+                                color: TraumColors.cyanBlue),
+                          IconButton(
+                            icon: const Icon(Icons.edit_outlined,
+                                color: TraumColors.onBackgroundMuted),
+                            tooltip: 'Karte bearbeiten',
+                            onPressed: () {
+                              Navigator.pop(ctx);
+                              context.go('/graffitimap/edit/${c.id}');
+                            },
+                          ),
+                        ],
+                      ),
                       onTap: () {
                         ref.read(activeCollectionProvider.notifier).state =
                             c.id;
