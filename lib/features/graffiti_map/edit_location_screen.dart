@@ -100,6 +100,8 @@ class _EditLocationScreenState extends ConsumerState<EditLocationScreen> {
                     interactionOptions: const InteractionOptions(
                       flags: InteractiveFlag.all,
                       enableMultiFingerGestureRace: true,
+                      rotationThreshold: 35.0,
+                      pinchZoomThreshold: 0.3,
                     ),
                   ),
                   children: [

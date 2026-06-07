@@ -93,9 +93,12 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
               interactionOptions: const InteractionOptions(
                 flags: InteractiveFlag.all,
                 // Zoom und Drehung schließen sich pro Geste gegenseitig aus:
-                // Wer zuerst die Schwelle überschreitet, gewinnt — so dreht
-                // sich die Karte beim Zoomen nicht versehentlich mit.
+                // Wer zuerst die Schwelle überschreitet, gewinnt. Höhere
+                // Dreh-Schwelle + niedrigere Zoom-Schwelle = Zoom gewinnt
+                // leichter, Übergänge wirken weicher.
                 enableMultiFingerGestureRace: true,
+                rotationThreshold: 35.0,
+                pinchZoomThreshold: 0.3,
               ),
               onPositionChanged: (camera, hasGesture) {
                 if (camera.rotation != _rotation) {
