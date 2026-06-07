@@ -39,6 +39,8 @@ class MarkerPhotos extends Table {
   TextColumn get thumbnailPath => text().nullable()();
   IntColumn get widthPx => integer().nullable()();
   IntColumn get heightPx => integer().nullable()();
+  RealColumn get latitude => real().nullable()();
+  RealColumn get longitude => real().nullable()();
   DateTimeColumn get takenAt => dateTime()();
   DateTimeColumn get createdAt => dateTime()();
 }

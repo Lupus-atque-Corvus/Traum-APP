@@ -24505,6 +24505,28 @@ class $MarkerPhotosTable extends MarkerPhotos
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _latitudeMeta = const VerificationMeta(
+    'latitude',
+  );
+  @override
+  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
+    'latitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _longitudeMeta = const VerificationMeta(
+    'longitude',
+  );
+  @override
+  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
+    'longitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _takenAtMeta = const VerificationMeta(
     'takenAt',
   );
@@ -24535,6 +24557,8 @@ class $MarkerPhotosTable extends MarkerPhotos
     thumbnailPath,
     widthPx,
     heightPx,
+    latitude,
+    longitude,
     takenAt,
     createdAt,
   ];
@@ -24590,6 +24614,18 @@ class $MarkerPhotosTable extends MarkerPhotos
         heightPx.isAcceptableOrUnknown(data['height_px']!, _heightPxMeta),
       );
     }
+    if (data.containsKey('latitude')) {
+      context.handle(
+        _latitudeMeta,
+        latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta),
+      );
+    }
+    if (data.containsKey('longitude')) {
+      context.handle(
+        _longitudeMeta,
+        longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta),
+      );
+    }
     if (data.containsKey('taken_at')) {
       context.handle(
         _takenAtMeta,
@@ -24639,6 +24675,14 @@ class $MarkerPhotosTable extends MarkerPhotos
         DriftSqlType.int,
         data['${effectivePrefix}height_px'],
       ),
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      ),
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      ),
       takenAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}taken_at'],
@@ -24663,6 +24707,8 @@ class MarkerPhoto extends DataClass implements Insertable<MarkerPhoto> {
   final String? thumbnailPath;
   final int? widthPx;
   final int? heightPx;
+  final double? latitude;
+  final double? longitude;
   final DateTime takenAt;
   final DateTime createdAt;
   const MarkerPhoto({
@@ -24672,6 +24718,8 @@ class MarkerPhoto extends DataClass implements Insertable<MarkerPhoto> {
     this.thumbnailPath,
     this.widthPx,
     this.heightPx,
+    this.latitude,
+    this.longitude,
     required this.takenAt,
     required this.createdAt,
   });
@@ -24689,6 +24737,12 @@ class MarkerPhoto extends DataClass implements Insertable<MarkerPhoto> {
     }
     if (!nullToAbsent || heightPx != null) {
       map['height_px'] = Variable<int>(heightPx);
+    }
+    if (!nullToAbsent || latitude != null) {
+      map['latitude'] = Variable<double>(latitude);
+    }
+    if (!nullToAbsent || longitude != null) {
+      map['longitude'] = Variable<double>(longitude);
     }
     map['taken_at'] = Variable<DateTime>(takenAt);
     map['created_at'] = Variable<DateTime>(createdAt);
@@ -24709,6 +24763,12 @@ class MarkerPhoto extends DataClass implements Insertable<MarkerPhoto> {
       heightPx: heightPx == null && nullToAbsent
           ? const Value.absent()
           : Value(heightPx),
+      latitude: latitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(latitude),
+      longitude: longitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(longitude),
       takenAt: Value(takenAt),
       createdAt: Value(createdAt),
     );
@@ -24726,6 +24786,8 @@ class MarkerPhoto extends DataClass implements Insertable<MarkerPhoto> {
       thumbnailPath: serializer.fromJson<String?>(json['thumbnailPath']),
       widthPx: serializer.fromJson<int?>(json['widthPx']),
       heightPx: serializer.fromJson<int?>(json['heightPx']),
+      latitude: serializer.fromJson<double?>(json['latitude']),
+      longitude: serializer.fromJson<double?>(json['longitude']),
       takenAt: serializer.fromJson<DateTime>(json['takenAt']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -24740,6 +24802,8 @@ class MarkerPhoto extends DataClass implements Insertable<MarkerPhoto> {
       'thumbnailPath': serializer.toJson<String?>(thumbnailPath),
       'widthPx': serializer.toJson<int?>(widthPx),
       'heightPx': serializer.toJson<int?>(heightPx),
+      'latitude': serializer.toJson<double?>(latitude),
+      'longitude': serializer.toJson<double?>(longitude),
       'takenAt': serializer.toJson<DateTime>(takenAt),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
@@ -24752,6 +24816,8 @@ class MarkerPhoto extends DataClass implements Insertable<MarkerPhoto> {
     Value<String?> thumbnailPath = const Value.absent(),
     Value<int?> widthPx = const Value.absent(),
     Value<int?> heightPx = const Value.absent(),
+    Value<double?> latitude = const Value.absent(),
+    Value<double?> longitude = const Value.absent(),
     DateTime? takenAt,
     DateTime? createdAt,
   }) => MarkerPhoto(
@@ -24763,6 +24829,8 @@ class MarkerPhoto extends DataClass implements Insertable<MarkerPhoto> {
         : this.thumbnailPath,
     widthPx: widthPx.present ? widthPx.value : this.widthPx,
     heightPx: heightPx.present ? heightPx.value : this.heightPx,
+    latitude: latitude.present ? latitude.value : this.latitude,
+    longitude: longitude.present ? longitude.value : this.longitude,
     takenAt: takenAt ?? this.takenAt,
     createdAt: createdAt ?? this.createdAt,
   );
@@ -24776,6 +24844,8 @@ class MarkerPhoto extends DataClass implements Insertable<MarkerPhoto> {
           : this.thumbnailPath,
       widthPx: data.widthPx.present ? data.widthPx.value : this.widthPx,
       heightPx: data.heightPx.present ? data.heightPx.value : this.heightPx,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
       takenAt: data.takenAt.present ? data.takenAt.value : this.takenAt,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
@@ -24790,6 +24860,8 @@ class MarkerPhoto extends DataClass implements Insertable<MarkerPhoto> {
           ..write('thumbnailPath: $thumbnailPath, ')
           ..write('widthPx: $widthPx, ')
           ..write('heightPx: $heightPx, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
           ..write('takenAt: $takenAt, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -24804,6 +24876,8 @@ class MarkerPhoto extends DataClass implements Insertable<MarkerPhoto> {
     thumbnailPath,
     widthPx,
     heightPx,
+    latitude,
+    longitude,
     takenAt,
     createdAt,
   );
@@ -24817,6 +24891,8 @@ class MarkerPhoto extends DataClass implements Insertable<MarkerPhoto> {
           other.thumbnailPath == this.thumbnailPath &&
           other.widthPx == this.widthPx &&
           other.heightPx == this.heightPx &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude &&
           other.takenAt == this.takenAt &&
           other.createdAt == this.createdAt);
 }
@@ -24828,6 +24904,8 @@ class MarkerPhotosCompanion extends UpdateCompanion<MarkerPhoto> {
   final Value<String?> thumbnailPath;
   final Value<int?> widthPx;
   final Value<int?> heightPx;
+  final Value<double?> latitude;
+  final Value<double?> longitude;
   final Value<DateTime> takenAt;
   final Value<DateTime> createdAt;
   const MarkerPhotosCompanion({
@@ -24837,6 +24915,8 @@ class MarkerPhotosCompanion extends UpdateCompanion<MarkerPhoto> {
     this.thumbnailPath = const Value.absent(),
     this.widthPx = const Value.absent(),
     this.heightPx = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
     this.takenAt = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
@@ -24847,6 +24927,8 @@ class MarkerPhotosCompanion extends UpdateCompanion<MarkerPhoto> {
     this.thumbnailPath = const Value.absent(),
     this.widthPx = const Value.absent(),
     this.heightPx = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
     required DateTime takenAt,
     required DateTime createdAt,
   }) : markerId = Value(markerId),
@@ -24860,6 +24942,8 @@ class MarkerPhotosCompanion extends UpdateCompanion<MarkerPhoto> {
     Expression<String>? thumbnailPath,
     Expression<int>? widthPx,
     Expression<int>? heightPx,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
     Expression<DateTime>? takenAt,
     Expression<DateTime>? createdAt,
   }) {
@@ -24870,6 +24954,8 @@ class MarkerPhotosCompanion extends UpdateCompanion<MarkerPhoto> {
       if (thumbnailPath != null) 'thumbnail_path': thumbnailPath,
       if (widthPx != null) 'width_px': widthPx,
       if (heightPx != null) 'height_px': heightPx,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
       if (takenAt != null) 'taken_at': takenAt,
       if (createdAt != null) 'created_at': createdAt,
     });
@@ -24882,6 +24968,8 @@ class MarkerPhotosCompanion extends UpdateCompanion<MarkerPhoto> {
     Value<String?>? thumbnailPath,
     Value<int?>? widthPx,
     Value<int?>? heightPx,
+    Value<double?>? latitude,
+    Value<double?>? longitude,
     Value<DateTime>? takenAt,
     Value<DateTime>? createdAt,
   }) {
@@ -24892,6 +24980,8 @@ class MarkerPhotosCompanion extends UpdateCompanion<MarkerPhoto> {
       thumbnailPath: thumbnailPath ?? this.thumbnailPath,
       widthPx: widthPx ?? this.widthPx,
       heightPx: heightPx ?? this.heightPx,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
       takenAt: takenAt ?? this.takenAt,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -24918,6 +25008,12 @@ class MarkerPhotosCompanion extends UpdateCompanion<MarkerPhoto> {
     if (heightPx.present) {
       map['height_px'] = Variable<int>(heightPx.value);
     }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
     if (takenAt.present) {
       map['taken_at'] = Variable<DateTime>(takenAt.value);
     }
@@ -24936,6 +25032,8 @@ class MarkerPhotosCompanion extends UpdateCompanion<MarkerPhoto> {
           ..write('thumbnailPath: $thumbnailPath, ')
           ..write('widthPx: $widthPx, ')
           ..write('heightPx: $heightPx, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
           ..write('takenAt: $takenAt, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -40427,6 +40525,8 @@ typedef $$MarkerPhotosTableCreateCompanionBuilder =
       Value<String?> thumbnailPath,
       Value<int?> widthPx,
       Value<int?> heightPx,
+      Value<double?> latitude,
+      Value<double?> longitude,
       required DateTime takenAt,
       required DateTime createdAt,
     });
@@ -40438,6 +40538,8 @@ typedef $$MarkerPhotosTableUpdateCompanionBuilder =
       Value<String?> thumbnailPath,
       Value<int?> widthPx,
       Value<int?> heightPx,
+      Value<double?> latitude,
+      Value<double?> longitude,
       Value<DateTime> takenAt,
       Value<DateTime> createdAt,
     });
@@ -40497,6 +40599,16 @@ class $$MarkerPhotosTableFilterComposer
 
   ColumnFilters<int> get heightPx => $composableBuilder(
     column: $table.heightPx,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get longitude => $composableBuilder(
+    column: $table.longitude,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -40568,6 +40680,16 @@ class $$MarkerPhotosTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get takenAt => $composableBuilder(
     column: $table.takenAt,
     builder: (column) => ColumnOrderings(column),
@@ -40627,6 +40749,12 @@ class $$MarkerPhotosTableAnnotationComposer
 
   GeneratedColumn<int> get heightPx =>
       $composableBuilder(column: $table.heightPx, builder: (column) => column);
+
+  GeneratedColumn<double> get latitude =>
+      $composableBuilder(column: $table.latitude, builder: (column) => column);
+
+  GeneratedColumn<double> get longitude =>
+      $composableBuilder(column: $table.longitude, builder: (column) => column);
 
   GeneratedColumn<DateTime> get takenAt =>
       $composableBuilder(column: $table.takenAt, builder: (column) => column);
@@ -40692,6 +40820,8 @@ class $$MarkerPhotosTableTableManager
                 Value<String?> thumbnailPath = const Value.absent(),
                 Value<int?> widthPx = const Value.absent(),
                 Value<int?> heightPx = const Value.absent(),
+                Value<double?> latitude = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
                 Value<DateTime> takenAt = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => MarkerPhotosCompanion(
@@ -40701,6 +40831,8 @@ class $$MarkerPhotosTableTableManager
                 thumbnailPath: thumbnailPath,
                 widthPx: widthPx,
                 heightPx: heightPx,
+                latitude: latitude,
+                longitude: longitude,
                 takenAt: takenAt,
                 createdAt: createdAt,
               ),
@@ -40712,6 +40844,8 @@ class $$MarkerPhotosTableTableManager
                 Value<String?> thumbnailPath = const Value.absent(),
                 Value<int?> widthPx = const Value.absent(),
                 Value<int?> heightPx = const Value.absent(),
+                Value<double?> latitude = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
                 required DateTime takenAt,
                 required DateTime createdAt,
               }) => MarkerPhotosCompanion.insert(
@@ -40721,6 +40855,8 @@ class $$MarkerPhotosTableTableManager
                 thumbnailPath: thumbnailPath,
                 widthPx: widthPx,
                 heightPx: heightPx,
+                latitude: latitude,
+                longitude: longitude,
                 takenAt: takenAt,
                 createdAt: createdAt,
               ),
