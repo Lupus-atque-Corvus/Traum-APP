@@ -3197,15 +3197,4 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get mapAddPhoto => 'Foto hinzufügen';
-
-  @override
-  String get mapStitchHint =>
-      'Fotos sollten 30% überlappen, gleiche Belichtung, horizontal.';
-
-  @override
-  String get mapStitchProcessing => 'Panorama wird berechnet...';
-
-  @override
-  String get mapStitchFailed =>
-      'Konnte nicht zusammengefügt werden — mehr Überlappung nötig.';
 }

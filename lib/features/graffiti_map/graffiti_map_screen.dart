@@ -55,8 +55,6 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
         ? ref.watch(activeMarkersProvider)
         : ref.watch(markerSearchProvider(_query));
     final hasRating = collectionInfo.valueOrNull?.hasRating ?? false;
-    final isGraffiti =
-        (collectionInfo.valueOrNull?.iconName ?? 'spray') == 'spray';
 
     final all = markersAsync.valueOrNull ?? const [];
     final filtered = hashtagFilter == null
@@ -242,12 +240,6 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                   label: 'Import',
                   onTap: () => _capturePhoto(ImageSource.gallery),
                 ),
-                if (isGraffiti)
-                  _actionButton(
-                    icon: Icons.auto_awesome_mosaic_outlined,
-                    label: 'Stitch',
-                    onTap: () => context.go('/graffitimap/stitch'),
-                  ),
               ],
             ),
           ),
