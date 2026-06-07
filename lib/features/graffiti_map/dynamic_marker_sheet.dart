@@ -127,6 +127,8 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
         photoPath: r.photoPath,
         widthPx: Value(dims?.width),
         heightPx: Value(dims?.height),
+        latitude: Value(r.latitude),
+        longitude: Value(r.longitude),
         takenAt: r.takenAt,
         createdAt: DateTime.now(),
       ));

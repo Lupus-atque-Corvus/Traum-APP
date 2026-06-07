@@ -136,6 +136,8 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
       photoPath: result.photoPath,
       widthPx: Value(dims?.width),
       heightPx: Value(dims?.height),
+      latitude: Value(result.latitude),
+      longitude: Value(result.longitude),
       takenAt: result.takenAt,
       createdAt: DateTime.now(),
     ));
