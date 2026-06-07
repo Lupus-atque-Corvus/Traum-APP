@@ -5,6 +5,7 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 import '../../core/theme/colors.dart';
@@ -55,8 +56,6 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
         ? ref.watch(activeMarkersProvider)
         : ref.watch(markerSearchProvider(_query));
     final hasRating = collectionInfo.valueOrNull?.hasRating ?? false;
-    final isGraffiti =
-        (collectionInfo.valueOrNull?.iconName ?? 'spray') == 'spray';
 
     final all = markersAsync.valueOrNull ?? const [];
     final filtered = hashtagFilter == null
@@ -93,40 +92,30 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
               interactionOptions: const InteractionOptions(
                 flags: InteractiveFlag.all,
                 // Zoom und Drehung schließen sich pro Geste gegenseitig aus:
-                // Wer zuerst die Schwelle überschreitet, gewinnt — so dreht
-                // sich die Karte beim Zoomen nicht versehentlich mit.
+                // Wer zuerst die Schwelle überschreitet, gewinnt. Höhere
+                // Dreh-Schwelle + niedrigere Zoom-Schwelle = Zoom gewinnt
+                // leichter, Übergänge wirken weicher.
                 enableMultiFingerGestureRace: true,
+                rotationThreshold: 35.0,
+                pinchZoomThreshold: 0.3,
               ),
               onPositionChanged: (camera, hasGesture) {
                 if (camera.rotation != _rotation) {
                   setState(() => _rotation = camera.rotation);
                 }
               },
+              onLongPress: (_, latlng) => _createPointAt(latlng),
             ),
             children: [
-              ...tileUrlTemplatesFor(viewMode).map((url) {
-                if (mapModeUsesDarkFilter(viewMode)) {
-                  return TileLayer(
-                    urlTemplate: url,
-                    userAgentPackageName: 'com.traum.app',
-                    tileBounds: _worldBounds,
-                    tileBuilder: (context, widget, tile) => ColorFiltered(
-                      colorFilter: const ColorFilter.matrix([
-                        -0.6, 0, 0, 0, 255, //
-                        0, -0.6, 0, 0, 255, //
-                        0, 0, -0.6, 0, 255, //
-                        0, 0, 0, 1, 0, //
-                      ]),
-                      child: widget,
-                    ),
-                  );
-                }
-                return TileLayer(
+              ...tileUrlTemplatesFor(viewMode).map(
+                (url) => TileLayer(
                   urlTemplate: url,
                   userAgentPackageName: 'com.traum.app',
+                  subdomains: const ['a', 'b', 'c', 'd'],
+                  retinaMode: RetinaMode.isHighDensity(context),
                   tileBounds: _worldBounds,
-                );
-              }),
+                ),
+              ),
               MarkerClusterLayerWidget(
                 options: MarkerClusterLayerOptions(
                   maxClusterRadius: 50,
@@ -229,11 +218,12 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
             ),
           ),
 
-          // Aktions-Buttons unten
+          // Aktions-Buttons unten (nah an der Navbar; der Screen ist bereits
+          // durch TraumScaffold über der Navbar eingerückt)
           Positioned(
             left: 16,
             right: 16,
-            bottom: MediaQuery.of(context).padding.bottom + 16,
+            bottom: 12,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -253,12 +243,11 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                   label: 'Import',
                   onTap: () => _capturePhoto(ImageSource.gallery),
                 ),
-                if (isGraffiti)
-                  _actionButton(
-                    icon: Icons.auto_awesome_mosaic_outlined,
-                    label: 'Stitch',
-                    onTap: () => context.go('/graffitimap/stitch'),
-                  ),
+                _actionButton(
+                  icon: Icons.add_location_alt_outlined,
+                  label: 'Ort',
+                  onTap: () => _createPointAt(_mapController.camera.center),
+                ),
               ],
             ),
           ),
@@ -266,7 +255,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
           // Kompass (nur bei gedrehter Karte) + Standort-Button
           Positioned(
             right: 16,
-            bottom: MediaQuery.of(context).padding.bottom + 86,
+            bottom: 82,
             child: Column(
               children: [
                 if (_rotation != 0) ...[
@@ -489,6 +478,42 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     ref.invalidate(allHashtagsProvider);
   }
 
+  /// Erstellt einen Punkt ohne Foto am gegebenen Ort. Fotos können später
+  /// im Detail-Screen hinzugefügt werden.
+  Future<void> _createPointAt(LatLng point) async {
+    final id = ref.read(activeCollectionProvider);
+    final collections = await ref.read(mapCollectionsDaoProvider).getAll();
+    if (collections.isEmpty) return;
+    final collection = collections.firstWhere(
+      (c) => c.id == id,
+      orElse: () => collections.first,
+    );
+    String? locationName;
+    try {
+      final p =
+          await placemarkFromCoordinates(point.latitude, point.longitude);
+      if (p.isNotEmpty) {
+        locationName = [p.first.locality, p.first.country]
+            .where((s) => s != null && s.isNotEmpty)
+            .join(', ');
+      }
+    } catch (_) {}
+    if (!mounted) return;
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => DynamicMarkerSheet(
+        collection: collection,
+        latitude: point.latitude,
+        longitude: point.longitude,
+        locationName: locationName,
+      ),
+    );
+    ref.invalidate(activeMarkersProvider);
+    ref.invalidate(allHashtagsProvider);
+  }
+
   void _showMapSwitcher(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -558,10 +583,23 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                           fontSize: 12,
                         ),
                       ),
-                      trailing: active == c.id
-                          ? const Icon(Icons.check_circle,
-                              color: TraumColors.cyanBlue)
-                          : null,
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (active == c.id)
+                            const Icon(Icons.check_circle,
+                                color: TraumColors.cyanBlue),
+                          IconButton(
+                            icon: const Icon(Icons.edit_outlined,
+                                color: TraumColors.onBackgroundMuted),
+                            tooltip: 'Karte bearbeiten',
+                            onPressed: () {
+                              Navigator.pop(ctx);
+                              context.go('/graffitimap/edit/${c.id}');
+                            },
+                          ),
+                        ],
+                      ),
                       onTap: () {
                         ref.read(activeCollectionProvider.notifier).state =
                             c.id;

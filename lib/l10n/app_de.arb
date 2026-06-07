@@ -1322,8 +1322,5 @@
   "mapAddToExisting": "Zu bestehendem hinzufügen",
   "mapTowerName": "Name",
   "mapRating": "Bewertung",
-  "mapAddPhoto": "Foto hinzufügen",
-  "mapStitchHint": "Fotos sollten 30% überlappen, gleiche Belichtung, horizontal.",
-  "mapStitchProcessing": "Panorama wird berechnet...",
-  "mapStitchFailed": "Konnte nicht zusammengefügt werden — mehr Überlappung nötig."
+  "mapAddPhoto": "Foto hinzufügen"
 }

@@ -1322,8 +1322,5 @@
   "mapAddToExisting": "Add to existing",
   "mapTowerName": "Name",
   "mapRating": "Rating",
-  "mapAddPhoto": "Add photo",
-  "mapStitchHint": "Photos should overlap 30%, same exposure, horizontal.",
-  "mapStitchProcessing": "Computing panorama...",
-  "mapStitchFailed": "Could not stitch — more overlap needed."
+  "mapAddPhoto": "Add photo"
 }

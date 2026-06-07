@@ -228,6 +228,7 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                   color: TraumColors.onBackground),
               color: TraumColors.surfaceVariant,
               onSelected: (v) {
+                if (v == 'addphoto') _addPhoto();
                 if (v == 'share') _share();
                 if (v == 'location') {
                   context.push('/graffitimap/marker/${marker.id}/location');
@@ -235,6 +236,12 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                 if (v == 'delete') _delete();
               },
               itemBuilder: (_) => [
+                const PopupMenuItem(
+                    value: 'addphoto',
+                    child: Text('Foto hinzufügen',
+                        style: TextStyle(
+                            fontFamily: 'DMSans',
+                            color: TraumColors.onBackground))),
                 const PopupMenuItem(
                     value: 'share',
                     child: Text('Teilen',
@@ -306,15 +313,30 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                     ),
                   )
                 else
-                  Container(
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: TraumColors.surfaceVariant,
-                      borderRadius: BorderRadius.circular(16),
+                  GestureDetector(
+                    onTap: _addPhoto,
+                    child: Container(
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: TraumColors.surfaceVariant,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.add_a_photo_outlined,
+                                color: TraumColors.cyanBlue, size: 40),
+                            SizedBox(height: 8),
+                            Text('Foto hinzufügen',
+                                style: TextStyle(
+                                    fontFamily: 'DMSans',
+                                    color: TraumColors.cyanBlue,
+                                    fontSize: 13)),
+                          ],
+                        ),
+                      ),
                     ),
-                    child: const Center(
-                        child: Icon(Icons.image,
-                            color: TraumColors.cyanBlue, size: 40)),
                   ),
                 const SizedBox(height: 16),
 

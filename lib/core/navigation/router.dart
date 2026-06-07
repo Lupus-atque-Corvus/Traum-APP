@@ -44,8 +44,8 @@ import '../../features/graffiti_map/graffiti_map_screen.dart';
 import '../../features/graffiti_map/map_gallery_screen.dart';
 import '../../features/graffiti_map/marker_detail_screen.dart';
 import '../../features/graffiti_map/create_collection_screen.dart';
+import '../../features/graffiti_map/edit_collection_screen.dart';
 import '../../features/graffiti_map/edit_location_screen.dart';
-import '../../features/graffiti_map/photo_stitch_screen.dart';
 import '../../features/notes/notes_screen.dart';
 import '../../features/notes/note_detail_screen.dart';
 import '../../features/notes/notes_graph_screen.dart';
@@ -278,8 +278,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                 builder: (_, __) => const CreateCollectionScreen(),
               ),
               GoRoute(
-                path: 'stitch',
-                builder: (_, __) => const PhotoStitchScreen(),
+                path: 'edit/:id',
+                builder: (_, state) => EditCollectionScreen(
+                  collectionId: int.parse(state.pathParameters['id']!),
+                ),
               ),
             ],
           ),

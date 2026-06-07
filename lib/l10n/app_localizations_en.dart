@@ -3185,14 +3185,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapAddPhoto => 'Add photo';
-
-  @override
-  String get mapStitchHint =>
-      'Photos should overlap 30%, same exposure, horizontal.';
-
-  @override
-  String get mapStitchProcessing => 'Computing panorama...';
-
-  @override
-  String get mapStitchFailed => 'Could not stitch — more overlap needed.';
 }

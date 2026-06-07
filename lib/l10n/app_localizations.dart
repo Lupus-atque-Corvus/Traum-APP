@@ -6181,24 +6181,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Foto hinzufügen'**
   String get mapAddPhoto;
-
-  /// No description provided for @mapStitchHint.
-  ///
-  /// In de, this message translates to:
-  /// **'Fotos sollten 30% überlappen, gleiche Belichtung, horizontal.'**
-  String get mapStitchHint;
-
-  /// No description provided for @mapStitchProcessing.
-  ///
-  /// In de, this message translates to:
-  /// **'Panorama wird berechnet...'**
-  String get mapStitchProcessing;
-
-  /// No description provided for @mapStitchFailed.
-  ///
-  /// In de, this message translates to:
-  /// **'Konnte nicht zusammengefügt werden — mehr Überlappung nötig.'**
-  String get mapStitchFailed;
 }
 
 class _AppLocalizationsDelegate

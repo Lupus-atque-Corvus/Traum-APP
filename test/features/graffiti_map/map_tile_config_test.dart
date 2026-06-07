@@ -2,29 +2,28 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:traum/features/graffiti_map/map_tile_config.dart';
 
 void main() {
-  test('standard mode: one OSM url, dark filter, OSM attribution', () {
+  test('standard mode: CartoDB Voyager url + CARTO attribution', () {
     final urls = tileUrlTemplatesFor(MapViewMode.standard);
     expect(urls.length, 1);
-    expect(urls.first, contains('tile.openstreetmap.org'));
-    expect(mapModeUsesDarkFilter(MapViewMode.standard), isTrue);
+    expect(urls.first, contains('cartocdn.com'));
+    expect(urls.first, contains('voyager'));
     expect(mapModeAttribution(MapViewMode.standard), contains('OpenStreetMap'));
+    expect(mapModeAttribution(MapViewMode.standard), contains('CARTO'));
   });
 
-  test('satellite mode: one Esri imagery url, no dark filter, Esri attribution', () {
+  test('satellite mode: one Esri imagery url, Esri attribution', () {
     final urls = tileUrlTemplatesFor(MapViewMode.satellite);
     expect(urls.length, 1);
     expect(urls.first, contains('World_Imagery'));
     expect(urls.first, contains('{z}/{y}/{x}'));
-    expect(mapModeUsesDarkFilter(MapViewMode.satellite), isFalse);
     expect(mapModeAttribution(MapViewMode.satellite), contains('Esri'));
   });
 
-  test('hybrid mode: imagery base + label overlay, no dark filter', () {
+  test('hybrid mode: imagery base + label overlay', () {
     final urls = tileUrlTemplatesFor(MapViewMode.hybrid);
     expect(urls.length, 2);
     expect(urls[0], contains('World_Imagery'));
     expect(urls[1], contains('World_Boundaries_and_Places'));
-    expect(mapModeUsesDarkFilter(MapViewMode.hybrid), isFalse);
     expect(mapModeAttribution(MapViewMode.hybrid), contains('Esri'));
   });
 
