@@ -1,7 +1,11 @@
 import 'dart:io';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_cache/flutter_map_cache.dart';
+import 'package:http_cache_file_store/http_cache_file_store.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,6 +38,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
   final _searchFocus = FocusNode();
   String _query = '';
   double _rotation = 0;
+  CacheStore? _tileStore;
 
   static const _fallbackCenter = LatLng(51.1657, 10.4515); // Deutschland
 
@@ -43,6 +48,19 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     const LatLng(-85.0, -180.0),
     const LatLng(85.0, 180.0),
   );
+
+  @override
+  void initState() {
+    super.initState();
+    _initTileCache();
+  }
+
+  Future<void> _initTileCache() async {
+    final dir = await getApplicationCacheDirectory();
+    if (mounted) {
+      setState(() => _tileStore = FileCacheStore('${dir.path}/maptiles'));
+    }
+  }
 
   @override
   void dispose() {
@@ -119,6 +137,12 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                   subdomains: const ['a', 'b', 'c', 'd'],
                   retinaMode: RetinaMode.isHighDensity(context),
                   tileBounds: _worldBounds,
+                  tileProvider: _tileStore == null
+                      ? null
+                      : CachedTileProvider(
+                          store: _tileStore!,
+                          maxStale: const Duration(days: 30),
+                        ),
                 ),
               ),
               CurrentLocationLayer(
