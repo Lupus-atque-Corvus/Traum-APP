@@ -13,7 +13,9 @@ import 'map_visuals.dart';
 import 'map_widgets.dart';
 
 class CreateCollectionScreen extends ConsumerStatefulWidget {
-  const CreateCollectionScreen({super.key});
+  /// Wenn gesetzt, arbeitet der Screen im Bearbeiten-Modus.
+  final MapCollection? collection;
+  const CreateCollectionScreen({super.key, this.collection});
 
   @override
   ConsumerState<CreateCollectionScreen> createState() =>
@@ -29,6 +31,28 @@ class _CreateCollectionScreenState
   bool _multiPhoto = false;
   int _groupRadius = 50;
   final List<MapField> _selectedFields = [];
+
+  bool get _isEditing => widget.collection != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final c = widget.collection;
+    if (c != null) {
+      _nameController.text = c.name;
+      _selectedIcon = c.iconName;
+      _selectedColor = c.colorHex ?? '3DD68C';
+      _hasRating = c.hasRating;
+      _multiPhoto = c.multiPhoto;
+      try {
+        final cfg = jsonDecode(c.fieldConfig) as Map<String, dynamic>;
+        final gr = cfg['groupRadius'];
+        if (gr is num) _groupRadius = gr.toInt();
+        _selectedFields.addAll((cfg['fields'] as List? ?? [])
+            .map((f) => MapField.fromJson(f as Map<String, dynamic>)));
+      } catch (_) {}
+    }
+  }
 
   @override
   void dispose() {
@@ -69,7 +93,7 @@ class _CreateCollectionScreenState
     if (field != null) setState(() => _selectedFields.add(field));
   }
 
-  Future<void> _create() async {
+  Future<void> _save() async {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -84,16 +108,31 @@ class _CreateCollectionScreenState
       'fields': _selectedFields.map((f) => f.toJson()).toList(),
     });
     final dao = ref.read(mapCollectionsDaoProvider);
-    await dao.insert(MapCollectionsCompanion.insert(
-      name: name,
-      iconName: _selectedIcon,
-      colorHex: Value(_selectedColor),
-      hasRating: Value(_hasRating),
-      multiPhoto: Value(_multiPhoto),
-      fieldConfig: Value(config),
-      sortOrder: Value(await dao.nextSortOrder()),
-      createdAt: DateTime.now(),
-    ));
+    final existing = widget.collection;
+    if (existing != null) {
+      await dao.updateCollection(existing.copyWith(
+        name: name,
+        iconName: _selectedIcon,
+        colorHex: Value(_selectedColor),
+        hasRating: _hasRating,
+        multiPhoto: _multiPhoto,
+        fieldConfig: config,
+      ));
+      ref.invalidate(collectionByIdProvider(existing.id));
+      ref.invalidate(activeCollectionInfoProvider);
+      ref.invalidate(activeMarkersProvider);
+    } else {
+      await dao.insert(MapCollectionsCompanion.insert(
+        name: name,
+        iconName: _selectedIcon,
+        colorHex: Value(_selectedColor),
+        hasRating: Value(_hasRating),
+        multiPhoto: Value(_multiPhoto),
+        fieldConfig: Value(config),
+        sortOrder: Value(await dao.nextSortOrder()),
+        createdAt: DateTime.now(),
+      ));
+    }
     ref.invalidate(mapCollectionsProvider);
     if (mounted) context.pop();
   }
@@ -110,8 +149,8 @@ class _CreateCollectionScreenState
           icon: const Icon(Icons.arrow_back, color: TraumColors.onBackground),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Neue Karte erstellen',
-            style: TextStyle(
+        title: Text(_isEditing ? 'Karte bearbeiten' : 'Neue Karte erstellen',
+            style: const TextStyle(
                 fontFamily: 'DMSans',
                 color: TraumColors.onBackground,
                 fontWeight: FontWeight.w700)),
@@ -119,55 +158,57 @@ class _CreateCollectionScreenState
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
         children: [
-          _sectionLabel('Vorlage wählen'),
-          const SizedBox(height: 8),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: 2.4,
-            children: MapTemplates.all.map((t) {
-              final c = colorFromHex(t.colorHex);
-              return GestureDetector(
-                onTap: () => _applyTemplate(t),
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: TraumColors.surface,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                        color: c.withValues(alpha: 0.4), width: 1),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 38,
-                        height: 38,
-                        decoration: BoxDecoration(
-                          color: c.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(10),
+          if (!_isEditing) ...[
+            _sectionLabel('Vorlage wählen'),
+            const SizedBox(height: 8),
+            GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 2.4,
+              children: MapTemplates.all.map((t) {
+                final c = colorFromHex(t.colorHex);
+                return GestureDetector(
+                  onTap: () => _applyTemplate(t),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: TraumColors.surface,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                          color: c.withValues(alpha: 0.4), width: 1),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 38,
+                          height: 38,
+                          decoration: BoxDecoration(
+                            color: c.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Icon(mapCollectionIcon(t.iconName),
+                              color: c, size: 20),
                         ),
-                        child: Icon(mapCollectionIcon(t.iconName),
-                            color: c, size: 20),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(t.name,
-                            style: const TextStyle(
-                                fontFamily: 'DMSans',
-                                color: TraumColors.onBackground,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13)),
-                      ),
-                    ],
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(t.name,
+                              style: const TextStyle(
+                                  fontFamily: 'DMSans',
+                                  color: TraumColors.onBackground,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13)),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 20),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+          ],
 
           _sectionLabel('Name'),
           const SizedBox(height: 8),
@@ -269,24 +310,33 @@ class _CreateCollectionScreenState
                   fontSize: 12),
             ),
             const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: [25, 50, 100, 200].map((m) {
-                final sel = _groupRadius == m;
-                return ChoiceChip(
-                  label: Text('$m m'),
-                  selected: sel,
-                  labelStyle: TextStyle(
-                    fontFamily: 'DMSans',
-                    color: sel ? TraumColors.cyanBlue : TraumColors.onBackgroundMuted,
+            Row(
+              children: [
+                Expanded(
+                  child: Slider(
+                    value: _groupRadius.toDouble().clamp(10, 200).toDouble(),
+                    min: 10,
+                    max: 200,
+                    divisions: 38, // 5-m-Schritte
+                    label: '$_groupRadius m',
+                    activeColor: accent,
+                    onChanged: (v) =>
+                        setState(() => _groupRadius = v.round()),
                   ),
-                  backgroundColor: TraumColors.surface,
-                  selectedColor: TraumColors.cyanDim,
-                  side: BorderSide(
-                      color: sel ? TraumColors.cyanBlue : Colors.transparent),
-                  onSelected: (_) => setState(() => _groupRadius = m),
-                );
-              }).toList(),
+                ),
+                SizedBox(
+                  width: 56,
+                  child: Text(
+                    '$_groupRadius m',
+                    textAlign: TextAlign.end,
+                    style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        color: TraumColors.onBackground,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13),
+                  ),
+                ),
+              ],
             ),
           ],
           const SizedBox(height: 12),
@@ -342,11 +392,11 @@ class _CreateCollectionScreenState
               borderRadius: BorderRadius.circular(14),
             ),
             child: TextButton(
-              onPressed: _create,
+              onPressed: _save,
               style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16)),
-              child: const Text('Karte erstellen',
-                  style: TextStyle(
+              child: Text(_isEditing ? 'Speichern' : 'Karte erstellen',
+                  style: const TextStyle(
                       fontFamily: 'DMSans',
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
