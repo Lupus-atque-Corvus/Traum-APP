@@ -31,6 +31,13 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
 
   static const _fallbackCenter = LatLng(51.1657, 10.4515); // Deutschland
 
+  // Echte Weltgrenzen — verhindert das mehrfache Kacheln der Welt beim
+  // Rauszoomen und hält die Karte im gültigen Bereich.
+  static final _worldBounds = LatLngBounds(
+    const LatLng(-85.0, -180.0),
+    const LatLng(85.0, 180.0),
+  );
+
   @override
   void dispose() {
     _mapController.dispose();
@@ -80,6 +87,9 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
             options: MapOptions(
               initialCenter: initialCenter,
               initialZoom: withCoords.isNotEmpty ? 12 : 5,
+              minZoom: 3.0,
+              maxZoom: 18,
+              cameraConstraint: CameraConstraint.contain(bounds: _worldBounds),
               interactionOptions: const InteractionOptions(
                 flags: InteractiveFlag.all,
                 // Zoom und Drehung schließen sich pro Geste gegenseitig aus:
@@ -99,6 +109,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                   return TileLayer(
                     urlTemplate: url,
                     userAgentPackageName: 'com.traum.app',
+                    tileBounds: _worldBounds,
                     tileBuilder: (context, widget, tile) => ColorFiltered(
                       colorFilter: const ColorFilter.matrix([
                         -0.6, 0, 0, 0, 255, //
@@ -113,6 +124,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                 return TileLayer(
                   urlTemplate: url,
                   userAgentPackageName: 'com.traum.app',
+                  tileBounds: _worldBounds,
                 );
               }),
               MarkerClusterLayerWidget(
@@ -221,7 +233,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
           Positioned(
             left: 16,
             right: 16,
-            bottom: MediaQuery.of(context).padding.bottom + 78,
+            bottom: MediaQuery.of(context).padding.bottom + 16,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -254,7 +266,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
           // Kompass (nur bei gedrehter Karte) + Standort-Button
           Positioned(
             right: 16,
-            bottom: MediaQuery.of(context).padding.bottom + 138,
+            bottom: MediaQuery.of(context).padding.bottom + 86,
             child: Column(
               children: [
                 if (_rotation != 0) ...[
