@@ -19,6 +19,9 @@ class MapCollectionsDao extends DatabaseAccessor<TraumDatabase>
   Future<int> insert(MapCollectionsCompanion c) =>
       into(mapCollections).insert(c);
 
+  Future<bool> updateCollection(MapCollection c) =>
+      update(mapCollections).replace(c);
+
   Future<void> deleteCollection(int id) =>
       (delete(mapCollections)..where((t) => t.id.equals(id))).go();
 
