@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
@@ -9,12 +10,15 @@ import 'package:go_router/go_router.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
+import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../data/database/traum_database.dart';
 import 'dynamic_marker_sheet.dart';
 import 'graffiti_map_provider.dart';
 import 'map_config.dart';
 import 'map_tile_config.dart';
 import 'map_visuals.dart';
+import 'megapixel_helper.dart';
 import 'photo_metadata_service.dart';
 
 class GraffitiMapScreen extends ConsumerStatefulWidget {
@@ -464,26 +468,59 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     );
     final result = await PhotoMetadataService.captureWithMetadata(source);
     if (result == null || !mounted) return;
-    int? attachId;
-    if (collection.multiPhoto && result.latitude != null) {
+    // Auto-Gruppieren: Foto im Radius eines vorhandenen Punktes direkt anhängen.
+    if (autoGroupFromConfig(collection.fieldConfig) &&
+        result.latitude != null) {
       final markers = await ref.read(mapMarkersDaoProvider).getByCollection(id);
       final pts = markers
           .where((m) => m.latitude != null)
           .map((m) => (m.id, m.latitude!, m.longitude!))
           .toList();
-      attachId = nearestMarkerWithin(
-          pts, result.latitude!, result.longitude!,
-          groupRadiusFromConfig(collection.fieldConfig));
+      final attachId = nearestMarkerWithin(pts, result.latitude!,
+          result.longitude!, groupRadiusFromConfig(collection.fieldConfig));
+      if (attachId != null) {
+        final db = ref.read(databaseProvider);
+        final dims = await readImageDimensions(result.photoPath);
+        final photoId =
+            await db.markerPhotosDao.insert(MarkerPhotosCompanion.insert(
+          markerId: attachId,
+          photoPath: result.photoPath,
+          widthPx: Value(dims?.width),
+          heightPx: Value(dims?.height),
+          latitude: Value(result.latitude),
+          longitude: Value(result.longitude),
+          takenAt: result.takenAt,
+          createdAt: DateTime.now(),
+        ));
+        ref.invalidate(activeMarkersProvider);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Zu vorhandenem Ort hinzugefügt'),
+              action: SnackBarAction(
+                label: 'Rückgängig',
+                onPressed: () async {
+                  await db.markerPhotosDao.deletePhoto(photoId);
+                  try {
+                    await File(result.photoPath).delete();
+                  } catch (_) {}
+                  ref.invalidate(activeMarkersProvider);
+                },
+              ),
+            ),
+          );
+        }
+        return;
+      }
     }
+
     if (!mounted) return;
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => DynamicMarkerSheet(
-          captureResult: result,
-          collection: collection,
-          initialAttachMarkerId: attachId),
+          captureResult: result, collection: collection),
     );
     ref.invalidate(activeMarkersProvider);
     ref.invalidate(allHashtagsProvider);
