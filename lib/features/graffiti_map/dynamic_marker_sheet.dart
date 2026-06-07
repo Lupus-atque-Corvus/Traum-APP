@@ -15,14 +15,24 @@ import 'photo_metadata_service.dart';
 /// Dynamisches Eintrag-Formular. Liest die Feld-Konfiguration der aktiven
 /// Karte und rendert die passenden Felder.
 class DynamicMarkerSheet extends ConsumerStatefulWidget {
-  final PhotoCaptureResult captureResult;
+  /// Foto-Aufnahme; null = Punkt ohne Foto (Standort kommt aus latitude/longitude).
+  final PhotoCaptureResult? captureResult;
   final MapCollection collection;
   final int? initialAttachMarkerId;
+
+  /// Nur relevant, wenn [captureResult] == null.
+  final double? latitude;
+  final double? longitude;
+  final String? locationName;
+
   const DynamicMarkerSheet({
     super.key,
-    required this.captureResult,
+    this.captureResult,
     required this.collection,
     this.initialAttachMarkerId,
+    this.latitude,
+    this.longitude,
+    this.locationName,
   });
 
   @override
@@ -86,8 +96,10 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
     if (_saving) return;
     setState(() => _saving = true);
     final r = widget.captureResult;
+    final lat = r?.latitude ?? widget.latitude;
+    final lon = r?.longitude ?? widget.longitude;
+    final locName = r?.locationName ?? widget.locationName;
     final db = ref.read(databaseProvider);
-    final dims = await readImageDimensions(r.photoPath);
 
     int markerId;
     if (_attachToMarkerId != null) {
@@ -96,9 +108,9 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
       markerId = await db.mapMarkersDao.insert(MapMarkersCompanion.insert(
         collectionId: widget.collection.id,
         title: Value(_titleController.text.trim()),
-        latitude: Value(r.latitude),
-        longitude: Value(r.longitude),
-        locationName: Value(r.locationName),
+        latitude: Value(lat),
+        longitude: Value(lon),
+        locationName: Value(locName),
         note: Value(_noteController.text.trim()),
         hashtags: Value(_hashtags.join(', ')),
         rating: Value(_hasRating && _rating > 0 ? _rating : null),
@@ -108,14 +120,17 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
       ));
     }
 
-    await db.markerPhotosDao.insert(MarkerPhotosCompanion.insert(
-      markerId: markerId,
-      photoPath: r.photoPath,
-      widthPx: Value(dims?.width),
-      heightPx: Value(dims?.height),
-      takenAt: r.takenAt,
-      createdAt: DateTime.now(),
-    ));
+    if (r != null) {
+      final dims = await readImageDimensions(r.photoPath);
+      await db.markerPhotosDao.insert(MarkerPhotosCompanion.insert(
+        markerId: markerId,
+        photoPath: r.photoPath,
+        widthPx: Value(dims?.width),
+        heightPx: Value(dims?.height),
+        takenAt: r.takenAt,
+        createdAt: DateTime.now(),
+      ));
+    }
 
     if (mounted) Navigator.pop(context);
   }
@@ -123,6 +138,10 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
   @override
   Widget build(BuildContext context) {
     final r = widget.captureResult;
+    final lat = r?.latitude ?? widget.latitude;
+    final lon = r?.longitude ?? widget.longitude;
+    final locName = r?.locationName ?? widget.locationName;
+    final takenAt = r?.takenAt ?? DateTime.now();
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
@@ -151,26 +170,28 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Foto-Vorschau + Megapixel
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Stack(
-                  children: [
-                    Image.file(
-                      File(r.photoPath),
-                      width: double.infinity,
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
-                    Positioned(
-                      right: 8,
-                      bottom: 8,
-                      child: _MegapixelFromFile(path: r.photoPath),
-                    ),
-                  ],
+              // Foto-Vorschau + Megapixel (nur wenn ein Foto vorhanden ist)
+              if (r != null) ...[
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Stack(
+                    children: [
+                      Image.file(
+                        File(r.photoPath),
+                        width: double.infinity,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      ),
+                      Positioned(
+                        right: 8,
+                        bottom: 8,
+                        child: _MegapixelFromFile(path: r.photoPath),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
+                const SizedBox(height: 12),
+              ],
               Row(
                 children: [
                   const Icon(Icons.place_outlined,
@@ -178,9 +199,9 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      r.locationName ??
-                          (r.latitude != null
-                              ? '${r.latitude!.toStringAsFixed(4)}, ${r.longitude!.toStringAsFixed(4)}'
+                      locName ??
+                          (lat != null
+                              ? '${lat.toStringAsFixed(4)}, ${lon!.toStringAsFixed(4)}'
                               : 'Kein Standort'),
                       style: const TextStyle(
                         fontFamily: 'DMSans',
@@ -190,7 +211,7 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                     ),
                   ),
                   Text(
-                    _formatDate(r.takenAt),
+                    _formatDate(takenAt),
                     style: const TextStyle(
                       fontFamily: 'DMSans',
                       color: TraumColors.onBackgroundMuted,
@@ -202,7 +223,8 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
               const SizedBox(height: 16),
 
               // Mehrfoto: neuer Eintrag oder zu bestehendem hinzufügen
-              if (_multiPhoto && _existing.isNotEmpty) ...[
+              // (nur sinnvoll, wenn ein Foto angehängt wird)
+              if (r != null && _multiPhoto && _existing.isNotEmpty) ...[
                 _label('Eintrag'),
                 const SizedBox(height: 6),
                 DropdownButtonFormField<int?>(
@@ -231,8 +253,8 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                 const SizedBox(height: 14),
               ],
 
-              // Titel (nur multiPhoto + neuer Eintrag)
-              if (_multiPhoto && _attachToMarkerId == null) ...[
+              // Name: bei multiPhoto-Neueintrag ODER bei fotolosem Punkt
+              if (_attachToMarkerId == null && (_multiPhoto || r == null)) ...[
                 _label('Name'),
                 const SizedBox(height: 6),
                 TextField(
