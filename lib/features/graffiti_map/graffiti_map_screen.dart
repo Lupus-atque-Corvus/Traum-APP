@@ -5,6 +5,7 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 import '../../core/theme/colors.dart';
@@ -103,6 +104,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                   setState(() => _rotation = camera.rotation);
                 }
               },
+              onLongPress: (_, latlng) => _createPointAt(latlng),
             ),
             children: [
               ...tileUrlTemplatesFor(viewMode).map(
@@ -239,6 +241,11 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                   icon: Icons.add_photo_alternate_outlined,
                   label: 'Import',
                   onTap: () => _capturePhoto(ImageSource.gallery),
+                ),
+                _actionButton(
+                  icon: Icons.add_location_alt_outlined,
+                  label: 'Ort',
+                  onTap: () => _createPointAt(_mapController.camera.center),
                 ),
               ],
             ),
@@ -465,6 +472,42 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
           captureResult: result,
           collection: collection,
           initialAttachMarkerId: attachId),
+    );
+    ref.invalidate(activeMarkersProvider);
+    ref.invalidate(allHashtagsProvider);
+  }
+
+  /// Erstellt einen Punkt ohne Foto am gegebenen Ort. Fotos können später
+  /// im Detail-Screen hinzugefügt werden.
+  Future<void> _createPointAt(LatLng point) async {
+    final id = ref.read(activeCollectionProvider);
+    final collections = await ref.read(mapCollectionsDaoProvider).getAll();
+    if (collections.isEmpty) return;
+    final collection = collections.firstWhere(
+      (c) => c.id == id,
+      orElse: () => collections.first,
+    );
+    String? locationName;
+    try {
+      final p =
+          await placemarkFromCoordinates(point.latitude, point.longitude);
+      if (p.isNotEmpty) {
+        locationName = [p.first.locality, p.first.country]
+            .where((s) => s != null && s.isNotEmpty)
+            .join(', ');
+      }
+    } catch (_) {}
+    if (!mounted) return;
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => DynamicMarkerSheet(
+        collection: collection,
+        latitude: point.latitude,
+        longitude: point.longitude,
+        locationName: locationName,
+      ),
     );
     ref.invalidate(activeMarkersProvider);
     ref.invalidate(allHashtagsProvider);
