@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.6.11 (2026-06-07) — Graffiti Map: UI-Korrekturen
+
+### Fehlerbehebung
+
+- **Zoom begrenzt:** Die Karte lässt sich nicht mehr so weit rauszoomen, dass sich die Welt mehrfach kachelt (minZoom + Weltgrenzen + begrenzte Kacheln)
+- **Aktions-Buttons tiefer:** Foto/Galerie/Import/Stitch sowie Standort-/Kompass-Button sitzen jetzt knapp über der Navigationsleiste statt zu weit oben
+- **Suchfeld:** Antippen der Lupe (gesamter Leistenbereich) fokussiert das Suchfeld
+
+---
+
 ## v0.6.10 (2026-06-07) — Graffiti Map: Karten-Steuerung
 
 ### Verbesserung
