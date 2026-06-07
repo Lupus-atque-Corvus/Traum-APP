@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.6.13 (2026-06-07) — Graffiti Map: Standortanzeige
+
+### Neu
+
+- **Eigener Standort auf der Karte:** Ein blauer Punkt zeigt jetzt live, wo du dich befindest — mit Genauigkeits-Kreis und Blickrichtung (wie in Google Maps)
+
+---
+
 ## v0.6.12 (2026-06-07) — Graffiti Map: Verbesserungen
 
 ### Neu
