@@ -104,29 +104,15 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
               },
             ),
             children: [
-              ...tileUrlTemplatesFor(viewMode).map((url) {
-                if (mapModeUsesDarkFilter(viewMode)) {
-                  return TileLayer(
-                    urlTemplate: url,
-                    userAgentPackageName: 'com.traum.app',
-                    tileBounds: _worldBounds,
-                    tileBuilder: (context, widget, tile) => ColorFiltered(
-                      colorFilter: const ColorFilter.matrix([
-                        -0.6, 0, 0, 0, 255, //
-                        0, -0.6, 0, 0, 255, //
-                        0, 0, -0.6, 0, 255, //
-                        0, 0, 0, 1, 0, //
-                      ]),
-                      child: widget,
-                    ),
-                  );
-                }
-                return TileLayer(
+              ...tileUrlTemplatesFor(viewMode).map(
+                (url) => TileLayer(
                   urlTemplate: url,
                   userAgentPackageName: 'com.traum.app',
+                  subdomains: const ['a', 'b', 'c', 'd'],
+                  retinaMode: RetinaMode.isHighDensity(context),
                   tileBounds: _worldBounds,
-                );
-              }),
+                ),
+              ),
               MarkerClusterLayerWidget(
                 options: MarkerClusterLayerOptions(
                   maxClusterRadius: 50,
