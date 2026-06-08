@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../core/components/components.dart';
 import '../../core/navigation/routes.dart';
-import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/providers/repository_providers.dart';
 import '../../core/theme/colors.dart';
@@ -16,14 +15,7 @@ import '../../data/database/traum_database.dart' show WaterLogsCompanion;
 import '../../features/budget/budget_providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../diary/widgets/diary_home_card.dart';
-
-final waterTodayProvider = StreamProvider.autoDispose<int>((ref) {
-  final today = DateTime.now();
-  return ref
-      .watch(nutritionDaoProvider)
-      .watchWaterForDate(today)
-      .map((logs) => logs.fold<int>(0, (sum, l) => sum + l.amountMl));
-});
+import '../nutrition/nutrition_providers.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
