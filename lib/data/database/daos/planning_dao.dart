@@ -24,6 +24,28 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
 
   Future<List<Appointment>> getAllAppointments() => select(appointments).get();
 
+  /// One-shot list of appointments for [date] (used by home widgets).
+  Future<List<Appointment>> getAppointmentsForDate(DateTime date) {
+    final start = DateTime(date.year, date.month, date.day);
+    final end = start.add(const Duration(days: 1));
+    return (select(appointments)
+          ..where((t) =>
+              t.startTime.isBiggerOrEqualValue(start) &
+              t.startTime.isSmallerThanValue(end))
+          ..orderBy([(t) => OrderingTerm.asc(t.startTime)]))
+        .get();
+  }
+
+  /// One-shot next upcoming appointment from [from] (used by home widgets).
+  Future<Appointment?> getNextAppointment([DateTime? from]) {
+    final ref = from ?? DateTime.now();
+    return (select(appointments)
+          ..where((t) => t.startTime.isBiggerOrEqualValue(ref))
+          ..orderBy([(t) => OrderingTerm.asc(t.startTime)])
+          ..limit(1))
+        .getSingleOrNull();
+  }
+
   Future<Appointment?> getAppointmentById(int id) =>
       (select(appointments)..where((t) => t.id.equals(id))).getSingleOrNull();
 
@@ -75,6 +97,10 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
   Stream<List<Todo>> watchAllTodos() =>
       (select(todos)..orderBy([(t) => OrderingTerm.desc(t.createdAt)])).watch();
 
+  /// One-shot list of all todos (used by home widgets).
+  Future<List<Todo>> getAllTodos() =>
+      (select(todos)..orderBy([(t) => OrderingTerm.desc(t.createdAt)])).get();
+
   Future<int> insertTodo(TodosCompanion entry) => into(todos).insert(entry);
 
   Future<bool> updateTodo(TodosCompanion entry) =>
@@ -113,6 +139,9 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
   // Habits
   Stream<List<Habit>> watchAllHabits() => select(habits).watch();
 
+  /// One-shot list of all habits (used by home widgets).
+  Future<List<Habit>> getAllHabits() => select(habits).get();
+
   Future<int> insertHabit(HabitsCompanion entry) => into(habits).insert(entry);
 
   Future<bool> updateHabit(HabitsCompanion entry) =>
@@ -130,6 +159,26 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
               t.logDate.isBiggerOrEqualValue(start) &
               t.logDate.isSmallerThanValue(end)))
         .watch();
+  }
+
+  /// One-shot completed habit logs for [date] (used by home widgets).
+  Future<List<HabitLog>> getHabitLogsForDate(DateTime date) {
+    final start = DateTime(date.year, date.month, date.day);
+    final end = start.add(const Duration(days: 1));
+    return (select(habitLogs)
+          ..where((t) =>
+              t.logDate.isBiggerOrEqualValue(start) &
+              t.logDate.isSmallerThanValue(end)))
+        .get();
+  }
+
+  /// One-shot habit logs from the last [days] days across all habits (used by
+  /// home widgets for streak computation).
+  Future<List<HabitLog>> getRecentHabitLogs({int days = 60}) {
+    final cutoff = DateTime.now().subtract(Duration(days: days));
+    final start = DateTime(cutoff.year, cutoff.month, cutoff.day);
+    return (select(habitLogs)..where((t) => t.logDate.isBiggerOrEqualValue(start)))
+        .get();
   }
 
   Future<int> insertHabitLog(HabitLogsCompanion entry) =>
