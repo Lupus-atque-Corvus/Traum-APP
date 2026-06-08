@@ -270,51 +270,8 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Fotos
-                if (photos.length == 1)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxHeight: 360),
-                      child: InteractiveViewer(
-                        child: Image.file(File(photos.first.photoPath),
-                            width: double.infinity, fit: BoxFit.cover),
-                      ),
-                    ),
-                  )
-                else if (photos.length > 1)
-                  SizedBox(
-                    height: 220,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: photos.length + 1,
-                      separatorBuilder: (_, __) => const SizedBox(width: 8),
-                      itemBuilder: (context, i) {
-                        if (i == photos.length) {
-                          return _AddPhotoTile(onTap: _addPhoto);
-                        }
-                        final p = photos[i];
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Stack(
-                            children: [
-                              Image.file(File(p.photoPath),
-                                  width: 180,
-                                  height: 220,
-                                  fit: BoxFit.cover),
-                              Positioned(
-                                right: 6,
-                                bottom: 6,
-                                child: MegapixelBadge(formatMegapixels(
-                                    p.widthPx, p.heightPx)),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                else
+                // Foto-Galerie
+                if (photos.isEmpty)
                   GestureDetector(
                     onTap: _addPhoto,
                     child: Container(
@@ -339,16 +296,10 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                         ),
                       ),
                     ),
-                  ),
+                  )
+                else
+                  _PhotoGallery(photos: photos, onAddPhoto: _addPhoto),
                 const SizedBox(height: 16),
-
-                if (photos.length == 1)
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: MegapixelBadge(formatMegapixels(
-                        photos.first.widthPx, photos.first.heightPx)),
-                  ),
-                if (photos.length == 1) const SizedBox(height: 12),
 
                 // Titel
                 if (marker.title.isNotEmpty)
@@ -638,38 +589,169 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
   }
 }
 
-class _AddPhotoTile extends StatelessWidget {
-  final VoidCallback onTap;
-  const _AddPhotoTile({required this.onTap});
+/// Wisch-Galerie mit Seiten-Zähler, Dots, Thumbnail-Leiste und „+ Foto".
+class _PhotoGallery extends StatefulWidget {
+  final List<MarkerPhoto> photos;
+  final VoidCallback onAddPhoto;
+  const _PhotoGallery({required this.photos, required this.onAddPhoto});
+
+  @override
+  State<_PhotoGallery> createState() => _PhotoGalleryState();
+}
+
+class _PhotoGalleryState extends State<_PhotoGallery> {
+  final _controller = PageController();
+  int _page = 0;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _openFullscreen(int index) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => Scaffold(
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          iconTheme: const IconThemeData(color: Colors.white),
+        ),
+        body: PageView.builder(
+          controller: PageController(initialPage: index),
+          itemCount: widget.photos.length,
+          itemBuilder: (_, i) => InteractiveViewer(
+            child: Center(child: Image.file(File(widget.photos[i].photoPath))),
+          ),
+        ),
+      ),
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 120,
-        height: 220,
-        decoration: BoxDecoration(
-          color: TraumColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-              color: TraumColors.cyanBlue.withValues(alpha: 0.4)),
+    final photos = widget.photos;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: SizedBox(
+            height: 320,
+            child: Stack(
+              children: [
+                PageView.builder(
+                  controller: _controller,
+                  itemCount: photos.length,
+                  onPageChanged: (i) => setState(() => _page = i),
+                  itemBuilder: (_, i) => GestureDetector(
+                    onTap: () => _openFullscreen(i),
+                    child: Image.file(
+                      File(photos[i].photoPath),
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.55),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text('${_page + 1} / ${photos.length}',
+                        style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600)),
+                  ),
+                ),
+                Positioned(
+                  right: 8,
+                  bottom: 8,
+                  child: MegapixelBadge(formatMegapixels(
+                      photos[_page].widthPx, photos[_page].heightPx)),
+                ),
+              ],
+            ),
+          ),
         ),
-        child: const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.add_a_photo_outlined,
-                color: TraumColors.cyanBlue, size: 28),
-            SizedBox(height: 8),
-            Text('Foto\nhinzufügen',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.cyanBlue,
-                    fontSize: 12)),
-          ],
+        if (photos.length > 1) ...[
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              photos.length,
+              (i) => Container(
+                width: 7,
+                height: 7,
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: i == _page
+                      ? TraumColors.cyanBlue
+                      : TraumColors.onBackgroundSubtle,
+                ),
+              ),
+            ),
+          ),
+        ],
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 64,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: photos.length + 1,
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            itemBuilder: (_, i) {
+              if (i == photos.length) {
+                return GestureDetector(
+                  onTap: widget.onAddPhoto,
+                  child: Container(
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: TraumColors.surfaceVariant,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          color: TraumColors.cyanBlue.withValues(alpha: 0.4)),
+                    ),
+                    child: const Icon(Icons.add_a_photo_outlined,
+                        color: TraumColors.cyanBlue, size: 22),
+                  ),
+                );
+              }
+              final selected = i == _page;
+              return GestureDetector(
+                onTap: () => _controller.jumpToPage(i),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    width: 64,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color:
+                            selected ? TraumColors.cyanBlue : Colors.transparent,
+                        width: 2,
+                      ),
+                    ),
+                    child: Image.file(
+                      File(photos[i].thumbnailPath ?? photos[i].photoPath),
+                      width: 64,
+                      height: 64,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
         ),
-      ),
+      ],
     );
   }
 }
