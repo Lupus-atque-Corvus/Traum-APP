@@ -49,6 +49,9 @@ class TrainingDao extends DatabaseAccessor<TraumDatabase>
   // Exercises
   Stream<List<Exercise>> watchAllExercises() => select(exercises).watch();
 
+  /// One-shot read of all exercises (no query-stream timer; used by home widgets).
+  Future<List<Exercise>> getAllExercisesOnce() => select(exercises).get();
+
   Stream<List<Exercise>> watchExercisesByMuscleGroup(String muscleGroup) =>
       (select(exercises)..where((t) => t.muscleGroup.equals(muscleGroup)))
           .watch();
