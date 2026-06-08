@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.6.14 (2026-06-08) — Graffiti Map: Gruppieren & Galerie
+
+### Neu
+
+- **Fotos automatisch gruppieren:** Eigener Schalter in den Karten-Einstellungen mit Radius-Slider (10–200 m). Fotos im Umkreis eines vorhandenen Punktes werden beim Aufnehmen automatisch angehängt (mit „Rückgängig")
+- **Live-Vorschau:** Beim Verschieben des Radius-Sliders zeigt sich sofort, wie viele Orte entstehen („N Fotos → M Orte")
+- **Umkehrbares Neugruppieren:** Fotos speichern jetzt ihre eigene Position — der Radius lässt sich nachträglich vergrößern (zusammenführen) oder verkleinern (aufsplitten)
+- **Foto-Galerie im Detail:** Durch die Fotos eines Punktes wischen (links/rechts), Seiten-Zähler, Punkte-Indikator, Thumbnail-Leiste zum Anspringen und Vollbild mit Zoom
+
+### Verbesserung
+
+- **Karten-Kacheln werden gecacht:** Einmal geladene Kartenbereiche bleiben offline/ohne erneuten Download sichtbar
+
+---
+
 ## v0.6.13 (2026-06-07) — Graffiti Map: Standortanzeige
 
 ### Neu
