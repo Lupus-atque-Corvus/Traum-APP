@@ -14,6 +14,18 @@ void main() {
     });
   });
 
+  group('autoGroupFromConfig', () {
+    test('reads autoGroup true', () {
+      expect(autoGroupFromConfig('{"autoGroup":true}'), isTrue);
+    });
+    test('defaults to false when missing', () {
+      expect(autoGroupFromConfig('{"rating":true}'), isFalse);
+    });
+    test('defaults to false on invalid JSON', () {
+      expect(autoGroupFromConfig('not json'), isFalse);
+    });
+  });
+
   group('nearestMarkerWithin', () {
     final pts = <(int, double, double)>[
       (1, 52.5200, 13.4050), // Berlin

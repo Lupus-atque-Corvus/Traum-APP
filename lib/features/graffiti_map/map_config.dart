@@ -11,6 +11,15 @@ double groupRadiusFromConfig(String fieldConfig) {
   return 50;
 }
 
+/// Whether photos should be auto-grouped by radius for this map (default false).
+bool autoGroupFromConfig(String fieldConfig) {
+  try {
+    final m = jsonDecode(fieldConfig) as Map<String, dynamic>;
+    return m['autoGroup'] == true;
+  } catch (_) {}
+  return false;
+}
+
 /// Returns the id of the nearest marker within [radiusMeters] of (lat,lon),
 /// or null if none. [markers] is a list of (id, lat, lon).
 int? nearestMarkerWithin(
