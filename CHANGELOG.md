@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.7.0 (2026-06-09) — Modularer Home-Screen
+
+### Neu
+
+- **Frei konfigurierbarer Home-Screen:** Der Startbildschirm ist jetzt ein Kachelraster, das du selbst zusammenstellst — wähle aus **68 Widgets** aus allen Bereichen (Allgemein, Gesundheit, Ernährung, Training, Planung, Budget, Tagebuch, Abstinenz, Substanzen, Periode, Notizen, Graffiti Map)
+- **Bearbeiten-Modus:** Stift-Button → Kacheln per Drag sortieren, Größe ändern (klein/breit/groß), entfernen, und über „+ Widget" neue aus dem nach Bereichen gruppierten Katalog (mit Suche) hinzufügen
+- **Drei Kachelgrößen:** klein (½ Breite), breit (volle Breite, flach), groß (volle Breite, hoch)
+- **Persönliches Layout** wird gespeichert; Tippen auf ein Widget öffnet den jeweiligen Bereich. Bestehende Nutzer starten mit dem bisherigen Home-Inhalt als Standard-Layout.
+
+---
+
 ## v0.6.14 (2026-06-08) — Graffiti Map: Gruppieren & Galerie
 
 ### Neu
