@@ -46,6 +46,10 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
   Stream<List<SavingsGoal>> watchAllSavingsGoals() =>
       select(savingsGoals).watch();
 
+  /// One-shot read of all savings goals (no query stream — safe for home tiles).
+  Future<List<SavingsGoal>> getAllSavingsGoals() =>
+      select(savingsGoals).get();
+
   Future<int> insertSavingsGoal(SavingsGoalsCompanion entry) =>
       into(savingsGoals).insert(entry);
 
@@ -87,6 +91,10 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
 
   Stream<List<Transaction>> watchRecurringTransactions() =>
       (select(transactions)..where((t) => t.isRecurring.equals(true))).watch();
+
+  /// One-shot read of recurring transactions (no query stream — safe for tiles).
+  Future<List<Transaction>> getRecurringTransactions() =>
+      (select(transactions)..where((t) => t.isRecurring.equals(true))).get();
 
   Future<List<BudgetCategory>> getAllCategories() =>
       select(budgetCategories).get();
