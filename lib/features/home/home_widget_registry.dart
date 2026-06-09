@@ -48,13 +48,11 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> homeWidgetRegistry = {
 HomeWidgetDescriptor? descriptorFor(HomeWidgetType type) =>
     homeWidgetRegistry[type];
 
-/// Nächste erlaubte Größe (zyklisch) für den Resize-Button.
+/// Nächste Größe (zyklisch über alle Größen) für den Resize-Button.
+/// Jedes Widget kann auf jede Größe gestellt werden.
 HomeTileSize nextSize(HomeWidgetType type, HomeTileSize current) {
-  final d = homeWidgetRegistry[type];
-  if (d == null || d.sizes.isEmpty) return current;
-  final ordered = HomeTileSize.values.where(d.sizes.contains).toList();
-  final i = ordered.indexOf(current);
-  return ordered[(i + 1) % ordered.length];
+  const all = HomeTileSize.values;
+  return all[(all.indexOf(current) + 1) % all.length];
 }
 
 const List<HomeWidgetGroup> homeWidgetGroupOrder = HomeWidgetGroup.values;

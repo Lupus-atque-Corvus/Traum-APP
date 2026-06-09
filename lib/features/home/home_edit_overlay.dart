@@ -95,6 +95,7 @@ class _HomeEditTileState extends State<HomeEditTile> {
     final wiggling = _wiggleChild(widget.child);
 
     return LongPressDraggable<int>(
+      delay: const Duration(milliseconds: 120),
       data: widget.index,
       feedback: Material(
         color: Colors.transparent,
