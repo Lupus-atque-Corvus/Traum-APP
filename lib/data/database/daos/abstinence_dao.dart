@@ -15,6 +15,12 @@ class AbstinenceDao extends DatabaseAccessor<TraumDatabase>
       (select(abstinenceTrackers)..where((t) => t.isActive.equals(true)))
           .watch();
 
+  /// One-shot read of all trackers (no stream timer) — used by home widgets.
+  Future<List<AbstinenceTracker>> getAllTrackers() =>
+      (select(abstinenceTrackers)
+            ..orderBy([(t) => OrderingTerm.asc(t.startDate)]))
+          .get();
+
   Future<int> insertTracker(AbstinenceTrackersCompanion entry) =>
       into(abstinenceTrackers).insert(entry);
 

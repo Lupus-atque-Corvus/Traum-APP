@@ -17,6 +17,11 @@ class MapMarkersDao extends DatabaseAccessor<TraumDatabase>
   Future<MapMarker?> getById(int id) =>
       (select(mapMarkers)..where((t) => t.id.equals(id))).getSingleOrNull();
 
+  /// One-shot read of all markers across collections — used by home widgets.
+  Future<List<MapMarker>> getAll() =>
+      (select(mapMarkers)..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
+          .get();
+
   Future<List<MapMarker>> search(int collectionId, String q) =>
       (select(mapMarkers)
             ..where((t) =>

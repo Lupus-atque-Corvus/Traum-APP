@@ -288,6 +288,15 @@ final notesDaoProvider = Provider<NotesDao>((ref) {
   return ref.watch(databaseProvider).notesDao;
 });
 
+// ─── Graffiti Map ───────────────────────────────────────────────────────────────
+final mapMarkersDaoProvider = Provider<MapMarkersDao>((ref) {
+  return ref.watch(databaseProvider).mapMarkersDao;
+});
+
+final markerPhotosDaoProvider = Provider<MarkerPhotosDao>((ref) {
+  return ref.watch(databaseProvider).markerPhotosDao;
+});
+
 // ─── Calendar Sync ────────────────────────────────────────────────────────────
 final calendarSyncServiceProvider = Provider<CalendarSyncService>((ref) {
   return CalendarSyncService(
