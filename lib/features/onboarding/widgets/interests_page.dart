@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/navigation/routes.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/radius.dart';
 import '../../../core/components/components.dart';
@@ -34,41 +35,6 @@ class InterestsPage extends StatelessWidget {
     ('graffitiMap', Icons.map_rounded),
     ('period', Icons.water_drop_rounded),
   ];
-
-  // Adaptation: l10n.substances, l10n.notes, l10n.diary, l10n.graffitiMap
-  // do not exist as standalone keys; we use the closest available equivalents.
-  String _label(String m, AppLocalizations l10n) {
-    switch (m) {
-      case 'training':
-        return l10n.training;
-      case 'health':
-        return l10n.health;
-      case 'nutrition':
-        return l10n.nutrition;
-      case 'supplements':
-        return l10n.supplements;
-      case 'medication':
-        return l10n.medication;
-      case 'substances':
-        return l10n.obSubstancesTitle; // no standalone l10n.substances key
-      case 'planning':
-        return l10n.planning;
-      case 'abstinence':
-        return l10n.abstinence;
-      case 'budget':
-        return l10n.budget;
-      case 'diary':
-        return l10n.diaryModuleLabel; // no standalone l10n.diary key
-      case 'notes':
-        return l10n.notes_title; // no standalone l10n.notes key
-      case 'graffitiMap':
-        return 'Graffiti Map'; // no standalone l10n.graffitiMap key
-      case 'period':
-        return l10n.period;
-      default:
-        return m;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +103,7 @@ class InterestsPage extends StatelessWidget {
                                   ? color
                                   : TraumColors.onBackgroundMuted),
                           const SizedBox(width: 8),
-                          Text(_label(module, l10n),
+                          Text(Routes.labelFor(module, l10n),
                               style: TextStyle(
                                   fontSize: 14,
                                   fontFamily: 'DMSans',
