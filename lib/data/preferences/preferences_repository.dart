@@ -80,6 +80,15 @@ class PreferencesRepository {
   int get workoutGoalPerWeek => _prefs.getInt('workout_goal_per_week') ?? 3;
   Future<void> setWorkoutGoalPerWeek(int v) => _prefs.setInt('workout_goal_per_week', v);
 
+  // Training-Profil (Onboarding)
+  String get trainingLevel => _prefs.getString('training_level') ?? 'beginner';
+  Future<void> setTrainingLevel(String v) =>
+      _prefs.setString('training_level', v);
+
+  String get trainingGoal => _prefs.getString('training_goal') ?? 'fitness';
+  Future<void> setTrainingGoal(String v) =>
+      _prefs.setString('training_goal', v);
+
   int get proteinGoalG => _prefs.getInt('protein_goal_g') ?? 150;
   Future<void> setProteinGoalG(int v) => _prefs.setInt('protein_goal_g', v);
 
