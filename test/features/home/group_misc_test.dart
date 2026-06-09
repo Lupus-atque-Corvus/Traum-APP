@@ -1,0 +1,51 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:drift/native.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:traum/core/providers/preferences_provider.dart';
+import 'package:traum/core/providers/database_provider.dart';
+import 'package:traum/data/database/traum_database.dart';
+import 'package:traum/features/home/home_tile.dart';
+import 'package:traum/features/home/home_widget_registry.dart';
+
+const _groups = {
+  HomeWidgetGroup.abstinence, HomeWidgetGroup.substances,
+  HomeWidgetGroup.period, HomeWidgetGroup.notes, HomeWidgetGroup.map,
+};
+
+void main() {
+  setUp(() => SharedPreferences.setMockInitialValues({}));
+
+  testWidgets('all misc widgets registered and build for each size',
+      (tester) async {
+    final prefs = await SharedPreferences.getInstance();
+    final db = TraumDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(db.close);
+    final types = HomeWidgetType.values
+        .where((t) => _groups.contains(homeWidgetRegistry[t]?.group))
+        .toList();
+    expect(types.length, 14);
+    for (final t in types) {
+      final d = homeWidgetRegistry[t]!;
+      for (final size in d.sizes) {
+        await tester.pumpWidget(ProviderScope(
+          overrides: [
+            sharedPreferencesProvider.overrideWithValue(prefs),
+            databaseProvider.overrideWithValue(db),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: Consumer(
+                builder: (ctx, ref, _) => SizedBox(
+                    width: 180, height: 180, child: d.builder(ctx, ref, size)),
+              ),
+            ),
+          ),
+        ));
+        await tester.pump();
+        expect(tester.takeException(), isNull, reason: '$t @ $size threw');
+      }
+    }
+  });
+}

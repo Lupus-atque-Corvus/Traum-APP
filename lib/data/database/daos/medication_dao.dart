@@ -14,6 +14,10 @@ class MedicationDao extends DatabaseAccessor<TraumDatabase>
   Stream<List<Medication>> watchActiveMedications() =>
       (select(medications)..where((t) => t.isActive.equals(true))).watch();
 
+  /// One-shot list of active medications (used by home widgets).
+  Future<List<Medication>> getActiveMedications() =>
+      (select(medications)..where((t) => t.isActive.equals(true))).get();
+
   Future<int> insertMedication(MedicationsCompanion entry) =>
       into(medications).insert(entry);
 

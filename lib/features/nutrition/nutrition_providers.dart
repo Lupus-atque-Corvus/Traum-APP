@@ -32,6 +32,16 @@ class DailyCalories {
 final selectedNutritionDateProvider =
     StateProvider<DateTime>((_) => DateTime.now());
 
+// ─── Water Today ──────────────────────────────────────────────────────────────
+
+final waterTodayProvider = StreamProvider.autoDispose<int>((ref) {
+  final today = DateTime.now();
+  return ref
+      .watch(nutritionDaoProvider)
+      .watchWaterForDate(today)
+      .map((logs) => logs.fold<int>(0, (sum, l) => sum + l.amountMl));
+});
+
 // ─── Today's Meals Grouped ───────────────────────────────────────────────────
 
 final todaysMealsProvider = FutureProvider.autoDispose
@@ -108,6 +118,70 @@ final allProductsProvider =
   final others =
       recent.where((p) => !customIds.contains(p.id)).toList();
   return [...custom, ...others];
+});
+
+// ─── Home Widget Helpers ────────────────────────────────────────────────────
+
+/// Today's meal entries (one-shot query, ordered asc by loggedAt).
+final todaysMealEntriesProvider =
+    FutureProvider.autoDispose<List<MealEntry>>((ref) {
+  final dateStr = formatDateStr(DateTime.now());
+  return ref.watch(mealEntriesDaoProvider).getForDate(dateStr);
+});
+
+/// Today's nutrition totals derived from today's meal entries.
+final todaysTotalsProvider =
+    FutureProvider.autoDispose<MacroSummary>((ref) async {
+  final entries = await ref.watch(todaysMealEntriesProvider.future);
+  if (entries.isEmpty) return MacroSummary.empty;
+  return MacroSummary(
+    calories: entries.fold(0.0, (s, e) => s + e.calories),
+    protein: entries.fold(0.0, (s, e) => s + e.protein),
+    carbs: entries.fold(0.0, (s, e) => s + e.carbs),
+    fat: entries.fold(0.0, (s, e) => s + e.fat),
+  );
+});
+
+/// Name + time of the most recent meal entry logged today.
+class LastMealInfo {
+  final String name;
+  final DateTime loggedAt;
+  const LastMealInfo({required this.name, required this.loggedAt});
+}
+
+final lastMealProvider =
+    FutureProvider.autoDispose<LastMealInfo?>((ref) async {
+  final entries = await ref.watch(todaysMealEntriesProvider.future);
+  if (entries.isEmpty) return null;
+  // Ordered asc by loggedAt → last element is most recent.
+  final latest = entries.last;
+  final product =
+      await ref.watch(foodProductsDaoProvider).getById(latest.productId);
+  return LastMealInfo(
+    name: product?.name ?? '—',
+    loggedAt: latest.loggedAt,
+  );
+});
+
+/// Count of supplements taken today (one-shot query).
+final supplementsTakenTodayProvider =
+    FutureProvider.autoDispose<int>((ref) {
+  return ref.watch(supplementDaoProvider).getTakenCountToday();
+});
+
+/// Today's total water in ml as a one-shot query. Unlike [waterTodayProvider]
+/// (a live drift `.watch()` stream used on the nutrition screen), this avoids a
+/// lingering query-stream close timer — safe for home widgets and tests.
+final waterTodaySnapshotProvider =
+    FutureProvider.autoDispose<int>((ref) async {
+  final logs = await ref
+      .watch(nutritionDaoProvider)
+      .getWaterLogsAfter(DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+      ));
+  return logs.fold<int>(0, (sum, l) => sum + l.amountMl);
 });
 
 // ─── Helper ───────────────────────────────────────────────────────────────────

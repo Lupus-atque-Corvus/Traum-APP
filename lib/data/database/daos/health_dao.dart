@@ -18,6 +18,10 @@ class HealthDao extends DatabaseAccessor<TraumDatabase> with _$HealthDaoMixin {
             ..limit(1))
           .getSingleOrNull();
 
+  Future<List<WeightLog>> getAllWeightLogs() =>
+      (select(weightLogs)..orderBy([(t) => OrderingTerm.desc(t.logDate)]))
+          .get();
+
   Future<int> insertWeightLog(WeightLogsCompanion entry) =>
       into(weightLogs).insert(entry);
 

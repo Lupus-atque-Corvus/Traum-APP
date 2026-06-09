@@ -25,6 +25,20 @@ class NotesDao extends DatabaseAccessor<TraumDatabase> with _$NotesDaoMixin {
   Future<List<Note>> getActiveNotes() =>
       (select(notes)..where((t) => t.deletedAt.isNull())).get();
 
+  /// One-shot read of active notes ordered by most-recently-updated — used by
+  /// home widgets (no stream timer).
+  Future<List<Note>> getRecentNotes(int limit) => (select(notes)
+        ..where((t) => t.deletedAt.isNull())
+        ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])
+        ..limit(limit))
+      .get();
+
+  /// One-shot read of pinned active notes — used by home widgets.
+  Future<List<Note>> getPinnedNotes() => (select(notes)
+        ..where((t) => t.deletedAt.isNull() & t.isPinned.equals(true))
+        ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]))
+      .get();
+
   Stream<List<Note>> watchNotesInFolder(int? folderId) {
     final q = select(notes)..where((t) => t.deletedAt.isNull());
     if (folderId == null) {

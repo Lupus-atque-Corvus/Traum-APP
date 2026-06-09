@@ -8,6 +8,11 @@ class MarkerPhotosDao extends DatabaseAccessor<TraumDatabase>
     with _$MarkerPhotosDaoMixin {
   MarkerPhotosDao(super.db);
 
+  /// One-shot read of all photos (most recent first) — used by home widgets.
+  Future<List<MarkerPhoto>> getAll() =>
+      (select(markerPhotos)..orderBy([(t) => OrderingTerm.desc(t.takenAt)]))
+          .get();
+
   Future<List<MarkerPhoto>> getByMarker(int markerId) =>
       (select(markerPhotos)
             ..where((t) => t.markerId.equals(markerId))

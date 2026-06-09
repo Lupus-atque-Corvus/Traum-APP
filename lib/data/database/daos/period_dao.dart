@@ -34,6 +34,14 @@ class PeriodDao extends DatabaseAccessor<TraumDatabase> with _$PeriodDaoMixin {
   Stream<List<CycleCalculation>> watchAllCalculations() =>
       select(cycleCalculations).watch();
 
+  /// One-shot read of the cycle calculation for a given period entry — used by
+  /// home widgets (no stream timer).
+  Future<CycleCalculation?> getCalculationForEntry(int periodEntryId) =>
+      (select(cycleCalculations)
+            ..where((t) => t.periodEntryId.equals(periodEntryId))
+            ..limit(1))
+          .getSingleOrNull();
+
   Future<int> insertCalculation(CycleCalculationsCompanion entry) =>
       into(cycleCalculations).insert(entry);
 
