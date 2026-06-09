@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.7.1 (2026-06-09) — Home: mehr Größen & flotterer Drag
+
+### Verbesserung
+
+- **Fünf Kachelgrößen:** klein (1×1), hoch (1×2), breit (2×1), groß (2×2) und sehr groß (2×3) — jedes Widget lässt sich frei auf jede Größe stellen (⤢ im Bearbeiten-Modus)
+- **Schnelleres Verschieben:** Beim Gedrückt-Halten startet das Ziehen jetzt deutlich früher (~120 ms statt 500 ms)
+
+---
+
 ## v0.7.0 (2026-06-09) — Modularer Home-Screen
 
 ### Neu
