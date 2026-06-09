@@ -34,8 +34,10 @@ class _HomeWidgetCatalogState extends State<_HomeWidgetCatalog> {
 
   String _sizeHint(HomeTileSize size) => switch (size) {
         HomeTileSize.small => '1×1',
+        HomeTileSize.tall => '1×2',
         HomeTileSize.wide => '2×1',
         HomeTileSize.large => '2×2',
+        HomeTileSize.xlarge => '2×3',
       };
 
   @override

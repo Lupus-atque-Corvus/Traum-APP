@@ -1,6 +1,15 @@
 import 'dart:convert';
 
-enum HomeTileSize { small, wide, large }
+enum HomeTileSize { small, tall, wide, large, xlarge }
+
+/// (crossAxisCellCount, mainAxisCellCount) für das 2-Spalten-StaggeredGrid.
+(int, int) tileCells(HomeTileSize size) => switch (size) {
+      HomeTileSize.small => (1, 1),
+      HomeTileSize.tall => (1, 2),
+      HomeTileSize.wide => (2, 1),
+      HomeTileSize.large => (2, 2),
+      HomeTileSize.xlarge => (2, 3),
+    };
 
 enum HomeWidgetGroup {
   general, health, nutrition, training, planning,

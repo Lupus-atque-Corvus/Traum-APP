@@ -134,10 +134,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   for (var i = 0; i < tiles.length; i++)
                     StaggeredGridTile.count(
-                      crossAxisCellCount:
-                          tiles[i].size == HomeTileSize.small ? 1 : 2,
-                      mainAxisCellCount:
-                          tiles[i].size == HomeTileSize.large ? 2 : 1,
+                      crossAxisCellCount: tileCells(tiles[i].size).$1,
+                      mainAxisCellCount: tileCells(tiles[i].size).$2,
                       child: Builder(
                         builder: (ctx) {
                           final d = descriptorFor(tiles[i].type);

@@ -35,4 +35,18 @@ void main() {
   test('HomeWidgetType has 68 values', () {
     expect(HomeWidgetType.values.length, 68);
   });
+
+  test('HomeTileSize has 5 values incl. tall and xlarge', () {
+    expect(HomeTileSize.values.length, 5);
+    expect(HomeTileSize.values.contains(HomeTileSize.tall), isTrue);
+    expect(HomeTileSize.values.contains(HomeTileSize.xlarge), isTrue);
+  });
+
+  test('tileCells maps each size to (cross, main)', () {
+    expect(tileCells(HomeTileSize.small), (1, 1));
+    expect(tileCells(HomeTileSize.tall), (1, 2));
+    expect(tileCells(HomeTileSize.wide), (2, 1));
+    expect(tileCells(HomeTileSize.large), (2, 2));
+    expect(tileCells(HomeTileSize.xlarge), (2, 3));
+  });
 }

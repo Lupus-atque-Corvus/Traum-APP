@@ -31,7 +31,7 @@ void main() {
     addTearDown(db.close);
     for (final t in HomeWidgetType.values) {
       final d = homeWidgetRegistry[t]!;
-      for (final size in d.sizes) {
+      for (final size in HomeTileSize.values) {
         await tester.pumpWidget(ProviderScope(
           overrides: [
             sharedPreferencesProvider.overrideWithValue(prefs),
