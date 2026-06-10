@@ -62,7 +62,7 @@ void main() {
       expect(normalizeDose(1000, 'µg', 'iron'), 1);
     });
 
-    test('µg-nutrient: mb→µg, µg→µg', () {
+    test('µg-nutrient: mg→µg, µg→µg', () {
       expect(normalizeDose(1, 'mg', 'vitD'), 1000);
       expect(normalizeDose(20, 'µg', 'vitD'), 20);
     });

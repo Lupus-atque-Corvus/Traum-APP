@@ -157,7 +157,7 @@ MicroNutrients supplementContribution({
   if (amount == null) return MicroNutrients.empty;
   final value = normalizeDose(amount, dosageUnit, nutrientKey);
   if (value == null) return MicroNutrients.empty;
-  return MicroNutrients({nutrientKey: value});
+  return MicroNutrients(Map.unmodifiable({nutrientKey: value}));
 }
 
 /// Baut die Panel-Mikros (vitC…potassium) aus einem OFF-`nutriments`-Map.
@@ -173,5 +173,5 @@ MicroNutrients offProductMicros(Map<String, dynamic> nutriments) {
     if (grams == null) continue;
     out[meta.key] = grams * meta.offFactor;
   }
-  return MicroNutrients(out);
+  return MicroNutrients(Map.unmodifiable(out));
 }
