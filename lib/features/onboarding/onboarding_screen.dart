@@ -19,6 +19,15 @@ import '../../core/utils/water_calculator.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import '../legal/legal_document_screen.dart';
+import '../home/home_layout_provider.dart';
+import 'onboarding_models.dart';
+import 'widgets/phase_progress_bar.dart';
+import 'widgets/interests_page.dart';
+import 'widgets/showcase_page.dart';
+import 'widgets/training_setup_page.dart';
+import 'widgets/abstinence_page.dart';
+import 'widgets/tabs_page.dart';
+import 'widgets/dashboard_teaser_page.dart';
 
 String _categoryLabel(String key, AppLocalizations l10n) {
   switch (key) {
@@ -96,6 +105,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   double _monthlyBudget = 1500;
   bool _periodTrackingEnabled = false;
 
+  final Set<String> _selectedModules = {};
+  String _trainingLevel = 'beginner';
+  String _trainingGoal = 'fitness';
+  int _trainingDays = 3;
+  List<String> _tabSlots = [];
+
+  bool _has(String m) => _selectedModules.contains(m);
+
   // Consents
   bool _consentPrivacy = false;
   bool _consentHealth = false;
@@ -118,27 +135,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   List<Widget> get _pages {
     final pages = <Widget>[
+      // Phase 1 · Basis
       _WelcomePage(onNext: _next),
       _ConsentPage(
-        consentPrivacy: _consentPrivacy,
-        consentHealth: _consentHealth,
-        consentTerms: _consentTerms,
-        consentDisclaimer: _consentDisclaimer,
+        consentPrivacy: _consentPrivacy, consentHealth: _consentHealth,
+        consentTerms: _consentTerms, consentDisclaimer: _consentDisclaimer,
         consentAge: _consentAge,
         onChanged: (p, h, t, d, a) => setState(() {
-          _consentPrivacy = p;
-          _consentHealth = h;
-          _consentTerms = t;
-          _consentDisclaimer = d;
-          _consentAge = a;
+          _consentPrivacy = p; _consentHealth = h; _consentTerms = t;
+          _consentDisclaimer = d; _consentAge = a;
         }),
-        canContinue: _allConsented,
-        onNext: _next,
+        canContinue: _allConsented, onNext: _next,
       ),
       _ProfilePage(
-        nameController: _nameController,
-        sex: _sex,
-        birthDate: _birthDate,
+        nameController: _nameController, sex: _sex, birthDate: _birthDate,
         unitSystem: _unitSystem,
         onSexChanged: (v) => setState(() => _sex = v),
         onUnitChanged: (v) => setState(() => _unitSystem = v),
@@ -146,66 +156,120 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         onNext: _next,
       ),
       _BodyPage(
-        heightCm: _heightCm,
-        weightKg: _weightKg,
-        weightGoalKg: _weightGoalKg,
-        stepsGoal: _stepsGoal,
-        unitSystem: _unitSystem ?? 'metric',
-        sex: _sex ?? 'male',
-        birthDate: _birthDate,
+        heightCm: _heightCm, weightKg: _weightKg, weightGoalKg: _weightGoalKg,
+        stepsGoal: _stepsGoal, unitSystem: _unitSystem ?? 'metric',
+        sex: _sex ?? 'male', birthDate: _birthDate,
         onHeightChanged: (v) => setState(() => _heightCm = v),
         onWeightChanged: (v) => setState(() => _weightKg = v),
         onGoalWeightChanged: (v) => setState(() => _weightGoalKg = v),
         onStepsChanged: (v) => setState(() => _stepsGoal = v),
         onNext: _next,
       ),
-      _NutritionPage(
-        kcalGoal: _kcalGoal,
-        proteinGoal: _proteinGoal,
-        onKcalChanged: (v) => setState(() => _kcalGoal = v),
-        onProteinChanged: (v) => setState(() => _proteinGoal = v),
+
+      // Phase 2 · Interessen
+      InterestsPage(
+        sex: _sex,
+        selected: _selectedModules,
+        onToggle: (m) => setState(() {
+          if (!_selectedModules.remove(m)) _selectedModules.add(m);
+        }),
         onNext: _next,
       ),
-      _SupplementsPage(onNext: _next),
-      _MedicationPage(onNext: _next),
-      _BudgetPage(
-        currencySymbol: _currencySymbol,
-        monthlyBudget: _monthlyBudget,
-        onCurrencyChanged: (v) => setState(() => _currencySymbol = v),
-        onBudgetChanged: (v) => setState(() => _monthlyBudget = v),
-        onNext: _next,
-        onSkip: _next,
-      ),
-      if (_sex == 'female')
+      if (_has('nutrition'))
+        _NutritionPage(
+          kcalGoal: _kcalGoal, proteinGoal: _proteinGoal,
+          onKcalChanged: (v) => setState(() => _kcalGoal = v),
+          onProteinChanged: (v) => setState(() => _proteinGoal = v),
+          onNext: _next,
+        ),
+      if (_has('training'))
+        TrainingSetupPage(
+          level: _trainingLevel, goal: _trainingGoal, daysPerWeek: _trainingDays,
+          onLevelChanged: (v) => setState(() => _trainingLevel = v),
+          onGoalChanged: (v) => setState(() => _trainingGoal = v),
+          onDaysChanged: (v) => setState(() => _trainingDays = v),
+          onNext: _next,
+        ),
+      if (_has('supplements')) _SupplementsPage(onNext: _next),
+      if (_has('medication')) _MedicationPage(onNext: _next),
+      if (_has('substances')) ShowcasePage(moduleKey: 'substances', onNext: _next),
+      if (_has('abstinence')) AbstinencePage(onNext: _next),
+      if (_sex == 'female' && _has('period'))
         _CyclePage(
-          avgCycleLength: _avgCycleLength,
-          avgPeriodLength: _avgPeriodLength,
+          avgCycleLength: _avgCycleLength, avgPeriodLength: _avgPeriodLength,
           lastPeriodStart: _lastPeriodStart,
           onCycleLengthChanged: (v) => setState(() => _avgCycleLength = v),
           onPeriodLengthChanged: (v) => setState(() => _avgPeriodLength = v),
           onLastPeriodChanged: (v) => setState(() => _lastPeriodStart = v),
-          onNext: () {
-            setState(() => _periodTrackingEnabled = true);
-            _next();
-          },
-          onSkip: () {
-            setState(() => _periodTrackingEnabled = false);
-            _next();
-          },
+          onNext: () { setState(() => _periodTrackingEnabled = true); _next(); },
+          onSkip: () { setState(() => _periodTrackingEnabled = false); _next(); },
         ),
-      _NavPage(sex: _sex, onNext: _next),
+      if (_has('budget'))
+        _BudgetPage(
+          currencySymbol: _currencySymbol, monthlyBudget: _monthlyBudget,
+          onCurrencyChanged: (v) => setState(() => _currencySymbol = v),
+          onBudgetChanged: (v) => setState(() => _monthlyBudget = v),
+          onNext: _next, onSkip: _next,
+        ),
+      if (_has('planning')) ShowcasePage(moduleKey: 'planning', onNext: _next),
+      if (_has('diary')) ShowcasePage(moduleKey: 'diary', onNext: _next),
+      if (_has('notes')) ShowcasePage(moduleKey: 'notes', onNext: _next),
+      if (_has('graffitiMap')) ShowcasePage(moduleKey: 'graffitiMap', onNext: _next),
+      if (_has('health')) ShowcasePage(moduleKey: 'healthScore', onNext: _next),
+      TabsPage(
+        candidates: _tabCandidates(),
+        selectedSlots: _tabSlots,
+        onToggle: (m) => setState(() {
+          if (!_tabSlots.remove(m) && _tabSlots.length < 4) _tabSlots.add(m);
+        }),
+        onNext: _next,
+      ),
+
+      // Phase 3 · Berechtigungen
       _WeatherPage(onNext: _next),
       _NotificationsPage(onNext: _next),
       _HealthPage(onNext: _next),
+
+      // Phase 4 · Sicherheit & Abschluss
       _SecurityPage(onNext: _next),
+      DashboardTeaserPage(onNext: _next),
       _DonePage(
-        name: _nameController.text,
-        kcalGoal: _kcalGoal,
-        waterGoal: _computeWaterGoal(),
-        onFinish: _finish,
+        name: _nameController.text, kcalGoal: _kcalGoal,
+        waterGoal: _computeWaterGoal(), onFinish: _finish,
       ),
     ];
     return pages;
+  }
+
+  /// Kandidaten für die Bottom-Bar: gewählte Module zuerst, dann Defaults auffüllen.
+  List<String> _tabCandidates() {
+    final base = [
+      ..._selectedModules,
+      'training', 'health', 'nutrition', 'budget', 'planning', 'profile', 'settings',
+    ];
+    final seen = <String>{};
+    return base.where((m) => m != 'period' || _sex == 'female')
+        .where(seen.add).toList();
+  }
+
+  OnboardingPhase _phaseForIndex(int i, int total) {
+    if (i <= 3) return OnboardingPhase.basis;
+    if (i >= total - 6) {
+      return i >= total - 3 ? OnboardingPhase.security : OnboardingPhase.permissions;
+    }
+    return OnboardingPhase.interests;
+  }
+
+  double _phaseProgress(int i, int total) {
+    final phase = _phaseForIndex(i, total);
+    var count = 0, pos = 0;
+    for (var k = 0; k < total; k++) {
+      if (_phaseForIndex(k, total) == phase) {
+        if (k == i) pos = count;
+        count++;
+      }
+    }
+    return count == 0 ? 0 : (pos + 1) / count;
   }
 
   int _computeWaterGoal() {
@@ -261,14 +325,26 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       prefs.setMonthlyBudget(_monthlyBudget),
       prefs.setAvgCycleLength(_avgCycleLength),
       prefs.setAvgPeriodLength(_avgPeriodLength),
-      prefs.setPeriodTrackingEnabled(sex == 'female' && _periodTrackingEnabled),
+      prefs.setPeriodTrackingEnabled(sex == 'female' && _has('period') && _periodTrackingEnabled),
       prefs.setOnboardingComplete(true),
     ]);
+    // Geburtsdatum ist jetzt Pflicht
     if (_birthDate != null) {
       await prefs.setUserBirthDate(
         '${_birthDate!.year}-${_birthDate!.month.toString().padLeft(2, '0')}-${_birthDate!.day.toString().padLeft(2, '0')}',
       );
     }
+    // Trainings-Präferenzen
+    if (_has('training')) {
+      await prefs.setTrainingLevel(_trainingLevel);
+      await prefs.setTrainingGoal(_trainingGoal);
+      await prefs.setWorkoutGoalPerWeek(_trainingDays);
+    }
+    // Bottom-Bar-Tabs
+    final slots = _tabSlots.isEmpty ? _tabCandidates().take(4).toList() : _tabSlots;
+    await ref.read(navSlotsProvider.notifier).setSlots(slots);
+    // Home-Layout an Interessen anpassen
+    ref.read(homeLayoutProvider.notifier).seedFromModules(_selectedModules);
 
     if (mounted) {
       context.go(Routes.home);
@@ -277,6 +353,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final pages = _pages;
     return PopScope(
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop) _prev();
@@ -307,13 +384,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 child: PageView(
                   controller: _pageController,
                   physics: const NeverScrollableScrollPhysics(),
-                  onPageChanged: (i) => setState(() => _currentPage = i),
-                  children: _pages,
+                  onPageChanged: (i) => setState(() {
+                    _currentPage = i;
+                    if (_tabSlots.isEmpty) {
+                      _tabSlots = _tabCandidates().take(4).toList();
+                    }
+                  }),
+                  children: pages,
                 ),
               ),
-              _DotIndicator(
-                count: _pages.length,
-                current: _currentPage,
+              PhaseProgressBar(
+                current: _phaseForIndex(_currentPage, pages.length),
+                phaseProgress: _phaseProgress(_currentPage, pages.length),
               ),
               const SizedBox(height: 12),
             ],
@@ -332,35 +414,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 }
 
 // ── Page helpers ──────────────────────────────────────────────────────────────
-
-class _DotIndicator extends StatelessWidget {
-  final int count;
-  final int current;
-
-  const _DotIndicator({required this.count, required this.current});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        count,
-        (i) => AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          margin: const EdgeInsets.symmetric(horizontal: 3),
-          width: i == current ? 20 : 8,
-          height: 8,
-          decoration: BoxDecoration(
-            color: i == current
-                ? TraumColors.coralOrange
-                : TraumColors.surfaceVariant,
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class _OnboardingPage extends StatelessWidget {
   final String title;
@@ -572,19 +625,31 @@ class _ConsentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CheckboxListTile(
-      value: value,
-      onChanged: onChanged,
-      title: Text(
-        label,
-        style: const TextStyle(
-          fontSize: 13,
-          color: TraumColors.onBackground,
-          fontFamily: 'DMSans',
-        ),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: TraumColors.surface,
+        borderRadius: BorderRadius.circular(TraumRadius.card),
+        border: Border.all(
+            color: value
+                ? TraumColors.coralOrange.withValues(alpha: 0.4)
+                : TraumColors.surfaceVariant),
       ),
-      contentPadding: EdgeInsets.zero,
-      controlAffinity: ListTileControlAffinity.leading,
+      child: CheckboxListTile(
+        value: value,
+        onChanged: onChanged,
+        activeColor: TraumColors.coralOrange,
+        title: Text(
+          label,
+          style: const TextStyle(
+            fontSize: 13,
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+          ),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+        controlAffinity: ListTileControlAffinity.leading,
+      ),
     );
   }
 }
@@ -608,33 +673,45 @@ class _LinkedConsentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CheckboxListTile(
-      value: value,
-      onChanged: onChanged,
-      title: RichText(
-        text: TextSpan(
-          style: const TextStyle(
-            fontSize: 13,
-            color: TraumColors.onBackground,
-            fontFamily: 'DMSans',
-          ),
-          children: [
-            TextSpan(text: leading),
-            TextSpan(
-              text: linkText,
-              style: const TextStyle(
-                color: TraumColors.cyanBlue,
-                decoration: TextDecoration.underline,
-                decorationColor: TraumColors.cyanBlue,
-              ),
-              recognizer: TapGestureRecognizer()..onTap = onLinkTap,
-            ),
-            TextSpan(text: trailing),
-          ],
-        ),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: TraumColors.surface,
+        borderRadius: BorderRadius.circular(TraumRadius.card),
+        border: Border.all(
+            color: value
+                ? TraumColors.coralOrange.withValues(alpha: 0.4)
+                : TraumColors.surfaceVariant),
       ),
-      contentPadding: EdgeInsets.zero,
-      controlAffinity: ListTileControlAffinity.leading,
+      child: CheckboxListTile(
+        value: value,
+        onChanged: onChanged,
+        activeColor: TraumColors.coralOrange,
+        title: RichText(
+          text: TextSpan(
+            style: const TextStyle(
+              fontSize: 13,
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+            ),
+            children: [
+              TextSpan(text: leading),
+              TextSpan(
+                text: linkText,
+                style: const TextStyle(
+                  color: TraumColors.cyanBlue,
+                  decoration: TextDecoration.underline,
+                  decorationColor: TraumColors.cyanBlue,
+                ),
+                recognizer: TapGestureRecognizer()..onTap = onLinkTap,
+              ),
+              TextSpan(text: trailing),
+            ],
+          ),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+        controlAffinity: ListTileControlAffinity.leading,
+      ),
     );
   }
 }
@@ -663,7 +740,10 @@ class _ProfilePage extends StatelessWidget {
   });
 
   bool get _canProceed =>
-      nameController.text.trim().isNotEmpty && sex != null && unitSystem != null;
+      nameController.text.trim().isNotEmpty &&
+      sex != null &&
+      unitSystem != null &&
+      birthDate != null;
 
   @override
   Widget build(BuildContext context) {
@@ -725,6 +805,59 @@ class _ProfilePage extends StatelessWidget {
             onSelectionChanged: (s) {
               if (s.isNotEmpty) onUnitChanged(s.first);
             },
+          ),
+          const SizedBox(height: 16),
+          Text(
+            l10n.obBirthDate,
+            style: const TextStyle(
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontSize: 13,
+            ),
+          ),
+          const SizedBox(height: 8),
+          InkWell(
+            onTap: () async {
+              final now = DateTime.now();
+              final picked = await showDatePicker(
+                context: context,
+                initialDate:
+                    birthDate ?? DateTime(now.year - 25, now.month, now.day),
+                firstDate: DateTime(1920),
+                lastDate: now,
+                builder: (ctx, child) => Theme(
+                  data: ThemeData.dark().copyWith(
+                      colorScheme: const ColorScheme.dark(
+                          primary: TraumColors.coralOrange)),
+                  child: child!,
+                ),
+              );
+              if (picked != null) onBirthDateChanged(picked);
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: TraumColors.surface,
+                borderRadius: BorderRadius.circular(TraumRadius.card),
+                border: Border.all(color: TraumColors.surfaceVariant),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.cake_rounded,
+                      color: TraumColors.coralOrange, size: 18),
+                  const SizedBox(width: 10),
+                  Text(
+                    birthDate == null
+                        ? l10n.obBirthDatePick
+                        : '${birthDate!.day.toString().padLeft(2, '0')}.${birthDate!.month.toString().padLeft(2, '0')}.${birthDate!.year}',
+                    style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
           ),
           if (!_canProceed) ...[
             const SizedBox(height: 12),
@@ -1382,168 +1515,6 @@ class _CyclePage extends StatelessWidget {
           GradientButton(label: l10n.next, onPressed: onNext),
           const SizedBox(height: 8),
           TextButton(onPressed: onSkip, child: Text(l10n.skip)),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Navigation customization ──────────────────────────────────────────────────
-
-class _NavPage extends ConsumerStatefulWidget {
-  final String? sex;
-  final VoidCallback onNext;
-
-  const _NavPage({required this.sex, required this.onNext});
-
-  @override
-  ConsumerState<_NavPage> createState() => _NavPageState();
-}
-
-class _NavPageState extends ConsumerState<_NavPage> {
-  late List<String> _selectedSlots;
-
-  static const _allModules = [
-    'training', 'health', 'nutrition', 'supplements',
-    'planning', 'medication', 'abstinence', 'budget',
-    'period', 'profile', 'settings',
-  ];
-
-
-  @override
-  void initState() {
-    super.initState();
-    // Start with current provider value as default selection
-    final current = ref.read(navSlotsProvider);
-    _selectedSlots = List.from(current);
-  }
-
-  List<String> get _visibleModules {
-    if (widget.sex != 'female') {
-      return _allModules.where((m) => m != 'period').toList();
-    }
-    return _allModules;
-  }
-
-  void _toggle(String module) {
-    setState(() {
-      if (_selectedSlots.contains(module)) {
-        _selectedSlots.remove(module);
-      } else if (_selectedSlots.length < 4) {
-        _selectedSlots.add(module);
-      }
-    });
-  }
-
-  Future<void> _proceed() async {
-    await ref.read(navSlotsProvider.notifier).setSlots(_selectedSlots);
-    widget.onNext();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final labels = {
-      'training': l10n.training,
-      'health': l10n.health,
-      'nutrition': l10n.nutrition,
-      'supplements': l10n.supplements,
-      'planning': l10n.planning,
-      'medication': l10n.medication,
-      'abstinence': l10n.abstinence,
-      'budget': l10n.budget,
-      'period': l10n.period,
-      'profile': l10n.profile,
-      'settings': l10n.settings,
-    };
-    return _OnboardingPage(
-      title: l10n.navTitleOb,
-      buttonLabel: l10n.next,
-      onButton: _proceed,
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.homeAlwaysLeft,
-            style: const TextStyle(
-              color: TraumColors.onBackgroundMuted,
-              fontFamily: 'DMSans',
-              fontSize: 14,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            l10n.slotsSelected(_selectedSlots.length),
-            style: const TextStyle(
-              color: TraumColors.onBackgroundSubtle,
-              fontFamily: 'DMSans',
-              fontSize: 12,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: _visibleModules.map((module) {
-              final selected = _selectedSlots.contains(module);
-              final color = TraumColors.moduleColor(module);
-              final canAdd = _selectedSlots.length < 4;
-              return GestureDetector(
-                onTap: () {
-                  if (selected || canAdd) _toggle(module);
-                },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: selected
-                        ? color.withValues(alpha: 0.15)
-                        : TraumColors.surface,
-                    borderRadius:
-                        BorderRadius.circular(TraumRadius.chip),
-                    border: Border.all(
-                      color: selected
-                          ? color
-                          : TraumColors.surfaceVariant,
-                    ),
-                  ),
-                  child: Text(
-                    labels[module] ?? module,
-                    style: TextStyle(
-                      color: selected
-                          ? color
-                          : (canAdd || selected)
-                              ? TraumColors.onBackgroundMuted
-                              : TraumColors.onBackgroundSubtle,
-                      fontFamily: 'DMSans',
-                      fontSize: 13,
-                      fontWeight: selected
-                          ? FontWeight.w600
-                          : FontWeight.normal,
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: TraumColors.surfaceVariant.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              l10n.adjustNavLater,
-              style: const TextStyle(
-                color: TraumColors.onBackgroundSubtle,
-                fontFamily: 'DMSans',
-                fontSize: 12,
-              ),
-            ),
-          ),
         ],
       ),
     );
