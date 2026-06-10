@@ -3197,4 +3197,208 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get mapAddPhoto => 'Foto hinzufügen';
+
+  @override
+  String get obInterestsTitle => 'Welche Bereiche interessieren dich?';
+
+  @override
+  String get obInterestsSubtitle =>
+      'Wähle aus, was du nutzen möchtest. Du kannst alles später ändern.';
+
+  @override
+  String obInterestsSelected(int count) {
+    return '$count ausgewählt';
+  }
+
+  @override
+  String get obTabsTitle => 'Deine 4 Tabs';
+
+  @override
+  String get obTabsSubtitle =>
+      'Diese Module erscheinen unten in der Leiste. Home ist immer links.';
+
+  @override
+  String get obTabsHint =>
+      'Du kannst die Leiste jederzeit in den Einstellungen ändern.';
+
+  @override
+  String get obTrainingTitle => 'Training';
+
+  @override
+  String get obTrainingSubtitle =>
+      'Erzähl uns kurz von dir – den Plan baust du später selbst.';
+
+  @override
+  String get obTrainingLevel => 'Erfahrung';
+
+  @override
+  String get obLevelBeginner => 'Anfänger';
+
+  @override
+  String get obLevelIntermediate => 'Fortgeschritten';
+
+  @override
+  String get obLevelAdvanced => 'Profi';
+
+  @override
+  String get obTrainingGoalLabel => 'Hauptziel';
+
+  @override
+  String get obGoalMuscle => 'Muskelaufbau';
+
+  @override
+  String get obGoalLose => 'Abnehmen';
+
+  @override
+  String get obGoalFitness => 'Fitness halten';
+
+  @override
+  String get obTrainingPerWeek => 'Trainingstage pro Woche';
+
+  @override
+  String get obAbstinenceTitle => 'Abstinenz';
+
+  @override
+  String get obAbstinenceSubtitle =>
+      'Verfolge Streaks und gesparte Zeit oder Geld.';
+
+  @override
+  String get obAbstinenceFeature1 => 'Live-Streak seit deinem Startdatum';
+
+  @override
+  String get obAbstinenceFeature2 => 'Gespartes Geld & gewonnene Zeit';
+
+  @override
+  String get obAbstinenceFeature3 => 'Mehrere Verzichte gleichzeitig';
+
+  @override
+  String get obAbstinenceQuickAdd =>
+      'Worauf möchtest du verzichten? (optional)';
+
+  @override
+  String get obAbstinenceHint => 'z. B. Rauchen, Alkohol, Zucker';
+
+  @override
+  String get obAbstinenceStart => 'Startdatum';
+
+  @override
+  String get obSubstancesTitle => 'Substanzen';
+
+  @override
+  String get obSubstancesSubtitle =>
+      'Behalte Einnahmen und Wechselwirkungen im Blick.';
+
+  @override
+  String get obSubstancesFeature1 => 'Einnahmen protokollieren';
+
+  @override
+  String get obSubstancesFeature2 => 'Interaktions-Check zwischen Stoffen';
+
+  @override
+  String get obSubstancesFeature3 => 'Verlauf & Häufigkeit';
+
+  @override
+  String get obPlanningTitle => 'Planung';
+
+  @override
+  String get obPlanningSubtitle =>
+      'Aufgaben, Gewohnheiten und Termine an einem Ort.';
+
+  @override
+  String get obPlanningFeature1 => 'To-dos mit Fälligkeiten';
+
+  @override
+  String get obPlanningFeature2 => 'Gewohnheiten im Habit-Tracker';
+
+  @override
+  String get obPlanningFeature3 => 'Termine & Kalender-Sync';
+
+  @override
+  String get obDiaryTitle => 'Tagebuch';
+
+  @override
+  String get obDiarySubtitle => 'Halte Momente in Foto & Video fest.';
+
+  @override
+  String get obDiaryFeature1 => 'Ein Eintrag pro Tag';
+
+  @override
+  String get obDiaryFeature2 => 'Kalender & Jahres-Heatmap';
+
+  @override
+  String get obDiaryFeature3 => 'Rückblick als Slideshow';
+
+  @override
+  String get obNotesTitle => 'Notizen';
+
+  @override
+  String get obNotesSubtitle => 'Gedanken festhalten und verknüpfen.';
+
+  @override
+  String get obNotesFeature1 => 'Markdown mit Tags';
+
+  @override
+  String get obNotesFeature2 => 'Verknüpfungen & Graph';
+
+  @override
+  String get obNotesFeature3 => 'Tägliche Notizen & Vorlagen';
+
+  @override
+  String get obMapTitle => 'Graffiti-Map';
+
+  @override
+  String get obMapSubtitle => 'Markiere Orte mit Fotos auf der Karte.';
+
+  @override
+  String get obMapFeature1 => 'Eigene Orte setzen';
+
+  @override
+  String get obMapFeature2 => 'Fotos je Ort sammeln';
+
+  @override
+  String get obMapFeature3 => 'Sammlungen & Touren';
+
+  @override
+  String get obHealthScoreTitle => 'Gesundheits-Score';
+
+  @override
+  String get obHealthScoreSubtitle =>
+      'Ein täglicher Wert aus all deinen Daten.';
+
+  @override
+  String get obHealthScoreFeature1 => 'Score aus Schlaf, Schritten & mehr';
+
+  @override
+  String get obHealthScoreFeature2 => 'Persönliche Insights';
+
+  @override
+  String get obHealthScoreFeature3 => 'Radar & Verlauf';
+
+  @override
+  String get obDashboardTitle => 'Dein Dashboard';
+
+  @override
+  String get obDashboardSubtitle => 'Dein Startbildschirm gehört dir.';
+
+  @override
+  String get obDashboardFeature1 => 'Widgets hinzufügen & entfernen';
+
+  @override
+  String get obDashboardFeature2 => 'Frei verschieben im Edit-Modus';
+
+  @override
+  String get obDashboardFeature3 => 'Fünf Größen pro Kachel';
+
+  @override
+  String get obDashboardSeeded =>
+      'Wir haben dein Dashboard schon an deine Interessen angepasst.';
+
+  @override
+  String get obUnderstood => 'Verstanden';
+
+  @override
+  String get obBirthDate => 'Geburtsdatum';
+
+  @override
+  String get obBirthDatePick => 'Datum wählen';
 }

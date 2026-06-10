@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/providers/preferences_provider.dart';
+import 'home_seed.dart';
 import 'home_tile.dart';
 import 'home_widget_registry.dart';
 
@@ -55,6 +56,12 @@ class HomeLayoutNotifier extends StateNotifier<List<HomeTile>> {
 
   void resetToDefault() {
     state = defaultHomeLayout();
+    _persist();
+  }
+
+  /// Setzt ein an die Onboarding-Interessen angepasstes Start-Layout.
+  void seedFromModules(Set<String> modules) {
+    state = seededLayoutForModules(modules);
     _persist();
   }
 }

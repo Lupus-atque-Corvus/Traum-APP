@@ -6181,6 +6181,390 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Foto hinzufügen'**
   String get mapAddPhoto;
+
+  /// No description provided for @obInterestsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Welche Bereiche interessieren dich?'**
+  String get obInterestsTitle;
+
+  /// No description provided for @obInterestsSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wähle aus, was du nutzen möchtest. Du kannst alles später ändern.'**
+  String get obInterestsSubtitle;
+
+  /// No description provided for @obInterestsSelected.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} ausgewählt'**
+  String obInterestsSelected(int count);
+
+  /// No description provided for @obTabsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine 4 Tabs'**
+  String get obTabsTitle;
+
+  /// No description provided for @obTabsSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Module erscheinen unten in der Leiste. Home ist immer links.'**
+  String get obTabsSubtitle;
+
+  /// No description provided for @obTabsHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Du kannst die Leiste jederzeit in den Einstellungen ändern.'**
+  String get obTabsHint;
+
+  /// No description provided for @obTrainingTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Training'**
+  String get obTrainingTitle;
+
+  /// No description provided for @obTrainingSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Erzähl uns kurz von dir – den Plan baust du später selbst.'**
+  String get obTrainingSubtitle;
+
+  /// No description provided for @obTrainingLevel.
+  ///
+  /// In de, this message translates to:
+  /// **'Erfahrung'**
+  String get obTrainingLevel;
+
+  /// No description provided for @obLevelBeginner.
+  ///
+  /// In de, this message translates to:
+  /// **'Anfänger'**
+  String get obLevelBeginner;
+
+  /// No description provided for @obLevelIntermediate.
+  ///
+  /// In de, this message translates to:
+  /// **'Fortgeschritten'**
+  String get obLevelIntermediate;
+
+  /// No description provided for @obLevelAdvanced.
+  ///
+  /// In de, this message translates to:
+  /// **'Profi'**
+  String get obLevelAdvanced;
+
+  /// No description provided for @obTrainingGoalLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Hauptziel'**
+  String get obTrainingGoalLabel;
+
+  /// No description provided for @obGoalMuscle.
+  ///
+  /// In de, this message translates to:
+  /// **'Muskelaufbau'**
+  String get obGoalMuscle;
+
+  /// No description provided for @obGoalLose.
+  ///
+  /// In de, this message translates to:
+  /// **'Abnehmen'**
+  String get obGoalLose;
+
+  /// No description provided for @obGoalFitness.
+  ///
+  /// In de, this message translates to:
+  /// **'Fitness halten'**
+  String get obGoalFitness;
+
+  /// No description provided for @obTrainingPerWeek.
+  ///
+  /// In de, this message translates to:
+  /// **'Trainingstage pro Woche'**
+  String get obTrainingPerWeek;
+
+  /// No description provided for @obAbstinenceTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Abstinenz'**
+  String get obAbstinenceTitle;
+
+  /// No description provided for @obAbstinenceSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Verfolge Streaks und gesparte Zeit oder Geld.'**
+  String get obAbstinenceSubtitle;
+
+  /// No description provided for @obAbstinenceFeature1.
+  ///
+  /// In de, this message translates to:
+  /// **'Live-Streak seit deinem Startdatum'**
+  String get obAbstinenceFeature1;
+
+  /// No description provided for @obAbstinenceFeature2.
+  ///
+  /// In de, this message translates to:
+  /// **'Gespartes Geld & gewonnene Zeit'**
+  String get obAbstinenceFeature2;
+
+  /// No description provided for @obAbstinenceFeature3.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrere Verzichte gleichzeitig'**
+  String get obAbstinenceFeature3;
+
+  /// No description provided for @obAbstinenceQuickAdd.
+  ///
+  /// In de, this message translates to:
+  /// **'Worauf möchtest du verzichten? (optional)'**
+  String get obAbstinenceQuickAdd;
+
+  /// No description provided for @obAbstinenceHint.
+  ///
+  /// In de, this message translates to:
+  /// **'z. B. Rauchen, Alkohol, Zucker'**
+  String get obAbstinenceHint;
+
+  /// No description provided for @obAbstinenceStart.
+  ///
+  /// In de, this message translates to:
+  /// **'Startdatum'**
+  String get obAbstinenceStart;
+
+  /// No description provided for @obSubstancesTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Substanzen'**
+  String get obSubstancesTitle;
+
+  /// No description provided for @obSubstancesSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Behalte Einnahmen und Wechselwirkungen im Blick.'**
+  String get obSubstancesSubtitle;
+
+  /// No description provided for @obSubstancesFeature1.
+  ///
+  /// In de, this message translates to:
+  /// **'Einnahmen protokollieren'**
+  String get obSubstancesFeature1;
+
+  /// No description provided for @obSubstancesFeature2.
+  ///
+  /// In de, this message translates to:
+  /// **'Interaktions-Check zwischen Stoffen'**
+  String get obSubstancesFeature2;
+
+  /// No description provided for @obSubstancesFeature3.
+  ///
+  /// In de, this message translates to:
+  /// **'Verlauf & Häufigkeit'**
+  String get obSubstancesFeature3;
+
+  /// No description provided for @obPlanningTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Planung'**
+  String get obPlanningTitle;
+
+  /// No description provided for @obPlanningSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgaben, Gewohnheiten und Termine an einem Ort.'**
+  String get obPlanningSubtitle;
+
+  /// No description provided for @obPlanningFeature1.
+  ///
+  /// In de, this message translates to:
+  /// **'To-dos mit Fälligkeiten'**
+  String get obPlanningFeature1;
+
+  /// No description provided for @obPlanningFeature2.
+  ///
+  /// In de, this message translates to:
+  /// **'Gewohnheiten im Habit-Tracker'**
+  String get obPlanningFeature2;
+
+  /// No description provided for @obPlanningFeature3.
+  ///
+  /// In de, this message translates to:
+  /// **'Termine & Kalender-Sync'**
+  String get obPlanningFeature3;
+
+  /// No description provided for @obDiaryTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Tagebuch'**
+  String get obDiaryTitle;
+
+  /// No description provided for @obDiarySubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Halte Momente in Foto & Video fest.'**
+  String get obDiarySubtitle;
+
+  /// No description provided for @obDiaryFeature1.
+  ///
+  /// In de, this message translates to:
+  /// **'Ein Eintrag pro Tag'**
+  String get obDiaryFeature1;
+
+  /// No description provided for @obDiaryFeature2.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalender & Jahres-Heatmap'**
+  String get obDiaryFeature2;
+
+  /// No description provided for @obDiaryFeature3.
+  ///
+  /// In de, this message translates to:
+  /// **'Rückblick als Slideshow'**
+  String get obDiaryFeature3;
+
+  /// No description provided for @obNotesTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Notizen'**
+  String get obNotesTitle;
+
+  /// No description provided for @obNotesSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Gedanken festhalten und verknüpfen.'**
+  String get obNotesSubtitle;
+
+  /// No description provided for @obNotesFeature1.
+  ///
+  /// In de, this message translates to:
+  /// **'Markdown mit Tags'**
+  String get obNotesFeature1;
+
+  /// No description provided for @obNotesFeature2.
+  ///
+  /// In de, this message translates to:
+  /// **'Verknüpfungen & Graph'**
+  String get obNotesFeature2;
+
+  /// No description provided for @obNotesFeature3.
+  ///
+  /// In de, this message translates to:
+  /// **'Tägliche Notizen & Vorlagen'**
+  String get obNotesFeature3;
+
+  /// No description provided for @obMapTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Graffiti-Map'**
+  String get obMapTitle;
+
+  /// No description provided for @obMapSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Markiere Orte mit Fotos auf der Karte.'**
+  String get obMapSubtitle;
+
+  /// No description provided for @obMapFeature1.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigene Orte setzen'**
+  String get obMapFeature1;
+
+  /// No description provided for @obMapFeature2.
+  ///
+  /// In de, this message translates to:
+  /// **'Fotos je Ort sammeln'**
+  String get obMapFeature2;
+
+  /// No description provided for @obMapFeature3.
+  ///
+  /// In de, this message translates to:
+  /// **'Sammlungen & Touren'**
+  String get obMapFeature3;
+
+  /// No description provided for @obHealthScoreTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesundheits-Score'**
+  String get obHealthScoreTitle;
+
+  /// No description provided for @obHealthScoreSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Ein täglicher Wert aus all deinen Daten.'**
+  String get obHealthScoreSubtitle;
+
+  /// No description provided for @obHealthScoreFeature1.
+  ///
+  /// In de, this message translates to:
+  /// **'Score aus Schlaf, Schritten & mehr'**
+  String get obHealthScoreFeature1;
+
+  /// No description provided for @obHealthScoreFeature2.
+  ///
+  /// In de, this message translates to:
+  /// **'Persönliche Insights'**
+  String get obHealthScoreFeature2;
+
+  /// No description provided for @obHealthScoreFeature3.
+  ///
+  /// In de, this message translates to:
+  /// **'Radar & Verlauf'**
+  String get obHealthScoreFeature3;
+
+  /// No description provided for @obDashboardTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Dashboard'**
+  String get obDashboardTitle;
+
+  /// No description provided for @obDashboardSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Startbildschirm gehört dir.'**
+  String get obDashboardSubtitle;
+
+  /// No description provided for @obDashboardFeature1.
+  ///
+  /// In de, this message translates to:
+  /// **'Widgets hinzufügen & entfernen'**
+  String get obDashboardFeature1;
+
+  /// No description provided for @obDashboardFeature2.
+  ///
+  /// In de, this message translates to:
+  /// **'Frei verschieben im Edit-Modus'**
+  String get obDashboardFeature2;
+
+  /// No description provided for @obDashboardFeature3.
+  ///
+  /// In de, this message translates to:
+  /// **'Fünf Größen pro Kachel'**
+  String get obDashboardFeature3;
+
+  /// No description provided for @obDashboardSeeded.
+  ///
+  /// In de, this message translates to:
+  /// **'Wir haben dein Dashboard schon an deine Interessen angepasst.'**
+  String get obDashboardSeeded;
+
+  /// No description provided for @obUnderstood.
+  ///
+  /// In de, this message translates to:
+  /// **'Verstanden'**
+  String get obUnderstood;
+
+  /// No description provided for @obBirthDate.
+  ///
+  /// In de, this message translates to:
+  /// **'Geburtsdatum'**
+  String get obBirthDate;
+
+  /// No description provided for @obBirthDatePick.
+  ///
+  /// In de, this message translates to:
+  /// **'Datum wählen'**
+  String get obBirthDatePick;
 }
 
 class _AppLocalizationsDelegate
