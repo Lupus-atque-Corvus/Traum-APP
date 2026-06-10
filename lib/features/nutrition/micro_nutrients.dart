@@ -52,9 +52,9 @@ class MicroNutrients {
     if (json == null || json.isEmpty) return const MicroNutrients({});
     try {
       final decoded = jsonDecode(json) as Map<String, dynamic>;
-      return MicroNutrients({
+      return MicroNutrients(Map.unmodifiable({
         for (final e in decoded.entries) e.key: (e.value as num).toDouble(),
-      });
+      }));
     } catch (_) {
       return const MicroNutrients({});
     }
@@ -67,11 +67,11 @@ class MicroNutrients {
   MicroNutrients operator +(MicroNutrients other) {
     final result = Map<String, double>.from(values);
     other.values.forEach((k, v) => result[k] = (result[k] ?? 0) + v);
-    return MicroNutrients(result);
+    return MicroNutrients(Map.unmodifiable(result));
   }
 
-  MicroNutrients scale(double factor) =>
-      MicroNutrients({for (final e in values.entries) e.key: e.value * factor});
+  MicroNutrients scale(double factor) => MicroNutrients(Map.unmodifiable(
+      {for (final e in values.entries) e.key: e.value * factor}));
 
   double? operator [](String key) => values[key];
 }
