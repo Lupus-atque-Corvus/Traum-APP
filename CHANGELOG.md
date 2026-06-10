@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.7.2 (2026-06-10) — Onboarding komplett überarbeitet
+
+### Neu
+
+- **Modul-Auswahl im Onboarding:** Ein neuer Schritt „Welche Bereiche interessieren dich?" mit bunten Kacheln in den Modulfarben. Deine Auswahl bestimmt, welche Einrichtungs-Schritte erscheinen, belegt deine 4 Bottom-Tabs vor **und** stellt dein Home-Dashboard passend zusammen.
+- **Alle Bereiche im Onboarding:** Eigene Schritte für **Training** (Level/Ziel/Tage), **Substanzen**, **Planung**, **Tagebuch**, **Notizen**, **Graffiti Map**, **Abstinenz** (mit optionalem ersten Tracker) und **Gesundheits-Score** — zusätzlich zu den bestehenden (Ernährung, Supplements, Medikamente, Budget, Zyklus).
+- **Dashboard-Teaser:** Zeigt zum Abschluss, dass der Startbildschirm frei anpassbar ist (modulares Home aus v0.7).
+- **Geburtsdatum** wird jetzt im Profil abgefragt — für ein korrektes Wasser- und Altersziel statt Schätzwert.
+
+### Verbesserung
+
+- **Phasen-Fortschritt:** Eine segmentierte Leiste (Basis · Interessen · Berechtigungen · Sicherheit) ersetzt die alte Punktanzeige und skaliert mit dem persönlichen Ablauf.
+- **Durchgängiges Design:** Modulfarben, Gradienten und Karten-Look auf allen Onboarding-Seiten; Einwilligungen als Karten.
+- **„Deine 4 Tabs":** Aus der Interessen-Auswahl vorbelegt und anpassbar — ersetzt den isolierten Navigations-Schritt.
+
+---
+
 ## v0.7.1 (2026-06-09) — Home: mehr Größen & flotterer Drag
 
 ### Verbesserung
