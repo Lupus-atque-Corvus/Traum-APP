@@ -173,7 +173,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         onToggle: (m) => setState(() {
           if (!_selectedModules.remove(m)) _selectedModules.add(m);
         }),
-        onNext: _next,
+        onNext: () {
+          // Tab-Slots erst beim Verlassen des Pickers vorbelegen, damit sie
+          // die Interessen-Auswahl widerspiegeln.
+          setState(() => _tabSlots = _tabCandidates().take(4).toList());
+          _next();
+        },
       ),
       if (_has('nutrition'))
         _NutritionPage(
@@ -384,12 +389,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 child: PageView(
                   controller: _pageController,
                   physics: const NeverScrollableScrollPhysics(),
-                  onPageChanged: (i) => setState(() {
-                    _currentPage = i;
-                    if (_tabSlots.isEmpty) {
-                      _tabSlots = _tabCandidates().take(4).toList();
-                    }
-                  }),
+                  onPageChanged: (i) => setState(() => _currentPage = i),
                   children: pages,
                 ),
               ),
