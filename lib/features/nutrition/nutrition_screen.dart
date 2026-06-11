@@ -10,6 +10,7 @@ import 'barcode_scanner_screen.dart';
 import 'nutrition_providers.dart';
 import 'widgets/macro_ring_row.dart';
 import 'widgets/meal_section.dart';
+import 'widgets/micro_nutrient_panel.dart';
 import 'widgets/weekly_bar_chart.dart';
 
 class NutritionScreen extends ConsumerStatefulWidget {
@@ -194,6 +195,7 @@ class _TodayTab extends ConsumerWidget {
                       TraumColors.mintGreen),
                 ),
               ),
+              MicroNutrientPanel(dateStr: dateStr),
             ]),
             loading: () => const SizedBox(
                 height: 80,

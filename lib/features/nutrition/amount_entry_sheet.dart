@@ -5,7 +5,6 @@ import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
-import 'micro_nutrients.dart';
 import 'nutrition_providers.dart';
 
 class AmountEntrySheet extends ConsumerStatefulWidget {
