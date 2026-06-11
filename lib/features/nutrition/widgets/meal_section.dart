@@ -171,12 +171,19 @@ class _EntryRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('ID ${entry.productId}',
-                    style: const TextStyle(
-                        fontFamily: 'DMSans',
-                        color: TraumColors.onBackground,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 13)),
+                Consumer(
+                  builder: (context, ref, _) {
+                    final name = ref
+                        .watch(productNameProvider(entry.productId))
+                        .valueOrNull;
+                    return Text(name ?? '…',
+                        style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            color: TraumColors.onBackground,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13));
+                  },
+                ),
                 Text(
                     '${entry.amountGrams.toStringAsFixed(0)}g · '
                     '${entry.calories.toStringAsFixed(0)} kcal',

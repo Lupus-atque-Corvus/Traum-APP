@@ -239,6 +239,13 @@ final dailyMicrosProvider = FutureProvider.autoDispose
   return total;
 });
 
+/// Name eines Produkts per ID (für Meal-Eintragszeilen).
+final productNameProvider =
+    FutureProvider.autoDispose.family<String, int>((ref, productId) async {
+  final p = await ref.watch(foodProductsDaoProvider).getById(productId);
+  return p?.name ?? 'Unbekannt';
+});
+
 // ─── Helper ───────────────────────────────────────────────────────────────────
 
 String formatDateStr(DateTime date) =>
