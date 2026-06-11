@@ -9,4 +9,9 @@ mixin _$NutritionDaoMixin on DatabaseAccessor<TraumDatabase> {
   $WaterLogsTable get waterLogs => attachedDatabase.waterLogs;
   $ShoppingListItemsTable get shoppingListItems =>
       attachedDatabase.shoppingListItems;
+  $GroceryPricesTable get groceryPrices => attachedDatabase.groceryPrices;
+  $ShoppingTemplatesTable get shoppingTemplates =>
+      attachedDatabase.shoppingTemplates;
+  $ShoppingTemplateItemsTable get shoppingTemplateItems =>
+      attachedDatabase.shoppingTemplateItems;
 }

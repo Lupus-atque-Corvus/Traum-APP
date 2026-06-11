@@ -105,6 +105,10 @@ part 'traum_database.g.dart';
     MealTemplates,
     WaterLogs,
     ShoppingListItems,
+    // Shopping extended (3)
+    GroceryPrices,
+    ShoppingTemplates,
+    ShoppingTemplateItems,
     // Supplements (2)
     Supplements,
     SupplementLogs,
@@ -202,7 +206,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 14;
+  int get schemaVersion => 15;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -293,6 +297,20 @@ class TraumDatabase extends _$TraumDatabase {
         await migrator.addColumn(foodProducts, foodProducts.microsJson);
         await migrator.addColumn(mealEntries, mealEntries.microsJson);
         await migrator.addColumn(supplements, supplements.nutrientKey);
+      }
+      if (from < 15) {
+        await migrator.addColumn(
+            shoppingListItems, shoppingListItems.priceEstimated);
+        await migrator.addColumn(
+            shoppingListItems, shoppingListItems.priceActual);
+        await migrator.addColumn(
+            shoppingListItems, shoppingListItems.isUrgent);
+        await migrator.createTable(groceryPrices);
+        await migrator.createTable(shoppingTemplates);
+        await migrator.createTable(shoppingTemplateItems);
+        await customStatement(
+            'CREATE INDEX IF NOT EXISTS idx_grocery_prices_norm '
+            'ON grocery_prices (name_normalized)');
       }
     },
   );

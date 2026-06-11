@@ -3,8 +3,15 @@ import '../traum_database.dart';
 
 part 'nutrition_dao.g.dart';
 
-@DriftAccessor(
-    tables: [NutritionLogs, MealTemplates, WaterLogs, ShoppingListItems])
+@DriftAccessor(tables: [
+  NutritionLogs,
+  MealTemplates,
+  WaterLogs,
+  ShoppingListItems,
+  GroceryPrices,
+  ShoppingTemplates,
+  ShoppingTemplateItems,
+])
 class NutritionDao extends DatabaseAccessor<TraumDatabase>
     with _$NutritionDaoMixin {
   NutritionDao(super.db);

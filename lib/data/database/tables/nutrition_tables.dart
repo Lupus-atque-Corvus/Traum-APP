@@ -39,7 +39,36 @@ class ShoppingListItems extends Table {
   RealColumn get quantity => real().nullable()();
   TextColumn get unit => text().nullable()();
   BoolColumn get checked => boolean().withDefault(const Constant(false))();
+  RealColumn get priceEstimated => real().nullable()();
+  RealColumn get priceActual => real().nullable()();
+  BoolColumn get isUrgent => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+}
+
+class GroceryPrices extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+  TextColumn get nameNormalized => text()();
+  TextColumn get category => text().nullable()();
+  RealColumn get avgPrice => real()();
+  TextColumn get unit => text().nullable()();
+  BoolColumn get isUserAdjusted => boolean().withDefault(const Constant(false))();
+  IntColumn get sampleCount => integer().withDefault(const Constant(1))();
+}
+
+class ShoppingTemplates extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+}
+
+class ShoppingTemplateItems extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get templateId => integer()();
+  TextColumn get name => text()();
+  TextColumn get category => text().nullable()();
+  RealColumn get quantity => real().nullable()();
+  TextColumn get unit => text().nullable()();
 }
 
 class FoodProducts extends Table {
