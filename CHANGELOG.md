@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.7.3 (2026-06-11) — Mikronährstoffe
+
+### Neu
+
+- **Mikronährstoff-Panel im Ernährung-Tab:** Aufklappbar in der Tagesübersicht — Zucker, Ballaststoffe, gesättigte Fettsäuren und Salz sowie Vitamin C/D/B12, Calcium, Eisen, Magnesium, Zink und Kalium mit aktuell/Ziel-Balken.
+- **Barcode-Scan erfasst Vitamine & Mineralien:** OpenFoodFacts liefert die Mikronährstoffe jetzt mit; sie werden beim Loggen einer Mahlzeit anteilig zur Menge mitgezählt.
+- **Supplements zählen mit:** Im Mittel-Tab lässt sich einem Supplement ein Nährstoff zuordnen (mit Auto-Vorschlag aus dem Namen, z. B. „Vitamin D3" → Vitamin D). Sobald es heute abgehakt ist, fließt seine Dosis in die Tageswerte ein — Medikamente bleiben außen vor.
+
+### Verbesserung
+
+- **Mahlzeiten-Einträge** zeigen den Produktnamen statt der internen ID.
+
+---
+
 ## v0.7.2 (2026-06-10) — Onboarding komplett überarbeitet
 
 ### Neu
