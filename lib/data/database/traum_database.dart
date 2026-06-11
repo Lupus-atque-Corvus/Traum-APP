@@ -202,7 +202,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 13;
+  int get schemaVersion => 14;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -288,6 +288,11 @@ class TraumDatabase extends _$TraumDatabase {
           'latitude = (SELECT latitude FROM map_markers WHERE map_markers.id = marker_photos.marker_id), '
           'longitude = (SELECT longitude FROM map_markers WHERE map_markers.id = marker_photos.marker_id)',
         );
+      }
+      if (from < 14) {
+        await migrator.addColumn(foodProducts, foodProducts.microsJson);
+        await migrator.addColumn(mealEntries, mealEntries.microsJson);
+        await migrator.addColumn(supplements, supplements.nutrientKey);
       }
     },
   );

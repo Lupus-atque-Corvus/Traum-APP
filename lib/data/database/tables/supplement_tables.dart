@@ -8,6 +8,7 @@ class Supplements extends Table {
   TextColumn get dosageUnit => text().nullable()();
   TextColumn get timings => text().withDefault(const Constant('[]'))();
   TextColumn get notes => text().nullable()();
+  TextColumn get nutrientKey => text().nullable()();
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }

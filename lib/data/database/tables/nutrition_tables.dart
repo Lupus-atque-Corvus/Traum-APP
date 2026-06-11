@@ -56,6 +56,7 @@ class FoodProducts extends Table {
   RealColumn get fiberPer100g => real().nullable()();
   RealColumn get saltPer100g => real().nullable()();
   RealColumn get saturatedFatPer100g => real().nullable()();
+  TextColumn get microsJson => text().nullable()();
   BoolColumn get isCustom =>
       boolean().withDefault(const Constant(false))();
   DateTimeColumn get lastUsed => dateTime().nullable()();
@@ -75,6 +76,7 @@ class MealEntries extends Table {
   RealColumn get carbs => real()();
   RealColumn get fat => real()();
   DateTimeColumn get loggedAt => dateTime()();
+  TextColumn get microsJson => text().nullable()();
 }
 
 class MealTemplateItems extends Table {

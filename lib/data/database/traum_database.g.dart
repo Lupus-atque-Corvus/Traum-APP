@@ -9862,6 +9862,17 @@ class $SupplementsTable extends Supplements
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _nutrientKeyMeta = const VerificationMeta(
+    'nutrientKey',
+  );
+  @override
+  late final GeneratedColumn<String> nutrientKey = GeneratedColumn<String>(
+    'nutrient_key',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _isActiveMeta = const VerificationMeta(
     'isActive',
   );
@@ -9898,6 +9909,7 @@ class $SupplementsTable extends Supplements
     dosageUnit,
     timings,
     notes,
+    nutrientKey,
     isActive,
     createdAt,
   ];
@@ -9957,6 +9969,15 @@ class $SupplementsTable extends Supplements
         notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
       );
     }
+    if (data.containsKey('nutrient_key')) {
+      context.handle(
+        _nutrientKeyMeta,
+        nutrientKey.isAcceptableOrUnknown(
+          data['nutrient_key']!,
+          _nutrientKeyMeta,
+        ),
+      );
+    }
     if (data.containsKey('is_active')) {
       context.handle(
         _isActiveMeta,
@@ -10006,6 +10027,10 @@ class $SupplementsTable extends Supplements
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
       ),
+      nutrientKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nutrient_key'],
+      ),
       isActive: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_active'],
@@ -10031,6 +10056,7 @@ class Supplement extends DataClass implements Insertable<Supplement> {
   final String? dosageUnit;
   final String timings;
   final String? notes;
+  final String? nutrientKey;
   final bool isActive;
   final DateTime createdAt;
   const Supplement({
@@ -10041,6 +10067,7 @@ class Supplement extends DataClass implements Insertable<Supplement> {
     this.dosageUnit,
     required this.timings,
     this.notes,
+    this.nutrientKey,
     required this.isActive,
     required this.createdAt,
   });
@@ -10061,6 +10088,9 @@ class Supplement extends DataClass implements Insertable<Supplement> {
     map['timings'] = Variable<String>(timings);
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || nutrientKey != null) {
+      map['nutrient_key'] = Variable<String>(nutrientKey);
     }
     map['is_active'] = Variable<bool>(isActive);
     map['created_at'] = Variable<DateTime>(createdAt);
@@ -10084,6 +10114,9 @@ class Supplement extends DataClass implements Insertable<Supplement> {
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
+      nutrientKey: nutrientKey == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nutrientKey),
       isActive: Value(isActive),
       createdAt: Value(createdAt),
     );
@@ -10102,6 +10135,7 @@ class Supplement extends DataClass implements Insertable<Supplement> {
       dosageUnit: serializer.fromJson<String?>(json['dosageUnit']),
       timings: serializer.fromJson<String>(json['timings']),
       notes: serializer.fromJson<String?>(json['notes']),
+      nutrientKey: serializer.fromJson<String?>(json['nutrientKey']),
       isActive: serializer.fromJson<bool>(json['isActive']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -10117,6 +10151,7 @@ class Supplement extends DataClass implements Insertable<Supplement> {
       'dosageUnit': serializer.toJson<String?>(dosageUnit),
       'timings': serializer.toJson<String>(timings),
       'notes': serializer.toJson<String?>(notes),
+      'nutrientKey': serializer.toJson<String?>(nutrientKey),
       'isActive': serializer.toJson<bool>(isActive),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
@@ -10130,6 +10165,7 @@ class Supplement extends DataClass implements Insertable<Supplement> {
     Value<String?> dosageUnit = const Value.absent(),
     String? timings,
     Value<String?> notes = const Value.absent(),
+    Value<String?> nutrientKey = const Value.absent(),
     bool? isActive,
     DateTime? createdAt,
   }) => Supplement(
@@ -10140,6 +10176,7 @@ class Supplement extends DataClass implements Insertable<Supplement> {
     dosageUnit: dosageUnit.present ? dosageUnit.value : this.dosageUnit,
     timings: timings ?? this.timings,
     notes: notes.present ? notes.value : this.notes,
+    nutrientKey: nutrientKey.present ? nutrientKey.value : this.nutrientKey,
     isActive: isActive ?? this.isActive,
     createdAt: createdAt ?? this.createdAt,
   );
@@ -10156,6 +10193,9 @@ class Supplement extends DataClass implements Insertable<Supplement> {
           : this.dosageUnit,
       timings: data.timings.present ? data.timings.value : this.timings,
       notes: data.notes.present ? data.notes.value : this.notes,
+      nutrientKey: data.nutrientKey.present
+          ? data.nutrientKey.value
+          : this.nutrientKey,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
@@ -10171,6 +10211,7 @@ class Supplement extends DataClass implements Insertable<Supplement> {
           ..write('dosageUnit: $dosageUnit, ')
           ..write('timings: $timings, ')
           ..write('notes: $notes, ')
+          ..write('nutrientKey: $nutrientKey, ')
           ..write('isActive: $isActive, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -10186,6 +10227,7 @@ class Supplement extends DataClass implements Insertable<Supplement> {
     dosageUnit,
     timings,
     notes,
+    nutrientKey,
     isActive,
     createdAt,
   );
@@ -10200,6 +10242,7 @@ class Supplement extends DataClass implements Insertable<Supplement> {
           other.dosageUnit == this.dosageUnit &&
           other.timings == this.timings &&
           other.notes == this.notes &&
+          other.nutrientKey == this.nutrientKey &&
           other.isActive == this.isActive &&
           other.createdAt == this.createdAt);
 }
@@ -10212,6 +10255,7 @@ class SupplementsCompanion extends UpdateCompanion<Supplement> {
   final Value<String?> dosageUnit;
   final Value<String> timings;
   final Value<String?> notes;
+  final Value<String?> nutrientKey;
   final Value<bool> isActive;
   final Value<DateTime> createdAt;
   const SupplementsCompanion({
@@ -10222,6 +10266,7 @@ class SupplementsCompanion extends UpdateCompanion<Supplement> {
     this.dosageUnit = const Value.absent(),
     this.timings = const Value.absent(),
     this.notes = const Value.absent(),
+    this.nutrientKey = const Value.absent(),
     this.isActive = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
@@ -10233,6 +10278,7 @@ class SupplementsCompanion extends UpdateCompanion<Supplement> {
     this.dosageUnit = const Value.absent(),
     this.timings = const Value.absent(),
     this.notes = const Value.absent(),
+    this.nutrientKey = const Value.absent(),
     this.isActive = const Value.absent(),
     this.createdAt = const Value.absent(),
   }) : name = Value(name);
@@ -10244,6 +10290,7 @@ class SupplementsCompanion extends UpdateCompanion<Supplement> {
     Expression<String>? dosageUnit,
     Expression<String>? timings,
     Expression<String>? notes,
+    Expression<String>? nutrientKey,
     Expression<bool>? isActive,
     Expression<DateTime>? createdAt,
   }) {
@@ -10255,6 +10302,7 @@ class SupplementsCompanion extends UpdateCompanion<Supplement> {
       if (dosageUnit != null) 'dosage_unit': dosageUnit,
       if (timings != null) 'timings': timings,
       if (notes != null) 'notes': notes,
+      if (nutrientKey != null) 'nutrient_key': nutrientKey,
       if (isActive != null) 'is_active': isActive,
       if (createdAt != null) 'created_at': createdAt,
     });
@@ -10268,6 +10316,7 @@ class SupplementsCompanion extends UpdateCompanion<Supplement> {
     Value<String?>? dosageUnit,
     Value<String>? timings,
     Value<String?>? notes,
+    Value<String?>? nutrientKey,
     Value<bool>? isActive,
     Value<DateTime>? createdAt,
   }) {
@@ -10279,6 +10328,7 @@ class SupplementsCompanion extends UpdateCompanion<Supplement> {
       dosageUnit: dosageUnit ?? this.dosageUnit,
       timings: timings ?? this.timings,
       notes: notes ?? this.notes,
+      nutrientKey: nutrientKey ?? this.nutrientKey,
       isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -10308,6 +10358,9 @@ class SupplementsCompanion extends UpdateCompanion<Supplement> {
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
+    if (nutrientKey.present) {
+      map['nutrient_key'] = Variable<String>(nutrientKey.value);
+    }
     if (isActive.present) {
       map['is_active'] = Variable<bool>(isActive.value);
     }
@@ -10327,6 +10380,7 @@ class SupplementsCompanion extends UpdateCompanion<Supplement> {
           ..write('dosageUnit: $dosageUnit, ')
           ..write('timings: $timings, ')
           ..write('notes: $notes, ')
+          ..write('nutrientKey: $nutrientKey, ')
           ..write('isActive: $isActive, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -18731,6 +18785,17 @@ class $FoodProductsTable extends FoodProducts
         type: DriftSqlType.double,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _microsJsonMeta = const VerificationMeta(
+    'microsJson',
+  );
+  @override
+  late final GeneratedColumn<String> microsJson = GeneratedColumn<String>(
+    'micros_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _isCustomMeta = const VerificationMeta(
     'isCustom',
   );
@@ -18795,6 +18860,7 @@ class $FoodProductsTable extends FoodProducts
     fiberPer100g,
     saltPer100g,
     saturatedFatPer100g,
+    microsJson,
     isCustom,
     lastUsed,
     useCount,
@@ -18918,6 +18984,12 @@ class $FoodProductsTable extends FoodProducts
         ),
       );
     }
+    if (data.containsKey('micros_json')) {
+      context.handle(
+        _microsJsonMeta,
+        microsJson.isAcceptableOrUnknown(data['micros_json']!, _microsJsonMeta),
+      );
+    }
     if (data.containsKey('is_custom')) {
       context.handle(
         _isCustomMeta,
@@ -19005,6 +19077,10 @@ class $FoodProductsTable extends FoodProducts
         DriftSqlType.double,
         data['${effectivePrefix}saturated_fat_per100g'],
       ),
+      microsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}micros_json'],
+      ),
       isCustom: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_custom'],
@@ -19044,6 +19120,7 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
   final double? fiberPer100g;
   final double? saltPer100g;
   final double? saturatedFatPer100g;
+  final String? microsJson;
   final bool isCustom;
   final DateTime? lastUsed;
   final int useCount;
@@ -19062,6 +19139,7 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
     this.fiberPer100g,
     this.saltPer100g,
     this.saturatedFatPer100g,
+    this.microsJson,
     required this.isCustom,
     this.lastUsed,
     required this.useCount,
@@ -19096,6 +19174,9 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
     }
     if (!nullToAbsent || saturatedFatPer100g != null) {
       map['saturated_fat_per100g'] = Variable<double>(saturatedFatPer100g);
+    }
+    if (!nullToAbsent || microsJson != null) {
+      map['micros_json'] = Variable<String>(microsJson);
     }
     map['is_custom'] = Variable<bool>(isCustom);
     if (!nullToAbsent || lastUsed != null) {
@@ -19135,6 +19216,9 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
       saturatedFatPer100g: saturatedFatPer100g == null && nullToAbsent
           ? const Value.absent()
           : Value(saturatedFatPer100g),
+      microsJson: microsJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(microsJson),
       isCustom: Value(isCustom),
       lastUsed: lastUsed == null && nullToAbsent
           ? const Value.absent()
@@ -19165,6 +19249,7 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
       saturatedFatPer100g: serializer.fromJson<double?>(
         json['saturatedFatPer100g'],
       ),
+      microsJson: serializer.fromJson<String?>(json['microsJson']),
       isCustom: serializer.fromJson<bool>(json['isCustom']),
       lastUsed: serializer.fromJson<DateTime?>(json['lastUsed']),
       useCount: serializer.fromJson<int>(json['useCount']),
@@ -19188,6 +19273,7 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
       'fiberPer100g': serializer.toJson<double?>(fiberPer100g),
       'saltPer100g': serializer.toJson<double?>(saltPer100g),
       'saturatedFatPer100g': serializer.toJson<double?>(saturatedFatPer100g),
+      'microsJson': serializer.toJson<String?>(microsJson),
       'isCustom': serializer.toJson<bool>(isCustom),
       'lastUsed': serializer.toJson<DateTime?>(lastUsed),
       'useCount': serializer.toJson<int>(useCount),
@@ -19209,6 +19295,7 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
     Value<double?> fiberPer100g = const Value.absent(),
     Value<double?> saltPer100g = const Value.absent(),
     Value<double?> saturatedFatPer100g = const Value.absent(),
+    Value<String?> microsJson = const Value.absent(),
     bool? isCustom,
     Value<DateTime?> lastUsed = const Value.absent(),
     int? useCount,
@@ -19229,6 +19316,7 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
     saturatedFatPer100g: saturatedFatPer100g.present
         ? saturatedFatPer100g.value
         : this.saturatedFatPer100g,
+    microsJson: microsJson.present ? microsJson.value : this.microsJson,
     isCustom: isCustom ?? this.isCustom,
     lastUsed: lastUsed.present ? lastUsed.value : this.lastUsed,
     useCount: useCount ?? this.useCount,
@@ -19265,6 +19353,9 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
       saturatedFatPer100g: data.saturatedFatPer100g.present
           ? data.saturatedFatPer100g.value
           : this.saturatedFatPer100g,
+      microsJson: data.microsJson.present
+          ? data.microsJson.value
+          : this.microsJson,
       isCustom: data.isCustom.present ? data.isCustom.value : this.isCustom,
       lastUsed: data.lastUsed.present ? data.lastUsed.value : this.lastUsed,
       useCount: data.useCount.present ? data.useCount.value : this.useCount,
@@ -19288,6 +19379,7 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
           ..write('fiberPer100g: $fiberPer100g, ')
           ..write('saltPer100g: $saltPer100g, ')
           ..write('saturatedFatPer100g: $saturatedFatPer100g, ')
+          ..write('microsJson: $microsJson, ')
           ..write('isCustom: $isCustom, ')
           ..write('lastUsed: $lastUsed, ')
           ..write('useCount: $useCount, ')
@@ -19311,6 +19403,7 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
     fiberPer100g,
     saltPer100g,
     saturatedFatPer100g,
+    microsJson,
     isCustom,
     lastUsed,
     useCount,
@@ -19333,6 +19426,7 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
           other.fiberPer100g == this.fiberPer100g &&
           other.saltPer100g == this.saltPer100g &&
           other.saturatedFatPer100g == this.saturatedFatPer100g &&
+          other.microsJson == this.microsJson &&
           other.isCustom == this.isCustom &&
           other.lastUsed == this.lastUsed &&
           other.useCount == this.useCount &&
@@ -19353,6 +19447,7 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
   final Value<double?> fiberPer100g;
   final Value<double?> saltPer100g;
   final Value<double?> saturatedFatPer100g;
+  final Value<String?> microsJson;
   final Value<bool> isCustom;
   final Value<DateTime?> lastUsed;
   final Value<int> useCount;
@@ -19371,6 +19466,7 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
     this.fiberPer100g = const Value.absent(),
     this.saltPer100g = const Value.absent(),
     this.saturatedFatPer100g = const Value.absent(),
+    this.microsJson = const Value.absent(),
     this.isCustom = const Value.absent(),
     this.lastUsed = const Value.absent(),
     this.useCount = const Value.absent(),
@@ -19390,6 +19486,7 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
     this.fiberPer100g = const Value.absent(),
     this.saltPer100g = const Value.absent(),
     this.saturatedFatPer100g = const Value.absent(),
+    this.microsJson = const Value.absent(),
     this.isCustom = const Value.absent(),
     this.lastUsed = const Value.absent(),
     this.useCount = const Value.absent(),
@@ -19414,6 +19511,7 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
     Expression<double>? fiberPer100g,
     Expression<double>? saltPer100g,
     Expression<double>? saturatedFatPer100g,
+    Expression<String>? microsJson,
     Expression<bool>? isCustom,
     Expression<DateTime>? lastUsed,
     Expression<int>? useCount,
@@ -19434,6 +19532,7 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
       if (saltPer100g != null) 'salt_per100g': saltPer100g,
       if (saturatedFatPer100g != null)
         'saturated_fat_per100g': saturatedFatPer100g,
+      if (microsJson != null) 'micros_json': microsJson,
       if (isCustom != null) 'is_custom': isCustom,
       if (lastUsed != null) 'last_used': lastUsed,
       if (useCount != null) 'use_count': useCount,
@@ -19455,6 +19554,7 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
     Value<double?>? fiberPer100g,
     Value<double?>? saltPer100g,
     Value<double?>? saturatedFatPer100g,
+    Value<String?>? microsJson,
     Value<bool>? isCustom,
     Value<DateTime?>? lastUsed,
     Value<int>? useCount,
@@ -19474,6 +19574,7 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
       fiberPer100g: fiberPer100g ?? this.fiberPer100g,
       saltPer100g: saltPer100g ?? this.saltPer100g,
       saturatedFatPer100g: saturatedFatPer100g ?? this.saturatedFatPer100g,
+      microsJson: microsJson ?? this.microsJson,
       isCustom: isCustom ?? this.isCustom,
       lastUsed: lastUsed ?? this.lastUsed,
       useCount: useCount ?? this.useCount,
@@ -19525,6 +19626,9 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
         saturatedFatPer100g.value,
       );
     }
+    if (microsJson.present) {
+      map['micros_json'] = Variable<String>(microsJson.value);
+    }
     if (isCustom.present) {
       map['is_custom'] = Variable<bool>(isCustom.value);
     }
@@ -19556,6 +19660,7 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
           ..write('fiberPer100g: $fiberPer100g, ')
           ..write('saltPer100g: $saltPer100g, ')
           ..write('saturatedFatPer100g: $saturatedFatPer100g, ')
+          ..write('microsJson: $microsJson, ')
           ..write('isCustom: $isCustom, ')
           ..write('lastUsed: $lastUsed, ')
           ..write('useCount: $useCount, ')
@@ -19677,6 +19782,17 @@ class $MealEntriesTable extends MealEntries
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _microsJsonMeta = const VerificationMeta(
+    'microsJson',
+  );
+  @override
+  late final GeneratedColumn<String> microsJson = GeneratedColumn<String>(
+    'micros_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -19689,6 +19805,7 @@ class $MealEntriesTable extends MealEntries
     carbs,
     fat,
     loggedAt,
+    microsJson,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -19780,6 +19897,12 @@ class $MealEntriesTable extends MealEntries
     } else if (isInserting) {
       context.missing(_loggedAtMeta);
     }
+    if (data.containsKey('micros_json')) {
+      context.handle(
+        _microsJsonMeta,
+        microsJson.isAcceptableOrUnknown(data['micros_json']!, _microsJsonMeta),
+      );
+    }
     return context;
   }
 
@@ -19829,6 +19952,10 @@ class $MealEntriesTable extends MealEntries
         DriftSqlType.dateTime,
         data['${effectivePrefix}logged_at'],
       )!,
+      microsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}micros_json'],
+      ),
     );
   }
 
@@ -19849,6 +19976,7 @@ class MealEntry extends DataClass implements Insertable<MealEntry> {
   final double carbs;
   final double fat;
   final DateTime loggedAt;
+  final String? microsJson;
   const MealEntry({
     required this.id,
     required this.date,
@@ -19860,6 +19988,7 @@ class MealEntry extends DataClass implements Insertable<MealEntry> {
     required this.carbs,
     required this.fat,
     required this.loggedAt,
+    this.microsJson,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -19874,6 +20003,9 @@ class MealEntry extends DataClass implements Insertable<MealEntry> {
     map['carbs'] = Variable<double>(carbs);
     map['fat'] = Variable<double>(fat);
     map['logged_at'] = Variable<DateTime>(loggedAt);
+    if (!nullToAbsent || microsJson != null) {
+      map['micros_json'] = Variable<String>(microsJson);
+    }
     return map;
   }
 
@@ -19889,6 +20021,9 @@ class MealEntry extends DataClass implements Insertable<MealEntry> {
       carbs: Value(carbs),
       fat: Value(fat),
       loggedAt: Value(loggedAt),
+      microsJson: microsJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(microsJson),
     );
   }
 
@@ -19908,6 +20043,7 @@ class MealEntry extends DataClass implements Insertable<MealEntry> {
       carbs: serializer.fromJson<double>(json['carbs']),
       fat: serializer.fromJson<double>(json['fat']),
       loggedAt: serializer.fromJson<DateTime>(json['loggedAt']),
+      microsJson: serializer.fromJson<String?>(json['microsJson']),
     );
   }
   @override
@@ -19924,6 +20060,7 @@ class MealEntry extends DataClass implements Insertable<MealEntry> {
       'carbs': serializer.toJson<double>(carbs),
       'fat': serializer.toJson<double>(fat),
       'loggedAt': serializer.toJson<DateTime>(loggedAt),
+      'microsJson': serializer.toJson<String?>(microsJson),
     };
   }
 
@@ -19938,6 +20075,7 @@ class MealEntry extends DataClass implements Insertable<MealEntry> {
     double? carbs,
     double? fat,
     DateTime? loggedAt,
+    Value<String?> microsJson = const Value.absent(),
   }) => MealEntry(
     id: id ?? this.id,
     date: date ?? this.date,
@@ -19949,6 +20087,7 @@ class MealEntry extends DataClass implements Insertable<MealEntry> {
     carbs: carbs ?? this.carbs,
     fat: fat ?? this.fat,
     loggedAt: loggedAt ?? this.loggedAt,
+    microsJson: microsJson.present ? microsJson.value : this.microsJson,
   );
   MealEntry copyWithCompanion(MealEntriesCompanion data) {
     return MealEntry(
@@ -19964,6 +20103,9 @@ class MealEntry extends DataClass implements Insertable<MealEntry> {
       carbs: data.carbs.present ? data.carbs.value : this.carbs,
       fat: data.fat.present ? data.fat.value : this.fat,
       loggedAt: data.loggedAt.present ? data.loggedAt.value : this.loggedAt,
+      microsJson: data.microsJson.present
+          ? data.microsJson.value
+          : this.microsJson,
     );
   }
 
@@ -19979,7 +20121,8 @@ class MealEntry extends DataClass implements Insertable<MealEntry> {
           ..write('protein: $protein, ')
           ..write('carbs: $carbs, ')
           ..write('fat: $fat, ')
-          ..write('loggedAt: $loggedAt')
+          ..write('loggedAt: $loggedAt, ')
+          ..write('microsJson: $microsJson')
           ..write(')'))
         .toString();
   }
@@ -19996,6 +20139,7 @@ class MealEntry extends DataClass implements Insertable<MealEntry> {
     carbs,
     fat,
     loggedAt,
+    microsJson,
   );
   @override
   bool operator ==(Object other) =>
@@ -20010,7 +20154,8 @@ class MealEntry extends DataClass implements Insertable<MealEntry> {
           other.protein == this.protein &&
           other.carbs == this.carbs &&
           other.fat == this.fat &&
-          other.loggedAt == this.loggedAt);
+          other.loggedAt == this.loggedAt &&
+          other.microsJson == this.microsJson);
 }
 
 class MealEntriesCompanion extends UpdateCompanion<MealEntry> {
@@ -20024,6 +20169,7 @@ class MealEntriesCompanion extends UpdateCompanion<MealEntry> {
   final Value<double> carbs;
   final Value<double> fat;
   final Value<DateTime> loggedAt;
+  final Value<String?> microsJson;
   const MealEntriesCompanion({
     this.id = const Value.absent(),
     this.date = const Value.absent(),
@@ -20035,6 +20181,7 @@ class MealEntriesCompanion extends UpdateCompanion<MealEntry> {
     this.carbs = const Value.absent(),
     this.fat = const Value.absent(),
     this.loggedAt = const Value.absent(),
+    this.microsJson = const Value.absent(),
   });
   MealEntriesCompanion.insert({
     this.id = const Value.absent(),
@@ -20047,6 +20194,7 @@ class MealEntriesCompanion extends UpdateCompanion<MealEntry> {
     required double carbs,
     required double fat,
     required DateTime loggedAt,
+    this.microsJson = const Value.absent(),
   }) : date = Value(date),
        mealType = Value(mealType),
        productId = Value(productId),
@@ -20067,6 +20215,7 @@ class MealEntriesCompanion extends UpdateCompanion<MealEntry> {
     Expression<double>? carbs,
     Expression<double>? fat,
     Expression<DateTime>? loggedAt,
+    Expression<String>? microsJson,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -20079,6 +20228,7 @@ class MealEntriesCompanion extends UpdateCompanion<MealEntry> {
       if (carbs != null) 'carbs': carbs,
       if (fat != null) 'fat': fat,
       if (loggedAt != null) 'logged_at': loggedAt,
+      if (microsJson != null) 'micros_json': microsJson,
     });
   }
 
@@ -20093,6 +20243,7 @@ class MealEntriesCompanion extends UpdateCompanion<MealEntry> {
     Value<double>? carbs,
     Value<double>? fat,
     Value<DateTime>? loggedAt,
+    Value<String?>? microsJson,
   }) {
     return MealEntriesCompanion(
       id: id ?? this.id,
@@ -20105,6 +20256,7 @@ class MealEntriesCompanion extends UpdateCompanion<MealEntry> {
       carbs: carbs ?? this.carbs,
       fat: fat ?? this.fat,
       loggedAt: loggedAt ?? this.loggedAt,
+      microsJson: microsJson ?? this.microsJson,
     );
   }
 
@@ -20141,6 +20293,9 @@ class MealEntriesCompanion extends UpdateCompanion<MealEntry> {
     if (loggedAt.present) {
       map['logged_at'] = Variable<DateTime>(loggedAt.value);
     }
+    if (microsJson.present) {
+      map['micros_json'] = Variable<String>(microsJson.value);
+    }
     return map;
   }
 
@@ -20156,7 +20311,8 @@ class MealEntriesCompanion extends UpdateCompanion<MealEntry> {
           ..write('protein: $protein, ')
           ..write('carbs: $carbs, ')
           ..write('fat: $fat, ')
-          ..write('loggedAt: $loggedAt')
+          ..write('loggedAt: $loggedAt, ')
+          ..write('microsJson: $microsJson')
           ..write(')'))
         .toString();
   }
@@ -31752,6 +31908,7 @@ typedef $$SupplementsTableCreateCompanionBuilder =
       Value<String?> dosageUnit,
       Value<String> timings,
       Value<String?> notes,
+      Value<String?> nutrientKey,
       Value<bool> isActive,
       Value<DateTime> createdAt,
     });
@@ -31764,6 +31921,7 @@ typedef $$SupplementsTableUpdateCompanionBuilder =
       Value<String?> dosageUnit,
       Value<String> timings,
       Value<String?> notes,
+      Value<String?> nutrientKey,
       Value<bool> isActive,
       Value<DateTime> createdAt,
     });
@@ -31835,6 +31993,11 @@ class $$SupplementsTableFilterComposer
 
   ColumnFilters<String> get notes => $composableBuilder(
     column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nutrientKey => $composableBuilder(
+    column: $table.nutrientKey,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -31918,6 +32081,11 @@ class $$SupplementsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get nutrientKey => $composableBuilder(
+    column: $table.nutrientKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isActive => $composableBuilder(
     column: $table.isActive,
     builder: (column) => ColumnOrderings(column),
@@ -31962,6 +32130,11 @@ class $$SupplementsTableAnnotationComposer
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get nutrientKey => $composableBuilder(
+    column: $table.nutrientKey,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get isActive =>
       $composableBuilder(column: $table.isActive, builder: (column) => column);
@@ -32030,6 +32203,7 @@ class $$SupplementsTableTableManager
                 Value<String?> dosageUnit = const Value.absent(),
                 Value<String> timings = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<String?> nutrientKey = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => SupplementsCompanion(
@@ -32040,6 +32214,7 @@ class $$SupplementsTableTableManager
                 dosageUnit: dosageUnit,
                 timings: timings,
                 notes: notes,
+                nutrientKey: nutrientKey,
                 isActive: isActive,
                 createdAt: createdAt,
               ),
@@ -32052,6 +32227,7 @@ class $$SupplementsTableTableManager
                 Value<String?> dosageUnit = const Value.absent(),
                 Value<String> timings = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<String?> nutrientKey = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => SupplementsCompanion.insert(
@@ -32062,6 +32238,7 @@ class $$SupplementsTableTableManager
                 dosageUnit: dosageUnit,
                 timings: timings,
                 notes: notes,
+                nutrientKey: nutrientKey,
                 isActive: isActive,
                 createdAt: createdAt,
               ),
@@ -37243,6 +37420,7 @@ typedef $$FoodProductsTableCreateCompanionBuilder =
       Value<double?> fiberPer100g,
       Value<double?> saltPer100g,
       Value<double?> saturatedFatPer100g,
+      Value<String?> microsJson,
       Value<bool> isCustom,
       Value<DateTime?> lastUsed,
       Value<int> useCount,
@@ -37263,6 +37441,7 @@ typedef $$FoodProductsTableUpdateCompanionBuilder =
       Value<double?> fiberPer100g,
       Value<double?> saltPer100g,
       Value<double?> saturatedFatPer100g,
+      Value<String?> microsJson,
       Value<bool> isCustom,
       Value<DateTime?> lastUsed,
       Value<int> useCount,
@@ -37340,6 +37519,11 @@ class $$FoodProductsTableFilterComposer
 
   ColumnFilters<double> get saturatedFatPer100g => $composableBuilder(
     column: $table.saturatedFatPer100g,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get microsJson => $composableBuilder(
+    column: $table.microsJson,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -37438,6 +37622,11 @@ class $$FoodProductsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get microsJson => $composableBuilder(
+    column: $table.microsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isCustom => $composableBuilder(
     column: $table.isCustom,
     builder: (column) => ColumnOrderings(column),
@@ -37523,6 +37712,11 @@ class $$FoodProductsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get microsJson => $composableBuilder(
+    column: $table.microsJson,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<bool> get isCustom =>
       $composableBuilder(column: $table.isCustom, builder: (column) => column);
 
@@ -37580,6 +37774,7 @@ class $$FoodProductsTableTableManager
                 Value<double?> fiberPer100g = const Value.absent(),
                 Value<double?> saltPer100g = const Value.absent(),
                 Value<double?> saturatedFatPer100g = const Value.absent(),
+                Value<String?> microsJson = const Value.absent(),
                 Value<bool> isCustom = const Value.absent(),
                 Value<DateTime?> lastUsed = const Value.absent(),
                 Value<int> useCount = const Value.absent(),
@@ -37598,6 +37793,7 @@ class $$FoodProductsTableTableManager
                 fiberPer100g: fiberPer100g,
                 saltPer100g: saltPer100g,
                 saturatedFatPer100g: saturatedFatPer100g,
+                microsJson: microsJson,
                 isCustom: isCustom,
                 lastUsed: lastUsed,
                 useCount: useCount,
@@ -37618,6 +37814,7 @@ class $$FoodProductsTableTableManager
                 Value<double?> fiberPer100g = const Value.absent(),
                 Value<double?> saltPer100g = const Value.absent(),
                 Value<double?> saturatedFatPer100g = const Value.absent(),
+                Value<String?> microsJson = const Value.absent(),
                 Value<bool> isCustom = const Value.absent(),
                 Value<DateTime?> lastUsed = const Value.absent(),
                 Value<int> useCount = const Value.absent(),
@@ -37636,6 +37833,7 @@ class $$FoodProductsTableTableManager
                 fiberPer100g: fiberPer100g,
                 saltPer100g: saltPer100g,
                 saturatedFatPer100g: saturatedFatPer100g,
+                microsJson: microsJson,
                 isCustom: isCustom,
                 lastUsed: lastUsed,
                 useCount: useCount,
@@ -37678,6 +37876,7 @@ typedef $$MealEntriesTableCreateCompanionBuilder =
       required double carbs,
       required double fat,
       required DateTime loggedAt,
+      Value<String?> microsJson,
     });
 typedef $$MealEntriesTableUpdateCompanionBuilder =
     MealEntriesCompanion Function({
@@ -37691,6 +37890,7 @@ typedef $$MealEntriesTableUpdateCompanionBuilder =
       Value<double> carbs,
       Value<double> fat,
       Value<DateTime> loggedAt,
+      Value<String?> microsJson,
     });
 
 class $$MealEntriesTableFilterComposer
@@ -37749,6 +37949,11 @@ class $$MealEntriesTableFilterComposer
 
   ColumnFilters<DateTime> get loggedAt => $composableBuilder(
     column: $table.loggedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get microsJson => $composableBuilder(
+    column: $table.microsJson,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -37811,6 +38016,11 @@ class $$MealEntriesTableOrderingComposer
     column: $table.loggedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get microsJson => $composableBuilder(
+    column: $table.microsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$MealEntriesTableAnnotationComposer
@@ -37853,6 +38063,11 @@ class $$MealEntriesTableAnnotationComposer
 
   GeneratedColumn<DateTime> get loggedAt =>
       $composableBuilder(column: $table.loggedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get microsJson => $composableBuilder(
+    column: $table.microsJson,
+    builder: (column) => column,
+  );
 }
 
 class $$MealEntriesTableTableManager
@@ -37896,6 +38111,7 @@ class $$MealEntriesTableTableManager
                 Value<double> carbs = const Value.absent(),
                 Value<double> fat = const Value.absent(),
                 Value<DateTime> loggedAt = const Value.absent(),
+                Value<String?> microsJson = const Value.absent(),
               }) => MealEntriesCompanion(
                 id: id,
                 date: date,
@@ -37907,6 +38123,7 @@ class $$MealEntriesTableTableManager
                 carbs: carbs,
                 fat: fat,
                 loggedAt: loggedAt,
+                microsJson: microsJson,
               ),
           createCompanionCallback:
               ({
@@ -37920,6 +38137,7 @@ class $$MealEntriesTableTableManager
                 required double carbs,
                 required double fat,
                 required DateTime loggedAt,
+                Value<String?> microsJson = const Value.absent(),
               }) => MealEntriesCompanion.insert(
                 id: id,
                 date: date,
@@ -37931,6 +38149,7 @@ class $$MealEntriesTableTableManager
                 carbs: carbs,
                 fat: fat,
                 loggedAt: loggedAt,
+                microsJson: microsJson,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
