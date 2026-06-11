@@ -4184,6 +4184,48 @@ abstract class AppLocalizations {
   /// **'Auswahl exportieren'**
   String get exportSelection;
 
+  /// No description provided for @importData.
+  ///
+  /// In de, this message translates to:
+  /// **'Daten importieren'**
+  String get importData;
+
+  /// No description provided for @backupRunning.
+  ///
+  /// In de, this message translates to:
+  /// **'Backup wird erstellt…'**
+  String get backupRunning;
+
+  /// No description provided for @backupCreated.
+  ///
+  /// In de, this message translates to:
+  /// **'Backup erstellt: {rows} Einträge, {media} Medien'**
+  String backupCreated(int rows, int media);
+
+  /// No description provided for @backupFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Backup fehlgeschlagen: {error}'**
+  String backupFailed(String error);
+
+  /// No description provided for @importRunning.
+  ///
+  /// In de, this message translates to:
+  /// **'Import läuft…'**
+  String get importRunning;
+
+  /// No description provided for @importDone.
+  ///
+  /// In de, this message translates to:
+  /// **'{rows} Einträge importiert, {media} Medien wiederhergestellt'**
+  String importDone(int rows, int media);
+
+  /// No description provided for @importFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Import fehlgeschlagen: {error}'**
+  String importFailed(String error);
+
   /// No description provided for @chooseLanguage.
   ///
   /// In de, this message translates to:

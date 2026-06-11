@@ -3,6 +3,7 @@ import '../../data/database/traum_database.dart';
 import '../../data/models/substance_info.dart';
 import '../../data/repositories/substance_repository.dart';
 import '../../data/services/substance_api_service.dart';
+import '../services/backup_service.dart';
 import '../services/calendar_sync_service.dart';
 import '../services/interaction_service.dart';
 import 'preferences_provider.dart';
@@ -294,4 +295,9 @@ final calendarSyncServiceProvider = Provider<CalendarSyncService>((ref) {
     ref.watch(planningDaoProvider),
     ref.watch(preferencesRepositoryProvider),
   );
+});
+
+// ─── Backup (Export/Import) ───────────────────────────────────────────────────
+final backupServiceProvider = Provider<BackupService>((ref) {
+  return BackupService(ref.watch(databaseProvider));
 });

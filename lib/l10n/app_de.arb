@@ -887,6 +887,35 @@
   "deleteEverything": "Alles löschen",
   "exportAll": "Alles exportieren",
   "exportSelection": "Auswahl exportieren",
+  "importData": "Daten importieren",
+  "backupRunning": "Backup wird erstellt…",
+  "backupCreated": "Backup erstellt: {rows} Einträge, {media} Medien",
+  "@backupCreated": {
+    "placeholders": {
+      "rows": { "type": "int" },
+      "media": { "type": "int" }
+    }
+  },
+  "backupFailed": "Backup fehlgeschlagen: {error}",
+  "@backupFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "importRunning": "Import läuft…",
+  "importDone": "{rows} Einträge importiert, {media} Medien wiederhergestellt",
+  "@importDone": {
+    "placeholders": {
+      "rows": { "type": "int" },
+      "media": { "type": "int" }
+    }
+  },
+  "importFailed": "Import fehlgeschlagen: {error}",
+  "@importFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
   "chooseLanguage": "Sprache wählen",
 
   "exercise": "Übung",

@@ -2138,6 +2138,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportSelection => 'Export selection';
 
   @override
+  String get importData => 'Import data';
+
+  @override
+  String get backupRunning => 'Creating backup…';
+
+  @override
+  String backupCreated(int rows, int media) {
+    return 'Backup created: $rows entries, $media media files';
+  }
+
+  @override
+  String backupFailed(String error) {
+    return 'Backup failed: $error';
+  }
+
+  @override
+  String get importRunning => 'Importing…';
+
+  @override
+  String importDone(int rows, int media) {
+    return '$rows entries imported, $media media files restored';
+  }
+
+  @override
+  String importFailed(String error) {
+    return 'Import failed: $error';
+  }
+
+  @override
   String get chooseLanguage => 'Choose language';
 
   @override

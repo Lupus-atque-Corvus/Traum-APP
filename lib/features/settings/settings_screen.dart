@@ -1308,6 +1308,24 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
           ),
           ListTile(
             leading: const Icon(
+              Icons.upload_rounded,
+              color: TraumColors.cyanBlue,
+            ),
+            title: Text(
+              l10n.importData,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
+            ),
+            trailing: const Icon(
+              Icons.chevron_right,
+              color: TraumColors.onBackgroundMuted,
+            ),
+            onTap: () => _importBackup(context),
+          ),
+          ListTile(
+            leading: const Icon(
               Icons.delete_forever_rounded,
               color: TraumColors.roseRed,
             ),
@@ -1386,6 +1404,31 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
       isScrollControlled: true,
       builder: (ctx) => const _ExportSheet(),
     );
+  }
+
+  Future<void> _importBackup(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    final service = ref.read(backupServiceProvider);
+
+    final result = await service.importBackup();
+    if (result.cancelled) return;
+    messenger.hideCurrentSnackBar();
+    if (result.success) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.importDone(result.rowCount, result.mediaCount)),
+          backgroundColor: TraumColors.success,
+        ),
+      );
+    } else {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.importFailed(result.error ?? '')),
+          backgroundColor: TraumColors.roseRed,
+        ),
+      );
+    }
   }
 
   Future<void> _confirmDeleteAll(BuildContext context) async {
@@ -1500,6 +1543,61 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
 
   bool get _anySelected => _modules.values.any((v) => v);
 
+  Future<void> _runFullBackup(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    final service = ref.read(backupServiceProvider);
+    Navigator.pop(context);
+    messenger.showSnackBar(SnackBar(content: Text(l10n.backupRunning)));
+    final result = await service.exportBackup();
+    messenger.hideCurrentSnackBar();
+    if (result.success) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.backupCreated(result.rowCount, result.mediaCount)),
+          backgroundColor: TraumColors.success,
+        ),
+      );
+    } else {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.backupFailed(result.error ?? '')),
+          backgroundColor: TraumColors.roseRed,
+        ),
+      );
+    }
+  }
+
+  Future<void> _runSelectiveExport(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    final service = ref.read(backupServiceProvider);
+    final selected = _modules.entries
+        .where((e) => e.value)
+        .map((e) => e.key)
+        .toList();
+    final format = _format;
+    Navigator.pop(context);
+    messenger.showSnackBar(SnackBar(content: Text(l10n.backupRunning)));
+    final result = await service.exportModules(selected, format: format);
+    messenger.hideCurrentSnackBar();
+    if (result.success) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.backupCreated(result.rowCount, result.mediaCount)),
+          backgroundColor: TraumColors.success,
+        ),
+      );
+    } else {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.backupFailed(result.error ?? '')),
+          backgroundColor: TraumColors.roseRed,
+        ),
+      );
+    }
+  }
+
   String _moduleLabel(String key, AppLocalizations l10n) {
     switch (key) {
       case 'training':
@@ -1577,12 +1675,7 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            onPressed: () {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(l10n.exportPreparing)));
-              Navigator.pop(context);
-            },
+            onPressed: () => _runFullBackup(context),
           ),
           const SizedBox(height: 20),
           Text(
@@ -1647,14 +1740,8 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            onPressed: _anySelected
-                ? () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.exportPreparing)),
-                    );
-                    Navigator.pop(context);
-                  }
-                : null,
+            onPressed:
+                _anySelected ? () => _runSelectiveExport(context) : null,
           ),
           const SizedBox(height: 20),
           const Text(
