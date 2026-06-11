@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.7.4 (2026-06-11) — Backup: Export & Import
+
+### Neu
+
+- **Vollständiges Backup (Export & Import):** „Alles exportieren" erstellt jetzt ein echtes ZIP-Backup der **gesamten** Datenbank inklusive aller Fotos/Videos (Tagebuch, Graffiti-Map). Über **„Daten importieren"** lässt sich ein Backup wieder einspielen — Medien werden mit zurückgeschrieben, bestehende Einträge per Primärschlüssel zusammengeführt (insert-or-update).
+- **Selektiver Export:** Einzelne Module (Training, Gesundheit, Ernährung, Supplements, Planung, Medikamente, Abstinenz, Budget, Zyklus) lassen sich gezielt als **JSON** (wieder importierbar) oder als **CSV** (ein CSV pro Tabelle, gebündelt im ZIP) exportieren.
+
+### Hinweis
+
+- Der Import akzeptiert ZIP-Backups (komplett, inkl. Fotos) sowie reine JSON-Exporte.
+
+---
+
 ## v0.7.3 (2026-06-11) — Mikronährstoffe
 
 ### Neu
