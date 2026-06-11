@@ -1,9 +1,11 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
+import 'micro_nutrients.dart';
 import 'nutrition_providers.dart';
 
 class AmountEntrySheet extends ConsumerStatefulWidget {
@@ -53,6 +55,7 @@ class _AmountEntrySheetState
     if (_grams <= 0) return;
     setState(() => _saving = true);
     try {
+      final micros = productMicrosPer100g(widget.product).scale(_factor);
       await ref.read(mealEntriesDaoProvider).insertEntry(
             MealEntriesCompanion.insert(
               date: widget.date,
@@ -64,6 +67,7 @@ class _AmountEntrySheetState
               carbs: _carbs,
               fat: _fat,
               loggedAt: DateTime.now(),
+              microsJson: Value(micros.toNullableJson()),
             ),
           );
       await ref

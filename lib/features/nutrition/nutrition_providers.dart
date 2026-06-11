@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
 import '../../data/database/traum_database.dart';
+import 'micro_nutrients.dart';
 
 // ─── Models ──────────────────────────────────────────────────────────────────
 
@@ -183,6 +184,18 @@ final waterTodaySnapshotProvider =
       ));
   return logs.fold<int>(0, (sum, l) => sum + l.amountMl);
 });
+
+// ─── Micros ───────────────────────────────────────────────────────────────────
+
+/// Mikros eines Produkts pro 100 g (erweiterte Spalten + Panel-JSON).
+MicroNutrients productMicrosPer100g(FoodProduct p) {
+  final base = <String, double>{};
+  if (p.sugarPer100g != null) base['sugar'] = p.sugarPer100g!;
+  if (p.fiberPer100g != null) base['fiber'] = p.fiberPer100g!;
+  if (p.saturatedFatPer100g != null) base['satFat'] = p.saturatedFatPer100g!;
+  if (p.saltPer100g != null) base['salt'] = p.saltPer100g!;
+  return MicroNutrients(base) + MicroNutrients.fromJson(p.microsJson);
+}
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
 
