@@ -197,6 +197,48 @@ MicroNutrients productMicrosPer100g(FoodProduct p) {
   return MicroNutrients(base) + MicroNutrients.fromJson(p.microsJson);
 }
 
+// ─── Supplement-Logs heute ────────────────────────────────────────────────────
+
+final supplementLogsTodayProvider =
+    StreamProvider.autoDispose<List<SupplementLog>>((ref) {
+  return ref.watch(supplementDaoProvider).watchLogsForDate(DateTime.now());
+});
+
+// ─── Tages-Mikronährstoffe ────────────────────────────────────────────────────
+
+/// Σ Mikros aller heutigen Meal-Einträge + Σ Beiträge heute abgehakter Supplements.
+final dailyMicrosProvider = FutureProvider.autoDispose
+    .family<MicroNutrients, String>((ref, dateStr) async {
+  // Meal entries
+  final entries =
+      await ref.watch(mealEntriesDaoProvider).getForDate(dateStr);
+  var total = MicroNutrients.empty;
+  for (final e in entries) {
+    total = total + MicroNutrients.fromJson(e.microsJson);
+  }
+
+  // Checked supplements (today)
+  final logs = await ref.watch(supplementLogsTodayProvider.future);
+  if (logs.isNotEmpty) {
+    final supps =
+        await ref.watch(supplementDaoProvider).watchAllSupplements().first;
+    final byId = {for (final s in supps) s.id: s};
+    final countedIds = <int>{};
+    for (final log in logs) {
+      if (!countedIds.add(log.supplementId)) continue; // pro Supplement 1×
+      final s = byId[log.supplementId];
+      if (s == null) continue;
+      total = total +
+          supplementContribution(
+            nutrientKey: s.nutrientKey,
+            dosageAmount: s.dosageAmount,
+            dosageUnit: s.dosageUnit,
+          );
+    }
+  }
+  return total;
+});
+
 // ─── Helper ───────────────────────────────────────────────────────────────────
 
 String formatDateStr(DateTime date) =>
