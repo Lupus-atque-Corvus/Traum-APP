@@ -10,6 +10,7 @@ import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../data/models/substance_info.dart';
 import '../../l10n/app_localizations.dart';
+import '../nutrition/micro_nutrients.dart';
 
 class MySubstancesTab extends ConsumerWidget {
   const MySubstancesTab({super.key});
@@ -513,6 +514,8 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
   final _amountCtrl = TextEditingController();
   String _category = 'Vitamine';
   String _unit = 'mg';
+  String? _nutrientKey; // null = "keiner"
+  bool _nutrientTouched = false; // true sobald der Nutzer manuell wählt
   bool _saving = false;
 
   static const _categories = [
@@ -520,6 +523,18 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
     'Adaptogene', 'Pre-Workout', 'Darmgesundheit', 'Kreatin', 'Sonstige'
   ];
   static const _units = ['mg', 'g', 'µg', 'IU', 'ml', 'Kapsel(n)', 'Tablette(n)', 'Messbecher'];
+
+  @override
+  void initState() {
+    super.initState();
+    _nameCtrl.addListener(() {
+      if (_nutrientTouched) return;
+      final suggested = suggestNutrientKey(_nameCtrl.text);
+      if (suggested != _nutrientKey) {
+        setState(() => _nutrientKey = suggested);
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -575,6 +590,32 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
               ),
             ]),
           ]),
+          const SizedBox(height: 12),
+          const Text('Nährstoff (für Ernährung)',
+              style: TextStyle(color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans', fontSize: 13)),
+          const SizedBox(height: 6),
+          DropdownButton<String?>(
+            value: _nutrientKey,
+            dropdownColor: TraumColors.surfaceElevated,
+            isExpanded: true,
+            style: const TextStyle(
+                color: TraumColors.onBackground, fontFamily: 'DMSans'),
+            underline: Container(height: 1, color: TraumColors.surfaceVariant),
+            hint: const Text('keiner',
+                style: TextStyle(
+                    color: TraumColors.onBackgroundSubtle,
+                    fontFamily: 'DMSans')),
+            items: [
+              const DropdownMenuItem<String?>(value: null, child: Text('keiner')),
+              ...kNutrientCatalog.map((n) =>
+                  DropdownMenuItem<String?>(value: n.key, child: Text(n.label))),
+            ],
+            onChanged: (v) => setState(() {
+              _nutrientKey = v;
+              _nutrientTouched = true;
+            }),
+          ),
           const SizedBox(height: 20),
           GradientButton(
             label: _saving ? 'Speichern…' : 'Speichern',
@@ -621,6 +662,7 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
       category: Value(_category),
       dosageAmount: Value(_amountCtrl.text.trim().isEmpty ? null : _amountCtrl.text.trim()),
       dosageUnit: Value(_unit),
+      nutrientKey: Value(_nutrientKey),
     ));
     if (mounted) Navigator.pop(context);
   }
