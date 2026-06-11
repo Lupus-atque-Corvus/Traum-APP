@@ -64,7 +64,7 @@ class ShoppingTemplates extends Table {
 
 class ShoppingTemplateItems extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get templateId => integer()();
+  IntColumn get templateId => integer().references(ShoppingTemplates, #id)();
   TextColumn get name => text()();
   TextColumn get category => text().nullable()();
   RealColumn get quantity => real().nullable()();

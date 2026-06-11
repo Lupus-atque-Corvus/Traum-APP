@@ -10735,6 +10735,9 @@ class $ShoppingTemplateItemsTable extends ShoppingTemplateItems
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES shopping_templates (id)',
+    ),
   );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
@@ -33567,6 +33570,48 @@ typedef $$ShoppingTemplatesTableUpdateCompanionBuilder =
       Value<DateTime> createdAt,
     });
 
+final class $$ShoppingTemplatesTableReferences
+    extends
+        BaseReferences<
+          _$TraumDatabase,
+          $ShoppingTemplatesTable,
+          ShoppingTemplate
+        > {
+  $$ShoppingTemplatesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<
+    $ShoppingTemplateItemsTable,
+    List<ShoppingTemplateItem>
+  >
+  _shoppingTemplateItemsRefsTable(_$TraumDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.shoppingTemplateItems,
+        aliasName: $_aliasNameGenerator(
+          db.shoppingTemplates.id,
+          db.shoppingTemplateItems.templateId,
+        ),
+      );
+
+  $$ShoppingTemplateItemsTableProcessedTableManager
+  get shoppingTemplateItemsRefs {
+    final manager = $$ShoppingTemplateItemsTableTableManager(
+      $_db,
+      $_db.shoppingTemplateItems,
+    ).filter((f) => f.templateId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _shoppingTemplateItemsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
 class $$ShoppingTemplatesTableFilterComposer
     extends Composer<_$TraumDatabase, $ShoppingTemplatesTable> {
   $$ShoppingTemplatesTableFilterComposer({
@@ -33590,6 +33635,32 @@ class $$ShoppingTemplatesTableFilterComposer
     column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
   );
+
+  Expression<bool> shoppingTemplateItemsRefs(
+    Expression<bool> Function($$ShoppingTemplateItemsTableFilterComposer f) f,
+  ) {
+    final $$ShoppingTemplateItemsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.shoppingTemplateItems,
+          getReferencedColumn: (t) => t.templateId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ShoppingTemplateItemsTableFilterComposer(
+                $db: $db,
+                $table: $db.shoppingTemplateItems,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$ShoppingTemplatesTableOrderingComposer
@@ -33634,6 +33705,32 @@ class $$ShoppingTemplatesTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  Expression<T> shoppingTemplateItemsRefs<T extends Object>(
+    Expression<T> Function($$ShoppingTemplateItemsTableAnnotationComposer a) f,
+  ) {
+    final $$ShoppingTemplateItemsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.shoppingTemplateItems,
+          getReferencedColumn: (t) => t.templateId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ShoppingTemplateItemsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.shoppingTemplateItems,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$ShoppingTemplatesTableTableManager
@@ -33647,16 +33744,9 @@ class $$ShoppingTemplatesTableTableManager
           $$ShoppingTemplatesTableAnnotationComposer,
           $$ShoppingTemplatesTableCreateCompanionBuilder,
           $$ShoppingTemplatesTableUpdateCompanionBuilder,
-          (
-            ShoppingTemplate,
-            BaseReferences<
-              _$TraumDatabase,
-              $ShoppingTemplatesTable,
-              ShoppingTemplate
-            >,
-          ),
+          (ShoppingTemplate, $$ShoppingTemplatesTableReferences),
           ShoppingTemplate,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool shoppingTemplateItemsRefs})
         > {
   $$ShoppingTemplatesTableTableManager(
     _$TraumDatabase db,
@@ -33695,9 +33785,45 @@ class $$ShoppingTemplatesTableTableManager
                 createdAt: createdAt,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ShoppingTemplatesTableReferences(db, table, e),
+                ),
+              )
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({shoppingTemplateItemsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (shoppingTemplateItemsRefs) db.shoppingTemplateItems,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (shoppingTemplateItemsRefs)
+                    await $_getPrefetchedData<
+                      ShoppingTemplate,
+                      $ShoppingTemplatesTable,
+                      ShoppingTemplateItem
+                    >(
+                      currentTable: table,
+                      referencedTable: $$ShoppingTemplatesTableReferences
+                          ._shoppingTemplateItemsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$ShoppingTemplatesTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).shoppingTemplateItemsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.templateId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
         ),
       );
 }
@@ -33712,16 +33838,9 @@ typedef $$ShoppingTemplatesTableProcessedTableManager =
       $$ShoppingTemplatesTableAnnotationComposer,
       $$ShoppingTemplatesTableCreateCompanionBuilder,
       $$ShoppingTemplatesTableUpdateCompanionBuilder,
-      (
-        ShoppingTemplate,
-        BaseReferences<
-          _$TraumDatabase,
-          $ShoppingTemplatesTable,
-          ShoppingTemplate
-        >,
-      ),
+      (ShoppingTemplate, $$ShoppingTemplatesTableReferences),
       ShoppingTemplate,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool shoppingTemplateItemsRefs})
     >;
 typedef $$ShoppingTemplateItemsTableCreateCompanionBuilder =
     ShoppingTemplateItemsCompanion Function({
@@ -33742,6 +33861,42 @@ typedef $$ShoppingTemplateItemsTableUpdateCompanionBuilder =
       Value<String?> unit,
     });
 
+final class $$ShoppingTemplateItemsTableReferences
+    extends
+        BaseReferences<
+          _$TraumDatabase,
+          $ShoppingTemplateItemsTable,
+          ShoppingTemplateItem
+        > {
+  $$ShoppingTemplateItemsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ShoppingTemplatesTable _templateIdTable(_$TraumDatabase db) =>
+      db.shoppingTemplates.createAlias(
+        $_aliasNameGenerator(
+          db.shoppingTemplateItems.templateId,
+          db.shoppingTemplates.id,
+        ),
+      );
+
+  $$ShoppingTemplatesTableProcessedTableManager get templateId {
+    final $_column = $_itemColumn<int>('template_id')!;
+
+    final manager = $$ShoppingTemplatesTableTableManager(
+      $_db,
+      $_db.shoppingTemplates,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_templateIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
 class $$ShoppingTemplateItemsTableFilterComposer
     extends Composer<_$TraumDatabase, $ShoppingTemplateItemsTable> {
   $$ShoppingTemplateItemsTableFilterComposer({
@@ -33753,11 +33908,6 @@ class $$ShoppingTemplateItemsTableFilterComposer
   });
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get templateId => $composableBuilder(
-    column: $table.templateId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -33780,6 +33930,29 @@ class $$ShoppingTemplateItemsTableFilterComposer
     column: $table.unit,
     builder: (column) => ColumnFilters(column),
   );
+
+  $$ShoppingTemplatesTableFilterComposer get templateId {
+    final $$ShoppingTemplatesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.templateId,
+      referencedTable: $db.shoppingTemplates,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ShoppingTemplatesTableFilterComposer(
+            $db: $db,
+            $table: $db.shoppingTemplates,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ShoppingTemplateItemsTableOrderingComposer
@@ -33793,11 +33966,6 @@ class $$ShoppingTemplateItemsTableOrderingComposer
   });
   ColumnOrderings<int> get id => $composableBuilder(
     column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get templateId => $composableBuilder(
-    column: $table.templateId,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -33820,6 +33988,29 @@ class $$ShoppingTemplateItemsTableOrderingComposer
     column: $table.unit,
     builder: (column) => ColumnOrderings(column),
   );
+
+  $$ShoppingTemplatesTableOrderingComposer get templateId {
+    final $$ShoppingTemplatesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.templateId,
+      referencedTable: $db.shoppingTemplates,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ShoppingTemplatesTableOrderingComposer(
+            $db: $db,
+            $table: $db.shoppingTemplates,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ShoppingTemplateItemsTableAnnotationComposer
@@ -33834,11 +34025,6 @@ class $$ShoppingTemplateItemsTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<int> get templateId => $composableBuilder(
-    column: $table.templateId,
-    builder: (column) => column,
-  );
-
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -33850,6 +34036,30 @@ class $$ShoppingTemplateItemsTableAnnotationComposer
 
   GeneratedColumn<String> get unit =>
       $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  $$ShoppingTemplatesTableAnnotationComposer get templateId {
+    final $$ShoppingTemplatesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.templateId,
+          referencedTable: $db.shoppingTemplates,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ShoppingTemplatesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.shoppingTemplates,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
 }
 
 class $$ShoppingTemplateItemsTableTableManager
@@ -33863,16 +34073,9 @@ class $$ShoppingTemplateItemsTableTableManager
           $$ShoppingTemplateItemsTableAnnotationComposer,
           $$ShoppingTemplateItemsTableCreateCompanionBuilder,
           $$ShoppingTemplateItemsTableUpdateCompanionBuilder,
-          (
-            ShoppingTemplateItem,
-            BaseReferences<
-              _$TraumDatabase,
-              $ShoppingTemplateItemsTable,
-              ShoppingTemplateItem
-            >,
-          ),
+          (ShoppingTemplateItem, $$ShoppingTemplateItemsTableReferences),
           ShoppingTemplateItem,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool templateId})
         > {
   $$ShoppingTemplateItemsTableTableManager(
     _$TraumDatabase db,
@@ -33929,9 +34132,56 @@ class $$ShoppingTemplateItemsTableTableManager
                 unit: unit,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ShoppingTemplateItemsTableReferences(db, table, e),
+                ),
+              )
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({templateId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (templateId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.templateId,
+                                referencedTable:
+                                    $$ShoppingTemplateItemsTableReferences
+                                        ._templateIdTable(db),
+                                referencedColumn:
+                                    $$ShoppingTemplateItemsTableReferences
+                                        ._templateIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
         ),
       );
 }
@@ -33946,16 +34196,9 @@ typedef $$ShoppingTemplateItemsTableProcessedTableManager =
       $$ShoppingTemplateItemsTableAnnotationComposer,
       $$ShoppingTemplateItemsTableCreateCompanionBuilder,
       $$ShoppingTemplateItemsTableUpdateCompanionBuilder,
-      (
-        ShoppingTemplateItem,
-        BaseReferences<
-          _$TraumDatabase,
-          $ShoppingTemplateItemsTable,
-          ShoppingTemplateItem
-        >,
-      ),
+      (ShoppingTemplateItem, $$ShoppingTemplateItemsTableReferences),
       ShoppingTemplateItem,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool templateId})
     >;
 typedef $$SupplementsTableCreateCompanionBuilder =
     SupplementsCompanion Function({
