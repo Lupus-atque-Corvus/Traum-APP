@@ -1,4 +1,3 @@
-import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
@@ -11,6 +10,7 @@ import 'nutrition_providers.dart';
 import 'widgets/macro_ring_row.dart';
 import 'widgets/meal_section.dart';
 import 'widgets/micro_nutrient_panel.dart';
+import 'shopping/shopping_list_view.dart';
 import 'widgets/weekly_bar_chart.dart';
 
 class NutritionScreen extends ConsumerStatefulWidget {
@@ -587,106 +587,6 @@ class _ShoppingTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final itemsAsync =
-        ref.watch(allShoppingItemsStreamProvider);
-
-    return itemsAsync.when(
-      data: (items) {
-        if (items.isEmpty) {
-          return const Center(
-            child: Text('Einkaufsliste ist leer',
-                style: TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackgroundMuted)),
-          );
-        }
-
-        final grouped = <String, List<ShoppingListItem>>{};
-        for (final item in items) {
-          final cat = item.category ?? 'Sonstiges';
-          grouped.putIfAbsent(cat, () => []).add(item);
-        }
-
-        return ListView(
-          padding:
-              const EdgeInsets.fromLTRB(16, 8, 16, 100),
-          children: grouped.entries.map((entry) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8),
-                  child: Text(
-                    entry.key.toUpperCase(),
-                    style: const TextStyle(
-                        fontFamily: 'DMSans',
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: TraumColors.mintGreen,
-                        letterSpacing: 0.8),
-                  ),
-                ),
-                ...entry.value.map((item) => Dismissible(
-                      key: ValueKey(item.id),
-                      direction: DismissDirection.endToStart,
-                      background: Container(
-                        alignment: Alignment.centerRight,
-                        padding:
-                            const EdgeInsets.only(right: 16),
-                        color: TraumColors.roseRed
-                            .withValues(alpha: 0.15),
-                        child: const Icon(
-                            Icons.delete_outline,
-                            color: TraumColors.roseRed),
-                      ),
-                      onDismissed: (_) => ref
-                          .read(nutritionDaoProvider)
-                          .deleteShoppingItem(item.id),
-                      child: CheckboxListTile(
-                        contentPadding: EdgeInsets.zero,
-                        value: item.checked,
-                        activeColor: TraumColors.mintGreen,
-                        checkColor: Colors.white,
-                        title: Text(item.name,
-                            style: TextStyle(
-                                fontFamily: 'DMSans',
-                                color: item.checked
-                                    ? TraumColors
-                                        .onBackgroundSubtle
-                                    : TraumColors.onBackground,
-                                decoration: item.checked
-                                    ? TextDecoration
-                                        .lineThrough
-                                    : null)),
-                        subtitle: item.quantity != null
-                            ? Text(
-                                '${item.quantity} ${item.unit ?? 'g'}',
-                                style: const TextStyle(
-                                    fontFamily: 'DMSans',
-                                    color: TraumColors
-                                        .onBackgroundMuted,
-                                    fontSize: 12))
-                            : null,
-                        onChanged: (_) => ref
-                            .read(nutritionDaoProvider)
-                            .updateShoppingItem(
-                              ShoppingListItemsCompanion(
-                                id: Value(item.id),
-                                checked: Value(!item.checked),
-                              ),
-                            ),
-                      ),
-                    )),
-              ],
-            );
-          }).toList(),
-        );
-      },
-      loading: () => const Center(
-          child: CircularProgressIndicator(
-              color: TraumColors.mintGreen, strokeWidth: 2)),
-      error: (_, __) => const SizedBox.shrink(),
-    );
+    return const ShoppingListView();
   }
 }
