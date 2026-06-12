@@ -38,20 +38,20 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
   }
 
   void _onNameChanged(String value) {
-    if (_priceEditedManually) return;
+    if (_priceEditedManually) {
+      // Name changed but price is user-owned: drop any stale suggestion label.
+      if (_suggestionLabel != null) setState(() => _suggestionLabel = null);
+      return;
+    }
     final entries = ref.read(groceryPriceEntriesProvider).valueOrNull ?? [];
     final match = GroceryPriceService.match(value, entries);
-    setState(() {
-      if (match != null) {
-        _priceCtrl.text = match.price.toStringAsFixed(2).replaceAll('.', ',');
-        if ((_unitCtrl.text).isEmpty && match.unit != null) {
-          _unitCtrl.text = match.unit!;
-        }
-        _suggestionLabel = '≈ ${match.name}';
-      } else {
-        _suggestionLabel = null;
+    if (match != null) {
+      _priceCtrl.text = match.price.toStringAsFixed(2).replaceAll('.', ',');
+      if (_unitCtrl.text.isEmpty && match.unit != null) {
+        _unitCtrl.text = match.unit!;
       }
-    });
+    }
+    setState(() => _suggestionLabel = match != null ? '≈ ${match.name}' : null);
   }
 
   Future<void> _save() async {
@@ -63,19 +63,28 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
     setState(() => _saving = true);
     final price =
         double.tryParse(_priceCtrl.text.replaceAll(',', '.').trim());
-    await ref.read(nutritionDaoProvider).insertShoppingItem(
-          ShoppingListItemsCompanion.insert(
-            name: _nameCtrl.text.trim(),
-            quantity:
-                Value(double.tryParse(_quantityCtrl.text.replaceAll(',', '.'))),
-            unit: Value(_unitCtrl.text.trim().isEmpty
-                ? null
-                : _unitCtrl.text.trim()),
-            priceEstimated: Value(price),
-            isUrgent: Value(_isUrgent),
-          ),
-        );
-    if (mounted) Navigator.pop(context);
+    try {
+      await ref.read(nutritionDaoProvider).insertShoppingItem(
+            ShoppingListItemsCompanion.insert(
+              name: _nameCtrl.text.trim(),
+              quantity: Value(
+                  double.tryParse(_quantityCtrl.text.replaceAll(',', '.'))),
+              unit: Value(_unitCtrl.text.trim().isEmpty
+                  ? null
+                  : _unitCtrl.text.trim()),
+              priceEstimated: Value(price),
+              isUrgent: Value(_isUrgent),
+            ),
+          );
+      if (mounted) Navigator.pop(context);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Fehler beim Speichern')));
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
   }
 
   InputDecoration _dec(String hint) => InputDecoration(
@@ -168,7 +177,7 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
             key: const Key('add_item_price'),
             controller: _priceCtrl,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            onChanged: (_) => _priceEditedManually = true,
+            onChanged: (v) => _priceEditedManually = v.isNotEmpty,
             style: const TextStyle(
                 color: TraumColors.onBackground, fontFamily: 'DMSans'),
             decoration: _dec('Preis (€) — geschätzt'),
@@ -178,7 +187,7 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
             contentPadding: EdgeInsets.zero,
             value: _isUrgent,
             onChanged: (v) => setState(() => _isUrgent = v),
-            activeColor: TraumColors.roseRed,
+            activeThumbColor: TraumColors.roseRed,
             title: const Text('Dringend',
                 style: TextStyle(
                     color: TraumColors.onBackground,
