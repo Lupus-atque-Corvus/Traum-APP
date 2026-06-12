@@ -23,4 +23,18 @@ void main() {
     final afterSecond = await db.select(db.groceryPrices).get();
     expect(afterSecond.length, afterFirst.length);
   });
+
+  test('does not set the flag when seeding fails', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final db = TraumDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(db.close);
+    // Drop the table so the seeder's DB read throws a real SQL error,
+    // exercising the catch block and the "flag stays unset" invariant.
+    await db.customStatement('DROP TABLE grocery_prices');
+
+    await GroceryPriceSeeder.seedIfNeeded(db, prefs);
+
+    expect(prefs.getBool('grocery_prices_seeded_v1'), isNull);
+  });
 }
