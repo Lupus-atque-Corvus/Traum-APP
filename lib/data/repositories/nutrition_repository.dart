@@ -25,7 +25,7 @@ class NutritionRepository {
       _dao.watchAllShoppingItems();
   Future<int> addShoppingItem(ShoppingListItemsCompanion e) =>
       _dao.insertShoppingItem(e);
-  Future<bool> updateShoppingItem(ShoppingListItemsCompanion e) =>
+  Future<int> updateShoppingItem(ShoppingListItemsCompanion e) =>
       _dao.updateShoppingItem(e);
   Future<int> deleteShoppingItem(int id) => _dao.deleteShoppingItem(id);
   Future<int> deleteCheckedShoppingItems() => _dao.deleteCheckedShoppingItems();

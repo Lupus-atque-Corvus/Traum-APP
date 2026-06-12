@@ -88,8 +88,9 @@ class NutritionDao extends DatabaseAccessor<TraumDatabase>
   Future<int> insertShoppingItem(ShoppingListItemsCompanion entry) =>
       into(shoppingListItems).insert(entry);
 
-  Future<bool> updateShoppingItem(ShoppingListItemsCompanion entry) =>
-      update(shoppingListItems).replace(entry);
+  Future<int> updateShoppingItem(ShoppingListItemsCompanion entry) =>
+      (update(shoppingListItems)..where((t) => t.id.equals(entry.id.value)))
+          .write(entry);
 
   Future<int> deleteShoppingItem(int id) =>
       (delete(shoppingListItems)..where((t) => t.id.equals(id))).go();
