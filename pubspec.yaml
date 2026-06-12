@@ -180,6 +180,7 @@ flutter:
     - assets/lottie/
     - assets/substances.json
     - assets/substances.db
+    - assets/data/
 
   fonts:
     - family: DMSans

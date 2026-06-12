@@ -1,0 +1,4874 @@
+[
+{
+"name": "Bananen",
+"category": "Obst & Gemüse",
+"avgPrice": 1.99,
+"unit": "kg"
+},
+{
+"name": "Bio Bananen",
+"category": "Obst & Gemüse",
+"avgPrice": 2.69,
+"unit": "kg"
+},
+{
+"name": "Ja! Bananen",
+"category": "Obst & Gemüse",
+"avgPrice": 1.49,
+"unit": "kg"
+},
+{
+"name": "Rewe Bananen",
+"category": "Obst & Gemüse",
+"avgPrice": 1.99,
+"unit": "kg"
+},
+{
+"name": "Edeka Bananen",
+"category": "Obst & Gemüse",
+"avgPrice": 2.09,
+"unit": "kg"
+},
+{
+"name": "Gut & Günstig Bananen",
+"category": "Obst & Gemüse",
+"avgPrice": 1.59,
+"unit": "kg"
+},
+{
+"name": "Alnatura Bananen",
+"category": "Obst & Gemüse",
+"avgPrice": 2.79,
+"unit": "kg"
+},
+{
+"name": "Frische Bananen",
+"category": "Obst & Gemüse",
+"avgPrice": 2.19,
+"unit": "kg"
+},
+{
+"name": "Premium Bananen",
+"category": "Obst & Gemüse",
+"avgPrice": 2.99,
+"unit": "kg"
+},
+{
+"name": "Discount Bananen",
+"category": "Obst & Gemüse",
+"avgPrice": 1.39,
+"unit": "kg"
+},
+{
+"name": "Regional Bananen",
+"category": "Obst & Gemüse",
+"avgPrice": 2.29,
+"unit": "kg"
+},
+{
+"name": "XXL Bananen",
+"category": "Obst & Gemüse",
+"avgPrice": 3.18,
+"unit": "kg"
+},
+{
+"name": "Mini Bananen",
+"category": "Obst & Gemüse",
+"avgPrice": 1.09,
+"unit": "kg"
+},
+{
+"name": "Familienpackung Bananen",
+"category": "Obst & Gemüse",
+"avgPrice": 3.38,
+"unit": "kg"
+},
+{
+"name": "Äpfel",
+"category": "Obst & Gemüse",
+"avgPrice": 2.49,
+"unit": "kg"
+},
+{
+"name": "Bio Äpfel",
+"category": "Obst & Gemüse",
+"avgPrice": 3.36,
+"unit": "kg"
+},
+{
+"name": "Ja! Äpfel",
+"category": "Obst & Gemüse",
+"avgPrice": 1.87,
+"unit": "kg"
+},
+{
+"name": "Rewe Äpfel",
+"category": "Obst & Gemüse",
+"avgPrice": 2.49,
+"unit": "kg"
+},
+{
+"name": "Edeka Äpfel",
+"category": "Obst & Gemüse",
+"avgPrice": 2.61,
+"unit": "kg"
+},
+{
+"name": "Gut & Günstig Äpfel",
+"category": "Obst & Gemüse",
+"avgPrice": 1.99,
+"unit": "kg"
+},
+{
+"name": "Alnatura Äpfel",
+"category": "Obst & Gemüse",
+"avgPrice": 3.49,
+"unit": "kg"
+},
+{
+"name": "Frische Äpfel",
+"category": "Obst & Gemüse",
+"avgPrice": 2.74,
+"unit": "kg"
+},
+{
+"name": "Premium Äpfel",
+"category": "Obst & Gemüse",
+"avgPrice": 3.74,
+"unit": "kg"
+},
+{
+"name": "Discount Äpfel",
+"category": "Obst & Gemüse",
+"avgPrice": 1.74,
+"unit": "kg"
+},
+{
+"name": "Regional Äpfel",
+"category": "Obst & Gemüse",
+"avgPrice": 2.86,
+"unit": "kg"
+},
+{
+"name": "XXL Äpfel",
+"category": "Obst & Gemüse",
+"avgPrice": 3.98,
+"unit": "kg"
+},
+{
+"name": "Mini Äpfel",
+"category": "Obst & Gemüse",
+"avgPrice": 1.37,
+"unit": "kg"
+},
+{
+"name": "Familienpackung Äpfel",
+"category": "Obst & Gemüse",
+"avgPrice": 4.23,
+"unit": "kg"
+},
+{
+"name": "Tomaten",
+"category": "Obst & Gemüse",
+"avgPrice": 2.99,
+"unit": "kg"
+},
+{
+"name": "Bio Tomaten",
+"category": "Obst & Gemüse",
+"avgPrice": 4.04,
+"unit": "kg"
+},
+{
+"name": "Ja! Tomaten",
+"category": "Obst & Gemüse",
+"avgPrice": 2.24,
+"unit": "kg"
+},
+{
+"name": "Rewe Tomaten",
+"category": "Obst & Gemüse",
+"avgPrice": 2.99,
+"unit": "kg"
+},
+{
+"name": "Edeka Tomaten",
+"category": "Obst & Gemüse",
+"avgPrice": 3.14,
+"unit": "kg"
+},
+{
+"name": "Gut & Günstig Tomaten",
+"category": "Obst & Gemüse",
+"avgPrice": 2.39,
+"unit": "kg"
+},
+{
+"name": "Alnatura Tomaten",
+"category": "Obst & Gemüse",
+"avgPrice": 4.19,
+"unit": "kg"
+},
+{
+"name": "Frische Tomaten",
+"category": "Obst & Gemüse",
+"avgPrice": 3.29,
+"unit": "kg"
+},
+{
+"name": "Premium Tomaten",
+"category": "Obst & Gemüse",
+"avgPrice": 4.49,
+"unit": "kg"
+},
+{
+"name": "Discount Tomaten",
+"category": "Obst & Gemüse",
+"avgPrice": 2.09,
+"unit": "kg"
+},
+{
+"name": "Regional Tomaten",
+"category": "Obst & Gemüse",
+"avgPrice": 3.44,
+"unit": "kg"
+},
+{
+"name": "XXL Tomaten",
+"category": "Obst & Gemüse",
+"avgPrice": 4.78,
+"unit": "kg"
+},
+{
+"name": "Mini Tomaten",
+"category": "Obst & Gemüse",
+"avgPrice": 1.64,
+"unit": "kg"
+},
+{
+"name": "Familienpackung Tomaten",
+"category": "Obst & Gemüse",
+"avgPrice": 5.08,
+"unit": "kg"
+},
+{
+"name": "Gurke",
+"category": "Obst & Gemüse",
+"avgPrice": 0.89,
+"unit": "Stück"
+},
+{
+"name": "Bio Gurke",
+"category": "Obst & Gemüse",
+"avgPrice": 1.2,
+"unit": "Stück"
+},
+{
+"name": "Ja! Gurke",
+"category": "Obst & Gemüse",
+"avgPrice": 0.67,
+"unit": "Stück"
+},
+{
+"name": "Rewe Gurke",
+"category": "Obst & Gemüse",
+"avgPrice": 0.89,
+"unit": "Stück"
+},
+{
+"name": "Edeka Gurke",
+"category": "Obst & Gemüse",
+"avgPrice": 0.93,
+"unit": "Stück"
+},
+{
+"name": "Gut & Günstig Gurke",
+"category": "Obst & Gemüse",
+"avgPrice": 0.71,
+"unit": "Stück"
+},
+{
+"name": "Alnatura Gurke",
+"category": "Obst & Gemüse",
+"avgPrice": 1.25,
+"unit": "Stück"
+},
+{
+"name": "Frische Gurke",
+"category": "Obst & Gemüse",
+"avgPrice": 0.98,
+"unit": "Stück"
+},
+{
+"name": "Premium Gurke",
+"category": "Obst & Gemüse",
+"avgPrice": 1.34,
+"unit": "Stück"
+},
+{
+"name": "Discount Gurke",
+"category": "Obst & Gemüse",
+"avgPrice": 0.62,
+"unit": "Stück"
+},
+{
+"name": "Regional Gurke",
+"category": "Obst & Gemüse",
+"avgPrice": 1.02,
+"unit": "Stück"
+},
+{
+"name": "XXL Gurke",
+"category": "Obst & Gemüse",
+"avgPrice": 1.42,
+"unit": "Stück"
+},
+{
+"name": "Mini Gurke",
+"category": "Obst & Gemüse",
+"avgPrice": 0.49,
+"unit": "Stück"
+},
+{
+"name": "Familienpackung Gurke",
+"category": "Obst & Gemüse",
+"avgPrice": 1.51,
+"unit": "Stück"
+},
+{
+"name": "Kartoffeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.79,
+"unit": "kg"
+},
+{
+"name": "Bio Kartoffeln",
+"category": "Obst & Gemüse",
+"avgPrice": 2.42,
+"unit": "kg"
+},
+{
+"name": "Ja! Kartoffeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.34,
+"unit": "kg"
+},
+{
+"name": "Rewe Kartoffeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.79,
+"unit": "kg"
+},
+{
+"name": "Edeka Kartoffeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.88,
+"unit": "kg"
+},
+{
+"name": "Gut & Günstig Kartoffeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.43,
+"unit": "kg"
+},
+{
+"name": "Alnatura Kartoffeln",
+"category": "Obst & Gemüse",
+"avgPrice": 2.51,
+"unit": "kg"
+},
+{
+"name": "Frische Kartoffeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.97,
+"unit": "kg"
+},
+{
+"name": "Premium Kartoffeln",
+"category": "Obst & Gemüse",
+"avgPrice": 2.69,
+"unit": "kg"
+},
+{
+"name": "Discount Kartoffeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.25,
+"unit": "kg"
+},
+{
+"name": "Regional Kartoffeln",
+"category": "Obst & Gemüse",
+"avgPrice": 2.06,
+"unit": "kg"
+},
+{
+"name": "XXL Kartoffeln",
+"category": "Obst & Gemüse",
+"avgPrice": 2.86,
+"unit": "kg"
+},
+{
+"name": "Mini Kartoffeln",
+"category": "Obst & Gemüse",
+"avgPrice": 0.98,
+"unit": "kg"
+},
+{
+"name": "Familienpackung Kartoffeln",
+"category": "Obst & Gemüse",
+"avgPrice": 3.04,
+"unit": "kg"
+},
+{
+"name": "Zwiebeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.29,
+"unit": "kg"
+},
+{
+"name": "Bio Zwiebeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.74,
+"unit": "kg"
+},
+{
+"name": "Ja! Zwiebeln",
+"category": "Obst & Gemüse",
+"avgPrice": 0.97,
+"unit": "kg"
+},
+{
+"name": "Rewe Zwiebeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.29,
+"unit": "kg"
+},
+{
+"name": "Edeka Zwiebeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.35,
+"unit": "kg"
+},
+{
+"name": "Gut & Günstig Zwiebeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.03,
+"unit": "kg"
+},
+{
+"name": "Alnatura Zwiebeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.81,
+"unit": "kg"
+},
+{
+"name": "Frische Zwiebeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.42,
+"unit": "kg"
+},
+{
+"name": "Premium Zwiebeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.94,
+"unit": "kg"
+},
+{
+"name": "Discount Zwiebeln",
+"category": "Obst & Gemüse",
+"avgPrice": 0.9,
+"unit": "kg"
+},
+{
+"name": "Regional Zwiebeln",
+"category": "Obst & Gemüse",
+"avgPrice": 1.48,
+"unit": "kg"
+},
+{
+"name": "XXL Zwiebeln",
+"category": "Obst & Gemüse",
+"avgPrice": 2.06,
+"unit": "kg"
+},
+{
+"name": "Mini Zwiebeln",
+"category": "Obst & Gemüse",
+"avgPrice": 0.71,
+"unit": "kg"
+},
+{
+"name": "Familienpackung Zwiebeln",
+"category": "Obst & Gemüse",
+"avgPrice": 2.19,
+"unit": "kg"
+},
+{
+"name": "Paprika",
+"category": "Obst & Gemüse",
+"avgPrice": 2.79,
+"unit": "kg"
+},
+{
+"name": "Bio Paprika",
+"category": "Obst & Gemüse",
+"avgPrice": 3.77,
+"unit": "kg"
+},
+{
+"name": "Ja! Paprika",
+"category": "Obst & Gemüse",
+"avgPrice": 2.09,
+"unit": "kg"
+},
+{
+"name": "Rewe Paprika",
+"category": "Obst & Gemüse",
+"avgPrice": 2.79,
+"unit": "kg"
+},
+{
+"name": "Edeka Paprika",
+"category": "Obst & Gemüse",
+"avgPrice": 2.93,
+"unit": "kg"
+},
+{
+"name": "Gut & Günstig Paprika",
+"category": "Obst & Gemüse",
+"avgPrice": 2.23,
+"unit": "kg"
+},
+{
+"name": "Alnatura Paprika",
+"category": "Obst & Gemüse",
+"avgPrice": 3.91,
+"unit": "kg"
+},
+{
+"name": "Frische Paprika",
+"category": "Obst & Gemüse",
+"avgPrice": 3.07,
+"unit": "kg"
+},
+{
+"name": "Premium Paprika",
+"category": "Obst & Gemüse",
+"avgPrice": 4.19,
+"unit": "kg"
+},
+{
+"name": "Discount Paprika",
+"category": "Obst & Gemüse",
+"avgPrice": 1.95,
+"unit": "kg"
+},
+{
+"name": "Regional Paprika",
+"category": "Obst & Gemüse",
+"avgPrice": 3.21,
+"unit": "kg"
+},
+{
+"name": "XXL Paprika",
+"category": "Obst & Gemüse",
+"avgPrice": 4.46,
+"unit": "kg"
+},
+{
+"name": "Mini Paprika",
+"category": "Obst & Gemüse",
+"avgPrice": 1.53,
+"unit": "kg"
+},
+{
+"name": "Familienpackung Paprika",
+"category": "Obst & Gemüse",
+"avgPrice": 4.74,
+"unit": "kg"
+},
+{
+"name": "Karotten",
+"category": "Obst & Gemüse",
+"avgPrice": 1.19,
+"unit": "kg"
+},
+{
+"name": "Bio Karotten",
+"category": "Obst & Gemüse",
+"avgPrice": 1.61,
+"unit": "kg"
+},
+{
+"name": "Ja! Karotten",
+"category": "Obst & Gemüse",
+"avgPrice": 0.89,
+"unit": "kg"
+},
+{
+"name": "Rewe Karotten",
+"category": "Obst & Gemüse",
+"avgPrice": 1.19,
+"unit": "kg"
+},
+{
+"name": "Edeka Karotten",
+"category": "Obst & Gemüse",
+"avgPrice": 1.25,
+"unit": "kg"
+},
+{
+"name": "Gut & Günstig Karotten",
+"category": "Obst & Gemüse",
+"avgPrice": 0.95,
+"unit": "kg"
+},
+{
+"name": "Alnatura Karotten",
+"category": "Obst & Gemüse",
+"avgPrice": 1.67,
+"unit": "kg"
+},
+{
+"name": "Frische Karotten",
+"category": "Obst & Gemüse",
+"avgPrice": 1.31,
+"unit": "kg"
+},
+{
+"name": "Premium Karotten",
+"category": "Obst & Gemüse",
+"avgPrice": 1.79,
+"unit": "kg"
+},
+{
+"name": "Discount Karotten",
+"category": "Obst & Gemüse",
+"avgPrice": 0.83,
+"unit": "kg"
+},
+{
+"name": "Regional Karotten",
+"category": "Obst & Gemüse",
+"avgPrice": 1.37,
+"unit": "kg"
+},
+{
+"name": "XXL Karotten",
+"category": "Obst & Gemüse",
+"avgPrice": 1.9,
+"unit": "kg"
+},
+{
+"name": "Mini Karotten",
+"category": "Obst & Gemüse",
+"avgPrice": 0.65,
+"unit": "kg"
+},
+{
+"name": "Familienpackung Karotten",
+"category": "Obst & Gemüse",
+"avgPrice": 2.02,
+"unit": "kg"
+},
+{
+"name": "Salat",
+"category": "Obst & Gemüse",
+"avgPrice": 1.29,
+"unit": "Stück"
+},
+{
+"name": "Bio Salat",
+"category": "Obst & Gemüse",
+"avgPrice": 1.74,
+"unit": "Stück"
+},
+{
+"name": "Ja! Salat",
+"category": "Obst & Gemüse",
+"avgPrice": 0.97,
+"unit": "Stück"
+},
+{
+"name": "Rewe Salat",
+"category": "Obst & Gemüse",
+"avgPrice": 1.29,
+"unit": "Stück"
+},
+{
+"name": "Edeka Salat",
+"category": "Obst & Gemüse",
+"avgPrice": 1.35,
+"unit": "Stück"
+},
+{
+"name": "Gut & Günstig Salat",
+"category": "Obst & Gemüse",
+"avgPrice": 1.03,
+"unit": "Stück"
+},
+{
+"name": "Alnatura Salat",
+"category": "Obst & Gemüse",
+"avgPrice": 1.81,
+"unit": "Stück"
+},
+{
+"name": "Frische Salat",
+"category": "Obst & Gemüse",
+"avgPrice": 1.42,
+"unit": "Stück"
+},
+{
+"name": "Premium Salat",
+"category": "Obst & Gemüse",
+"avgPrice": 1.94,
+"unit": "Stück"
+},
+{
+"name": "Discount Salat",
+"category": "Obst & Gemüse",
+"avgPrice": 0.9,
+"unit": "Stück"
+},
+{
+"name": "Regional Salat",
+"category": "Obst & Gemüse",
+"avgPrice": 1.48,
+"unit": "Stück"
+},
+{
+"name": "XXL Salat",
+"category": "Obst & Gemüse",
+"avgPrice": 2.06,
+"unit": "Stück"
+},
+{
+"name": "Mini Salat",
+"category": "Obst & Gemüse",
+"avgPrice": 0.71,
+"unit": "Stück"
+},
+{
+"name": "Familienpackung Salat",
+"category": "Obst & Gemüse",
+"avgPrice": 2.19,
+"unit": "Stück"
+},
+{
+"name": "Zitronen",
+"category": "Obst & Gemüse",
+"avgPrice": 2.29,
+"unit": "kg"
+},
+{
+"name": "Bio Zitronen",
+"category": "Obst & Gemüse",
+"avgPrice": 3.09,
+"unit": "kg"
+},
+{
+"name": "Ja! Zitronen",
+"category": "Obst & Gemüse",
+"avgPrice": 1.72,
+"unit": "kg"
+},
+{
+"name": "Rewe Zitronen",
+"category": "Obst & Gemüse",
+"avgPrice": 2.29,
+"unit": "kg"
+},
+{
+"name": "Edeka Zitronen",
+"category": "Obst & Gemüse",
+"avgPrice": 2.4,
+"unit": "kg"
+},
+{
+"name": "Gut & Günstig Zitronen",
+"category": "Obst & Gemüse",
+"avgPrice": 1.83,
+"unit": "kg"
+},
+{
+"name": "Alnatura Zitronen",
+"category": "Obst & Gemüse",
+"avgPrice": 3.21,
+"unit": "kg"
+},
+{
+"name": "Frische Zitronen",
+"category": "Obst & Gemüse",
+"avgPrice": 2.52,
+"unit": "kg"
+},
+{
+"name": "Premium Zitronen",
+"category": "Obst & Gemüse",
+"avgPrice": 3.44,
+"unit": "kg"
+},
+{
+"name": "Discount Zitronen",
+"category": "Obst & Gemüse",
+"avgPrice": 1.6,
+"unit": "kg"
+},
+{
+"name": "Regional Zitronen",
+"category": "Obst & Gemüse",
+"avgPrice": 2.63,
+"unit": "kg"
+},
+{
+"name": "XXL Zitronen",
+"category": "Obst & Gemüse",
+"avgPrice": 3.66,
+"unit": "kg"
+},
+{
+"name": "Mini Zitronen",
+"category": "Obst & Gemüse",
+"avgPrice": 1.26,
+"unit": "kg"
+},
+{
+"name": "Familienpackung Zitronen",
+"category": "Obst & Gemüse",
+"avgPrice": 3.89,
+"unit": "kg"
+},
+{
+"name": "Avocado",
+"category": "Obst & Gemüse",
+"avgPrice": 1.49,
+"unit": "Stück"
+},
+{
+"name": "Bio Avocado",
+"category": "Obst & Gemüse",
+"avgPrice": 2.01,
+"unit": "Stück"
+},
+{
+"name": "Ja! Avocado",
+"category": "Obst & Gemüse",
+"avgPrice": 1.12,
+"unit": "Stück"
+},
+{
+"name": "Rewe Avocado",
+"category": "Obst & Gemüse",
+"avgPrice": 1.49,
+"unit": "Stück"
+},
+{
+"name": "Edeka Avocado",
+"category": "Obst & Gemüse",
+"avgPrice": 1.56,
+"unit": "Stück"
+},
+{
+"name": "Gut & Günstig Avocado",
+"category": "Obst & Gemüse",
+"avgPrice": 1.19,
+"unit": "Stück"
+},
+{
+"name": "Alnatura Avocado",
+"category": "Obst & Gemüse",
+"avgPrice": 2.09,
+"unit": "Stück"
+},
+{
+"name": "Frische Avocado",
+"category": "Obst & Gemüse",
+"avgPrice": 1.64,
+"unit": "Stück"
+},
+{
+"name": "Premium Avocado",
+"category": "Obst & Gemüse",
+"avgPrice": 2.24,
+"unit": "Stück"
+},
+{
+"name": "Discount Avocado",
+"category": "Obst & Gemüse",
+"avgPrice": 1.04,
+"unit": "Stück"
+},
+{
+"name": "Regional Avocado",
+"category": "Obst & Gemüse",
+"avgPrice": 1.71,
+"unit": "Stück"
+},
+{
+"name": "XXL Avocado",
+"category": "Obst & Gemüse",
+"avgPrice": 2.38,
+"unit": "Stück"
+},
+{
+"name": "Mini Avocado",
+"category": "Obst & Gemüse",
+"avgPrice": 0.82,
+"unit": "Stück"
+},
+{
+"name": "Familienpackung Avocado",
+"category": "Obst & Gemüse",
+"avgPrice": 2.53,
+"unit": "Stück"
+},
+{
+"name": "Trauben",
+"category": "Obst & Gemüse",
+"avgPrice": 2.99,
+"unit": "kg"
+},
+{
+"name": "Bio Trauben",
+"category": "Obst & Gemüse",
+"avgPrice": 4.04,
+"unit": "kg"
+},
+{
+"name": "Ja! Trauben",
+"category": "Obst & Gemüse",
+"avgPrice": 2.24,
+"unit": "kg"
+},
+{
+"name": "Rewe Trauben",
+"category": "Obst & Gemüse",
+"avgPrice": 2.99,
+"unit": "kg"
+},
+{
+"name": "Edeka Trauben",
+"category": "Obst & Gemüse",
+"avgPrice": 3.14,
+"unit": "kg"
+},
+{
+"name": "Gut & Günstig Trauben",
+"category": "Obst & Gemüse",
+"avgPrice": 2.39,
+"unit": "kg"
+},
+{
+"name": "Alnatura Trauben",
+"category": "Obst & Gemüse",
+"avgPrice": 4.19,
+"unit": "kg"
+},
+{
+"name": "Frische Trauben",
+"category": "Obst & Gemüse",
+"avgPrice": 3.29,
+"unit": "kg"
+},
+{
+"name": "Premium Trauben",
+"category": "Obst & Gemüse",
+"avgPrice": 4.49,
+"unit": "kg"
+},
+{
+"name": "Discount Trauben",
+"category": "Obst & Gemüse",
+"avgPrice": 2.09,
+"unit": "kg"
+},
+{
+"name": "Regional Trauben",
+"category": "Obst & Gemüse",
+"avgPrice": 3.44,
+"unit": "kg"
+},
+{
+"name": "XXL Trauben",
+"category": "Obst & Gemüse",
+"avgPrice": 4.78,
+"unit": "kg"
+},
+{
+"name": "Mini Trauben",
+"category": "Obst & Gemüse",
+"avgPrice": 1.64,
+"unit": "kg"
+},
+{
+"name": "Familienpackung Trauben",
+"category": "Obst & Gemüse",
+"avgPrice": 5.08,
+"unit": "kg"
+},
+{
+"name": "Milch",
+"category": "Milchprodukte",
+"avgPrice": 1.19,
+"unit": "L"
+},
+{
+"name": "Bio Milch",
+"category": "Milchprodukte",
+"avgPrice": 1.61,
+"unit": "L"
+},
+{
+"name": "Ja! Milch",
+"category": "Milchprodukte",
+"avgPrice": 0.89,
+"unit": "L"
+},
+{
+"name": "Rewe Milch",
+"category": "Milchprodukte",
+"avgPrice": 1.19,
+"unit": "L"
+},
+{
+"name": "Edeka Milch",
+"category": "Milchprodukte",
+"avgPrice": 1.25,
+"unit": "L"
+},
+{
+"name": "Gut & Günstig Milch",
+"category": "Milchprodukte",
+"avgPrice": 0.95,
+"unit": "L"
+},
+{
+"name": "Alnatura Milch",
+"category": "Milchprodukte",
+"avgPrice": 1.67,
+"unit": "L"
+},
+{
+"name": "Frische Milch",
+"category": "Milchprodukte",
+"avgPrice": 1.31,
+"unit": "L"
+},
+{
+"name": "Premium Milch",
+"category": "Milchprodukte",
+"avgPrice": 1.79,
+"unit": "L"
+},
+{
+"name": "Discount Milch",
+"category": "Milchprodukte",
+"avgPrice": 0.83,
+"unit": "L"
+},
+{
+"name": "Regional Milch",
+"category": "Milchprodukte",
+"avgPrice": 1.37,
+"unit": "L"
+},
+{
+"name": "XXL Milch",
+"category": "Milchprodukte",
+"avgPrice": 1.9,
+"unit": "L"
+},
+{
+"name": "Mini Milch",
+"category": "Milchprodukte",
+"avgPrice": 0.65,
+"unit": "L"
+},
+{
+"name": "Familienpackung Milch",
+"category": "Milchprodukte",
+"avgPrice": 2.02,
+"unit": "L"
+},
+{
+"name": "Butter",
+"category": "Milchprodukte",
+"avgPrice": 2.39,
+"unit": "250g"
+},
+{
+"name": "Bio Butter",
+"category": "Milchprodukte",
+"avgPrice": 3.23,
+"unit": "250g"
+},
+{
+"name": "Ja! Butter",
+"category": "Milchprodukte",
+"avgPrice": 1.79,
+"unit": "250g"
+},
+{
+"name": "Rewe Butter",
+"category": "Milchprodukte",
+"avgPrice": 2.39,
+"unit": "250g"
+},
+{
+"name": "Edeka Butter",
+"category": "Milchprodukte",
+"avgPrice": 2.51,
+"unit": "250g"
+},
+{
+"name": "Gut & Günstig Butter",
+"category": "Milchprodukte",
+"avgPrice": 1.91,
+"unit": "250g"
+},
+{
+"name": "Alnatura Butter",
+"category": "Milchprodukte",
+"avgPrice": 3.35,
+"unit": "250g"
+},
+{
+"name": "Frische Butter",
+"category": "Milchprodukte",
+"avgPrice": 2.63,
+"unit": "250g"
+},
+{
+"name": "Premium Butter",
+"category": "Milchprodukte",
+"avgPrice": 3.59,
+"unit": "250g"
+},
+{
+"name": "Discount Butter",
+"category": "Milchprodukte",
+"avgPrice": 1.67,
+"unit": "250g"
+},
+{
+"name": "Regional Butter",
+"category": "Milchprodukte",
+"avgPrice": 2.75,
+"unit": "250g"
+},
+{
+"name": "XXL Butter",
+"category": "Milchprodukte",
+"avgPrice": 3.82,
+"unit": "250g"
+},
+{
+"name": "Mini Butter",
+"category": "Milchprodukte",
+"avgPrice": 1.31,
+"unit": "250g"
+},
+{
+"name": "Familienpackung Butter",
+"category": "Milchprodukte",
+"avgPrice": 4.06,
+"unit": "250g"
+},
+{
+"name": "Joghurt",
+"category": "Milchprodukte",
+"avgPrice": 0.99,
+"unit": "Becher"
+},
+{
+"name": "Bio Joghurt",
+"category": "Milchprodukte",
+"avgPrice": 1.34,
+"unit": "Becher"
+},
+{
+"name": "Ja! Joghurt",
+"category": "Milchprodukte",
+"avgPrice": 0.74,
+"unit": "Becher"
+},
+{
+"name": "Rewe Joghurt",
+"category": "Milchprodukte",
+"avgPrice": 0.99,
+"unit": "Becher"
+},
+{
+"name": "Edeka Joghurt",
+"category": "Milchprodukte",
+"avgPrice": 1.04,
+"unit": "Becher"
+},
+{
+"name": "Gut & Günstig Joghurt",
+"category": "Milchprodukte",
+"avgPrice": 0.79,
+"unit": "Becher"
+},
+{
+"name": "Alnatura Joghurt",
+"category": "Milchprodukte",
+"avgPrice": 1.39,
+"unit": "Becher"
+},
+{
+"name": "Frische Joghurt",
+"category": "Milchprodukte",
+"avgPrice": 1.09,
+"unit": "Becher"
+},
+{
+"name": "Premium Joghurt",
+"category": "Milchprodukte",
+"avgPrice": 1.49,
+"unit": "Becher"
+},
+{
+"name": "Discount Joghurt",
+"category": "Milchprodukte",
+"avgPrice": 0.69,
+"unit": "Becher"
+},
+{
+"name": "Regional Joghurt",
+"category": "Milchprodukte",
+"avgPrice": 1.14,
+"unit": "Becher"
+},
+{
+"name": "XXL Joghurt",
+"category": "Milchprodukte",
+"avgPrice": 1.58,
+"unit": "Becher"
+},
+{
+"name": "Mini Joghurt",
+"category": "Milchprodukte",
+"avgPrice": 0.54,
+"unit": "Becher"
+},
+{
+"name": "Familienpackung Joghurt",
+"category": "Milchprodukte",
+"avgPrice": 1.68,
+"unit": "Becher"
+},
+{
+"name": "Käse Gouda",
+"category": "Milchprodukte",
+"avgPrice": 2.49,
+"unit": "Packung"
+},
+{
+"name": "Bio Käse Gouda",
+"category": "Milchprodukte",
+"avgPrice": 3.36,
+"unit": "Packung"
+},
+{
+"name": "Ja! Käse Gouda",
+"category": "Milchprodukte",
+"avgPrice": 1.87,
+"unit": "Packung"
+},
+{
+"name": "Rewe Käse Gouda",
+"category": "Milchprodukte",
+"avgPrice": 2.49,
+"unit": "Packung"
+},
+{
+"name": "Edeka Käse Gouda",
+"category": "Milchprodukte",
+"avgPrice": 2.61,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Käse Gouda",
+"category": "Milchprodukte",
+"avgPrice": 1.99,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Käse Gouda",
+"category": "Milchprodukte",
+"avgPrice": 3.49,
+"unit": "Packung"
+},
+{
+"name": "Frische Käse Gouda",
+"category": "Milchprodukte",
+"avgPrice": 2.74,
+"unit": "Packung"
+},
+{
+"name": "Premium Käse Gouda",
+"category": "Milchprodukte",
+"avgPrice": 3.74,
+"unit": "Packung"
+},
+{
+"name": "Discount Käse Gouda",
+"category": "Milchprodukte",
+"avgPrice": 1.74,
+"unit": "Packung"
+},
+{
+"name": "Regional Käse Gouda",
+"category": "Milchprodukte",
+"avgPrice": 2.86,
+"unit": "Packung"
+},
+{
+"name": "XXL Käse Gouda",
+"category": "Milchprodukte",
+"avgPrice": 3.98,
+"unit": "Packung"
+},
+{
+"name": "Mini Käse Gouda",
+"category": "Milchprodukte",
+"avgPrice": 1.37,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Käse Gouda",
+"category": "Milchprodukte",
+"avgPrice": 4.23,
+"unit": "Packung"
+},
+{
+"name": "Frischkäse",
+"category": "Milchprodukte",
+"avgPrice": 1.29,
+"unit": "Packung"
+},
+{
+"name": "Bio Frischkäse",
+"category": "Milchprodukte",
+"avgPrice": 1.74,
+"unit": "Packung"
+},
+{
+"name": "Ja! Frischkäse",
+"category": "Milchprodukte",
+"avgPrice": 0.97,
+"unit": "Packung"
+},
+{
+"name": "Rewe Frischkäse",
+"category": "Milchprodukte",
+"avgPrice": 1.29,
+"unit": "Packung"
+},
+{
+"name": "Edeka Frischkäse",
+"category": "Milchprodukte",
+"avgPrice": 1.35,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Frischkäse",
+"category": "Milchprodukte",
+"avgPrice": 1.03,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Frischkäse",
+"category": "Milchprodukte",
+"avgPrice": 1.81,
+"unit": "Packung"
+},
+{
+"name": "Frische Frischkäse",
+"category": "Milchprodukte",
+"avgPrice": 1.42,
+"unit": "Packung"
+},
+{
+"name": "Premium Frischkäse",
+"category": "Milchprodukte",
+"avgPrice": 1.94,
+"unit": "Packung"
+},
+{
+"name": "Discount Frischkäse",
+"category": "Milchprodukte",
+"avgPrice": 0.9,
+"unit": "Packung"
+},
+{
+"name": "Regional Frischkäse",
+"category": "Milchprodukte",
+"avgPrice": 1.48,
+"unit": "Packung"
+},
+{
+"name": "XXL Frischkäse",
+"category": "Milchprodukte",
+"avgPrice": 2.06,
+"unit": "Packung"
+},
+{
+"name": "Mini Frischkäse",
+"category": "Milchprodukte",
+"avgPrice": 0.71,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Frischkäse",
+"category": "Milchprodukte",
+"avgPrice": 2.19,
+"unit": "Packung"
+},
+{
+"name": "Quark",
+"category": "Milchprodukte",
+"avgPrice": 0.95,
+"unit": "Becher"
+},
+{
+"name": "Bio Quark",
+"category": "Milchprodukte",
+"avgPrice": 1.28,
+"unit": "Becher"
+},
+{
+"name": "Ja! Quark",
+"category": "Milchprodukte",
+"avgPrice": 0.71,
+"unit": "Becher"
+},
+{
+"name": "Rewe Quark",
+"category": "Milchprodukte",
+"avgPrice": 0.95,
+"unit": "Becher"
+},
+{
+"name": "Edeka Quark",
+"category": "Milchprodukte",
+"avgPrice": 1.0,
+"unit": "Becher"
+},
+{
+"name": "Gut & Günstig Quark",
+"category": "Milchprodukte",
+"avgPrice": 0.76,
+"unit": "Becher"
+},
+{
+"name": "Alnatura Quark",
+"category": "Milchprodukte",
+"avgPrice": 1.33,
+"unit": "Becher"
+},
+{
+"name": "Frische Quark",
+"category": "Milchprodukte",
+"avgPrice": 1.05,
+"unit": "Becher"
+},
+{
+"name": "Premium Quark",
+"category": "Milchprodukte",
+"avgPrice": 1.43,
+"unit": "Becher"
+},
+{
+"name": "Discount Quark",
+"category": "Milchprodukte",
+"avgPrice": 0.67,
+"unit": "Becher"
+},
+{
+"name": "Regional Quark",
+"category": "Milchprodukte",
+"avgPrice": 1.09,
+"unit": "Becher"
+},
+{
+"name": "XXL Quark",
+"category": "Milchprodukte",
+"avgPrice": 1.52,
+"unit": "Becher"
+},
+{
+"name": "Mini Quark",
+"category": "Milchprodukte",
+"avgPrice": 0.52,
+"unit": "Becher"
+},
+{
+"name": "Familienpackung Quark",
+"category": "Milchprodukte",
+"avgPrice": 1.62,
+"unit": "Becher"
+},
+{
+"name": "Sahne",
+"category": "Milchprodukte",
+"avgPrice": 1.09,
+"unit": "Becher"
+},
+{
+"name": "Bio Sahne",
+"category": "Milchprodukte",
+"avgPrice": 1.47,
+"unit": "Becher"
+},
+{
+"name": "Ja! Sahne",
+"category": "Milchprodukte",
+"avgPrice": 0.82,
+"unit": "Becher"
+},
+{
+"name": "Rewe Sahne",
+"category": "Milchprodukte",
+"avgPrice": 1.09,
+"unit": "Becher"
+},
+{
+"name": "Edeka Sahne",
+"category": "Milchprodukte",
+"avgPrice": 1.14,
+"unit": "Becher"
+},
+{
+"name": "Gut & Günstig Sahne",
+"category": "Milchprodukte",
+"avgPrice": 0.87,
+"unit": "Becher"
+},
+{
+"name": "Alnatura Sahne",
+"category": "Milchprodukte",
+"avgPrice": 1.53,
+"unit": "Becher"
+},
+{
+"name": "Frische Sahne",
+"category": "Milchprodukte",
+"avgPrice": 1.2,
+"unit": "Becher"
+},
+{
+"name": "Premium Sahne",
+"category": "Milchprodukte",
+"avgPrice": 1.64,
+"unit": "Becher"
+},
+{
+"name": "Discount Sahne",
+"category": "Milchprodukte",
+"avgPrice": 0.76,
+"unit": "Becher"
+},
+{
+"name": "Regional Sahne",
+"category": "Milchprodukte",
+"avgPrice": 1.25,
+"unit": "Becher"
+},
+{
+"name": "XXL Sahne",
+"category": "Milchprodukte",
+"avgPrice": 1.74,
+"unit": "Becher"
+},
+{
+"name": "Mini Sahne",
+"category": "Milchprodukte",
+"avgPrice": 0.6,
+"unit": "Becher"
+},
+{
+"name": "Familienpackung Sahne",
+"category": "Milchprodukte",
+"avgPrice": 1.85,
+"unit": "Becher"
+},
+{
+"name": "Eier",
+"category": "Milchprodukte",
+"avgPrice": 2.19,
+"unit": "10er"
+},
+{
+"name": "Bio Eier",
+"category": "Milchprodukte",
+"avgPrice": 2.96,
+"unit": "10er"
+},
+{
+"name": "Ja! Eier",
+"category": "Milchprodukte",
+"avgPrice": 1.64,
+"unit": "10er"
+},
+{
+"name": "Rewe Eier",
+"category": "Milchprodukte",
+"avgPrice": 2.19,
+"unit": "10er"
+},
+{
+"name": "Edeka Eier",
+"category": "Milchprodukte",
+"avgPrice": 2.3,
+"unit": "10er"
+},
+{
+"name": "Gut & Günstig Eier",
+"category": "Milchprodukte",
+"avgPrice": 1.75,
+"unit": "10er"
+},
+{
+"name": "Alnatura Eier",
+"category": "Milchprodukte",
+"avgPrice": 3.07,
+"unit": "10er"
+},
+{
+"name": "Frische Eier",
+"category": "Milchprodukte",
+"avgPrice": 2.41,
+"unit": "10er"
+},
+{
+"name": "Premium Eier",
+"category": "Milchprodukte",
+"avgPrice": 3.29,
+"unit": "10er"
+},
+{
+"name": "Discount Eier",
+"category": "Milchprodukte",
+"avgPrice": 1.53,
+"unit": "10er"
+},
+{
+"name": "Regional Eier",
+"category": "Milchprodukte",
+"avgPrice": 2.52,
+"unit": "10er"
+},
+{
+"name": "XXL Eier",
+"category": "Milchprodukte",
+"avgPrice": 3.5,
+"unit": "10er"
+},
+{
+"name": "Mini Eier",
+"category": "Milchprodukte",
+"avgPrice": 1.2,
+"unit": "10er"
+},
+{
+"name": "Familienpackung Eier",
+"category": "Milchprodukte",
+"avgPrice": 3.72,
+"unit": "10er"
+},
+{
+"name": "Mozzarella",
+"category": "Milchprodukte",
+"avgPrice": 0.99,
+"unit": "Packung"
+},
+{
+"name": "Bio Mozzarella",
+"category": "Milchprodukte",
+"avgPrice": 1.34,
+"unit": "Packung"
+},
+{
+"name": "Ja! Mozzarella",
+"category": "Milchprodukte",
+"avgPrice": 0.74,
+"unit": "Packung"
+},
+{
+"name": "Rewe Mozzarella",
+"category": "Milchprodukte",
+"avgPrice": 0.99,
+"unit": "Packung"
+},
+{
+"name": "Edeka Mozzarella",
+"category": "Milchprodukte",
+"avgPrice": 1.04,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Mozzarella",
+"category": "Milchprodukte",
+"avgPrice": 0.79,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Mozzarella",
+"category": "Milchprodukte",
+"avgPrice": 1.39,
+"unit": "Packung"
+},
+{
+"name": "Frische Mozzarella",
+"category": "Milchprodukte",
+"avgPrice": 1.09,
+"unit": "Packung"
+},
+{
+"name": "Premium Mozzarella",
+"category": "Milchprodukte",
+"avgPrice": 1.49,
+"unit": "Packung"
+},
+{
+"name": "Discount Mozzarella",
+"category": "Milchprodukte",
+"avgPrice": 0.69,
+"unit": "Packung"
+},
+{
+"name": "Regional Mozzarella",
+"category": "Milchprodukte",
+"avgPrice": 1.14,
+"unit": "Packung"
+},
+{
+"name": "XXL Mozzarella",
+"category": "Milchprodukte",
+"avgPrice": 1.58,
+"unit": "Packung"
+},
+{
+"name": "Mini Mozzarella",
+"category": "Milchprodukte",
+"avgPrice": 0.54,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Mozzarella",
+"category": "Milchprodukte",
+"avgPrice": 1.68,
+"unit": "Packung"
+},
+{
+"name": "Brot",
+"category": "Backwaren",
+"avgPrice": 2.49,
+"unit": "Stück"
+},
+{
+"name": "Bio Brot",
+"category": "Backwaren",
+"avgPrice": 3.36,
+"unit": "Stück"
+},
+{
+"name": "Ja! Brot",
+"category": "Backwaren",
+"avgPrice": 1.87,
+"unit": "Stück"
+},
+{
+"name": "Rewe Brot",
+"category": "Backwaren",
+"avgPrice": 2.49,
+"unit": "Stück"
+},
+{
+"name": "Edeka Brot",
+"category": "Backwaren",
+"avgPrice": 2.61,
+"unit": "Stück"
+},
+{
+"name": "Gut & Günstig Brot",
+"category": "Backwaren",
+"avgPrice": 1.99,
+"unit": "Stück"
+},
+{
+"name": "Alnatura Brot",
+"category": "Backwaren",
+"avgPrice": 3.49,
+"unit": "Stück"
+},
+{
+"name": "Frische Brot",
+"category": "Backwaren",
+"avgPrice": 2.74,
+"unit": "Stück"
+},
+{
+"name": "Premium Brot",
+"category": "Backwaren",
+"avgPrice": 3.74,
+"unit": "Stück"
+},
+{
+"name": "Discount Brot",
+"category": "Backwaren",
+"avgPrice": 1.74,
+"unit": "Stück"
+},
+{
+"name": "Regional Brot",
+"category": "Backwaren",
+"avgPrice": 2.86,
+"unit": "Stück"
+},
+{
+"name": "XXL Brot",
+"category": "Backwaren",
+"avgPrice": 3.98,
+"unit": "Stück"
+},
+{
+"name": "Mini Brot",
+"category": "Backwaren",
+"avgPrice": 1.37,
+"unit": "Stück"
+},
+{
+"name": "Familienpackung Brot",
+"category": "Backwaren",
+"avgPrice": 4.23,
+"unit": "Stück"
+},
+{
+"name": "Brötchen",
+"category": "Backwaren",
+"avgPrice": 0.35,
+"unit": "Stück"
+},
+{
+"name": "Bio Brötchen",
+"category": "Backwaren",
+"avgPrice": 0.47,
+"unit": "Stück"
+},
+{
+"name": "Ja! Brötchen",
+"category": "Backwaren",
+"avgPrice": 0.26,
+"unit": "Stück"
+},
+{
+"name": "Rewe Brötchen",
+"category": "Backwaren",
+"avgPrice": 0.35,
+"unit": "Stück"
+},
+{
+"name": "Edeka Brötchen",
+"category": "Backwaren",
+"avgPrice": 0.37,
+"unit": "Stück"
+},
+{
+"name": "Gut & Günstig Brötchen",
+"category": "Backwaren",
+"avgPrice": 0.28,
+"unit": "Stück"
+},
+{
+"name": "Alnatura Brötchen",
+"category": "Backwaren",
+"avgPrice": 0.49,
+"unit": "Stück"
+},
+{
+"name": "Frische Brötchen",
+"category": "Backwaren",
+"avgPrice": 0.39,
+"unit": "Stück"
+},
+{
+"name": "Premium Brötchen",
+"category": "Backwaren",
+"avgPrice": 0.53,
+"unit": "Stück"
+},
+{
+"name": "Discount Brötchen",
+"category": "Backwaren",
+"avgPrice": 0.25,
+"unit": "Stück"
+},
+{
+"name": "Regional Brötchen",
+"category": "Backwaren",
+"avgPrice": 0.4,
+"unit": "Stück"
+},
+{
+"name": "XXL Brötchen",
+"category": "Backwaren",
+"avgPrice": 0.56,
+"unit": "Stück"
+},
+{
+"name": "Mini Brötchen",
+"category": "Backwaren",
+"avgPrice": 0.19,
+"unit": "Stück"
+},
+{
+"name": "Familienpackung Brötchen",
+"category": "Backwaren",
+"avgPrice": 0.6,
+"unit": "Stück"
+},
+{
+"name": "Toast",
+"category": "Backwaren",
+"avgPrice": 1.29,
+"unit": "Packung"
+},
+{
+"name": "Bio Toast",
+"category": "Backwaren",
+"avgPrice": 1.74,
+"unit": "Packung"
+},
+{
+"name": "Ja! Toast",
+"category": "Backwaren",
+"avgPrice": 0.97,
+"unit": "Packung"
+},
+{
+"name": "Rewe Toast",
+"category": "Backwaren",
+"avgPrice": 1.29,
+"unit": "Packung"
+},
+{
+"name": "Edeka Toast",
+"category": "Backwaren",
+"avgPrice": 1.35,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Toast",
+"category": "Backwaren",
+"avgPrice": 1.03,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Toast",
+"category": "Backwaren",
+"avgPrice": 1.81,
+"unit": "Packung"
+},
+{
+"name": "Frische Toast",
+"category": "Backwaren",
+"avgPrice": 1.42,
+"unit": "Packung"
+},
+{
+"name": "Premium Toast",
+"category": "Backwaren",
+"avgPrice": 1.94,
+"unit": "Packung"
+},
+{
+"name": "Discount Toast",
+"category": "Backwaren",
+"avgPrice": 0.9,
+"unit": "Packung"
+},
+{
+"name": "Regional Toast",
+"category": "Backwaren",
+"avgPrice": 1.48,
+"unit": "Packung"
+},
+{
+"name": "XXL Toast",
+"category": "Backwaren",
+"avgPrice": 2.06,
+"unit": "Packung"
+},
+{
+"name": "Mini Toast",
+"category": "Backwaren",
+"avgPrice": 0.71,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Toast",
+"category": "Backwaren",
+"avgPrice": 2.19,
+"unit": "Packung"
+},
+{
+"name": "Croissant",
+"category": "Backwaren",
+"avgPrice": 0.89,
+"unit": "Stück"
+},
+{
+"name": "Bio Croissant",
+"category": "Backwaren",
+"avgPrice": 1.2,
+"unit": "Stück"
+},
+{
+"name": "Ja! Croissant",
+"category": "Backwaren",
+"avgPrice": 0.67,
+"unit": "Stück"
+},
+{
+"name": "Rewe Croissant",
+"category": "Backwaren",
+"avgPrice": 0.89,
+"unit": "Stück"
+},
+{
+"name": "Edeka Croissant",
+"category": "Backwaren",
+"avgPrice": 0.93,
+"unit": "Stück"
+},
+{
+"name": "Gut & Günstig Croissant",
+"category": "Backwaren",
+"avgPrice": 0.71,
+"unit": "Stück"
+},
+{
+"name": "Alnatura Croissant",
+"category": "Backwaren",
+"avgPrice": 1.25,
+"unit": "Stück"
+},
+{
+"name": "Frische Croissant",
+"category": "Backwaren",
+"avgPrice": 0.98,
+"unit": "Stück"
+},
+{
+"name": "Premium Croissant",
+"category": "Backwaren",
+"avgPrice": 1.34,
+"unit": "Stück"
+},
+{
+"name": "Discount Croissant",
+"category": "Backwaren",
+"avgPrice": 0.62,
+"unit": "Stück"
+},
+{
+"name": "Regional Croissant",
+"category": "Backwaren",
+"avgPrice": 1.02,
+"unit": "Stück"
+},
+{
+"name": "XXL Croissant",
+"category": "Backwaren",
+"avgPrice": 1.42,
+"unit": "Stück"
+},
+{
+"name": "Mini Croissant",
+"category": "Backwaren",
+"avgPrice": 0.49,
+"unit": "Stück"
+},
+{
+"name": "Familienpackung Croissant",
+"category": "Backwaren",
+"avgPrice": 1.51,
+"unit": "Stück"
+},
+{
+"name": "Hähnchenbrust",
+"category": "Fleisch & Fisch",
+"avgPrice": 6.99,
+"unit": "kg"
+},
+{
+"name": "Bio Hähnchenbrust",
+"category": "Fleisch & Fisch",
+"avgPrice": 9.44,
+"unit": "kg"
+},
+{
+"name": "Ja! Hähnchenbrust",
+"category": "Fleisch & Fisch",
+"avgPrice": 5.24,
+"unit": "kg"
+},
+{
+"name": "Rewe Hähnchenbrust",
+"category": "Fleisch & Fisch",
+"avgPrice": 6.99,
+"unit": "kg"
+},
+{
+"name": "Edeka Hähnchenbrust",
+"category": "Fleisch & Fisch",
+"avgPrice": 7.34,
+"unit": "kg"
+},
+{
+"name": "Gut & Günstig Hähnchenbrust",
+"category": "Fleisch & Fisch",
+"avgPrice": 5.59,
+"unit": "kg"
+},
+{
+"name": "Alnatura Hähnchenbrust",
+"category": "Fleisch & Fisch",
+"avgPrice": 9.79,
+"unit": "kg"
+},
+{
+"name": "Frische Hähnchenbrust",
+"category": "Fleisch & Fisch",
+"avgPrice": 7.69,
+"unit": "kg"
+},
+{
+"name": "Premium Hähnchenbrust",
+"category": "Fleisch & Fisch",
+"avgPrice": 10.49,
+"unit": "kg"
+},
+{
+"name": "Discount Hähnchenbrust",
+"category": "Fleisch & Fisch",
+"avgPrice": 4.89,
+"unit": "kg"
+},
+{
+"name": "Regional Hähnchenbrust",
+"category": "Fleisch & Fisch",
+"avgPrice": 8.04,
+"unit": "kg"
+},
+{
+"name": "XXL Hähnchenbrust",
+"category": "Fleisch & Fisch",
+"avgPrice": 11.18,
+"unit": "kg"
+},
+{
+"name": "Mini Hähnchenbrust",
+"category": "Fleisch & Fisch",
+"avgPrice": 3.84,
+"unit": "kg"
+},
+{
+"name": "Familienpackung Hähnchenbrust",
+"category": "Fleisch & Fisch",
+"avgPrice": 11.88,
+"unit": "kg"
+},
+{
+"name": "Hackfleisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 7.49,
+"unit": "kg"
+},
+{
+"name": "Bio Hackfleisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 10.11,
+"unit": "kg"
+},
+{
+"name": "Ja! Hackfleisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 5.62,
+"unit": "kg"
+},
+{
+"name": "Rewe Hackfleisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 7.49,
+"unit": "kg"
+},
+{
+"name": "Edeka Hackfleisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 7.86,
+"unit": "kg"
+},
+{
+"name": "Gut & Günstig Hackfleisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 5.99,
+"unit": "kg"
+},
+{
+"name": "Alnatura Hackfleisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 10.49,
+"unit": "kg"
+},
+{
+"name": "Frische Hackfleisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 8.24,
+"unit": "kg"
+},
+{
+"name": "Premium Hackfleisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 11.24,
+"unit": "kg"
+},
+{
+"name": "Discount Hackfleisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 5.24,
+"unit": "kg"
+},
+{
+"name": "Regional Hackfleisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 8.61,
+"unit": "kg"
+},
+{
+"name": "XXL Hackfleisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 11.98,
+"unit": "kg"
+},
+{
+"name": "Mini Hackfleisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 4.12,
+"unit": "kg"
+},
+{
+"name": "Familienpackung Hackfleisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 12.73,
+"unit": "kg"
+},
+{
+"name": "Lachs",
+"category": "Fleisch & Fisch",
+"avgPrice": 3.49,
+"unit": "Packung"
+},
+{
+"name": "Bio Lachs",
+"category": "Fleisch & Fisch",
+"avgPrice": 4.71,
+"unit": "Packung"
+},
+{
+"name": "Ja! Lachs",
+"category": "Fleisch & Fisch",
+"avgPrice": 2.62,
+"unit": "Packung"
+},
+{
+"name": "Rewe Lachs",
+"category": "Fleisch & Fisch",
+"avgPrice": 3.49,
+"unit": "Packung"
+},
+{
+"name": "Edeka Lachs",
+"category": "Fleisch & Fisch",
+"avgPrice": 3.66,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Lachs",
+"category": "Fleisch & Fisch",
+"avgPrice": 2.79,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Lachs",
+"category": "Fleisch & Fisch",
+"avgPrice": 4.89,
+"unit": "Packung"
+},
+{
+"name": "Frische Lachs",
+"category": "Fleisch & Fisch",
+"avgPrice": 3.84,
+"unit": "Packung"
+},
+{
+"name": "Premium Lachs",
+"category": "Fleisch & Fisch",
+"avgPrice": 5.24,
+"unit": "Packung"
+},
+{
+"name": "Discount Lachs",
+"category": "Fleisch & Fisch",
+"avgPrice": 2.44,
+"unit": "Packung"
+},
+{
+"name": "Regional Lachs",
+"category": "Fleisch & Fisch",
+"avgPrice": 4.01,
+"unit": "Packung"
+},
+{
+"name": "XXL Lachs",
+"category": "Fleisch & Fisch",
+"avgPrice": 5.58,
+"unit": "Packung"
+},
+{
+"name": "Mini Lachs",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.92,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Lachs",
+"category": "Fleisch & Fisch",
+"avgPrice": 5.93,
+"unit": "Packung"
+},
+{
+"name": "Aufschnitt",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.79,
+"unit": "Packung"
+},
+{
+"name": "Bio Aufschnitt",
+"category": "Fleisch & Fisch",
+"avgPrice": 2.42,
+"unit": "Packung"
+},
+{
+"name": "Ja! Aufschnitt",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.34,
+"unit": "Packung"
+},
+{
+"name": "Rewe Aufschnitt",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.79,
+"unit": "Packung"
+},
+{
+"name": "Edeka Aufschnitt",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.88,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Aufschnitt",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.43,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Aufschnitt",
+"category": "Fleisch & Fisch",
+"avgPrice": 2.51,
+"unit": "Packung"
+},
+{
+"name": "Frische Aufschnitt",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.97,
+"unit": "Packung"
+},
+{
+"name": "Premium Aufschnitt",
+"category": "Fleisch & Fisch",
+"avgPrice": 2.69,
+"unit": "Packung"
+},
+{
+"name": "Discount Aufschnitt",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.25,
+"unit": "Packung"
+},
+{
+"name": "Regional Aufschnitt",
+"category": "Fleisch & Fisch",
+"avgPrice": 2.06,
+"unit": "Packung"
+},
+{
+"name": "XXL Aufschnitt",
+"category": "Fleisch & Fisch",
+"avgPrice": 2.86,
+"unit": "Packung"
+},
+{
+"name": "Mini Aufschnitt",
+"category": "Fleisch & Fisch",
+"avgPrice": 0.98,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Aufschnitt",
+"category": "Fleisch & Fisch",
+"avgPrice": 3.04,
+"unit": "Packung"
+},
+{
+"name": "Thunfisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.29,
+"unit": "Dose"
+},
+{
+"name": "Bio Thunfisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.74,
+"unit": "Dose"
+},
+{
+"name": "Ja! Thunfisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 0.97,
+"unit": "Dose"
+},
+{
+"name": "Rewe Thunfisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.29,
+"unit": "Dose"
+},
+{
+"name": "Edeka Thunfisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.35,
+"unit": "Dose"
+},
+{
+"name": "Gut & Günstig Thunfisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.03,
+"unit": "Dose"
+},
+{
+"name": "Alnatura Thunfisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.81,
+"unit": "Dose"
+},
+{
+"name": "Frische Thunfisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.42,
+"unit": "Dose"
+},
+{
+"name": "Premium Thunfisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.94,
+"unit": "Dose"
+},
+{
+"name": "Discount Thunfisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 0.9,
+"unit": "Dose"
+},
+{
+"name": "Regional Thunfisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 1.48,
+"unit": "Dose"
+},
+{
+"name": "XXL Thunfisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 2.06,
+"unit": "Dose"
+},
+{
+"name": "Mini Thunfisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 0.71,
+"unit": "Dose"
+},
+{
+"name": "Familienpackung Thunfisch",
+"category": "Fleisch & Fisch",
+"avgPrice": 2.19,
+"unit": "Dose"
+},
+{
+"name": "Wasser",
+"category": "Getränke",
+"avgPrice": 0.65,
+"unit": "Kasten"
+},
+{
+"name": "Bio Wasser",
+"category": "Getränke",
+"avgPrice": 0.88,
+"unit": "Kasten"
+},
+{
+"name": "Ja! Wasser",
+"category": "Getränke",
+"avgPrice": 0.49,
+"unit": "Kasten"
+},
+{
+"name": "Rewe Wasser",
+"category": "Getränke",
+"avgPrice": 0.65,
+"unit": "Kasten"
+},
+{
+"name": "Edeka Wasser",
+"category": "Getränke",
+"avgPrice": 0.68,
+"unit": "Kasten"
+},
+{
+"name": "Gut & Günstig Wasser",
+"category": "Getränke",
+"avgPrice": 0.52,
+"unit": "Kasten"
+},
+{
+"name": "Alnatura Wasser",
+"category": "Getränke",
+"avgPrice": 0.91,
+"unit": "Kasten"
+},
+{
+"name": "Frische Wasser",
+"category": "Getränke",
+"avgPrice": 0.72,
+"unit": "Kasten"
+},
+{
+"name": "Premium Wasser",
+"category": "Getränke",
+"avgPrice": 0.98,
+"unit": "Kasten"
+},
+{
+"name": "Discount Wasser",
+"category": "Getränke",
+"avgPrice": 0.46,
+"unit": "Kasten"
+},
+{
+"name": "Regional Wasser",
+"category": "Getränke",
+"avgPrice": 0.75,
+"unit": "Kasten"
+},
+{
+"name": "XXL Wasser",
+"category": "Getränke",
+"avgPrice": 1.04,
+"unit": "Kasten"
+},
+{
+"name": "Mini Wasser",
+"category": "Getränke",
+"avgPrice": 0.36,
+"unit": "Kasten"
+},
+{
+"name": "Familienpackung Wasser",
+"category": "Getränke",
+"avgPrice": 1.11,
+"unit": "Kasten"
+},
+{
+"name": "Apfelsaft",
+"category": "Getränke",
+"avgPrice": 1.49,
+"unit": "L"
+},
+{
+"name": "Bio Apfelsaft",
+"category": "Getränke",
+"avgPrice": 2.01,
+"unit": "L"
+},
+{
+"name": "Ja! Apfelsaft",
+"category": "Getränke",
+"avgPrice": 1.12,
+"unit": "L"
+},
+{
+"name": "Rewe Apfelsaft",
+"category": "Getränke",
+"avgPrice": 1.49,
+"unit": "L"
+},
+{
+"name": "Edeka Apfelsaft",
+"category": "Getränke",
+"avgPrice": 1.56,
+"unit": "L"
+},
+{
+"name": "Gut & Günstig Apfelsaft",
+"category": "Getränke",
+"avgPrice": 1.19,
+"unit": "L"
+},
+{
+"name": "Alnatura Apfelsaft",
+"category": "Getränke",
+"avgPrice": 2.09,
+"unit": "L"
+},
+{
+"name": "Frische Apfelsaft",
+"category": "Getränke",
+"avgPrice": 1.64,
+"unit": "L"
+},
+{
+"name": "Premium Apfelsaft",
+"category": "Getränke",
+"avgPrice": 2.24,
+"unit": "L"
+},
+{
+"name": "Discount Apfelsaft",
+"category": "Getränke",
+"avgPrice": 1.04,
+"unit": "L"
+},
+{
+"name": "Regional Apfelsaft",
+"category": "Getränke",
+"avgPrice": 1.71,
+"unit": "L"
+},
+{
+"name": "XXL Apfelsaft",
+"category": "Getränke",
+"avgPrice": 2.38,
+"unit": "L"
+},
+{
+"name": "Mini Apfelsaft",
+"category": "Getränke",
+"avgPrice": 0.82,
+"unit": "L"
+},
+{
+"name": "Familienpackung Apfelsaft",
+"category": "Getränke",
+"avgPrice": 2.53,
+"unit": "L"
+},
+{
+"name": "Cola",
+"category": "Getränke",
+"avgPrice": 1.29,
+"unit": "L"
+},
+{
+"name": "Bio Cola",
+"category": "Getränke",
+"avgPrice": 1.74,
+"unit": "L"
+},
+{
+"name": "Ja! Cola",
+"category": "Getränke",
+"avgPrice": 0.97,
+"unit": "L"
+},
+{
+"name": "Rewe Cola",
+"category": "Getränke",
+"avgPrice": 1.29,
+"unit": "L"
+},
+{
+"name": "Edeka Cola",
+"category": "Getränke",
+"avgPrice": 1.35,
+"unit": "L"
+},
+{
+"name": "Gut & Günstig Cola",
+"category": "Getränke",
+"avgPrice": 1.03,
+"unit": "L"
+},
+{
+"name": "Alnatura Cola",
+"category": "Getränke",
+"avgPrice": 1.81,
+"unit": "L"
+},
+{
+"name": "Frische Cola",
+"category": "Getränke",
+"avgPrice": 1.42,
+"unit": "L"
+},
+{
+"name": "Premium Cola",
+"category": "Getränke",
+"avgPrice": 1.94,
+"unit": "L"
+},
+{
+"name": "Discount Cola",
+"category": "Getränke",
+"avgPrice": 0.9,
+"unit": "L"
+},
+{
+"name": "Regional Cola",
+"category": "Getränke",
+"avgPrice": 1.48,
+"unit": "L"
+},
+{
+"name": "XXL Cola",
+"category": "Getränke",
+"avgPrice": 2.06,
+"unit": "L"
+},
+{
+"name": "Mini Cola",
+"category": "Getränke",
+"avgPrice": 0.71,
+"unit": "L"
+},
+{
+"name": "Familienpackung Cola",
+"category": "Getränke",
+"avgPrice": 2.19,
+"unit": "L"
+},
+{
+"name": "Kaffee",
+"category": "Getränke",
+"avgPrice": 4.99,
+"unit": "Packung"
+},
+{
+"name": "Bio Kaffee",
+"category": "Getränke",
+"avgPrice": 6.74,
+"unit": "Packung"
+},
+{
+"name": "Ja! Kaffee",
+"category": "Getränke",
+"avgPrice": 3.74,
+"unit": "Packung"
+},
+{
+"name": "Rewe Kaffee",
+"category": "Getränke",
+"avgPrice": 4.99,
+"unit": "Packung"
+},
+{
+"name": "Edeka Kaffee",
+"category": "Getränke",
+"avgPrice": 5.24,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Kaffee",
+"category": "Getränke",
+"avgPrice": 3.99,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Kaffee",
+"category": "Getränke",
+"avgPrice": 6.99,
+"unit": "Packung"
+},
+{
+"name": "Frische Kaffee",
+"category": "Getränke",
+"avgPrice": 5.49,
+"unit": "Packung"
+},
+{
+"name": "Premium Kaffee",
+"category": "Getränke",
+"avgPrice": 7.49,
+"unit": "Packung"
+},
+{
+"name": "Discount Kaffee",
+"category": "Getränke",
+"avgPrice": 3.49,
+"unit": "Packung"
+},
+{
+"name": "Regional Kaffee",
+"category": "Getränke",
+"avgPrice": 5.74,
+"unit": "Packung"
+},
+{
+"name": "XXL Kaffee",
+"category": "Getränke",
+"avgPrice": 7.98,
+"unit": "Packung"
+},
+{
+"name": "Mini Kaffee",
+"category": "Getränke",
+"avgPrice": 2.74,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Kaffee",
+"category": "Getränke",
+"avgPrice": 8.48,
+"unit": "Packung"
+},
+{
+"name": "Tee",
+"category": "Getränke",
+"avgPrice": 2.29,
+"unit": "Packung"
+},
+{
+"name": "Bio Tee",
+"category": "Getränke",
+"avgPrice": 3.09,
+"unit": "Packung"
+},
+{
+"name": "Ja! Tee",
+"category": "Getränke",
+"avgPrice": 1.72,
+"unit": "Packung"
+},
+{
+"name": "Rewe Tee",
+"category": "Getränke",
+"avgPrice": 2.29,
+"unit": "Packung"
+},
+{
+"name": "Edeka Tee",
+"category": "Getränke",
+"avgPrice": 2.4,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Tee",
+"category": "Getränke",
+"avgPrice": 1.83,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Tee",
+"category": "Getränke",
+"avgPrice": 3.21,
+"unit": "Packung"
+},
+{
+"name": "Frische Tee",
+"category": "Getränke",
+"avgPrice": 2.52,
+"unit": "Packung"
+},
+{
+"name": "Premium Tee",
+"category": "Getränke",
+"avgPrice": 3.44,
+"unit": "Packung"
+},
+{
+"name": "Discount Tee",
+"category": "Getränke",
+"avgPrice": 1.6,
+"unit": "Packung"
+},
+{
+"name": "Regional Tee",
+"category": "Getränke",
+"avgPrice": 2.63,
+"unit": "Packung"
+},
+{
+"name": "XXL Tee",
+"category": "Getränke",
+"avgPrice": 3.66,
+"unit": "Packung"
+},
+{
+"name": "Mini Tee",
+"category": "Getränke",
+"avgPrice": 1.26,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Tee",
+"category": "Getränke",
+"avgPrice": 3.89,
+"unit": "Packung"
+},
+{
+"name": "Bier",
+"category": "Getränke",
+"avgPrice": 0.79,
+"unit": "Flasche"
+},
+{
+"name": "Bio Bier",
+"category": "Getränke",
+"avgPrice": 1.07,
+"unit": "Flasche"
+},
+{
+"name": "Ja! Bier",
+"category": "Getränke",
+"avgPrice": 0.59,
+"unit": "Flasche"
+},
+{
+"name": "Rewe Bier",
+"category": "Getränke",
+"avgPrice": 0.79,
+"unit": "Flasche"
+},
+{
+"name": "Edeka Bier",
+"category": "Getränke",
+"avgPrice": 0.83,
+"unit": "Flasche"
+},
+{
+"name": "Gut & Günstig Bier",
+"category": "Getränke",
+"avgPrice": 0.63,
+"unit": "Flasche"
+},
+{
+"name": "Alnatura Bier",
+"category": "Getränke",
+"avgPrice": 1.11,
+"unit": "Flasche"
+},
+{
+"name": "Frische Bier",
+"category": "Getränke",
+"avgPrice": 0.87,
+"unit": "Flasche"
+},
+{
+"name": "Premium Bier",
+"category": "Getränke",
+"avgPrice": 1.19,
+"unit": "Flasche"
+},
+{
+"name": "Discount Bier",
+"category": "Getränke",
+"avgPrice": 0.55,
+"unit": "Flasche"
+},
+{
+"name": "Regional Bier",
+"category": "Getränke",
+"avgPrice": 0.91,
+"unit": "Flasche"
+},
+{
+"name": "XXL Bier",
+"category": "Getränke",
+"avgPrice": 1.26,
+"unit": "Flasche"
+},
+{
+"name": "Mini Bier",
+"category": "Getränke",
+"avgPrice": 0.43,
+"unit": "Flasche"
+},
+{
+"name": "Familienpackung Bier",
+"category": "Getränke",
+"avgPrice": 1.34,
+"unit": "Flasche"
+},
+{
+"name": "Nudeln",
+"category": "Vorrat",
+"avgPrice": 1.19,
+"unit": "Packung"
+},
+{
+"name": "Bio Nudeln",
+"category": "Vorrat",
+"avgPrice": 1.61,
+"unit": "Packung"
+},
+{
+"name": "Ja! Nudeln",
+"category": "Vorrat",
+"avgPrice": 0.89,
+"unit": "Packung"
+},
+{
+"name": "Rewe Nudeln",
+"category": "Vorrat",
+"avgPrice": 1.19,
+"unit": "Packung"
+},
+{
+"name": "Edeka Nudeln",
+"category": "Vorrat",
+"avgPrice": 1.25,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Nudeln",
+"category": "Vorrat",
+"avgPrice": 0.95,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Nudeln",
+"category": "Vorrat",
+"avgPrice": 1.67,
+"unit": "Packung"
+},
+{
+"name": "Frische Nudeln",
+"category": "Vorrat",
+"avgPrice": 1.31,
+"unit": "Packung"
+},
+{
+"name": "Premium Nudeln",
+"category": "Vorrat",
+"avgPrice": 1.79,
+"unit": "Packung"
+},
+{
+"name": "Discount Nudeln",
+"category": "Vorrat",
+"avgPrice": 0.83,
+"unit": "Packung"
+},
+{
+"name": "Regional Nudeln",
+"category": "Vorrat",
+"avgPrice": 1.37,
+"unit": "Packung"
+},
+{
+"name": "XXL Nudeln",
+"category": "Vorrat",
+"avgPrice": 1.9,
+"unit": "Packung"
+},
+{
+"name": "Mini Nudeln",
+"category": "Vorrat",
+"avgPrice": 0.65,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Nudeln",
+"category": "Vorrat",
+"avgPrice": 2.02,
+"unit": "Packung"
+},
+{
+"name": "Reis",
+"category": "Vorrat",
+"avgPrice": 1.99,
+"unit": "Packung"
+},
+{
+"name": "Bio Reis",
+"category": "Vorrat",
+"avgPrice": 2.69,
+"unit": "Packung"
+},
+{
+"name": "Ja! Reis",
+"category": "Vorrat",
+"avgPrice": 1.49,
+"unit": "Packung"
+},
+{
+"name": "Rewe Reis",
+"category": "Vorrat",
+"avgPrice": 1.99,
+"unit": "Packung"
+},
+{
+"name": "Edeka Reis",
+"category": "Vorrat",
+"avgPrice": 2.09,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Reis",
+"category": "Vorrat",
+"avgPrice": 1.59,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Reis",
+"category": "Vorrat",
+"avgPrice": 2.79,
+"unit": "Packung"
+},
+{
+"name": "Frische Reis",
+"category": "Vorrat",
+"avgPrice": 2.19,
+"unit": "Packung"
+},
+{
+"name": "Premium Reis",
+"category": "Vorrat",
+"avgPrice": 2.99,
+"unit": "Packung"
+},
+{
+"name": "Discount Reis",
+"category": "Vorrat",
+"avgPrice": 1.39,
+"unit": "Packung"
+},
+{
+"name": "Regional Reis",
+"category": "Vorrat",
+"avgPrice": 2.29,
+"unit": "Packung"
+},
+{
+"name": "XXL Reis",
+"category": "Vorrat",
+"avgPrice": 3.18,
+"unit": "Packung"
+},
+{
+"name": "Mini Reis",
+"category": "Vorrat",
+"avgPrice": 1.09,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Reis",
+"category": "Vorrat",
+"avgPrice": 3.38,
+"unit": "Packung"
+},
+{
+"name": "Mehl",
+"category": "Vorrat",
+"avgPrice": 0.69,
+"unit": "kg"
+},
+{
+"name": "Bio Mehl",
+"category": "Vorrat",
+"avgPrice": 0.93,
+"unit": "kg"
+},
+{
+"name": "Ja! Mehl",
+"category": "Vorrat",
+"avgPrice": 0.52,
+"unit": "kg"
+},
+{
+"name": "Rewe Mehl",
+"category": "Vorrat",
+"avgPrice": 0.69,
+"unit": "kg"
+},
+{
+"name": "Edeka Mehl",
+"category": "Vorrat",
+"avgPrice": 0.72,
+"unit": "kg"
+},
+{
+"name": "Gut & Günstig Mehl",
+"category": "Vorrat",
+"avgPrice": 0.55,
+"unit": "kg"
+},
+{
+"name": "Alnatura Mehl",
+"category": "Vorrat",
+"avgPrice": 0.97,
+"unit": "kg"
+},
+{
+"name": "Frische Mehl",
+"category": "Vorrat",
+"avgPrice": 0.76,
+"unit": "kg"
+},
+{
+"name": "Premium Mehl",
+"category": "Vorrat",
+"avgPrice": 1.04,
+"unit": "kg"
+},
+{
+"name": "Discount Mehl",
+"category": "Vorrat",
+"avgPrice": 0.48,
+"unit": "kg"
+},
+{
+"name": "Regional Mehl",
+"category": "Vorrat",
+"avgPrice": 0.79,
+"unit": "kg"
+},
+{
+"name": "XXL Mehl",
+"category": "Vorrat",
+"avgPrice": 1.1,
+"unit": "kg"
+},
+{
+"name": "Mini Mehl",
+"category": "Vorrat",
+"avgPrice": 0.38,
+"unit": "kg"
+},
+{
+"name": "Familienpackung Mehl",
+"category": "Vorrat",
+"avgPrice": 1.17,
+"unit": "kg"
+},
+{
+"name": "Zucker",
+"category": "Vorrat",
+"avgPrice": 0.89,
+"unit": "kg"
+},
+{
+"name": "Bio Zucker",
+"category": "Vorrat",
+"avgPrice": 1.2,
+"unit": "kg"
+},
+{
+"name": "Ja! Zucker",
+"category": "Vorrat",
+"avgPrice": 0.67,
+"unit": "kg"
+},
+{
+"name": "Rewe Zucker",
+"category": "Vorrat",
+"avgPrice": 0.89,
+"unit": "kg"
+},
+{
+"name": "Edeka Zucker",
+"category": "Vorrat",
+"avgPrice": 0.93,
+"unit": "kg"
+},
+{
+"name": "Gut & Günstig Zucker",
+"category": "Vorrat",
+"avgPrice": 0.71,
+"unit": "kg"
+},
+{
+"name": "Alnatura Zucker",
+"category": "Vorrat",
+"avgPrice": 1.25,
+"unit": "kg"
+},
+{
+"name": "Frische Zucker",
+"category": "Vorrat",
+"avgPrice": 0.98,
+"unit": "kg"
+},
+{
+"name": "Premium Zucker",
+"category": "Vorrat",
+"avgPrice": 1.34,
+"unit": "kg"
+},
+{
+"name": "Discount Zucker",
+"category": "Vorrat",
+"avgPrice": 0.62,
+"unit": "kg"
+},
+{
+"name": "Regional Zucker",
+"category": "Vorrat",
+"avgPrice": 1.02,
+"unit": "kg"
+},
+{
+"name": "XXL Zucker",
+"category": "Vorrat",
+"avgPrice": 1.42,
+"unit": "kg"
+},
+{
+"name": "Mini Zucker",
+"category": "Vorrat",
+"avgPrice": 0.49,
+"unit": "kg"
+},
+{
+"name": "Familienpackung Zucker",
+"category": "Vorrat",
+"avgPrice": 1.51,
+"unit": "kg"
+},
+{
+"name": "Olivenöl",
+"category": "Vorrat",
+"avgPrice": 4.99,
+"unit": "Flasche"
+},
+{
+"name": "Bio Olivenöl",
+"category": "Vorrat",
+"avgPrice": 6.74,
+"unit": "Flasche"
+},
+{
+"name": "Ja! Olivenöl",
+"category": "Vorrat",
+"avgPrice": 3.74,
+"unit": "Flasche"
+},
+{
+"name": "Rewe Olivenöl",
+"category": "Vorrat",
+"avgPrice": 4.99,
+"unit": "Flasche"
+},
+{
+"name": "Edeka Olivenöl",
+"category": "Vorrat",
+"avgPrice": 5.24,
+"unit": "Flasche"
+},
+{
+"name": "Gut & Günstig Olivenöl",
+"category": "Vorrat",
+"avgPrice": 3.99,
+"unit": "Flasche"
+},
+{
+"name": "Alnatura Olivenöl",
+"category": "Vorrat",
+"avgPrice": 6.99,
+"unit": "Flasche"
+},
+{
+"name": "Frische Olivenöl",
+"category": "Vorrat",
+"avgPrice": 5.49,
+"unit": "Flasche"
+},
+{
+"name": "Premium Olivenöl",
+"category": "Vorrat",
+"avgPrice": 7.49,
+"unit": "Flasche"
+},
+{
+"name": "Discount Olivenöl",
+"category": "Vorrat",
+"avgPrice": 3.49,
+"unit": "Flasche"
+},
+{
+"name": "Regional Olivenöl",
+"category": "Vorrat",
+"avgPrice": 5.74,
+"unit": "Flasche"
+},
+{
+"name": "XXL Olivenöl",
+"category": "Vorrat",
+"avgPrice": 7.98,
+"unit": "Flasche"
+},
+{
+"name": "Mini Olivenöl",
+"category": "Vorrat",
+"avgPrice": 2.74,
+"unit": "Flasche"
+},
+{
+"name": "Familienpackung Olivenöl",
+"category": "Vorrat",
+"avgPrice": 8.48,
+"unit": "Flasche"
+},
+{
+"name": "Tomatensoße",
+"category": "Vorrat",
+"avgPrice": 1.49,
+"unit": "Glas"
+},
+{
+"name": "Bio Tomatensoße",
+"category": "Vorrat",
+"avgPrice": 2.01,
+"unit": "Glas"
+},
+{
+"name": "Ja! Tomatensoße",
+"category": "Vorrat",
+"avgPrice": 1.12,
+"unit": "Glas"
+},
+{
+"name": "Rewe Tomatensoße",
+"category": "Vorrat",
+"avgPrice": 1.49,
+"unit": "Glas"
+},
+{
+"name": "Edeka Tomatensoße",
+"category": "Vorrat",
+"avgPrice": 1.56,
+"unit": "Glas"
+},
+{
+"name": "Gut & Günstig Tomatensoße",
+"category": "Vorrat",
+"avgPrice": 1.19,
+"unit": "Glas"
+},
+{
+"name": "Alnatura Tomatensoße",
+"category": "Vorrat",
+"avgPrice": 2.09,
+"unit": "Glas"
+},
+{
+"name": "Frische Tomatensoße",
+"category": "Vorrat",
+"avgPrice": 1.64,
+"unit": "Glas"
+},
+{
+"name": "Premium Tomatensoße",
+"category": "Vorrat",
+"avgPrice": 2.24,
+"unit": "Glas"
+},
+{
+"name": "Discount Tomatensoße",
+"category": "Vorrat",
+"avgPrice": 1.04,
+"unit": "Glas"
+},
+{
+"name": "Regional Tomatensoße",
+"category": "Vorrat",
+"avgPrice": 1.71,
+"unit": "Glas"
+},
+{
+"name": "XXL Tomatensoße",
+"category": "Vorrat",
+"avgPrice": 2.38,
+"unit": "Glas"
+},
+{
+"name": "Mini Tomatensoße",
+"category": "Vorrat",
+"avgPrice": 0.82,
+"unit": "Glas"
+},
+{
+"name": "Familienpackung Tomatensoße",
+"category": "Vorrat",
+"avgPrice": 2.53,
+"unit": "Glas"
+},
+{
+"name": "Haferflocken",
+"category": "Vorrat",
+"avgPrice": 1.29,
+"unit": "Packung"
+},
+{
+"name": "Bio Haferflocken",
+"category": "Vorrat",
+"avgPrice": 1.74,
+"unit": "Packung"
+},
+{
+"name": "Ja! Haferflocken",
+"category": "Vorrat",
+"avgPrice": 0.97,
+"unit": "Packung"
+},
+{
+"name": "Rewe Haferflocken",
+"category": "Vorrat",
+"avgPrice": 1.29,
+"unit": "Packung"
+},
+{
+"name": "Edeka Haferflocken",
+"category": "Vorrat",
+"avgPrice": 1.35,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Haferflocken",
+"category": "Vorrat",
+"avgPrice": 1.03,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Haferflocken",
+"category": "Vorrat",
+"avgPrice": 1.81,
+"unit": "Packung"
+},
+{
+"name": "Frische Haferflocken",
+"category": "Vorrat",
+"avgPrice": 1.42,
+"unit": "Packung"
+},
+{
+"name": "Premium Haferflocken",
+"category": "Vorrat",
+"avgPrice": 1.94,
+"unit": "Packung"
+},
+{
+"name": "Discount Haferflocken",
+"category": "Vorrat",
+"avgPrice": 0.9,
+"unit": "Packung"
+},
+{
+"name": "Regional Haferflocken",
+"category": "Vorrat",
+"avgPrice": 1.48,
+"unit": "Packung"
+},
+{
+"name": "XXL Haferflocken",
+"category": "Vorrat",
+"avgPrice": 2.06,
+"unit": "Packung"
+},
+{
+"name": "Mini Haferflocken",
+"category": "Vorrat",
+"avgPrice": 0.71,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Haferflocken",
+"category": "Vorrat",
+"avgPrice": 2.19,
+"unit": "Packung"
+},
+{
+"name": "Müsli",
+"category": "Vorrat",
+"avgPrice": 2.49,
+"unit": "Packung"
+},
+{
+"name": "Bio Müsli",
+"category": "Vorrat",
+"avgPrice": 3.36,
+"unit": "Packung"
+},
+{
+"name": "Ja! Müsli",
+"category": "Vorrat",
+"avgPrice": 1.87,
+"unit": "Packung"
+},
+{
+"name": "Rewe Müsli",
+"category": "Vorrat",
+"avgPrice": 2.49,
+"unit": "Packung"
+},
+{
+"name": "Edeka Müsli",
+"category": "Vorrat",
+"avgPrice": 2.61,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Müsli",
+"category": "Vorrat",
+"avgPrice": 1.99,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Müsli",
+"category": "Vorrat",
+"avgPrice": 3.49,
+"unit": "Packung"
+},
+{
+"name": "Frische Müsli",
+"category": "Vorrat",
+"avgPrice": 2.74,
+"unit": "Packung"
+},
+{
+"name": "Premium Müsli",
+"category": "Vorrat",
+"avgPrice": 3.74,
+"unit": "Packung"
+},
+{
+"name": "Discount Müsli",
+"category": "Vorrat",
+"avgPrice": 1.74,
+"unit": "Packung"
+},
+{
+"name": "Regional Müsli",
+"category": "Vorrat",
+"avgPrice": 2.86,
+"unit": "Packung"
+},
+{
+"name": "XXL Müsli",
+"category": "Vorrat",
+"avgPrice": 3.98,
+"unit": "Packung"
+},
+{
+"name": "Mini Müsli",
+"category": "Vorrat",
+"avgPrice": 1.37,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Müsli",
+"category": "Vorrat",
+"avgPrice": 4.23,
+"unit": "Packung"
+},
+{
+"name": "Pizza",
+"category": "Tiefkühl",
+"avgPrice": 2.99,
+"unit": "Stück"
+},
+{
+"name": "Bio Pizza",
+"category": "Tiefkühl",
+"avgPrice": 4.04,
+"unit": "Stück"
+},
+{
+"name": "Ja! Pizza",
+"category": "Tiefkühl",
+"avgPrice": 2.24,
+"unit": "Stück"
+},
+{
+"name": "Rewe Pizza",
+"category": "Tiefkühl",
+"avgPrice": 2.99,
+"unit": "Stück"
+},
+{
+"name": "Edeka Pizza",
+"category": "Tiefkühl",
+"avgPrice": 3.14,
+"unit": "Stück"
+},
+{
+"name": "Gut & Günstig Pizza",
+"category": "Tiefkühl",
+"avgPrice": 2.39,
+"unit": "Stück"
+},
+{
+"name": "Alnatura Pizza",
+"category": "Tiefkühl",
+"avgPrice": 4.19,
+"unit": "Stück"
+},
+{
+"name": "Frische Pizza",
+"category": "Tiefkühl",
+"avgPrice": 3.29,
+"unit": "Stück"
+},
+{
+"name": "Premium Pizza",
+"category": "Tiefkühl",
+"avgPrice": 4.49,
+"unit": "Stück"
+},
+{
+"name": "Discount Pizza",
+"category": "Tiefkühl",
+"avgPrice": 2.09,
+"unit": "Stück"
+},
+{
+"name": "Regional Pizza",
+"category": "Tiefkühl",
+"avgPrice": 3.44,
+"unit": "Stück"
+},
+{
+"name": "XXL Pizza",
+"category": "Tiefkühl",
+"avgPrice": 4.78,
+"unit": "Stück"
+},
+{
+"name": "Mini Pizza",
+"category": "Tiefkühl",
+"avgPrice": 1.64,
+"unit": "Stück"
+},
+{
+"name": "Familienpackung Pizza",
+"category": "Tiefkühl",
+"avgPrice": 5.08,
+"unit": "Stück"
+},
+{
+"name": "Pommes",
+"category": "Tiefkühl",
+"avgPrice": 1.99,
+"unit": "Packung"
+},
+{
+"name": "Bio Pommes",
+"category": "Tiefkühl",
+"avgPrice": 2.69,
+"unit": "Packung"
+},
+{
+"name": "Ja! Pommes",
+"category": "Tiefkühl",
+"avgPrice": 1.49,
+"unit": "Packung"
+},
+{
+"name": "Rewe Pommes",
+"category": "Tiefkühl",
+"avgPrice": 1.99,
+"unit": "Packung"
+},
+{
+"name": "Edeka Pommes",
+"category": "Tiefkühl",
+"avgPrice": 2.09,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Pommes",
+"category": "Tiefkühl",
+"avgPrice": 1.59,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Pommes",
+"category": "Tiefkühl",
+"avgPrice": 2.79,
+"unit": "Packung"
+},
+{
+"name": "Frische Pommes",
+"category": "Tiefkühl",
+"avgPrice": 2.19,
+"unit": "Packung"
+},
+{
+"name": "Premium Pommes",
+"category": "Tiefkühl",
+"avgPrice": 2.99,
+"unit": "Packung"
+},
+{
+"name": "Discount Pommes",
+"category": "Tiefkühl",
+"avgPrice": 1.39,
+"unit": "Packung"
+},
+{
+"name": "Regional Pommes",
+"category": "Tiefkühl",
+"avgPrice": 2.29,
+"unit": "Packung"
+},
+{
+"name": "XXL Pommes",
+"category": "Tiefkühl",
+"avgPrice": 3.18,
+"unit": "Packung"
+},
+{
+"name": "Mini Pommes",
+"category": "Tiefkühl",
+"avgPrice": 1.09,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Pommes",
+"category": "Tiefkühl",
+"avgPrice": 3.38,
+"unit": "Packung"
+},
+{
+"name": "Eis",
+"category": "Tiefkühl",
+"avgPrice": 2.49,
+"unit": "Packung"
+},
+{
+"name": "Bio Eis",
+"category": "Tiefkühl",
+"avgPrice": 3.36,
+"unit": "Packung"
+},
+{
+"name": "Ja! Eis",
+"category": "Tiefkühl",
+"avgPrice": 1.87,
+"unit": "Packung"
+},
+{
+"name": "Rewe Eis",
+"category": "Tiefkühl",
+"avgPrice": 2.49,
+"unit": "Packung"
+},
+{
+"name": "Edeka Eis",
+"category": "Tiefkühl",
+"avgPrice": 2.61,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Eis",
+"category": "Tiefkühl",
+"avgPrice": 1.99,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Eis",
+"category": "Tiefkühl",
+"avgPrice": 3.49,
+"unit": "Packung"
+},
+{
+"name": "Frische Eis",
+"category": "Tiefkühl",
+"avgPrice": 2.74,
+"unit": "Packung"
+},
+{
+"name": "Premium Eis",
+"category": "Tiefkühl",
+"avgPrice": 3.74,
+"unit": "Packung"
+},
+{
+"name": "Discount Eis",
+"category": "Tiefkühl",
+"avgPrice": 1.74,
+"unit": "Packung"
+},
+{
+"name": "Regional Eis",
+"category": "Tiefkühl",
+"avgPrice": 2.86,
+"unit": "Packung"
+},
+{
+"name": "XXL Eis",
+"category": "Tiefkühl",
+"avgPrice": 3.98,
+"unit": "Packung"
+},
+{
+"name": "Mini Eis",
+"category": "Tiefkühl",
+"avgPrice": 1.37,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Eis",
+"category": "Tiefkühl",
+"avgPrice": 4.23,
+"unit": "Packung"
+},
+{
+"name": "TK-Gemüse",
+"category": "Tiefkühl",
+"avgPrice": 1.49,
+"unit": "Packung"
+},
+{
+"name": "Bio TK-Gemüse",
+"category": "Tiefkühl",
+"avgPrice": 2.01,
+"unit": "Packung"
+},
+{
+"name": "Ja! TK-Gemüse",
+"category": "Tiefkühl",
+"avgPrice": 1.12,
+"unit": "Packung"
+},
+{
+"name": "Rewe TK-Gemüse",
+"category": "Tiefkühl",
+"avgPrice": 1.49,
+"unit": "Packung"
+},
+{
+"name": "Edeka TK-Gemüse",
+"category": "Tiefkühl",
+"avgPrice": 1.56,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig TK-Gemüse",
+"category": "Tiefkühl",
+"avgPrice": 1.19,
+"unit": "Packung"
+},
+{
+"name": "Alnatura TK-Gemüse",
+"category": "Tiefkühl",
+"avgPrice": 2.09,
+"unit": "Packung"
+},
+{
+"name": "Frische TK-Gemüse",
+"category": "Tiefkühl",
+"avgPrice": 1.64,
+"unit": "Packung"
+},
+{
+"name": "Premium TK-Gemüse",
+"category": "Tiefkühl",
+"avgPrice": 2.24,
+"unit": "Packung"
+},
+{
+"name": "Discount TK-Gemüse",
+"category": "Tiefkühl",
+"avgPrice": 1.04,
+"unit": "Packung"
+},
+{
+"name": "Regional TK-Gemüse",
+"category": "Tiefkühl",
+"avgPrice": 1.71,
+"unit": "Packung"
+},
+{
+"name": "XXL TK-Gemüse",
+"category": "Tiefkühl",
+"avgPrice": 2.38,
+"unit": "Packung"
+},
+{
+"name": "Mini TK-Gemüse",
+"category": "Tiefkühl",
+"avgPrice": 0.82,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung TK-Gemüse",
+"category": "Tiefkühl",
+"avgPrice": 2.53,
+"unit": "Packung"
+},
+{
+"name": "Schokolade",
+"category": "Süßes & Snacks",
+"avgPrice": 0.99,
+"unit": "Tafel"
+},
+{
+"name": "Bio Schokolade",
+"category": "Süßes & Snacks",
+"avgPrice": 1.34,
+"unit": "Tafel"
+},
+{
+"name": "Ja! Schokolade",
+"category": "Süßes & Snacks",
+"avgPrice": 0.74,
+"unit": "Tafel"
+},
+{
+"name": "Rewe Schokolade",
+"category": "Süßes & Snacks",
+"avgPrice": 0.99,
+"unit": "Tafel"
+},
+{
+"name": "Edeka Schokolade",
+"category": "Süßes & Snacks",
+"avgPrice": 1.04,
+"unit": "Tafel"
+},
+{
+"name": "Gut & Günstig Schokolade",
+"category": "Süßes & Snacks",
+"avgPrice": 0.79,
+"unit": "Tafel"
+},
+{
+"name": "Alnatura Schokolade",
+"category": "Süßes & Snacks",
+"avgPrice": 1.39,
+"unit": "Tafel"
+},
+{
+"name": "Frische Schokolade",
+"category": "Süßes & Snacks",
+"avgPrice": 1.09,
+"unit": "Tafel"
+},
+{
+"name": "Premium Schokolade",
+"category": "Süßes & Snacks",
+"avgPrice": 1.49,
+"unit": "Tafel"
+},
+{
+"name": "Discount Schokolade",
+"category": "Süßes & Snacks",
+"avgPrice": 0.69,
+"unit": "Tafel"
+},
+{
+"name": "Regional Schokolade",
+"category": "Süßes & Snacks",
+"avgPrice": 1.14,
+"unit": "Tafel"
+},
+{
+"name": "XXL Schokolade",
+"category": "Süßes & Snacks",
+"avgPrice": 1.58,
+"unit": "Tafel"
+},
+{
+"name": "Mini Schokolade",
+"category": "Süßes & Snacks",
+"avgPrice": 0.54,
+"unit": "Tafel"
+},
+{
+"name": "Familienpackung Schokolade",
+"category": "Süßes & Snacks",
+"avgPrice": 1.68,
+"unit": "Tafel"
+},
+{
+"name": "Chips",
+"category": "Süßes & Snacks",
+"avgPrice": 1.49,
+"unit": "Packung"
+},
+{
+"name": "Bio Chips",
+"category": "Süßes & Snacks",
+"avgPrice": 2.01,
+"unit": "Packung"
+},
+{
+"name": "Ja! Chips",
+"category": "Süßes & Snacks",
+"avgPrice": 1.12,
+"unit": "Packung"
+},
+{
+"name": "Rewe Chips",
+"category": "Süßes & Snacks",
+"avgPrice": 1.49,
+"unit": "Packung"
+},
+{
+"name": "Edeka Chips",
+"category": "Süßes & Snacks",
+"avgPrice": 1.56,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Chips",
+"category": "Süßes & Snacks",
+"avgPrice": 1.19,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Chips",
+"category": "Süßes & Snacks",
+"avgPrice": 2.09,
+"unit": "Packung"
+},
+{
+"name": "Frische Chips",
+"category": "Süßes & Snacks",
+"avgPrice": 1.64,
+"unit": "Packung"
+},
+{
+"name": "Premium Chips",
+"category": "Süßes & Snacks",
+"avgPrice": 2.24,
+"unit": "Packung"
+},
+{
+"name": "Discount Chips",
+"category": "Süßes & Snacks",
+"avgPrice": 1.04,
+"unit": "Packung"
+},
+{
+"name": "Regional Chips",
+"category": "Süßes & Snacks",
+"avgPrice": 1.71,
+"unit": "Packung"
+},
+{
+"name": "XXL Chips",
+"category": "Süßes & Snacks",
+"avgPrice": 2.38,
+"unit": "Packung"
+},
+{
+"name": "Mini Chips",
+"category": "Süßes & Snacks",
+"avgPrice": 0.82,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Chips",
+"category": "Süßes & Snacks",
+"avgPrice": 2.53,
+"unit": "Packung"
+},
+{
+"name": "Kekse",
+"category": "Süßes & Snacks",
+"avgPrice": 1.29,
+"unit": "Packung"
+},
+{
+"name": "Bio Kekse",
+"category": "Süßes & Snacks",
+"avgPrice": 1.74,
+"unit": "Packung"
+},
+{
+"name": "Ja! Kekse",
+"category": "Süßes & Snacks",
+"avgPrice": 0.97,
+"unit": "Packung"
+},
+{
+"name": "Rewe Kekse",
+"category": "Süßes & Snacks",
+"avgPrice": 1.29,
+"unit": "Packung"
+},
+{
+"name": "Edeka Kekse",
+"category": "Süßes & Snacks",
+"avgPrice": 1.35,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Kekse",
+"category": "Süßes & Snacks",
+"avgPrice": 1.03,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Kekse",
+"category": "Süßes & Snacks",
+"avgPrice": 1.81,
+"unit": "Packung"
+},
+{
+"name": "Frische Kekse",
+"category": "Süßes & Snacks",
+"avgPrice": 1.42,
+"unit": "Packung"
+},
+{
+"name": "Premium Kekse",
+"category": "Süßes & Snacks",
+"avgPrice": 1.94,
+"unit": "Packung"
+},
+{
+"name": "Discount Kekse",
+"category": "Süßes & Snacks",
+"avgPrice": 0.9,
+"unit": "Packung"
+},
+{
+"name": "Regional Kekse",
+"category": "Süßes & Snacks",
+"avgPrice": 1.48,
+"unit": "Packung"
+},
+{
+"name": "XXL Kekse",
+"category": "Süßes & Snacks",
+"avgPrice": 2.06,
+"unit": "Packung"
+},
+{
+"name": "Mini Kekse",
+"category": "Süßes & Snacks",
+"avgPrice": 0.71,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Kekse",
+"category": "Süßes & Snacks",
+"avgPrice": 2.19,
+"unit": "Packung"
+},
+{
+"name": "Gummibärchen",
+"category": "Süßes & Snacks",
+"avgPrice": 0.99,
+"unit": "Packung"
+},
+{
+"name": "Bio Gummibärchen",
+"category": "Süßes & Snacks",
+"avgPrice": 1.34,
+"unit": "Packung"
+},
+{
+"name": "Ja! Gummibärchen",
+"category": "Süßes & Snacks",
+"avgPrice": 0.74,
+"unit": "Packung"
+},
+{
+"name": "Rewe Gummibärchen",
+"category": "Süßes & Snacks",
+"avgPrice": 0.99,
+"unit": "Packung"
+},
+{
+"name": "Edeka Gummibärchen",
+"category": "Süßes & Snacks",
+"avgPrice": 1.04,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Gummibärchen",
+"category": "Süßes & Snacks",
+"avgPrice": 0.79,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Gummibärchen",
+"category": "Süßes & Snacks",
+"avgPrice": 1.39,
+"unit": "Packung"
+},
+{
+"name": "Frische Gummibärchen",
+"category": "Süßes & Snacks",
+"avgPrice": 1.09,
+"unit": "Packung"
+},
+{
+"name": "Premium Gummibärchen",
+"category": "Süßes & Snacks",
+"avgPrice": 1.49,
+"unit": "Packung"
+},
+{
+"name": "Discount Gummibärchen",
+"category": "Süßes & Snacks",
+"avgPrice": 0.69,
+"unit": "Packung"
+},
+{
+"name": "Regional Gummibärchen",
+"category": "Süßes & Snacks",
+"avgPrice": 1.14,
+"unit": "Packung"
+},
+{
+"name": "XXL Gummibärchen",
+"category": "Süßes & Snacks",
+"avgPrice": 1.58,
+"unit": "Packung"
+},
+{
+"name": "Mini Gummibärchen",
+"category": "Süßes & Snacks",
+"avgPrice": 0.54,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Gummibärchen",
+"category": "Süßes & Snacks",
+"avgPrice": 1.68,
+"unit": "Packung"
+},
+{
+"name": "Zahnpasta",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.49,
+"unit": "Stück"
+},
+{
+"name": "Bio Zahnpasta",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.01,
+"unit": "Stück"
+},
+{
+"name": "Ja! Zahnpasta",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.12,
+"unit": "Stück"
+},
+{
+"name": "Rewe Zahnpasta",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.49,
+"unit": "Stück"
+},
+{
+"name": "Edeka Zahnpasta",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.56,
+"unit": "Stück"
+},
+{
+"name": "Gut & Günstig Zahnpasta",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.19,
+"unit": "Stück"
+},
+{
+"name": "Alnatura Zahnpasta",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.09,
+"unit": "Stück"
+},
+{
+"name": "Frische Zahnpasta",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.64,
+"unit": "Stück"
+},
+{
+"name": "Premium Zahnpasta",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.24,
+"unit": "Stück"
+},
+{
+"name": "Discount Zahnpasta",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.04,
+"unit": "Stück"
+},
+{
+"name": "Regional Zahnpasta",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.71,
+"unit": "Stück"
+},
+{
+"name": "XXL Zahnpasta",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.38,
+"unit": "Stück"
+},
+{
+"name": "Mini Zahnpasta",
+"category": "Drogerie & Haushalt",
+"avgPrice": 0.82,
+"unit": "Stück"
+},
+{
+"name": "Familienpackung Zahnpasta",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.53,
+"unit": "Stück"
+},
+{
+"name": "Duschgel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.29,
+"unit": "Flasche"
+},
+{
+"name": "Bio Duschgel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.74,
+"unit": "Flasche"
+},
+{
+"name": "Ja! Duschgel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 0.97,
+"unit": "Flasche"
+},
+{
+"name": "Rewe Duschgel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.29,
+"unit": "Flasche"
+},
+{
+"name": "Edeka Duschgel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.35,
+"unit": "Flasche"
+},
+{
+"name": "Gut & Günstig Duschgel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.03,
+"unit": "Flasche"
+},
+{
+"name": "Alnatura Duschgel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.81,
+"unit": "Flasche"
+},
+{
+"name": "Frische Duschgel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.42,
+"unit": "Flasche"
+},
+{
+"name": "Premium Duschgel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.94,
+"unit": "Flasche"
+},
+{
+"name": "Discount Duschgel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 0.9,
+"unit": "Flasche"
+},
+{
+"name": "Regional Duschgel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.48,
+"unit": "Flasche"
+},
+{
+"name": "XXL Duschgel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.06,
+"unit": "Flasche"
+},
+{
+"name": "Mini Duschgel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 0.71,
+"unit": "Flasche"
+},
+{
+"name": "Familienpackung Duschgel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.19,
+"unit": "Flasche"
+},
+{
+"name": "Toilettenpapier",
+"category": "Drogerie & Haushalt",
+"avgPrice": 3.49,
+"unit": "Packung"
+},
+{
+"name": "Bio Toilettenpapier",
+"category": "Drogerie & Haushalt",
+"avgPrice": 4.71,
+"unit": "Packung"
+},
+{
+"name": "Ja! Toilettenpapier",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.62,
+"unit": "Packung"
+},
+{
+"name": "Rewe Toilettenpapier",
+"category": "Drogerie & Haushalt",
+"avgPrice": 3.49,
+"unit": "Packung"
+},
+{
+"name": "Edeka Toilettenpapier",
+"category": "Drogerie & Haushalt",
+"avgPrice": 3.66,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Toilettenpapier",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.79,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Toilettenpapier",
+"category": "Drogerie & Haushalt",
+"avgPrice": 4.89,
+"unit": "Packung"
+},
+{
+"name": "Frische Toilettenpapier",
+"category": "Drogerie & Haushalt",
+"avgPrice": 3.84,
+"unit": "Packung"
+},
+{
+"name": "Premium Toilettenpapier",
+"category": "Drogerie & Haushalt",
+"avgPrice": 5.24,
+"unit": "Packung"
+},
+{
+"name": "Discount Toilettenpapier",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.44,
+"unit": "Packung"
+},
+{
+"name": "Regional Toilettenpapier",
+"category": "Drogerie & Haushalt",
+"avgPrice": 4.01,
+"unit": "Packung"
+},
+{
+"name": "XXL Toilettenpapier",
+"category": "Drogerie & Haushalt",
+"avgPrice": 5.58,
+"unit": "Packung"
+},
+{
+"name": "Mini Toilettenpapier",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.92,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Toilettenpapier",
+"category": "Drogerie & Haushalt",
+"avgPrice": 5.93,
+"unit": "Packung"
+},
+{
+"name": "Spülmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 0.99,
+"unit": "Flasche"
+},
+{
+"name": "Bio Spülmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.34,
+"unit": "Flasche"
+},
+{
+"name": "Ja! Spülmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 0.74,
+"unit": "Flasche"
+},
+{
+"name": "Rewe Spülmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 0.99,
+"unit": "Flasche"
+},
+{
+"name": "Edeka Spülmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.04,
+"unit": "Flasche"
+},
+{
+"name": "Gut & Günstig Spülmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 0.79,
+"unit": "Flasche"
+},
+{
+"name": "Alnatura Spülmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.39,
+"unit": "Flasche"
+},
+{
+"name": "Frische Spülmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.09,
+"unit": "Flasche"
+},
+{
+"name": "Premium Spülmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.49,
+"unit": "Flasche"
+},
+{
+"name": "Discount Spülmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 0.69,
+"unit": "Flasche"
+},
+{
+"name": "Regional Spülmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.14,
+"unit": "Flasche"
+},
+{
+"name": "XXL Spülmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.58,
+"unit": "Flasche"
+},
+{
+"name": "Mini Spülmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 0.54,
+"unit": "Flasche"
+},
+{
+"name": "Familienpackung Spülmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.68,
+"unit": "Flasche"
+},
+{
+"name": "Waschmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 4.99,
+"unit": "Packung"
+},
+{
+"name": "Bio Waschmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 6.74,
+"unit": "Packung"
+},
+{
+"name": "Ja! Waschmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 3.74,
+"unit": "Packung"
+},
+{
+"name": "Rewe Waschmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 4.99,
+"unit": "Packung"
+},
+{
+"name": "Edeka Waschmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 5.24,
+"unit": "Packung"
+},
+{
+"name": "Gut & Günstig Waschmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 3.99,
+"unit": "Packung"
+},
+{
+"name": "Alnatura Waschmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 6.99,
+"unit": "Packung"
+},
+{
+"name": "Frische Waschmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 5.49,
+"unit": "Packung"
+},
+{
+"name": "Premium Waschmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 7.49,
+"unit": "Packung"
+},
+{
+"name": "Discount Waschmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 3.49,
+"unit": "Packung"
+},
+{
+"name": "Regional Waschmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 5.74,
+"unit": "Packung"
+},
+{
+"name": "XXL Waschmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 7.98,
+"unit": "Packung"
+},
+{
+"name": "Mini Waschmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.74,
+"unit": "Packung"
+},
+{
+"name": "Familienpackung Waschmittel",
+"category": "Drogerie & Haushalt",
+"avgPrice": 8.48,
+"unit": "Packung"
+},
+{
+"name": "Shampoo",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.99,
+"unit": "Flasche"
+},
+{
+"name": "Bio Shampoo",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.69,
+"unit": "Flasche"
+},
+{
+"name": "Ja! Shampoo",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.49,
+"unit": "Flasche"
+},
+{
+"name": "Rewe Shampoo",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.99,
+"unit": "Flasche"
+},
+{
+"name": "Edeka Shampoo",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.09,
+"unit": "Flasche"
+},
+{
+"name": "Gut & Günstig Shampoo",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.59,
+"unit": "Flasche"
+},
+{
+"name": "Alnatura Shampoo",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.79,
+"unit": "Flasche"
+},
+{
+"name": "Frische Shampoo",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.19,
+"unit": "Flasche"
+},
+{
+"name": "Premium Shampoo",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.99,
+"unit": "Flasche"
+},
+{
+"name": "Discount Shampoo",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.39,
+"unit": "Flasche"
+},
+{
+"name": "Regional Shampoo",
+"category": "Drogerie & Haushalt",
+"avgPrice": 2.29,
+"unit": "Flasche"
+},
+{
+"name": "XXL Shampoo",
+"category": "Drogerie & Haushalt",
+"avgPrice": 3.18,
+"unit": "Flasche"
+},
+{
+"name": "Mini Shampoo",
+"category": "Drogerie & Haushalt",
+"avgPrice": 1.09,
+"unit": "Flasche"
+},
+{
+"name": "Familienpackung Shampoo",
+"category": "Drogerie & Haushalt",
+"avgPrice": 3.38,
+"unit": "Flasche"
+}
+]
