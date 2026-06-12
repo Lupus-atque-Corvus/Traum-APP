@@ -13,6 +13,7 @@ import 'data/repositories/map_collection_seeder.dart';
 import 'data/repositories/substance_database_copier.dart';
 import 'data/repositories/supplement_seeder.dart';
 import 'widget/widget_data_service.dart';
+import 'widget/widget_update_scheduler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,9 @@ void main() async {
     WidgetDataService.init(),
     NotificationService.init(),
   ]);
+
+  // Register the periodic background widget refresh (internally guarded).
+  await registerWidgetPeriodicRefresh();
 
   await Future.wait([
     ExerciseSeeder.seedIfNeeded(db, prefs),

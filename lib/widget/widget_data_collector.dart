@@ -56,10 +56,17 @@ class WidgetDataCollector {
   // ---------------------------------------------------------------------------
 
   /// Reads all metrics from the real data layer and returns a [WidgetSnapshot].
+  ///
+  /// Accepts a [read] function so this method can be called from any context:
+  /// - Foreground widget: pass `ref.read` (a [WidgetRef] or [Ref] tear-off)
+  /// - Background isolate: pass `container.read` (a [ProviderContainer] tear-off)
+  ///
   /// Each metric is wrapped in its own try/catch so one failing read cannot
   /// crash the entire collection; the corresponding [WidgetSnapshot.empty()]
   /// default is used as fallback.
-  static Future<WidgetSnapshot> collect(Ref ref) async {
+  static Future<WidgetSnapshot> collect(
+    R Function<R>(ProviderListenable<R> provider) read,
+  ) async {
     final empty = WidgetSnapshot.empty();
 
     // ── steps (FALLBACK: no live step data source exists yet) ─────────────────
@@ -68,14 +75,14 @@ class WidgetDataCollector {
     // ── stepsGoal (REAL: preferences_provider.dart – stepsGoalProvider) ───────
     int stepsGoal = empty.stepsGoal;
     try {
-      stepsGoal = ref.read(stepsGoalProvider);
+      stepsGoal = read(stepsGoalProvider);
     } catch (_) {}
 
     // ── sleepHours (REAL: healthDaoProvider.getRecentSleepLogs(2)) ────────────
     // Same logic as _SleepContent / _HealthSnapshotContent in health_widgets.dart
     double sleepHours = empty.sleepHours;
     try {
-      final logs = await ref.read(healthDaoProvider).getRecentSleepLogs(2);
+      final logs = await read(healthDaoProvider).getRecentSleepLogs(2);
       if (logs.isNotEmpty) {
         final latest =
             logs.reduce((a, b) => a.bedtime.isAfter(b.bedtime) ? a : b);
@@ -92,7 +99,7 @@ class WidgetDataCollector {
     // Same logic as _MoodContent in health_widgets.dart
     int mood = empty.mood;
     try {
-      final moodLog = await ref.read(healthDaoProvider).getLatestMood();
+      final moodLog = await read(healthDaoProvider).getLatestMood();
       if (moodLog != null) {
         final now = DateTime.now();
         final isToday = moodLog.logDate.year == now.year &&
@@ -108,48 +115,48 @@ class WidgetDataCollector {
     // Same source as _CaloriesRingContent / _RemainingCaloriesContent in nutrition_widgets.dart
     int kcalToday = empty.kcal;
     try {
-      final totals = await ref.read(todaysTotalsProvider.future);
+      final totals = await read(todaysTotalsProvider.future);
       kcalToday = totals.calories.round();
     } catch (_) {}
 
     // ── kcalGoal (REAL: preferences_provider.dart – kcalGoalProvider) ─────────
     int kcalGoal = empty.kcalGoal;
     try {
-      kcalGoal = ref.read(kcalGoalProvider);
+      kcalGoal = read(kcalGoalProvider);
     } catch (_) {}
 
     // ── waterMlToday (REAL: waterTodaySnapshotProvider) ───────────────────────
     // Same source as _WaterContent in nutrition_widgets.dart
     int waterMlToday = empty.waterMl;
     try {
-      waterMlToday = await ref.read(waterTodaySnapshotProvider.future);
+      waterMlToday = await read(waterTodaySnapshotProvider.future);
     } catch (_) {}
 
     // ── waterGoalMl (REAL: preferences_provider.dart – waterGoalMlProvider) ───
     int waterGoalMl = empty.waterGoalMl;
     try {
-      waterGoalMl = ref.read(waterGoalMlProvider);
+      waterGoalMl = read(waterGoalMlProvider);
     } catch (_) {}
 
     // ── proteinToday (REAL: todaysTotalsProvider → protein) ──────────────────
     // Same source as _MacrosContent in nutrition_widgets.dart
     int proteinToday = empty.protein;
     try {
-      final totals = await ref.read(todaysTotalsProvider.future);
+      final totals = await read(todaysTotalsProvider.future);
       proteinToday = totals.protein.round();
     } catch (_) {}
 
     // ── proteinGoal (REAL: preferences_provider.dart – proteinGoalGProvider) ──
     int proteinGoal = empty.proteinGoal;
     try {
-      proteinGoal = ref.read(proteinGoalGProvider);
+      proteinGoal = read(proteinGoalGProvider);
     } catch (_) {}
 
     // ── nextTodoTitle (REAL: planningDaoProvider.getAllTodos() → first open) ───
     // Same source as _OpenTodosContent in planning_widgets.dart
     String? nextTodoTitle;
     try {
-      final todos = await ref.read(planningDaoProvider).getAllTodos();
+      final todos = await read(planningDaoProvider).getAllTodos();
       final open = todos.where((t) => !t.done).toList();
       if (open.isNotEmpty) {
         nextTodoTitle = open.first.title;

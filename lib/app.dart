@@ -7,6 +7,7 @@ import 'core/navigation/routes.dart';
 import 'core/providers/preferences_provider.dart';
 import 'core/theme/traum_theme.dart';
 import 'l10n/app_localizations.dart';
+import 'widget/widget_update_scheduler.dart';
 
 class TraumApp extends ConsumerStatefulWidget {
   const TraumApp({super.key});
@@ -59,6 +60,9 @@ class _TraumAppState extends ConsumerState<TraumApp> {
     if (biometric || pin) {
       _pausedForLock = true;
     }
+
+    // Fire-and-forget: refresh homescreen widget data when app is backgrounded.
+    refreshWidgetsFromRead(ref.read);
   }
 
   void _onResume() {
@@ -70,6 +74,9 @@ class _TraumAppState extends ConsumerState<TraumApp> {
     if (!biometric && !pin) return;
 
     _goToLock(biometric);
+
+    // Fire-and-forget: refresh homescreen widget data when app resumes.
+    refreshWidgetsFromRead(ref.read);
   }
 
   void _goToLock(bool biometric) {
