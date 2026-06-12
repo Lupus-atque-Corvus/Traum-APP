@@ -79,15 +79,31 @@ class ShoppingListView extends ConsumerWidget {
                 ...entry.value.map((item) => _ItemRow(item: item)),
               ],
               if (checked.isNotEmpty) ...[
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(4, 16, 4, 6),
-                  child: Text('ERLEDIGT',
-                      style: TextStyle(
-                          color: TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans',
-                          fontSize: 11,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.8)),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 16, 4, 6),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('ERLEDIGT',
+                          style: TextStyle(
+                              color: TraumColors.onBackgroundMuted,
+                              fontFamily: 'DMSans',
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.8)),
+                      GestureDetector(
+                        onTap: () => ref
+                            .read(nutritionDaoProvider)
+                            .deleteCheckedShoppingItems(),
+                        child: const Text('Erledigte löschen',
+                            style: TextStyle(
+                                color: TraumColors.roseRed,
+                                fontFamily: 'DMSans',
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700)),
+                      ),
+                    ],
+                  ),
                 ),
                 ...checked.map((item) => _ItemRow(item: item)),
               ],

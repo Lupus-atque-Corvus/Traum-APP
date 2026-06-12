@@ -67,7 +67,7 @@ class ShoppingModeScreen extends ConsumerWidget {
                             fontSize: 30,
                             fontWeight: FontWeight.w800)),
                     Text(
-                        'Geschätzt: ${_estTotal(items).toStringAsFixed(2).replaceAll('.', ',')} €',
+                        'Budget (geschätzt): ${_estTotal(items).toStringAsFixed(2).replaceAll('.', ',')} €',
                         style: const TextStyle(
                             color: Color(0xCC0D0D1A),
                             fontFamily: 'DMSans',
