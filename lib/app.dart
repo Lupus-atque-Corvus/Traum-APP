@@ -52,6 +52,9 @@ class _TraumAppState extends ConsumerState<TraumApp> {
   }
 
   void _onPause() {
+    // Fire-and-forget: refresh homescreen widget data on every pause.
+    refreshWidgetsFromRead(ref.read);
+
     final prefs = ref.read(preferencesRepositoryProvider);
     if (!prefs.onboardingComplete) return;
 
@@ -60,12 +63,12 @@ class _TraumAppState extends ConsumerState<TraumApp> {
     if (biometric || pin) {
       _pausedForLock = true;
     }
-
-    // Fire-and-forget: refresh homescreen widget data when app is backgrounded.
-    refreshWidgetsFromRead(ref.read);
   }
 
   void _onResume() {
+    // Fire-and-forget: refresh homescreen widget data on every resume.
+    refreshWidgetsFromRead(ref.read);
+
     if (!_pausedForLock) return;
     _pausedForLock = false;
 
@@ -74,9 +77,6 @@ class _TraumAppState extends ConsumerState<TraumApp> {
     if (!biometric && !pin) return;
 
     _goToLock(biometric);
-
-    // Fire-and-forget: refresh homescreen widget data when app resumes.
-    refreshWidgetsFromRead(ref.read);
   }
 
   void _goToLock(bool biometric) {
