@@ -78,9 +78,9 @@ class GroceryPriceService {
     // 3. Fuzzy — accept if edit distance ≤ 2 and ≤ 25% of length.
     PriceEntry? fuzzyBest;
     int fuzzyDist = 1 << 30;
+    final threshold = (q.length * 0.25).ceil().clamp(1, 2);
     for (final p in prices) {
       final d = _levenshtein(q, p.normalized);
-      final threshold = (q.length * 0.25).ceil().clamp(1, 2);
       if (d <= threshold && d < fuzzyDist) {
         fuzzyDist = d;
         fuzzyBest = p;
@@ -110,9 +110,7 @@ class GroceryPriceService {
           prev[j] + cost,
         ].reduce((x, y) => x < y ? x : y);
       }
-      for (var k = 0; k <= b.length; k++) {
-        prev[k] = curr[k];
-      }
+      prev.setRange(0, b.length + 1, curr);
     }
     return prev[b.length];
   }

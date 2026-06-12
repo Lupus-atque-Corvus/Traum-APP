@@ -41,5 +41,13 @@ void main() {
     test('returns null when nothing is close', () {
       expect(GroceryPriceService.match('Quantencomputer', prices), isNull);
     });
+
+    test('returns null for empty query', () {
+      expect(GroceryPriceService.match('   ', prices), isNull);
+    });
+
+    test('returns null for empty price list', () {
+      expect(GroceryPriceService.match('Milch', const []), isNull);
+    });
   });
 }
