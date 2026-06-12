@@ -164,16 +164,8 @@ final shoppingTemplatesStreamProvider =
         ref.watch(nutritionDaoProvider).watchShoppingTemplates());
 
 final groceryPriceEntriesProvider =
-    FutureProvider.autoDispose<List<PriceEntry>>((ref) async {
-  final prices = await ref.watch(nutritionDaoProvider).getAllGroceryPrices();
-  return prices
-      .map((p) => PriceEntry(
-          name: p.name,
-          normalized: p.nameNormalized,
-          price: p.avgPrice,
-          unit: p.unit))
-      .toList();
-});
+    FutureProvider.autoDispose<List<PriceEntry>>((ref) =>
+        ref.watch(nutritionDaoProvider).getAllPriceEntries());
 
 // ─── Period ───────────────────────────────────────────────────────────────────
 final allPeriodEntriesStreamProvider = StreamProvider.autoDispose<List<PeriodEntry>>((ref) =>

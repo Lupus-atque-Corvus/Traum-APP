@@ -101,42 +101,59 @@ class NutritionDao extends DatabaseAccessor<TraumDatabase>
   Future<List<GroceryPrice>> getAllGroceryPrices() =>
       select(groceryPrices).get();
 
-  Future<GroceryPrice?> findGroceryPriceByNormalized(String normalized) =>
-      (select(groceryPrices)..where((t) => t.nameNormalized.equals(normalized)))
-          .getSingleOrNull();
+  /// Grocery prices mapped to the pure [PriceEntry] form used by the matcher.
+  Future<List<PriceEntry>> getAllPriceEntries() async {
+    final prices = await getAllGroceryPrices();
+    return prices
+        .map((p) => PriceEntry(
+            name: p.name,
+            normalized: p.nameNormalized,
+            price: p.avgPrice,
+            unit: p.unit))
+        .toList();
+  }
+
+  Future<GroceryPrice?> findGroceryPriceByNormalized(String normalized) async {
+    final rows = await (select(groceryPrices)
+          ..where((t) => t.nameNormalized.equals(normalized))
+          ..limit(1))
+        .get();
+    return rows.isEmpty ? null : rows.first;
+  }
 
   /// Records a real price: updates the moving average if the item exists,
-  /// otherwise inserts a new user-adjusted entry.
+  /// otherwise inserts a new user-adjusted entry. Wrapped in a transaction so
+  /// the read-then-write cannot interleave and create duplicate rows.
   Future<void> upsertActualGroceryPrice({
     required String name,
     String? category,
     String? unit,
     required double actual,
-  }) async {
+  }) {
     final normalized = GroceryPriceService.normalizeName(name);
-    final existing = await (select(groceryPrices)
-          ..where((t) => t.nameNormalized.equals(normalized)))
-        .getSingleOrNull();
-    if (existing == null) {
-      await into(groceryPrices).insert(GroceryPricesCompanion.insert(
-        name: name,
-        nameNormalized: normalized,
-        category: Value(category),
-        avgPrice: actual,
-        unit: Value(unit),
+    return transaction(() async {
+      final existing = await findGroceryPriceByNormalized(normalized);
+      if (existing == null) {
+        await into(groceryPrices).insert(GroceryPricesCompanion.insert(
+          name: name,
+          nameNormalized: normalized,
+          category: Value(category),
+          avgPrice: actual,
+          unit: Value(unit),
+          isUserAdjusted: const Value(true),
+        ));
+        return;
+      }
+      final newCount = existing.sampleCount + 1;
+      final newAvg =
+          (existing.avgPrice * existing.sampleCount + actual) / newCount;
+      await (update(groceryPrices)..where((t) => t.id.equals(existing.id)))
+          .write(GroceryPricesCompanion(
+        avgPrice: Value(newAvg),
+        sampleCount: Value(newCount),
         isUserAdjusted: const Value(true),
       ));
-      return;
-    }
-    final newCount = existing.sampleCount + 1;
-    final newAvg =
-        (existing.avgPrice * existing.sampleCount + actual) / newCount;
-    await (update(groceryPrices)..where((t) => t.id.equals(existing.id)))
-        .write(GroceryPricesCompanion(
-      avgPrice: Value(newAvg),
-      sampleCount: Value(newCount),
-      isUserAdjusted: const Value(true),
-    ));
+    });
   }
 
   // ── Shopping templates ─────────────────────────────────────────────────────
@@ -149,36 +166,31 @@ class NutritionDao extends DatabaseAccessor<TraumDatabase>
           .get();
 
   Future<int> saveTemplateFromItems(
-      String name, List<ShoppingTemplateDraft> items) async {
-    final tplId = await into(shoppingTemplates)
-        .insert(ShoppingTemplatesCompanion.insert(name: name));
-    await batch((b) {
-      for (final it in items) {
-        b.insert(
-          shoppingTemplateItems,
-          ShoppingTemplateItemsCompanion.insert(
-            templateId: tplId,
-            name: it.name,
-            category: Value(it.category),
-            quantity: Value(it.quantity),
-            unit: Value(it.unit),
-          ),
-        );
-      }
+      String name, List<ShoppingTemplateDraft> items) {
+    return transaction(() async {
+      final tplId = await into(shoppingTemplates)
+          .insert(ShoppingTemplatesCompanion.insert(name: name));
+      await batch((b) {
+        for (final it in items) {
+          b.insert(
+            shoppingTemplateItems,
+            ShoppingTemplateItemsCompanion.insert(
+              templateId: tplId,
+              name: it.name,
+              category: Value(it.category),
+              quantity: Value(it.quantity),
+              unit: Value(it.unit),
+            ),
+          );
+        }
+      });
+      return tplId;
     });
-    return tplId;
   }
 
   Future<void> applyShoppingTemplate(int templateId) async {
     final items = await getTemplateItems(templateId);
-    final prices = await getAllGroceryPrices();
-    final entries = prices
-        .map((p) => PriceEntry(
-            name: p.name,
-            normalized: p.nameNormalized,
-            price: p.avgPrice,
-            unit: p.unit))
-        .toList();
+    final entries = await getAllPriceEntries();
     await batch((b) {
       for (final it in items) {
         final est = GroceryPriceService.match(it.name, entries);
@@ -196,11 +208,13 @@ class NutritionDao extends DatabaseAccessor<TraumDatabase>
     });
   }
 
-  Future<int> deleteShoppingTemplate(int id) async {
-    await (delete(shoppingTemplateItems)
-          ..where((t) => t.templateId.equals(id)))
-        .go();
-    return (delete(shoppingTemplates)..where((t) => t.id.equals(id))).go();
+  Future<int> deleteShoppingTemplate(int id) {
+    return transaction(() async {
+      await (delete(shoppingTemplateItems)
+            ..where((t) => t.templateId.equals(id)))
+          .go();
+      return (delete(shoppingTemplates)..where((t) => t.id.equals(id))).go();
+    });
   }
 }
 

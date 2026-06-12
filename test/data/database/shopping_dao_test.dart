@@ -45,4 +45,26 @@ void main() {
     final items = await db.nutritionDao.watchAllShoppingItems().first;
     expect(items.map((i) => i.name), containsAll(['Brot', 'Milch']));
   });
+
+  test('deleteShoppingTemplate removes the template and its items', () async {
+    final tplId = await db.nutritionDao.saveTemplateFromItems('Woche', [
+      ShoppingTemplateDraft(name: 'Brot'),
+      ShoppingTemplateDraft(name: 'Milch'),
+    ]);
+    await db.nutritionDao.deleteShoppingTemplate(tplId);
+    final templates = await db.nutritionDao.watchShoppingTemplates().first;
+    expect(templates, isEmpty);
+    final items = await db.nutritionDao.getTemplateItems(tplId);
+    expect(items, isEmpty);
+  });
+
+  test('upsertActualGroceryPrice accumulates multiple samples', () async {
+    await db.into(db.groceryPrices).insert(GroceryPricesCompanion.insert(
+        name: 'Milch', nameNormalized: 'milch', avgPrice: 1.00));
+    await db.nutritionDao.upsertActualGroceryPrice(name: 'Milch', actual: 2.00);
+    await db.nutritionDao.upsertActualGroceryPrice(name: 'Milch', actual: 3.00);
+    final hit = await db.nutritionDao.findGroceryPriceByNormalized('milch');
+    expect(hit!.sampleCount, 3);
+    expect(hit.avgPrice, closeTo(2.00, 0.001));
+  });
 }

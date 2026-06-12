@@ -49,5 +49,16 @@ void main() {
     test('returns null for empty price list', () {
       expect(GroceryPriceService.match('Milch', const []), isNull);
     });
+
+    test('contains prefers the most specific entry when query is a superstring',
+        () {
+      const ps = [
+        PriceEntry(name: 'Milch', normalized: 'milch', price: 1.19),
+        PriceEntry(name: 'Bio Vollmilch', normalized: 'bio vollmilch', price: 1.59),
+      ];
+      final m = GroceryPriceService.match('bio vollmilch extra', ps);
+      expect(m, isNotNull);
+      expect(m!.name, 'Bio Vollmilch');
+    });
   });
 }

@@ -58,14 +58,21 @@ class GroceryPriceService {
       }
     }
 
-    // 2. Contains (prefer the shortest containing entry = closest concept)
+    // 2. Contains (either direction). When the query sits inside an entry,
+    // prefer the shortest entry (least extra noise). When an entry sits inside
+    // the query, prefer the longest entry (most specific concept).
     PriceEntry? containBest;
+    int containBestLen = -1;
     for (final p in prices) {
-      if (p.normalized.contains(q) || q.contains(p.normalized)) {
-        if (containBest == null ||
-            p.normalized.length < containBest.normalized.length) {
-          containBest = p;
-        }
+      final entryInQuery = q.contains(p.normalized);
+      final queryInEntry = p.normalized.contains(q);
+      if (!entryInQuery && !queryInEntry) continue;
+      final len = p.normalized.length;
+      final better = containBest == null ||
+          (entryInQuery ? len > containBestLen : len < containBestLen);
+      if (better) {
+        containBest = p;
+        containBestLen = len;
       }
     }
     if (containBest != null) {
