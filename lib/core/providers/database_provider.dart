@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/database/traum_database.dart';
+import '../services/grocery_price_service.dart';
 import '../../data/models/substance_info.dart';
 import '../../data/repositories/substance_repository.dart';
 import '../../data/services/substance_api_service.dart';
@@ -157,6 +158,22 @@ final allMealTemplatesStreamProvider = StreamProvider.autoDispose<List<MealTempl
 
 final allShoppingItemsStreamProvider = StreamProvider.autoDispose<List<ShoppingListItem>>((ref) =>
     ref.watch(nutritionDaoProvider).watchAllShoppingItems());
+
+final shoppingTemplatesStreamProvider =
+    StreamProvider.autoDispose<List<ShoppingTemplate>>((ref) =>
+        ref.watch(nutritionDaoProvider).watchShoppingTemplates());
+
+final groceryPriceEntriesProvider =
+    FutureProvider.autoDispose<List<PriceEntry>>((ref) async {
+  final prices = await ref.watch(nutritionDaoProvider).getAllGroceryPrices();
+  return prices
+      .map((p) => PriceEntry(
+          name: p.name,
+          normalized: p.nameNormalized,
+          price: p.avgPrice,
+          unit: p.unit))
+      .toList();
+});
 
 // ─── Period ───────────────────────────────────────────────────────────────────
 final allPeriodEntriesStreamProvider = StreamProvider.autoDispose<List<PeriodEntry>>((ref) =>

@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import '../traum_database.dart';
+import '../../../core/services/grocery_price_service.dart';
 
 part 'nutrition_dao.g.dart';
 
@@ -95,4 +96,124 @@ class NutritionDao extends DatabaseAccessor<TraumDatabase>
 
   Future<int> deleteCheckedShoppingItems() =>
       (delete(shoppingListItems)..where((t) => t.checked.equals(true))).go();
+
+  // ── GroceryPrices ──────────────────────────────────────────────────────────
+  Future<List<GroceryPrice>> getAllGroceryPrices() =>
+      select(groceryPrices).get();
+
+  Future<GroceryPrice?> findGroceryPriceByNormalized(String normalized) =>
+      (select(groceryPrices)..where((t) => t.nameNormalized.equals(normalized)))
+          .getSingleOrNull();
+
+  /// Records a real price: updates the moving average if the item exists,
+  /// otherwise inserts a new user-adjusted entry.
+  Future<void> upsertActualGroceryPrice({
+    required String name,
+    String? category,
+    String? unit,
+    required double actual,
+  }) async {
+    final normalized = GroceryPriceService.normalizeName(name);
+    final existing = await (select(groceryPrices)
+          ..where((t) => t.nameNormalized.equals(normalized)))
+        .getSingleOrNull();
+    if (existing == null) {
+      await into(groceryPrices).insert(GroceryPricesCompanion.insert(
+        name: name,
+        nameNormalized: normalized,
+        category: Value(category),
+        avgPrice: actual,
+        unit: Value(unit),
+        isUserAdjusted: const Value(true),
+      ));
+      return;
+    }
+    final newCount = existing.sampleCount + 1;
+    final newAvg =
+        (existing.avgPrice * existing.sampleCount + actual) / newCount;
+    await (update(groceryPrices)..where((t) => t.id.equals(existing.id)))
+        .write(GroceryPricesCompanion(
+      avgPrice: Value(newAvg),
+      sampleCount: Value(newCount),
+      isUserAdjusted: const Value(true),
+    ));
+  }
+
+  // ── Shopping templates ─────────────────────────────────────────────────────
+  Stream<List<ShoppingTemplate>> watchShoppingTemplates() =>
+      select(shoppingTemplates).watch();
+
+  Future<List<ShoppingTemplateItem>> getTemplateItems(int templateId) =>
+      (select(shoppingTemplateItems)
+            ..where((t) => t.templateId.equals(templateId)))
+          .get();
+
+  Future<int> saveTemplateFromItems(
+      String name, List<ShoppingTemplateDraft> items) async {
+    final tplId = await into(shoppingTemplates)
+        .insert(ShoppingTemplatesCompanion.insert(name: name));
+    await batch((b) {
+      for (final it in items) {
+        b.insert(
+          shoppingTemplateItems,
+          ShoppingTemplateItemsCompanion.insert(
+            templateId: tplId,
+            name: it.name,
+            category: Value(it.category),
+            quantity: Value(it.quantity),
+            unit: Value(it.unit),
+          ),
+        );
+      }
+    });
+    return tplId;
+  }
+
+  Future<void> applyShoppingTemplate(int templateId) async {
+    final items = await getTemplateItems(templateId);
+    final prices = await getAllGroceryPrices();
+    final entries = prices
+        .map((p) => PriceEntry(
+            name: p.name,
+            normalized: p.nameNormalized,
+            price: p.avgPrice,
+            unit: p.unit))
+        .toList();
+    await batch((b) {
+      for (final it in items) {
+        final est = GroceryPriceService.match(it.name, entries);
+        b.insert(
+          shoppingListItems,
+          ShoppingListItemsCompanion.insert(
+            name: it.name,
+            category: Value(it.category),
+            quantity: Value(it.quantity),
+            unit: Value(it.unit),
+            priceEstimated: Value(est?.price),
+          ),
+        );
+      }
+    });
+  }
+
+  Future<int> deleteShoppingTemplate(int id) async {
+    await (delete(shoppingTemplateItems)
+          ..where((t) => t.templateId.equals(id)))
+        .go();
+    return (delete(shoppingTemplates)..where((t) => t.id.equals(id))).go();
+  }
+}
+
+/// Lightweight draft used when persisting a shopping template.
+class ShoppingTemplateDraft {
+  final String name;
+  final String? category;
+  final double? quantity;
+  final String? unit;
+  ShoppingTemplateDraft({
+    required this.name,
+    this.category,
+    this.quantity,
+    this.unit,
+  });
 }
