@@ -94,18 +94,18 @@ struct TraumTimelineProvider: TimelineProvider {
         let d = UserDefaults(suiteName: "group.de.traum.widgets")
         return TraumEntry(
             date: Date(),
-            steps: d?.string(forKey: "steps") ?? "—",
+            steps: d?.string(forKey: "health.steps") ?? "—",
             stepsGoal: d?.string(forKey: "stepsGoal") ?? "10000",
             calories: d?.string(forKey: "calories") ?? "—",
             caloriesGoal: d?.string(forKey: "caloriesGoal") ?? "2000",
-            kcal: d?.string(forKey: "kcal") ?? "—",
+            kcal: d?.string(forKey: "nutrition.kcal") ?? "—",
             kcalGoal: d?.string(forKey: "kcalGoal") ?? "2000",
-            waterMl: d?.string(forKey: "waterMl") ?? "—",
+            waterMl: d?.string(forKey: "nutrition.waterMl") ?? "—",
             waterGoalMl: d?.string(forKey: "waterGoalMl") ?? "2000",
             protein: d?.string(forKey: "protein") ?? "—",
             proteinGoal: d?.string(forKey: "proteinGoal") ?? "150",
             sleepHours: d?.string(forKey: "sleepHours") ?? "—",
-            nextTodo: d?.string(forKey: "nextTodo") ?? "—",
+            nextTodo: d?.string(forKey: "planning.nextTodo") ?? "—",
             abstinenceTitle: d?.string(forKey: "abstinenceTitle") ?? "—",
             abstinenceDuration: d?.string(forKey: "abstinenceDuration") ?? "—",
             periodDaysLabel: d?.string(forKey: "periodDaysLabel") ?? "—",
@@ -137,34 +137,28 @@ private struct WidgetHeader: View {
 // MARK: - 1. Overview Widget
 
 struct TraumOverviewWidgetEntryView: View {
+    @Environment(\.widgetFamily) var family
     let entry: TraumEntry
     var body: some View {
         ZStack {
             traumBackground.ignoresSafeArea()
             VStack(alignment: .leading, spacing: 4) {
-                WidgetHeader(title: "TRAUM Übersicht")
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(entry.steps)
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(traumText)
-                        Text("Schritte")
-                            .font(.caption2)
-                            .foregroundColor(traumMuted)
-                    }
-                    Spacer()
-                    VStack(alignment: .trailing, spacing: 2) {
-                        Text("\(entry.kcal) kcal")
-                            .font(.caption)
-                            .foregroundColor(traumText)
-                        Text("\(entry.waterMl) ml")
-                            .font(.caption2)
-                            .foregroundColor(traumBlue)
-                    }
+                WidgetHeader(title: "Übersicht")
+                Text(entry.steps).font(.system(size: 22, weight: .bold)).foregroundColor(traumText)
+                Text("Schritte").font(.caption2).foregroundColor(traumMuted)
+                if family != .systemSmall {
+                    HStack {
+                        Text("\(entry.kcal) kcal").font(.caption).foregroundColor(traumText)
+                        Spacer()
+                        Text("\(entry.waterMl) ml").font(.caption).foregroundColor(traumBlue)
+                    }.padding(.top, 6)
+                }
+                if family == .systemLarge {
+                    Text(entry.nextTodo).font(.caption).foregroundColor(traumMuted)
+                        .lineLimit(2).padding(.top, 6)
                 }
                 Spacer(minLength: 0)
-            }
-            .padding(12)
+            }.padding(12)
         }
     }
 }
@@ -176,7 +170,7 @@ struct TraumOverviewWidget: Widget {
         }
         .configurationDisplayName("TRAUM Übersicht")
         .description("Schritte, Kalorien und Wasser im Überblick")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 
