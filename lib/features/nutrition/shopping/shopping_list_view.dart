@@ -17,7 +17,7 @@ class ShoppingListView extends ConsumerWidget {
   final bool standalone;
   const ShoppingListView({super.key, this.standalone = false});
 
-  double _estimatedTotal(List<ShoppingListItem> items) => items
+  static double _estimatedTotal(List<ShoppingListItem> items) => items
       .where((i) => !i.checked)
       .fold(0.0, (sum, i) => sum + (i.priceEstimated ?? 0));
 
@@ -51,7 +51,7 @@ class ShoppingListView extends ConsumerWidget {
             children: [
               _HeroSummary(
                 total: _estimatedTotal(items),
-                itemCount: items.length,
+                itemCount: open.length,
                 doneCount: checked.length,
               ),
               const SizedBox(height: 8),
@@ -130,19 +130,22 @@ class ShoppingListView extends ConsumerWidget {
                       ? null
                       : () => Navigator.of(context).push(MaterialPageRoute(
                           builder: (_) => const ShoppingModeScreen())),
-                  child: Container(
-                    height: 52,
-                    decoration: BoxDecoration(
-                      gradient: TraumColors.gradientNutrition,
-                      borderRadius: BorderRadius.circular(TraumRadius.card),
-                    ),
-                    child: const Center(
-                      child: Text('🛒  Einkaufen starten',
-                          style: TextStyle(
-                              color: Color(0xFF0D0D1A),
-                              fontFamily: 'DMSans',
-                              fontWeight: FontWeight.w800,
-                              fontSize: 14)),
+                  child: Opacity(
+                    opacity: items.isEmpty ? 0.45 : 1.0,
+                    child: Container(
+                      height: 52,
+                      decoration: BoxDecoration(
+                        gradient: TraumColors.gradientNutrition,
+                        borderRadius: BorderRadius.circular(TraumRadius.card),
+                      ),
+                      child: const Center(
+                        child: Text('🛒  Einkaufen starten',
+                            style: TextStyle(
+                                color: Color(0xFF0D0D1A),
+                                fontFamily: 'DMSans',
+                                fontWeight: FontWeight.w800,
+                                fontSize: 14)),
+                      ),
                     ),
                   ),
                 ),
@@ -221,7 +224,6 @@ class _ItemRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dao = ref.read(nutritionDaoProvider);
     final sub = _subtitle();
     final price = item.priceActual ?? item.priceEstimated;
     return Dismissible(
@@ -236,7 +238,7 @@ class _ItemRow extends ConsumerWidget {
         ),
         child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
       ),
-      onDismissed: (_) => dao.deleteShoppingItem(item.id),
+      onDismissed: (_) => ref.read(nutritionDaoProvider).deleteShoppingItem(item.id),
       child: Container(
         margin: const EdgeInsets.only(bottom: 6),
         decoration: BoxDecoration(
@@ -250,7 +252,7 @@ class _ItemRow extends ConsumerWidget {
               value: item.checked,
               activeColor: TraumColors.mintGreen,
               checkColor: Colors.white,
-              onChanged: (v) => dao.updateShoppingItem(
+              onChanged: (v) => ref.read(nutritionDaoProvider).updateShoppingItem(
                 ShoppingListItemsCompanion(
                   id: Value(item.id),
                   checked: Value(v ?? false),
