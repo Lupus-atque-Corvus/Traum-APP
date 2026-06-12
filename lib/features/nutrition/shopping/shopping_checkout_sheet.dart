@@ -17,28 +17,34 @@ Future<double> finalizeShopping(
   required DateTime date,
   required String? receiptImagePath,
 }) async {
+  // Read items BEFORE opening the transaction (avoids running a stream query
+  // inside a transaction).
   final items = await db.nutritionDao.watchAllShoppingItems().first;
   final cart =
       items.where((i) => i.checked && i.priceActual != null).toList();
   final total = cart.fold(0.0, (s, i) => s + (i.priceActual ?? 0));
+  if (cart.isEmpty) return 0.0; // nothing to book → no ghost €0.00 expense
 
-  for (final i in cart) {
-    await db.nutritionDao.upsertActualGroceryPrice(
-      name: i.name,
-      category: i.category,
-      unit: i.unit,
-      actual: i.priceActual!,
-    );
-  }
-
-  await db.budgetDao.insertTransaction(TransactionsCompanion.insert(
-    amount: total,
-    description: description.isEmpty ? 'Lebensmittel' : description,
-    type: const Value('expense'),
-    date: date,
-    categoryId: Value(categoryId),
-    receiptImagePath: Value(receiptImagePath),
-  ));
+  // Atomic: either all price write-backs AND the expense row commit, or none.
+  // (upsertActualGroceryPrice opens its own transaction; nested → savepoint.)
+  await db.transaction(() async {
+    for (final i in cart) {
+      await db.nutritionDao.upsertActualGroceryPrice(
+        name: i.name,
+        category: i.category,
+        unit: i.unit,
+        actual: i.priceActual!,
+      );
+    }
+    await db.budgetDao.insertTransaction(TransactionsCompanion.insert(
+      amount: total,
+      description: description.isEmpty ? 'Lebensmittel' : description,
+      type: const Value('expense'),
+      date: date,
+      categoryId: Value(categoryId),
+      receiptImagePath: Value(receiptImagePath),
+    ));
+  });
 
   return total;
 }
@@ -72,6 +78,7 @@ class _ShoppingCheckoutSheetState extends ConsumerState<ShoppingCheckoutSheet> {
     try {
       final res = await ReceiptScanner.scanFromCamera();
       if (res != null) {
+        if (!mounted) return;
         setState(() {
           _receiptPath = res.imagePath;
           if (res.detectedMerchant != null) _merchant = res.detectedMerchant!;
@@ -84,6 +91,7 @@ class _ShoppingCheckoutSheetState extends ConsumerState<ShoppingCheckoutSheet> {
   }
 
   Future<void> _book(List<ShoppingListItem> items) async {
+    if (_saving) return;
     setState(() => _saving = true);
     final db = ref.read(databaseProvider);
     try {
@@ -99,7 +107,8 @@ class _ShoppingCheckoutSheetState extends ConsumerState<ShoppingCheckoutSheet> {
       Navigator.of(context).pop(); // leave shopping mode
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Als Ausgabe in Finanzen gebucht ✓')));
-    } catch (_) {
+    } catch (e, st) {
+      debugPrint('finalizeShopping failed: $e\n$st');
       if (mounted) {
         setState(() => _saving = false);
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -207,7 +216,7 @@ class _ShoppingCheckoutSheetState extends ConsumerState<ShoppingCheckoutSheet> {
             ),
             const SizedBox(height: 16),
             GestureDetector(
-              onTap: _saving ? null : () => _book(items),
+              onTap: (_saving || total <= 0) ? null : () => _book(items),
               child: Container(
                 height: 54,
                 decoration: BoxDecoration(

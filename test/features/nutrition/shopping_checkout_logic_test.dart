@@ -43,4 +43,24 @@ void main() {
     expect(milk!.avgPrice, 1.25);
     expect(milk.isUserAdjusted, isTrue);
   });
+
+  test('finalizeShopping books nothing when cart is empty', () async {
+    await db.into(db.budgetCategories).insert(
+        BudgetCategoriesCompanion.insert(name: 'Lebensmittel'));
+    // An item that is checked but has no actual price → not in cart.
+    await db.into(db.shoppingListItems).insert(ShoppingListItemsCompanion.insert(
+        name: 'Brot', checked: const Value(true)));
+
+    final total = await finalizeShopping(
+      db,
+      categoryId: null,
+      description: 'REWE',
+      date: DateTime(2026, 6, 11),
+      receiptImagePath: null,
+    );
+
+    expect(total, 0.0);
+    final txns = await db.select(db.transactions).get();
+    expect(txns, isEmpty);
+  });
 }
