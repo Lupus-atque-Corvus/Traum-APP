@@ -50,7 +50,7 @@
 {
 "name": "Premium Bananen",
 "category": "Obst & Gemüse",
-"avgPrice": 2.99,
+"avgPrice": 2.98,
 "unit": "kg"
 },
 {
@@ -302,7 +302,7 @@
 {
 "name": "Premium Gurke",
 "category": "Obst & Gemüse",
-"avgPrice": 1.34,
+"avgPrice": 1.33,
 "unit": "Stück"
 },
 {
@@ -638,7 +638,7 @@
 {
 "name": "Premium Karotten",
 "category": "Obst & Gemüse",
-"avgPrice": 1.79,
+"avgPrice": 1.78,
 "unit": "kg"
 },
 {
@@ -890,7 +890,7 @@
 {
 "name": "Premium Avocado",
 "category": "Obst & Gemüse",
-"avgPrice": 2.24,
+"avgPrice": 2.23,
 "unit": "Stück"
 },
 {
@@ -1058,7 +1058,7 @@
 {
 "name": "Premium Milch",
 "category": "Milchprodukte",
-"avgPrice": 1.79,
+"avgPrice": 1.78,
 "unit": "L"
 },
 {
@@ -1142,7 +1142,7 @@
 {
 "name": "Premium Butter",
 "category": "Milchprodukte",
-"avgPrice": 3.59,
+"avgPrice": 3.58,
 "unit": "250g"
 },
 {
@@ -1226,7 +1226,7 @@
 {
 "name": "Premium Joghurt",
 "category": "Milchprodukte",
-"avgPrice": 1.49,
+"avgPrice": 1.48,
 "unit": "Becher"
 },
 {
@@ -1472,19 +1472,19 @@
 {
 "name": "Frische Quark",
 "category": "Milchprodukte",
-"avgPrice": 1.05,
+"avgPrice": 1.04,
 "unit": "Becher"
 },
 {
 "name": "Premium Quark",
 "category": "Milchprodukte",
-"avgPrice": 1.43,
+"avgPrice": 1.42,
 "unit": "Becher"
 },
 {
 "name": "Discount Quark",
 "category": "Milchprodukte",
-"avgPrice": 0.67,
+"avgPrice": 0.66,
 "unit": "Becher"
 },
 {
@@ -1508,7 +1508,7 @@
 {
 "name": "Familienpackung Quark",
 "category": "Milchprodukte",
-"avgPrice": 1.62,
+"avgPrice": 1.61,
 "unit": "Becher"
 },
 {
@@ -1730,7 +1730,7 @@
 {
 "name": "Premium Mozzarella",
 "category": "Milchprodukte",
-"avgPrice": 1.49,
+"avgPrice": 1.48,
 "unit": "Packung"
 },
 {
@@ -1898,13 +1898,13 @@
 {
 "name": "Premium Brötchen",
 "category": "Backwaren",
-"avgPrice": 0.53,
+"avgPrice": 0.52,
 "unit": "Stück"
 },
 {
 "name": "Discount Brötchen",
 "category": "Backwaren",
-"avgPrice": 0.25,
+"avgPrice": 0.24,
 "unit": "Stück"
 },
 {
@@ -1928,7 +1928,7 @@
 {
 "name": "Familienpackung Brötchen",
 "category": "Backwaren",
-"avgPrice": 0.6,
+"avgPrice": 0.59,
 "unit": "Stück"
 },
 {
@@ -2066,7 +2066,7 @@
 {
 "name": "Premium Croissant",
 "category": "Backwaren",
-"avgPrice": 1.34,
+"avgPrice": 1.33,
 "unit": "Stück"
 },
 {
@@ -2150,7 +2150,7 @@
 {
 "name": "Premium Hähnchenbrust",
 "category": "Fleisch & Fisch",
-"avgPrice": 10.49,
+"avgPrice": 10.48,
 "unit": "kg"
 },
 {
@@ -2234,7 +2234,7 @@
 {
 "name": "Premium Hackfleisch",
 "category": "Fleisch & Fisch",
-"avgPrice": 11.24,
+"avgPrice": 11.23,
 "unit": "kg"
 },
 {
@@ -2523,85 +2523,85 @@
 "name": "Wasser",
 "category": "Getränke",
 "avgPrice": 0.65,
-"unit": "Kasten"
+"unit": "Flasche"
 },
 {
 "name": "Bio Wasser",
 "category": "Getränke",
 "avgPrice": 0.88,
-"unit": "Kasten"
+"unit": "Flasche"
 },
 {
 "name": "Ja! Wasser",
 "category": "Getränke",
 "avgPrice": 0.49,
-"unit": "Kasten"
+"unit": "Flasche"
 },
 {
 "name": "Rewe Wasser",
 "category": "Getränke",
 "avgPrice": 0.65,
-"unit": "Kasten"
+"unit": "Flasche"
 },
 {
 "name": "Edeka Wasser",
 "category": "Getränke",
 "avgPrice": 0.68,
-"unit": "Kasten"
+"unit": "Flasche"
 },
 {
 "name": "Gut & Günstig Wasser",
 "category": "Getränke",
 "avgPrice": 0.52,
-"unit": "Kasten"
+"unit": "Flasche"
 },
 {
 "name": "Alnatura Wasser",
 "category": "Getränke",
 "avgPrice": 0.91,
-"unit": "Kasten"
+"unit": "Flasche"
 },
 {
 "name": "Frische Wasser",
 "category": "Getränke",
 "avgPrice": 0.72,
-"unit": "Kasten"
+"unit": "Flasche"
 },
 {
 "name": "Premium Wasser",
 "category": "Getränke",
 "avgPrice": 0.98,
-"unit": "Kasten"
+"unit": "Flasche"
 },
 {
 "name": "Discount Wasser",
 "category": "Getränke",
-"avgPrice": 0.46,
-"unit": "Kasten"
+"avgPrice": 0.45,
+"unit": "Flasche"
 },
 {
 "name": "Regional Wasser",
 "category": "Getränke",
 "avgPrice": 0.75,
-"unit": "Kasten"
+"unit": "Flasche"
 },
 {
 "name": "XXL Wasser",
 "category": "Getränke",
 "avgPrice": 1.04,
-"unit": "Kasten"
+"unit": "Flasche"
 },
 {
 "name": "Mini Wasser",
 "category": "Getränke",
 "avgPrice": 0.36,
-"unit": "Kasten"
+"unit": "Flasche"
 },
 {
 "name": "Familienpackung Wasser",
 "category": "Getränke",
-"avgPrice": 1.11,
-"unit": "Kasten"
+"avgPrice": 1.1,
+"unit": "Flasche"
 },
 {
 "name": "Apfelsaft",
@@ -2654,7 +2654,7 @@
 {
 "name": "Premium Apfelsaft",
 "category": "Getränke",
-"avgPrice": 2.24,
+"avgPrice": 2.23,
 "unit": "L"
 },
 {
@@ -3074,7 +3074,7 @@
 {
 "name": "Premium Nudeln",
 "category": "Vorrat",
-"avgPrice": 1.79,
+"avgPrice": 1.78,
 "unit": "Packung"
 },
 {
@@ -3158,7 +3158,7 @@
 {
 "name": "Premium Reis",
 "category": "Vorrat",
-"avgPrice": 2.99,
+"avgPrice": 2.98,
 "unit": "Packung"
 },
 {
@@ -3242,7 +3242,7 @@
 {
 "name": "Premium Mehl",
 "category": "Vorrat",
-"avgPrice": 1.04,
+"avgPrice": 1.03,
 "unit": "kg"
 },
 {
@@ -3326,7 +3326,7 @@
 {
 "name": "Premium Zucker",
 "category": "Vorrat",
-"avgPrice": 1.34,
+"avgPrice": 1.33,
 "unit": "kg"
 },
 {
@@ -3494,7 +3494,7 @@
 {
 "name": "Premium Tomatensoße",
 "category": "Vorrat",
-"avgPrice": 2.24,
+"avgPrice": 2.23,
 "unit": "Glas"
 },
 {
@@ -3830,7 +3830,7 @@
 {
 "name": "Premium Pommes",
 "category": "Tiefkühl",
-"avgPrice": 2.99,
+"avgPrice": 2.98,
 "unit": "Packung"
 },
 {
@@ -3998,7 +3998,7 @@
 {
 "name": "Premium TK-Gemüse",
 "category": "Tiefkühl",
-"avgPrice": 2.24,
+"avgPrice": 2.23,
 "unit": "Packung"
 },
 {
@@ -4082,7 +4082,7 @@
 {
 "name": "Premium Schokolade",
 "category": "Süßes & Snacks",
-"avgPrice": 1.49,
+"avgPrice": 1.48,
 "unit": "Tafel"
 },
 {
@@ -4166,7 +4166,7 @@
 {
 "name": "Premium Chips",
 "category": "Süßes & Snacks",
-"avgPrice": 2.24,
+"avgPrice": 2.23,
 "unit": "Packung"
 },
 {
@@ -4334,7 +4334,7 @@
 {
 "name": "Premium Gummibärchen",
 "category": "Süßes & Snacks",
-"avgPrice": 1.49,
+"avgPrice": 1.48,
 "unit": "Packung"
 },
 {
@@ -4418,7 +4418,7 @@
 {
 "name": "Premium Zahnpasta",
 "category": "Drogerie & Haushalt",
-"avgPrice": 2.24,
+"avgPrice": 2.23,
 "unit": "Stück"
 },
 {
@@ -4670,7 +4670,7 @@
 {
 "name": "Premium Spülmittel",
 "category": "Drogerie & Haushalt",
-"avgPrice": 1.49,
+"avgPrice": 1.48,
 "unit": "Flasche"
 },
 {
@@ -4838,7 +4838,7 @@
 {
 "name": "Premium Shampoo",
 "category": "Drogerie & Haushalt",
-"avgPrice": 2.99,
+"avgPrice": 2.98,
 "unit": "Flasche"
 },
 {

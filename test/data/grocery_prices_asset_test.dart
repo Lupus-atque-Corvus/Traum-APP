@@ -9,11 +9,16 @@ void main() {
     final raw =
         await rootBundle.loadString('assets/data/grocery_prices.json');
     final list = jsonDecode(raw) as List<dynamic>;
-    expect(list.length, greaterThan(300));
-    final first = list.first as Map<String, dynamic>;
-    expect(first.containsKey('name'), isTrue);
-    expect(first.containsKey('category'), isTrue);
-    expect(first['avgPrice'], isA<num>());
+    expect(list.length, greaterThan(750));
+
+    for (final e in list) {
+      final item = e as Map<String, dynamic>;
+      expect(item['name'], isA<String>());
+      expect(item['category'], isA<String>());
+      expect(item['avgPrice'], isA<num>());
+      expect(item['unit'], isA<String>());
+    }
+
     // No duplicate names.
     final names = list.map((e) => (e as Map)['name'] as String).toSet();
     expect(names.length, list.length);
