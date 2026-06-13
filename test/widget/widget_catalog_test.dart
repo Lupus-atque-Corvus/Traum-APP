@@ -55,4 +55,8 @@ void main() {
       expect(catalogKeys.contains(t.name), isTrue, reason: 'fehlt: ${t.name}');
     }
   });
+
+  test('functionCatalog.length == HomeWidgetType.values.length (keine verwaisten Einträge)', () {
+    expect(functionCatalog.length, HomeWidgetType.values.length);
+  });
 }

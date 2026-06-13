@@ -599,7 +599,7 @@ const List<WidgetCatalogEntry> functionCatalog = [
     key: 'recentTransactions',
     title: 'Letzte',
     accentHex: '#00D4D4',
-    template: WidgetTemplate.list,
+    template: WidgetTemplate.stat,
     route: '/budget',
     slots: [WidgetSlot(label: 'Transaktion', valueKey: WidgetKeys.recentTransaction)],
   ),

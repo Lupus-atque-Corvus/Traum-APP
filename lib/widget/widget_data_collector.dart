@@ -545,14 +545,24 @@ class WidgetDataCollector {
       entriesThisMonth = entries.length;
     } catch (_) {}
 
-    // ── abstinenceTitle / abstinenceDuration (REAL: abstinenceDaoProvider) ────
-    // Same logic as _CurrentStreakContent / _AllCountersContent in misc_widgets.dart
+    // ── allTrackers (REAL: abstinenceDaoProvider.getAllTrackers()) — read once, reused for
+    //    abstinenceTitle, abstinenceDuration, longestStreak, allCounters ─────────────────
+    // Same source as _CurrentStreakContent / _LongestStreakContent / _AllCountersContent
+    // in misc_widgets.dart
+    final allTrackers = await () async {
+      try {
+        return await read(abstinenceDaoProvider).getAllTrackers();
+      } catch (_) {
+        return <dynamic>[];
+      }
+    }();
+
+    // ── abstinenceTitle / abstinenceDuration (REAL: allTrackers → active only) ─
+    // Same logic as _CurrentStreakContent in misc_widgets.dart
     String abstinenceTitle = '';
     String abstinenceDuration = '';
-    try {
-      final trackers =
-          await read(abstinenceDaoProvider).getAllTrackers();
-      final active = trackers.where((t) => t.isActive).toList();
+    {
+      final active = allTrackers.where((t) => t.isActive).toList();
       if (active.isNotEmpty) {
         // Longest currently-running streak (same logic as _CurrentStreakContent)
         final best = active.reduce(
@@ -561,7 +571,7 @@ class WidgetDataCollector {
         final days = _daysSince(best.startDate);
         abstinenceDuration = '$days ${days == 1 ? 'Tag' : 'Tage'}';
       }
-    } catch (_) {}
+    }
 
     // ── moneySaved (FALLBACK: keine Quelle; widget zeigt '—') ────────────────
     const double moneySaved = 0.0;
@@ -653,46 +663,43 @@ class WidgetDataCollector {
     // ── clockDate (FALLBACK: keine Quelle; live clock renders in widget, not snapshot) ────
     const String clockDate = ''; // FALLBACK: keine Quelle
 
-    // ── weatherTemp (REAL: SharedPreferences weather_cache → temperature_2m) ──
+    // ── weatherCache (REAL: SharedPreferences weather_cache) — parsed once,
+    //    reused for weatherTemp + weatherForecast ───────────────────────────────
     // Same source as _WeatherContent in general_widgets.dart
-    String weatherTemp = '';
+    Map<String, dynamic>? weatherCurrent;
     try {
       final prefs = read(sharedPreferencesProvider);
       final cache = prefs.getString('weather_cache');
       if (cache != null && cache.isNotEmpty) {
         final data = jsonDecode(cache) as Map<String, dynamic>?;
-        if (data != null) {
-          final current = data['current'] as Map<String, dynamic>?;
-          final temp = current?['temperature_2m'] as num?;
-          if (temp != null) weatherTemp = '${temp.toStringAsFixed(0)}°C';
-        }
+        weatherCurrent = data?['current'] as Map<String, dynamic>?;
       }
     } catch (_) {}
 
-    // ── weatherForecast (REAL: SharedPreferences weather_cache → condition label) ──
-    // Same source as _WeatherContent in general_widgets.dart
+    // ── weatherTemp (REAL: weather_cache → temperature_2m) ───────────────────
+    String weatherTemp = '';
+    {
+      final temp = weatherCurrent?['temperature_2m'] as num?;
+      if (temp != null) weatherTemp = '${temp.toStringAsFixed(0)}°C';
+    }
+
+    // ── weatherForecast (REAL: weather_cache → condition label) ──────────────
     String weatherForecast = '';
-    try {
-      final prefs = read(sharedPreferencesProvider);
-      final cache = prefs.getString('weather_cache');
-      if (cache != null && cache.isNotEmpty) {
-        final data = jsonDecode(cache) as Map<String, dynamic>?;
-        if (data != null) {
-          final current = data['current'] as Map<String, dynamic>?;
-          final code = (current?['weathercode'] as num?)?.toInt() ?? 0;
-          String cond(int c) {
-            if (c == 0) return 'Klar';
-            if (c <= 3) return 'Bewölkt';
-            if (c <= 48) return 'Neblig';
-            if (c <= 67) return 'Regen';
-            if (c <= 77) return 'Schnee';
-            if (c <= 82) return 'Schauer';
-            return 'Gewitter';
-          }
-          weatherForecast = cond(code);
+    {
+      final code = (weatherCurrent?['weathercode'] as num?)?.toInt() ?? -1;
+      if (code >= 0) {
+        String cond(int c) {
+          if (c == 0) return 'Klar';
+          if (c <= 3) return 'Bewölkt';
+          if (c <= 48) return 'Neblig';
+          if (c <= 67) return 'Regen';
+          if (c <= 77) return 'Schnee';
+          if (c <= 82) return 'Schauer';
+          return 'Gewitter';
         }
+        weatherForecast = cond(code);
       }
-    } catch (_) {}
+    }
 
     // ── appFavorites (REAL: appLauncherFavoritesProvider → count) ────────────
     // Same source as _AppFavoritesContent in general_widgets.dart
@@ -799,19 +806,20 @@ class WidgetDataCollector {
       }
     } catch (_) {}
 
-    // ── recentTransaction (REAL: budgetDaoProvider → most recent transaction label) ──
-    // Same source as _RecentTransactionsContent in budget_widgets.dart
+    // ── recentTransaction (REAL: budgetDaoProvider.getRecentTransactions(limit:1)) ──
+    // Same source as _RecentTransactionsContent in budget_widgets.dart which uses
+    // recentTransactionItemsProvider(3) → dao.getRecentTransactions(limit:3).
+    // Cross-month source so it never returns blank at start of a new month.
+    // Format matches the tile's top row: description (= item.name) if non-empty,
+    // else category name — but category lookup requires a separate DAO call, so we
+    // store the raw description (same as item.name). This is the scalar the widget
+    // key holds; the tile renders it with amount in a second column.
     String recentTransaction = '';
     try {
-      final now = DateTime.now();
-      final txs = await read(budgetDaoProvider)
-          .getTransactionsForMonth(now.year, now.month);
+      final txs = await read(budgetDaoProvider).getRecentTransactions(limit: 1);
       if (txs.isNotEmpty) {
-        final sorted = [...txs]
-          ..sort((a, b) => b.date.compareTo(a.date));
-        final txNote = sorted.first.note?.trim() ?? '';
-        recentTransaction =
-            txNote.isEmpty ? sorted.first.description : txNote;
+        final tx = txs.first;
+        recentTransaction = tx.description;
       }
     } catch (_) {}
 
@@ -835,14 +843,14 @@ class WidgetDataCollector {
     // ── monthTrend (FALLBACK: keine Quelle; Trend-Chart braucht Mehrmonate-Daten) ──
     const String monthTrend = ''; // FALLBACK: keine Quelle
 
-    // ── yearHeatmap (REAL: diaryDaoProvider → entries this year count as surrogate) ──
-    // Same concept as _YearHeatmapContent in diary_widgets.dart
+    // ── yearHeatmap (REAL: datesWithDiaryEntriesProvider → total distinct-date count) ──
+    // Same source as _YearHeatmapContent in diary_widgets.dart, which watches
+    // datesWithDiaryEntriesProvider and shows `dates.length` ("N Tage mit Eintrag").
+    // getDatesWithEntries() returns ALL diary dates (no year cap), matching the tile.
     int yearHeatmap = 0;
     try {
-      final now = DateTime.now();
-      final entries = await read(
-          diaryEntriesForMonthProvider((now.year, now.month)).future);
-      yearHeatmap = entries.length; // month count as surrogate for heatmap
+      final dates = await read(datesWithDiaryEntriesProvider.future);
+      yearHeatmap = dates.length;
     } catch (_) {}
 
     // ── moodCalendar (REAL: healthDaoProvider.getMoodLogsAfter(monthStart) → avg mood) ──
@@ -858,24 +866,23 @@ class WidgetDataCollector {
       }
     } catch (_) {}
 
-    // ── longestStreak (REAL: abstinenceDaoProvider.getAllTrackers() → max historical) ──
-    // Same concept as _LongestStreakContent in misc_widgets.dart
+    // ── longestStreak (REAL: allTrackers → longest currently-running streak) ──────
+    // Same logic as _LongestStreakContent in misc_widgets.dart: picks the tracker
+    // with the highest _daysSince(startDate) among ALL trackers (active + inactive).
+    // Note: this is NOT a "max historical" value — it is the oldest startDate
+    // still recorded (i.e. longest currently-running streak, never reset).
     int longestStreak = 0;
-    try {
-      final trackers = await read(abstinenceDaoProvider).getAllTrackers();
-      for (final t in trackers) {
+    if (allTrackers.isNotEmpty) {
+      for (final t in allTrackers) {
         final days = _daysSince(t.startDate);
         if (days > longestStreak) longestStreak = days;
       }
-    } catch (_) {}
+    }
 
-    // ── allCounters (REAL: abstinenceDaoProvider.getAllTrackers() → active count) ──
-    // Same source as _AllCountersContent in misc_widgets.dart
-    int allCounters = 0;
-    try {
-      final trackers = await read(abstinenceDaoProvider).getAllTrackers();
-      allCounters = trackers.where((t) => t.isActive).length;
-    } catch (_) {}
+    // ── allCounters (REAL: allTrackers → total count, unfiltered) ────────────────
+    // Same source as _AllCountersContent in misc_widgets.dart, which renders ALL
+    // trackers without an isActive filter (trackers list is unfiltered).
+    final int allCounters = allTrackers.length;
 
     // ── pinnedNote (REAL: notesDaoProvider.getPinnedNotes() → first title) ────
     // Same source as _PinnedNoteContent in misc_widgets.dart
