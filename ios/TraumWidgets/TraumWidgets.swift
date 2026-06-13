@@ -30,132 +30,96 @@ private let traumYellow = Color(hex: "FFCC80")
 
 struct TraumEntry: TimelineEntry {
     let date: Date
-    let steps: String
-    let stepsGoal: String
-    let calories: String
-    let caloriesGoal: String
-    let kcal: String
-    let kcalGoal: String
-    let waterMl: String
-    let waterGoalMl: String
-    let protein: String
-    let proteinGoal: String
-    let sleepHours: String
-    let nextTodo: String
-    let abstinenceTitle: String
-    let abstinenceDuration: String
-    let periodDaysLabel: String
-    let budgetSpent: String
-    let budgetLimit: String
-    let habitsCompleted: String
-    let habitsTotal: String
-    let medsTaken: String
-    let medsTotal: String
-    let nextAppointment: String
-    let heartRate: String
-    let mood: String
+    let values: [String: String]   // namespaced key -> string value
+    func v(_ key: String) -> String {
+        let s = values[key] ?? ""
+        return s.isEmpty ? "—" : s
+    }
 }
 
 // MARK: - Timeline Provider
 
 struct TraumTimelineProvider: TimelineProvider {
     func placeholder(in context: Context) -> TraumEntry {
-        TraumEntry(
-            date: Date(),
-            steps: "—", stepsGoal: "10000",
-            calories: "—", caloriesGoal: "2000",
-            kcal: "—", kcalGoal: "2000",
-            waterMl: "—", waterGoalMl: "2000",
-            protein: "—", proteinGoal: "150",
-            sleepHours: "—",
-            nextTodo: "—",
-            abstinenceTitle: "—", abstinenceDuration: "—",
-            periodDaysLabel: "—",
-            budgetSpent: "—", budgetLimit: "—",
-            habitsCompleted: "—", habitsTotal: "—",
-            medsTaken: "—", medsTotal: "—",
-            nextAppointment: "—",
-            heartRate: "—",
-            mood: "—"
-        )
+        TraumEntry(date: Date(), values: [:])
     }
-
     func getSnapshot(in context: Context, completion: @escaping (TraumEntry) -> Void) {
         completion(makeEntry())
     }
-
     func getTimeline(in context: Context, completion: @escaping (Timeline<TraumEntry>) -> Void) {
         let entry = makeEntry()
         let nextUpdate = Calendar.current.date(byAdding: .minute, value: 30, to: Date())!
         completion(Timeline(entries: [entry], policy: .after(nextUpdate)))
     }
-
     private func makeEntry() -> TraumEntry {
         let d = UserDefaults(suiteName: "group.de.traum.widgets")
-        return TraumEntry(
-            date: Date(),
-            steps: d?.string(forKey: "health.steps") ?? "—",
-            stepsGoal: d?.string(forKey: "stepsGoal") ?? "10000",
-            calories: d?.string(forKey: "calories") ?? "—",
-            caloriesGoal: d?.string(forKey: "caloriesGoal") ?? "2000",
-            kcal: d?.string(forKey: "nutrition.kcal") ?? "—",
-            kcalGoal: d?.string(forKey: "kcalGoal") ?? "2000",
-            waterMl: d?.string(forKey: "nutrition.waterMl") ?? "—",
-            waterGoalMl: d?.string(forKey: "waterGoalMl") ?? "2000",
-            protein: d?.string(forKey: "protein") ?? "—",
-            proteinGoal: d?.string(forKey: "proteinGoal") ?? "150",
-            sleepHours: d?.string(forKey: "sleepHours") ?? "—",
-            nextTodo: d?.string(forKey: "planning.nextTodo") ?? "—",
-            abstinenceTitle: d?.string(forKey: "abstinenceTitle") ?? "—",
-            abstinenceDuration: d?.string(forKey: "abstinenceDuration") ?? "—",
-            periodDaysLabel: d?.string(forKey: "periodDaysLabel") ?? "—",
-            budgetSpent: d?.string(forKey: "budgetSpent") ?? "—",
-            budgetLimit: d?.string(forKey: "budgetLimit") ?? "—",
-            habitsCompleted: d?.string(forKey: "habitsCompleted") ?? "—",
-            habitsTotal: d?.string(forKey: "habitsTotal") ?? "—",
-            medsTaken: d?.string(forKey: "medsTaken") ?? "—",
-            medsTotal: d?.string(forKey: "medsTotal") ?? "—",
-            nextAppointment: d?.string(forKey: "nextAppointment") ?? "—",
-            heartRate: d?.string(forKey: "heartRate") ?? "—",
-            mood: d?.string(forKey: "mood") ?? "—"
-        )
+        let keys = [
+            "health.steps", "health.stepsGoal", "health.sleepHours", "health.heartRate", "health.mood",
+            "health.score", "health.weightKg", "health.activeMinutes",
+            "nutrition.kcal", "nutrition.kcalGoal", "nutrition.waterMl", "nutrition.waterGoalMl",
+            "nutrition.protein", "nutrition.proteinGoal", "nutrition.carbs", "nutrition.fat", "nutrition.lastMeal",
+            "training.nextWorkout", "training.weeklyVolume", "training.streak",
+            "planning.nextTodo", "planning.openTodos", "planning.nextAppointment",
+            "planning.habitsDone", "planning.habitsTotal", "planning.medsDone", "planning.medsTotal",
+            "budget.balanceMonth", "budget.income", "budget.expense", "budget.spent", "budget.limit", "budget.topCategory",
+            "diary.writeStreak", "diary.lastEntry", "diary.entriesThisMonth",
+            "abstinence.title", "abstinence.duration", "abstinence.moneySaved",
+            "substances.lastIntake", "substances.takenToday",
+            "period.cycleDay", "period.phase", "period.nextDays",
+            "notes.count", "notes.lastNote", "map.placesCount", "map.lastPhoto",
+        ]
+        var values: [String: String] = [:]
+        for k in keys { if let s = d?.string(forKey: k) { values[k] = s } }
+        return TraumEntry(date: Date(), values: values)
     }
 }
 
-// MARK: - Shared header view
+// MARK: - Generic slot model + overview view
 
-private struct WidgetHeader: View {
-    let title: String
-    var body: some View {
-        Text(title)
-            .font(.system(size: 10, weight: .bold))
-            .foregroundColor(traumAccent)
-            .textCase(.uppercase)
+struct OverviewSlot {
+    let label: String
+    let key: String
+    let suffix: String
+    init(_ label: String, _ key: String, _ suffix: String = "") {
+        self.label = label; self.key = key; self.suffix = suffix
     }
 }
 
-// MARK: - 1. Overview Widget
-
-struct TraumOverviewWidgetEntryView: View {
+struct OverviewWidgetView: View {
     @Environment(\.widgetFamily) var family
     let entry: TraumEntry
+    let title: String
+    let accentHex: String
+    let slots: [OverviewSlot]
+
+    private func text(_ s: OverviewSlot) -> String { entry.v(s.key) + s.suffix }
+
     var body: some View {
         ZStack {
             traumBackground.ignoresSafeArea()
             VStack(alignment: .leading, spacing: 4) {
-                WidgetHeader(title: "Übersicht")
-                Text(entry.steps).font(.system(size: 22, weight: .bold)).foregroundColor(traumText)
-                Text("Schritte").font(.caption2).foregroundColor(traumMuted)
-                if family != .systemSmall {
+                Text(title).font(.system(size: 10, weight: .bold))
+                    .foregroundColor(Color(hex: accentHex)).textCase(.uppercase)
+                if let p = slots.first {
+                    Text(text(p)).font(.system(size: 22, weight: .bold)).foregroundColor(traumText)
+                    Text(p.label).font(.caption2).foregroundColor(traumMuted)
+                }
+                if family != .systemSmall, slots.count > 1 {
                     HStack {
-                        Text("\(entry.kcal) kcal").font(.caption).foregroundColor(traumText)
-                        Spacer()
-                        Text("\(entry.waterMl) ml").font(.caption).foregroundColor(traumBlue)
+                        ForEach(Array(slots.dropFirst().prefix(2).enumerated()), id: \.offset) { _, s in
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(text(s)).font(.system(size: 13, weight: .bold)).foregroundColor(traumText)
+                                Text(s.label).font(.caption2).foregroundColor(traumMuted)
+                            }
+                            Spacer()
+                        }
                     }.padding(.top, 6)
                 }
-                if family == .systemLarge {
-                    Text(entry.nextTodo).font(.caption).foregroundColor(traumMuted)
-                        .lineLimit(2).padding(.top, 6)
+                if family == .systemLarge, slots.count > 3 {
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(text(slots[3])).font(.system(size: 13, weight: .bold)).foregroundColor(traumText)
+                        Text(slots[3].label).font(.caption2).foregroundColor(traumMuted)
+                    }.padding(.top, 6)
                 }
                 Spacer(minLength: 0)
             }.padding(12)
@@ -163,468 +127,209 @@ struct TraumOverviewWidgetEntryView: View {
     }
 }
 
+// MARK: - 1. Overview Widget
+
 struct TraumOverviewWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "TraumOverviewWidget", provider: TraumTimelineProvider()) {
-            TraumOverviewWidgetEntryView(entry: $0)
+        StaticConfiguration(kind: "TraumOverviewWidget", provider: TraumTimelineProvider()) { e in
+            OverviewWidgetView(entry: e, title: "Übersicht", accentHex: "#FF6B3D", slots: [
+                OverviewSlot("Schritte", "health.steps"),
+                OverviewSlot("Kalorien", "nutrition.kcal", " kcal"),
+                OverviewSlot("Wasser", "nutrition.waterMl", " ml"),
+                OverviewSlot("Aufgabe", "planning.nextTodo"),
+            ])
         }
         .configurationDisplayName("TRAUM Übersicht")
-        .description("Schritte, Kalorien und Wasser im Überblick")
+        .description("Schritte, Kalorien und Wasser auf einen Blick")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 
-// MARK: - 2. Todo Widget
-
-struct TraumTodoWidgetEntryView: View {
-    let entry: TraumEntry
-    var body: some View {
-        ZStack {
-            traumBackground.ignoresSafeArea()
-            VStack(alignment: .leading, spacing: 4) {
-                WidgetHeader(title: "Aufgaben")
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Nächste Aufgabe")
-                        .font(.caption2)
-                        .foregroundColor(traumMuted)
-                    Text(entry.nextTodo)
-                        .font(.caption)
-                        .foregroundColor(traumText)
-                        .lineLimit(2)
-                }
-                Spacer(minLength: 4)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Nächster Termin")
-                        .font(.caption2)
-                        .foregroundColor(traumMuted)
-                    Text(entry.nextAppointment)
-                        .font(.caption)
-                        .foregroundColor(traumText)
-                        .lineLimit(1)
-                }
-                Spacer(minLength: 0)
-            }
-            .padding(12)
-        }
-    }
-}
-
-struct TraumTodoWidget: Widget {
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "TraumTodoWidget", provider: TraumTimelineProvider()) {
-            TraumTodoWidgetEntryView(entry: $0)
-        }
-        .configurationDisplayName("TRAUM Aufgaben")
-        .description("Nächste Aufgabe und Termin")
-        .supportedFamilies([.systemSmall, .systemMedium])
-    }
-}
-
-// MARK: - 3. Steps Widget
-
-struct TraumStepsWidgetEntryView: View {
-    let entry: TraumEntry
-    var progressValue: Double {
-        let s = Double(entry.steps) ?? 0
-        let g = Double(entry.stepsGoal) ?? 10000
-        guard g > 0 else { return 0 }
-        return min(s / g, 1.0)
-    }
-    var body: some View {
-        ZStack {
-            traumBackground.ignoresSafeArea()
-            VStack(alignment: .leading, spacing: 4) {
-                WidgetHeader(title: "Schritte")
-                Text(entry.steps)
-                    .font(.system(size: 24, weight: .bold))
-                    .foregroundColor(traumText)
-                Text("Ziel: \(entry.stepsGoal)")
-                    .font(.caption2)
-                    .foregroundColor(traumMuted)
-                Spacer(minLength: 4)
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(Color(hex: "333355"))
-                            .frame(height: 8)
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(traumAccent)
-                            .frame(width: geo.size.width * progressValue, height: 8)
-                    }
-                }
-                .frame(height: 8)
-            }
-            .padding(12)
-        }
-    }
-}
-
-struct TraumStepsWidget: Widget {
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "TraumStepsWidget", provider: TraumTimelineProvider()) {
-            TraumStepsWidgetEntryView(entry: $0)
-        }
-        .configurationDisplayName("TRAUM Schritte")
-        .description("Schritte und Fortschritt zum Tagesziel")
-        .supportedFamilies([.systemSmall, .systemMedium])
-    }
-}
-
-// MARK: - 4. Abstinence Widget
-
-struct TraumAbstinenceWidgetEntryView: View {
-    let entry: TraumEntry
-    var body: some View {
-        ZStack {
-            traumBackground.ignoresSafeArea()
-            VStack(alignment: .center, spacing: 6) {
-                WidgetHeader(title: "Abstinenz")
-                Text(entry.abstinenceTitle)
-                    .font(.caption)
-                    .foregroundColor(traumMuted)
-                    .lineLimit(1)
-                Text(entry.abstinenceDuration)
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundColor(traumText)
-                Spacer(minLength: 0)
-            }
-            .padding(12)
-            .frame(maxWidth: .infinity)
-        }
-    }
-}
-
-struct TraumAbstinenceWidget: Widget {
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "TraumAbstinenceWidget", provider: TraumTimelineProvider()) {
-            TraumAbstinenceWidgetEntryView(entry: $0)
-        }
-        .configurationDisplayName("TRAUM Abstinenz")
-        .description("Abstinenz-Titel und -Dauer")
-        .supportedFamilies([.systemSmall, .systemMedium])
-    }
-}
-
-// MARK: - 5. Period Widget
-
-struct TraumPeriodWidgetEntryView: View {
-    let entry: TraumEntry
-    var body: some View {
-        ZStack {
-            traumBackground.ignoresSafeArea()
-            VStack(alignment: .center, spacing: 6) {
-                WidgetHeader(title: "Zyklus")
-                Text("Zyklusphase")
-                    .font(.caption2)
-                    .foregroundColor(traumMuted)
-                Text(entry.periodDaysLabel)
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(traumText)
-                    .multilineTextAlignment(.center)
-                Spacer(minLength: 0)
-            }
-            .padding(12)
-            .frame(maxWidth: .infinity)
-        }
-    }
-}
-
-struct TraumPeriodWidget: Widget {
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "TraumPeriodWidget", provider: TraumTimelineProvider()) {
-            TraumPeriodWidgetEntryView(entry: $0)
-        }
-        .configurationDisplayName("TRAUM Zyklus")
-        .description("Aktuelle Zyklusphase")
-        .supportedFamilies([.systemSmall, .systemMedium])
-    }
-}
-
-// MARK: - 6. Health Widget
-
-struct TraumHealthWidgetEntryView: View {
-    let entry: TraumEntry
-    var body: some View {
-        ZStack {
-            traumBackground.ignoresSafeArea()
-            VStack(alignment: .leading, spacing: 4) {
-                WidgetHeader(title: "Gesundheit")
-                HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("\(entry.sleepHours) h")
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(traumText)
-                        Text("Schlaf")
-                            .font(.caption2)
-                            .foregroundColor(traumMuted)
-                    }
-                    Spacer()
-                    VStack(alignment: .center, spacing: 2) {
-                        Text(entry.heartRate)
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(traumRed)
-                        Text("bpm")
-                            .font(.caption2)
-                            .foregroundColor(traumMuted)
-                    }
-                    Spacer()
-                    VStack(alignment: .trailing, spacing: 2) {
-                        Text(entry.mood)
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(traumYellow)
-                        Text("Stimmung")
-                            .font(.caption2)
-                            .foregroundColor(traumMuted)
-                    }
-                }
-                Spacer(minLength: 0)
-            }
-            .padding(12)
-        }
-    }
-}
+// MARK: - 2. Health Widget
 
 struct TraumHealthWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "TraumHealthWidget", provider: TraumTimelineProvider()) {
-            TraumHealthWidgetEntryView(entry: $0)
+        StaticConfiguration(kind: "TraumHealthWidget", provider: TraumTimelineProvider()) { e in
+            OverviewWidgetView(entry: e, title: "Gesundheit", accentHex: "#F43F5E", slots: [
+                OverviewSlot("Score", "health.score"),
+                OverviewSlot("Schlaf", "health.sleepHours", " h"),
+                OverviewSlot("Puls", "health.heartRate", " bpm"),
+                OverviewSlot("Aktiv", "health.activeMinutes", " min"),
+            ])
         }
         .configurationDisplayName("TRAUM Gesundheit")
-        .description("Schlaf, Herzrate und Stimmung")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .description("Gesundheit auf einen Blick")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 
-// MARK: - 7. Calendar Widget
-
-struct TraumCalendarWidgetEntryView: View {
-    let entry: TraumEntry
-    var body: some View {
-        ZStack {
-            traumBackground.ignoresSafeArea()
-            VStack(alignment: .leading, spacing: 4) {
-                WidgetHeader(title: "Kalender")
-                Text("Nächster Termin")
-                    .font(.caption2)
-                    .foregroundColor(traumMuted)
-                Text(entry.nextAppointment)
-                    .font(.caption)
-                    .foregroundColor(traumText)
-                    .lineLimit(4)
-                Spacer(minLength: 0)
-            }
-            .padding(12)
-        }
-    }
-}
-
-struct TraumCalendarWidget: Widget {
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "TraumCalendarWidget", provider: TraumTimelineProvider()) {
-            TraumCalendarWidgetEntryView(entry: $0)
-        }
-        .configurationDisplayName("TRAUM Kalender")
-        .description("Nächster Termin auf einen Blick")
-        .supportedFamilies([.systemSmall, .systemMedium])
-    }
-}
-
-// MARK: - 8. Budget Widget
-
-struct TraumBudgetWidgetEntryView: View {
-    let entry: TraumEntry
-    var progressValue: Double {
-        let s = Double(entry.budgetSpent) ?? 0
-        let l = Double(entry.budgetLimit) ?? 1
-        guard l > 0 else { return 0 }
-        return min(s / l, 1.0)
-    }
-    var body: some View {
-        ZStack {
-            traumBackground.ignoresSafeArea()
-            VStack(alignment: .leading, spacing: 4) {
-                WidgetHeader(title: "Budget")
-                Text("\(entry.budgetSpent) €")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundColor(traumText)
-                Text("von \(entry.budgetLimit) €")
-                    .font(.caption2)
-                    .foregroundColor(traumMuted)
-                Spacer(minLength: 4)
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(Color(hex: "333355"))
-                            .frame(height: 8)
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(traumAccent)
-                            .frame(width: geo.size.width * progressValue, height: 8)
-                    }
-                }
-                .frame(height: 8)
-            }
-            .padding(12)
-        }
-    }
-}
-
-struct TraumBudgetWidget: Widget {
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "TraumBudgetWidget", provider: TraumTimelineProvider()) {
-            TraumBudgetWidgetEntryView(entry: $0)
-        }
-        .configurationDisplayName("TRAUM Budget")
-        .description("Ausgaben und Budgetlimit")
-        .supportedFamilies([.systemSmall, .systemMedium])
-    }
-}
-
-// MARK: - 9. Nutrition Widget
-
-struct TraumNutritionWidgetEntryView: View {
-    let entry: TraumEntry
-    var body: some View {
-        ZStack {
-            traumBackground.ignoresSafeArea()
-            VStack(alignment: .leading, spacing: 4) {
-                WidgetHeader(title: "Ernährung")
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("\(entry.kcal) / \(entry.kcalGoal)")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(traumText)
-                        Text("Kalorien")
-                            .font(.caption2)
-                            .foregroundColor(traumMuted)
-                    }
-                    Spacer()
-                    VStack(alignment: .trailing, spacing: 2) {
-                        Text("\(entry.protein) g")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(traumText)
-                        Text("Protein")
-                            .font(.caption2)
-                            .foregroundColor(traumMuted)
-                        Text("\(entry.waterMl) ml")
-                            .font(.caption2)
-                            .foregroundColor(traumBlue)
-                    }
-                }
-                Spacer(minLength: 0)
-            }
-            .padding(12)
-        }
-    }
-}
+// MARK: - 3. Nutrition Widget
 
 struct TraumNutritionWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "TraumNutritionWidget", provider: TraumTimelineProvider()) {
-            TraumNutritionWidgetEntryView(entry: $0)
+        StaticConfiguration(kind: "TraumNutritionWidget", provider: TraumTimelineProvider()) { e in
+            OverviewWidgetView(entry: e, title: "Ernährung", accentHex: "#3DD68C", slots: [
+                OverviewSlot("Kalorien", "nutrition.kcal", " kcal"),
+                OverviewSlot("Protein", "nutrition.protein", " g"),
+                OverviewSlot("Wasser", "nutrition.waterMl", " ml"),
+                OverviewSlot("Mahlzeit", "nutrition.lastMeal"),
+            ])
         }
         .configurationDisplayName("TRAUM Ernährung")
-        .description("Kalorien, Protein und Wasser")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .description("Kalorien, Protein und Wasser im Überblick")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 
-// MARK: - 10. Habits Widget
+// MARK: - 4. Training Widget
 
-struct TraumHabitsWidgetEntryView: View {
-    let entry: TraumEntry
-    var progressValue: Double {
-        let c = Double(entry.habitsCompleted) ?? 0
-        let t = Double(entry.habitsTotal) ?? 1
-        guard t > 0 else { return 0 }
-        return min(c / t, 1.0)
-    }
-    var body: some View {
-        ZStack {
-            traumBackground.ignoresSafeArea()
-            VStack(alignment: .leading, spacing: 4) {
-                WidgetHeader(title: "Gewohnheiten")
-                Text("\(entry.habitsCompleted) / \(entry.habitsTotal)")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundColor(traumText)
-                Text("Gewohnheiten heute")
-                    .font(.caption2)
-                    .foregroundColor(traumMuted)
-                Spacer(minLength: 4)
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(Color(hex: "333355"))
-                            .frame(height: 8)
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(traumGreen)
-                            .frame(width: geo.size.width * progressValue, height: 8)
-                    }
-                }
-                .frame(height: 8)
-            }
-            .padding(12)
-        }
-    }
-}
-
-struct TraumHabitsWidget: Widget {
+struct TraumTrainingWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "TraumHabitsWidget", provider: TraumTimelineProvider()) {
-            TraumHabitsWidgetEntryView(entry: $0)
+        StaticConfiguration(kind: "TraumTrainingWidget", provider: TraumTimelineProvider()) { e in
+            OverviewWidgetView(entry: e, title: "Training", accentHex: "#5B6CF9", slots: [
+                OverviewSlot("Nächstes", "training.nextWorkout"),
+                OverviewSlot("Volumen", "training.weeklyVolume"),
+                OverviewSlot("Streak", "training.streak"),
+            ])
         }
-        .configurationDisplayName("TRAUM Gewohnheiten")
-        .description("Abgeschlossene Gewohnheiten und Fortschritt")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .configurationDisplayName("TRAUM Training")
+        .description("Nächstes Workout, Wochenvolumen und Streak")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 
-// MARK: - 11. Medication Widget
+// MARK: - 5. Planning Widget
 
-struct TraumMedicationWidgetEntryView: View {
-    let entry: TraumEntry
-    var progressValue: Double {
-        let t = Double(entry.medsTaken) ?? 0
-        let total = Double(entry.medsTotal) ?? 1
-        guard total > 0 else { return 0 }
-        return min(t / total, 1.0)
-    }
-    var body: some View {
-        ZStack {
-            traumBackground.ignoresSafeArea()
-            VStack(alignment: .leading, spacing: 4) {
-                WidgetHeader(title: "Medikamente")
-                Text("\(entry.medsTaken) / \(entry.medsTotal)")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundColor(traumText)
-                Text("Medikamente heute")
-                    .font(.caption2)
-                    .foregroundColor(traumMuted)
-                Spacer(minLength: 4)
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(Color(hex: "333355"))
-                            .frame(height: 8)
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(traumBlue)
-                            .frame(width: geo.size.width * progressValue, height: 8)
-                    }
-                }
-                .frame(height: 8)
-            }
-            .padding(12)
-        }
-    }
-}
-
-struct TraumMedicationWidget: Widget {
+struct TraumPlanningWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "TraumMedicationWidget", provider: TraumTimelineProvider()) {
-            TraumMedicationWidgetEntryView(entry: $0)
+        StaticConfiguration(kind: "TraumPlanningWidget", provider: TraumTimelineProvider()) { e in
+            OverviewWidgetView(entry: e, title: "Planung", accentHex: "#F5A623", slots: [
+                OverviewSlot("Offen", "planning.openTodos"),
+                OverviewSlot("Termin", "planning.nextAppointment"),
+                OverviewSlot("Habits", "planning.habitsDone"),
+                OverviewSlot("Medis", "planning.medsDone"),
+            ])
         }
-        .configurationDisplayName("TRAUM Medikamente")
-        .description("Eingenommene Medikamente und Fortschritt")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .configurationDisplayName("TRAUM Planung")
+        .description("Offene Aufgaben, Termine und Habits")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+    }
+}
+
+// MARK: - 6. Budget Widget
+
+struct TraumBudgetWidget: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "TraumBudgetWidget", provider: TraumTimelineProvider()) { e in
+            OverviewWidgetView(entry: e, title: "Budget", accentHex: "#00D4D4", slots: [
+                OverviewSlot("Saldo", "budget.balanceMonth", " €"),
+                OverviewSlot("Ausgaben", "budget.spent", " €"),
+                OverviewSlot("Einnahmen", "budget.income", " €"),
+                OverviewSlot("Top", "budget.topCategory"),
+            ])
+        }
+        .configurationDisplayName("TRAUM Budget")
+        .description("Monatssaldo, Ausgaben und Einnahmen")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+    }
+}
+
+// MARK: - 7. Diary Widget
+
+struct TraumDiaryWidget: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "TraumDiaryWidget", provider: TraumTimelineProvider()) { e in
+            OverviewWidgetView(entry: e, title: "Tagebuch", accentHex: "#9B8EC4", slots: [
+                OverviewSlot("Streak", "diary.writeStreak"),
+                OverviewSlot("Letzter", "diary.lastEntry"),
+                OverviewSlot("Monat", "diary.entriesThisMonth"),
+            ])
+        }
+        .configurationDisplayName("TRAUM Tagebuch")
+        .description("Schreibstreak und Einträge diesen Monat")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+    }
+}
+
+// MARK: - 8. Abstinence Widget
+
+struct TraumAbstinenceWidget: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "TraumAbstinenceWidget", provider: TraumTimelineProvider()) { e in
+            OverviewWidgetView(entry: e, title: "Abstinenz", accentHex: "#FFAA55", slots: [
+                OverviewSlot("Titel", "abstinence.title"),
+                OverviewSlot("Dauer", "abstinence.duration"),
+                OverviewSlot("Gespart", "abstinence.moneySaved", " €"),
+            ])
+        }
+        .configurationDisplayName("TRAUM Abstinenz")
+        .description("Abstinenz-Titel, Dauer und gesparte Kosten")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+    }
+}
+
+// MARK: - 9. Substances Widget
+
+struct TraumSubstancesWidget: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "TraumSubstancesWidget", provider: TraumTimelineProvider()) { e in
+            OverviewWidgetView(entry: e, title: "Mittel", accentHex: "#0099BB", slots: [
+                OverviewSlot("Zuletzt", "substances.lastIntake"),
+                OverviewSlot("Heute", "substances.takenToday"),
+            ])
+        }
+        .configurationDisplayName("TRAUM Mittel")
+        .description("Letzte Einnahme und heutige Mittel")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+    }
+}
+
+// MARK: - 10. Period Widget
+
+struct TraumPeriodWidget: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "TraumPeriodWidget", provider: TraumTimelineProvider()) { e in
+            OverviewWidgetView(entry: e, title: "Zyklus", accentHex: "#FF8FAB", slots: [
+                OverviewSlot("Zyklustag", "period.cycleDay"),
+                OverviewSlot("Phase", "period.phase"),
+                OverviewSlot("Nächste", "period.nextDays", " T"),
+            ])
+        }
+        .configurationDisplayName("TRAUM Zyklus")
+        .description("Zyklustag, Phase und Tage bis zur nächsten Periode")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+    }
+}
+
+// MARK: - 11. Notes Widget
+
+struct TraumNotesWidget: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "TraumNotesWidget", provider: TraumTimelineProvider()) { e in
+            OverviewWidgetView(entry: e, title: "Notizen", accentHex: "#9B8EC4", slots: [
+                OverviewSlot("Notizen", "notes.count"),
+                OverviewSlot("Letzte", "notes.lastNote"),
+            ])
+        }
+        .configurationDisplayName("TRAUM Notizen")
+        .description("Anzahl Notizen und letzte Notiz")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+    }
+}
+
+// MARK: - 12. Map Widget
+
+struct TraumMapWidget: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "TraumMapWidget", provider: TraumTimelineProvider()) { e in
+            OverviewWidgetView(entry: e, title: "Karte", accentHex: "#3DD68C", slots: [
+                OverviewSlot("Orte", "map.placesCount"),
+                OverviewSlot("Foto", "map.lastPhoto"),
+            ])
+        }
+        .configurationDisplayName("TRAUM Karte")
+        .description("Gespeicherte Orte und letztes Foto")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 
@@ -633,16 +338,9 @@ struct TraumMedicationWidget: Widget {
 @main
 struct TraumWidgetBundle: WidgetBundle {
     var body: some Widget {
-        TraumOverviewWidget()
-        TraumTodoWidget()
-        TraumStepsWidget()
-        TraumAbstinenceWidget()
-        TraumPeriodWidget()
-        TraumHealthWidget()
-        TraumCalendarWidget()
-        TraumBudgetWidget()
-        TraumNutritionWidget()
-        TraumHabitsWidget()
-        TraumMedicationWidget()
+        TraumOverviewWidget(); TraumHealthWidget(); TraumNutritionWidget()
+        TraumTrainingWidget(); TraumPlanningWidget(); TraumBudgetWidget()
+        TraumDiaryWidget(); TraumAbstinenceWidget(); TraumSubstancesWidget()
+        TraumPeriodWidget(); TraumNotesWidget(); TraumMapWidget()
     }
 }
