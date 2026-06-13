@@ -1,26 +1,15 @@
-﻿package de.traum.traum
+package de.traum.traum
 
-import android.appwidget.AppWidgetManager
-import android.content.Context
-import android.widget.RemoteViews
-import es.antonborri.home_widget.HomeWidgetProvider
+import de.traum.traum.widget.BaseOverviewWidgetProvider
+import de.traum.traum.widget.OverviewSlot
 
-class TraumAbstinenceWidgetProvider : HomeWidgetProvider() {
-    override fun onUpdate(
-        context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray,
-        widgetData: android.content.SharedPreferences
-    ) {
-        appWidgetIds.forEach { widgetId ->
-            val views = RemoteViews(context.packageName, R.layout.widget_abstinence)
-            val abstinenceTitle = widgetData.getString("abstinenceTitle", "—") ?: "—"
-            val abstinenceDuration = widgetData.getString("abstinenceDuration", "—") ?: "—"
-
-            views.setTextViewText(R.id.tv_abstinence_title, abstinenceTitle)
-            views.setTextViewText(R.id.tv_abstinence_duration, abstinenceDuration)
-
-            appWidgetManager.updateAppWidget(widgetId, views)
-        }
-    }
+class TraumAbstinenceWidgetProvider : BaseOverviewWidgetProvider() {
+    override val title = "Abstinenz"
+    override val accentHex = "#FFAA55"
+    override val route = "/abstinence"
+    override val slots = listOf(
+        OverviewSlot("Titel", "abstinence.title"),
+        OverviewSlot("Dauer", "abstinence.duration"),
+        OverviewSlot("Gespart", "abstinence.moneySaved", " €"),
+    )
 }

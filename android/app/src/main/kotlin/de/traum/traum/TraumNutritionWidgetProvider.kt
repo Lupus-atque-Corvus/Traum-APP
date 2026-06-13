@@ -1,29 +1,16 @@
-﻿package de.traum.traum
+package de.traum.traum
 
-import android.appwidget.AppWidgetManager
-import android.content.Context
-import android.widget.RemoteViews
-import es.antonborri.home_widget.HomeWidgetProvider
+import de.traum.traum.widget.BaseOverviewWidgetProvider
+import de.traum.traum.widget.OverviewSlot
 
-class TraumNutritionWidgetProvider : HomeWidgetProvider() {
-    override fun onUpdate(
-        context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray,
-        widgetData: android.content.SharedPreferences
-    ) {
-        appWidgetIds.forEach { widgetId ->
-            val views = RemoteViews(context.packageName, R.layout.widget_nutrition)
-            val kcal = widgetData.getString("kcal", "0")
-            val kcalGoal = widgetData.getString("kcalGoal", "2000")
-            val protein = widgetData.getString("protein", "0")
-            val water = widgetData.getString("waterMl", "0")
-
-            views.setTextViewText(R.id.tv_kcal, "$kcal / $kcalGoal kcal")
-            views.setTextViewText(R.id.tv_protein, "$protein g Protein")
-            views.setTextViewText(R.id.tv_water, "$water ml Wasser")
-
-            appWidgetManager.updateAppWidget(widgetId, views)
-        }
-    }
+class TraumNutritionWidgetProvider : BaseOverviewWidgetProvider() {
+    override val title = "Ernährung"
+    override val accentHex = "#3DD68C"
+    override val route = "/nutrition"
+    override val slots = listOf(
+        OverviewSlot("Kalorien", "nutrition.kcal", " kcal"),
+        OverviewSlot("Protein", "nutrition.protein", " g"),
+        OverviewSlot("Wasser", "nutrition.waterMl", " ml"),
+        OverviewSlot("Mahlzeit", "nutrition.lastMeal"),
+    )
 }
