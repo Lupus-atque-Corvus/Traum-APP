@@ -212,13 +212,17 @@ class WidgetDataCollector {
       }
     } catch (_) {}
 
+    // ── todaysTotals (REAL: todaysTotalsProvider) — read once, reused for kcal/protein/carbs/fat ─
+    // Same source as _CaloriesRingContent / _RemainingCaloriesContent / _MacrosContent in nutrition_widgets.dart
+    MacroSummary? todaysTotals;
+    try {
+      todaysTotals = await read(todaysTotalsProvider.future);
+    } catch (_) {}
+
     // ── kcalToday (REAL: todaysTotalsProvider → calories) ────────────────────
     // Same source as _CaloriesRingContent / _RemainingCaloriesContent in nutrition_widgets.dart
-    int kcalToday = empty.kcal;
-    try {
-      final totals = await read(todaysTotalsProvider.future);
-      kcalToday = totals.calories.round();
-    } catch (_) {}
+    final int kcalToday =
+        todaysTotals != null ? todaysTotals.calories.round() : empty.kcal;
 
     // ── kcalGoal (REAL: preferences_provider.dart – kcalGoalProvider) ─────────
     int kcalGoal = empty.kcalGoal;
@@ -241,11 +245,8 @@ class WidgetDataCollector {
 
     // ── proteinToday (REAL: todaysTotalsProvider → protein) ──────────────────
     // Same source as _MacrosContent in nutrition_widgets.dart
-    int proteinToday = empty.protein;
-    try {
-      final totals = await read(todaysTotalsProvider.future);
-      proteinToday = totals.protein.round();
-    } catch (_) {}
+    final int proteinToday =
+        todaysTotals != null ? todaysTotals.protein.round() : empty.protein;
 
     // ── proteinGoal (REAL: preferences_provider.dart – proteinGoalGProvider) ──
     int proteinGoal = empty.proteinGoal;
@@ -253,16 +254,25 @@ class WidgetDataCollector {
       proteinGoal = read(proteinGoalGProvider);
     } catch (_) {}
 
+    // ── allTodos (REAL: planningDaoProvider.getAllTodos()) — read once, reused for nextTodoTitle and openTodos ─
+    // Same source as _OpenTodosContent in planning_widgets.dart
+    final allTodos = await () async {
+      try {
+        return await read(planningDaoProvider).getAllTodos();
+      } catch (_) {
+        return <dynamic>[];
+      }
+    }();
+
     // ── nextTodoTitle (REAL: planningDaoProvider.getAllTodos() → first open) ───
     // Same source as _OpenTodosContent in planning_widgets.dart
     String? nextTodoTitle;
-    try {
-      final todos = await read(planningDaoProvider).getAllTodos();
-      final open = todos.where((t) => !t.done).toList();
+    {
+      final open = allTodos.where((t) => !t.done).toList();
       if (open.isNotEmpty) {
         nextTodoTitle = open.first.title;
       }
-    } catch (_) {}
+    }
 
     // ── healthScore (REAL: healthScoreProvider → gesamtScore) ────────────────
     // Same source as _HealthScoreContent in health_widgets.dart
@@ -287,19 +297,11 @@ class WidgetDataCollector {
 
     // ── carbs (REAL: todaysTotalsProvider → carbs) ────────────────────────────
     // Same source as _MacrosContent in nutrition_widgets.dart
-    int carbs = 0;
-    try {
-      final totals = await read(todaysTotalsProvider.future);
-      carbs = totals.carbs.round();
-    } catch (_) {}
+    final int carbs = todaysTotals != null ? todaysTotals.carbs.round() : 0;
 
     // ── fat (REAL: todaysTotalsProvider → fat) ────────────────────────────────
     // Same source as _MacrosContent in nutrition_widgets.dart
-    int fat = 0;
-    try {
-      final totals = await read(todaysTotalsProvider.future);
-      fat = totals.fat.round();
-    } catch (_) {}
+    final int fat = todaysTotals != null ? todaysTotals.fat.round() : 0;
 
     // ── lastMeal (REAL: lastMealProvider → name) ──────────────────────────────
     // Same source as _LastMealContent in nutrition_widgets.dart
@@ -365,11 +367,7 @@ class WidgetDataCollector {
 
     // ── openTodos (REAL: planningDaoProvider.getAllTodos() → open count) ──────
     // Same logic as _OpenTodosContent in planning_widgets.dart (already read for nextTodoTitle)
-    int openTodos = 0;
-    try {
-      final todos = await read(planningDaoProvider).getAllTodos();
-      openTodos = todos.where((t) => !t.done).length;
-    } catch (_) {}
+    final int openTodos = allTodos.where((t) => !t.done).length;
 
     // ── nextAppointment (REAL: planningDaoProvider.getNextAppointment()) ──────
     // Same source as _NextAppointmentCountdownContent in planning_widgets.dart
@@ -426,15 +424,10 @@ class WidgetDataCollector {
 
     // ── budgetSpent / budgetLimit (REAL: budgetDaoProvider + SharedPreferences) ─
     // Same logic as _BudgetProgressContent in budget_widgets.dart
-    double budgetSpent = 0.0;
+    // budgetSpent reuses expenseMonth (same filter: type == 'expense', same month)
+    final double budgetSpent = expenseMonth;
     double budgetLimit = 0.0;
     try {
-      final now = DateTime.now();
-      final txs = await read(budgetDaoProvider)
-          .getTransactionsForMonth(now.year, now.month);
-      budgetSpent = txs
-          .where((t) => t.type == 'expense')
-          .fold(0.0, (s, t) => s + t.amount);
       budgetLimit =
           read(sharedPreferencesProvider).getDouble('monthly_budget') ?? 0.0;
     } catch (_) {}
