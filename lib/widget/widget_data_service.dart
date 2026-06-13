@@ -9,6 +9,22 @@ class WidgetDataService {
     await HomeWidget.setAppGroupId(WidgetKeys.appGroupId);
   }
 
+  /// Android-Provider-Klassennamen je Tab.
+  static const List<String> androidWidgetNames = [
+    'TraumOverviewWidgetProvider',
+    'TraumHealthWidgetProvider',
+    'TraumNutritionWidgetProvider',
+    'TraumTrainingWidgetProvider',
+    'TraumPlanningWidgetProvider',
+    'TraumBudgetWidgetProvider',
+    'TraumDiaryWidgetProvider',
+    'TraumAbstinenceWidgetProvider',
+    'TraumSubstancesWidgetProvider',
+    'TraumPeriodWidgetProvider',
+    'TraumNotesWidgetProvider',
+    'TraumMapWidgetProvider',
+  ];
+
   /// Reine Aufbereitung der zu schreibenden Map (testbar).
   static Map<String, String> buildWriteMap(WidgetSnapshot snap,
       {DateTime? now}) {
@@ -24,9 +40,10 @@ class WidgetDataService {
     for (final e in map.entries) {
       await HomeWidget.saveWidgetData<String>(e.key, e.value);
     }
-    await HomeWidget.updateWidget(
-      androidName: 'TraumOverviewWidgetProvider',
-      iOSName: 'TraumOverviewWidget',
-    );
+    for (final name in androidWidgetNames) {
+      await HomeWidget.updateWidget(androidName: name);
+    }
+    // iOS: ein Reload aktualisiert alle Timelines des Bundles.
+    await HomeWidget.updateWidget(iOSName: 'TraumOverviewWidget');
   }
 }

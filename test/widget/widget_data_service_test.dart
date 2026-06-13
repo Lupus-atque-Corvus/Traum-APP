@@ -12,4 +12,16 @@ void main() {
     expect(map[WidgetKeys.steps], '0');
     expect(map[WidgetKeys.updatedAt], '2026-06-12T10:00:00.000Z');
   });
+
+  test('androidWidgetNames enthält alle 12 Tab-Provider', () {
+    expect(WidgetDataService.androidWidgetNames, containsAll(<String>[
+      'TraumOverviewWidgetProvider', 'TraumHealthWidgetProvider',
+      'TraumNutritionWidgetProvider', 'TraumTrainingWidgetProvider',
+      'TraumPlanningWidgetProvider', 'TraumBudgetWidgetProvider',
+      'TraumDiaryWidgetProvider', 'TraumAbstinenceWidgetProvider',
+      'TraumSubstancesWidgetProvider', 'TraumPeriodWidgetProvider',
+      'TraumNotesWidgetProvider', 'TraumMapWidgetProvider',
+    ]));
+    expect(WidgetDataService.androidWidgetNames.length, 12);
+  });
 }
