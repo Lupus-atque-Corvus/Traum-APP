@@ -23,4 +23,32 @@ void main() {
     expect(snap.nextTodo, '');
     expect(snap, isA<WidgetSnapshot>());
   });
+
+  test('mapToSnapshot übernimmt Phase-2-Felder (benannte Defaults)', () {
+    final snap = WidgetDataCollector.mapToSnapshot(
+      stepsToday: 0, stepsGoal: 10000, sleepHours: 0, heartRate: 0, mood: 0,
+      kcalToday: 0, kcalGoal: 2200, waterMlToday: 0, waterGoalMl: 2500,
+      proteinToday: 0, proteinGoal: 150, nextTodoTitle: null,
+      healthScore: 82, weightKg: 74.5, activeMinutes: 35,
+      carbs: 180, fat: 60, lastMeal: 'Haferflocken',
+      nextWorkout: 'Push A', weeklyVolume: 12000, trainingStreak: 4,
+      openTodos: 3, nextAppointment: 'Zahnarzt 14:00',
+      habitsDone: 2, habitsTotal: 5, medsDone: 1, medsTotal: 2,
+      balanceMonth: 420.5, income: 2000, expense: 1579.5,
+      budgetSpent: 800, budgetLimit: 1000, topCategory: 'Lebensmittel',
+      writeStreak: 6, lastEntry: 'Guter Tag', entriesThisMonth: 12,
+      abstinenceTitle: 'Alkohol', abstinenceDuration: '14 Tage', moneySaved: 120,
+      lastIntake: 'Magnesium', takenToday: 2,
+      cycleDay: 12, periodPhase: 'Follikelphase', nextPeriodDays: 16,
+      notesCount: 23, lastNote: 'Einkaufsliste',
+      placesCount: 8, lastPhoto: 'Hauptbahnhof',
+    );
+    expect(snap.healthScore, 82);
+    expect(snap.weightKg, 74.5);
+    expect(snap.nextWorkout, 'Push A');
+    expect(snap.balanceMonth, 420.5);
+    expect(snap.topCategory, 'Lebensmittel');
+    expect(snap.cycleDay, 12);
+    expect(snap.placesCount, 8);
+  });
 }
