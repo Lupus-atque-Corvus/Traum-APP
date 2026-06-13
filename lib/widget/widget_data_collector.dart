@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/providers/database_provider.dart';
@@ -87,6 +89,43 @@ class WidgetDataCollector {
     // ── map ───────────────────────────────────────────────────────────────────
     int placesCount = 0,
     String lastPhoto = '',
+    // ── Phase 3 — map ─────────────────────────────────────────────────────────
+    int mapPreview = 0,
+    // ── Phase 3 — general ─────────────────────────────────────────────────────
+    String clockDate = '',
+    String weatherTemp = '',
+    String weatherForecast = '',
+    int appFavorites = 0,
+    String quickActions = '',
+    // ── Phase 3 — health ──────────────────────────────────────────────────────
+    int caloriesBurned = 0,
+    int stepsWeekAvg = 0,
+    // ── Phase 3 — nutrition ───────────────────────────────────────────────────
+    int supplementsToday = 0,
+    int mealsToday = 0,
+    // ── Phase 3 — training ────────────────────────────────────────────────────
+    int muscleHeatmap = 0,
+    String lastWorkout = '',
+    int weeklyWorkouts = 0,
+    int personalRecords = 0,
+    String restTimer = '',
+    // ── Phase 3 — planning ────────────────────────────────────────────────────
+    int overdueTodos = 0,
+    int bestHabitStreak = 0,
+    // ── Phase 3 — budget ──────────────────────────────────────────────────────
+    String accountsOverview = '',
+    String recentTransaction = '',
+    String savingsGoal = '',
+    int recurringDue = 0,
+    String monthTrend = '',
+    // ── Phase 3 — diary ───────────────────────────────────────────────────────
+    int yearHeatmap = 0,
+    int moodCalendar = 0,
+    // ── Phase 3 — abstinence ──────────────────────────────────────────────────
+    int longestStreak = 0,
+    int allCounters = 0,
+    // ── Phase 3 — notes ───────────────────────────────────────────────────────
+    String pinnedNote = '',
   }) {
     return WidgetSnapshot(
       // Phase 1
@@ -149,6 +188,43 @@ class WidgetDataCollector {
       // map
       placesCount: placesCount,
       lastPhoto: lastPhoto,
+      // Phase 3 — map
+      mapPreview: mapPreview,
+      // Phase 3 — general
+      clockDate: clockDate,
+      weatherTemp: weatherTemp,
+      weatherForecast: weatherForecast,
+      appFavorites: appFavorites,
+      quickActions: quickActions,
+      // Phase 3 — health
+      caloriesBurned: caloriesBurned,
+      stepsWeekAvg: stepsWeekAvg,
+      // Phase 3 — nutrition
+      supplementsToday: supplementsToday,
+      mealsToday: mealsToday,
+      // Phase 3 — training
+      muscleHeatmap: muscleHeatmap,
+      lastWorkout: lastWorkout,
+      weeklyWorkouts: weeklyWorkouts,
+      personalRecords: personalRecords,
+      restTimer: restTimer,
+      // Phase 3 — planning
+      overdueTodos: overdueTodos,
+      bestHabitStreak: bestHabitStreak,
+      // Phase 3 — budget
+      accountsOverview: accountsOverview,
+      recentTransaction: recentTransaction,
+      savingsGoal: savingsGoal,
+      recurringDue: recurringDue,
+      monthTrend: monthTrend,
+      // Phase 3 — diary
+      yearHeatmap: yearHeatmap,
+      moodCalendar: moodCalendar,
+      // Phase 3 — abstinence
+      longestStreak: longestStreak,
+      allCounters: allCounters,
+      // Phase 3 — notes
+      pinnedNote: pinnedNote,
     );
   }
 
@@ -569,6 +645,250 @@ class WidgetDataCollector {
       }
     } catch (_) {}
 
+    // ── Phase 3 new fields ───────────────────────────────────────────────────
+
+    // ── mapPreview (REAL: reuse placesCount — mapPreview shows marker count as surrogate) ──
+    final int mapPreview = placesCount;
+
+    // ── clockDate (FALLBACK: keine Quelle; live clock renders in widget, not snapshot) ────
+    const String clockDate = ''; // FALLBACK: keine Quelle
+
+    // ── weatherTemp (REAL: SharedPreferences weather_cache → temperature_2m) ──
+    // Same source as _WeatherContent in general_widgets.dart
+    String weatherTemp = '';
+    try {
+      final prefs = read(sharedPreferencesProvider);
+      final cache = prefs.getString('weather_cache');
+      if (cache != null && cache.isNotEmpty) {
+        final data = jsonDecode(cache) as Map<String, dynamic>?;
+        if (data != null) {
+          final current = data['current'] as Map<String, dynamic>?;
+          final temp = current?['temperature_2m'] as num?;
+          if (temp != null) weatherTemp = '${temp.toStringAsFixed(0)}°C';
+        }
+      }
+    } catch (_) {}
+
+    // ── weatherForecast (REAL: SharedPreferences weather_cache → condition label) ──
+    // Same source as _WeatherContent in general_widgets.dart
+    String weatherForecast = '';
+    try {
+      final prefs = read(sharedPreferencesProvider);
+      final cache = prefs.getString('weather_cache');
+      if (cache != null && cache.isNotEmpty) {
+        final data = jsonDecode(cache) as Map<String, dynamic>?;
+        if (data != null) {
+          final current = data['current'] as Map<String, dynamic>?;
+          final code = (current?['weathercode'] as num?)?.toInt() ?? 0;
+          String cond(int c) {
+            if (c == 0) return 'Klar';
+            if (c <= 3) return 'Bewölkt';
+            if (c <= 48) return 'Neblig';
+            if (c <= 67) return 'Regen';
+            if (c <= 77) return 'Schnee';
+            if (c <= 82) return 'Schauer';
+            return 'Gewitter';
+          }
+          weatherForecast = cond(code);
+        }
+      }
+    } catch (_) {}
+
+    // ── appFavorites (REAL: appLauncherFavoritesProvider → count) ────────────
+    // Same source as _AppFavoritesContent in general_widgets.dart
+    int appFavorites = 0;
+    try {
+      final favs = read(appLauncherFavoritesProvider);
+      appFavorites = favs.length;
+    } catch (_) {}
+
+    // ── quickActions (FALLBACK: keine Quelle; statische Liste, kein Snapshot-Wert) ──
+    const String quickActions = ''; // FALLBACK: keine Quelle
+
+    // ── caloriesBurned (FALLBACK: keine Quelle; kein Burn-Tracking implementiert) ──
+    const int caloriesBurned = 0; // FALLBACK: keine Quelle
+
+    // ── stepsWeekAvg (FALLBACK: keine Quelle; kein Step-Log für Wochenschnitt) ─
+    const int stepsWeekAvg = 0; // FALLBACK: keine Quelle
+
+    // ── supplementsToday (REAL: todaysTotalsProvider — count of supplement entries today) ──
+    // supplementsToday: FALLBACK — no distinct supplement table separate from meal logs
+    const int supplementsToday = 0; // FALLBACK: keine Quelle
+
+    // ── mealsToday (REAL: todaysTotalsProvider — could count meal entries, but no per-meal count exposed) ──
+    // mealsToday: FALLBACK — no meal-count field on MacroSummary
+    const int mealsToday = 0; // FALLBACK: keine Quelle
+
+    // ── muscleHeatmap (FALLBACK: keine Quelle; Heatmap ist visuelle Darstellung) ──
+    const int muscleHeatmap = 0; // FALLBACK: keine Quelle
+
+    // ── lastWorkout (REAL: _recentSessionsProvider → first session name) ──────
+    // Same source as _LastWorkoutContent in training_widgets.dart
+    String lastWorkout = '';
+    try {
+      final cutoff = DateTime.now().subtract(const Duration(days: 365));
+      final sessions =
+          await read(trainingDaoProvider).getSessionsAfter(cutoff);
+      if (sessions.isNotEmpty) {
+        final sorted = [...sessions]
+          ..sort((a, b) => b.startedAt.compareTo(a.startedAt));
+        final notes = sorted.first.notes?.trim() ?? '';
+        lastWorkout = notes.isEmpty
+            ? sorted.first.startedAt.toIso8601String().substring(0, 10)
+            : notes;
+      }
+    } catch (_) {}
+
+    // ── weeklyWorkouts (REAL: recentTrainingSetsProvider(7) → distinct session count) ──
+    // Same source as _WeeklyWorkoutsContent in training_widgets.dart
+    int weeklyWorkouts = 0;
+    try {
+      final sets = await read(recentTrainingSetsProvider(7).future);
+      final sessionIds = sets.map((s) => s.sessionId).toSet();
+      weeklyWorkouts = sessionIds.length;
+    } catch (_) {}
+
+    // ── personalRecords (FALLBACK: keine PR-Tabelle / kein PR-Provider direkt lesbar) ──
+    const int personalRecords = 0; // FALLBACK: keine Quelle
+
+    // ── restTimer (FALLBACK: keine Quelle; Rest-Timer ist transient, nicht gespeichert) ──
+    const String restTimer = ''; // FALLBACK: keine Quelle
+
+    // ── overdueTodos (REAL: planningDaoProvider.getAllTodos() → overdue count) ──
+    // Same logic as _OverdueTodosContent in planning_widgets.dart (allTodos already read)
+    final int overdueTodos = () {
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      return allTodos
+          .where((t) => !t.done &&
+              t.dueDate != null &&
+              t.dueDate!.isBefore(today))
+          .length;
+    }();
+
+    // ── bestHabitStreak (REAL: planningDaoProvider.getRecentHabitLogs() → max streak) ──
+    // Same logic as _BestHabitStreakContent in planning_widgets.dart
+    int bestHabitStreak = 0;
+    try {
+      final logs = await read(planningDaoProvider).getRecentHabitLogs();
+      final habits = await read(planningDaoProvider).getAllHabits();
+      for (final habit in habits) {
+        final habitLogs = logs
+            .where((l) => l.habitId == habit.id && l.done)
+            .map((l) => DateTime(l.logDate.year, l.logDate.month, l.logDate.day))
+            .toSet();
+        int streak = 0;
+        var cursor = DateTime(
+            DateTime.now().year, DateTime.now().month, DateTime.now().day);
+        while (habitLogs.contains(cursor)) {
+          streak++;
+          cursor = cursor.subtract(const Duration(days: 1));
+        }
+        if (streak > bestHabitStreak) bestHabitStreak = streak;
+      }
+    } catch (_) {}
+
+    // ── accountsOverview (REAL: accountsDaoProvider.getAll() → total balance) ─
+    // Same source as _AccountsOverviewContent in budget_widgets.dart
+    String accountsOverview = '';
+    try {
+      final accounts = await read(accountsDaoProvider).getAll();
+      if (accounts.isNotEmpty) {
+        final total = accounts.fold(0.0, (s, a) => s + a.balance);
+        accountsOverview = '${total.toStringAsFixed(2)} €';
+      }
+    } catch (_) {}
+
+    // ── recentTransaction (REAL: budgetDaoProvider → most recent transaction label) ──
+    // Same source as _RecentTransactionsContent in budget_widgets.dart
+    String recentTransaction = '';
+    try {
+      final now = DateTime.now();
+      final txs = await read(budgetDaoProvider)
+          .getTransactionsForMonth(now.year, now.month);
+      if (txs.isNotEmpty) {
+        final sorted = [...txs]
+          ..sort((a, b) => b.date.compareTo(a.date));
+        final txNote = sorted.first.note?.trim() ?? '';
+        recentTransaction =
+            txNote.isEmpty ? sorted.first.description : txNote;
+      }
+    } catch (_) {}
+
+    // ── savingsGoal (REAL: budgetDaoProvider.getAllSavingsGoals() → first active) ──
+    // Same source as _SavingsGoalContent in budget_widgets.dart
+    String savingsGoal = '';
+    try {
+      final goals = await read(budgetDaoProvider).getAllSavingsGoals();
+      if (goals.isNotEmpty) savingsGoal = goals.first.name;
+    } catch (_) {}
+
+    // ── recurringDue (REAL: budgetDaoProvider.getRecurringTransactions() → count) ──
+    // Same source as _RecurringDueContent in budget_widgets.dart
+    int recurringDue = 0;
+    try {
+      final recurring =
+          await read(budgetDaoProvider).getRecurringTransactions();
+      recurringDue = recurring.length;
+    } catch (_) {}
+
+    // ── monthTrend (FALLBACK: keine Quelle; Trend-Chart braucht Mehrmonate-Daten) ──
+    const String monthTrend = ''; // FALLBACK: keine Quelle
+
+    // ── yearHeatmap (REAL: diaryDaoProvider → entries this year count as surrogate) ──
+    // Same concept as _YearHeatmapContent in diary_widgets.dart
+    int yearHeatmap = 0;
+    try {
+      final now = DateTime.now();
+      final entries = await read(
+          diaryEntriesForMonthProvider((now.year, now.month)).future);
+      yearHeatmap = entries.length; // month count as surrogate for heatmap
+    } catch (_) {}
+
+    // ── moodCalendar (REAL: healthDaoProvider.getMoodLogsAfter(monthStart) → avg mood) ──
+    // Same source as _MoodCalendarContent in diary_widgets.dart
+    int moodCalendar = 0;
+    try {
+      final now = DateTime.now();
+      final monthStart = DateTime(now.year, now.month);
+      final logs = await read(healthDaoProvider).getMoodLogsAfter(monthStart);
+      if (logs.isNotEmpty) {
+        final avg = logs.fold(0, (s, l) => s + l.moodScore) / logs.length;
+        moodCalendar = avg.round();
+      }
+    } catch (_) {}
+
+    // ── longestStreak (REAL: abstinenceDaoProvider.getAllTrackers() → max historical) ──
+    // Same concept as _LongestStreakContent in misc_widgets.dart
+    int longestStreak = 0;
+    try {
+      final trackers = await read(abstinenceDaoProvider).getAllTrackers();
+      for (final t in trackers) {
+        final days = _daysSince(t.startDate);
+        if (days > longestStreak) longestStreak = days;
+      }
+    } catch (_) {}
+
+    // ── allCounters (REAL: abstinenceDaoProvider.getAllTrackers() → active count) ──
+    // Same source as _AllCountersContent in misc_widgets.dart
+    int allCounters = 0;
+    try {
+      final trackers = await read(abstinenceDaoProvider).getAllTrackers();
+      allCounters = trackers.where((t) => t.isActive).length;
+    } catch (_) {}
+
+    // ── pinnedNote (REAL: notesDaoProvider.getPinnedNotes() → first title) ────
+    // Same source as _PinnedNoteContent in misc_widgets.dart
+    String pinnedNote = '';
+    try {
+      final pins = await read(notesDaoProvider).getPinnedNotes();
+      if (pins.isNotEmpty) {
+        pinnedNote = pins.first.title.trim().isEmpty
+            ? pins.first.content.trim()
+            : pins.first.title.trim();
+      }
+    } catch (_) {}
+
     return mapToSnapshot(
       stepsToday: stepsToday,
       stepsGoal: stepsGoal,
@@ -618,6 +938,34 @@ class WidgetDataCollector {
       lastNote: lastNote,
       placesCount: placesCount,
       lastPhoto: lastPhoto,
+      // Phase 3
+      mapPreview: mapPreview,
+      clockDate: clockDate,
+      weatherTemp: weatherTemp,
+      weatherForecast: weatherForecast,
+      appFavorites: appFavorites,
+      quickActions: quickActions,
+      caloriesBurned: caloriesBurned,
+      stepsWeekAvg: stepsWeekAvg,
+      supplementsToday: supplementsToday,
+      mealsToday: mealsToday,
+      muscleHeatmap: muscleHeatmap,
+      lastWorkout: lastWorkout,
+      weeklyWorkouts: weeklyWorkouts,
+      personalRecords: personalRecords,
+      restTimer: restTimer,
+      overdueTodos: overdueTodos,
+      bestHabitStreak: bestHabitStreak,
+      accountsOverview: accountsOverview,
+      recentTransaction: recentTransaction,
+      savingsGoal: savingsGoal,
+      recurringDue: recurringDue,
+      monthTrend: monthTrend,
+      yearHeatmap: yearHeatmap,
+      moodCalendar: moodCalendar,
+      longestStreak: longestStreak,
+      allCounters: allCounters,
+      pinnedNote: pinnedNote,
     );
   }
 
