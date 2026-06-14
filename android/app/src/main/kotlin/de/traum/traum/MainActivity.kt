@@ -10,8 +10,11 @@ import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterFragmentActivity() {
 
+    private var pendingWidgetRoute: String? = null
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        pendingWidgetRoute = intent?.getStringExtra("widget_route")
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
@@ -163,5 +166,23 @@ class MainActivity : FlutterFragmentActivity() {
                 else -> result.notImplemented()
             }
         }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            "de.traum/widget"
+        ).setMethodCallHandler { call, result ->
+            if (call.method == "getInitialRoute") {
+                result.success(pendingWidgetRoute)
+                pendingWidgetRoute = null
+            } else {
+                result.notImplemented()
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        // Update the pending route when the activity is reused (singleTop).
+        intent.getStringExtra("widget_route")?.let { pendingWidgetRoute = it }
     }
 }
