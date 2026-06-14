@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,7 +8,25 @@ import 'core/navigation/routes.dart';
 import 'core/providers/preferences_provider.dart';
 import 'core/theme/traum_theme.dart';
 import 'l10n/app_localizations.dart';
+import 'widget/widget_catalog.dart';
 import 'widget/widget_update_scheduler.dart';
+
+/// Returns true when [route] matches one of the known widget deep-link routes.
+bool isKnownWidgetRoute(String? route) =>
+    route != null && widgetCatalog.any((e) => e.route == route);
+
+const MethodChannel _widgetChannel = MethodChannel('de.traum/widget');
+
+/// Fetches the initial route triggered by a widget tap (or null).
+/// Validates against [widgetCatalog] to reject arbitrary routes.
+Future<String?> initialWidgetRoute() async {
+  try {
+    final r = await _widgetChannel.invokeMethod<String>('getInitialRoute');
+    return isKnownWidgetRoute(r) ? r : null;
+  } catch (_) {
+    return null;
+  }
+}
 
 class TraumApp extends ConsumerStatefulWidget {
   const TraumApp({super.key});
@@ -32,12 +51,21 @@ class _TraumAppState extends ConsumerState<TraumApp> {
     );
     // Always lock on cold start if lock is configured.
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkStartupLock());
+    // Navigate to the route that triggered the widget tap (cold start).
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkWidgetDeepLink());
   }
 
   @override
   void dispose() {
     _lifecycleListener.dispose();
     super.dispose();
+  }
+
+  Future<void> _checkWidgetDeepLink() async {
+    final route = await initialWidgetRoute();
+    if (route != null && mounted) {
+      ref.read(routerProvider).go(route);
+    }
   }
 
   void _checkStartupLock() {
@@ -68,6 +96,9 @@ class _TraumAppState extends ConsumerState<TraumApp> {
   void _onResume() {
     // Fire-and-forget: refresh homescreen widget data on every resume.
     refreshWidgetsFromRead(ref.read);
+
+    // Navigate if resumed from a widget tap (singleTop re-delivery).
+    _checkWidgetDeepLink();
 
     if (!_pausedForLock) return;
     _pausedForLock = false;
