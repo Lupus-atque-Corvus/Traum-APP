@@ -127,6 +127,89 @@ struct OverviewWidgetView: View {
     }
 }
 
+// MARK: - Generic template views (stat / progress / dualStat / list)
+
+struct StatWidgetView: View {
+    let entry: TraumEntry; let title: String; let accentHex: String
+    let valueKey: String; let label: String; let suffix: String
+    var body: some View {
+        ZStack { traumBackground.ignoresSafeArea()
+            VStack(spacing: 4) {
+                Text(title).font(.system(size: 10, weight: .bold))
+                    .foregroundColor(Color(hex: accentHex)).textCase(.uppercase)
+                Text(entry.v(valueKey) + suffix).font(.system(size: 28, weight: .bold)).foregroundColor(traumText)
+                Text(label).font(.caption2).foregroundColor(traumMuted)
+            }.padding(12)
+        }
+    }
+}
+
+struct ProgressWidgetView: View {
+    let entry: TraumEntry; let title: String; let accentHex: String
+    let valueKey: String; let goalKey: String; let label: String
+    var ratio: Double {
+        let v = Double(entry.v(valueKey)) ?? 0, g = Double(entry.v(goalKey)) ?? 0
+        return g > 0 ? min(v / g, 1.0) : 0
+    }
+    var body: some View {
+        ZStack { traumBackground.ignoresSafeArea()
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title).font(.system(size: 10, weight: .bold))
+                    .foregroundColor(Color(hex: accentHex)).textCase(.uppercase)
+                Text(entry.v(valueKey)).font(.system(size: 22, weight: .bold)).foregroundColor(traumText)
+                Text(label).font(.caption2).foregroundColor(traumMuted)
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 4).fill(Color(hex: "333355")).frame(height: 8)
+                        RoundedRectangle(cornerRadius: 4).fill(Color(hex: accentHex))
+                            .frame(width: geo.size.width * ratio, height: 8)
+                    }
+                }.frame(height: 8)
+            }.padding(12)
+        }
+    }
+}
+
+struct DualStatWidgetView: View {
+    let entry: TraumEntry; let title: String; let accentHex: String
+    let aKey: String; let aLabel: String; let bKey: String; let bLabel: String
+    var body: some View {
+        ZStack { traumBackground.ignoresSafeArea()
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title).font(.system(size: 10, weight: .bold))
+                    .foregroundColor(Color(hex: accentHex)).textCase(.uppercase)
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(entry.v(aKey)).font(.system(size: 18, weight: .bold)).foregroundColor(traumText)
+                        Text(aLabel).font(.caption2).foregroundColor(traumMuted)
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing) {
+                        Text(entry.v(bKey)).font(.system(size: 18, weight: .bold)).foregroundColor(traumText)
+                        Text(bLabel).font(.caption2).foregroundColor(traumMuted)
+                    }
+                }.padding(.top, 6)
+            }.padding(12)
+        }
+    }
+}
+
+struct ListWidgetView: View {
+    let entry: TraumEntry; let title: String; let accentHex: String; let rowKeys: [String]
+    var body: some View {
+        ZStack { traumBackground.ignoresSafeArea()
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title).font(.system(size: 10, weight: .bold))
+                    .foregroundColor(Color(hex: accentHex)).textCase(.uppercase)
+                ForEach(Array(rowKeys.prefix(3).enumerated()), id: \.offset) { _, k in
+                    Text(entry.v(k)).font(.caption).foregroundColor(traumText).lineLimit(1)
+                }
+                Spacer(minLength: 0)
+            }.padding(12)
+        }
+    }
+}
+
 // MARK: - 1. Overview Widget
 
 struct TraumOverviewWidget: Widget {
