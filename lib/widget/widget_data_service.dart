@@ -43,6 +43,7 @@ class WidgetDataService {
     for (final name in androidWidgetNames) {
       await HomeWidget.updateWidget(androidName: name);
     }
+    await HomeWidget.updateWidget(androidName: 'TraumFunctionWidgetProvider');
     // iOS: ein Reload aktualisiert alle Timelines des Bundles.
     await HomeWidget.updateWidget(iOSName: 'TraumOverviewWidget');
   }
