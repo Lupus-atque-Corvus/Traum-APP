@@ -26,6 +26,25 @@ const _routeToGroup = <String, String>{
 
 String _groupLabel(String route) => _routeToGroup[route] ?? '';
 
+// ── Route → group-Slug (maschinenlesbar, für Asset-Mapping) ──────────────────
+
+const _routeToSlug = <String, String>{
+  '/home': 'general',
+  '/health': 'health',
+  '/nutrition': 'nutrition',
+  '/training': 'training',
+  '/planning': 'planning',
+  '/budget': 'budget',
+  '/diary': 'diary',
+  '/abstinence': 'abstinence',
+  '/substances': 'substances',
+  '/period': 'period',
+  '/notes': 'notes',
+  '/graffitimap': 'map',
+};
+
+String _groupSlug(String route) => _routeToSlug[route] ?? 'general';
+
 String _esc(String s) => s.replaceAll(r'\', r'\\').replaceAll('"', r'\"');
 
 // ── Kotlin generation ────────────────────────────────────────────────────────
@@ -44,7 +63,8 @@ String _kotlinSlot(WidgetSlot slot) {
 String _kotlinEntry(WidgetCatalogEntry e) {
   final key = _esc(e.key);
   final title = _esc(e.title);
-  final group = _esc(_groupLabel(e.route));
+  final group = _esc(_groupSlug(e.route));
+  final groupLabel = _esc(_groupLabel(e.route));
   final accent = _esc(e.accentHex);
   final template = e.template.name;
   final route = _esc(e.route);
@@ -54,7 +74,8 @@ String _kotlinEntry(WidgetCatalogEntry e) {
   return '''        WidgetCatalogDef(
             key = "$key",
             title = "$title",
-            groupLabel = "$group",
+            group = "$group",
+            groupLabel = "$groupLabel",
             accentHex = "$accent",
             template = "$template",
             route = "$route",
@@ -74,6 +95,7 @@ data class WidgetSlotDef(val label: String, val valueKey: String, val goalKey: S
 data class WidgetCatalogDef(
     val key: String,
     val title: String,
+    val group: String,
     val groupLabel: String,
     val accentHex: String,
     val template: String,
@@ -109,7 +131,8 @@ String _swiftSlot(WidgetSlot slot) {
 String _swiftEntry(WidgetCatalogEntry e) {
   final key = _esc(e.key);
   final title = _esc(e.title);
-  final group = _esc(_groupLabel(e.route));
+  final group = _esc(_groupSlug(e.route));
+  final groupLabel = _esc(_groupLabel(e.route));
   final accent = _esc(e.accentHex);
   final template = e.template.name;
   final route = _esc(e.route);
@@ -119,7 +142,8 @@ String _swiftEntry(WidgetCatalogEntry e) {
   return '''        WidgetCatalogDef(
             key: "$key",
             title: "$title",
-            groupLabel: "$group",
+            group: "$group",
+            groupLabel: "$groupLabel",
             accentHex: "$accent",
             template: "$template",
             route: "$route",
@@ -137,6 +161,7 @@ String generateSwift() {
 struct WidgetCatalogDef {
     let key: String
     let title: String
+    let group: String
     let groupLabel: String
     let accentHex: String
     let template: String

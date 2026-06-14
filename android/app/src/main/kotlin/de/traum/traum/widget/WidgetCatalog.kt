@@ -4,6 +4,7 @@ data class WidgetSlotDef(val label: String, val valueKey: String, val goalKey: S
 data class WidgetCatalogDef(
     val key: String,
     val title: String,
+    val group: String,
     val groupLabel: String,
     val accentHex: String,
     val template: String,
@@ -16,6 +17,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "overview",
             title = "Übersicht",
+            group = "general",
             groupLabel = "Allgemein",
             accentHex = "#FF6B3D",
             template = "overview",
@@ -30,6 +32,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "health",
             title = "Gesundheit",
+            group = "health",
             groupLabel = "Gesundheit",
             accentHex = "#F43F5E",
             template = "overview",
@@ -44,6 +47,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "nutrition",
             title = "Ernährung",
+            group = "nutrition",
             groupLabel = "Ernährung",
             accentHex = "#3DD68C",
             template = "overview",
@@ -58,6 +62,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "training",
             title = "Training",
+            group = "training",
             groupLabel = "Training",
             accentHex = "#5B6CF9",
             template = "overview",
@@ -71,6 +76,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "planning",
             title = "Planung",
+            group = "planning",
             groupLabel = "Planung",
             accentHex = "#F5A623",
             template = "overview",
@@ -85,6 +91,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "budget",
             title = "Budget",
+            group = "budget",
             groupLabel = "Budget",
             accentHex = "#00D4D4",
             template = "overview",
@@ -99,6 +106,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "diary",
             title = "Tagebuch",
+            group = "diary",
             groupLabel = "Tagebuch",
             accentHex = "#9B8EC4",
             template = "overview",
@@ -112,6 +120,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "abstinence",
             title = "Abstinenz",
+            group = "abstinence",
             groupLabel = "Abstinenz",
             accentHex = "#FFAA55",
             template = "overview",
@@ -125,6 +134,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "substances",
             title = "Mittel",
+            group = "substances",
             groupLabel = "Mittel",
             accentHex = "#0099BB",
             template = "overview",
@@ -137,6 +147,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "period",
             title = "Zyklus",
+            group = "period",
             groupLabel = "Zyklus",
             accentHex = "#FF8FAB",
             template = "overview",
@@ -150,6 +161,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "notes",
             title = "Notizen",
+            group = "notes",
             groupLabel = "Notizen",
             accentHex = "#9B8EC4",
             template = "overview",
@@ -162,6 +174,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "map",
             title = "Karte",
+            group = "map",
             groupLabel = "Karte",
             accentHex = "#3DD68C",
             template = "overview",
@@ -176,6 +189,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "clockDate",
             title = "Uhr",
+            group = "general",
             groupLabel = "Allgemein",
             accentHex = "#FF6B3D",
             template = "stat",
@@ -187,6 +201,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "weatherNow",
             title = "Wetter",
+            group = "general",
             groupLabel = "Allgemein",
             accentHex = "#FF6B3D",
             template = "stat",
@@ -198,6 +213,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "weatherForecast",
             title = "Wetter",
+            group = "general",
             groupLabel = "Allgemein",
             accentHex = "#FF6B3D",
             template = "stat",
@@ -209,6 +225,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "appFavorites",
             title = "Apps",
+            group = "general",
             groupLabel = "Allgemein",
             accentHex = "#FF6B3D",
             template = "list",
@@ -220,6 +237,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "quickActions",
             title = "Schnellzugriff",
+            group = "general",
             groupLabel = "Allgemein",
             accentHex = "#FF6B3D",
             template = "list",
@@ -231,6 +249,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "dailyScore",
             title = "Tagesübersicht",
+            group = "general",
             groupLabel = "Allgemein",
             accentHex = "#FF6B3D",
             template = "stat",
@@ -242,6 +261,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "miniCalendar",
             title = "Kalender",
+            group = "general",
             groupLabel = "Allgemein",
             accentHex = "#FF6B3D",
             template = "list",
@@ -253,6 +273,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "steps",
             title = "Schritte",
+            group = "health",
             groupLabel = "Gesundheit",
             accentHex = "#F43F5E",
             template = "progress",
@@ -264,6 +285,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "sleep",
             title = "Schlaf",
+            group = "health",
             groupLabel = "Gesundheit",
             accentHex = "#F43F5E",
             template = "stat",
@@ -275,6 +297,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "heartRate",
             title = "Herzfrequenz",
+            group = "health",
             groupLabel = "Gesundheit",
             accentHex = "#F43F5E",
             template = "stat",
@@ -286,6 +309,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "moodToday",
             title = "Stimmung",
+            group = "health",
             groupLabel = "Gesundheit",
             accentHex = "#F43F5E",
             template = "stat",
@@ -297,6 +321,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "weightTrend",
             title = "Gewicht",
+            group = "health",
             groupLabel = "Gesundheit",
             accentHex = "#F43F5E",
             template = "stat",
@@ -308,6 +333,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "healthScore",
             title = "Score",
+            group = "health",
             groupLabel = "Gesundheit",
             accentHex = "#F43F5E",
             template = "stat",
@@ -319,6 +345,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "healthSnapshot",
             title = "Gesundheit",
+            group = "health",
             groupLabel = "Gesundheit",
             accentHex = "#F43F5E",
             template = "stat",
@@ -330,6 +357,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "activeMinutes",
             title = "Aktive Min.",
+            group = "health",
             groupLabel = "Gesundheit",
             accentHex = "#F43F5E",
             template = "stat",
@@ -341,6 +369,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "caloriesBurned",
             title = "Verbrannt",
+            group = "health",
             groupLabel = "Gesundheit",
             accentHex = "#F43F5E",
             template = "stat",
@@ -352,6 +381,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "stepsWeekChart",
             title = "Schritte-Woche",
+            group = "health",
             groupLabel = "Gesundheit",
             accentHex = "#F43F5E",
             template = "stat",
@@ -363,6 +393,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "weightChart",
             title = "Gewichtsverlauf",
+            group = "health",
             groupLabel = "Gesundheit",
             accentHex = "#F43F5E",
             template = "stat",
@@ -374,6 +405,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "caloriesRing",
             title = "Kalorien",
+            group = "nutrition",
             groupLabel = "Ernährung",
             accentHex = "#3DD68C",
             template = "progress",
@@ -385,6 +417,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "macros",
             title = "Makros",
+            group = "nutrition",
             groupLabel = "Ernährung",
             accentHex = "#3DD68C",
             template = "dualStat",
@@ -397,6 +430,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "water",
             title = "Wasser",
+            group = "nutrition",
             groupLabel = "Ernährung",
             accentHex = "#3DD68C",
             template = "progress",
@@ -408,6 +442,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "lastMeal",
             title = "Letzte Mahlzeit",
+            group = "nutrition",
             groupLabel = "Ernährung",
             accentHex = "#3DD68C",
             template = "stat",
@@ -419,6 +454,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "remainingCalories",
             title = "Rest-kcal",
+            group = "nutrition",
             groupLabel = "Ernährung",
             accentHex = "#3DD68C",
             template = "progress",
@@ -430,6 +466,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "supplementsToday",
             title = "Supplements",
+            group = "nutrition",
             groupLabel = "Ernährung",
             accentHex = "#3DD68C",
             template = "stat",
@@ -441,6 +478,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "mealsToday",
             title = "Mahlzeiten",
+            group = "nutrition",
             groupLabel = "Ernährung",
             accentHex = "#3DD68C",
             template = "stat",
@@ -452,6 +490,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "nextWorkout",
             title = "Nächstes Workout",
+            group = "training",
             groupLabel = "Training",
             accentHex = "#5B6CF9",
             template = "stat",
@@ -463,6 +502,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "weeklyVolume",
             title = "Wochen-Volumen",
+            group = "training",
             groupLabel = "Training",
             accentHex = "#5B6CF9",
             template = "stat",
@@ -474,6 +514,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "muscleHeatmap",
             title = "Muskeln",
+            group = "training",
             groupLabel = "Training",
             accentHex = "#5B6CF9",
             template = "stat",
@@ -485,6 +526,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "lastWorkout",
             title = "Letztes Workout",
+            group = "training",
             groupLabel = "Training",
             accentHex = "#5B6CF9",
             template = "stat",
@@ -496,6 +538,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "trainingStreak",
             title = "Trainings-Streak",
+            group = "training",
             groupLabel = "Training",
             accentHex = "#5B6CF9",
             template = "stat",
@@ -507,6 +550,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "weeklyWorkouts",
             title = "Wochen-Workouts",
+            group = "training",
             groupLabel = "Training",
             accentHex = "#5B6CF9",
             template = "stat",
@@ -518,6 +562,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "personalRecords",
             title = "Rekorde",
+            group = "training",
             groupLabel = "Training",
             accentHex = "#5B6CF9",
             template = "stat",
@@ -529,6 +574,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "restTimerQuick",
             title = "Rest-Timer",
+            group = "training",
             groupLabel = "Training",
             accentHex = "#5B6CF9",
             template = "stat",
@@ -540,6 +586,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "openTodos",
             title = "Offene Todos",
+            group = "planning",
             groupLabel = "Planung",
             accentHex = "#F5A623",
             template = "stat",
@@ -551,6 +598,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "todayAppointments",
             title = "Heute",
+            group = "planning",
             groupLabel = "Planung",
             accentHex = "#F5A623",
             template = "list",
@@ -562,6 +610,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "habitsToday",
             title = "Gewohnheiten",
+            group = "planning",
             groupLabel = "Planung",
             accentHex = "#F5A623",
             template = "progress",
@@ -573,6 +622,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "medicationsToday",
             title = "Medikamente",
+            group = "planning",
             groupLabel = "Planung",
             accentHex = "#F5A623",
             template = "progress",
@@ -584,6 +634,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "nextAppointmentCountdown",
             title = "Nächster Termin",
+            group = "planning",
             groupLabel = "Planung",
             accentHex = "#F5A623",
             template = "stat",
@@ -595,6 +646,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "overdueTodos",
             title = "Überfällig",
+            group = "planning",
             groupLabel = "Planung",
             accentHex = "#F5A623",
             template = "stat",
@@ -606,6 +658,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "bestHabitStreak",
             title = "Beste Serie",
+            group = "planning",
             groupLabel = "Planung",
             accentHex = "#F5A623",
             template = "stat",
@@ -617,6 +670,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "balanceMonth",
             title = "Saldo",
+            group = "budget",
             groupLabel = "Budget",
             accentHex = "#00D4D4",
             template = "stat",
@@ -628,6 +682,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "incomeExpense",
             title = "Ein/Aus",
+            group = "budget",
             groupLabel = "Budget",
             accentHex = "#00D4D4",
             template = "dualStat",
@@ -640,6 +695,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "budgetProgress",
             title = "Budget",
+            group = "budget",
             groupLabel = "Budget",
             accentHex = "#00D4D4",
             template = "progress",
@@ -651,6 +707,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "accountsOverview",
             title = "Konten",
+            group = "budget",
             groupLabel = "Budget",
             accentHex = "#00D4D4",
             template = "stat",
@@ -662,6 +719,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "topCategory",
             title = "Top-Ausgabe",
+            group = "budget",
             groupLabel = "Budget",
             accentHex = "#00D4D4",
             template = "stat",
@@ -673,6 +731,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "recentTransactions",
             title = "Letzte",
+            group = "budget",
             groupLabel = "Budget",
             accentHex = "#00D4D4",
             template = "stat",
@@ -684,6 +743,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "savingsGoal",
             title = "Sparziel",
+            group = "budget",
             groupLabel = "Budget",
             accentHex = "#00D4D4",
             template = "stat",
@@ -695,6 +755,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "recurringDue",
             title = "Wiederkehrend",
+            group = "budget",
             groupLabel = "Budget",
             accentHex = "#00D4D4",
             template = "stat",
@@ -706,6 +767,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "monthTrend",
             title = "Monats-Trend",
+            group = "budget",
             groupLabel = "Budget",
             accentHex = "#00D4D4",
             template = "stat",
@@ -717,6 +779,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "writeStreak",
             title = "Schreib-Streak",
+            group = "diary",
             groupLabel = "Tagebuch",
             accentHex = "#9B8EC4",
             template = "stat",
@@ -728,6 +791,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "lastEntry",
             title = "Letzter Eintrag",
+            group = "diary",
             groupLabel = "Tagebuch",
             accentHex = "#9B8EC4",
             template = "stat",
@@ -739,6 +803,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "yearHeatmap",
             title = "Jahres-Heatmap",
+            group = "diary",
             groupLabel = "Tagebuch",
             accentHex = "#9B8EC4",
             template = "stat",
@@ -750,6 +815,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "moodCalendar",
             title = "Stimmungs-Kalender",
+            group = "diary",
             groupLabel = "Tagebuch",
             accentHex = "#9B8EC4",
             template = "stat",
@@ -761,6 +827,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "entriesThisMonth",
             title = "Einträge/Monat",
+            group = "diary",
             groupLabel = "Tagebuch",
             accentHex = "#9B8EC4",
             template = "stat",
@@ -772,6 +839,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "currentStreak",
             title = "Aktueller Streak",
+            group = "abstinence",
             groupLabel = "Abstinenz",
             accentHex = "#FFAA55",
             template = "stat",
@@ -783,6 +851,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "longestStreak",
             title = "Längster Streak",
+            group = "abstinence",
             groupLabel = "Abstinenz",
             accentHex = "#FFAA55",
             template = "stat",
@@ -794,6 +863,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "moneySaved",
             title = "Gespart",
+            group = "abstinence",
             groupLabel = "Abstinenz",
             accentHex = "#FFAA55",
             template = "stat",
@@ -805,6 +875,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "allCounters",
             title = "Alle Counter",
+            group = "abstinence",
             groupLabel = "Abstinenz",
             accentHex = "#FFAA55",
             template = "stat",
@@ -816,6 +887,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "lastIntake",
             title = "Letzte Einnahme",
+            group = "substances",
             groupLabel = "Mittel",
             accentHex = "#0099BB",
             template = "stat",
@@ -827,6 +899,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "takenToday",
             title = "Heute",
+            group = "substances",
             groupLabel = "Mittel",
             accentHex = "#0099BB",
             template = "stat",
@@ -838,6 +911,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "cycleDay",
             title = "Zyklustag",
+            group = "period",
             groupLabel = "Zyklus",
             accentHex = "#FF8FAB",
             template = "stat",
@@ -849,6 +923,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "nextPeriod",
             title = "Nächste Periode",
+            group = "period",
             groupLabel = "Zyklus",
             accentHex = "#FF8FAB",
             template = "stat",
@@ -860,6 +935,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "notesCount",
             title = "Notizen",
+            group = "notes",
             groupLabel = "Notizen",
             accentHex = "#9B8EC4",
             template = "stat",
@@ -871,6 +947,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "lastNote",
             title = "Letzte Notiz",
+            group = "notes",
             groupLabel = "Notizen",
             accentHex = "#9B8EC4",
             template = "stat",
@@ -882,6 +959,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "pinnedNote",
             title = "Angepinnt",
+            group = "notes",
             groupLabel = "Notizen",
             accentHex = "#9B8EC4",
             template = "stat",
@@ -893,6 +971,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "placesCount",
             title = "Orte",
+            group = "map",
             groupLabel = "Karte",
             accentHex = "#3DD68C",
             template = "stat",
@@ -904,6 +983,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "lastPhoto",
             title = "Letztes Foto",
+            group = "map",
             groupLabel = "Karte",
             accentHex = "#3DD68C",
             template = "stat",
@@ -915,6 +995,7 @@ object WidgetCatalog {
         WidgetCatalogDef(
             key = "mapPreview",
             title = "Karte",
+            group = "map",
             groupLabel = "Karte",
             accentHex = "#3DD68C",
             template = "stat",
