@@ -46,21 +46,32 @@ abstract class BaseOverviewWidgetProvider : HomeWidgetProvider() {
             return shown + slot.suffix
         }
 
-        slots.getOrNull(0)?.let {
-            views.setTextViewText(R.id.tv_primary, read(it))
-            views.setTextViewText(R.id.tv_primary_label, it.label)
-        }
-        slots.getOrNull(1)?.let {
-            views.setTextViewText(R.id.tv_s1_value, read(it)); views.setTextViewText(R.id.tv_s1_label, it.label)
-        }
-        slots.getOrNull(2)?.let {
-            views.setTextViewText(R.id.tv_s2_value, read(it)); views.setTextViewText(R.id.tv_s2_label, it.label)
-        }
-        slots.getOrNull(3)?.let {
-            views.setTextViewText(R.id.tv_s3_value, read(it)); views.setTextViewText(R.id.tv_s3_label, it.label)
-        }
+        val slot0 = slots.getOrNull(0)
+        val primaryEmpty = slot0 == null ||
+            (widgetData.getString(slot0.valueKey, null)?.isBlank() != false)
 
-        applyBucket(appWidgetManager, id, views)
+        if (primaryEmpty) {
+            views.setTextViewText(R.id.tv_primary, "—")
+            views.setTextViewText(R.id.tv_primary_label, "Noch keine Daten")
+            views.setViewVisibility(R.id.row_secondary, View.GONE)
+            views.setViewVisibility(R.id.row_tertiary, View.GONE)
+            views.setViewVisibility(R.id.tv_footer, View.GONE)
+        } else {
+            slot0?.let {
+                views.setTextViewText(R.id.tv_primary, read(it))
+                views.setTextViewText(R.id.tv_primary_label, it.label)
+            }
+            slots.getOrNull(1)?.let {
+                views.setTextViewText(R.id.tv_s1_value, read(it)); views.setTextViewText(R.id.tv_s1_label, it.label)
+            }
+            slots.getOrNull(2)?.let {
+                views.setTextViewText(R.id.tv_s2_value, read(it)); views.setTextViewText(R.id.tv_s2_label, it.label)
+            }
+            slots.getOrNull(3)?.let {
+                views.setTextViewText(R.id.tv_s3_value, read(it)); views.setTextViewText(R.id.tv_s3_label, it.label)
+            }
+            applyBucket(appWidgetManager, id, views)
+        }
 
         val intent = Intent(context, MainActivity::class.java).apply {
             putExtra("widget_route", route)

@@ -7,4 +7,6 @@
     android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/widget_template_overview"
     android:resizeMode="horizontal|vertical"
+    android:maxResizeWidth="320dp"
+    android:maxResizeHeight="320dp"
     android:widgetCategory="home_screen" />

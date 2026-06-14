@@ -94,6 +94,10 @@ struct OverviewWidgetView: View {
     let slots: [OverviewSlot]
 
     private func text(_ s: OverviewSlot) -> String { entry.v(s.key) + s.suffix }
+    private var primaryEmpty: Bool {
+        guard let first = slots.first else { return true }
+        return entry.v(first.key) == "—"
+    }
 
     var body: some View {
         ZStack {
@@ -101,26 +105,31 @@ struct OverviewWidgetView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title).font(.system(size: 10, weight: .bold))
                     .foregroundColor(Color(hex: accentHex)).textCase(.uppercase)
-                if let p = slots.first {
-                    Text(text(p)).font(.system(size: 22, weight: .bold)).foregroundColor(traumText)
-                    Text(p.label).font(.caption2).foregroundColor(traumMuted)
-                }
-                if family != .systemSmall, slots.count > 1 {
-                    HStack {
-                        ForEach(Array(slots.dropFirst().prefix(2).enumerated()), id: \.offset) { _, s in
-                            VStack(alignment: .leading, spacing: 1) {
-                                Text(text(s)).font(.system(size: 13, weight: .bold)).foregroundColor(traumText)
-                                Text(s.label).font(.caption2).foregroundColor(traumMuted)
+                if primaryEmpty {
+                    Text("—").font(.system(size: 22, weight: .bold)).foregroundColor(traumText)
+                    Text("Noch keine Daten").font(.caption2).foregroundColor(traumMuted)
+                } else {
+                    if let p = slots.first {
+                        Text(text(p)).font(.system(size: 22, weight: .bold)).foregroundColor(traumText)
+                        Text(p.label).font(.caption2).foregroundColor(traumMuted)
+                    }
+                    if family != .systemSmall, slots.count > 1 {
+                        HStack {
+                            ForEach(Array(slots.dropFirst().prefix(2).enumerated()), id: \.offset) { _, s in
+                                VStack(alignment: .leading, spacing: 1) {
+                                    Text(text(s)).font(.system(size: 13, weight: .bold)).foregroundColor(traumText)
+                                    Text(s.label).font(.caption2).foregroundColor(traumMuted)
+                                }
+                                Spacer()
                             }
-                            Spacer()
-                        }
-                    }.padding(.top, 6)
-                }
-                if family == .systemLarge, slots.count > 3 {
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text(text(slots[3])).font(.system(size: 13, weight: .bold)).foregroundColor(traumText)
-                        Text(slots[3].label).font(.caption2).foregroundColor(traumMuted)
-                    }.padding(.top, 6)
+                        }.padding(.top, 6)
+                    }
+                    if family == .systemLarge, slots.count > 3 {
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(text(slots[3])).font(.system(size: 13, weight: .bold)).foregroundColor(traumText)
+                            Text(slots[3].label).font(.caption2).foregroundColor(traumMuted)
+                        }.padding(.top, 6)
+                    }
                 }
                 Spacer(minLength: 0)
             }.padding(12)
