@@ -25,6 +25,20 @@ class WidgetDataService {
     'TraumMapWidgetProvider',
   ];
 
+  /// Voll-qualifizierter Klassenname des konfigurierbaren Funktions-Widgets.
+  /// Liegt im `widget`-Unterpaket, daher NICHT über [androidName] (das würde
+  /// `de.traum.traum.<name>` auflösen), sondern über `qualifiedAndroidName`.
+  static const String androidFunctionWidget =
+      'de.traum.traum.widget.TraumFunctionWidgetProvider';
+
+  /// iOS-Widget-`kind`s je Tab (Klassenname ohne „Provider") + Funktions-Widget.
+  /// `HomeWidget.updateWidget(iOSName:)` lädt nur eine Timeline `ofKind:` neu —
+  /// es gibt kein Reload-All, daher muss jeder kind einzeln getriggert werden.
+  static List<String> get iosWidgetKinds => [
+        for (final n in androidWidgetNames) n.replaceAll('Provider', ''),
+        'TraumFunctionWidget',
+      ];
+
   /// Reine Aufbereitung der zu schreibenden Map (testbar).
   static Map<String, String> buildWriteMap(WidgetSnapshot snap,
       {DateTime? now}) {
@@ -40,11 +54,15 @@ class WidgetDataService {
     for (final e in map.entries) {
       await HomeWidget.saveWidgetData<String>(e.key, e.value);
     }
+    // Android: 12 Tab-Provider (Paket de.traum.traum) ...
     for (final name in androidWidgetNames) {
       await HomeWidget.updateWidget(androidName: name);
     }
-    await HomeWidget.updateWidget(androidName: 'TraumFunctionWidgetProvider');
-    // iOS: ein Reload aktualisiert alle Timelines des Bundles.
-    await HomeWidget.updateWidget(iOSName: 'TraumOverviewWidget');
+    // ... + Funktions-Provider (liegt im widget-Unterpaket).
+    await HomeWidget.updateWidget(qualifiedAndroidName: androidFunctionWidget);
+    // iOS: jeder Widget-kind muss einzeln neu geladen werden (kein Reload-All).
+    for (final kind in iosWidgetKinds) {
+      await HomeWidget.updateWidget(iOSName: kind);
+    }
   }
 }

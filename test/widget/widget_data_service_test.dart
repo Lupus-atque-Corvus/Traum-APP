@@ -24,4 +24,19 @@ void main() {
     ]));
     expect(WidgetDataService.androidWidgetNames.length, 12);
   });
+
+  test('iosWidgetKinds spiegelt 12 Tabs (ohne "Provider") + Funktions-Widget', () {
+    final kinds = WidgetDataService.iosWidgetKinds;
+    expect(kinds.length, 13);
+    expect(kinds, contains('TraumOverviewWidget'));
+    expect(kinds, contains('TraumMapWidget'));
+    expect(kinds, contains('TraumFunctionWidget'));
+    // Kein kind trägt noch das "Provider"-Suffix.
+    expect(kinds.any((k) => k.endsWith('Provider')), isFalse);
+  });
+
+  test('androidFunctionWidget ist voll-qualifiziert (widget-Unterpaket)', () {
+    expect(WidgetDataService.androidFunctionWidget,
+        'de.traum.traum.widget.TraumFunctionWidgetProvider');
+  });
 }
