@@ -103,12 +103,7 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> miscHomeWidgets = {
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.abstinence,
-      // No money/cost field is tracked → permanent empty state.
-      child: const _MetricValue(
-        value: '—',
-        unit: '€',
-        color: TraumColors.mintGreen,
-      ),
+      child: const _MoneySavedContent(),
     ),
   ),
   HomeWidgetType.allCounters: HomeWidgetDescriptor(
@@ -396,6 +391,28 @@ class _LongestStreakContent extends ConsumerWidget {
     return _MetricValue(
       value: '$best',
       unit: best == 1 ? 'Tag' : 'Tage',
+      color: TraumColors.mintGreen,
+    );
+  }
+}
+
+class _MoneySavedContent extends ConsumerWidget {
+  const _MoneySavedContent();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final trackers = ref.watch(_abstinenceTrackersProvider).value;
+    if (trackers == null) return const _EmptyDash();
+    double saved = 0.0;
+    for (final t in trackers) {
+      if (t.isActive && t.costPerDay != null) {
+        saved += t.costPerDay! * _daysSince(t.startDate);
+      }
+    }
+    if (saved <= 0) return const _EmptyDash();
+    return _MetricValue(
+      value: saved.toStringAsFixed(0),
+      unit: '€',
       color: TraumColors.mintGreen,
     );
   }

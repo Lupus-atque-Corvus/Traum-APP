@@ -69,6 +69,7 @@ class _ExerciseBlock {
   String equipment;
   String mode = 'Bilateral';
   String? note;
+  bool supersetWithNext = false;
   final List<_SetRow> sets;
 
   _ExerciseBlock({
@@ -119,6 +120,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
   int? _sessionId;
   final _blocks = <_ExerciseBlock>[];
   bool _finishing = false;
+  bool _isFavorite = false;
   final _mainScrollCtrl = ScrollController();
   final _sidebarScrollCtrl = ScrollController();
   int _focusedBlock = 0;
@@ -193,8 +195,11 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.favorite_border_rounded, color: TraumColors.onBackground),
-            onPressed: () {},
+            icon: Icon(
+              _isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+              color: _isFavorite ? TraumColors.coralOrange : TraumColors.onBackground,
+            ),
+            onPressed: _toggleFavorite,
           ),
           IconButton(
             icon: const Icon(Icons.more_vert_rounded, color: TraumColors.onBackground),
@@ -289,6 +294,9 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
                             return _ExerciseCard(
                               key: _blockKeys[i],
                               block: _blocks[i],
+                              canLink: i < _blocks.length - 1,
+                              onToggleLink: () => setState(() => _blocks[i]
+                                  .supersetWithNext = !_blocks[i].supersetWithNext),
                               onChanged: () => setState(() {}),
                               onRemove: () => setState(() {
                                 _blocks[i].dispose();
@@ -393,6 +401,29 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
     );
   }
 
+  Future<void> _toggleFavorite() async {
+    if (_blocks.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Noch keine Übungen im Workout')),
+      );
+      return;
+    }
+    final next = !_isFavorite;
+    final dao = ref.read(trainingDaoProvider);
+    for (final block in _blocks) {
+      await dao.setBookmarked(block.exercise.id, next);
+    }
+    if (!mounted) return;
+    setState(() => _isFavorite = next);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(next
+            ? 'Übungen zu Favoriten hinzugefügt'
+            : 'Übungen aus Favoriten entfernt'),
+      ),
+    );
+  }
+
   void _showWorkoutOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -479,6 +510,8 @@ class _SidebarThumb extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 class _ExerciseCard extends StatefulWidget {
   final _ExerciseBlock block;
+  final bool canLink;
+  final VoidCallback onToggleLink;
   final VoidCallback onChanged;
   final VoidCallback onRemove;
   final VoidCallback onNavigateToDetail;
@@ -487,6 +520,8 @@ class _ExerciseCard extends StatefulWidget {
   const _ExerciseCard({
     super.key,
     required this.block,
+    required this.canLink,
+    required this.onToggleLink,
     required this.onChanged,
     required this.onRemove,
     required this.onNavigateToDetail,
@@ -721,13 +756,24 @@ class _ExerciseCardState extends State<_ExerciseCard> {
                 ),
               ),
             ),
-            IconButton(
-              icon: const Icon(Icons.link_rounded,
-                  color: TraumColors.onBackgroundMuted, size: 20),
-              onPressed: () {},
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-            ),
+            if (widget.canLink)
+              IconButton(
+                tooltip: block.supersetWithNext
+                    ? 'Superset mit nächster Übung aufheben'
+                    : 'Mit nächster Übung zum Superset verbinden',
+                icon: Icon(
+                  block.supersetWithNext
+                      ? Icons.link_rounded
+                      : Icons.link_off_rounded,
+                  color: block.supersetWithNext
+                      ? TraumColors.coralOrange
+                      : TraumColors.onBackgroundMuted,
+                  size: 20,
+                ),
+                onPressed: widget.onToggleLink,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+              ),
             IconButton(
               icon: const Icon(Icons.more_vert_rounded,
                   color: TraumColors.onBackgroundMuted, size: 20),
@@ -736,6 +782,26 @@ class _ExerciseCardState extends State<_ExerciseCard> {
               constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
             ),
           ]),
+          if (block.supersetWithNext)
+            Padding(
+              padding: const EdgeInsets.only(top: 2, bottom: 2),
+              child: Row(
+                children: [
+                  const Icon(Icons.link_rounded,
+                      color: TraumColors.coralOrange, size: 14),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Superset mit nächster Übung',
+                    style: TextStyle(
+                      color: TraumColors.coralOrange.withValues(alpha: 0.9),
+                      fontFamily: 'DMSans',
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           const SizedBox(height: 8),
 
           // ── Equipment + Mode pills ──────────────────────────────────────

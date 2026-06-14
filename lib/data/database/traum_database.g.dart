@@ -13066,6 +13066,17 @@ class $AbstinenceTrackersTable extends AbstinenceTrackers
     ),
     defaultValue: const Constant(true),
   );
+  static const VerificationMeta _costPerDayMeta = const VerificationMeta(
+    'costPerDay',
+  );
+  @override
+  late final GeneratedColumn<double> costPerDay = GeneratedColumn<double>(
+    'cost_per_day',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -13086,6 +13097,7 @@ class $AbstinenceTrackersTable extends AbstinenceTrackers
     startDate,
     note,
     isActive,
+    costPerDay,
     createdAt,
   ];
   @override
@@ -13137,6 +13149,15 @@ class $AbstinenceTrackersTable extends AbstinenceTrackers
         isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
       );
     }
+    if (data.containsKey('cost_per_day')) {
+      context.handle(
+        _costPerDayMeta,
+        costPerDay.isAcceptableOrUnknown(
+          data['cost_per_day']!,
+          _costPerDayMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -13176,6 +13197,10 @@ class $AbstinenceTrackersTable extends AbstinenceTrackers
         DriftSqlType.bool,
         data['${effectivePrefix}is_active'],
       )!,
+      costPerDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}cost_per_day'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -13197,6 +13222,9 @@ class AbstinenceTracker extends DataClass
   final DateTime startDate;
   final String? note;
   final bool isActive;
+
+  /// Optional Kosten pro Tag der vermiedenen Gewohnheit (für "Geld gespart").
+  final double? costPerDay;
   final DateTime createdAt;
   const AbstinenceTracker({
     required this.id,
@@ -13205,6 +13233,7 @@ class AbstinenceTracker extends DataClass
     required this.startDate,
     this.note,
     required this.isActive,
+    this.costPerDay,
     required this.createdAt,
   });
   @override
@@ -13220,6 +13249,9 @@ class AbstinenceTracker extends DataClass
       map['note'] = Variable<String>(note);
     }
     map['is_active'] = Variable<bool>(isActive);
+    if (!nullToAbsent || costPerDay != null) {
+      map['cost_per_day'] = Variable<double>(costPerDay);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -13234,6 +13266,9 @@ class AbstinenceTracker extends DataClass
       startDate: Value(startDate),
       note: note == null && nullToAbsent ? const Value.absent() : Value(note),
       isActive: Value(isActive),
+      costPerDay: costPerDay == null && nullToAbsent
+          ? const Value.absent()
+          : Value(costPerDay),
       createdAt: Value(createdAt),
     );
   }
@@ -13250,6 +13285,7 @@ class AbstinenceTracker extends DataClass
       startDate: serializer.fromJson<DateTime>(json['startDate']),
       note: serializer.fromJson<String?>(json['note']),
       isActive: serializer.fromJson<bool>(json['isActive']),
+      costPerDay: serializer.fromJson<double?>(json['costPerDay']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -13263,6 +13299,7 @@ class AbstinenceTracker extends DataClass
       'startDate': serializer.toJson<DateTime>(startDate),
       'note': serializer.toJson<String?>(note),
       'isActive': serializer.toJson<bool>(isActive),
+      'costPerDay': serializer.toJson<double?>(costPerDay),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -13274,6 +13311,7 @@ class AbstinenceTracker extends DataClass
     DateTime? startDate,
     Value<String?> note = const Value.absent(),
     bool? isActive,
+    Value<double?> costPerDay = const Value.absent(),
     DateTime? createdAt,
   }) => AbstinenceTracker(
     id: id ?? this.id,
@@ -13282,6 +13320,7 @@ class AbstinenceTracker extends DataClass
     startDate: startDate ?? this.startDate,
     note: note.present ? note.value : this.note,
     isActive: isActive ?? this.isActive,
+    costPerDay: costPerDay.present ? costPerDay.value : this.costPerDay,
     createdAt: createdAt ?? this.createdAt,
   );
   AbstinenceTracker copyWithCompanion(AbstinenceTrackersCompanion data) {
@@ -13292,6 +13331,9 @@ class AbstinenceTracker extends DataClass
       startDate: data.startDate.present ? data.startDate.value : this.startDate,
       note: data.note.present ? data.note.value : this.note,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      costPerDay: data.costPerDay.present
+          ? data.costPerDay.value
+          : this.costPerDay,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -13305,14 +13347,23 @@ class AbstinenceTracker extends DataClass
           ..write('startDate: $startDate, ')
           ..write('note: $note, ')
           ..write('isActive: $isActive, ')
+          ..write('costPerDay: $costPerDay, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, emoji, startDate, note, isActive, createdAt);
+  int get hashCode => Object.hash(
+    id,
+    name,
+    emoji,
+    startDate,
+    note,
+    isActive,
+    costPerDay,
+    createdAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -13323,6 +13374,7 @@ class AbstinenceTracker extends DataClass
           other.startDate == this.startDate &&
           other.note == this.note &&
           other.isActive == this.isActive &&
+          other.costPerDay == this.costPerDay &&
           other.createdAt == this.createdAt);
 }
 
@@ -13333,6 +13385,7 @@ class AbstinenceTrackersCompanion extends UpdateCompanion<AbstinenceTracker> {
   final Value<DateTime> startDate;
   final Value<String?> note;
   final Value<bool> isActive;
+  final Value<double?> costPerDay;
   final Value<DateTime> createdAt;
   const AbstinenceTrackersCompanion({
     this.id = const Value.absent(),
@@ -13341,6 +13394,7 @@ class AbstinenceTrackersCompanion extends UpdateCompanion<AbstinenceTracker> {
     this.startDate = const Value.absent(),
     this.note = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.costPerDay = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   AbstinenceTrackersCompanion.insert({
@@ -13350,6 +13404,7 @@ class AbstinenceTrackersCompanion extends UpdateCompanion<AbstinenceTracker> {
     required DateTime startDate,
     this.note = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.costPerDay = const Value.absent(),
     this.createdAt = const Value.absent(),
   }) : name = Value(name),
        startDate = Value(startDate);
@@ -13360,6 +13415,7 @@ class AbstinenceTrackersCompanion extends UpdateCompanion<AbstinenceTracker> {
     Expression<DateTime>? startDate,
     Expression<String>? note,
     Expression<bool>? isActive,
+    Expression<double>? costPerDay,
     Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
@@ -13369,6 +13425,7 @@ class AbstinenceTrackersCompanion extends UpdateCompanion<AbstinenceTracker> {
       if (startDate != null) 'start_date': startDate,
       if (note != null) 'note': note,
       if (isActive != null) 'is_active': isActive,
+      if (costPerDay != null) 'cost_per_day': costPerDay,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
@@ -13380,6 +13437,7 @@ class AbstinenceTrackersCompanion extends UpdateCompanion<AbstinenceTracker> {
     Value<DateTime>? startDate,
     Value<String?>? note,
     Value<bool>? isActive,
+    Value<double?>? costPerDay,
     Value<DateTime>? createdAt,
   }) {
     return AbstinenceTrackersCompanion(
@@ -13389,6 +13447,7 @@ class AbstinenceTrackersCompanion extends UpdateCompanion<AbstinenceTracker> {
       startDate: startDate ?? this.startDate,
       note: note ?? this.note,
       isActive: isActive ?? this.isActive,
+      costPerDay: costPerDay ?? this.costPerDay,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -13414,6 +13473,9 @@ class AbstinenceTrackersCompanion extends UpdateCompanion<AbstinenceTracker> {
     if (isActive.present) {
       map['is_active'] = Variable<bool>(isActive.value);
     }
+    if (costPerDay.present) {
+      map['cost_per_day'] = Variable<double>(costPerDay.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -13429,6 +13491,7 @@ class AbstinenceTrackersCompanion extends UpdateCompanion<AbstinenceTracker> {
           ..write('startDate: $startDate, ')
           ..write('note: $note, ')
           ..write('isActive: $isActive, ')
+          ..write('costPerDay: $costPerDay, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -18828,6 +18891,405 @@ class SubstanceCachesCompanion extends UpdateCompanion<SubstanceCache> {
           ..write('source: $source, ')
           ..write('cachedAt: $cachedAt, ')
           ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SubstanceIntakeLogsTable extends SubstanceIntakeLogs
+    with TableInfo<$SubstanceIntakeLogsTable, SubstanceIntakeLog> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SubstanceIntakeLogsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _substanceNameMeta = const VerificationMeta(
+    'substanceName',
+  );
+  @override
+  late final GeneratedColumn<String> substanceName = GeneratedColumn<String>(
+    'substance_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dosageMeta = const VerificationMeta('dosage');
+  @override
+  late final GeneratedColumn<String> dosage = GeneratedColumn<String>(
+    'dosage',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _unitMeta = const VerificationMeta('unit');
+  @override
+  late final GeneratedColumn<String> unit = GeneratedColumn<String>(
+    'unit',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _takenAtMeta = const VerificationMeta(
+    'takenAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> takenAt = GeneratedColumn<DateTime>(
+    'taken_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    substanceName,
+    dosage,
+    unit,
+    takenAt,
+    note,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'substance_intake_logs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SubstanceIntakeLog> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('substance_name')) {
+      context.handle(
+        _substanceNameMeta,
+        substanceName.isAcceptableOrUnknown(
+          data['substance_name']!,
+          _substanceNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_substanceNameMeta);
+    }
+    if (data.containsKey('dosage')) {
+      context.handle(
+        _dosageMeta,
+        dosage.isAcceptableOrUnknown(data['dosage']!, _dosageMeta),
+      );
+    }
+    if (data.containsKey('unit')) {
+      context.handle(
+        _unitMeta,
+        unit.isAcceptableOrUnknown(data['unit']!, _unitMeta),
+      );
+    }
+    if (data.containsKey('taken_at')) {
+      context.handle(
+        _takenAtMeta,
+        takenAt.isAcceptableOrUnknown(data['taken_at']!, _takenAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_takenAtMeta);
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SubstanceIntakeLog map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SubstanceIntakeLog(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      substanceName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}substance_name'],
+      )!,
+      dosage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dosage'],
+      ),
+      unit: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}unit'],
+      ),
+      takenAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}taken_at'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      ),
+    );
+  }
+
+  @override
+  $SubstanceIntakeLogsTable createAlias(String alias) {
+    return $SubstanceIntakeLogsTable(attachedDatabase, alias);
+  }
+}
+
+class SubstanceIntakeLog extends DataClass
+    implements Insertable<SubstanceIntakeLog> {
+  final int id;
+  final String substanceName;
+  final String? dosage;
+  final String? unit;
+  final DateTime takenAt;
+  final String? note;
+  const SubstanceIntakeLog({
+    required this.id,
+    required this.substanceName,
+    this.dosage,
+    this.unit,
+    required this.takenAt,
+    this.note,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['substance_name'] = Variable<String>(substanceName);
+    if (!nullToAbsent || dosage != null) {
+      map['dosage'] = Variable<String>(dosage);
+    }
+    if (!nullToAbsent || unit != null) {
+      map['unit'] = Variable<String>(unit);
+    }
+    map['taken_at'] = Variable<DateTime>(takenAt);
+    if (!nullToAbsent || note != null) {
+      map['note'] = Variable<String>(note);
+    }
+    return map;
+  }
+
+  SubstanceIntakeLogsCompanion toCompanion(bool nullToAbsent) {
+    return SubstanceIntakeLogsCompanion(
+      id: Value(id),
+      substanceName: Value(substanceName),
+      dosage: dosage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dosage),
+      unit: unit == null && nullToAbsent ? const Value.absent() : Value(unit),
+      takenAt: Value(takenAt),
+      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+    );
+  }
+
+  factory SubstanceIntakeLog.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SubstanceIntakeLog(
+      id: serializer.fromJson<int>(json['id']),
+      substanceName: serializer.fromJson<String>(json['substanceName']),
+      dosage: serializer.fromJson<String?>(json['dosage']),
+      unit: serializer.fromJson<String?>(json['unit']),
+      takenAt: serializer.fromJson<DateTime>(json['takenAt']),
+      note: serializer.fromJson<String?>(json['note']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'substanceName': serializer.toJson<String>(substanceName),
+      'dosage': serializer.toJson<String?>(dosage),
+      'unit': serializer.toJson<String?>(unit),
+      'takenAt': serializer.toJson<DateTime>(takenAt),
+      'note': serializer.toJson<String?>(note),
+    };
+  }
+
+  SubstanceIntakeLog copyWith({
+    int? id,
+    String? substanceName,
+    Value<String?> dosage = const Value.absent(),
+    Value<String?> unit = const Value.absent(),
+    DateTime? takenAt,
+    Value<String?> note = const Value.absent(),
+  }) => SubstanceIntakeLog(
+    id: id ?? this.id,
+    substanceName: substanceName ?? this.substanceName,
+    dosage: dosage.present ? dosage.value : this.dosage,
+    unit: unit.present ? unit.value : this.unit,
+    takenAt: takenAt ?? this.takenAt,
+    note: note.present ? note.value : this.note,
+  );
+  SubstanceIntakeLog copyWithCompanion(SubstanceIntakeLogsCompanion data) {
+    return SubstanceIntakeLog(
+      id: data.id.present ? data.id.value : this.id,
+      substanceName: data.substanceName.present
+          ? data.substanceName.value
+          : this.substanceName,
+      dosage: data.dosage.present ? data.dosage.value : this.dosage,
+      unit: data.unit.present ? data.unit.value : this.unit,
+      takenAt: data.takenAt.present ? data.takenAt.value : this.takenAt,
+      note: data.note.present ? data.note.value : this.note,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubstanceIntakeLog(')
+          ..write('id: $id, ')
+          ..write('substanceName: $substanceName, ')
+          ..write('dosage: $dosage, ')
+          ..write('unit: $unit, ')
+          ..write('takenAt: $takenAt, ')
+          ..write('note: $note')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, substanceName, dosage, unit, takenAt, note);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SubstanceIntakeLog &&
+          other.id == this.id &&
+          other.substanceName == this.substanceName &&
+          other.dosage == this.dosage &&
+          other.unit == this.unit &&
+          other.takenAt == this.takenAt &&
+          other.note == this.note);
+}
+
+class SubstanceIntakeLogsCompanion extends UpdateCompanion<SubstanceIntakeLog> {
+  final Value<int> id;
+  final Value<String> substanceName;
+  final Value<String?> dosage;
+  final Value<String?> unit;
+  final Value<DateTime> takenAt;
+  final Value<String?> note;
+  const SubstanceIntakeLogsCompanion({
+    this.id = const Value.absent(),
+    this.substanceName = const Value.absent(),
+    this.dosage = const Value.absent(),
+    this.unit = const Value.absent(),
+    this.takenAt = const Value.absent(),
+    this.note = const Value.absent(),
+  });
+  SubstanceIntakeLogsCompanion.insert({
+    this.id = const Value.absent(),
+    required String substanceName,
+    this.dosage = const Value.absent(),
+    this.unit = const Value.absent(),
+    required DateTime takenAt,
+    this.note = const Value.absent(),
+  }) : substanceName = Value(substanceName),
+       takenAt = Value(takenAt);
+  static Insertable<SubstanceIntakeLog> custom({
+    Expression<int>? id,
+    Expression<String>? substanceName,
+    Expression<String>? dosage,
+    Expression<String>? unit,
+    Expression<DateTime>? takenAt,
+    Expression<String>? note,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (substanceName != null) 'substance_name': substanceName,
+      if (dosage != null) 'dosage': dosage,
+      if (unit != null) 'unit': unit,
+      if (takenAt != null) 'taken_at': takenAt,
+      if (note != null) 'note': note,
+    });
+  }
+
+  SubstanceIntakeLogsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? substanceName,
+    Value<String?>? dosage,
+    Value<String?>? unit,
+    Value<DateTime>? takenAt,
+    Value<String?>? note,
+  }) {
+    return SubstanceIntakeLogsCompanion(
+      id: id ?? this.id,
+      substanceName: substanceName ?? this.substanceName,
+      dosage: dosage ?? this.dosage,
+      unit: unit ?? this.unit,
+      takenAt: takenAt ?? this.takenAt,
+      note: note ?? this.note,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (substanceName.present) {
+      map['substance_name'] = Variable<String>(substanceName.value);
+    }
+    if (dosage.present) {
+      map['dosage'] = Variable<String>(dosage.value);
+    }
+    if (unit.present) {
+      map['unit'] = Variable<String>(unit.value);
+    }
+    if (takenAt.present) {
+      map['taken_at'] = Variable<DateTime>(takenAt.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubstanceIntakeLogsCompanion(')
+          ..write('id: $id, ')
+          ..write('substanceName: $substanceName, ')
+          ..write('dosage: $dosage, ')
+          ..write('unit: $unit, ')
+          ..write('takenAt: $takenAt, ')
+          ..write('note: $note')
           ..write(')'))
         .toString();
   }
@@ -26586,6 +27048,8 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   late final $SubstanceCachesTable substanceCaches = $SubstanceCachesTable(
     this,
   );
+  late final $SubstanceIntakeLogsTable substanceIntakeLogs =
+      $SubstanceIntakeLogsTable(this);
   late final $DiaryEntriesTable diaryEntries = $DiaryEntriesTable(this);
   late final $SubstanceDatabaseEntriesTable substanceDatabaseEntries =
       $SubstanceDatabaseEntriesTable(this);
@@ -26677,6 +27141,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
     cycleCalculations,
     periodSymptoms,
     substanceCaches,
+    substanceIntakeLogs,
     diaryEntries,
     substanceDatabaseEntries,
     foodProducts,
@@ -35637,6 +36102,7 @@ typedef $$AbstinenceTrackersTableCreateCompanionBuilder =
       required DateTime startDate,
       Value<String?> note,
       Value<bool> isActive,
+      Value<double?> costPerDay,
       Value<DateTime> createdAt,
     });
 typedef $$AbstinenceTrackersTableUpdateCompanionBuilder =
@@ -35647,6 +36113,7 @@ typedef $$AbstinenceTrackersTableUpdateCompanionBuilder =
       Value<DateTime> startDate,
       Value<String?> note,
       Value<bool> isActive,
+      Value<double?> costPerDay,
       Value<DateTime> createdAt,
     });
 
@@ -35727,6 +36194,11 @@ class $$AbstinenceTrackersTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<double> get costPerDay => $composableBuilder(
+    column: $table.costPerDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
@@ -35797,6 +36269,11 @@ class $$AbstinenceTrackersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<double> get costPerDay => $composableBuilder(
+    column: $table.costPerDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -35829,6 +36306,11 @@ class $$AbstinenceTrackersTableAnnotationComposer
 
   GeneratedColumn<bool> get isActive =>
       $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<double> get costPerDay => $composableBuilder(
+    column: $table.costPerDay,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -35898,6 +36380,7 @@ class $$AbstinenceTrackersTableTableManager
                 Value<DateTime> startDate = const Value.absent(),
                 Value<String?> note = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
+                Value<double?> costPerDay = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => AbstinenceTrackersCompanion(
                 id: id,
@@ -35906,6 +36389,7 @@ class $$AbstinenceTrackersTableTableManager
                 startDate: startDate,
                 note: note,
                 isActive: isActive,
+                costPerDay: costPerDay,
                 createdAt: createdAt,
               ),
           createCompanionCallback:
@@ -35916,6 +36400,7 @@ class $$AbstinenceTrackersTableTableManager
                 required DateTime startDate,
                 Value<String?> note = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
+                Value<double?> costPerDay = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => AbstinenceTrackersCompanion.insert(
                 id: id,
@@ -35924,6 +36409,7 @@ class $$AbstinenceTrackersTableTableManager
                 startDate: startDate,
                 note: note,
                 isActive: isActive,
+                costPerDay: costPerDay,
                 createdAt: createdAt,
               ),
           withReferenceMapper: (p0) => p0
@@ -39129,6 +39615,237 @@ typedef $$SubstanceCachesTableProcessedTableManager =
         BaseReferences<_$TraumDatabase, $SubstanceCachesTable, SubstanceCache>,
       ),
       SubstanceCache,
+      PrefetchHooks Function()
+    >;
+typedef $$SubstanceIntakeLogsTableCreateCompanionBuilder =
+    SubstanceIntakeLogsCompanion Function({
+      Value<int> id,
+      required String substanceName,
+      Value<String?> dosage,
+      Value<String?> unit,
+      required DateTime takenAt,
+      Value<String?> note,
+    });
+typedef $$SubstanceIntakeLogsTableUpdateCompanionBuilder =
+    SubstanceIntakeLogsCompanion Function({
+      Value<int> id,
+      Value<String> substanceName,
+      Value<String?> dosage,
+      Value<String?> unit,
+      Value<DateTime> takenAt,
+      Value<String?> note,
+    });
+
+class $$SubstanceIntakeLogsTableFilterComposer
+    extends Composer<_$TraumDatabase, $SubstanceIntakeLogsTable> {
+  $$SubstanceIntakeLogsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get substanceName => $composableBuilder(
+    column: $table.substanceName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dosage => $composableBuilder(
+    column: $table.dosage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get takenAt => $composableBuilder(
+    column: $table.takenAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SubstanceIntakeLogsTableOrderingComposer
+    extends Composer<_$TraumDatabase, $SubstanceIntakeLogsTable> {
+  $$SubstanceIntakeLogsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get substanceName => $composableBuilder(
+    column: $table.substanceName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dosage => $composableBuilder(
+    column: $table.dosage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get takenAt => $composableBuilder(
+    column: $table.takenAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SubstanceIntakeLogsTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $SubstanceIntakeLogsTable> {
+  $$SubstanceIntakeLogsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get substanceName => $composableBuilder(
+    column: $table.substanceName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dosage =>
+      $composableBuilder(column: $table.dosage, builder: (column) => column);
+
+  GeneratedColumn<String> get unit =>
+      $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get takenAt =>
+      $composableBuilder(column: $table.takenAt, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+}
+
+class $$SubstanceIntakeLogsTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $SubstanceIntakeLogsTable,
+          SubstanceIntakeLog,
+          $$SubstanceIntakeLogsTableFilterComposer,
+          $$SubstanceIntakeLogsTableOrderingComposer,
+          $$SubstanceIntakeLogsTableAnnotationComposer,
+          $$SubstanceIntakeLogsTableCreateCompanionBuilder,
+          $$SubstanceIntakeLogsTableUpdateCompanionBuilder,
+          (
+            SubstanceIntakeLog,
+            BaseReferences<
+              _$TraumDatabase,
+              $SubstanceIntakeLogsTable,
+              SubstanceIntakeLog
+            >,
+          ),
+          SubstanceIntakeLog,
+          PrefetchHooks Function()
+        > {
+  $$SubstanceIntakeLogsTableTableManager(
+    _$TraumDatabase db,
+    $SubstanceIntakeLogsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SubstanceIntakeLogsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SubstanceIntakeLogsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SubstanceIntakeLogsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> substanceName = const Value.absent(),
+                Value<String?> dosage = const Value.absent(),
+                Value<String?> unit = const Value.absent(),
+                Value<DateTime> takenAt = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+              }) => SubstanceIntakeLogsCompanion(
+                id: id,
+                substanceName: substanceName,
+                dosage: dosage,
+                unit: unit,
+                takenAt: takenAt,
+                note: note,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String substanceName,
+                Value<String?> dosage = const Value.absent(),
+                Value<String?> unit = const Value.absent(),
+                required DateTime takenAt,
+                Value<String?> note = const Value.absent(),
+              }) => SubstanceIntakeLogsCompanion.insert(
+                id: id,
+                substanceName: substanceName,
+                dosage: dosage,
+                unit: unit,
+                takenAt: takenAt,
+                note: note,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SubstanceIntakeLogsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $SubstanceIntakeLogsTable,
+      SubstanceIntakeLog,
+      $$SubstanceIntakeLogsTableFilterComposer,
+      $$SubstanceIntakeLogsTableOrderingComposer,
+      $$SubstanceIntakeLogsTableAnnotationComposer,
+      $$SubstanceIntakeLogsTableCreateCompanionBuilder,
+      $$SubstanceIntakeLogsTableUpdateCompanionBuilder,
+      (
+        SubstanceIntakeLog,
+        BaseReferences<
+          _$TraumDatabase,
+          $SubstanceIntakeLogsTable,
+          SubstanceIntakeLog
+        >,
+      ),
+      SubstanceIntakeLog,
       PrefetchHooks Function()
     >;
 typedef $$DiaryEntriesTableCreateCompanionBuilder =
@@ -43531,6 +44248,8 @@ class $TraumDatabaseManager {
       $$PeriodSymptomsTableTableManager(_db, _db.periodSymptoms);
   $$SubstanceCachesTableTableManager get substanceCaches =>
       $$SubstanceCachesTableTableManager(_db, _db.substanceCaches);
+  $$SubstanceIntakeLogsTableTableManager get substanceIntakeLogs =>
+      $$SubstanceIntakeLogsTableTableManager(_db, _db.substanceIntakeLogs);
   $$DiaryEntriesTableTableManager get diaryEntries =>
       $$DiaryEntriesTableTableManager(_db, _db.diaryEntries);
   $$SubstanceDatabaseEntriesTableTableManager get substanceDatabaseEntries =>

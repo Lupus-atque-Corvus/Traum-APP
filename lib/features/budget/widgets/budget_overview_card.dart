@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/components/traum_card.dart';
+import '../../../core/navigation/routes.dart';
 import '../../../core/theme/colors.dart';
 import '../budget_helpers.dart';
 import '../budget_providers.dart';
@@ -30,7 +32,7 @@ class BudgetOverviewCard extends ConsumerWidget {
             ),
             const Spacer(),
             GestureDetector(
-              onTap: () {},
+              onTap: () => context.push(Routes.budgetStats),
               child: const Text(
                 'Mehr ›',
                 style: TextStyle(

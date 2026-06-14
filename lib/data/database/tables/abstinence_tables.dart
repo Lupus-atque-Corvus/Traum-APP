@@ -7,6 +7,8 @@ class AbstinenceTrackers extends Table {
   DateTimeColumn get startDate => dateTime()();
   TextColumn get note => text().nullable()();
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  /// Optional Kosten pro Tag der vermiedenen Gewohnheit (für "Geld gespart").
+  RealColumn get costPerDay => real().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
 

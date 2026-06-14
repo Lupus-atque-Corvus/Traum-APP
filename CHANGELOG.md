@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.7.8 (2026-06-14) — Datenlücken geschlossen
+
+### Neu
+
+- **Health Connect / HealthKit wird ausgelesen:** Schritte, Puls, aktive Minuten und verbrannte Kalorien kommen jetzt echt vom Gerät (vorher wurde die Berechtigung nur angefragt, aber nie gelesen). Inkl. 7-Tage-Schritt-Schnitt; das Schritt-Ziel ist damit endlich erreichbar.
+- **Medikamenten-Einnahme erfassen:** In der „Heute"-Karte lassen sich die Einnahme-Punkte antippen (genommen/zurücknehmen). Zusätzlich hat die Erinnerungs-Benachrichtigung einen **„Genommen"-Button**. Schaltet das `medsDone`-Widget und den Health-Score-Faktor frei.
+- **Substanz-Konsum-Log:** Neuer „Konsum erfassen"-Dialog (Substanz, Dosis, Einheit, Zeitpunkt) im Mittel-Tab.
+- **Geld gespart (Abstinenz):** Tracker haben jetzt ein optionales Feld „Kosten pro Tag" — daraus wird die Ersparnis berechnet und im Widget angezeigt.
+- **Trainings-Verlauf:** Neuer Verlaufs-Screen (über das Verlauf-Icon im Training-Tab) listet alle abgeschlossenen Workouts.
+- **Benachrichtigungs-Center:** Die Glocke auf dem Homescreen öffnet eine Übersicht über fällige Medikamente, offene Aufgaben und den nächsten Termin.
+- **Supersätze im aktiven Workout:** Übungen lassen sich per Link-Button mit der nächsten Übung zum Superset verbinden.
+- **Rest-Timer-Widget:** Der „Start"-Button startet jetzt einen echten Countdown direkt auf dem Homescreen (Tippen Start/Pause, lang drücken = Reset).
+
+### Verbesserung
+
+- **Homescreen-Widgets verdrahtet:** Supplements heute, Zyklusphase, Mahlzeiten heute, persönliche Rekorde und Monatstrend zeigen jetzt echte Werte statt Platzhalter.
+- **Tote Buttons aktiviert:** „Mehr ›" in Budget (Konten/Übersicht), das ⋮-Menü und der Tipps-Link in der Übungs-Statistik, der Favoriten-Button im aktiven Workout sowie der Aktiv/Pause-Schalter bei Medikamenten haben jetzt Funktion.
+
+### Technik
+
+- DB-Schema **v16**: neue Spalte `costPerDay` (Abstinenz) und neue Tabelle `SubstanceIntakeLogs`.
+
+---
+
 ## v0.7.4 (2026-06-11) — Backup: Export & Import
 
 ### Neu

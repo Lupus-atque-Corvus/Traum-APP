@@ -131,6 +131,8 @@ part 'traum_database.g.dart';
     PeriodSymptoms,
     // Substance cache (1)
     SubstanceCaches,
+    // Substance intake log (1)
+    SubstanceIntakeLogs,
     // Diary (1)
     DiaryEntries,
     // Substance offline database (1)
@@ -206,7 +208,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 15;
+  int get schemaVersion => 16;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -311,6 +313,11 @@ class TraumDatabase extends _$TraumDatabase {
         await customStatement(
             'CREATE INDEX IF NOT EXISTS idx_grocery_prices_norm '
             'ON grocery_prices (name_normalized)');
+      }
+      if (from < 16) {
+        await migrator.addColumn(
+            abstinenceTrackers, abstinenceTrackers.costPerDay);
+        await migrator.createTable(substanceIntakeLogs);
       }
     },
   );

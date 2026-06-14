@@ -1072,6 +1072,7 @@ class _AddTrackerSheet extends StatefulWidget {
 class _AddTrackerSheetState extends State<_AddTrackerSheet> {
   final _nameCtrl = TextEditingController();
   final _noteCtrl = TextEditingController();
+  final _costCtrl = TextEditingController();
   String _emoji = '🚫';
   DateTime _startDate = DateTime.now();
   bool _saving = false;
@@ -1084,6 +1085,7 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
   void dispose() {
     _nameCtrl.dispose();
     _noteCtrl.dispose();
+    _costCtrl.dispose();
     super.dispose();
   }
 
@@ -1216,6 +1218,27 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
                     horizontal: 16, vertical: 12),
               ),
             ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _costCtrl,
+              style: const TextStyle(
+                  color: TraumColors.onBackground, fontFamily: 'DMSans'),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                labelText: 'Kosten pro Tag (€, optional)',
+                labelStyle: const TextStyle(
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans'),
+                filled: true,
+                fillColor: TraumColors.surface,
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(TraumRadius.card),
+                    borderSide: BorderSide.none),
+                contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 12),
+              ),
+            ),
             const SizedBox(height: 20),
             GradientButton(
                 label: _saving ? l10n.starting : l10n.startTrackerButton,
@@ -1241,6 +1264,8 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
       startDate: _startDate,
       note: Value(
           _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim()),
+      costPerDay:
+          Value(double.tryParse(_costCtrl.text.trim().replaceAll(',', '.'))),
     ));
     if (mounted) Navigator.pop(context);
   }

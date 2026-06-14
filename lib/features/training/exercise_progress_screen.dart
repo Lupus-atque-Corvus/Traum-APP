@@ -6,6 +6,7 @@ import '../../core/providers/unit_preference_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../settings/feedback/feedback_bottom_sheet.dart';
 import 'widgets/body_map_widget.dart';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -77,6 +78,55 @@ class _ExerciseProgressScreenState
     super.dispose();
   }
 
+  void _showExerciseOptions(BuildContext context, Exercise? ex) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: TraumColors.surfaceElevated,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => SafeArea(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          if (ex != null)
+            ListTile(
+              leading: Icon(
+                ex.isBookmarked
+                    ? Icons.bookmark_rounded
+                    : Icons.bookmark_border_rounded,
+                color: TraumColors.amberGold,
+              ),
+              title: Text(
+                ex.isBookmarked ? 'Lesezeichen entfernen' : 'Als Lesezeichen',
+                style: const TextStyle(
+                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
+              ),
+              onTap: () {
+                ref
+                    .read(trainingDaoProvider)
+                    .setBookmarked(ex.id, !ex.isBookmarked);
+                Navigator.pop(context);
+              },
+            ),
+          ListTile(
+            leading:
+                const Icon(Icons.feedback_outlined, color: TraumColors.cyanBlue),
+            title: const Text('Feedback zu dieser Übung',
+                style: TextStyle(
+                    color: TraumColors.onBackground, fontFamily: 'DMSans')),
+            onTap: () {
+              Navigator.pop(context);
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (_) => const FeedbackBottomSheet(),
+              );
+            },
+          ),
+        ]),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final exercisesAsync = ref.watch(allExercisesStreamProvider);
@@ -104,7 +154,7 @@ class _ExerciseProgressScreenState
             actions: [
               IconButton(
                 icon: const Icon(Icons.more_vert_rounded, color: TraumColors.onBackground),
-                onPressed: () {},
+                onPressed: () => _showExerciseOptions(context, ex),
               ),
             ],
             bottom: TabBar(
@@ -282,11 +332,15 @@ class _InfoTab extends StatelessWidget {
           const SizedBox(height: 8),
         ],
 
-        // Suggestion link
+        // Suggestion link → opens the feedback sheet
         TextButton(
-          onPressed: () {},
+          onPressed: () => showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            builder: (_) => const FeedbackBottomSheet(),
+          ),
           child: const Text(
-            'Any suggestions for this exercise?',
+            'Hast du Tipps zu dieser Übung?',
             style: TextStyle(
               color: TraumColors.onBackgroundSubtle,
               fontFamily: 'DMSans',

@@ -17,6 +17,7 @@ import '../../core/theme/radius.dart';
 import '../../core/components/components.dart';
 import '../../core/utils/water_calculator.dart';
 import '../../data/database/traum_database.dart';
+import '../../data/services/health_service.dart';
 import '../../l10n/app_localizations.dart';
 import '../legal/legal_document_screen.dart';
 import '../home/home_layout_provider.dart';
@@ -1656,11 +1657,12 @@ class _HealthPageState extends State<_HealthPage> {
   Future<void> _requestHealth() async {
     setState(() => _requesting = true);
     try {
+      // Includes steps, heart rate, active energy & exercise time so the
+      // homescreen widgets can actually read those metrics afterwards.
       final health = Health();
       await health.configure();
       await health.requestAuthorization([
-        HealthDataType.STEPS,
-        HealthDataType.HEART_RATE,
+        ...HealthService.readTypes,
         HealthDataType.SLEEP_ASLEEP,
         HealthDataType.WEIGHT,
       ]);

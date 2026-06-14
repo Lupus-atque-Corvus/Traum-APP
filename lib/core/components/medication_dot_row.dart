@@ -6,11 +6,15 @@ class MedicationDotRow extends StatelessWidget {
   final List<String> times;
   final List<bool> taken;
 
+  /// Optional: called with the dot index when a dot is tapped (mark taken/untaken).
+  final void Function(int index)? onTapDot;
+
   const MedicationDotRow({
     super.key,
     required this.name,
     required this.times,
     required this.taken,
+    this.onTapDot,
   });
 
   @override
@@ -37,14 +41,21 @@ class MedicationDotRow extends StatelessWidget {
             times.length,
             (i) => Tooltip(
               message: times[i],
-              child: Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: (i < taken.length && taken[i])
-                      ? TraumColors.mintGreen
-                      : TraumColors.roseRed,
+              child: GestureDetector(
+                onTap: onTapDot == null ? null : () => onTapDot!(i),
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: const EdgeInsets.all(3),
+                  child: Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: (i < taken.length && taken[i])
+                          ? TraumColors.mintGreen
+                          : TraumColors.roseRed,
+                    ),
+                  ),
                 ),
               ),
             ),

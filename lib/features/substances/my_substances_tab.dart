@@ -67,7 +67,9 @@ class MySubstancesTab extends ConsumerWidget {
                       ...meds.map((med) => _MedCard(
                             med: med,
                             onDelete: () => ref.read(medicationDaoProvider).deleteMedication(med.id),
-                            onToggle: null,
+                            onToggle: (active) => ref
+                                .read(medicationDaoProvider)
+                                .setMedicationActive(med.id, active),
                           )),
                       const SizedBox(height: 16),
                     ],
@@ -149,8 +151,35 @@ class MySubstancesTab extends ConsumerWidget {
               ),
             ),
           ]),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: _TypeButton(
+              icon: Icons.event_available_rounded,
+              label: 'Konsum erfassen',
+              color: TraumColors.coralOrange,
+              dimColor: TraumColors.coralDim,
+              onTap: () {
+                Navigator.pop(context);
+                _showAddIntakeSheet(context, ref);
+              },
+            ),
+          ),
           const SizedBox(height: 8),
         ]),
+      ),
+    );
+  }
+
+  void _showAddIntakeSheet(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: TraumColors.surfaceElevated,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
+      builder: (_) => _AddIntakeSheet(
+        onAdd: (c) => ref.read(substanceDaoProvider).insertIntake(c),
       ),
     );
   }
@@ -289,13 +318,13 @@ class _InteractionBanner extends StatelessWidget {
   }
 }
 
-class _TodayStatusCard extends StatelessWidget {
+class _TodayStatusCard extends ConsumerWidget {
   final List<Medication> meds;
   final List<MedicationLog> logs;
   const _TodayStatusCard({required this.meds, required this.logs});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final activeMeds = meds.where((m) => m.isActive).toList();
     if (activeMeds.isEmpty) return const SizedBox.shrink();
     return TraumCard(
@@ -310,11 +339,50 @@ class _TodayStatusCard extends StatelessWidget {
           final takenList = List.generate(times.length, (i) => i < takenCount);
           return Padding(
             padding: const EdgeInsets.only(bottom: 8),
-            child: MedicationDotRow(name: med.name, times: times, taken: takenList),
+            child: MedicationDotRow(
+              name: med.name,
+              times: times,
+              taken: takenList,
+              onTapDot: (i) {
+                // Tap empty dot → fill up to i+1; tap filled dot → reduce to i.
+                final target = i < takenCount ? i : i + 1;
+                _setTakenCount(ref, med, times, target);
+              },
+            ),
           );
         }),
       ]),
     );
+  }
+
+  Future<void> _setTakenCount(
+      WidgetRef ref, Medication med, List<String> times, int target) async {
+    final dao = ref.read(medicationDaoProvider);
+    final takenLogs =
+        logs.where((l) => l.medicationId == med.id && l.taken).toList();
+    var count = takenLogs.length;
+    final now = DateTime.now();
+    while (count < target) {
+      final timeStr = count < times.length ? times[count] : '';
+      var sched = DateTime(now.year, now.month, now.day);
+      final parts = timeStr.split(':');
+      if (parts.length == 2) {
+        sched = DateTime(now.year, now.month, now.day,
+            int.tryParse(parts[0]) ?? 0, int.tryParse(parts[1]) ?? 0);
+      }
+      await dao.insertLog(MedicationLogsCompanion.insert(
+        medicationId: med.id,
+        scheduledAt: sched,
+        takenAt: Value(now),
+        taken: Value(true),
+      ));
+      count++;
+    }
+    while (count > target && takenLogs.isNotEmpty) {
+      final last = takenLogs.removeLast();
+      await dao.deleteLog(last.id);
+      count--;
+    }
   }
 
   List<String> _parseTimes(String t) {
@@ -407,17 +475,20 @@ class _MedCard extends StatelessWidget {
                   style: const TextStyle(color: TraumColors.onBackgroundSubtle,
                       fontFamily: 'DMSans', fontSize: 11)),
           ]),
-          trailing: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: med.isActive ? TraumColors.mintGreenDim : TraumColors.surfaceVariant,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              med.isActive ? 'Aktiv' : 'Inaktiv',
-              style: TextStyle(
-                color: med.isActive ? TraumColors.mintGreen : TraumColors.onBackgroundMuted,
-                fontFamily: 'DMSans', fontSize: 11, fontWeight: FontWeight.w600,
+          trailing: GestureDetector(
+            onTap: onToggle == null ? null : () => onToggle!(!med.isActive),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: med.isActive ? TraumColors.mintGreenDim : TraumColors.surfaceVariant,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                med.isActive ? 'Aktiv' : 'Inaktiv',
+                style: TextStyle(
+                  color: med.isActive ? TraumColors.mintGreen : TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans', fontSize: 11, fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
@@ -846,6 +917,159 @@ class _AddMedSheetState extends State<_AddMedSheet> {
       dosage: Value(_dosageCtrl.text.trim().isEmpty ? null : _dosageCtrl.text.trim()),
       form: Value(_form),
       timings: Value(jsonEncode(_times)),
+    ));
+    if (mounted) Navigator.pop(context);
+  }
+}
+
+// ─── Konsum-Erfassung (Substanz-Einnahme-Log) ───────────────────────────────
+class _AddIntakeSheet extends StatefulWidget {
+  final Future<void> Function(SubstanceIntakeLogsCompanion) onAdd;
+  const _AddIntakeSheet({required this.onAdd});
+
+  @override
+  State<_AddIntakeSheet> createState() => _AddIntakeSheetState();
+}
+
+class _AddIntakeSheetState extends State<_AddIntakeSheet> {
+  final _nameCtrl = TextEditingController();
+  final _dosageCtrl = TextEditingController();
+  final _unitCtrl = TextEditingController();
+  DateTime _takenAt = DateTime.now();
+  bool _saving = false;
+
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    _dosageCtrl.dispose();
+    _unitCtrl.dispose();
+    super.dispose();
+  }
+
+  InputDecoration _dec(String label) => InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(
+            color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+        filled: true,
+        fillColor: TraumColors.surface,
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(TraumRadius.card),
+            borderSide: BorderSide.none),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(width: 40, height: 4,
+                decoration: BoxDecoration(
+                    color: TraumColors.onBackgroundSubtle,
+                    borderRadius: BorderRadius.circular(2))),
+          ),
+          const SizedBox(height: 16),
+          const Text('Konsum erfassen',
+              style: TextStyle(color: TraumColors.onBackground,
+                  fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _nameCtrl,
+            style: const TextStyle(
+                color: TraumColors.onBackground, fontFamily: 'DMSans'),
+            decoration: _dec('Substanz'),
+          ),
+          const SizedBox(height: 12),
+          Row(children: [
+            Expanded(
+              child: TextField(
+                controller: _dosageCtrl,
+                style: const TextStyle(
+                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                decoration: _dec('Dosis'),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: TextField(
+                controller: _unitCtrl,
+                style: const TextStyle(
+                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                decoration: _dec('Einheit'),
+              ),
+            ),
+          ]),
+          const SizedBox(height: 12),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Zeitpunkt',
+                style: TextStyle(
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans', fontSize: 13)),
+            trailing: Text(
+              '${_takenAt.day.toString().padLeft(2, '0')}.${_takenAt.month.toString().padLeft(2, '0')} ${_takenAt.hour.toString().padLeft(2, '0')}:${_takenAt.minute.toString().padLeft(2, '0')}',
+              style: const TextStyle(
+                  color: TraumColors.coralOrange,
+                  fontFamily: 'DMSans', fontWeight: FontWeight.w600),
+            ),
+            onTap: _pickTime,
+          ),
+          const SizedBox(height: 12),
+          GradientButton(
+              label: _saving ? 'Speichern…' : 'Erfassen',
+              onPressed: _saving ? null : _save),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pickTime() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: _takenAt,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+      builder: (ctx, child) => Theme(
+        data: ThemeData.dark().copyWith(
+            colorScheme:
+                const ColorScheme.dark(primary: TraumColors.coralOrange)),
+        child: child!,
+      ),
+    );
+    if (date == null) return;
+    if (!mounted) return;
+    final time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(_takenAt),
+    );
+    setState(() => _takenAt = DateTime(
+        date.year, date.month, date.day, time?.hour ?? 0, time?.minute ?? 0));
+  }
+
+  Future<void> _save() async {
+    if (_nameCtrl.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Bitte Substanz angeben')));
+      return;
+    }
+    setState(() => _saving = true);
+    await widget.onAdd(SubstanceIntakeLogsCompanion.insert(
+      substanceName: _nameCtrl.text.trim(),
+      dosage: Value(
+          _dosageCtrl.text.trim().isEmpty ? null : _dosageCtrl.text.trim()),
+      unit: Value(_unitCtrl.text.trim().isEmpty ? null : _unitCtrl.text.trim()),
+      takenAt: _takenAt,
     ));
     if (mounted) Navigator.pop(context);
   }

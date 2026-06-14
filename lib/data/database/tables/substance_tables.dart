@@ -11,3 +11,13 @@ class SubstanceCaches extends Table {
   @override
   Set<Column> get primaryKey => {substanceId};
 }
+
+/// Persistiertes Einnahme-/Konsum-Log einer Substanz.
+class SubstanceIntakeLogs extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get substanceName => text()();
+  TextColumn get dosage => text().nullable()();
+  TextColumn get unit => text().nullable()();
+  DateTimeColumn get takenAt => dateTime()();
+  TextColumn get note => text().nullable()();
+}

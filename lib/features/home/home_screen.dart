@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../core/navigation/routes.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/utils/date_utils.dart' as traum_dates;
@@ -114,7 +116,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               IconButton(
                 icon: const Icon(Icons.notifications_outlined,
                     color: TraumColors.onBackground),
-                onPressed: () {},
+                onPressed: () => context.push(Routes.notifications),
               ),
               IconButton(
                 icon: Icon(

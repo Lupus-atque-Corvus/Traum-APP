@@ -24,6 +24,11 @@ class MedicationDao extends DatabaseAccessor<TraumDatabase>
   Future<bool> updateMedication(MedicationsCompanion entry) =>
       update(medications).replace(entry);
 
+  /// Toggles only the active flag without touching other columns.
+  Future<int> setMedicationActive(int id, bool active) =>
+      (update(medications)..where((t) => t.id.equals(id)))
+          .write(MedicationsCompanion(isActive: Value(active)));
+
   Future<int> deleteMedication(int id) =>
       (delete(medications)..where((t) => t.id.equals(id))).go();
 

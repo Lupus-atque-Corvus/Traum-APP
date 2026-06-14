@@ -1,7 +1,66 @@
+import 'dart:convert';
+
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
+
+import '../../data/database/traum_database.dart';
+
+/// Action id for the "Genommen" (taken) button on medication reminders.
+const String kMedTakenActionId = 'med_taken';
+
+/// Marks the next due dose of each active medication as taken for today.
+///
+/// Opens its own [TraumDatabase] so it works from a background isolate
+/// (same pattern as [widgetWorkmanagerDispatcher]).
+Future<void> markMedicationsTakenFromNotification() async {
+  final db = TraumDatabase();
+  try {
+    final meds = await db.medicationDao.getActiveMedications();
+    final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day);
+    final logs = await db.medicationDao.watchLogsForDate(todayStart).first;
+    for (final med in meds) {
+      List<String> times;
+      try {
+        times = (jsonDecode(med.timings) as List).cast<String>();
+      } catch (_) {
+        times = const [];
+      }
+      if (times.isEmpty) continue;
+      final takenCount =
+          logs.where((l) => l.medicationId == med.id && l.taken).length;
+      if (takenCount >= times.length) continue;
+      final parts = times[takenCount].split(':');
+      var sched = DateTime(now.year, now.month, now.day);
+      if (parts.length == 2) {
+        sched = DateTime(now.year, now.month, now.day,
+            int.tryParse(parts[0]) ?? 0, int.tryParse(parts[1]) ?? 0);
+      }
+      await db.medicationDao.insertLog(MedicationLogsCompanion.insert(
+        medicationId: med.id,
+        scheduledAt: sched,
+        takenAt: Value(now),
+        taken: const Value(true),
+      ));
+    }
+  } catch (_) {
+    // Never let a notification action crash the isolate.
+  } finally {
+    await db.close();
+  }
+}
+
+/// Background (terminated/background app) notification-response handler.
+/// Must be top-level + `@pragma('vm:entry-point')` so AOT keeps it.
+@pragma('vm:entry-point')
+void notificationTapBackground(NotificationResponse response) {
+  if (response.actionId == kMedTakenActionId) {
+    markMedicationsTakenFromNotification();
+  }
+}
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _plugin =
@@ -25,6 +84,8 @@ class NotificationService {
         android: androidSettings,
         iOS: darwinSettings,
       ),
+      onDidReceiveNotificationResponse: _onNotificationResponse,
+      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
 
     await _createChannels();
@@ -112,6 +173,7 @@ class NotificationService {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
 
+    final isMedication = channelId == 'medication';
     await _plugin.zonedSchedule(
       id,
       title,
@@ -123,14 +185,31 @@ class NotificationService {
           channelId,
           importance: Importance.high,
           priority: Priority.high,
+          actions: isMedication
+              ? <AndroidNotificationAction>[
+                  const AndroidNotificationAction(
+                    kMedTakenActionId,
+                    'Genommen',
+                    showsUserInterface: false,
+                  ),
+                ]
+              : null,
         ),
         iOS: const DarwinNotificationDetails(),
       ),
+      payload: isMedication ? kMedTakenActionId : null,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
+  }
+
+  /// Foreground notification-response handler (app running).
+  static void _onNotificationResponse(NotificationResponse response) {
+    if (response.actionId == kMedTakenActionId) {
+      markMedicationsTakenFromNotification();
+    }
   }
 
   static Future<void> cancel(int id) => _plugin.cancel(id);

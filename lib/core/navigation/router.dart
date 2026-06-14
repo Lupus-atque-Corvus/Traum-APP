@@ -14,6 +14,7 @@ import '../../features/training/workout_plan_detail_screen.dart';
 import '../../features/training/routines_screen.dart';
 import '../../features/training/new_routine_screen.dart';
 import '../../features/training/muscle_heatmap_screen.dart';
+import '../../features/training/workout_history_screen.dart';
 import '../../features/training/training_wizard_screen.dart';
 import '../../features/health/health_screen.dart';
 import '../../features/health/health_score_detail_screen.dart';
@@ -34,6 +35,7 @@ import '../../features/period_tracking/period_screen.dart';
 import '../../features/period_tracking/period_calendar_screen.dart';
 import '../../features/period_tracking/cycle_history_screen.dart';
 import '../../features/settings/settings_screen.dart';
+import '../../features/notifications/notification_center_screen.dart';
 import '../../features/profile/profile_screen.dart';
 import '../../features/lock/biometric_lock_screen.dart';
 import '../../features/lock/pin_lock_screen.dart';
@@ -102,6 +104,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (_, __) => const HomeScreen(),
           ),
           GoRoute(
+            path: Routes.notifications,
+            builder: (_, __) => const NotificationCenterScreen(),
+          ),
+          GoRoute(
             path: Routes.training,
             builder: (_, __) => const TrainingScreen(),
             routes: [
@@ -144,6 +150,10 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'heatmap',
                 builder: (_, __) => const MuscleHeatmapScreen(),
+              ),
+              GoRoute(
+                path: 'history',
+                builder: (_, __) => const WorkoutHistoryScreen(),
               ),
             ],
           ),

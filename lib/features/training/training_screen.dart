@@ -96,7 +96,7 @@ class TrainingScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.history_rounded, color: TraumColors.onBackgroundMuted),
-            onPressed: () {},
+            onPressed: () => context.push(Routes.workoutHistory),
           ),
         ],
       ),

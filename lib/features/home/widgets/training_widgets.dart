@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -624,33 +626,92 @@ class _PersonalRecordsContent extends ConsumerWidget {
   }
 }
 
-// ─── Rest timer quick (static start-button look) ──────────────────────────────
-class _RestTimerQuickContent extends StatelessWidget {
+// ─── Rest timer quick (inline countdown) ──────────────────────────────────────
+class _RestTimerQuickContent extends StatefulWidget {
   const _RestTimerQuickContent();
 
   @override
+  State<_RestTimerQuickContent> createState() => _RestTimerQuickContentState();
+}
+
+class _RestTimerQuickContentState extends State<_RestTimerQuickContent> {
+  static const int _defaultSeconds = 90;
+  int _remaining = _defaultSeconds;
+  Timer? _timer;
+
+  bool get _running => _timer != null;
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _toggle() {
+    if (_running) {
+      _timer?.cancel();
+      setState(() => _timer = null);
+      return;
+    }
+    if (_remaining <= 0) _remaining = _defaultSeconds;
+    setState(() {
+      _timer = Timer.periodic(const Duration(seconds: 1), (t) {
+        if (_remaining <= 1) {
+          t.cancel();
+          setState(() {
+            _remaining = 0;
+            _timer = null;
+          });
+        } else {
+          setState(() => _remaining--);
+        }
+      });
+    });
+  }
+
+  void _reset() {
+    _timer?.cancel();
+    setState(() {
+      _timer = null;
+      _remaining = _defaultSeconds;
+    });
+  }
+
+  String get _label {
+    final m = _remaining ~/ 60;
+    final s = _remaining % 60;
+    return '$m:${s.toString().padLeft(2, '0')}';
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final showCountdown = _running || _remaining != _defaultSeconds;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          width: 54,
-          height: 54,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: TraumColors.mintGreen.withValues(alpha: 0.15),
-            border: Border.all(color: TraumColors.mintGreen, width: 2),
-          ),
-          child: const Icon(
-            Icons.play_arrow_rounded,
-            color: TraumColors.mintGreen,
-            size: 30,
+        GestureDetector(
+          onTap: _toggle,
+          onLongPress: _reset,
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            width: 54,
+            height: 54,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: TraumColors.mintGreen.withValues(alpha: 0.15),
+              border: Border.all(color: TraumColors.mintGreen, width: 2),
+            ),
+            child: Icon(
+              _running ? Icons.pause_rounded : Icons.play_arrow_rounded,
+              color: TraumColors.mintGreen,
+              size: 30,
+            ),
           ),
         ),
         const SizedBox(height: 6),
-        const Text(
-          'Start',
-          style: TextStyle(
+        Text(
+          showCountdown ? _label : 'Start',
+          style: const TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w700,
             color: TraumColors.mintGreen,

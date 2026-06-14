@@ -15,6 +15,7 @@ class Routes {
   static const String routines = '/training/routines';
   static const String newRoutine = '/training/routines/new';
   static const String muscleHeatmap = '/training/heatmap';
+  static const String workoutHistory = '/training/history';
   static const String health = '/health';
   static const String healthScoreDetail = '/health/score-detail';
   static const String nutrition = '/nutrition';
@@ -45,6 +46,7 @@ class Routes {
   static const String notesTemplates = '/notes/templates';
   static const String notesTrash = '/notes/trash';
   static const String settings = '/settings';
+  static const String notifications = '/notifications';
   static const String profile = '/profile';
   static const String biometricLock = '/biometric-lock';
   static const String pinEntry = '/pin-entry';

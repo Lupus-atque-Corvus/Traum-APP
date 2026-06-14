@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/providers/database_provider.dart';
 import '../core/providers/preferences_provider.dart';
+import '../data/services/health_service.dart';
 import '../features/budget/budget_providers.dart';
 import '../features/diary/diary_provider.dart';
 import '../features/graffiti_map/graffiti_map_provider.dart'
@@ -246,8 +247,11 @@ class WidgetDataCollector {
   ) async {
     final empty = WidgetSnapshot.empty();
 
-    // ── steps (FALLBACK: keine Quelle) ────────────────────────────────────────
-    final int stepsToday = empty.steps; // 0
+    // ── steps (REAL: HealthService.stepsToday() via Health Connect/HealthKit) ─
+    int stepsToday = empty.steps;
+    try {
+      stepsToday = await HealthService.stepsToday();
+    } catch (_) {}
 
     // ── stepsGoal (REAL: preferences_provider.dart – stepsGoalProvider) ───────
     int stepsGoal = empty.stepsGoal;
@@ -269,8 +273,11 @@ class WidgetDataCollector {
       }
     } catch (_) {}
 
-    // ── heartRate (FALLBACK: keine Quelle; widget zeigt '—') ──────────────────
-    final int heartRate = empty.heartRate; // 0
+    // ── heartRate (REAL: HealthService.latestHeartRate() last 24h) ───────────
+    int heartRate = empty.heartRate;
+    try {
+      heartRate = await HealthService.latestHeartRate();
+    } catch (_) {}
 
     // ── mood (REAL: healthDaoProvider.getLatestMood()) ────────────────────────
     // Same logic as _MoodContent in health_widgets.dart
@@ -368,8 +375,11 @@ class WidgetDataCollector {
       }
     } catch (_) {}
 
-    // ── activeMinutes (FALLBACK: keine Quelle; widget zeigt '—') ─────────────
-    const int activeMinutes = 0;
+    // ── activeMinutes (REAL: HealthService.activeMinutesToday()) ─────────────
+    int activeMinutes = 0;
+    try {
+      activeMinutes = await HealthService.activeMinutesToday();
+    } catch (_) {}
 
     // ── carbs (REAL: todaysTotalsProvider → carbs) ────────────────────────────
     // Same source as _MacrosContent in nutrition_widgets.dart
@@ -467,17 +477,19 @@ class WidgetDataCollector {
       habitsDone = doneIds.length;
     } catch (_) {}
 
-    // ── medsDone / medsTotal (REAL: medicationDaoProvider.getActiveMedications()) ──
-    // Same logic as _MedicationsTodayContent in planning_widgets.dart
-    // medsDone: FALLBACK: keine Quelle (no taken-today log read in the tile)
-    int medsDone = 0; // FALLBACK: keine Quelle
+    // ── medsDone / medsTotal (REAL: medicationDaoProvider) ───────────────────
+    // medsTotal: active meds with at least one scheduled time.
+    // medsDone: getTakenCountToday() — taken-logs written by the "Heute" card.
+    int medsDone = 0;
     int medsTotal = 0;
     try {
-      final meds = await read(medicationDaoProvider).getActiveMedications();
+      final dao = read(medicationDaoProvider);
+      final meds = await dao.getActiveMedications();
       medsTotal = meds
           .where(
               (m) => m.timings.trim().isNotEmpty && m.timings.trim() != '[]')
           .length;
+      medsDone = await dao.getTakenCountToday();
     } catch (_) {}
 
     // ── balanceMonth / income / expense (REAL: budgetDaoProvider.getTransactionsForMonth) ──
@@ -573,14 +585,27 @@ class WidgetDataCollector {
       }
     }
 
-    // ── moneySaved (FALLBACK: keine Quelle; widget zeigt '—') ────────────────
-    const double moneySaved = 0.0;
+    // ── moneySaved (REAL: Σ costPerDay × Tage über aktive Tracker) ───────────
+    // Reuses allTrackers; costPerDay (v16) is null when the user left it blank.
+    double moneySaved = 0.0;
+    for (final t in allTrackers) {
+      if (t.isActive == true && t.costPerDay != null) {
+        moneySaved += (t.costPerDay as double) * _daysSince(t.startDate);
+      }
+    }
 
-    // ── lastIntake (FALLBACK: keine Quelle; kein Intake-Log persistiert) ─────
-    const String lastIntake = '';
+    // ── lastIntake (REAL: substanceDaoProvider.getLastIntake() → name) ───────
+    String lastIntake = '';
+    try {
+      final last = await read(substanceDaoProvider).getLastIntake();
+      if (last != null) lastIntake = last.substanceName;
+    } catch (_) {}
 
-    // ── takenToday (FALLBACK: keine Quelle; kein Intake-Log persistiert) ─────
-    const int takenToday = 0;
+    // ── takenToday (REAL: substanceDaoProvider.getIntakeCountToday()) ────────
+    int takenToday = 0;
+    try {
+      takenToday = await read(substanceDaoProvider).getIntakeCountToday();
+    } catch (_) {}
 
     // ── cycleDay (REAL: periodDaoProvider.getLatestPeriodEntry()) ────────────
     // Same logic as _CycleDayContent in misc_widgets.dart
@@ -592,8 +617,47 @@ class WidgetDataCollector {
       }
     } catch (_) {}
 
-    // ── periodPhase (FALLBACK: keine Quelle; Kachel zeigt keinen phase-Text) ─
-    const String periodPhase = '';
+    // ── periodPhase (REAL: abgeleitet aus PeriodEntry + CycleCalculation) ─────
+    // Gleiche Logik wie _CycleStatusCard in period_screen.dart:
+    // Menstruation (innerhalb Periode) → Ovulation → Fruchtbar → Luteal → Follikel.
+    String periodPhase = '';
+    try {
+      final dao = read(periodDaoProvider);
+      final latest = await dao.getLatestPeriodEntry();
+      if (latest != null) {
+        final now = DateTime.now();
+        final today = DateTime(now.year, now.month, now.day);
+        final start = DateTime(
+            latest.startDate.year, latest.startDate.month, latest.startDate.day);
+        final end = latest.endDate;
+        final inPeriod = !today.isBefore(start) &&
+            (end == null
+                ? today.difference(start).inDays < 7
+                : !today.isAfter(DateTime(end.year, end.month, end.day)));
+        if (inPeriod) {
+          periodPhase = 'Menstruation';
+        } else {
+          final calc = await dao.getCalculationForEntry(latest.id);
+          final ov = calc?.ovulationDate;
+          final fs = calc?.fertileStart;
+          final fe = calc?.fertileEnd;
+          final ovDay =
+              ov == null ? null : DateTime(ov.year, ov.month, ov.day);
+          if (ovDay != null && today == ovDay) {
+            periodPhase = 'Ovulation';
+          } else if (fs != null &&
+              fe != null &&
+              !today.isBefore(DateTime(fs.year, fs.month, fs.day)) &&
+              !today.isAfter(DateTime(fe.year, fe.month, fe.day))) {
+            periodPhase = 'Fruchtbar';
+          } else if (ovDay != null && today.isAfter(ovDay)) {
+            periodPhase = 'Lutealphase';
+          } else {
+            periodPhase = 'Follikelphase';
+          }
+        }
+      }
+    } catch (_) {}
 
     // ── nextPeriodDays (REAL: periodDaoProvider.getCalculationForEntry()) ─────
     // Same logic as _NextPeriodContent in misc_widgets.dart
@@ -712,19 +776,32 @@ class WidgetDataCollector {
     // ── quickActions (FALLBACK: keine Quelle; statische Liste, kein Snapshot-Wert) ──
     const String quickActions = ''; // FALLBACK: keine Quelle
 
-    // ── caloriesBurned (FALLBACK: keine Quelle; kein Burn-Tracking implementiert) ──
-    const int caloriesBurned = 0; // FALLBACK: keine Quelle
+    // ── caloriesBurned (REAL: HealthService.caloriesBurnedToday()) ───────────
+    int caloriesBurned = 0;
+    try {
+      caloriesBurned = await HealthService.caloriesBurnedToday();
+    } catch (_) {}
 
-    // ── stepsWeekAvg (FALLBACK: keine Quelle; kein Step-Log für Wochenschnitt) ─
-    const int stepsWeekAvg = 0; // FALLBACK: keine Quelle
+    // ── stepsWeekAvg (REAL: HealthService.stepsWeekAvg() last 7 days) ────────
+    int stepsWeekAvg = 0;
+    try {
+      stepsWeekAvg = await HealthService.stepsWeekAvg();
+    } catch (_) {}
 
-    // ── supplementsToday (REAL: todaysTotalsProvider — count of supplement entries today) ──
-    // supplementsToday: FALLBACK — no distinct supplement table separate from meal logs
-    const int supplementsToday = 0; // FALLBACK: keine Quelle
+    // ── supplementsToday (REAL: supplementDaoProvider.getTakenCountToday()) ───
+    // Same source as supplementsTakenTodayProvider in nutrition_providers.dart
+    int supplementsToday = 0;
+    try {
+      supplementsToday = await read(supplementDaoProvider).getTakenCountToday();
+    } catch (_) {}
 
-    // ── mealsToday (REAL: todaysTotalsProvider — could count meal entries, but no per-meal count exposed) ──
-    // mealsToday: FALLBACK — no meal-count field on MacroSummary
-    const int mealsToday = 0; // FALLBACK: keine Quelle
+    // ── mealsToday (REAL: todaysMealEntriesProvider → distinct mealType count) ─
+    // Same source as todaysMealEntriesProvider in nutrition_providers.dart
+    int mealsToday = 0;
+    try {
+      final entries = await read(todaysMealEntriesProvider.future);
+      mealsToday = entries.map((e) => e.mealType).toSet().length;
+    } catch (_) {}
 
     // ── muscleHeatmap (FALLBACK: keine Quelle; Heatmap ist visuelle Darstellung) ──
     const int muscleHeatmap = 0; // FALLBACK: keine Quelle
@@ -755,8 +832,18 @@ class WidgetDataCollector {
       weeklyWorkouts = sessionIds.length;
     } catch (_) {}
 
-    // ── personalRecords (FALLBACK: keine PR-Tabelle / kein PR-Provider direkt lesbar) ──
-    const int personalRecords = 0; // FALLBACK: keine Quelle
+    // ── personalRecords (REAL: recentTrainingSetsProvider(365) → distinct exercises with weight) ──
+    // Same source as _PersonalRecordsContent in training_widgets.dart (best weight per exercise).
+    // Scalar = number of exercises that have at least one weighted working set on record.
+    int personalRecords = 0;
+    try {
+      final sets = await read(recentTrainingSetsProvider(365).future);
+      personalRecords = sets
+          .where((s) => (s.weightKg ?? 0) > 0)
+          .map((s) => s.exerciseId)
+          .toSet()
+          .length;
+    } catch (_) {}
 
     // ── restTimer (FALLBACK: keine Quelle; Rest-Timer ist transient, nicht gespeichert) ──
     const String restTimer = ''; // FALLBACK: keine Quelle
@@ -840,8 +927,20 @@ class WidgetDataCollector {
       recurringDue = recurring.length;
     } catch (_) {}
 
-    // ── monthTrend (FALLBACK: keine Quelle; Trend-Chart braucht Mehrmonate-Daten) ──
-    const String monthTrend = ''; // FALLBACK: keine Quelle
+    // ── monthTrend (REAL: trendDataProvider(sixMonths) → delta last two months) ──
+    // Same source as _MonthTrendContent in budget_widgets.dart (net = income - expenses).
+    String monthTrend = '';
+    try {
+      final bars = await read(trendDataProvider(TrendPeriod.sixMonths).future);
+      if (bars.length >= 2) {
+        final cur = bars.last.income - bars.last.expenses;
+        final prev = bars[bars.length - 2].income - bars[bars.length - 2].expenses;
+        final delta = cur - prev;
+        final arrow = delta >= 0 ? '▲' : '▼';
+        monthTrend =
+            '$arrow ${delta >= 0 ? '+' : ''}${delta.toStringAsFixed(0)} €';
+      }
+    } catch (_) {}
 
     // ── yearHeatmap (REAL: datesWithDiaryEntriesProvider → total distinct-date count) ──
     // Same source as _YearHeatmapContent in diary_widgets.dart, which watches
