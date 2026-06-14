@@ -1,5 +1,6 @@
 import WidgetKit
 import SwiftUI
+import AppIntents
 
 // MARK: - Color helpers
 
@@ -418,12 +419,125 @@ struct TraumMapWidget: Widget {
 
 // MARK: - Widget Bundle
 
+// MARK: - Configurable "Traum Funktion" widget (iOS 17+, AppIntent)
+
+@available(iOS 17.0, *)
+struct FunctionChoice: AppEntity {
+    let id: String
+    let title: String
+    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Funktion"
+    static var defaultQuery = FunctionQuery()
+    var displayRepresentation: DisplayRepresentation { DisplayRepresentation(title: "\(title)") }
+}
+
+@available(iOS 17.0, *)
+struct FunctionQuery: EntityQuery {
+    private func choice(_ d: WidgetCatalogDef) -> FunctionChoice {
+        FunctionChoice(id: d.key, title: "\(d.groupLabel) · \(d.title)")
+    }
+    func entities(for identifiers: [String]) async throws -> [FunctionChoice] {
+        WidgetCatalogSwift.functions.filter { identifiers.contains($0.key) }.map(choice)
+    }
+    func suggestedEntities() async throws -> [FunctionChoice] {
+        WidgetCatalogSwift.functions.map(choice)
+    }
+    func defaultResult() async -> FunctionChoice? { try? await suggestedEntities().first }
+}
+
+@available(iOS 17.0, *)
+struct SelectFunctionIntent: WidgetConfigurationIntent {
+    static var title: LocalizedStringResource = "Funktion wählen"
+    @Parameter(title: "Funktion") var function: FunctionChoice?
+}
+
+struct TraumFunctionEntry: TimelineEntry {
+    let date: Date
+    let values: [String: String]
+    let functionKey: String?
+}
+
+@available(iOS 17.0, *)
+struct TraumFunctionProvider: AppIntentTimelineProvider {
+    func placeholder(in context: Context) -> TraumFunctionEntry {
+        TraumFunctionEntry(date: Date(), values: [:], functionKey: nil)
+    }
+    func snapshot(for configuration: SelectFunctionIntent, in context: Context) async -> TraumFunctionEntry {
+        makeEntry(configuration.function?.id)
+    }
+    func timeline(for configuration: SelectFunctionIntent, in context: Context) async -> Timeline<TraumFunctionEntry> {
+        let entry = makeEntry(configuration.function?.id)
+        let next = Calendar.current.date(byAdding: .minute, value: 30, to: Date())!
+        return Timeline(entries: [entry], policy: .after(next))
+    }
+    private func makeEntry(_ key: String?) -> TraumFunctionEntry {
+        let d = UserDefaults(suiteName: "group.de.traum.widgets")
+        var values: [String: String] = [:]
+        for def in (WidgetCatalogSwift.tabs + WidgetCatalogSwift.functions) {
+            for slot in def.slots {
+                if let s = d?.string(forKey: slot.valueKey) { values[slot.valueKey] = s }
+                if let g = slot.goalKey, let s = d?.string(forKey: g) { values[g] = s }
+            }
+        }
+        return TraumFunctionEntry(date: Date(), values: values, functionKey: key)
+    }
+}
+
+struct FunctionRouterView: View {
+    let entry: TraumFunctionEntry
+    private var te: TraumEntry { TraumEntry(date: entry.date, values: entry.values) }
+    private var def: WidgetCatalogDef? { entry.functionKey.flatMap { WidgetCatalogSwift.byKey($0) } }
+    var body: some View {
+        if let def = def {
+            switch def.template {
+            case "progress":
+                ProgressWidgetView(entry: te, title: def.title, accentHex: def.accentHex,
+                    valueKey: def.slots.first?.valueKey ?? "", goalKey: def.slots.first?.goalKey ?? "",
+                    label: def.slots.first?.label ?? "")
+            case "dualStat":
+                DualStatWidgetView(entry: te, title: def.title, accentHex: def.accentHex,
+                    aKey: def.slots.first?.valueKey ?? "", aLabel: def.slots.first?.label ?? "",
+                    bKey: def.slots.count > 1 ? def.slots[1].valueKey : "",
+                    bLabel: def.slots.count > 1 ? def.slots[1].label : "")
+            case "list":
+                ListWidgetView(entry: te, title: def.title, accentHex: def.accentHex,
+                    rowKeys: def.slots.map { $0.valueKey })
+            default:
+                StatWidgetView(entry: te, title: def.title, accentHex: def.accentHex,
+                    valueKey: def.slots.first?.valueKey ?? "", label: def.slots.first?.label ?? "", suffix: "")
+            }
+        } else {
+            StatWidgetView(entry: te, title: "TRAUM", accentHex: "#FF6B3D",
+                valueKey: "", label: "Funktion wählen", suffix: "")
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+struct TraumFunctionWidget: Widget {
+    var body: some WidgetConfiguration {
+        AppIntentConfiguration(kind: "TraumFunctionWidget",
+                               intent: SelectFunctionIntent.self,
+                               provider: TraumFunctionProvider()) { entry in
+            FunctionRouterView(entry: entry)
+        }
+        .configurationDisplayName("TRAUM Funktion")
+        .description("Beliebige Funktion als Widget")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+    }
+}
+
+// MARK: - Widget Bundle
+
 @main
 struct TraumWidgetBundle: WidgetBundle {
+    @WidgetBundleBuilder
     var body: some Widget {
         TraumOverviewWidget(); TraumHealthWidget(); TraumNutritionWidget()
         TraumTrainingWidget(); TraumPlanningWidget(); TraumBudgetWidget()
         TraumDiaryWidget(); TraumAbstinenceWidget(); TraumSubstancesWidget()
         TraumPeriodWidget(); TraumNotesWidget(); TraumMapWidget()
+        if #available(iOS 17.0, *) {
+            TraumFunctionWidget()
+        }
     }
 }
