@@ -14,8 +14,8 @@ import de.traum.traum.R
 import es.antonborri.home_widget.HomeWidgetPlugin
 import es.antonborri.home_widget.HomeWidgetProvider
 
-/** Ein darzustellender Wert: Label + Group-Store-Key (+ optionaler Suffix wie " kcal"). */
-data class OverviewSlot(val label: String, val valueKey: String, val suffix: String = "")
+/** Ein darzustellender Wert: Label + Group-Store-Key (+ optionaler Suffix wie " kcal" + optionales Ziel für Ring). */
+data class OverviewSlot(val label: String, val valueKey: String, val suffix: String = "", val goalKey: String? = null)
 
 /**
  * Generische Basis für alle benannten Tab-Übersichts-Widgets.
@@ -25,6 +25,8 @@ abstract class BaseOverviewWidgetProvider : HomeWidgetProvider() {
     abstract val title: String
     abstract val accentHex: String
     abstract val route: String
+    /** Group-Slug für Gradient-Hintergrund + Header-Icon (z. B. "health"). */
+    abstract val group: String
     /** Slot 0 = Primärzahl, 1..3 = Sekundär-Zellen. */
     abstract val slots: List<OverviewSlot>
 
@@ -36,6 +38,10 @@ abstract class BaseOverviewWidgetProvider : HomeWidgetProvider() {
     ): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_template_overview)
         val accent = runCatching { Color.parseColor(accentHex) }.getOrDefault(Color.WHITE)
+
+        views.setInt(R.id.widget_root, "setBackgroundResource", WidgetAssets.bgRes(group))
+        views.setImageViewResource(R.id.iv_icon, WidgetAssets.iconRes(group))
+        views.setInt(R.id.iv_icon, "setColorFilter", accent)
 
         views.setTextViewText(R.id.tv_title, title.uppercase())
         views.setTextColor(R.id.tv_title, accent)
@@ -53,6 +59,7 @@ abstract class BaseOverviewWidgetProvider : HomeWidgetProvider() {
         if (primaryEmpty) {
             views.setTextViewText(R.id.tv_primary, "—")
             views.setTextViewText(R.id.tv_primary_label, "Noch keine Daten")
+            views.setViewVisibility(R.id.iv_graphic, View.GONE)
             views.setViewVisibility(R.id.row_secondary, View.GONE)
             views.setViewVisibility(R.id.row_tertiary, View.GONE)
             views.setViewVisibility(R.id.tv_footer, View.GONE)
@@ -60,6 +67,15 @@ abstract class BaseOverviewWidgetProvider : HomeWidgetProvider() {
             slot0?.let {
                 views.setTextViewText(R.id.tv_primary, read(it))
                 views.setTextViewText(R.id.tv_primary_label, it.label)
+            }
+            val goalKey = slot0?.goalKey
+            val v = slot0?.let { widgetData.getString(it.valueKey, "0")?.toDoubleOrNull() } ?: 0.0
+            val g = goalKey?.let { widgetData.getString(it, "0")?.toDoubleOrNull() } ?: 0.0
+            if (goalKey != null && g > 0) {
+                views.setImageViewBitmap(R.id.iv_graphic, WidgetGraphics.progressRing(v, g, accent, 140))
+                views.setViewVisibility(R.id.iv_graphic, View.VISIBLE)
+            } else {
+                views.setViewVisibility(R.id.iv_graphic, View.GONE)
             }
             slots.getOrNull(1)?.let {
                 views.setTextViewText(R.id.tv_s1_value, read(it)); views.setTextViewText(R.id.tv_s1_label, it.label)

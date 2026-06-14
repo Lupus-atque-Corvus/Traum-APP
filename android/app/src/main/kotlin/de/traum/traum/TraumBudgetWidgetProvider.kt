@@ -7,6 +7,7 @@ class TraumBudgetWidgetProvider : BaseOverviewWidgetProvider() {
     override val title = "Budget"
     override val accentHex = "#00D4D4"
     override val route = "/budget"
+    override val group = "budget"
     override val slots = listOf(
         OverviewSlot("Saldo", "budget.balanceMonth", " €"),
         OverviewSlot("Ausgaben", "budget.spent", " €"),

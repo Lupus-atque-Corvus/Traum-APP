@@ -7,6 +7,7 @@ class TraumHealthWidgetProvider : BaseOverviewWidgetProvider() {
     override val title = "Gesundheit"
     override val accentHex = "#F43F5E"
     override val route = "/health"
+    override val group = "health"
     override val slots = listOf(
         OverviewSlot("Score", "health.score"),
         OverviewSlot("Schlaf", "health.sleepHours", " h"),
