@@ -2,6 +2,13 @@ import 'widget_keys.dart';
 
 /// Vollständiger Datenstand für die Homescreen-Widgets.
 class WidgetSnapshot {
+  /// Kodiert eine Zahlenreihe als CSV-String ("4200,5100,…") für den Group-Store.
+  static String encodeSeries(List<num> values) =>
+      values.map((v) => v == v.roundToDouble() ? '${v.toInt()}' : '$v').join(',');
+
+  /// Kodiert Labels als ";"-getrennte Liste ("Apfel;Reis").
+  static String encodeLabels(List<String> labels) => labels.join(';');
+
   // ── health (Phase 1) ─────────────────────────────────────────────────────
   final int steps;
   final int stepsGoal;

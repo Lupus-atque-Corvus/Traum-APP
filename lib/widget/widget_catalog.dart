@@ -1,7 +1,7 @@
 import 'widget_keys.dart';
 
 /// Render-Vorlage eines Widgets. Wird in Kotlin/Swift gespiegelt.
-enum WidgetTemplate { stat, progress, dualStat, list, overview }
+enum WidgetTemplate { stat, progress, dualStat, list, overview, ring, ringTrio, barChart, sparkline, donut, dashboard, motivation }
 
 /// Eine Kennzahl-Zelle eines Widgets: Label + Wert-Schlüssel
 /// (+ optionales Ziel für Fortschritt).
