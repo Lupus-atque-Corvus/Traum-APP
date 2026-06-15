@@ -3430,4 +3430,172 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get obBirthDatePick => 'Datum wählen';
+
+  @override
+  String get cycleDayLabel => 'Zyklustag';
+
+  @override
+  String get phaseMenstrual => 'Menstruation';
+
+  @override
+  String get phaseFollicular => 'Follikelphase';
+
+  @override
+  String get phaseFertile => 'Fruchtbare Phase';
+
+  @override
+  String get phaseOvulation => 'Eisprung';
+
+  @override
+  String get phaseLuteal => 'Lutealphase';
+
+  @override
+  String get logPeriodShort => 'Periode';
+
+  @override
+  String get logSymptomShort => 'Symptom';
+
+  @override
+  String get logTempShort => 'Temp';
+
+  @override
+  String get logMore => 'Mehr';
+
+  @override
+  String nextPeriodIn(int days) {
+    return 'Periode in $days Tagen';
+  }
+
+  @override
+  String predictedRange(Object start, Object end) {
+    return 'Wahrscheinlich $start–$end';
+  }
+
+  @override
+  String get fertileWindowLabel => 'Fruchtbares Fenster';
+
+  @override
+  String get ovulationEstimatedLabel => 'Eisprung (geschätzt)';
+
+  @override
+  String get ovulationConfirmedLabel => 'Eisprung (bestätigt)';
+
+  @override
+  String get loggedToday => 'Heute geloggt';
+
+  @override
+  String get nothingLoggedToday => 'Noch nichts geloggt';
+
+  @override
+  String get cycleLengthsTitle => 'Zykluslängen';
+
+  @override
+  String cycleLengthsSubtitle(int avg) {
+    return 'Ø $avg T · Normbereich 21–35';
+  }
+
+  @override
+  String get bbtCurveTitle => 'Basaltemperatur-Kurve';
+
+  @override
+  String get bbtConfirmsOvulation =>
+      'Temperatur-Sprung bestätigt Eisprung (symptothermal)';
+
+  @override
+  String get cycleAnalysisTitle => 'Zyklus-Analyse';
+
+  @override
+  String get regularityRegular => 'Regelmäßig';
+
+  @override
+  String get regularitySlightly => 'Leicht unregelmäßig';
+
+  @override
+  String get regularityIrregular => 'Unregelmäßig';
+
+  @override
+  String get regularityUnknown => 'Zu wenig Daten';
+
+  @override
+  String variabilityDays(int days) {
+    return 'Schwankung ±$days Tage';
+  }
+
+  @override
+  String gynAgeYears(int years) {
+    return 'Gyn. Alter: $years J seit Menarche';
+  }
+
+  @override
+  String get symptomPatternsTitle => 'Muster über Zyklen';
+
+  @override
+  String get healthFlagConsistentlyLong => 'Mehrere Zyklen länger als 35 Tage.';
+
+  @override
+  String get healthFlagConsistentlyShort =>
+      'Mehrere Zyklen kürzer als 21 Tage.';
+
+  @override
+  String get healthFlagLongPeriod => 'Deine Periode dauert ungewöhnlich lange.';
+
+  @override
+  String get healthFlagHighVariability => 'Deine Zykluslänge schwankt stark.';
+
+  @override
+  String get healthAllNormal => 'Alles im Normbereich.';
+
+  @override
+  String get menarcheTitle => 'Erste Periode (Menarche)';
+
+  @override
+  String get menarcheNotSet => 'Nicht festgelegt';
+
+  @override
+  String get lutealPhaseTitle => 'Lutealphasen-Länge';
+
+  @override
+  String get cycleSettingsTitle => 'Zyklus-Einstellungen';
+
+  @override
+  String get energyLabel => 'Energie';
+
+  @override
+  String get bbtInputLabel => 'Basaltemperatur (°C)';
+
+  @override
+  String get cervicalMucusLabel => 'Zervixschleim';
+
+  @override
+  String get mucusDry => 'Trocken';
+
+  @override
+  String get mucusSticky => 'Klebrig';
+
+  @override
+  String get mucusCreamy => 'Cremig';
+
+  @override
+  String get mucusWatery => 'Wässrig';
+
+  @override
+  String get mucusEggWhite => 'Eiweißartig';
+
+  @override
+  String get sexLabel => 'Sex';
+
+  @override
+  String get sexNone => 'Keiner';
+
+  @override
+  String get sexProtected => 'Geschützt';
+
+  @override
+  String get sexUnprotected => 'Ungeschützt';
+
+  @override
+  String get logTodayTitle => 'Heute eintragen';
+
+  @override
+  String get saveLog => 'Speichern';
 }
