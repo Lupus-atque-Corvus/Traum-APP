@@ -10,6 +10,9 @@ class WidgetKeys {
   static const String weatherForecast = 'general.weatherForecast';
   static const String appFavorites = 'general.appFavorites';
   static const String quickActions = 'general.quickActions';
+  static const String quote = 'general.quote';
+  static const String countdownLabel = 'general.countdownLabel';
+  static const String countdownDays = 'general.countdownDays';
 
   // ── health ──────────────────────────────────────────────────────────────
   static const String steps = 'health.steps';
@@ -22,6 +25,13 @@ class WidgetKeys {
   static const String activeMinutes = 'health.activeMinutes';
   static const String caloriesBurned = 'health.caloriesBurned';
   static const String stepsWeekAvg = 'health.stepsWeekAvg';
+  // ── v2 series + fixed-goal defaults ───────────────────────────────────────
+  static const String stepsWeek = 'health.stepsWeek';
+  static const String sleepWeek = 'health.sleepWeek';
+  static const String weightHistory = 'health.weightHistory';
+  static const String moodWeek = 'health.moodWeek';
+  static const String sleepGoalH = 'health.sleepGoalH';
+  static const String activeGoalMin = 'health.activeGoalMin';
 
   // ── nutrition ────────────────────────────────────────────────────────────
   static const String kcal = 'nutrition.kcal';
@@ -35,6 +45,8 @@ class WidgetKeys {
   static const String lastMeal = 'nutrition.lastMeal';
   static const String supplementsToday = 'nutrition.supplementsToday';
   static const String mealsToday = 'nutrition.mealsToday';
+  static const String macroSplit = 'nutrition.macroSplit';
+  static const String mealsTodayList = 'nutrition.mealsTodayList';
 
   // ── training ─────────────────────────────────────────────────────────────
   static const String nextWorkout = 'training.nextWorkout';
@@ -45,6 +57,7 @@ class WidgetKeys {
   static const String weeklyWorkouts = 'training.weeklyWorkouts';
   static const String personalRecords = 'training.personalRecords';
   static const String restTimer = 'training.restTimer';
+  static const String volumeWeek = 'training.volumeWeek';
 
   // ── planning ─────────────────────────────────────────────────────────────
   static const String nextTodo = 'planning.nextTodo';
@@ -56,6 +69,8 @@ class WidgetKeys {
   static const String medsTotal = 'planning.medsTotal';
   static const String overdueTodos = 'planning.overdueTodos';
   static const String bestHabitStreak = 'planning.bestHabitStreak';
+  static const String todayAgenda = 'planning.todayAgenda';
+  static const String habitWeek = 'planning.habitWeek';
 
   // ── budget ───────────────────────────────────────────────────────────────
   static const String balanceMonth = 'budget.balanceMonth';
@@ -69,6 +84,8 @@ class WidgetKeys {
   static const String savingsGoal = 'budget.savingsGoal';
   static const String recurringDue = 'budget.recurringDue';
   static const String monthTrend = 'budget.monthTrend';
+  static const String categorySplit = 'budget.categorySplit';
+  static const String monthTrendSeries = 'budget.monthTrendSeries';
 
   // ── diary ─────────────────────────────────────────────────────────────────
   static const String writeStreak = 'diary.writeStreak';
@@ -83,6 +100,7 @@ class WidgetKeys {
   static const String moneySaved = 'abstinence.moneySaved';
   static const String longestStreak = 'abstinence.longestStreak';
   static const String allCounters = 'abstinence.allCounters';
+  static const String counters = 'abstinence.counters';
 
   // ── substances ───────────────────────────────────────────────────────────
   static const String lastIntake = 'substances.lastIntake';
@@ -92,6 +110,7 @@ class WidgetKeys {
   static const String cycleDay = 'period.cycleDay';
   static const String periodPhase = 'period.phase';
   static const String nextPeriodDays = 'period.nextDays';
+  static const String cycleLenDays = 'period.cycleLenDays';
 
   // ── notes ─────────────────────────────────────────────────────────────────
   static const String notesCount = 'notes.count';

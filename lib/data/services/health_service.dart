@@ -70,6 +70,26 @@ class HealthService {
     }
   }
 
+  /// Daily step counts for the last 7 days, ordered oldest → newest.
+  /// Missing days are reported as 0. Empty list on error.
+  static Future<List<int>> stepsWeek() async {
+    try {
+      await _ensureConfigured();
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final result = <int>[];
+      for (var i = 6; i >= 0; i--) {
+        final dayStart = today.subtract(Duration(days: i));
+        final dayEnd = dayStart.add(const Duration(days: 1));
+        final steps = await _health.getTotalStepsInInterval(dayStart, dayEnd);
+        result.add(steps ?? 0);
+      }
+      return result;
+    } catch (_) {
+      return const [];
+    }
+  }
+
   /// Most recent heart-rate reading within the last 24h (bpm), else 0.
   static Future<int> latestHeartRate() async {
     try {

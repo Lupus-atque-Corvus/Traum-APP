@@ -127,6 +127,22 @@ class WidgetDataCollector {
     int allCounters = 0,
     // ── Phase 3 — notes ───────────────────────────────────────────────────────
     String pinnedNote = '',
+    // ── v2 series (CSV / labels) ──────────────────────────────────────────────
+    String stepsWeek = '',
+    String sleepWeek = '',
+    String weightHistory = '',
+    String moodWeek = '',
+    String macroSplit = '',
+    String mealsTodayList = '',
+    String volumeWeek = '',
+    String todayAgenda = '',
+    String habitWeek = '',
+    String categorySplit = '',
+    String monthTrendSeries = '',
+    String counters = '',
+    String quote = '',
+    String countdownLabel = '',
+    String countdownDays = '',
   }) {
     return WidgetSnapshot(
       // Phase 1
@@ -226,6 +242,22 @@ class WidgetDataCollector {
       allCounters: allCounters,
       // Phase 3 — notes
       pinnedNote: pinnedNote,
+      // v2 series
+      stepsWeek: stepsWeek,
+      sleepWeek: sleepWeek,
+      weightHistory: weightHistory,
+      moodWeek: moodWeek,
+      macroSplit: macroSplit,
+      mealsTodayList: mealsTodayList,
+      volumeWeek: volumeWeek,
+      todayAgenda: todayAgenda,
+      habitWeek: habitWeek,
+      categorySplit: categorySplit,
+      monthTrendSeries: monthTrendSeries,
+      counters: counters,
+      quote: quote,
+      countdownLabel: countdownLabel,
+      countdownDays: countdownDays,
     );
   }
 
@@ -995,6 +1027,165 @@ class WidgetDataCollector {
       }
     } catch (_) {}
 
+    // ── v2 series (REAL where a source exists, else FALLBACK '') ─────────────
+
+    // stepsWeek (REAL: HealthService.stepsWeek() — 7-day daily series)
+    String stepsWeekSeries = '';
+    try {
+      final week = await HealthService.stepsWeek();
+      if (week.isNotEmpty) stepsWeekSeries = WidgetSnapshot.encodeSeries(week);
+    } catch (_) {}
+
+    // weightHistory (REAL: getAllWeightLogs() → last 7, oldest→newest)
+    String weightHistory = '';
+    try {
+      final logs = await read(healthDaoProvider).getAllWeightLogs(); // desc by date
+      if (logs.isNotEmpty) {
+        final last7 =
+            logs.take(7).toList().reversed.map((l) => l.weightKg).toList();
+        weightHistory = WidgetSnapshot.encodeSeries(last7);
+      }
+    } catch (_) {}
+
+    // moodWeek (REAL: getMoodLogsAfter(7d) → latest score per day, 0 if none)
+    String moodWeekSeries = '';
+    try {
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final since = today.subtract(const Duration(days: 6));
+      final logs = await read(healthDaoProvider).getMoodLogsAfter(since);
+      if (logs.isNotEmpty) {
+        final perDay = <num>[];
+        for (var i = 6; i >= 0; i--) {
+          final day = today.subtract(Duration(days: i));
+          final dayLogs = logs.where((l) =>
+              l.logDate.year == day.year &&
+              l.logDate.month == day.month &&
+              l.logDate.day == day.day);
+          perDay.add(dayLogs.isEmpty ? 0 : dayLogs.last.moodScore);
+        }
+        moodWeekSeries = WidgetSnapshot.encodeSeries(perDay);
+      }
+    } catch (_) {}
+
+    // sleepWeek (REAL: getRecentSleepLogs(7) → hours per day, 0 if none)
+    String sleepWeekSeries = '';
+    try {
+      final logs = await read(healthDaoProvider).getRecentSleepLogs(7);
+      if (logs.isNotEmpty) {
+        final now = DateTime.now();
+        final today = DateTime(now.year, now.month, now.day);
+        final perDay = <num>[];
+        for (var i = 6; i >= 0; i--) {
+          final day = today.subtract(Duration(days: i));
+          final dayLogs = logs.where((l) =>
+              l.bedtime.year == day.year &&
+              l.bedtime.month == day.month &&
+              l.bedtime.day == day.day);
+          if (dayLogs.isEmpty) {
+            perDay.add(0);
+          } else {
+            final l = dayLogs.first;
+            final h = l.wakeTime.difference(l.bedtime).inMinutes / 60.0;
+            perDay.add(h < 0 ? 0 : (h > 24 ? 24 : h));
+          }
+        }
+        sleepWeekSeries = WidgetSnapshot.encodeSeries(perDay);
+      }
+    } catch (_) {}
+
+    // macroSplit (REAL: todaysTotals → protein,carbs,fat)
+    final String macroSplit = todaysTotals != null
+        ? WidgetSnapshot.encodeSeries(<num>[
+            todaysTotals.protein.round(),
+            todaysTotals.carbs.round(),
+            todaysTotals.fat.round(),
+          ])
+        : '';
+
+    // mealsTodayList (REAL: todaysMealEntriesProvider → distinct meal types)
+    String mealsTodayList = '';
+    try {
+      final entries = await read(todaysMealEntriesProvider.future);
+      final names = <String>[];
+      for (final e in entries) {
+        final n = e.mealType.trim();
+        if (n.isNotEmpty && !names.contains(n)) names.add(n);
+      }
+      if (names.isNotEmpty) {
+        mealsTodayList = WidgetSnapshot.encodeLabels(names.take(5).toList());
+      }
+    } catch (_) {}
+
+    // habitWeek (REAL: getRecentHabitLogs → done count per day, last 7)
+    String habitWeekSeries = '';
+    try {
+      final logs = await read(planningDaoProvider).getRecentHabitLogs();
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final perDay = <num>[];
+      for (var i = 6; i >= 0; i--) {
+        final day = today.subtract(Duration(days: i));
+        perDay.add(logs
+            .where((l) =>
+                l.done &&
+                l.logDate.year == day.year &&
+                l.logDate.month == day.month &&
+                l.logDate.day == day.day)
+            .length);
+      }
+      if (perDay.any((v) => v > 0)) {
+        habitWeekSeries = WidgetSnapshot.encodeSeries(perDay);
+      }
+    } catch (_) {}
+
+    // categorySplit (REAL: categoryExpensesProvider → top amounts)
+    String categorySplit = '';
+    try {
+      final now = DateTime.now();
+      final cats =
+          await read(categoryExpensesProvider((now.year, now.month)).future);
+      if (cats.isNotEmpty) {
+        categorySplit = WidgetSnapshot.encodeSeries(
+            cats.take(5).map((c) => c.amount).toList());
+      }
+    } catch (_) {}
+
+    // monthTrendSeries (REAL: trendDataProvider(sixMonths) → net per month)
+    String monthTrendSeries = '';
+    try {
+      final bars = await read(trendDataProvider(TrendPeriod.sixMonths).future);
+      if (bars.isNotEmpty) {
+        monthTrendSeries = WidgetSnapshot.encodeSeries(
+            bars.map((b) => (b.income - b.expenses).round()).toList());
+      }
+    } catch (_) {}
+
+    // counters (REAL: allTrackers → "name days" labels)
+    String counters = '';
+    if (allTrackers.isNotEmpty) {
+      final labels = allTrackers
+          .take(5)
+          .map((t) => '${t.name} ${_daysSince(t.startDate)}')
+          .toList();
+      counters = WidgetSnapshot.encodeLabels(labels);
+    }
+
+    // quote (REAL: static rotating list, index by day of month)
+    const quotes = <String>[
+      'Jeder Tag zählt.',
+      'Kleine Schritte, große Wirkung.',
+      'Bleib dran — du schaffst das.',
+      'Fortschritt statt Perfektion.',
+      'Heute ist ein guter Tag.',
+      'Disziplin schlägt Motivation.',
+      'Erschaffe deinen Traum.',
+    ];
+    final quote = quotes[DateTime.now().day % quotes.length];
+
+    // FALLBACK '' (keine geeignete Einzel-Quelle): volumeWeek, todayAgenda,
+    // countdownLabel, countdownDays.
+
     return mapToSnapshot(
       stepsToday: stepsToday,
       stepsGoal: stepsGoal,
@@ -1072,6 +1263,18 @@ class WidgetDataCollector {
       longestStreak: longestStreak,
       allCounters: allCounters,
       pinnedNote: pinnedNote,
+      // v2 series
+      stepsWeek: stepsWeekSeries,
+      sleepWeek: sleepWeekSeries,
+      weightHistory: weightHistory,
+      moodWeek: moodWeekSeries,
+      macroSplit: macroSplit,
+      mealsTodayList: mealsTodayList,
+      habitWeek: habitWeekSeries,
+      categorySplit: categorySplit,
+      monthTrendSeries: monthTrendSeries,
+      counters: counters,
+      quote: quote,
     );
   }
 
