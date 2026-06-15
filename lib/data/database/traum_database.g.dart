@@ -18484,6 +18484,775 @@ class PeriodSymptomsCompanion extends UpdateCompanion<PeriodSymptom> {
   }
 }
 
+class $DailyLogsTable extends DailyLogs
+    with TableInfo<$DailyLogsTable, DailyLog> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DailyLogsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _logDateMeta = const VerificationMeta(
+    'logDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> logDate = GeneratedColumn<DateTime>(
+    'log_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _moodMeta = const VerificationMeta('mood');
+  @override
+  late final GeneratedColumn<int> mood = GeneratedColumn<int>(
+    'mood',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _energyMeta = const VerificationMeta('energy');
+  @override
+  late final GeneratedColumn<int> energy = GeneratedColumn<int>(
+    'energy',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bbtMeta = const VerificationMeta('bbt');
+  @override
+  late final GeneratedColumn<double> bbt = GeneratedColumn<double>(
+    'bbt',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cervicalMucusMeta = const VerificationMeta(
+    'cervicalMucus',
+  );
+  @override
+  late final GeneratedColumn<int> cervicalMucus = GeneratedColumn<int>(
+    'cervical_mucus',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sexEventMeta = const VerificationMeta(
+    'sexEvent',
+  );
+  @override
+  late final GeneratedColumn<int> sexEvent = GeneratedColumn<int>(
+    'sex_event',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    logDate,
+    mood,
+    energy,
+    bbt,
+    cervicalMucus,
+    sexEvent,
+    note,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'daily_logs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DailyLog> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('log_date')) {
+      context.handle(
+        _logDateMeta,
+        logDate.isAcceptableOrUnknown(data['log_date']!, _logDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_logDateMeta);
+    }
+    if (data.containsKey('mood')) {
+      context.handle(
+        _moodMeta,
+        mood.isAcceptableOrUnknown(data['mood']!, _moodMeta),
+      );
+    }
+    if (data.containsKey('energy')) {
+      context.handle(
+        _energyMeta,
+        energy.isAcceptableOrUnknown(data['energy']!, _energyMeta),
+      );
+    }
+    if (data.containsKey('bbt')) {
+      context.handle(
+        _bbtMeta,
+        bbt.isAcceptableOrUnknown(data['bbt']!, _bbtMeta),
+      );
+    }
+    if (data.containsKey('cervical_mucus')) {
+      context.handle(
+        _cervicalMucusMeta,
+        cervicalMucus.isAcceptableOrUnknown(
+          data['cervical_mucus']!,
+          _cervicalMucusMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sex_event')) {
+      context.handle(
+        _sexEventMeta,
+        sexEvent.isAcceptableOrUnknown(data['sex_event']!, _sexEventMeta),
+      );
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DailyLog map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DailyLog(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      logDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}log_date'],
+      )!,
+      mood: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}mood'],
+      ),
+      energy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}energy'],
+      ),
+      bbt: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}bbt'],
+      ),
+      cervicalMucus: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}cervical_mucus'],
+      ),
+      sexEvent: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sex_event'],
+      ),
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      ),
+    );
+  }
+
+  @override
+  $DailyLogsTable createAlias(String alias) {
+    return $DailyLogsTable(attachedDatabase, alias);
+  }
+}
+
+class DailyLog extends DataClass implements Insertable<DailyLog> {
+  final int id;
+  final DateTime logDate;
+  final int? mood;
+  final int? energy;
+  final double? bbt;
+  final int? cervicalMucus;
+  final int? sexEvent;
+  final String? note;
+  const DailyLog({
+    required this.id,
+    required this.logDate,
+    this.mood,
+    this.energy,
+    this.bbt,
+    this.cervicalMucus,
+    this.sexEvent,
+    this.note,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['log_date'] = Variable<DateTime>(logDate);
+    if (!nullToAbsent || mood != null) {
+      map['mood'] = Variable<int>(mood);
+    }
+    if (!nullToAbsent || energy != null) {
+      map['energy'] = Variable<int>(energy);
+    }
+    if (!nullToAbsent || bbt != null) {
+      map['bbt'] = Variable<double>(bbt);
+    }
+    if (!nullToAbsent || cervicalMucus != null) {
+      map['cervical_mucus'] = Variable<int>(cervicalMucus);
+    }
+    if (!nullToAbsent || sexEvent != null) {
+      map['sex_event'] = Variable<int>(sexEvent);
+    }
+    if (!nullToAbsent || note != null) {
+      map['note'] = Variable<String>(note);
+    }
+    return map;
+  }
+
+  DailyLogsCompanion toCompanion(bool nullToAbsent) {
+    return DailyLogsCompanion(
+      id: Value(id),
+      logDate: Value(logDate),
+      mood: mood == null && nullToAbsent ? const Value.absent() : Value(mood),
+      energy: energy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(energy),
+      bbt: bbt == null && nullToAbsent ? const Value.absent() : Value(bbt),
+      cervicalMucus: cervicalMucus == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cervicalMucus),
+      sexEvent: sexEvent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sexEvent),
+      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+    );
+  }
+
+  factory DailyLog.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DailyLog(
+      id: serializer.fromJson<int>(json['id']),
+      logDate: serializer.fromJson<DateTime>(json['logDate']),
+      mood: serializer.fromJson<int?>(json['mood']),
+      energy: serializer.fromJson<int?>(json['energy']),
+      bbt: serializer.fromJson<double?>(json['bbt']),
+      cervicalMucus: serializer.fromJson<int?>(json['cervicalMucus']),
+      sexEvent: serializer.fromJson<int?>(json['sexEvent']),
+      note: serializer.fromJson<String?>(json['note']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'logDate': serializer.toJson<DateTime>(logDate),
+      'mood': serializer.toJson<int?>(mood),
+      'energy': serializer.toJson<int?>(energy),
+      'bbt': serializer.toJson<double?>(bbt),
+      'cervicalMucus': serializer.toJson<int?>(cervicalMucus),
+      'sexEvent': serializer.toJson<int?>(sexEvent),
+      'note': serializer.toJson<String?>(note),
+    };
+  }
+
+  DailyLog copyWith({
+    int? id,
+    DateTime? logDate,
+    Value<int?> mood = const Value.absent(),
+    Value<int?> energy = const Value.absent(),
+    Value<double?> bbt = const Value.absent(),
+    Value<int?> cervicalMucus = const Value.absent(),
+    Value<int?> sexEvent = const Value.absent(),
+    Value<String?> note = const Value.absent(),
+  }) => DailyLog(
+    id: id ?? this.id,
+    logDate: logDate ?? this.logDate,
+    mood: mood.present ? mood.value : this.mood,
+    energy: energy.present ? energy.value : this.energy,
+    bbt: bbt.present ? bbt.value : this.bbt,
+    cervicalMucus: cervicalMucus.present
+        ? cervicalMucus.value
+        : this.cervicalMucus,
+    sexEvent: sexEvent.present ? sexEvent.value : this.sexEvent,
+    note: note.present ? note.value : this.note,
+  );
+  DailyLog copyWithCompanion(DailyLogsCompanion data) {
+    return DailyLog(
+      id: data.id.present ? data.id.value : this.id,
+      logDate: data.logDate.present ? data.logDate.value : this.logDate,
+      mood: data.mood.present ? data.mood.value : this.mood,
+      energy: data.energy.present ? data.energy.value : this.energy,
+      bbt: data.bbt.present ? data.bbt.value : this.bbt,
+      cervicalMucus: data.cervicalMucus.present
+          ? data.cervicalMucus.value
+          : this.cervicalMucus,
+      sexEvent: data.sexEvent.present ? data.sexEvent.value : this.sexEvent,
+      note: data.note.present ? data.note.value : this.note,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyLog(')
+          ..write('id: $id, ')
+          ..write('logDate: $logDate, ')
+          ..write('mood: $mood, ')
+          ..write('energy: $energy, ')
+          ..write('bbt: $bbt, ')
+          ..write('cervicalMucus: $cervicalMucus, ')
+          ..write('sexEvent: $sexEvent, ')
+          ..write('note: $note')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    logDate,
+    mood,
+    energy,
+    bbt,
+    cervicalMucus,
+    sexEvent,
+    note,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DailyLog &&
+          other.id == this.id &&
+          other.logDate == this.logDate &&
+          other.mood == this.mood &&
+          other.energy == this.energy &&
+          other.bbt == this.bbt &&
+          other.cervicalMucus == this.cervicalMucus &&
+          other.sexEvent == this.sexEvent &&
+          other.note == this.note);
+}
+
+class DailyLogsCompanion extends UpdateCompanion<DailyLog> {
+  final Value<int> id;
+  final Value<DateTime> logDate;
+  final Value<int?> mood;
+  final Value<int?> energy;
+  final Value<double?> bbt;
+  final Value<int?> cervicalMucus;
+  final Value<int?> sexEvent;
+  final Value<String?> note;
+  const DailyLogsCompanion({
+    this.id = const Value.absent(),
+    this.logDate = const Value.absent(),
+    this.mood = const Value.absent(),
+    this.energy = const Value.absent(),
+    this.bbt = const Value.absent(),
+    this.cervicalMucus = const Value.absent(),
+    this.sexEvent = const Value.absent(),
+    this.note = const Value.absent(),
+  });
+  DailyLogsCompanion.insert({
+    this.id = const Value.absent(),
+    required DateTime logDate,
+    this.mood = const Value.absent(),
+    this.energy = const Value.absent(),
+    this.bbt = const Value.absent(),
+    this.cervicalMucus = const Value.absent(),
+    this.sexEvent = const Value.absent(),
+    this.note = const Value.absent(),
+  }) : logDate = Value(logDate);
+  static Insertable<DailyLog> custom({
+    Expression<int>? id,
+    Expression<DateTime>? logDate,
+    Expression<int>? mood,
+    Expression<int>? energy,
+    Expression<double>? bbt,
+    Expression<int>? cervicalMucus,
+    Expression<int>? sexEvent,
+    Expression<String>? note,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (logDate != null) 'log_date': logDate,
+      if (mood != null) 'mood': mood,
+      if (energy != null) 'energy': energy,
+      if (bbt != null) 'bbt': bbt,
+      if (cervicalMucus != null) 'cervical_mucus': cervicalMucus,
+      if (sexEvent != null) 'sex_event': sexEvent,
+      if (note != null) 'note': note,
+    });
+  }
+
+  DailyLogsCompanion copyWith({
+    Value<int>? id,
+    Value<DateTime>? logDate,
+    Value<int?>? mood,
+    Value<int?>? energy,
+    Value<double?>? bbt,
+    Value<int?>? cervicalMucus,
+    Value<int?>? sexEvent,
+    Value<String?>? note,
+  }) {
+    return DailyLogsCompanion(
+      id: id ?? this.id,
+      logDate: logDate ?? this.logDate,
+      mood: mood ?? this.mood,
+      energy: energy ?? this.energy,
+      bbt: bbt ?? this.bbt,
+      cervicalMucus: cervicalMucus ?? this.cervicalMucus,
+      sexEvent: sexEvent ?? this.sexEvent,
+      note: note ?? this.note,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (logDate.present) {
+      map['log_date'] = Variable<DateTime>(logDate.value);
+    }
+    if (mood.present) {
+      map['mood'] = Variable<int>(mood.value);
+    }
+    if (energy.present) {
+      map['energy'] = Variable<int>(energy.value);
+    }
+    if (bbt.present) {
+      map['bbt'] = Variable<double>(bbt.value);
+    }
+    if (cervicalMucus.present) {
+      map['cervical_mucus'] = Variable<int>(cervicalMucus.value);
+    }
+    if (sexEvent.present) {
+      map['sex_event'] = Variable<int>(sexEvent.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyLogsCompanion(')
+          ..write('id: $id, ')
+          ..write('logDate: $logDate, ')
+          ..write('mood: $mood, ')
+          ..write('energy: $energy, ')
+          ..write('bbt: $bbt, ')
+          ..write('cervicalMucus: $cervicalMucus, ')
+          ..write('sexEvent: $sexEvent, ')
+          ..write('note: $note')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CycleProfileTable extends CycleProfile
+    with TableInfo<$CycleProfileTable, CycleProfileData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CycleProfileTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _menarcheDateMeta = const VerificationMeta(
+    'menarcheDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> menarcheDate = GeneratedColumn<DateTime>(
+    'menarche_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lutealPhaseOverrideMeta =
+      const VerificationMeta('lutealPhaseOverride');
+  @override
+  late final GeneratedColumn<int> lutealPhaseOverride = GeneratedColumn<int>(
+    'luteal_phase_override',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, menarcheDate, lutealPhaseOverride];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cycle_profile';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CycleProfileData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('menarche_date')) {
+      context.handle(
+        _menarcheDateMeta,
+        menarcheDate.isAcceptableOrUnknown(
+          data['menarche_date']!,
+          _menarcheDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('luteal_phase_override')) {
+      context.handle(
+        _lutealPhaseOverrideMeta,
+        lutealPhaseOverride.isAcceptableOrUnknown(
+          data['luteal_phase_override']!,
+          _lutealPhaseOverrideMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CycleProfileData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CycleProfileData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      menarcheDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}menarche_date'],
+      ),
+      lutealPhaseOverride: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}luteal_phase_override'],
+      ),
+    );
+  }
+
+  @override
+  $CycleProfileTable createAlias(String alias) {
+    return $CycleProfileTable(attachedDatabase, alias);
+  }
+}
+
+class CycleProfileData extends DataClass
+    implements Insertable<CycleProfileData> {
+  final int id;
+  final DateTime? menarcheDate;
+  final int? lutealPhaseOverride;
+  const CycleProfileData({
+    required this.id,
+    this.menarcheDate,
+    this.lutealPhaseOverride,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || menarcheDate != null) {
+      map['menarche_date'] = Variable<DateTime>(menarcheDate);
+    }
+    if (!nullToAbsent || lutealPhaseOverride != null) {
+      map['luteal_phase_override'] = Variable<int>(lutealPhaseOverride);
+    }
+    return map;
+  }
+
+  CycleProfileCompanion toCompanion(bool nullToAbsent) {
+    return CycleProfileCompanion(
+      id: Value(id),
+      menarcheDate: menarcheDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(menarcheDate),
+      lutealPhaseOverride: lutealPhaseOverride == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lutealPhaseOverride),
+    );
+  }
+
+  factory CycleProfileData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CycleProfileData(
+      id: serializer.fromJson<int>(json['id']),
+      menarcheDate: serializer.fromJson<DateTime?>(json['menarcheDate']),
+      lutealPhaseOverride: serializer.fromJson<int?>(
+        json['lutealPhaseOverride'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'menarcheDate': serializer.toJson<DateTime?>(menarcheDate),
+      'lutealPhaseOverride': serializer.toJson<int?>(lutealPhaseOverride),
+    };
+  }
+
+  CycleProfileData copyWith({
+    int? id,
+    Value<DateTime?> menarcheDate = const Value.absent(),
+    Value<int?> lutealPhaseOverride = const Value.absent(),
+  }) => CycleProfileData(
+    id: id ?? this.id,
+    menarcheDate: menarcheDate.present ? menarcheDate.value : this.menarcheDate,
+    lutealPhaseOverride: lutealPhaseOverride.present
+        ? lutealPhaseOverride.value
+        : this.lutealPhaseOverride,
+  );
+  CycleProfileData copyWithCompanion(CycleProfileCompanion data) {
+    return CycleProfileData(
+      id: data.id.present ? data.id.value : this.id,
+      menarcheDate: data.menarcheDate.present
+          ? data.menarcheDate.value
+          : this.menarcheDate,
+      lutealPhaseOverride: data.lutealPhaseOverride.present
+          ? data.lutealPhaseOverride.value
+          : this.lutealPhaseOverride,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CycleProfileData(')
+          ..write('id: $id, ')
+          ..write('menarcheDate: $menarcheDate, ')
+          ..write('lutealPhaseOverride: $lutealPhaseOverride')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, menarcheDate, lutealPhaseOverride);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CycleProfileData &&
+          other.id == this.id &&
+          other.menarcheDate == this.menarcheDate &&
+          other.lutealPhaseOverride == this.lutealPhaseOverride);
+}
+
+class CycleProfileCompanion extends UpdateCompanion<CycleProfileData> {
+  final Value<int> id;
+  final Value<DateTime?> menarcheDate;
+  final Value<int?> lutealPhaseOverride;
+  const CycleProfileCompanion({
+    this.id = const Value.absent(),
+    this.menarcheDate = const Value.absent(),
+    this.lutealPhaseOverride = const Value.absent(),
+  });
+  CycleProfileCompanion.insert({
+    this.id = const Value.absent(),
+    this.menarcheDate = const Value.absent(),
+    this.lutealPhaseOverride = const Value.absent(),
+  });
+  static Insertable<CycleProfileData> custom({
+    Expression<int>? id,
+    Expression<DateTime>? menarcheDate,
+    Expression<int>? lutealPhaseOverride,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (menarcheDate != null) 'menarche_date': menarcheDate,
+      if (lutealPhaseOverride != null)
+        'luteal_phase_override': lutealPhaseOverride,
+    });
+  }
+
+  CycleProfileCompanion copyWith({
+    Value<int>? id,
+    Value<DateTime?>? menarcheDate,
+    Value<int?>? lutealPhaseOverride,
+  }) {
+    return CycleProfileCompanion(
+      id: id ?? this.id,
+      menarcheDate: menarcheDate ?? this.menarcheDate,
+      lutealPhaseOverride: lutealPhaseOverride ?? this.lutealPhaseOverride,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (menarcheDate.present) {
+      map['menarche_date'] = Variable<DateTime>(menarcheDate.value);
+    }
+    if (lutealPhaseOverride.present) {
+      map['luteal_phase_override'] = Variable<int>(lutealPhaseOverride.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CycleProfileCompanion(')
+          ..write('id: $id, ')
+          ..write('menarcheDate: $menarcheDate, ')
+          ..write('lutealPhaseOverride: $lutealPhaseOverride')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $SubstanceCachesTable extends SubstanceCaches
     with TableInfo<$SubstanceCachesTable, SubstanceCache> {
   @override
@@ -27045,6 +27814,8 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   late final $CycleCalculationsTable cycleCalculations =
       $CycleCalculationsTable(this);
   late final $PeriodSymptomsTable periodSymptoms = $PeriodSymptomsTable(this);
+  late final $DailyLogsTable dailyLogs = $DailyLogsTable(this);
+  late final $CycleProfileTable cycleProfile = $CycleProfileTable(this);
   late final $SubstanceCachesTable substanceCaches = $SubstanceCachesTable(
     this,
   );
@@ -27140,6 +27911,8 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
     periodEntries,
     cycleCalculations,
     periodSymptoms,
+    dailyLogs,
+    cycleProfile,
     substanceCaches,
     substanceIntakeLogs,
     diaryEntries,
@@ -39390,6 +40163,420 @@ typedef $$PeriodSymptomsTableProcessedTableManager =
       PeriodSymptom,
       PrefetchHooks Function()
     >;
+typedef $$DailyLogsTableCreateCompanionBuilder =
+    DailyLogsCompanion Function({
+      Value<int> id,
+      required DateTime logDate,
+      Value<int?> mood,
+      Value<int?> energy,
+      Value<double?> bbt,
+      Value<int?> cervicalMucus,
+      Value<int?> sexEvent,
+      Value<String?> note,
+    });
+typedef $$DailyLogsTableUpdateCompanionBuilder =
+    DailyLogsCompanion Function({
+      Value<int> id,
+      Value<DateTime> logDate,
+      Value<int?> mood,
+      Value<int?> energy,
+      Value<double?> bbt,
+      Value<int?> cervicalMucus,
+      Value<int?> sexEvent,
+      Value<String?> note,
+    });
+
+class $$DailyLogsTableFilterComposer
+    extends Composer<_$TraumDatabase, $DailyLogsTable> {
+  $$DailyLogsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get logDate => $composableBuilder(
+    column: $table.logDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get mood => $composableBuilder(
+    column: $table.mood,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get energy => $composableBuilder(
+    column: $table.energy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bbt => $composableBuilder(
+    column: $table.bbt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get cervicalMucus => $composableBuilder(
+    column: $table.cervicalMucus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sexEvent => $composableBuilder(
+    column: $table.sexEvent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DailyLogsTableOrderingComposer
+    extends Composer<_$TraumDatabase, $DailyLogsTable> {
+  $$DailyLogsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get logDate => $composableBuilder(
+    column: $table.logDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get mood => $composableBuilder(
+    column: $table.mood,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get energy => $composableBuilder(
+    column: $table.energy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bbt => $composableBuilder(
+    column: $table.bbt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get cervicalMucus => $composableBuilder(
+    column: $table.cervicalMucus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sexEvent => $composableBuilder(
+    column: $table.sexEvent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DailyLogsTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $DailyLogsTable> {
+  $$DailyLogsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get logDate =>
+      $composableBuilder(column: $table.logDate, builder: (column) => column);
+
+  GeneratedColumn<int> get mood =>
+      $composableBuilder(column: $table.mood, builder: (column) => column);
+
+  GeneratedColumn<int> get energy =>
+      $composableBuilder(column: $table.energy, builder: (column) => column);
+
+  GeneratedColumn<double> get bbt =>
+      $composableBuilder(column: $table.bbt, builder: (column) => column);
+
+  GeneratedColumn<int> get cervicalMucus => $composableBuilder(
+    column: $table.cervicalMucus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sexEvent =>
+      $composableBuilder(column: $table.sexEvent, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+}
+
+class $$DailyLogsTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $DailyLogsTable,
+          DailyLog,
+          $$DailyLogsTableFilterComposer,
+          $$DailyLogsTableOrderingComposer,
+          $$DailyLogsTableAnnotationComposer,
+          $$DailyLogsTableCreateCompanionBuilder,
+          $$DailyLogsTableUpdateCompanionBuilder,
+          (
+            DailyLog,
+            BaseReferences<_$TraumDatabase, $DailyLogsTable, DailyLog>,
+          ),
+          DailyLog,
+          PrefetchHooks Function()
+        > {
+  $$DailyLogsTableTableManager(_$TraumDatabase db, $DailyLogsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DailyLogsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DailyLogsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DailyLogsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DateTime> logDate = const Value.absent(),
+                Value<int?> mood = const Value.absent(),
+                Value<int?> energy = const Value.absent(),
+                Value<double?> bbt = const Value.absent(),
+                Value<int?> cervicalMucus = const Value.absent(),
+                Value<int?> sexEvent = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+              }) => DailyLogsCompanion(
+                id: id,
+                logDate: logDate,
+                mood: mood,
+                energy: energy,
+                bbt: bbt,
+                cervicalMucus: cervicalMucus,
+                sexEvent: sexEvent,
+                note: note,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required DateTime logDate,
+                Value<int?> mood = const Value.absent(),
+                Value<int?> energy = const Value.absent(),
+                Value<double?> bbt = const Value.absent(),
+                Value<int?> cervicalMucus = const Value.absent(),
+                Value<int?> sexEvent = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+              }) => DailyLogsCompanion.insert(
+                id: id,
+                logDate: logDate,
+                mood: mood,
+                energy: energy,
+                bbt: bbt,
+                cervicalMucus: cervicalMucus,
+                sexEvent: sexEvent,
+                note: note,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DailyLogsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $DailyLogsTable,
+      DailyLog,
+      $$DailyLogsTableFilterComposer,
+      $$DailyLogsTableOrderingComposer,
+      $$DailyLogsTableAnnotationComposer,
+      $$DailyLogsTableCreateCompanionBuilder,
+      $$DailyLogsTableUpdateCompanionBuilder,
+      (DailyLog, BaseReferences<_$TraumDatabase, $DailyLogsTable, DailyLog>),
+      DailyLog,
+      PrefetchHooks Function()
+    >;
+typedef $$CycleProfileTableCreateCompanionBuilder =
+    CycleProfileCompanion Function({
+      Value<int> id,
+      Value<DateTime?> menarcheDate,
+      Value<int?> lutealPhaseOverride,
+    });
+typedef $$CycleProfileTableUpdateCompanionBuilder =
+    CycleProfileCompanion Function({
+      Value<int> id,
+      Value<DateTime?> menarcheDate,
+      Value<int?> lutealPhaseOverride,
+    });
+
+class $$CycleProfileTableFilterComposer
+    extends Composer<_$TraumDatabase, $CycleProfileTable> {
+  $$CycleProfileTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get menarcheDate => $composableBuilder(
+    column: $table.menarcheDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lutealPhaseOverride => $composableBuilder(
+    column: $table.lutealPhaseOverride,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CycleProfileTableOrderingComposer
+    extends Composer<_$TraumDatabase, $CycleProfileTable> {
+  $$CycleProfileTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get menarcheDate => $composableBuilder(
+    column: $table.menarcheDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lutealPhaseOverride => $composableBuilder(
+    column: $table.lutealPhaseOverride,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CycleProfileTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $CycleProfileTable> {
+  $$CycleProfileTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get menarcheDate => $composableBuilder(
+    column: $table.menarcheDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lutealPhaseOverride => $composableBuilder(
+    column: $table.lutealPhaseOverride,
+    builder: (column) => column,
+  );
+}
+
+class $$CycleProfileTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $CycleProfileTable,
+          CycleProfileData,
+          $$CycleProfileTableFilterComposer,
+          $$CycleProfileTableOrderingComposer,
+          $$CycleProfileTableAnnotationComposer,
+          $$CycleProfileTableCreateCompanionBuilder,
+          $$CycleProfileTableUpdateCompanionBuilder,
+          (
+            CycleProfileData,
+            BaseReferences<
+              _$TraumDatabase,
+              $CycleProfileTable,
+              CycleProfileData
+            >,
+          ),
+          CycleProfileData,
+          PrefetchHooks Function()
+        > {
+  $$CycleProfileTableTableManager(_$TraumDatabase db, $CycleProfileTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CycleProfileTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CycleProfileTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CycleProfileTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DateTime?> menarcheDate = const Value.absent(),
+                Value<int?> lutealPhaseOverride = const Value.absent(),
+              }) => CycleProfileCompanion(
+                id: id,
+                menarcheDate: menarcheDate,
+                lutealPhaseOverride: lutealPhaseOverride,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DateTime?> menarcheDate = const Value.absent(),
+                Value<int?> lutealPhaseOverride = const Value.absent(),
+              }) => CycleProfileCompanion.insert(
+                id: id,
+                menarcheDate: menarcheDate,
+                lutealPhaseOverride: lutealPhaseOverride,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CycleProfileTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $CycleProfileTable,
+      CycleProfileData,
+      $$CycleProfileTableFilterComposer,
+      $$CycleProfileTableOrderingComposer,
+      $$CycleProfileTableAnnotationComposer,
+      $$CycleProfileTableCreateCompanionBuilder,
+      $$CycleProfileTableUpdateCompanionBuilder,
+      (
+        CycleProfileData,
+        BaseReferences<_$TraumDatabase, $CycleProfileTable, CycleProfileData>,
+      ),
+      CycleProfileData,
+      PrefetchHooks Function()
+    >;
 typedef $$SubstanceCachesTableCreateCompanionBuilder =
     SubstanceCachesCompanion Function({
       required String substanceId,
@@ -44246,6 +45433,10 @@ class $TraumDatabaseManager {
       $$CycleCalculationsTableTableManager(_db, _db.cycleCalculations);
   $$PeriodSymptomsTableTableManager get periodSymptoms =>
       $$PeriodSymptomsTableTableManager(_db, _db.periodSymptoms);
+  $$DailyLogsTableTableManager get dailyLogs =>
+      $$DailyLogsTableTableManager(_db, _db.dailyLogs);
+  $$CycleProfileTableTableManager get cycleProfile =>
+      $$CycleProfileTableTableManager(_db, _db.cycleProfile);
   $$SubstanceCachesTableTableManager get substanceCaches =>
       $$SubstanceCachesTableTableManager(_db, _db.substanceCaches);
   $$SubstanceIntakeLogsTableTableManager get substanceIntakeLogs =>

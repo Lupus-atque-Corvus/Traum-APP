@@ -25,3 +25,25 @@ class PeriodSymptoms extends Table {
   IntColumn get intensity => integer().withDefault(const Constant(1))();
   TextColumn get note => text().nullable()();
 }
+
+/// One row per calendar day (date-only). Holds non-period daily tracking.
+class DailyLogs extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  DateTimeColumn get logDate => dateTime()();
+  IntColumn get mood => integer().nullable()();          // 1..5
+  IntColumn get energy => integer().nullable()();         // 1..5
+  RealColumn get bbt => real().nullable()();              // °C, e.g. 36.72
+  IntColumn get cervicalMucus => integer().nullable()();  // CervicalMucus index
+  IntColumn get sexEvent => integer().nullable()();       // SexEvent index
+  TextColumn get note => text().nullable()();
+}
+
+/// Singleton (id == 0). Per-user cycle settings.
+class CycleProfile extends Table {
+  IntColumn get id => integer()(); // always 0
+  DateTimeColumn get menarcheDate => dateTime().nullable()();
+  IntColumn get lutealPhaseOverride => integer().nullable()(); // days; null → 14
+
+  @override
+  Set<Column> get primaryKey => {id};
+}

@@ -8,4 +8,6 @@ mixin _$PeriodDaoMixin on DatabaseAccessor<TraumDatabase> {
   $CycleCalculationsTable get cycleCalculations =>
       attachedDatabase.cycleCalculations;
   $PeriodSymptomsTable get periodSymptoms => attachedDatabase.periodSymptoms;
+  $DailyLogsTable get dailyLogs => attachedDatabase.dailyLogs;
+  $CycleProfileTable get cycleProfile => attachedDatabase.cycleProfile;
 }
