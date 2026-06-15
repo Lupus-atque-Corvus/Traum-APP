@@ -37,10 +37,22 @@ class CycleAnalyzer {
     final stdDev = _stdDev(cycleLengths, avgCycle);
     final avgPeriod = _avgPeriodLength(sorted);
 
+    final lastStart = _dateOnly(sorted.last.startDate);
+    final cycleRounded = avgCycle.round();
+    final nextPredicted = lastStart.add(Duration(days: cycleRounded));
+
+    // Honest uncertainty: ±1·stdDev, minimum ±1 day.
+    final marginDays = math.max(1, (stdDev ?? 0).round());
+    final rangeStart = nextPredicted.subtract(Duration(days: marginDays));
+    final rangeEnd = nextPredicted.add(Duration(days: marginDays));
+
     return CycleAnalysis(
       avgCycleLength: avgCycle,
       cycleLengthStdDev: stdDev,
       avgPeriodLength: avgPeriod,
+      nextPeriodPredicted: nextPredicted,
+      nextPeriodRangeStart: rangeStart,
+      nextPeriodRangeEnd: rangeEnd,
     );
   }
 

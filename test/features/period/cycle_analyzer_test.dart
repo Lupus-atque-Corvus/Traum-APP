@@ -26,4 +26,31 @@ void main() {
         today: DateTime(2026, 1, 10));
     expect(a.avgCycleLength, 28);
   });
+
+  test('predicts next period and a range widening with variability', () {
+    final regular = [
+      entry(1, DateTime(2026, 1, 1)),
+      entry(2, DateTime(2026, 1, 29)),
+      entry(3, DateTime(2026, 2, 26)),
+    ];
+    final a = CycleAnalyzer.analyze(
+        entries: regular, today: DateTime(2026, 3, 1));
+    expect(a.nextPeriodPredicted, DateTime(2026, 3, 26));
+    final span = a.nextPeriodRangeEnd!
+        .difference(a.nextPeriodRangeStart!)
+        .inDays;
+    expect(span, greaterThanOrEqualTo(2));
+
+    final variable = [
+      entry(1, DateTime(2026, 1, 1)),
+      entry(2, DateTime(2026, 1, 23)), // 22
+      entry(3, DateTime(2026, 2, 26)), // 34
+    ];
+    final b = CycleAnalyzer.analyze(
+        entries: variable, today: DateTime(2026, 3, 1));
+    final spanB = b.nextPeriodRangeEnd!
+        .difference(b.nextPeriodRangeStart!)
+        .inDays;
+    expect(spanB, greaterThan(span));
+  });
 }
