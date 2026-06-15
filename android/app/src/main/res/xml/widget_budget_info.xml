@@ -7,6 +7,7 @@
     android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/widget_template_overview"
     android:previewLayout="@layout/widget_template_overview"
+    android:previewImage="@drawable/widget_preview_budget"
     android:resizeMode="horizontal|vertical"
     android:maxResizeWidth="320dp"
     android:maxResizeHeight="320dp"
