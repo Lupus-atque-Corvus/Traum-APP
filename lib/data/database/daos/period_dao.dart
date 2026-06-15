@@ -83,6 +83,7 @@ class PeriodDao extends DatabaseAccessor<TraumDatabase> with _$PeriodDaoMixin {
 
   /// Insert or replace the daily log for its calendar day.
   Future<int> upsertDailyLog(DailyLogsCompanion entry) async {
+    assert(entry.logDate.present, 'upsertDailyLog requires a logDate');
     final date = entry.logDate.value;
     final existing = await getDailyLogForDate(date);
     if (existing == null) {
@@ -93,6 +94,7 @@ class PeriodDao extends DatabaseAccessor<TraumDatabase> with _$PeriodDaoMixin {
     return existing.id;
   }
 
+  /// Streams [DailyLog]s with [start] inclusive and [end] exclusive.
   Stream<List<DailyLog>> watchDailyLogsInRange(DateTime start, DateTime end) =>
       (select(dailyLogs)
             ..where((t) =>

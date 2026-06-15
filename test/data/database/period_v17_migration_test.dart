@@ -24,11 +24,24 @@ void main() {
     expect(log!.bbt, 36.72);
     expect(log.cervicalMucus, 4);
     expect(log.sexEvent, 2);
+    expect(log.mood, 3);
+    expect(log.energy, 4);
   });
 
   test('CycleProfile singleton exists with id 0 after open', () async {
     final profile = await db.periodDao.getCycleProfile();
     expect(profile.id, 0);
     expect(profile.menarcheDate, isNull);
+  });
+
+  test('upsertDailyLog overwrites existing log for same date', () async {
+    final date = DateTime(2026, 6, 15);
+    await db.periodDao.upsertDailyLog(
+      DailyLogsCompanion.insert(logDate: date, mood: const Value(2)));
+    await db.periodDao.upsertDailyLog(
+      DailyLogsCompanion.insert(logDate: date, mood: const Value(5)));
+    final logs = await db.periodDao.watchAllDailyLogs().first;
+    expect(logs, hasLength(1));   // no duplicate row
+    expect(logs.single.mood, 5);  // value was updated
   });
 }

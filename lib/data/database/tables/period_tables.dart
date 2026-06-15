@@ -36,6 +36,9 @@ class DailyLogs extends Table {
   IntColumn get cervicalMucus => integer().nullable()();  // CervicalMucus index
   IntColumn get sexEvent => integer().nullable()();       // SexEvent index
   TextColumn get note => text().nullable()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [{logDate}];
 }
 
 /// Singleton (id == 0). Per-user cycle settings.
