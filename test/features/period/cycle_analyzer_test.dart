@@ -113,4 +113,37 @@ void main() {
         entries: entries, dailyLogs: logs, today: DateTime(2026, 3, 14));
     expect(a.ovulationConfirmed, isFalse);
   });
+
+  test('classifies regular vs irregular by ACOG variability', () {
+    final regular = [
+      entry(1, DateTime(2026, 1, 1)),
+      entry(2, DateTime(2026, 1, 29)),
+      entry(3, DateTime(2026, 2, 26)),
+    ];
+    expect(
+      CycleAnalyzer.analyze(entries: regular, today: DateTime(2026, 3, 1))
+          .regularity,
+      CycleRegularity.regular,
+    );
+
+    final irregular = [
+      entry(1, DateTime(2026, 1, 1)),
+      entry(2, DateTime(2026, 1, 21)), // 20
+      entry(3, DateTime(2026, 3, 5)),  // 43
+    ];
+    expect(
+      CycleAnalyzer.analyze(entries: irregular, today: DateTime(2026, 3, 6))
+          .regularity,
+      CycleRegularity.irregular,
+    );
+  });
+
+  test('computes gynecological age from menarche', () {
+    final a = CycleAnalyzer.analyze(
+      entries: [entry(1, DateTime(2026, 1, 1))],
+      menarcheDate: DateTime(2014, 1, 1),
+      today: DateTime(2026, 1, 1),
+    );
+    expect(a.gynecologicalAgeYears, closeTo(12, 0.1));
+  });
 }

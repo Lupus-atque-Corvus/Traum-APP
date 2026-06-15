@@ -58,6 +58,11 @@ class CycleAnalyzer {
         ovulationFinal.subtract(const Duration(days: 5));
     final fertileEndFinal = ovulationFinal.add(const Duration(days: 1));
 
+    final regularity = _classifyRegularity(cycleLengths);
+    final gynAge = menarcheDate == null
+        ? null
+        : now.difference(_dateOnly(menarcheDate)).inDays / 365.25;
+
     return CycleAnalysis(
       avgCycleLength: avgCycle,
       cycleLengthStdDev: stdDev,
@@ -69,6 +74,8 @@ class CycleAnalyzer {
       ovulationConfirmed: ovulationConfirmed,
       fertileWindowStart: fertileStartFinal,
       fertileWindowEnd: fertileEndFinal,
+      regularity: regularity,
+      gynecologicalAgeYears: gynAge,
     );
   }
 
@@ -117,6 +124,20 @@ class CycleAnalyzer {
         .toList();
     if (durations.isEmpty) return null;
     return durations.reduce((a, b) => a + b) / durations.length;
+  }
+
+  /// ACOG: range (max−min) >7 d → slightly irregular, >9 d → irregular.
+  /// Any cycle <21 or >35 d also marks irregular.
+  static CycleRegularity _classifyRegularity(List<int> lengths) {
+    if (lengths.length < 2) return CycleRegularity.unknown;
+    final min = lengths.reduce(math.min);
+    final max = lengths.reduce(math.max);
+    final range = max - min;
+    final hasOutlier =
+        lengths.any((l) => l < minNormalCycle || l > maxNormalCycle);
+    if (range > 9 || hasOutlier) return CycleRegularity.irregular;
+    if (range > 7) return CycleRegularity.slightlyIrregular;
+    return CycleRegularity.regular;
   }
 
   /// Sensiplan "3-over-6": ovulation is confirmed when 3 consecutive BBT
