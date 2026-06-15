@@ -70,6 +70,22 @@ class CycleAnalyzer {
       gynAgeYears: gynAge,
     );
 
+    final cycleDay = now.difference(lastStart).inDays + 1;
+
+    final phase = _phaseFor(
+      today: now,
+      cycleStart: lastStart,
+      avgPeriod: avgPeriod,
+      ovulation: ovulationFinal,
+      fertileStart: fertileStartFinal,
+      fertileEnd: fertileEndFinal,
+    );
+
+    var pregnancyProb = 0;
+    if (!now.isBefore(fertileStartFinal) && !now.isAfter(fertileEndFinal)) {
+      pregnancyProb = now == ovulationFinal ? 30 : 25;
+    }
+
     return CycleAnalysis(
       avgCycleLength: avgCycle,
       cycleLengthStdDev: stdDev,
@@ -84,6 +100,9 @@ class CycleAnalyzer {
       regularity: regularity,
       gynecologicalAgeYears: gynAge,
       healthFlags: flags,
+      currentCycleDay: cycleDay >= 1 ? cycleDay : null,
+      currentPhase: phase,
+      pregnancyProbabilityToday: pregnancyProb,
     );
   }
 
@@ -176,6 +195,27 @@ class CycleAnalyzer {
       flags.add(const HealthFlag(HealthFlagType.highVariability));
     }
     return flags;
+  }
+
+  static CyclePhase _phaseFor({
+    required DateTime today,
+    required DateTime cycleStart,
+    required double? avgPeriod,
+    required DateTime ovulation,
+    required DateTime fertileStart,
+    required DateTime fertileEnd,
+  }) {
+    final periodLen = (avgPeriod ?? 5).round();
+    final menstrualEnd = cycleStart.add(Duration(days: periodLen - 1));
+    if (!today.isBefore(cycleStart) && !today.isAfter(menstrualEnd)) {
+      return CyclePhase.menstrual;
+    }
+    if (today == ovulation) return CyclePhase.ovulation;
+    if (!today.isBefore(fertileStart) && !today.isAfter(fertileEnd)) {
+      return CyclePhase.fertile;
+    }
+    if (today.isAfter(fertileEnd)) return CyclePhase.luteal;
+    return CyclePhase.follicular;
   }
 
   /// Sensiplan "3-over-6": ovulation is confirmed when 3 consecutive BBT

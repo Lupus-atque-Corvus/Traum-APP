@@ -182,4 +182,21 @@ void main() {
     expect(a.healthFlags.map((f) => f.type),
         contains(HealthFlagType.longPeriod));
   });
+
+  test('computes current cycle day and phase', () {
+    final entries = [
+      entry(1, DateTime(2026, 1, 1)),
+      entry(2, DateTime(2026, 1, 29)),
+      entry(3, DateTime(2026, 2, 26), end: DateTime(2026, 3, 2)),
+    ];
+    final a = CycleAnalyzer.analyze(
+        entries: entries, today: DateTime(2026, 3, 12));
+    expect(a.currentCycleDay, 15);
+    expect(a.currentPhase, CyclePhase.ovulation);
+
+    final b = CycleAnalyzer.analyze(
+        entries: entries, today: DateTime(2026, 2, 27));
+    expect(b.currentCycleDay, 2);
+    expect(b.currentPhase, CyclePhase.menstrual);
+  });
 }
