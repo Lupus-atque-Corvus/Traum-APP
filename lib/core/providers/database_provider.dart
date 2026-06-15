@@ -174,6 +174,18 @@ final allPeriodEntriesStreamProvider = StreamProvider.autoDispose<List<PeriodEnt
 final allPeriodSymptomsStreamProvider = StreamProvider.autoDispose<List<PeriodSymptom>>((ref) =>
     ref.watch(periodDaoProvider).watchAllSymptoms());
 
+final cycleProfileStreamProvider =
+    StreamProvider.autoDispose<CycleProfileData?>((ref) =>
+        ref.watch(periodDaoProvider).watchCycleProfile());
+
+final allDailyLogsStreamProvider =
+    StreamProvider.autoDispose<List<DailyLog>>((ref) =>
+        ref.watch(periodDaoProvider).watchAllDailyLogs());
+
+final dailyLogForDateProvider =
+    FutureProvider.autoDispose.family<DailyLog?, DateTime>((ref, date) =>
+        ref.watch(periodDaoProvider).getDailyLogForDate(date));
+
 // ─── Budget extras ────────────────────────────────────────────────────────────
 final allTransactionsStreamProvider = StreamProvider.autoDispose<List<Transaction>>((ref) =>
     ref.watch(budgetDaoProvider).watchAllTransactions());
