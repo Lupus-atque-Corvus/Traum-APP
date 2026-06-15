@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:home_widget/home_widget.dart';
 
 import 'core/navigation/router.dart';
 import 'core/navigation/routes.dart';
@@ -28,6 +31,14 @@ Future<String?> initialWidgetRoute() async {
   }
 }
 
+/// Maps an incoming iOS widget URL (e.g. `traum:///budget` or `traum://budget`)
+/// to a known app route, or null when unknown.
+String? routeFromWidgetUri(Uri? uri) {
+  if (uri == null) return null;
+  final path = uri.path.isEmpty ? '/${uri.host}' : uri.path;
+  return isKnownWidgetRoute(path) ? path : null;
+}
+
 class TraumApp extends ConsumerStatefulWidget {
   const TraumApp({super.key});
 
@@ -37,6 +48,7 @@ class TraumApp extends ConsumerStatefulWidget {
 
 class _TraumAppState extends ConsumerState<TraumApp> {
   late final AppLifecycleListener _lifecycleListener;
+  StreamSubscription<Uri?>? _widgetClickSub;
 
   // Set to true when app is truly backgrounded (paused state).
   // Cleared after lock screen is shown on resume.
@@ -53,16 +65,37 @@ class _TraumAppState extends ConsumerState<TraumApp> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkStartupLock());
     // Navigate to the route that triggered the widget tap (cold start).
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkWidgetDeepLink());
+    // iOS: handle widgetURL launches + taps via home_widget.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkWidgetUriLaunch());
+    _widgetClickSub = HomeWidget.widgetClicked.listen(_onWidgetUri);
   }
 
   @override
   void dispose() {
+    _widgetClickSub?.cancel();
     _lifecycleListener.dispose();
     super.dispose();
   }
 
   Future<void> _checkWidgetDeepLink() async {
     final route = await initialWidgetRoute();
+    if (route != null && mounted) {
+      ref.read(routerProvider).go(route);
+    }
+  }
+
+  /// iOS cold start: the launch URI from a tapped widget (`traum:///route`).
+  Future<void> _checkWidgetUriLaunch() async {
+    try {
+      final uri = await HomeWidget.initiallyLaunchedFromHomeWidget();
+      _onWidgetUri(uri);
+    } catch (_) {
+      // No launch URI / unsupported platform — ignore.
+    }
+  }
+
+  void _onWidgetUri(Uri? uri) {
+    final route = routeFromWidgetUri(uri);
     if (route != null && mounted) {
       ref.read(routerProvider).go(route);
     }

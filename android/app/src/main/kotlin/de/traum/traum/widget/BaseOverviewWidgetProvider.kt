@@ -6,7 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.util.SizeF
 import android.view.View
 import android.widget.RemoteViews
 import de.traum.traum.MainActivity
@@ -16,6 +18,9 @@ import es.antonborri.home_widget.HomeWidgetProvider
 
 /** Ein darzustellender Wert: Label + Group-Store-Key (+ optionaler Suffix wie " kcal" + optionales Ziel für Ring). */
 data class OverviewSlot(val label: String, val valueKey: String, val suffix: String = "", val goalKey: String? = null)
+
+/** Größen-Bucket für responsives Layout (Sichtbarkeit der Sekundär-/Tertiär-Zeilen). */
+private enum class Bucket { COMPACT, MEDIUM, LARGE }
 
 /**
  * Generische Basis für alle benannten Tab-Übersichts-Widgets.
@@ -32,9 +37,9 @@ abstract class BaseOverviewWidgetProvider : HomeWidgetProvider() {
 
     private fun buildViews(
         context: Context,
-        appWidgetManager: AppWidgetManager,
         id: Int,
-        widgetData: SharedPreferences
+        widgetData: SharedPreferences,
+        bucket: Bucket
     ): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_template_overview)
         val accent = runCatching { Color.parseColor(accentHex) }.getOrDefault(Color.WHITE)
@@ -86,7 +91,11 @@ abstract class BaseOverviewWidgetProvider : HomeWidgetProvider() {
             slots.getOrNull(3)?.let {
                 views.setTextViewText(R.id.tv_s3_value, read(it)); views.setTextViewText(R.id.tv_s3_label, it.label)
             }
-            applyBucket(appWidgetManager, id, views)
+            val medium = bucket != Bucket.COMPACT
+            val large = bucket == Bucket.LARGE
+            views.setViewVisibility(R.id.row_secondary, if (medium && slots.size > 1) View.VISIBLE else View.GONE)
+            views.setViewVisibility(R.id.row_tertiary, if (large && slots.size > 3) View.VISIBLE else View.GONE)
+            views.setViewVisibility(R.id.tv_footer, View.GONE)
         }
 
         val intent = Intent(context, MainActivity::class.java).apply {
@@ -102,6 +111,35 @@ abstract class BaseOverviewWidgetProvider : HomeWidgetProvider() {
         return views
     }
 
+    /** Liefert für API≥31 ein größen-responsives RemoteViews, sonst Bucket aus den Optionen. */
+    private fun buildSizedViews(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        id: Int,
+        widgetData: SharedPreferences
+    ): RemoteViews {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val mapping = mapOf(
+                SizeF(120f, 100f) to buildViews(context, id, widgetData, Bucket.COMPACT),
+                SizeF(250f, 100f) to buildViews(context, id, widgetData, Bucket.MEDIUM),
+                SizeF(250f, 200f) to buildViews(context, id, widgetData, Bucket.LARGE),
+            )
+            return RemoteViews(mapping)
+        }
+        return buildViews(context, id, widgetData, bucketFromOptions(appWidgetManager, id))
+    }
+
+    private fun bucketFromOptions(appWidgetManager: AppWidgetManager, id: Int): Bucket {
+        val opts = appWidgetManager.getAppWidgetOptions(id)
+        val minH = opts.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 0)
+        val minW = opts.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0)
+        return when {
+            minH >= 200 -> Bucket.LARGE
+            minH >= 110 || minW >= 250 -> Bucket.MEDIUM
+            else -> Bucket.COMPACT
+        }
+    }
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -109,7 +147,7 @@ abstract class BaseOverviewWidgetProvider : HomeWidgetProvider() {
         widgetData: SharedPreferences
     ) {
         appWidgetIds.forEach { id ->
-            appWidgetManager.updateAppWidget(id, buildViews(context, appWidgetManager, id, widgetData))
+            appWidgetManager.updateAppWidget(id, buildSizedViews(context, appWidgetManager, id, widgetData))
         }
     }
 
@@ -121,18 +159,7 @@ abstract class BaseOverviewWidgetProvider : HomeWidgetProvider() {
     ) {
         appWidgetManager.updateAppWidget(
             appWidgetId,
-            buildViews(context, appWidgetManager, appWidgetId, HomeWidgetPlugin.getData(context))
+            buildSizedViews(context, appWidgetManager, appWidgetId, HomeWidgetPlugin.getData(context))
         )
-    }
-
-    private fun applyBucket(appWidgetManager: AppWidgetManager, id: Int, views: RemoteViews) {
-        val opts = appWidgetManager.getAppWidgetOptions(id)
-        val minH = opts.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 0)
-        val minW = opts.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0)
-        val medium = minH >= 110 || minW >= 250
-        val large = minH >= 200
-        views.setViewVisibility(R.id.row_secondary, if (medium && slots.size > 1) View.VISIBLE else View.GONE)
-        views.setViewVisibility(R.id.row_tertiary, if (large && slots.size > 3) View.VISIBLE else View.GONE)
-        views.setViewVisibility(R.id.tv_footer, View.GONE)
     }
 }
