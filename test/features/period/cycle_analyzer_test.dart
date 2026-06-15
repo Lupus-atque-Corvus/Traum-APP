@@ -53,4 +53,30 @@ void main() {
         .inDays;
     expect(spanB, greaterThan(span));
   });
+
+  test('estimates ovulation (cycle-luteal) and Wilcox fertile window', () {
+    final entries = [
+      entry(1, DateTime(2026, 1, 1)),
+      entry(2, DateTime(2026, 1, 29)),
+      entry(3, DateTime(2026, 2, 26)),
+    ];
+    final a = CycleAnalyzer.analyze(
+        entries: entries, today: DateTime(2026, 3, 1));
+    expect(a.ovulationDate, DateTime(2026, 3, 12));
+    expect(a.ovulationConfirmed, isFalse);
+    expect(a.fertileWindowStart, DateTime(2026, 3, 7));
+    expect(a.fertileWindowEnd, DateTime(2026, 3, 13));
+  });
+
+  test('lutealPhaseOverride shifts ovulation', () {
+    final entries = [
+      entry(1, DateTime(2026, 1, 1)),
+      entry(2, DateTime(2026, 1, 29)),
+    ];
+    final a = CycleAnalyzer.analyze(
+        entries: entries,
+        lutealPhaseOverride: 12,
+        today: DateTime(2026, 2, 1));
+    expect(a.ovulationDate, DateTime(2026, 2, 14));
+  });
 }

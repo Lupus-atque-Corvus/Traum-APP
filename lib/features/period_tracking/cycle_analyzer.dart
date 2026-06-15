@@ -46,6 +46,13 @@ class CycleAnalyzer {
     final rangeStart = nextPredicted.subtract(Duration(days: marginDays));
     final rangeEnd = nextPredicted.add(Duration(days: marginDays));
 
+    final luteal = lutealPhaseOverride ?? defaultLutealPhase;
+    // Estimated ovulation in the CURRENT cycle = lastStart + (cycle - luteal).
+    final ovulation = lastStart.add(Duration(days: cycleRounded - luteal));
+    // Wilcox 1995: 5 days before to 1 day after ovulation.
+    final fertileStart = ovulation.subtract(const Duration(days: 5));
+    final fertileEnd = ovulation.add(const Duration(days: 1));
+
     return CycleAnalysis(
       avgCycleLength: avgCycle,
       cycleLengthStdDev: stdDev,
@@ -53,6 +60,9 @@ class CycleAnalyzer {
       nextPeriodPredicted: nextPredicted,
       nextPeriodRangeStart: rangeStart,
       nextPeriodRangeEnd: rangeEnd,
+      ovulationDate: ovulation,
+      fertileWindowStart: fertileStart,
+      fertileWindowEnd: fertileEnd,
     );
   }
 
