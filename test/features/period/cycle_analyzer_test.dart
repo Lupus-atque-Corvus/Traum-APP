@@ -146,4 +146,40 @@ void main() {
     );
     expect(a.gynecologicalAgeYears, closeTo(12, 0.1));
   });
+
+  test('flags consistently long cycles, softened in early gyn age', () {
+    final longCycles = [
+      entry(1, DateTime(2026, 1, 1)),
+      entry(2, DateTime(2026, 2, 9)),  // 39
+      entry(3, DateTime(2026, 3, 21)), // 40
+      entry(4, DateTime(2026, 4, 30)), // 40
+    ];
+    final flagged = CycleAnalyzer.analyze(
+        entries: longCycles, today: DateTime(2026, 5, 1));
+    expect(
+      flagged.healthFlags.map((f) => f.type),
+      contains(HealthFlagType.consistentlyLong),
+    );
+
+    final softened = CycleAnalyzer.analyze(
+      entries: longCycles,
+      menarcheDate: DateTime(2024, 6, 1),
+      today: DateTime(2026, 5, 1),
+    );
+    expect(
+      softened.healthFlags.map((f) => f.type),
+      isNot(contains(HealthFlagType.consistentlyLong)),
+    );
+  });
+
+  test('flags an overly long period', () {
+    final entries = [
+      entry(1, DateTime(2026, 2, 1), end: DateTime(2026, 2, 10)), // 10 days
+      entry(2, DateTime(2026, 3, 1)),
+    ];
+    final a = CycleAnalyzer.analyze(
+        entries: entries, today: DateTime(2026, 3, 2));
+    expect(a.healthFlags.map((f) => f.type),
+        contains(HealthFlagType.longPeriod));
+  });
 }

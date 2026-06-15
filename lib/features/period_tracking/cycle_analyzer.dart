@@ -63,6 +63,13 @@ class CycleAnalyzer {
         ? null
         : now.difference(_dateOnly(menarcheDate)).inDays / 365.25;
 
+    final flags = _healthFlags(
+      cycleLengths: cycleLengths,
+      avgPeriod: avgPeriod,
+      stdDev: stdDev ?? 0,
+      gynAgeYears: gynAge,
+    );
+
     return CycleAnalysis(
       avgCycleLength: avgCycle,
       cycleLengthStdDev: stdDev,
@@ -76,6 +83,7 @@ class CycleAnalyzer {
       fertileWindowEnd: fertileEndFinal,
       regularity: regularity,
       gynecologicalAgeYears: gynAge,
+      healthFlags: flags,
     );
   }
 
@@ -138,6 +146,36 @@ class CycleAnalyzer {
     if (range > 9 || hasOutlier) return CycleRegularity.irregular;
     if (range > 7) return CycleRegularity.slightlyIrregular;
     return CycleRegularity.regular;
+  }
+
+  /// Health flags. Softened (suppressed) when within the first 3 years post
+  /// menarche, where irregularity/anovulation is expected.
+  static List<HealthFlag> _healthFlags({
+    required List<int> cycleLengths,
+    required double? avgPeriod,
+    required double stdDev,
+    required double? gynAgeYears,
+  }) {
+    final earlyGynAge = gynAgeYears != null && gynAgeYears < 3;
+    final flags = <HealthFlag>[];
+
+    final recent =
+        cycleLengths.length > 3 ? cycleLengths.sublist(cycleLengths.length - 3) : cycleLengths;
+    final hasThree = recent.length >= 3;
+
+    if (!earlyGynAge && hasThree && recent.every((l) => l > maxNormalCycle)) {
+      flags.add(const HealthFlag(HealthFlagType.consistentlyLong));
+    }
+    if (!earlyGynAge && hasThree && recent.every((l) => l < minNormalCycle)) {
+      flags.add(const HealthFlag(HealthFlagType.consistentlyShort));
+    }
+    if (avgPeriod != null && avgPeriod > 8) {
+      flags.add(const HealthFlag(HealthFlagType.longPeriod));
+    }
+    if (!earlyGynAge && cycleLengths.length >= 3 && stdDev > 7) {
+      flags.add(const HealthFlag(HealthFlagType.highVariability));
+    }
+    return flags;
   }
 
   /// Sensiplan "3-over-6": ovulation is confirmed when 3 consecutive BBT
