@@ -3582,4 +3582,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveLog => 'Save';
+
+  @override
+  String get periodMedicalDisclaimer =>
+      'Not medical advice and not a contraceptive guarantee.';
 }

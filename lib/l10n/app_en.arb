@@ -1452,5 +1452,6 @@
   "sexProtected": "Protected",
   "sexUnprotected": "Unprotected",
   "logTodayTitle": "Log today",
-  "saveLog": "Save"
+  "saveLog": "Save",
+  "periodMedicalDisclaimer": "Not medical advice and not a contraceptive guarantee."
 }

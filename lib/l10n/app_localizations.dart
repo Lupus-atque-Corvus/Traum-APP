@@ -6919,6 +6919,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Speichern'**
   String get saveLog;
+
+  /// No description provided for @periodMedicalDisclaimer.
+  ///
+  /// In de, this message translates to:
+  /// **'Kein medizinischer Rat und keine Verhütungsgarantie.'**
+  String get periodMedicalDisclaimer;
 }
 
 class _AppLocalizationsDelegate

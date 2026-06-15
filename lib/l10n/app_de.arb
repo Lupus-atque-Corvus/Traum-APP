@@ -1474,5 +1474,6 @@
   "sexProtected": "Geschützt",
   "sexUnprotected": "Ungeschützt",
   "logTodayTitle": "Heute eintragen",
-  "saveLog": "Speichern"
+  "saveLog": "Speichern",
+  "periodMedicalDisclaimer": "Kein medizinischer Rat und keine Verhütungsgarantie."
 }
