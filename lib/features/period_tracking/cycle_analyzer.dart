@@ -49,9 +49,14 @@ class CycleAnalyzer {
     final luteal = lutealPhaseOverride ?? defaultLutealPhase;
     // Estimated ovulation in the CURRENT cycle = lastStart + (cycle - luteal).
     final ovulation = lastStart.add(Duration(days: cycleRounded - luteal));
-    // Wilcox 1995: 5 days before to 1 day after ovulation.
-    final fertileStart = ovulation.subtract(const Duration(days: 5));
-    final fertileEnd = ovulation.add(const Duration(days: 1));
+
+    // Try to confirm ovulation from BBT in the current cycle (since lastStart).
+    final confirmed = _detectThermalShift(dailyLogs, lastStart);
+    final ovulationConfirmed = confirmed != null;
+    final ovulationFinal = confirmed ?? ovulation;
+    final fertileStartFinal =
+        ovulationFinal.subtract(const Duration(days: 5));
+    final fertileEndFinal = ovulationFinal.add(const Duration(days: 1));
 
     return CycleAnalysis(
       avgCycleLength: avgCycle,
@@ -60,9 +65,10 @@ class CycleAnalyzer {
       nextPeriodPredicted: nextPredicted,
       nextPeriodRangeStart: rangeStart,
       nextPeriodRangeEnd: rangeEnd,
-      ovulationDate: ovulation,
-      fertileWindowStart: fertileStart,
-      fertileWindowEnd: fertileEnd,
+      ovulationDate: ovulationFinal,
+      ovulationConfirmed: ovulationConfirmed,
+      fertileWindowStart: fertileStartFinal,
+      fertileWindowEnd: fertileEndFinal,
     );
   }
 
@@ -111,5 +117,32 @@ class CycleAnalyzer {
         .toList();
     if (durations.isEmpty) return null;
     return durations.reduce((a, b) => a + b) / durations.length;
+  }
+
+  /// Sensiplan "3-over-6": ovulation is confirmed when 3 consecutive BBT
+  /// readings all exceed the highest of the preceding 6. Returns the ovulation
+  /// date (day before the first of the 3 high temps) or null. Only considers
+  /// readings on/after [cycleStart].
+  static DateTime? _detectThermalShift(
+      List<DailyLog> logs, DateTime cycleStart) {
+    final temps = logs
+        .where((l) => l.bbt != null && !l.logDate.isBefore(cycleStart))
+        .toList()
+      ..sort((a, b) => a.logDate.compareTo(b.logDate));
+    if (temps.length < 9) return null; // need 6 baseline + 3 high
+    for (var i = 6; i <= temps.length - 3; i++) {
+      final baseline = temps
+          .sublist(i - 6, i)
+          .map((l) => l.bbt!)
+          .reduce(math.max);
+      final high1 = temps[i].bbt!;
+      final high2 = temps[i + 1].bbt!;
+      final high3 = temps[i + 2].bbt!;
+      if (high1 > baseline && high2 > baseline && high3 > baseline) {
+        // Ovulation = day before the first high temperature.
+        return _dateOnly(temps[i].logDate).subtract(const Duration(days: 1));
+      }
+    }
+    return null;
   }
 }

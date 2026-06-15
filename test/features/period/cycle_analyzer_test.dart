@@ -79,4 +79,38 @@ void main() {
         today: DateTime(2026, 2, 1));
     expect(a.ovulationDate, DateTime(2026, 2, 14));
   });
+
+  DailyLog tlog(DateTime d, double t) => DailyLog(id: 0, logDate: d, bbt: t);
+
+  test('confirms ovulation from a clean thermal shift in current cycle', () {
+    final entries = [entry(1, DateTime(2026, 2, 26))];
+    final logs = <DailyLog>[
+      tlog(DateTime(2026, 3, 5), 36.40),
+      tlog(DateTime(2026, 3, 6), 36.42),
+      tlog(DateTime(2026, 3, 7), 36.41),
+      tlog(DateTime(2026, 3, 8), 36.39),
+      tlog(DateTime(2026, 3, 9), 36.43),
+      tlog(DateTime(2026, 3, 10), 36.40),
+      tlog(DateTime(2026, 3, 11), 36.70), // shift day 1
+      tlog(DateTime(2026, 3, 12), 36.72), // shift day 2
+      tlog(DateTime(2026, 3, 13), 36.71), // shift day 3 → confirmed
+    ];
+    final a = CycleAnalyzer.analyze(
+        entries: entries, dailyLogs: logs, today: DateTime(2026, 3, 14));
+    expect(a.ovulationConfirmed, isTrue);
+    expect(a.ovulationDate, DateTime(2026, 3, 10));
+  });
+
+  test('no confirmation without a sustained shift', () {
+    final entries = [entry(1, DateTime(2026, 2, 26))];
+    final logs = [
+      tlog(DateTime(2026, 3, 5), 36.40),
+      tlog(DateTime(2026, 3, 6), 36.42),
+      tlog(DateTime(2026, 3, 7), 36.41),
+      tlog(DateTime(2026, 3, 8), 36.70), // single spike only
+    ];
+    final a = CycleAnalyzer.analyze(
+        entries: entries, dailyLogs: logs, today: DateTime(2026, 3, 14));
+    expect(a.ovulationConfirmed, isFalse);
+  });
 }
