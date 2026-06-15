@@ -3,7 +3,7 @@
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/widget_bg"
+    android:background="@drawable/widget_bg_general"
     android:orientation="vertical"
     android:padding="12dp">
 
@@ -11,7 +11,7 @@
         android:orientation="horizontal" android:gravity="center_vertical">
         <ImageView android:id="@+id/iv_icon"
             android:layout_width="14dp" android:layout_height="14dp"
-            android:layout_marginEnd="4dp" />
+            android:layout_marginEnd="4dp" android:src="@drawable/ic_w_overview" />
         <TextView android:id="@+id/tv_title"
             android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="ÜBERSICHT" android:textColor="#FF6B3D"
