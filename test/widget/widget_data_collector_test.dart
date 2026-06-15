@@ -51,4 +51,33 @@ void main() {
     expect(snap.cycleDay, 12);
     expect(snap.placesCount, 8);
   });
+
+  test('mapToSnapshot übernimmt v2-Serien und toStringMap enthält die CSV-Strings', () {
+    final snap = WidgetDataCollector.mapToSnapshot(
+      stepsToday: 0, stepsGoal: 10000, sleepHours: 0, heartRate: 0, mood: 0,
+      kcalToday: 0, kcalGoal: 2200, waterMlToday: 0, waterGoalMl: 2500,
+      proteinToday: 0, proteinGoal: 150, nextTodoTitle: null,
+      stepsWeek: '4200,5100,0',
+      weightHistory: '75,74.5,74',
+      macroSplit: '90,180,60',
+      habitWeek: '1,0,1,1,0,1,1',
+      categorySplit: '120,80,40',
+      mealsTodayList: 'Haferflocken;Reis',
+      counters: 'Alkohol 14;Nikotin 3',
+      quote: 'Bleib dran.',
+    );
+    expect(snap.macroSplit, '90,180,60');
+    expect(snap.mealsTodayList, 'Haferflocken;Reis');
+    final map = snap.toStringMap();
+    expect(map['health.stepsWeek'], '4200,5100,0');
+    expect(map['health.weightHistory'], '75,74.5,74');
+    expect(map['nutrition.macroSplit'], '90,180,60');
+    expect(map['planning.habitWeek'], '1,0,1,1,0,1,1');
+    expect(map['budget.categorySplit'], '120,80,40');
+    expect(map['abstinence.counters'], 'Alkohol 14;Nikotin 3');
+    expect(map['general.quote'], 'Bleib dran.');
+    // fixed-goal constants always present
+    expect(map['health.sleepGoalH'], '8');
+    expect(map['period.cycleLenDays'], '28');
+  });
 }

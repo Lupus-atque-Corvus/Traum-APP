@@ -1,7 +1,7 @@
 import 'widget_keys.dart';
 
 /// Render-Vorlage eines Widgets. Wird in Kotlin/Swift gespiegelt.
-enum WidgetTemplate { stat, progress, dualStat, list, overview }
+enum WidgetTemplate { stat, progress, dualStat, list, overview, ring, ringTrio, barChart, sparkline, donut, dashboard, motivation }
 
 /// Eine Kennzahl-Zelle eines Widgets: Label + Wert-Schlüssel
 /// (+ optionales Ziel für Fortschritt).
@@ -784,5 +784,191 @@ const List<WidgetCatalogEntry> functionCatalog = [
     template: WidgetTemplate.stat,
     route: '/graffitimap',
     slots: [WidgetSlot(label: 'Orte', valueKey: WidgetKeys.mapPreview)],
+  ),
+
+  // ══ v2 visual widgets (native-only; nicht in HomeWidgetType) ═══════════════
+  // ── general ───────────────────────────────────────────────────────────────
+  WidgetCatalogEntry(
+    key: 'dailyGoals', title: 'Tagesziele', accentHex: '#FF6B3D',
+    template: WidgetTemplate.ringTrio, route: '/home',
+    slots: [
+      WidgetSlot(label: 'Schritte', valueKey: WidgetKeys.steps, goalKey: WidgetKeys.stepsGoal),
+      WidgetSlot(label: 'Kalorien', valueKey: WidgetKeys.kcal, goalKey: WidgetKeys.kcalGoal),
+      WidgetSlot(label: 'Wasser', valueKey: WidgetKeys.waterMl, goalKey: WidgetKeys.waterGoalMl),
+    ],
+  ),
+  WidgetCatalogEntry(
+    key: 'morningRoutine', title: 'Morgenroutine', accentHex: '#FF6B3D',
+    template: WidgetTemplate.dashboard, route: '/home',
+    slots: [
+      WidgetSlot(label: 'Wetter', valueKey: WidgetKeys.weatherTemp),
+      WidgetSlot(label: 'Termin', valueKey: WidgetKeys.nextAppointment),
+      WidgetSlot(label: 'Habits', valueKey: WidgetKeys.habitsDone, goalKey: WidgetKeys.habitsTotal),
+      WidgetSlot(label: 'Wasser', valueKey: WidgetKeys.waterMl, goalKey: WidgetKeys.waterGoalMl),
+    ],
+  ),
+  WidgetCatalogEntry(
+    key: 'quoteOfDay', title: 'Spruch des Tages', accentHex: '#FF6B3D',
+    template: WidgetTemplate.motivation, route: '/home',
+    slots: [WidgetSlot(label: 'Spruch', valueKey: WidgetKeys.quote)],
+  ),
+  WidgetCatalogEntry(
+    key: 'celebrate', title: 'Tagesziel', accentHex: '#FF6B3D',
+    template: WidgetTemplate.motivation, route: '/home',
+    slots: [WidgetSlot(label: 'Ziel', valueKey: WidgetKeys.healthScore)],
+  ),
+  WidgetCatalogEntry(
+    key: 'countdown', title: 'Countdown', accentHex: '#FF6B3D',
+    template: WidgetTemplate.motivation, route: '/home',
+    slots: [WidgetSlot(label: 'Countdown', valueKey: WidgetKeys.countdownLabel)],
+  ),
+  // ── health ────────────────────────────────────────────────────────────────
+  WidgetCatalogEntry(
+    key: 'stepsWeek', title: 'Schritte Woche', accentHex: '#F43F5E',
+    template: WidgetTemplate.barChart, route: '/health',
+    slots: [WidgetSlot(label: '7 Tage', valueKey: WidgetKeys.stepsWeek)],
+  ),
+  WidgetCatalogEntry(
+    key: 'weightTrendChart', title: 'Gewichtsverlauf', accentHex: '#F43F5E',
+    template: WidgetTemplate.sparkline, route: '/health',
+    slots: [WidgetSlot(label: 'Gewicht', valueKey: WidgetKeys.weightHistory)],
+  ),
+  WidgetCatalogEntry(
+    key: 'moodWeek', title: 'Stimmung Woche', accentHex: '#F43F5E',
+    template: WidgetTemplate.barChart, route: '/health',
+    slots: [WidgetSlot(label: 'Stimmung', valueKey: WidgetKeys.moodWeek)],
+  ),
+  WidgetCatalogEntry(
+    key: 'healthRings', title: 'Gesundheitsringe', accentHex: '#F43F5E',
+    template: WidgetTemplate.ringTrio, route: '/health',
+    slots: [
+      WidgetSlot(label: 'Schlaf', valueKey: WidgetKeys.sleepHours, goalKey: WidgetKeys.sleepGoalH),
+      WidgetSlot(label: 'Puls', valueKey: WidgetKeys.heartRate),
+      WidgetSlot(label: 'Aktiv', valueKey: WidgetKeys.activeMinutes, goalKey: WidgetKeys.activeGoalMin),
+    ],
+  ),
+  WidgetCatalogEntry(
+    key: 'sleepWeek', title: 'Schlaf Woche', accentHex: '#F43F5E',
+    template: WidgetTemplate.barChart, route: '/health',
+    slots: [WidgetSlot(label: 'Schlaf', valueKey: WidgetKeys.sleepWeek)],
+  ),
+  // ── nutrition ─────────────────────────────────────────────────────────────
+  WidgetCatalogEntry(
+    key: 'macroDonut', title: 'Makros', accentHex: '#3DD68C',
+    template: WidgetTemplate.donut, route: '/nutrition',
+    slots: [WidgetSlot(label: 'P/K/F', valueKey: WidgetKeys.macroSplit)],
+  ),
+  WidgetCatalogEntry(
+    key: 'waterBottle', title: 'Wasser', accentHex: '#3DD68C',
+    template: WidgetTemplate.ring, route: '/nutrition',
+    slots: [WidgetSlot(label: 'Wasser', valueKey: WidgetKeys.waterMl, goalKey: WidgetKeys.waterGoalMl)],
+  ),
+  WidgetCatalogEntry(
+    key: 'nutritionDash', title: 'Ernährung', accentHex: '#3DD68C',
+    template: WidgetTemplate.dashboard, route: '/nutrition',
+    slots: [
+      WidgetSlot(label: 'kcal', valueKey: WidgetKeys.kcal, goalKey: WidgetKeys.kcalGoal),
+      WidgetSlot(label: 'Protein', valueKey: WidgetKeys.protein),
+      WidgetSlot(label: 'Wasser', valueKey: WidgetKeys.waterMl),
+      WidgetSlot(label: 'Mahlzeit', valueKey: WidgetKeys.lastMeal),
+    ],
+  ),
+  WidgetCatalogEntry(
+    key: 'mealsTodayList', title: 'Mahlzeiten', accentHex: '#3DD68C',
+    template: WidgetTemplate.list, route: '/nutrition',
+    slots: [WidgetSlot(label: 'Mahlzeiten', valueKey: WidgetKeys.mealsTodayList)],
+  ),
+  // ── training ──────────────────────────────────────────────────────────────
+  WidgetCatalogEntry(
+    key: 'trainingDash', title: 'Training', accentHex: '#5B6CF9',
+    template: WidgetTemplate.dashboard, route: '/training',
+    slots: [
+      WidgetSlot(label: 'Nächstes', valueKey: WidgetKeys.nextWorkout),
+      WidgetSlot(label: 'Volumen', valueKey: WidgetKeys.weeklyVolume),
+      WidgetSlot(label: 'Streak', valueKey: WidgetKeys.trainingStreak),
+    ],
+  ),
+  WidgetCatalogEntry(
+    key: 'volumeWeek', title: 'Volumen Woche', accentHex: '#5B6CF9',
+    template: WidgetTemplate.barChart, route: '/training',
+    slots: [WidgetSlot(label: 'Volumen', valueKey: WidgetKeys.volumeWeek)],
+  ),
+  // ── planning ──────────────────────────────────────────────────────────────
+  WidgetCatalogEntry(
+    key: 'habitWeek', title: 'Habit-Woche', accentHex: '#F5A623',
+    template: WidgetTemplate.barChart, route: '/planning',
+    slots: [WidgetSlot(label: 'Woche', valueKey: WidgetKeys.habitWeek)],
+  ),
+  WidgetCatalogEntry(
+    key: 'todayAgenda', title: 'Heute', accentHex: '#F5A623',
+    template: WidgetTemplate.list, route: '/planning',
+    slots: [WidgetSlot(label: 'Heute', valueKey: WidgetKeys.todayAgenda)],
+  ),
+  // ── budget ────────────────────────────────────────────────────────────────
+  WidgetCatalogEntry(
+    key: 'budgetDash', title: 'Budget-Übersicht', accentHex: '#00D4D4',
+    template: WidgetTemplate.dashboard, route: '/budget',
+    slots: [
+      WidgetSlot(label: 'Saldo', valueKey: WidgetKeys.balanceMonth),
+      WidgetSlot(label: 'Ausgaben', valueKey: WidgetKeys.budgetSpent, goalKey: WidgetKeys.budgetLimit),
+      WidgetSlot(label: 'Einnahmen', valueKey: WidgetKeys.income),
+      WidgetSlot(label: 'Top', valueKey: WidgetKeys.topCategory),
+    ],
+  ),
+  WidgetCatalogEntry(
+    key: 'monthTrendChart', title: 'Monats-Trend', accentHex: '#00D4D4',
+    template: WidgetTemplate.sparkline, route: '/budget',
+    slots: [WidgetSlot(label: 'Monat', valueKey: WidgetKeys.monthTrendSeries)],
+  ),
+  WidgetCatalogEntry(
+    key: 'categoryDonut', title: 'Kategorien', accentHex: '#00D4D4',
+    template: WidgetTemplate.donut, route: '/budget',
+    slots: [WidgetSlot(label: 'Kategorien', valueKey: WidgetKeys.categorySplit)],
+  ),
+  // ── diary ─────────────────────────────────────────────────────────────────
+  WidgetCatalogEntry(
+    key: 'diaryDash', title: 'Tagebuch', accentHex: '#9B8EC4',
+    template: WidgetTemplate.dashboard, route: '/diary',
+    slots: [
+      WidgetSlot(label: 'Streak', valueKey: WidgetKeys.writeStreak),
+      WidgetSlot(label: 'Letzter', valueKey: WidgetKeys.lastEntry),
+      WidgetSlot(label: 'Monat', valueKey: WidgetKeys.entriesThisMonth),
+    ],
+  ),
+  // ── abstinence ────────────────────────────────────────────────────────────
+  WidgetCatalogEntry(
+    key: 'abstinenceDash', title: 'Counter', accentHex: '#FFAA55',
+    template: WidgetTemplate.list, route: '/abstinence',
+    slots: [WidgetSlot(label: 'Counter', valueKey: WidgetKeys.counters)],
+  ),
+  // ── substances ────────────────────────────────────────────────────────────
+  WidgetCatalogEntry(
+    key: 'substancesDash', title: 'Mittel', accentHex: '#0099BB',
+    template: WidgetTemplate.dashboard, route: '/substances',
+    slots: [
+      WidgetSlot(label: 'Zuletzt', valueKey: WidgetKeys.lastIntake),
+      WidgetSlot(label: 'Heute', valueKey: WidgetKeys.takenToday),
+    ],
+  ),
+  // ── period ────────────────────────────────────────────────────────────────
+  WidgetCatalogEntry(
+    key: 'cycleRing', title: 'Zyklus', accentHex: '#FF8FAB',
+    template: WidgetTemplate.ring, route: '/period',
+    slots: [WidgetSlot(label: 'Zyklustag', valueKey: WidgetKeys.cycleDay, goalKey: WidgetKeys.cycleLenDays)],
+  ),
+  // ── notes ─────────────────────────────────────────────────────────────────
+  WidgetCatalogEntry(
+    key: 'pinnedNoteCard', title: 'Angepinnt', accentHex: '#9B8EC4',
+    template: WidgetTemplate.motivation, route: '/notes',
+    slots: [WidgetSlot(label: 'Notiz', valueKey: WidgetKeys.pinnedNote)],
+  ),
+  // ── map ───────────────────────────────────────────────────────────────────
+  WidgetCatalogEntry(
+    key: 'mapDash', title: 'Karte', accentHex: '#3DD68C',
+    template: WidgetTemplate.dashboard, route: '/graffitimap',
+    slots: [
+      WidgetSlot(label: 'Orte', valueKey: WidgetKeys.placesCount),
+      WidgetSlot(label: 'Foto', valueKey: WidgetKeys.lastPhoto),
+    ],
   ),
 ];

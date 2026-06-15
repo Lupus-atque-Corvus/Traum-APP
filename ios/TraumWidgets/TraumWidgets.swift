@@ -27,6 +27,218 @@ private let traumGreen = Color(hex: "66BB6A")
 private let traumRed = Color(hex: "EF5350")
 private let traumYellow = Color(hex: "FFCC80")
 
+// MARK: - v2 helpers (gradient / SF symbol / series)
+
+private func gradientEndHex(_ group: String) -> String {
+    switch group {
+    case "general": return "2A1A12"
+    case "health": return "2A1420"
+    case "nutrition": return "14241C"
+    case "training": return "161A2E"
+    case "planning": return "2A2212"
+    case "budget": return "0E2424"
+    case "diary": return "201C2A"
+    case "abstinence": return "2A2012"
+    case "substances": return "0E2026"
+    case "period": return "2A1820"
+    case "notes": return "201C2A"
+    case "map": return "14241C"
+    default: return "2A1A12"
+    }
+}
+
+func widgetGradient(_ group: String) -> LinearGradient {
+    LinearGradient(
+        gradient: Gradient(colors: [Color(hex: "0D0D1A"), Color(hex: gradientEndHex(group))]),
+        startPoint: .topLeading, endPoint: .bottomTrailing)
+}
+
+func sfSymbol(_ group: String) -> String {
+    switch group {
+    case "health": return "heart.fill"
+    case "nutrition": return "flame.fill"
+    case "training": return "figure.walk"
+    case "planning": return "list.bullet"
+    case "budget": return "eurosign.circle.fill"
+    case "diary": return "book.fill"
+    case "abstinence": return "checkmark.seal.fill"
+    case "substances": return "cross.case.fill"
+    case "period": return "drop.fill"
+    case "notes": return "doc.text.fill"
+    case "map": return "map.fill"
+    default: return "square.grid.2x2.fill"
+    }
+}
+
+func seriesNumbers(_ s: String) -> [Double] {
+    s.split(separator: ",").compactMap { Double($0.trimmingCharacters(in: .whitespaces)) }
+}
+
+// MARK: - v2 reusable header + graphic views
+
+struct WidgetHeader: View {
+    let title: String; let group: String; let accentHex: String
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: sfSymbol(group)).font(.system(size: 10)).foregroundColor(Color(hex: accentHex))
+            Text(title).font(.system(size: 10, weight: .bold)).foregroundColor(Color(hex: accentHex)).textCase(.uppercase)
+        }
+    }
+}
+
+struct RingView: View {
+    let value: Double; let maxValue: Double; let accentHex: String
+    let title: String; let caption: String; let group: String
+    private var ratio: Double { maxValue > 0 ? min(value / maxValue, 1.0) : 0 }
+    var body: some View {
+        ZStack { widgetGradient(group).ignoresSafeArea()
+            VStack(alignment: .leading, spacing: 4) {
+                WidgetHeader(title: title, group: group, accentHex: accentHex)
+                ZStack {
+                    Circle().stroke(Color(hex: "333355"), lineWidth: 10)
+                    Circle().trim(from: 0, to: ratio)
+                        .stroke(Color(hex: accentHex), style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                    Text("\(Int(ratio * 100))%").font(.system(size: 18, weight: .bold)).foregroundColor(traumText)
+                }.frame(maxWidth: .infinity, maxHeight: .infinity).padding(6)
+                Text(caption).font(.caption2).foregroundColor(traumMuted).lineLimit(1)
+            }.padding(12)
+        }
+    }
+}
+
+struct RingTrioView: View {
+    let rings: [(Double, Double)]; let title: String; let group: String; let accentHex: String
+    private var cols: [Color] { [Color(hex: accentHex), traumGreen, traumBlue] }
+    var body: some View {
+        ZStack { widgetGradient(group).ignoresSafeArea()
+            VStack(alignment: .leading, spacing: 4) {
+                WidgetHeader(title: title, group: group, accentHex: accentHex)
+                ZStack {
+                    ForEach(0..<min(3, rings.count), id: \.self) { i in
+                        let r = rings[i].1 > 0 ? min(rings[i].0 / rings[i].1, 1.0) : 0
+                        Circle().stroke(Color(hex: "333355"), lineWidth: 8).padding(CGFloat(i) * 11)
+                        Circle().trim(from: 0, to: r)
+                            .stroke(cols[i % cols.count], style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                            .rotationEffect(.degrees(-90)).padding(CGFloat(i) * 11)
+                    }
+                }.frame(maxWidth: .infinity, maxHeight: .infinity).padding(6)
+            }.padding(12)
+        }
+    }
+}
+
+struct BarChartView: View {
+    let values: [Double]; let accentHex: String; let title: String; let caption: String; let group: String
+    var body: some View {
+        ZStack { widgetGradient(group).ignoresSafeArea()
+            VStack(alignment: .leading, spacing: 4) {
+                WidgetHeader(title: title, group: group, accentHex: accentHex)
+                GeometryReader { geo in
+                    let maxV = Swift.max(values.max() ?? 1, 1)
+                    HStack(alignment: .bottom, spacing: geo.size.width * 0.03) {
+                        ForEach(values.indices, id: \.self) { i in
+                            RoundedRectangle(cornerRadius: 2)
+                                .fill(i == values.count - 1 ? Color(hex: accentHex) : Color(hex: accentHex).opacity(0.5))
+                                .frame(height: Swift.max(geo.size.height * CGFloat(values[i] / maxV), 2))
+                        }
+                    }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                }
+                Text(caption).font(.caption2).foregroundColor(traumMuted).lineLimit(1)
+            }.padding(12)
+        }
+    }
+}
+
+struct SparklineView: View {
+    let values: [Double]; let accentHex: String; let title: String; let caption: String; let group: String
+    var body: some View {
+        ZStack { widgetGradient(group).ignoresSafeArea()
+            VStack(alignment: .leading, spacing: 4) {
+                WidgetHeader(title: title, group: group, accentHex: accentHex)
+                GeometryReader { geo in
+                    Path { path in
+                        guard values.count > 1 else { return }
+                        let maxV = values.max() ?? 0, minV = values.min() ?? 0
+                        let span = Swift.max(maxV - minV, 0.000001)
+                        let dx = geo.size.width / CGFloat(values.count - 1)
+                        for i in values.indices {
+                            let x = CGFloat(i) * dx
+                            let y = geo.size.height * (1 - CGFloat((values[i] - minV) / span))
+                            if i == 0 { path.move(to: CGPoint(x: x, y: y)) } else { path.addLine(to: CGPoint(x: x, y: y)) }
+                        }
+                    }.stroke(Color(hex: accentHex), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                }
+                Text(caption).font(.caption2).foregroundColor(traumMuted).lineLimit(1)
+            }.padding(12)
+        }
+    }
+}
+
+struct DonutView: View {
+    let parts: [(Double, Color)]; let title: String; let caption: String; let group: String; let accentHex: String
+    private var total: Double { parts.reduce(0) { $0 + $1.0 } }
+    var body: some View {
+        ZStack { widgetGradient(group).ignoresSafeArea()
+            VStack(alignment: .leading, spacing: 4) {
+                WidgetHeader(title: title, group: group, accentHex: accentHex)
+                ZStack {
+                    if total <= 0 {
+                        Circle().stroke(Color(hex: "333355"), lineWidth: 14)
+                    } else {
+                        ForEach(parts.indices, id: \.self) { i in
+                            let start = parts.prefix(i).reduce(0) { $0 + $1.0 } / total
+                            let frac = parts[i].0 / total
+                            Circle().trim(from: CGFloat(start), to: CGFloat(start + frac))
+                                .stroke(parts[i].1, style: StrokeStyle(lineWidth: 14, lineCap: .butt))
+                                .rotationEffect(.degrees(-90))
+                        }
+                    }
+                }.frame(maxWidth: .infinity, maxHeight: .infinity).padding(6)
+                Text(caption).font(.caption2).foregroundColor(traumMuted).lineLimit(1)
+            }.padding(12)
+        }
+    }
+}
+
+struct DashboardView: View {
+    let cells: [(String, String)]; let title: String; let group: String; let accentHex: String
+    var body: some View {
+        ZStack { widgetGradient(group).ignoresSafeArea()
+            VStack(alignment: .leading, spacing: 6) {
+                WidgetHeader(title: title, group: group, accentHex: accentHex)
+                let rows = [Array(cells.prefix(2)), Array(cells.dropFirst(2).prefix(2))]
+                ForEach(rows.indices, id: \.self) { r in
+                    HStack {
+                        ForEach(rows[r].indices, id: \.self) { c in
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(rows[r][c].0).font(.system(size: 16, weight: .bold)).foregroundColor(traumText).lineLimit(1)
+                                Text(rows[r][c].1).font(.caption2).foregroundColor(traumMuted).lineLimit(1)
+                            }
+                            Spacer()
+                        }
+                    }
+                }
+                Spacer(minLength: 0)
+            }.padding(12)
+        }
+    }
+}
+
+struct MotivationView: View {
+    let symbol: String; let value: String; let caption: String; let group: String; let accentHex: String
+    var body: some View {
+        ZStack { widgetGradient(group).ignoresSafeArea()
+            VStack(spacing: 6) {
+                Image(systemName: symbol).font(.system(size: 30)).foregroundColor(Color(hex: accentHex))
+                Text(value).font(.system(size: 15, weight: .bold)).foregroundColor(traumText)
+                    .multilineTextAlignment(.center).lineLimit(3)
+                Text(caption).font(.caption2).foregroundColor(traumMuted).lineLimit(1)
+            }.padding(14)
+        }
+    }
+}
+
 // MARK: - Shared Entry
 
 struct TraumEntry: TimelineEntry {
@@ -92,6 +304,7 @@ struct OverviewWidgetView: View {
     let title: String
     let accentHex: String
     let slots: [OverviewSlot]
+    var group: String = "general"
 
     private func text(_ s: OverviewSlot) -> String { entry.v(s.key) + s.suffix }
     private var primaryEmpty: Bool {
@@ -101,10 +314,9 @@ struct OverviewWidgetView: View {
 
     var body: some View {
         ZStack {
-            traumBackground.ignoresSafeArea()
+            widgetGradient(group).ignoresSafeArea()
             VStack(alignment: .leading, spacing: 4) {
-                Text(title).font(.system(size: 10, weight: .bold))
-                    .foregroundColor(Color(hex: accentHex)).textCase(.uppercase)
+                WidgetHeader(title: title, group: group, accentHex: accentHex)
                 if primaryEmpty {
                     Text("—").font(.system(size: 22, weight: .bold)).foregroundColor(traumText)
                     Text("Noch keine Daten").font(.caption2).foregroundColor(traumMuted)
@@ -142,11 +354,11 @@ struct OverviewWidgetView: View {
 struct StatWidgetView: View {
     let entry: TraumEntry; let title: String; let accentHex: String
     let valueKey: String; let label: String; let suffix: String
+    var group: String = "general"
     var body: some View {
-        ZStack { traumBackground.ignoresSafeArea()
+        ZStack { widgetGradient(group).ignoresSafeArea()
             VStack(spacing: 4) {
-                Text(title).font(.system(size: 10, weight: .bold))
-                    .foregroundColor(Color(hex: accentHex)).textCase(.uppercase)
+                WidgetHeader(title: title, group: group, accentHex: accentHex)
                 Text(entry.v(valueKey) + suffix).font(.system(size: 28, weight: .bold)).foregroundColor(traumText)
                 Text(label).font(.caption2).foregroundColor(traumMuted)
             }.padding(12)
@@ -157,15 +369,15 @@ struct StatWidgetView: View {
 struct ProgressWidgetView: View {
     let entry: TraumEntry; let title: String; let accentHex: String
     let valueKey: String; let goalKey: String; let label: String
+    var group: String = "general"
     var ratio: Double {
         let v = Double(entry.v(valueKey)) ?? 0, g = Double(entry.v(goalKey)) ?? 0
         return g > 0 ? min(v / g, 1.0) : 0
     }
     var body: some View {
-        ZStack { traumBackground.ignoresSafeArea()
+        ZStack { widgetGradient(group).ignoresSafeArea()
             VStack(alignment: .leading, spacing: 4) {
-                Text(title).font(.system(size: 10, weight: .bold))
-                    .foregroundColor(Color(hex: accentHex)).textCase(.uppercase)
+                WidgetHeader(title: title, group: group, accentHex: accentHex)
                 Text(entry.v(valueKey)).font(.system(size: 22, weight: .bold)).foregroundColor(traumText)
                 Text(label).font(.caption2).foregroundColor(traumMuted)
                 GeometryReader { geo in
@@ -183,11 +395,11 @@ struct ProgressWidgetView: View {
 struct DualStatWidgetView: View {
     let entry: TraumEntry; let title: String; let accentHex: String
     let aKey: String; let aLabel: String; let bKey: String; let bLabel: String
+    var group: String = "general"
     var body: some View {
-        ZStack { traumBackground.ignoresSafeArea()
+        ZStack { widgetGradient(group).ignoresSafeArea()
             VStack(alignment: .leading, spacing: 4) {
-                Text(title).font(.system(size: 10, weight: .bold))
-                    .foregroundColor(Color(hex: accentHex)).textCase(.uppercase)
+                WidgetHeader(title: title, group: group, accentHex: accentHex)
                 HStack {
                     VStack(alignment: .leading) {
                         Text(entry.v(aKey)).font(.system(size: 18, weight: .bold)).foregroundColor(traumText)
@@ -206,11 +418,11 @@ struct DualStatWidgetView: View {
 
 struct ListWidgetView: View {
     let entry: TraumEntry; let title: String; let accentHex: String; let rowKeys: [String]
+    var group: String = "general"
     var body: some View {
-        ZStack { traumBackground.ignoresSafeArea()
+        ZStack { widgetGradient(group).ignoresSafeArea()
             VStack(alignment: .leading, spacing: 4) {
-                Text(title).font(.system(size: 10, weight: .bold))
-                    .foregroundColor(Color(hex: accentHex)).textCase(.uppercase)
+                WidgetHeader(title: title, group: group, accentHex: accentHex)
                 ForEach(Array(rowKeys.prefix(3).enumerated()), id: \.offset) { _, k in
                     Text(entry.v(k)).font(.caption).foregroundColor(traumText).lineLimit(1)
                 }
@@ -230,7 +442,8 @@ struct TraumOverviewWidget: Widget {
                 OverviewSlot("Kalorien", "nutrition.kcal", " kcal"),
                 OverviewSlot("Wasser", "nutrition.waterMl", " ml"),
                 OverviewSlot("Aufgabe", "planning.nextTodo"),
-            ])
+            ], group: "general")
+            .widgetURL(URL(string: "traum:///home"))
         }
         .configurationDisplayName("TRAUM Übersicht")
         .description("Schritte, Kalorien und Wasser auf einen Blick")
@@ -248,7 +461,8 @@ struct TraumHealthWidget: Widget {
                 OverviewSlot("Schlaf", "health.sleepHours", " h"),
                 OverviewSlot("Puls", "health.heartRate", " bpm"),
                 OverviewSlot("Aktiv", "health.activeMinutes", " min"),
-            ])
+            ], group: "health")
+            .widgetURL(URL(string: "traum:///health"))
         }
         .configurationDisplayName("TRAUM Gesundheit")
         .description("Gesundheit auf einen Blick")
@@ -266,7 +480,8 @@ struct TraumNutritionWidget: Widget {
                 OverviewSlot("Protein", "nutrition.protein", " g"),
                 OverviewSlot("Wasser", "nutrition.waterMl", " ml"),
                 OverviewSlot("Mahlzeit", "nutrition.lastMeal"),
-            ])
+            ], group: "nutrition")
+            .widgetURL(URL(string: "traum:///nutrition"))
         }
         .configurationDisplayName("TRAUM Ernährung")
         .description("Kalorien, Protein und Wasser im Überblick")
@@ -283,7 +498,8 @@ struct TraumTrainingWidget: Widget {
                 OverviewSlot("Nächstes", "training.nextWorkout"),
                 OverviewSlot("Volumen", "training.weeklyVolume"),
                 OverviewSlot("Streak", "training.streak"),
-            ])
+            ], group: "training")
+            .widgetURL(URL(string: "traum:///training"))
         }
         .configurationDisplayName("TRAUM Training")
         .description("Nächstes Workout, Wochenvolumen und Streak")
@@ -301,7 +517,8 @@ struct TraumPlanningWidget: Widget {
                 OverviewSlot("Termin", "planning.nextAppointment"),
                 OverviewSlot("Habits", "planning.habitsDone"),
                 OverviewSlot("Medis", "planning.medsDone"),
-            ])
+            ], group: "planning")
+            .widgetURL(URL(string: "traum:///planning"))
         }
         .configurationDisplayName("TRAUM Planung")
         .description("Offene Aufgaben, Termine und Habits")
@@ -319,7 +536,8 @@ struct TraumBudgetWidget: Widget {
                 OverviewSlot("Ausgaben", "budget.spent", " €"),
                 OverviewSlot("Einnahmen", "budget.income", " €"),
                 OverviewSlot("Top", "budget.topCategory"),
-            ])
+            ], group: "budget")
+            .widgetURL(URL(string: "traum:///budget"))
         }
         .configurationDisplayName("TRAUM Budget")
         .description("Monatssaldo, Ausgaben und Einnahmen")
@@ -336,7 +554,8 @@ struct TraumDiaryWidget: Widget {
                 OverviewSlot("Streak", "diary.writeStreak"),
                 OverviewSlot("Letzter", "diary.lastEntry"),
                 OverviewSlot("Monat", "diary.entriesThisMonth"),
-            ])
+            ], group: "diary")
+            .widgetURL(URL(string: "traum:///diary"))
         }
         .configurationDisplayName("TRAUM Tagebuch")
         .description("Schreibstreak und Einträge diesen Monat")
@@ -353,7 +572,8 @@ struct TraumAbstinenceWidget: Widget {
                 OverviewSlot("Titel", "abstinence.title"),
                 OverviewSlot("Dauer", "abstinence.duration"),
                 OverviewSlot("Gespart", "abstinence.moneySaved", " €"),
-            ])
+            ], group: "abstinence")
+            .widgetURL(URL(string: "traum:///abstinence"))
         }
         .configurationDisplayName("TRAUM Abstinenz")
         .description("Abstinenz-Titel, Dauer und gesparte Kosten")
@@ -369,7 +589,8 @@ struct TraumSubstancesWidget: Widget {
             OverviewWidgetView(entry: e, title: "Mittel", accentHex: "#0099BB", slots: [
                 OverviewSlot("Zuletzt", "substances.lastIntake"),
                 OverviewSlot("Heute", "substances.takenToday"),
-            ])
+            ], group: "substances")
+            .widgetURL(URL(string: "traum:///substances"))
         }
         .configurationDisplayName("TRAUM Mittel")
         .description("Letzte Einnahme und heutige Mittel")
@@ -386,7 +607,8 @@ struct TraumPeriodWidget: Widget {
                 OverviewSlot("Zyklustag", "period.cycleDay"),
                 OverviewSlot("Phase", "period.phase"),
                 OverviewSlot("Nächste", "period.nextDays", " T"),
-            ])
+            ], group: "period")
+            .widgetURL(URL(string: "traum:///period"))
         }
         .configurationDisplayName("TRAUM Zyklus")
         .description("Zyklustag, Phase und Tage bis zur nächsten Periode")
@@ -402,7 +624,8 @@ struct TraumNotesWidget: Widget {
             OverviewWidgetView(entry: e, title: "Notizen", accentHex: "#9B8EC4", slots: [
                 OverviewSlot("Notizen", "notes.count"),
                 OverviewSlot("Letzte", "notes.lastNote"),
-            ])
+            ], group: "notes")
+            .widgetURL(URL(string: "traum:///notes"))
         }
         .configurationDisplayName("TRAUM Notizen")
         .description("Anzahl Notizen und letzte Notiz")
@@ -418,7 +641,8 @@ struct TraumMapWidget: Widget {
             OverviewWidgetView(entry: e, title: "Karte", accentHex: "#3DD68C", slots: [
                 OverviewSlot("Orte", "map.placesCount"),
                 OverviewSlot("Foto", "map.lastPhoto"),
-            ])
+            ], group: "map")
+            .widgetURL(URL(string: "traum:///graffitimap"))
         }
         .configurationDisplayName("TRAUM Karte")
         .description("Gespeicherte Orte und letztes Foto")
@@ -495,28 +719,60 @@ struct FunctionRouterView: View {
     let entry: TraumFunctionEntry
     private var te: TraumEntry { TraumEntry(date: entry.date, values: entry.values) }
     private var def: WidgetCatalogDef? { entry.functionKey.flatMap { WidgetCatalogSwift.byKey($0) } }
+    @ViewBuilder
     var body: some View {
         if let def = def {
-            switch def.template {
-            case "progress":
-                ProgressWidgetView(entry: te, title: def.title, accentHex: def.accentHex,
-                    valueKey: def.slots.first?.valueKey ?? "", goalKey: def.slots.first?.goalKey ?? "",
-                    label: def.slots.first?.label ?? "")
-            case "dualStat":
-                DualStatWidgetView(entry: te, title: def.title, accentHex: def.accentHex,
-                    aKey: def.slots.first?.valueKey ?? "", aLabel: def.slots.first?.label ?? "",
-                    bKey: def.slots.count > 1 ? def.slots[1].valueKey : "",
-                    bLabel: def.slots.count > 1 ? def.slots[1].label : "")
-            case "list":
-                ListWidgetView(entry: te, title: def.title, accentHex: def.accentHex,
-                    rowKeys: def.slots.map { $0.valueKey })
-            default:
-                StatWidgetView(entry: te, title: def.title, accentHex: def.accentHex,
-                    valueKey: def.slots.first?.valueKey ?? "", label: def.slots.first?.label ?? "", suffix: "")
-            }
+            routed(def).widgetURL(URL(string: "traum://\(def.route)"))
         } else {
             StatWidgetView(entry: te, title: "TRAUM", accentHex: "#FF6B3D",
                 valueKey: "", label: "Funktion wählen", suffix: "")
+        }
+    }
+
+    @ViewBuilder
+    private func routed(_ def: WidgetCatalogDef) -> some View {
+        let slot0 = def.slots.first
+        switch def.template {
+        case "progress":
+            ProgressWidgetView(entry: te, title: def.title, accentHex: def.accentHex,
+                valueKey: slot0?.valueKey ?? "", goalKey: slot0?.goalKey ?? "",
+                label: slot0?.label ?? "", group: def.group)
+        case "dualStat":
+            DualStatWidgetView(entry: te, title: def.title, accentHex: def.accentHex,
+                aKey: slot0?.valueKey ?? "", aLabel: slot0?.label ?? "",
+                bKey: def.slots.count > 1 ? def.slots[1].valueKey : "",
+                bLabel: def.slots.count > 1 ? def.slots[1].label : "", group: def.group)
+        case "list":
+            ListWidgetView(entry: te, title: def.title, accentHex: def.accentHex,
+                rowKeys: def.slots.map { $0.valueKey }, group: def.group)
+        case "ring":
+            RingView(value: Double(te.v(slot0?.valueKey ?? "")) ?? 0,
+                maxValue: Double(te.v(slot0?.goalKey ?? "")) ?? 0,
+                accentHex: def.accentHex, title: def.title, caption: slot0?.label ?? "", group: def.group)
+        case "ringTrio":
+            RingTrioView(rings: def.slots.prefix(3).map {
+                (Double(te.v($0.valueKey)) ?? 0, Double(te.v($0.goalKey ?? "")) ?? 100)
+            }, title: def.title, group: def.group, accentHex: def.accentHex)
+        case "barChart":
+            BarChartView(values: seriesNumbers(te.v(slot0?.valueKey ?? "")),
+                accentHex: def.accentHex, title: def.title, caption: slot0?.label ?? "", group: def.group)
+        case "sparkline":
+            SparklineView(values: seriesNumbers(te.v(slot0?.valueKey ?? "")),
+                accentHex: def.accentHex, title: def.title, caption: slot0?.label ?? "", group: def.group)
+        case "donut":
+            let cols = [traumBlue, traumYellow, traumRed]
+            DonutView(parts: seriesNumbers(te.v(slot0?.valueKey ?? "")).enumerated().map { (i, v) in
+                (v, cols[i % cols.count])
+            }, title: def.title, caption: slot0?.label ?? "", group: def.group, accentHex: def.accentHex)
+        case "dashboard":
+            DashboardView(cells: def.slots.prefix(4).map { (te.v($0.valueKey), $0.label) },
+                title: def.title, group: def.group, accentHex: def.accentHex)
+        case "motivation":
+            MotivationView(symbol: sfSymbol(def.group), value: te.v(slot0?.valueKey ?? ""),
+                caption: def.title, group: def.group, accentHex: def.accentHex)
+        default:
+            StatWidgetView(entry: te, title: def.title, accentHex: def.accentHex,
+                valueKey: slot0?.valueKey ?? "", label: slot0?.label ?? "", suffix: "", group: def.group)
         }
     }
 }

@@ -2,6 +2,7 @@ struct WidgetSlotDef { let label: String; let valueKey: String; let goalKey: Str
 struct WidgetCatalogDef {
     let key: String
     let title: String
+    let group: String
     let groupLabel: String
     let accentHex: String
     let template: String
@@ -14,6 +15,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "overview",
             title: "Übersicht",
+            group: "general",
             groupLabel: "Allgemein",
             accentHex: "#FF6B3D",
             template: "overview",
@@ -28,6 +30,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "health",
             title: "Gesundheit",
+            group: "health",
             groupLabel: "Gesundheit",
             accentHex: "#F43F5E",
             template: "overview",
@@ -42,6 +45,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "nutrition",
             title: "Ernährung",
+            group: "nutrition",
             groupLabel: "Ernährung",
             accentHex: "#3DD68C",
             template: "overview",
@@ -56,6 +60,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "training",
             title: "Training",
+            group: "training",
             groupLabel: "Training",
             accentHex: "#5B6CF9",
             template: "overview",
@@ -69,6 +74,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "planning",
             title: "Planung",
+            group: "planning",
             groupLabel: "Planung",
             accentHex: "#F5A623",
             template: "overview",
@@ -83,6 +89,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "budget",
             title: "Budget",
+            group: "budget",
             groupLabel: "Budget",
             accentHex: "#00D4D4",
             template: "overview",
@@ -97,6 +104,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "diary",
             title: "Tagebuch",
+            group: "diary",
             groupLabel: "Tagebuch",
             accentHex: "#9B8EC4",
             template: "overview",
@@ -110,6 +118,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "abstinence",
             title: "Abstinenz",
+            group: "abstinence",
             groupLabel: "Abstinenz",
             accentHex: "#FFAA55",
             template: "overview",
@@ -123,6 +132,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "substances",
             title: "Mittel",
+            group: "substances",
             groupLabel: "Mittel",
             accentHex: "#0099BB",
             template: "overview",
@@ -135,6 +145,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "period",
             title: "Zyklus",
+            group: "period",
             groupLabel: "Zyklus",
             accentHex: "#FF8FAB",
             template: "overview",
@@ -148,6 +159,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "notes",
             title: "Notizen",
+            group: "notes",
             groupLabel: "Notizen",
             accentHex: "#9B8EC4",
             template: "overview",
@@ -160,6 +172,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "map",
             title: "Karte",
+            group: "map",
             groupLabel: "Karte",
             accentHex: "#3DD68C",
             template: "overview",
@@ -174,6 +187,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "clockDate",
             title: "Uhr",
+            group: "general",
             groupLabel: "Allgemein",
             accentHex: "#FF6B3D",
             template: "stat",
@@ -185,6 +199,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "weatherNow",
             title: "Wetter",
+            group: "general",
             groupLabel: "Allgemein",
             accentHex: "#FF6B3D",
             template: "stat",
@@ -196,6 +211,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "weatherForecast",
             title: "Wetter",
+            group: "general",
             groupLabel: "Allgemein",
             accentHex: "#FF6B3D",
             template: "stat",
@@ -207,6 +223,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "appFavorites",
             title: "Apps",
+            group: "general",
             groupLabel: "Allgemein",
             accentHex: "#FF6B3D",
             template: "list",
@@ -218,6 +235,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "quickActions",
             title: "Schnellzugriff",
+            group: "general",
             groupLabel: "Allgemein",
             accentHex: "#FF6B3D",
             template: "list",
@@ -229,6 +247,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "dailyScore",
             title: "Tagesübersicht",
+            group: "general",
             groupLabel: "Allgemein",
             accentHex: "#FF6B3D",
             template: "stat",
@@ -240,6 +259,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "miniCalendar",
             title: "Kalender",
+            group: "general",
             groupLabel: "Allgemein",
             accentHex: "#FF6B3D",
             template: "list",
@@ -251,6 +271,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "steps",
             title: "Schritte",
+            group: "health",
             groupLabel: "Gesundheit",
             accentHex: "#F43F5E",
             template: "progress",
@@ -262,6 +283,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "sleep",
             title: "Schlaf",
+            group: "health",
             groupLabel: "Gesundheit",
             accentHex: "#F43F5E",
             template: "stat",
@@ -273,6 +295,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "heartRate",
             title: "Herzfrequenz",
+            group: "health",
             groupLabel: "Gesundheit",
             accentHex: "#F43F5E",
             template: "stat",
@@ -284,6 +307,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "moodToday",
             title: "Stimmung",
+            group: "health",
             groupLabel: "Gesundheit",
             accentHex: "#F43F5E",
             template: "stat",
@@ -295,6 +319,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "weightTrend",
             title: "Gewicht",
+            group: "health",
             groupLabel: "Gesundheit",
             accentHex: "#F43F5E",
             template: "stat",
@@ -306,6 +331,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "healthScore",
             title: "Score",
+            group: "health",
             groupLabel: "Gesundheit",
             accentHex: "#F43F5E",
             template: "stat",
@@ -317,6 +343,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "healthSnapshot",
             title: "Gesundheit",
+            group: "health",
             groupLabel: "Gesundheit",
             accentHex: "#F43F5E",
             template: "stat",
@@ -328,6 +355,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "activeMinutes",
             title: "Aktive Min.",
+            group: "health",
             groupLabel: "Gesundheit",
             accentHex: "#F43F5E",
             template: "stat",
@@ -339,6 +367,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "caloriesBurned",
             title: "Verbrannt",
+            group: "health",
             groupLabel: "Gesundheit",
             accentHex: "#F43F5E",
             template: "stat",
@@ -350,6 +379,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "stepsWeekChart",
             title: "Schritte-Woche",
+            group: "health",
             groupLabel: "Gesundheit",
             accentHex: "#F43F5E",
             template: "stat",
@@ -361,6 +391,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "weightChart",
             title: "Gewichtsverlauf",
+            group: "health",
             groupLabel: "Gesundheit",
             accentHex: "#F43F5E",
             template: "stat",
@@ -372,6 +403,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "caloriesRing",
             title: "Kalorien",
+            group: "nutrition",
             groupLabel: "Ernährung",
             accentHex: "#3DD68C",
             template: "progress",
@@ -383,6 +415,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "macros",
             title: "Makros",
+            group: "nutrition",
             groupLabel: "Ernährung",
             accentHex: "#3DD68C",
             template: "dualStat",
@@ -395,6 +428,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "water",
             title: "Wasser",
+            group: "nutrition",
             groupLabel: "Ernährung",
             accentHex: "#3DD68C",
             template: "progress",
@@ -406,6 +440,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "lastMeal",
             title: "Letzte Mahlzeit",
+            group: "nutrition",
             groupLabel: "Ernährung",
             accentHex: "#3DD68C",
             template: "stat",
@@ -417,6 +452,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "remainingCalories",
             title: "Rest-kcal",
+            group: "nutrition",
             groupLabel: "Ernährung",
             accentHex: "#3DD68C",
             template: "progress",
@@ -428,6 +464,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "supplementsToday",
             title: "Supplements",
+            group: "nutrition",
             groupLabel: "Ernährung",
             accentHex: "#3DD68C",
             template: "stat",
@@ -439,6 +476,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "mealsToday",
             title: "Mahlzeiten",
+            group: "nutrition",
             groupLabel: "Ernährung",
             accentHex: "#3DD68C",
             template: "stat",
@@ -450,6 +488,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "nextWorkout",
             title: "Nächstes Workout",
+            group: "training",
             groupLabel: "Training",
             accentHex: "#5B6CF9",
             template: "stat",
@@ -461,6 +500,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "weeklyVolume",
             title: "Wochen-Volumen",
+            group: "training",
             groupLabel: "Training",
             accentHex: "#5B6CF9",
             template: "stat",
@@ -472,6 +512,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "muscleHeatmap",
             title: "Muskeln",
+            group: "training",
             groupLabel: "Training",
             accentHex: "#5B6CF9",
             template: "stat",
@@ -483,6 +524,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "lastWorkout",
             title: "Letztes Workout",
+            group: "training",
             groupLabel: "Training",
             accentHex: "#5B6CF9",
             template: "stat",
@@ -494,6 +536,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "trainingStreak",
             title: "Trainings-Streak",
+            group: "training",
             groupLabel: "Training",
             accentHex: "#5B6CF9",
             template: "stat",
@@ -505,6 +548,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "weeklyWorkouts",
             title: "Wochen-Workouts",
+            group: "training",
             groupLabel: "Training",
             accentHex: "#5B6CF9",
             template: "stat",
@@ -516,6 +560,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "personalRecords",
             title: "Rekorde",
+            group: "training",
             groupLabel: "Training",
             accentHex: "#5B6CF9",
             template: "stat",
@@ -527,6 +572,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "restTimerQuick",
             title: "Rest-Timer",
+            group: "training",
             groupLabel: "Training",
             accentHex: "#5B6CF9",
             template: "stat",
@@ -538,6 +584,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "openTodos",
             title: "Offene Todos",
+            group: "planning",
             groupLabel: "Planung",
             accentHex: "#F5A623",
             template: "stat",
@@ -549,6 +596,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "todayAppointments",
             title: "Heute",
+            group: "planning",
             groupLabel: "Planung",
             accentHex: "#F5A623",
             template: "list",
@@ -560,6 +608,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "habitsToday",
             title: "Gewohnheiten",
+            group: "planning",
             groupLabel: "Planung",
             accentHex: "#F5A623",
             template: "progress",
@@ -571,6 +620,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "medicationsToday",
             title: "Medikamente",
+            group: "planning",
             groupLabel: "Planung",
             accentHex: "#F5A623",
             template: "progress",
@@ -582,6 +632,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "nextAppointmentCountdown",
             title: "Nächster Termin",
+            group: "planning",
             groupLabel: "Planung",
             accentHex: "#F5A623",
             template: "stat",
@@ -593,6 +644,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "overdueTodos",
             title: "Überfällig",
+            group: "planning",
             groupLabel: "Planung",
             accentHex: "#F5A623",
             template: "stat",
@@ -604,6 +656,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "bestHabitStreak",
             title: "Beste Serie",
+            group: "planning",
             groupLabel: "Planung",
             accentHex: "#F5A623",
             template: "stat",
@@ -615,6 +668,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "balanceMonth",
             title: "Saldo",
+            group: "budget",
             groupLabel: "Budget",
             accentHex: "#00D4D4",
             template: "stat",
@@ -626,6 +680,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "incomeExpense",
             title: "Ein/Aus",
+            group: "budget",
             groupLabel: "Budget",
             accentHex: "#00D4D4",
             template: "dualStat",
@@ -638,6 +693,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "budgetProgress",
             title: "Budget",
+            group: "budget",
             groupLabel: "Budget",
             accentHex: "#00D4D4",
             template: "progress",
@@ -649,6 +705,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "accountsOverview",
             title: "Konten",
+            group: "budget",
             groupLabel: "Budget",
             accentHex: "#00D4D4",
             template: "stat",
@@ -660,6 +717,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "topCategory",
             title: "Top-Ausgabe",
+            group: "budget",
             groupLabel: "Budget",
             accentHex: "#00D4D4",
             template: "stat",
@@ -671,6 +729,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "recentTransactions",
             title: "Letzte",
+            group: "budget",
             groupLabel: "Budget",
             accentHex: "#00D4D4",
             template: "stat",
@@ -682,6 +741,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "savingsGoal",
             title: "Sparziel",
+            group: "budget",
             groupLabel: "Budget",
             accentHex: "#00D4D4",
             template: "stat",
@@ -693,6 +753,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "recurringDue",
             title: "Wiederkehrend",
+            group: "budget",
             groupLabel: "Budget",
             accentHex: "#00D4D4",
             template: "stat",
@@ -704,6 +765,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "monthTrend",
             title: "Monats-Trend",
+            group: "budget",
             groupLabel: "Budget",
             accentHex: "#00D4D4",
             template: "stat",
@@ -715,6 +777,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "writeStreak",
             title: "Schreib-Streak",
+            group: "diary",
             groupLabel: "Tagebuch",
             accentHex: "#9B8EC4",
             template: "stat",
@@ -726,6 +789,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "lastEntry",
             title: "Letzter Eintrag",
+            group: "diary",
             groupLabel: "Tagebuch",
             accentHex: "#9B8EC4",
             template: "stat",
@@ -737,6 +801,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "yearHeatmap",
             title: "Jahres-Heatmap",
+            group: "diary",
             groupLabel: "Tagebuch",
             accentHex: "#9B8EC4",
             template: "stat",
@@ -748,6 +813,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "moodCalendar",
             title: "Stimmungs-Kalender",
+            group: "diary",
             groupLabel: "Tagebuch",
             accentHex: "#9B8EC4",
             template: "stat",
@@ -759,6 +825,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "entriesThisMonth",
             title: "Einträge/Monat",
+            group: "diary",
             groupLabel: "Tagebuch",
             accentHex: "#9B8EC4",
             template: "stat",
@@ -770,6 +837,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "currentStreak",
             title: "Aktueller Streak",
+            group: "abstinence",
             groupLabel: "Abstinenz",
             accentHex: "#FFAA55",
             template: "stat",
@@ -781,6 +849,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "longestStreak",
             title: "Längster Streak",
+            group: "abstinence",
             groupLabel: "Abstinenz",
             accentHex: "#FFAA55",
             template: "stat",
@@ -792,6 +861,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "moneySaved",
             title: "Gespart",
+            group: "abstinence",
             groupLabel: "Abstinenz",
             accentHex: "#FFAA55",
             template: "stat",
@@ -803,6 +873,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "allCounters",
             title: "Alle Counter",
+            group: "abstinence",
             groupLabel: "Abstinenz",
             accentHex: "#FFAA55",
             template: "stat",
@@ -814,6 +885,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "lastIntake",
             title: "Letzte Einnahme",
+            group: "substances",
             groupLabel: "Mittel",
             accentHex: "#0099BB",
             template: "stat",
@@ -825,6 +897,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "takenToday",
             title: "Heute",
+            group: "substances",
             groupLabel: "Mittel",
             accentHex: "#0099BB",
             template: "stat",
@@ -836,6 +909,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "cycleDay",
             title: "Zyklustag",
+            group: "period",
             groupLabel: "Zyklus",
             accentHex: "#FF8FAB",
             template: "stat",
@@ -847,6 +921,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "nextPeriod",
             title: "Nächste Periode",
+            group: "period",
             groupLabel: "Zyklus",
             accentHex: "#FF8FAB",
             template: "stat",
@@ -858,6 +933,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "notesCount",
             title: "Notizen",
+            group: "notes",
             groupLabel: "Notizen",
             accentHex: "#9B8EC4",
             template: "stat",
@@ -869,6 +945,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "lastNote",
             title: "Letzte Notiz",
+            group: "notes",
             groupLabel: "Notizen",
             accentHex: "#9B8EC4",
             template: "stat",
@@ -880,6 +957,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "pinnedNote",
             title: "Angepinnt",
+            group: "notes",
             groupLabel: "Notizen",
             accentHex: "#9B8EC4",
             template: "stat",
@@ -891,6 +969,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "placesCount",
             title: "Orte",
+            group: "map",
             groupLabel: "Karte",
             accentHex: "#3DD68C",
             template: "stat",
@@ -902,6 +981,7 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "lastPhoto",
             title: "Letztes Foto",
+            group: "map",
             groupLabel: "Karte",
             accentHex: "#3DD68C",
             template: "stat",
@@ -913,12 +993,356 @@ enum WidgetCatalogSwift {
         WidgetCatalogDef(
             key: "mapPreview",
             title: "Karte",
+            group: "map",
             groupLabel: "Karte",
             accentHex: "#3DD68C",
             template: "stat",
             route: "/graffitimap",
             slots: [
             WidgetSlotDef(label: "Orte", valueKey: "map.mapPreview", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "dailyGoals",
+            title: "Tagesziele",
+            group: "general",
+            groupLabel: "Allgemein",
+            accentHex: "#FF6B3D",
+            template: "ringTrio",
+            route: "/home",
+            slots: [
+            WidgetSlotDef(label: "Schritte", valueKey: "health.steps", goalKey: "health.stepsGoal"),
+            WidgetSlotDef(label: "Kalorien", valueKey: "nutrition.kcal", goalKey: "nutrition.kcalGoal"),
+            WidgetSlotDef(label: "Wasser", valueKey: "nutrition.waterMl", goalKey: "nutrition.waterGoalMl"),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "morningRoutine",
+            title: "Morgenroutine",
+            group: "general",
+            groupLabel: "Allgemein",
+            accentHex: "#FF6B3D",
+            template: "dashboard",
+            route: "/home",
+            slots: [
+            WidgetSlotDef(label: "Wetter", valueKey: "general.weatherTemp", goalKey: nil),
+            WidgetSlotDef(label: "Termin", valueKey: "planning.nextAppointment", goalKey: nil),
+            WidgetSlotDef(label: "Habits", valueKey: "planning.habitsDone", goalKey: "planning.habitsTotal"),
+            WidgetSlotDef(label: "Wasser", valueKey: "nutrition.waterMl", goalKey: "nutrition.waterGoalMl"),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "quoteOfDay",
+            title: "Spruch des Tages",
+            group: "general",
+            groupLabel: "Allgemein",
+            accentHex: "#FF6B3D",
+            template: "motivation",
+            route: "/home",
+            slots: [
+            WidgetSlotDef(label: "Spruch", valueKey: "general.quote", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "celebrate",
+            title: "Tagesziel",
+            group: "general",
+            groupLabel: "Allgemein",
+            accentHex: "#FF6B3D",
+            template: "motivation",
+            route: "/home",
+            slots: [
+            WidgetSlotDef(label: "Ziel", valueKey: "health.score", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "countdown",
+            title: "Countdown",
+            group: "general",
+            groupLabel: "Allgemein",
+            accentHex: "#FF6B3D",
+            template: "motivation",
+            route: "/home",
+            slots: [
+            WidgetSlotDef(label: "Countdown", valueKey: "general.countdownLabel", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "stepsWeek",
+            title: "Schritte Woche",
+            group: "health",
+            groupLabel: "Gesundheit",
+            accentHex: "#F43F5E",
+            template: "barChart",
+            route: "/health",
+            slots: [
+            WidgetSlotDef(label: "7 Tage", valueKey: "health.stepsWeek", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "weightTrendChart",
+            title: "Gewichtsverlauf",
+            group: "health",
+            groupLabel: "Gesundheit",
+            accentHex: "#F43F5E",
+            template: "sparkline",
+            route: "/health",
+            slots: [
+            WidgetSlotDef(label: "Gewicht", valueKey: "health.weightHistory", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "moodWeek",
+            title: "Stimmung Woche",
+            group: "health",
+            groupLabel: "Gesundheit",
+            accentHex: "#F43F5E",
+            template: "barChart",
+            route: "/health",
+            slots: [
+            WidgetSlotDef(label: "Stimmung", valueKey: "health.moodWeek", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "healthRings",
+            title: "Gesundheitsringe",
+            group: "health",
+            groupLabel: "Gesundheit",
+            accentHex: "#F43F5E",
+            template: "ringTrio",
+            route: "/health",
+            slots: [
+            WidgetSlotDef(label: "Schlaf", valueKey: "health.sleepHours", goalKey: "health.sleepGoalH"),
+            WidgetSlotDef(label: "Puls", valueKey: "health.heartRate", goalKey: nil),
+            WidgetSlotDef(label: "Aktiv", valueKey: "health.activeMinutes", goalKey: "health.activeGoalMin"),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "sleepWeek",
+            title: "Schlaf Woche",
+            group: "health",
+            groupLabel: "Gesundheit",
+            accentHex: "#F43F5E",
+            template: "barChart",
+            route: "/health",
+            slots: [
+            WidgetSlotDef(label: "Schlaf", valueKey: "health.sleepWeek", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "macroDonut",
+            title: "Makros",
+            group: "nutrition",
+            groupLabel: "Ernährung",
+            accentHex: "#3DD68C",
+            template: "donut",
+            route: "/nutrition",
+            slots: [
+            WidgetSlotDef(label: "P/K/F", valueKey: "nutrition.macroSplit", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "waterBottle",
+            title: "Wasser",
+            group: "nutrition",
+            groupLabel: "Ernährung",
+            accentHex: "#3DD68C",
+            template: "ring",
+            route: "/nutrition",
+            slots: [
+            WidgetSlotDef(label: "Wasser", valueKey: "nutrition.waterMl", goalKey: "nutrition.waterGoalMl"),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "nutritionDash",
+            title: "Ernährung",
+            group: "nutrition",
+            groupLabel: "Ernährung",
+            accentHex: "#3DD68C",
+            template: "dashboard",
+            route: "/nutrition",
+            slots: [
+            WidgetSlotDef(label: "kcal", valueKey: "nutrition.kcal", goalKey: "nutrition.kcalGoal"),
+            WidgetSlotDef(label: "Protein", valueKey: "nutrition.protein", goalKey: nil),
+            WidgetSlotDef(label: "Wasser", valueKey: "nutrition.waterMl", goalKey: nil),
+            WidgetSlotDef(label: "Mahlzeit", valueKey: "nutrition.lastMeal", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "mealsTodayList",
+            title: "Mahlzeiten",
+            group: "nutrition",
+            groupLabel: "Ernährung",
+            accentHex: "#3DD68C",
+            template: "list",
+            route: "/nutrition",
+            slots: [
+            WidgetSlotDef(label: "Mahlzeiten", valueKey: "nutrition.mealsTodayList", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "trainingDash",
+            title: "Training",
+            group: "training",
+            groupLabel: "Training",
+            accentHex: "#5B6CF9",
+            template: "dashboard",
+            route: "/training",
+            slots: [
+            WidgetSlotDef(label: "Nächstes", valueKey: "training.nextWorkout", goalKey: nil),
+            WidgetSlotDef(label: "Volumen", valueKey: "training.weeklyVolume", goalKey: nil),
+            WidgetSlotDef(label: "Streak", valueKey: "training.streak", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "volumeWeek",
+            title: "Volumen Woche",
+            group: "training",
+            groupLabel: "Training",
+            accentHex: "#5B6CF9",
+            template: "barChart",
+            route: "/training",
+            slots: [
+            WidgetSlotDef(label: "Volumen", valueKey: "training.volumeWeek", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "habitWeek",
+            title: "Habit-Woche",
+            group: "planning",
+            groupLabel: "Planung",
+            accentHex: "#F5A623",
+            template: "barChart",
+            route: "/planning",
+            slots: [
+            WidgetSlotDef(label: "Woche", valueKey: "planning.habitWeek", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "todayAgenda",
+            title: "Heute",
+            group: "planning",
+            groupLabel: "Planung",
+            accentHex: "#F5A623",
+            template: "list",
+            route: "/planning",
+            slots: [
+            WidgetSlotDef(label: "Heute", valueKey: "planning.todayAgenda", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "budgetDash",
+            title: "Budget-Übersicht",
+            group: "budget",
+            groupLabel: "Budget",
+            accentHex: "#00D4D4",
+            template: "dashboard",
+            route: "/budget",
+            slots: [
+            WidgetSlotDef(label: "Saldo", valueKey: "budget.balanceMonth", goalKey: nil),
+            WidgetSlotDef(label: "Ausgaben", valueKey: "budget.spent", goalKey: "budget.limit"),
+            WidgetSlotDef(label: "Einnahmen", valueKey: "budget.income", goalKey: nil),
+            WidgetSlotDef(label: "Top", valueKey: "budget.topCategory", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "monthTrendChart",
+            title: "Monats-Trend",
+            group: "budget",
+            groupLabel: "Budget",
+            accentHex: "#00D4D4",
+            template: "sparkline",
+            route: "/budget",
+            slots: [
+            WidgetSlotDef(label: "Monat", valueKey: "budget.monthTrendSeries", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "categoryDonut",
+            title: "Kategorien",
+            group: "budget",
+            groupLabel: "Budget",
+            accentHex: "#00D4D4",
+            template: "donut",
+            route: "/budget",
+            slots: [
+            WidgetSlotDef(label: "Kategorien", valueKey: "budget.categorySplit", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "diaryDash",
+            title: "Tagebuch",
+            group: "diary",
+            groupLabel: "Tagebuch",
+            accentHex: "#9B8EC4",
+            template: "dashboard",
+            route: "/diary",
+            slots: [
+            WidgetSlotDef(label: "Streak", valueKey: "diary.writeStreak", goalKey: nil),
+            WidgetSlotDef(label: "Letzter", valueKey: "diary.lastEntry", goalKey: nil),
+            WidgetSlotDef(label: "Monat", valueKey: "diary.entriesThisMonth", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "abstinenceDash",
+            title: "Counter",
+            group: "abstinence",
+            groupLabel: "Abstinenz",
+            accentHex: "#FFAA55",
+            template: "list",
+            route: "/abstinence",
+            slots: [
+            WidgetSlotDef(label: "Counter", valueKey: "abstinence.counters", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "substancesDash",
+            title: "Mittel",
+            group: "substances",
+            groupLabel: "Mittel",
+            accentHex: "#0099BB",
+            template: "dashboard",
+            route: "/substances",
+            slots: [
+            WidgetSlotDef(label: "Zuletzt", valueKey: "substances.lastIntake", goalKey: nil),
+            WidgetSlotDef(label: "Heute", valueKey: "substances.takenToday", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "cycleRing",
+            title: "Zyklus",
+            group: "period",
+            groupLabel: "Zyklus",
+            accentHex: "#FF8FAB",
+            template: "ring",
+            route: "/period",
+            slots: [
+            WidgetSlotDef(label: "Zyklustag", valueKey: "period.cycleDay", goalKey: "period.cycleLenDays"),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "pinnedNoteCard",
+            title: "Angepinnt",
+            group: "notes",
+            groupLabel: "Notizen",
+            accentHex: "#9B8EC4",
+            template: "motivation",
+            route: "/notes",
+            slots: [
+            WidgetSlotDef(label: "Notiz", valueKey: "notes.pinnedNote", goalKey: nil),
+            ]
+        ),
+        WidgetCatalogDef(
+            key: "mapDash",
+            title: "Karte",
+            group: "map",
+            groupLabel: "Karte",
+            accentHex: "#3DD68C",
+            template: "dashboard",
+            route: "/graffitimap",
+            slots: [
+            WidgetSlotDef(label: "Orte", valueKey: "map.placesCount", goalKey: nil),
+            WidgetSlotDef(label: "Foto", valueKey: "map.lastPhoto", goalKey: nil),
             ]
         ),
     ]

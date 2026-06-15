@@ -2,6 +2,13 @@ import 'widget_keys.dart';
 
 /// Vollständiger Datenstand für die Homescreen-Widgets.
 class WidgetSnapshot {
+  /// Kodiert eine Zahlenreihe als CSV-String ("4200,5100,…") für den Group-Store.
+  static String encodeSeries(List<num> values) =>
+      values.map((v) => v == v.roundToDouble() ? '${v.toInt()}' : '$v').join(',');
+
+  /// Kodiert Labels als ";"-getrennte Liste ("Apfel;Reis").
+  static String encodeLabels(List<String> labels) => labels.join(';');
+
   // ── health (Phase 1) ─────────────────────────────────────────────────────
   final int steps;
   final int stepsGoal;
@@ -123,6 +130,23 @@ class WidgetSnapshot {
   // ── notes (Phase 3) ──────────────────────────────────────────────────────
   final String pinnedNote;
 
+  // ── v2 series (CSV / labels), Default '' ──────────────────────────────────
+  final String stepsWeek;
+  final String sleepWeek;
+  final String weightHistory;
+  final String moodWeek;
+  final String macroSplit;
+  final String mealsTodayList;
+  final String volumeWeek;
+  final String todayAgenda;
+  final String habitWeek;
+  final String categorySplit;
+  final String monthTrendSeries;
+  final String counters;
+  final String quote;
+  final String countdownLabel;
+  final String countdownDays;
+
   const WidgetSnapshot({
     // Phase 1 — required (no default) to preserve existing call sites
     required this.steps,
@@ -211,6 +235,22 @@ class WidgetSnapshot {
     this.allCounters = 0,
     // Phase 3 — notes
     this.pinnedNote = '',
+    // v2 series
+    this.stepsWeek = '',
+    this.sleepWeek = '',
+    this.weightHistory = '',
+    this.moodWeek = '',
+    this.macroSplit = '',
+    this.mealsTodayList = '',
+    this.volumeWeek = '',
+    this.todayAgenda = '',
+    this.habitWeek = '',
+    this.categorySplit = '',
+    this.monthTrendSeries = '',
+    this.counters = '',
+    this.quote = '',
+    this.countdownLabel = '',
+    this.countdownDays = '',
   });
 
   factory WidgetSnapshot.empty() => const WidgetSnapshot(
@@ -328,6 +368,26 @@ class WidgetSnapshot {
         WidgetKeys.allCounters: '$allCounters',
         // ── notes (Phase 3) ───────────────────────────────────────────────
         WidgetKeys.pinnedNote: pinnedNote,
+        // ── v2 series ─────────────────────────────────────────────────────
+        WidgetKeys.stepsWeek: stepsWeek,
+        WidgetKeys.sleepWeek: sleepWeek,
+        WidgetKeys.weightHistory: weightHistory,
+        WidgetKeys.moodWeek: moodWeek,
+        WidgetKeys.macroSplit: macroSplit,
+        WidgetKeys.mealsTodayList: mealsTodayList,
+        WidgetKeys.volumeWeek: volumeWeek,
+        WidgetKeys.todayAgenda: todayAgenda,
+        WidgetKeys.habitWeek: habitWeek,
+        WidgetKeys.categorySplit: categorySplit,
+        WidgetKeys.monthTrendSeries: monthTrendSeries,
+        WidgetKeys.counters: counters,
+        WidgetKeys.quote: quote,
+        WidgetKeys.countdownLabel: countdownLabel,
+        WidgetKeys.countdownDays: countdownDays,
+        // ── v2 fixed-goal constants (rings with a fixed target) ───────────
+        WidgetKeys.sleepGoalH: '8',
+        WidgetKeys.activeGoalMin: '30',
+        WidgetKeys.cycleLenDays: '28',
       };
 
   static String _trimDouble(double v) =>
