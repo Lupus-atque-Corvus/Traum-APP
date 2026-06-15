@@ -135,6 +135,8 @@ class CycleAnalyzer {
     return weightedSum / weightTotal;
   }
 
+  /// Population standard deviation (÷n) of cycle lengths — a variability
+  /// heuristic, not an inferential statistic. Returns 0 for fewer than 2 values.
   static double? _stdDev(List<int> lengths, double mean) {
     if (lengths.length < 2) return 0;
     final variance = lengths

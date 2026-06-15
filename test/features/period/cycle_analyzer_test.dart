@@ -199,4 +199,65 @@ void main() {
     expect(b.currentCycleDay, 2);
     expect(b.currentPhase, CyclePhase.menstrual);
   });
+
+  test('pregnancyProbabilityToday: 30 on ovulation, 25 in window, 0 outside', () {
+    final entries = [
+      entry(1, DateTime(2026, 1, 1)),
+      entry(2, DateTime(2026, 1, 29)),
+      entry(3, DateTime(2026, 2, 26)),
+    ];
+    // ovulation = 26 Feb + (28-14) = 12 Mar; fertile window 7 Mar..13 Mar.
+    final onOvulation = CycleAnalyzer.analyze(
+        entries: entries, today: DateTime(2026, 3, 12));
+    expect(onOvulation.pregnancyProbabilityToday, 30);
+
+    final inWindow = CycleAnalyzer.analyze(
+        entries: entries, today: DateTime(2026, 3, 8));
+    expect(inWindow.pregnancyProbabilityToday, 25);
+
+    final outside = CycleAnalyzer.analyze(
+        entries: entries, today: DateTime(2026, 3, 1));
+    expect(outside.pregnancyProbabilityToday, 0);
+  });
+
+  test('longPeriod flag survives early gynecological-age softening', () {
+    // Average period length 10 days, menarche <3y ago.
+    final entries = [
+      entry(1, DateTime(2026, 2, 1), end: DateTime(2026, 2, 10)), // 10 days
+      entry(2, DateTime(2026, 3, 1)),
+    ];
+    final a = CycleAnalyzer.analyze(
+      entries: entries,
+      menarcheDate: DateTime(2024, 6, 1), // <3 years before today
+      today: DateTime(2026, 3, 2),
+    );
+    expect(a.healthFlags.map((f) => f.type),
+        contains(HealthFlagType.longPeriod));
+  });
+
+  test('highVariability flag for large cycle-length spread', () {
+    // Cycle lengths: 20, 45, 24 → stdDev > 7. (Outliers also make it irregular.)
+    final entries = [
+      entry(1, DateTime(2026, 1, 1)),
+      entry(2, DateTime(2026, 1, 21)), // 20
+      entry(3, DateTime(2026, 3, 7)),  // 45
+      entry(4, DateTime(2026, 3, 31)), // 24
+    ];
+    final a = CycleAnalyzer.analyze(
+        entries: entries, today: DateTime(2026, 4, 1));
+    expect(a.healthFlags.map((f) => f.type),
+        contains(HealthFlagType.highVariability));
+  });
+
+  test('slightlyIrregular for a moderate spread within normal range', () {
+    // Lengths 26 and 34 → range 8 (in (7,9]), both within 21..35.
+    final entries = [
+      entry(1, DateTime(2026, 1, 1)),
+      entry(2, DateTime(2026, 1, 27)), // 26
+      entry(3, DateTime(2026, 3, 2)),  // 34
+    ];
+    final a = CycleAnalyzer.analyze(
+        entries: entries, today: DateTime(2026, 3, 3));
+    expect(a.regularity, CycleRegularity.slightlyIrregular);
+  });
 }
