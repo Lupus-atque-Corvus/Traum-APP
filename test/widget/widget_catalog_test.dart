@@ -2,6 +2,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:traum/features/home/home_tile.dart';
 import 'package:traum/widget/widget_catalog.dart';
 
+/// Native-only v2-Visual-Widgets: erscheinen im Funktions-Widget-Picker,
+/// haben aber bewusst KEINEN HomeWidgetType (kein In-App-Dashboard-Eintrag).
+const kNativeOnlyV2Keys = <String>[
+  'dailyGoals', 'stepsWeek', 'weightTrendChart', 'macroDonut', 'habitWeek', 'moodWeek',
+  'waterBottle', 'monthTrendChart', 'morningRoutine', 'quoteOfDay', 'celebrate', 'countdown',
+  'healthRings', 'sleepWeek', 'nutritionDash', 'mealsTodayList', 'trainingDash', 'volumeWeek',
+  'todayAgenda', 'budgetDash', 'categoryDonut', 'diaryDash', 'abstinenceDash', 'substancesDash',
+  'cycleRing', 'pinnedNoteCard', 'mapDash',
+];
+
 void main() {
   test('Katalog enthält genau 12 Einträge', () {
     expect(widgetCatalog.length, 12);
@@ -56,7 +66,31 @@ void main() {
     }
   });
 
-  test('functionCatalog.length == HomeWidgetType.values.length (keine verwaisten Einträge)', () {
-    expect(functionCatalog.length, HomeWidgetType.values.length);
+  test('functionCatalog = HomeWidgetType-Abdeckung + bekannte native-only Extras', () {
+    final enumNames = HomeWidgetType.values.map((e) => e.name).toSet();
+    final extra = functionCatalog
+        .map((e) => e.key)
+        .where((k) => !enumNames.contains(k))
+        .toSet();
+    expect(extra, equals(kNativeOnlyV2Keys.toSet()),
+        reason: 'native-only Einträge müssen exakt kNativeOnlyV2Keys sein');
+    expect(functionCatalog.length,
+        HomeWidgetType.values.length + kNativeOnlyV2Keys.length);
+  });
+
+  test('functionCatalog enthält die v2-Widgets mit gültigem Template + Slots', () {
+    final byKey = {for (final e in functionCatalog) e.key: e};
+    const v2Templates = {
+      WidgetTemplate.ring, WidgetTemplate.ringTrio, WidgetTemplate.barChart,
+      WidgetTemplate.sparkline, WidgetTemplate.donut, WidgetTemplate.dashboard,
+      WidgetTemplate.motivation, WidgetTemplate.list,
+    };
+    for (final k in kNativeOnlyV2Keys) {
+      final e = byKey[k];
+      expect(e, isNotNull, reason: 'fehlt: $k');
+      expect(e!.slots, isNotEmpty, reason: '$k: keine Slots');
+      expect(v2Templates.contains(e.template), isTrue,
+          reason: '$k: ungültiges Template ${e.template}');
+    }
   });
 }
