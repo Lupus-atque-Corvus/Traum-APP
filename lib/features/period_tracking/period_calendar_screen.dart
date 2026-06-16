@@ -4,8 +4,42 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
+import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'cycle_analysis.dart';
 import 'cycle_calculator.dart';
+import 'daily_log_sheet.dart';
+
+/// Returns the phase color for [day], or null if the day has no phase marker.
+/// Priority: active period day (within any entry's start..end) → ovulation →
+/// fertile window → predicted next-period range (lower opacity) → null.
+Color? phaseColorForDay(
+    DateTime day, CycleAnalysis analysis, List<PeriodEntry> entries) {
+  final d = DateTime(day.year, day.month, day.day);
+  bool inRange(DateTime? a, DateTime? b) {
+    if (a == null || b == null) return false;
+    final s = DateTime(a.year, a.month, a.day);
+    final e = DateTime(b.year, b.month, b.day);
+    return !d.isBefore(s) && !d.isAfter(e);
+  }
+
+  // Active period days (logged): within any entry's start..(end ?? start)
+  for (final e in entries) {
+    final end = e.endDate ?? e.startDate;
+    if (inRange(e.startDate, end)) return TraumColors.periodRose;
+  }
+  if (analysis.ovulationDate != null) {
+    final ov = analysis.ovulationDate!;
+    if (DateTime(ov.year, ov.month, ov.day) == d) return TraumColors.ovulationCyan;
+  }
+  if (inRange(analysis.fertileWindowStart, analysis.fertileWindowEnd)) {
+    return TraumColors.fertileCyan;
+  }
+  if (inRange(analysis.nextPeriodRangeStart, analysis.nextPeriodRangeEnd)) {
+    return TraumColors.periodRose.withValues(alpha: 0.4);
+  }
+  return null;
+}
 
 class PeriodCalendarScreen extends ConsumerStatefulWidget {
   const PeriodCalendarScreen({super.key});
@@ -22,6 +56,8 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
   Widget build(BuildContext context) {
     final entriesAsync = ref.watch(allPeriodEntriesStreamProvider);
 
+    final analysis = ref.watch(cycleAnalysisProvider);
+
     return Scaffold(
       backgroundColor: TraumColors.background,
       appBar: AppBar(
@@ -36,7 +72,7 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
       ),
       body: entriesAsync.when(
         data: (entries) {
-          // Build cycle prediction
+          // Build cycle prediction (kept for _DayDetail backwards compatibility)
           CycleResult? cycleResult;
           int avgCycleLength = 28;
 
@@ -59,7 +95,7 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
             );
           }
 
-          // Build set of period days
+          // Build set of period days (for _DayDetail)
           final periodDays = <DateTime>{};
           for (final entry in entries) {
             final end = entry.endDate ?? DateTime.now();
@@ -71,7 +107,7 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
             }
           }
 
-          // Fertile window days
+          // Fertile window days (for _DayDetail)
           final fertileDays = <DateTime>{};
           if (cycleResult?.fertileStart != null && cycleResult?.fertileEnd != null) {
             var d = DateTime(cycleResult!.fertileStart!.year, cycleResult.fertileStart!.month,
@@ -96,11 +132,30 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
                 lastDay: DateTime(2100),
                 focusedDay: _focusedDay,
                 selectedDayPredicate: (d) => isSameDay(d, _selectedDay),
-                onDaySelected: (selected, focused) {
+                onDaySelected: (selected, focused) async {
                   setState(() {
                     _selectedDay = selected;
                     _focusedDay = focused;
                   });
+                  // Open DailyLogSheet for the selected day
+                  final existing = await ref
+                      .read(periodDaoProvider)
+                      .getDailyLogForDate(selected);
+                  if (!context.mounted) return;
+                  await showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: TraumColors.surface,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                    ),
+                    builder: (_) => DailyLogSheet(
+                      date: selected,
+                      existing: existing,
+                      onSave: (companion) =>
+                          ref.read(periodDaoProvider).upsertDailyLog(companion),
+                    ),
+                  );
                 },
                 onPageChanged: (focused) => setState(() => _focusedDay = focused),
                 calendarStyle: CalendarStyle(
@@ -131,25 +186,27 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
                 ),
                 calendarBuilders: CalendarBuilders(
                   defaultBuilder: (ctx, day, focusedDay) {
-                    final d = DateTime(day.year, day.month, day.day);
-                    final isPeriod = periodDays.contains(d);
-                    final isFertile = fertileDays.contains(d);
-                    final isOvul = ovulationDay != null && d == ovulationDay;
+                    final phaseColor = phaseColorForDay(day, analysis, entries);
+                    if (phaseColor == null) return null;
 
-                    Color? bgColor;
-                    Color textColor = TraumColors.onBackground;
-                    if (isPeriod) {
+                    // Derive background and text colors from the phase color
+                    Color bgColor;
+                    Color textColor;
+                    if (phaseColor == TraumColors.periodRose) {
                       bgColor = TraumColors.periodRose.withValues(alpha: 0.35);
                       textColor = TraumColors.periodRose;
-                    } else if (isOvul) {
+                    } else if (phaseColor == TraumColors.ovulationCyan) {
                       bgColor = TraumColors.ovulationCyan.withValues(alpha: 0.35);
                       textColor = TraumColors.ovulationCyan;
-                    } else if (isFertile) {
+                    } else if (phaseColor == TraumColors.fertileCyan) {
                       bgColor = TraumColors.fertileCyan.withValues(alpha: 0.25);
                       textColor = TraumColors.fertileCyan;
+                    } else {
+                      // predicted next period range (periodRose @ 0.4 alpha)
+                      bgColor = phaseColor.withValues(alpha: 0.2);
+                      textColor = TraumColors.periodRose.withValues(alpha: 0.7);
                     }
 
-                    if (bgColor == null) return null;
                     return Container(
                       margin: const EdgeInsets.all(4),
                       decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),

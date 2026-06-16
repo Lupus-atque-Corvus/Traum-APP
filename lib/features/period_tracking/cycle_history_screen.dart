@@ -6,7 +6,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
-import 'cycle_calculator.dart';
+import 'cycle_analysis.dart';
 
 class CycleHistoryScreen extends ConsumerWidget {
   const CycleHistoryScreen({super.key});
@@ -14,6 +14,7 @@ class CycleHistoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final entriesAsync = ref.watch(allPeriodEntriesStreamProvider);
+    final analysis = ref.watch(cycleAnalysisProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,
@@ -56,24 +57,17 @@ class CycleHistoryScreen extends ConsumerWidget {
 
           final sorted = [...entries]..sort((a, b) => a.startDate.compareTo(b.startDate));
 
-          // Cycle lengths between consecutive periods
+          // Cycle lengths between consecutive periods (used for bar chart)
           final cycleLengths = <int>[];
           for (int i = 1; i < sorted.length; i++) {
             cycleLengths.add(sorted[i].startDate.difference(sorted[i - 1].startDate).inDays);
           }
 
-          final periodLengths = entries
-              .where((e) => e.endDate != null)
-              .map((e) => e.endDate!.difference(e.startDate).inDays)
-              .toList();
-
-          final avgCycle = cycleLengths.isNotEmpty
-              ? (cycleLengths.reduce((a, b) => a + b) / cycleLengths.length).round()
-              : 28;
-          final avgPeriod = periodLengths.isNotEmpty
-              ? (periodLengths.reduce((a, b) => a + b) / periodLengths.length).round()
-              : 5;
-          final isIrregular = CycleCalculator.isIrregular(cycleLengths);
+          // Read stats from the engine so numbers match the dashboard
+          final avgCycle = analysis.avgCycleLength?.round() ?? 28;
+          final avgPeriod = analysis.avgPeriodLength?.round() ?? 5;
+          final isIrregular = analysis.regularity == CycleRegularity.irregular ||
+              analysis.regularity == CycleRegularity.slightlyIrregular;
 
           return ListView(
             padding: const EdgeInsets.all(16),
