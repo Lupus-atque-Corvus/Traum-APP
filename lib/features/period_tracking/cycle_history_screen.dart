@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/components/components.dart';
@@ -6,7 +7,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
-import 'cycle_calculator.dart';
+import 'cycle_analysis.dart';
 
 class CycleHistoryScreen extends ConsumerWidget {
   const CycleHistoryScreen({super.key});
@@ -14,6 +15,7 @@ class CycleHistoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final entriesAsync = ref.watch(allPeriodEntriesStreamProvider);
+    final analysis = ref.watch(cycleAnalysisProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,
@@ -56,24 +58,17 @@ class CycleHistoryScreen extends ConsumerWidget {
 
           final sorted = [...entries]..sort((a, b) => a.startDate.compareTo(b.startDate));
 
-          // Cycle lengths between consecutive periods
+          // Cycle lengths between consecutive periods (used for bar chart)
           final cycleLengths = <int>[];
           for (int i = 1; i < sorted.length; i++) {
             cycleLengths.add(sorted[i].startDate.difference(sorted[i - 1].startDate).inDays);
           }
 
-          final periodLengths = entries
-              .where((e) => e.endDate != null)
-              .map((e) => e.endDate!.difference(e.startDate).inDays)
-              .toList();
-
-          final avgCycle = cycleLengths.isNotEmpty
-              ? (cycleLengths.reduce((a, b) => a + b) / cycleLengths.length).round()
-              : 28;
-          final avgPeriod = periodLengths.isNotEmpty
-              ? (periodLengths.reduce((a, b) => a + b) / periodLengths.length).round()
-              : 5;
-          final isIrregular = CycleCalculator.isIrregular(cycleLengths);
+          // Read stats from the engine so numbers match the dashboard
+          final avgCycle = analysis.avgCycleLength?.round() ?? 28;
+          final avgPeriod = analysis.avgPeriodLength?.round() ?? 5;
+          final isIrregular = analysis.regularity == CycleRegularity.irregular ||
+              analysis.regularity == CycleRegularity.slightlyIrregular;
 
           return ListView(
             padding: const EdgeInsets.all(16),
@@ -175,9 +170,36 @@ class CycleHistoryScreen extends ConsumerWidget {
                       fontWeight: FontWeight.w700,
                       fontSize: 15)),
               const SizedBox(height: 8),
-              ...entries.map((e) => _PeriodHistoryTile(
-                    entry: e,
-                    cycleLength: _getCycleLength(e, entries),
+              ...entries.map((e) => Dismissible(
+                    key: ValueKey(e.id),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 20),
+                      decoration: BoxDecoration(
+                        color: TraumColors.roseRed.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(TraumRadius.card),
+                      ),
+                      child: const Icon(Icons.delete_rounded,
+                          color: TraumColors.roseRed),
+                    ),
+                    onDismissed: (_) =>
+                        ref.read(periodDaoProvider).deletePeriodEntry(e.id),
+                    child: _PeriodHistoryTile(
+                      entry: e,
+                      cycleLength: _getCycleLength(e, entries),
+                      onEnd: e.endDate == null
+                          ? () => ref
+                              .read(periodDaoProvider)
+                              .updatePeriodEntry(PeriodEntriesCompanion(
+                                id: Value(e.id),
+                                startDate: Value(e.startDate),
+                                endDate: Value(DateTime.now()),
+                                flowIntensity: Value(e.flowIntensity),
+                                note: Value(e.note),
+                              ))
+                          : null,
+                    ),
                   )),
             ],
           );
@@ -269,12 +291,15 @@ class _CycleLengthChart extends StatelessWidget {
 class _PeriodHistoryTile extends StatelessWidget {
   final PeriodEntry entry;
   final int? cycleLength;
+  final VoidCallback? onEnd;
 
-  const _PeriodHistoryTile({required this.entry, this.cycleLength});
+  const _PeriodHistoryTile(
+      {required this.entry, this.cycleLength, this.onEnd});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isActive = entry.endDate == null;
     final duration = entry.endDate?.difference(entry.startDate).inDays;
     final flowLabels = ['', l10n.flowLight, l10n.flowMedium, l10n.flowStrong, l10n.flowVeryStrong];
     final intensity = entry.flowIntensity.clamp(1, 4);
@@ -285,6 +310,11 @@ class _PeriodHistoryTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: TraumColors.surface,
         borderRadius: BorderRadius.circular(TraumRadius.card),
+        border: Border.all(
+          color: isActive
+              ? TraumColors.periodRose.withValues(alpha: 0.4)
+              : TraumColors.surfaceVariant,
+        ),
       ),
       child: Row(children: [
         Container(
@@ -300,7 +330,7 @@ class _PeriodHistoryTile extends StatelessWidget {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               '${entry.startDate.day.toString().padLeft(2, '0')}.${entry.startDate.month.toString().padLeft(2, '0')}.${entry.startDate.year}'
-              '${entry.endDate != null ? ' – ${entry.endDate!.day}.${entry.endDate!.month}.' : ''}',
+              '${entry.endDate != null ? ' – ${entry.endDate!.day}.${entry.endDate!.month}.' : ' – ${l10n.today}'}',
               style: const TextStyle(
                   color: TraumColors.onBackground,
                   fontFamily: 'DMSans',
@@ -317,12 +347,35 @@ class _PeriodHistoryTile extends StatelessWidget {
             ),
           ]),
         ),
-        if (duration != null)
-          GradientProgressBar(
-            value: (duration / 7).clamp(0.0, 1.0),
-            height: 6,
-            gradient: const LinearGradient(
-                colors: [TraumColors.periodRose, TraumColors.roseRed]),
+        if (isActive) ...[
+          TextButton(
+            onPressed: onEnd,
+            style: TextButton.styleFrom(foregroundColor: TraumColors.periodRose),
+            child: Text(l10n.endPeriod,
+                style: const TextStyle(fontFamily: 'DMSans', fontSize: 12)),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: TraumColors.periodRose.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(l10n.activeLabel,
+                style: const TextStyle(
+                    color: TraumColors.periodRose,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 10)),
+          ),
+        ] else if (duration != null)
+          SizedBox(
+            width: 60,
+            child: GradientProgressBar(
+              value: (duration / 7).clamp(0.0, 1.0),
+              height: 6,
+              gradient: const LinearGradient(
+                  colors: [TraumColors.periodRose, TraumColors.roseRed]),
+            ),
           ),
       ]),
     );

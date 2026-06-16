@@ -6607,6 +6607,324 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Datum wählen'**
   String get obBirthDatePick;
+
+  /// No description provided for @cycleDayLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Zyklustag'**
+  String get cycleDayLabel;
+
+  /// No description provided for @phaseMenstrual.
+  ///
+  /// In de, this message translates to:
+  /// **'Menstruation'**
+  String get phaseMenstrual;
+
+  /// No description provided for @phaseFollicular.
+  ///
+  /// In de, this message translates to:
+  /// **'Follikelphase'**
+  String get phaseFollicular;
+
+  /// No description provided for @phaseFertile.
+  ///
+  /// In de, this message translates to:
+  /// **'Fruchtbare Phase'**
+  String get phaseFertile;
+
+  /// No description provided for @phaseOvulation.
+  ///
+  /// In de, this message translates to:
+  /// **'Eisprung'**
+  String get phaseOvulation;
+
+  /// No description provided for @phaseLuteal.
+  ///
+  /// In de, this message translates to:
+  /// **'Lutealphase'**
+  String get phaseLuteal;
+
+  /// No description provided for @logPeriodShort.
+  ///
+  /// In de, this message translates to:
+  /// **'Periode'**
+  String get logPeriodShort;
+
+  /// No description provided for @logSymptomShort.
+  ///
+  /// In de, this message translates to:
+  /// **'Symptom'**
+  String get logSymptomShort;
+
+  /// No description provided for @logTempShort.
+  ///
+  /// In de, this message translates to:
+  /// **'Temp'**
+  String get logTempShort;
+
+  /// No description provided for @logMore.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehr'**
+  String get logMore;
+
+  /// No description provided for @nextPeriodIn.
+  ///
+  /// In de, this message translates to:
+  /// **'Periode in {days} Tagen'**
+  String nextPeriodIn(int days);
+
+  /// No description provided for @predictedRange.
+  ///
+  /// In de, this message translates to:
+  /// **'Wahrscheinlich {start}–{end}'**
+  String predictedRange(Object start, Object end);
+
+  /// No description provided for @fertileWindowLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Fruchtbares Fenster'**
+  String get fertileWindowLabel;
+
+  /// No description provided for @ovulationEstimatedLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Eisprung (geschätzt)'**
+  String get ovulationEstimatedLabel;
+
+  /// No description provided for @ovulationConfirmedLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Eisprung (bestätigt)'**
+  String get ovulationConfirmedLabel;
+
+  /// No description provided for @loggedToday.
+  ///
+  /// In de, this message translates to:
+  /// **'Heute geloggt'**
+  String get loggedToday;
+
+  /// No description provided for @nothingLoggedToday.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch nichts geloggt'**
+  String get nothingLoggedToday;
+
+  /// No description provided for @cycleLengthsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Zykluslängen'**
+  String get cycleLengthsTitle;
+
+  /// No description provided for @cycleLengthsSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Ø {avg} T · Normbereich 21–35'**
+  String cycleLengthsSubtitle(int avg);
+
+  /// No description provided for @bbtCurveTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Basaltemperatur-Kurve'**
+  String get bbtCurveTitle;
+
+  /// No description provided for @bbtConfirmsOvulation.
+  ///
+  /// In de, this message translates to:
+  /// **'Temperatur-Sprung bestätigt Eisprung (symptothermal)'**
+  String get bbtConfirmsOvulation;
+
+  /// No description provided for @cycleAnalysisTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Zyklus-Analyse'**
+  String get cycleAnalysisTitle;
+
+  /// No description provided for @regularityRegular.
+  ///
+  /// In de, this message translates to:
+  /// **'Regelmäßig'**
+  String get regularityRegular;
+
+  /// No description provided for @regularitySlightly.
+  ///
+  /// In de, this message translates to:
+  /// **'Leicht unregelmäßig'**
+  String get regularitySlightly;
+
+  /// No description provided for @regularityIrregular.
+  ///
+  /// In de, this message translates to:
+  /// **'Unregelmäßig'**
+  String get regularityIrregular;
+
+  /// No description provided for @regularityUnknown.
+  ///
+  /// In de, this message translates to:
+  /// **'Zu wenig Daten'**
+  String get regularityUnknown;
+
+  /// No description provided for @variabilityDays.
+  ///
+  /// In de, this message translates to:
+  /// **'Schwankung ±{days} Tage'**
+  String variabilityDays(int days);
+
+  /// No description provided for @gynAgeYears.
+  ///
+  /// In de, this message translates to:
+  /// **'Gyn. Alter: {years} J seit Menarche'**
+  String gynAgeYears(int years);
+
+  /// No description provided for @symptomPatternsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Muster über Zyklen'**
+  String get symptomPatternsTitle;
+
+  /// No description provided for @healthFlagConsistentlyLong.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrere Zyklen länger als 35 Tage.'**
+  String get healthFlagConsistentlyLong;
+
+  /// No description provided for @healthFlagConsistentlyShort.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrere Zyklen kürzer als 21 Tage.'**
+  String get healthFlagConsistentlyShort;
+
+  /// No description provided for @healthFlagLongPeriod.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Periode dauert ungewöhnlich lange.'**
+  String get healthFlagLongPeriod;
+
+  /// No description provided for @healthFlagHighVariability.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Zykluslänge schwankt stark.'**
+  String get healthFlagHighVariability;
+
+  /// No description provided for @healthAllNormal.
+  ///
+  /// In de, this message translates to:
+  /// **'Alles im Normbereich.'**
+  String get healthAllNormal;
+
+  /// No description provided for @menarcheTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Erste Periode (Menarche)'**
+  String get menarcheTitle;
+
+  /// No description provided for @menarcheNotSet.
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht festgelegt'**
+  String get menarcheNotSet;
+
+  /// No description provided for @lutealPhaseTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Lutealphasen-Länge'**
+  String get lutealPhaseTitle;
+
+  /// No description provided for @cycleSettingsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Zyklus-Einstellungen'**
+  String get cycleSettingsTitle;
+
+  /// No description provided for @energyLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Energie'**
+  String get energyLabel;
+
+  /// No description provided for @bbtInputLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Basaltemperatur (°C)'**
+  String get bbtInputLabel;
+
+  /// No description provided for @cervicalMucusLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Zervixschleim'**
+  String get cervicalMucusLabel;
+
+  /// No description provided for @mucusDry.
+  ///
+  /// In de, this message translates to:
+  /// **'Trocken'**
+  String get mucusDry;
+
+  /// No description provided for @mucusSticky.
+  ///
+  /// In de, this message translates to:
+  /// **'Klebrig'**
+  String get mucusSticky;
+
+  /// No description provided for @mucusCreamy.
+  ///
+  /// In de, this message translates to:
+  /// **'Cremig'**
+  String get mucusCreamy;
+
+  /// No description provided for @mucusWatery.
+  ///
+  /// In de, this message translates to:
+  /// **'Wässrig'**
+  String get mucusWatery;
+
+  /// No description provided for @mucusEggWhite.
+  ///
+  /// In de, this message translates to:
+  /// **'Eiweißartig'**
+  String get mucusEggWhite;
+
+  /// No description provided for @sexLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Sex'**
+  String get sexLabel;
+
+  /// No description provided for @sexNone.
+  ///
+  /// In de, this message translates to:
+  /// **'Keiner'**
+  String get sexNone;
+
+  /// No description provided for @sexProtected.
+  ///
+  /// In de, this message translates to:
+  /// **'Geschützt'**
+  String get sexProtected;
+
+  /// No description provided for @sexUnprotected.
+  ///
+  /// In de, this message translates to:
+  /// **'Ungeschützt'**
+  String get sexUnprotected;
+
+  /// No description provided for @logTodayTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Heute eintragen'**
+  String get logTodayTitle;
+
+  /// No description provided for @saveLog.
+  ///
+  /// In de, this message translates to:
+  /// **'Speichern'**
+  String get saveLog;
+
+  /// No description provided for @periodMedicalDisclaimer.
+  ///
+  /// In de, this message translates to:
+  /// **'Kein medizinischer Rat und keine Verhütungsgarantie.'**
+  String get periodMedicalDisclaimer;
 }
 
 class _AppLocalizationsDelegate

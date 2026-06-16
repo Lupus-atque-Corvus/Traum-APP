@@ -125,10 +125,12 @@ part 'traum_database.g.dart';
     Debts,
     QuickTemplates,
     Accounts,
-    // Period (3)
+    // Period (5)
     PeriodEntries,
     CycleCalculations,
     PeriodSymptoms,
+    DailyLogs,
+    CycleProfile,
     // Substance cache (1)
     SubstanceCaches,
     // Substance intake log (1)
@@ -208,13 +210,17 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 16;
+  int get schemaVersion => 17;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
       await _createNotesFtsObjects();
+      await into(cycleProfile).insert(
+        const CycleProfileCompanion(id: Value(0)),
+        mode: InsertMode.insertOrIgnore,
+      );
     },
     onUpgrade: (migrator, from, to) async {
       if (from < 2) {
@@ -318,6 +324,14 @@ class TraumDatabase extends _$TraumDatabase {
         await migrator.addColumn(
             abstinenceTrackers, abstinenceTrackers.costPerDay);
         await migrator.createTable(substanceIntakeLogs);
+      }
+      if (from < 17) {
+        await migrator.createTable(dailyLogs);
+        await migrator.createTable(cycleProfile);
+        await into(cycleProfile).insert(
+          const CycleProfileCompanion(id: Value(0)),
+          mode: InsertMode.insertOrIgnore,
+        );
       }
     },
   );

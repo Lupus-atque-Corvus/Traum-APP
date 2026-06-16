@@ -3413,4 +3413,177 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get obBirthDatePick => 'Pick date';
+
+  @override
+  String get cycleDayLabel => 'Cycle day';
+
+  @override
+  String get phaseMenstrual => 'Menstruation';
+
+  @override
+  String get phaseFollicular => 'Follicular phase';
+
+  @override
+  String get phaseFertile => 'Fertile window';
+
+  @override
+  String get phaseOvulation => 'Ovulation';
+
+  @override
+  String get phaseLuteal => 'Luteal phase';
+
+  @override
+  String get logPeriodShort => 'Period';
+
+  @override
+  String get logSymptomShort => 'Symptom';
+
+  @override
+  String get logTempShort => 'Temp';
+
+  @override
+  String get logMore => 'More';
+
+  @override
+  String nextPeriodIn(int days) {
+    return 'Period in $days days';
+  }
+
+  @override
+  String predictedRange(Object start, Object end) {
+    return 'Likely $start–$end';
+  }
+
+  @override
+  String get fertileWindowLabel => 'Fertile window';
+
+  @override
+  String get ovulationEstimatedLabel => 'Ovulation (estimated)';
+
+  @override
+  String get ovulationConfirmedLabel => 'Ovulation (confirmed)';
+
+  @override
+  String get loggedToday => 'Logged today';
+
+  @override
+  String get nothingLoggedToday => 'Nothing logged yet';
+
+  @override
+  String get cycleLengthsTitle => 'Cycle lengths';
+
+  @override
+  String cycleLengthsSubtitle(int avg) {
+    return 'Avg $avg d · normal 21–35';
+  }
+
+  @override
+  String get bbtCurveTitle => 'Basal body temperature';
+
+  @override
+  String get bbtConfirmsOvulation =>
+      'Temperature shift confirms ovulation (symptothermal)';
+
+  @override
+  String get cycleAnalysisTitle => 'Cycle analysis';
+
+  @override
+  String get regularityRegular => 'Regular';
+
+  @override
+  String get regularitySlightly => 'Slightly irregular';
+
+  @override
+  String get regularityIrregular => 'Irregular';
+
+  @override
+  String get regularityUnknown => 'Not enough data';
+
+  @override
+  String variabilityDays(int days) {
+    return 'Variation ±$days days';
+  }
+
+  @override
+  String gynAgeYears(int years) {
+    return 'Gyn. age: $years y since menarche';
+  }
+
+  @override
+  String get symptomPatternsTitle => 'Patterns across cycles';
+
+  @override
+  String get healthFlagConsistentlyLong =>
+      'Several cycles longer than 35 days.';
+
+  @override
+  String get healthFlagConsistentlyShort =>
+      'Several cycles shorter than 21 days.';
+
+  @override
+  String get healthFlagLongPeriod => 'Your period lasts unusually long.';
+
+  @override
+  String get healthFlagHighVariability => 'Your cycle length varies a lot.';
+
+  @override
+  String get healthAllNormal => 'Everything within normal range.';
+
+  @override
+  String get menarcheTitle => 'First period (menarche)';
+
+  @override
+  String get menarcheNotSet => 'Not set';
+
+  @override
+  String get lutealPhaseTitle => 'Luteal phase length';
+
+  @override
+  String get cycleSettingsTitle => 'Cycle settings';
+
+  @override
+  String get energyLabel => 'Energy';
+
+  @override
+  String get bbtInputLabel => 'Basal body temperature (°C)';
+
+  @override
+  String get cervicalMucusLabel => 'Cervical mucus';
+
+  @override
+  String get mucusDry => 'Dry';
+
+  @override
+  String get mucusSticky => 'Sticky';
+
+  @override
+  String get mucusCreamy => 'Creamy';
+
+  @override
+  String get mucusWatery => 'Watery';
+
+  @override
+  String get mucusEggWhite => 'Egg-white';
+
+  @override
+  String get sexLabel => 'Sex';
+
+  @override
+  String get sexNone => 'None';
+
+  @override
+  String get sexProtected => 'Protected';
+
+  @override
+  String get sexUnprotected => 'Unprotected';
+
+  @override
+  String get logTodayTitle => 'Log today';
+
+  @override
+  String get saveLog => 'Save';
+
+  @override
+  String get periodMedicalDisclaimer =>
+      'Not medical advice and not a contraceptive guarantee.';
 }

@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/database/traum_database.dart';
+import '../../features/period_tracking/cycle_analyzer.dart';
+import '../../features/period_tracking/cycle_analysis.dart';
 import '../services/grocery_price_service.dart';
 import '../../data/models/substance_info.dart';
 import '../../data/repositories/substance_repository.dart';
@@ -173,6 +175,31 @@ final allPeriodEntriesStreamProvider = StreamProvider.autoDispose<List<PeriodEnt
 
 final allPeriodSymptomsStreamProvider = StreamProvider.autoDispose<List<PeriodSymptom>>((ref) =>
     ref.watch(periodDaoProvider).watchAllSymptoms());
+
+final cycleProfileStreamProvider =
+    StreamProvider.autoDispose<CycleProfileData?>((ref) =>
+        ref.watch(periodDaoProvider).watchCycleProfile());
+
+final allDailyLogsStreamProvider =
+    StreamProvider.autoDispose<List<DailyLog>>((ref) =>
+        ref.watch(periodDaoProvider).watchAllDailyLogs());
+
+final dailyLogForDateProvider =
+    FutureProvider.autoDispose.family<DailyLog?, DateTime>((ref, date) =>
+        ref.watch(periodDaoProvider).getDailyLogForDate(date));
+
+// Combined cycle analysis (entries + daily logs + profile → CycleAnalysis).
+final cycleAnalysisProvider = Provider.autoDispose<CycleAnalysis>((ref) {
+  final entries = ref.watch(allPeriodEntriesStreamProvider).valueOrNull ?? const [];
+  final logs = ref.watch(allDailyLogsStreamProvider).valueOrNull ?? const [];
+  final profile = ref.watch(cycleProfileStreamProvider).valueOrNull;
+  return CycleAnalyzer.analyze(
+    entries: entries,
+    dailyLogs: logs,
+    menarcheDate: profile?.menarcheDate,
+    lutealPhaseOverride: profile?.lutealPhaseOverride,
+  );
+});
 
 // ─── Budget extras ────────────────────────────────────────────────────────────
 final allTransactionsStreamProvider = StreamProvider.autoDispose<List<Transaction>>((ref) =>
