@@ -7,7 +7,6 @@ import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'cycle_analysis.dart';
-import 'cycle_calculator.dart';
 import 'daily_log_sheet.dart';
 
 /// Returns the phase color for [day], or null if the day has no phase marker.
@@ -72,30 +71,7 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
       ),
       body: entriesAsync.when(
         data: (entries) {
-          // Build cycle prediction (kept for _DayDetail backwards compatibility)
-          CycleResult? cycleResult;
-          int avgCycleLength = 28;
-
-          if (entries.length >= 2) {
-            final sorted = [...entries]..sort((a, b) => a.startDate.compareTo(b.startDate));
-            final cycleLengths = <int>[];
-            for (int i = 1; i < sorted.length; i++) {
-              cycleLengths.add(sorted[i].startDate.difference(sorted[i - 1].startDate).inDays);
-            }
-            avgCycleLength = (cycleLengths.reduce((a, b) => a + b) / cycleLengths.length)
-                .round()
-                .clamp(21, 35);
-          }
-
-          if (entries.isNotEmpty) {
-            cycleResult = CycleCalculator.calculate(
-              lastPeriodStart: entries.first.startDate,
-              avgCycleLength: avgCycleLength,
-              avgPeriodLength: 5,
-            );
-          }
-
-          // Build set of period days (for _DayDetail)
+          // Build set of period days (for _DayDetail) from logged entries
           final periodDays = <DateTime>{};
           for (final entry in entries) {
             final end = entry.endDate ?? DateTime.now();
@@ -107,22 +83,22 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
             }
           }
 
-          // Fertile window days (for _DayDetail)
+          // Fertile window days derived from the engine (CycleAnalysis)
           final fertileDays = <DateTime>{};
-          if (cycleResult?.fertileStart != null && cycleResult?.fertileEnd != null) {
-            var d = DateTime(cycleResult!.fertileStart!.year, cycleResult.fertileStart!.month,
-                cycleResult.fertileStart!.day);
-            final end = DateTime(cycleResult.fertileEnd!.year, cycleResult.fertileEnd!.month,
-                cycleResult.fertileEnd!.day);
+          if (analysis.fertileWindowStart != null && analysis.fertileWindowEnd != null) {
+            var d = DateTime(analysis.fertileWindowStart!.year,
+                analysis.fertileWindowStart!.month, analysis.fertileWindowStart!.day);
+            final end = DateTime(analysis.fertileWindowEnd!.year,
+                analysis.fertileWindowEnd!.month, analysis.fertileWindowEnd!.day);
             while (!d.isAfter(end)) {
               fertileDays.add(d);
               d = d.add(const Duration(days: 1));
             }
           }
 
-          final ovulationDay = cycleResult?.ovulationDate != null
-              ? DateTime(cycleResult!.ovulationDate!.year, cycleResult.ovulationDate!.month,
-                  cycleResult.ovulationDate!.day)
+          final ovulationDay = analysis.ovulationDate != null
+              ? DateTime(analysis.ovulationDate!.year, analysis.ovulationDate!.month,
+                  analysis.ovulationDate!.day)
               : null;
 
           return Column(
@@ -240,7 +216,7 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
                   periodDays: periodDays,
                   fertileDays: fertileDays,
                   ovulationDay: ovulationDay,
-                  nextPeriod: cycleResult?.nextPeriodPredicted,
+                  nextPeriod: analysis.nextPeriodPredicted,
                 ),
               ],
             ],
