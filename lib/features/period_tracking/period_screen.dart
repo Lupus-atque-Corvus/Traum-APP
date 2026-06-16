@@ -9,6 +9,7 @@ import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'cycle_analysis.dart';
+import 'cycle_settings_sheet.dart';
 import 'daily_log_sheet.dart';
 import 'widgets/cycle_ring.dart';
 import 'widgets/period_cards.dart';
@@ -91,6 +92,7 @@ class PeriodScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final analysis = ref.watch(cycleAnalysisProvider);
+    final profile = ref.watch(cycleProfileStreamProvider).valueOrNull;
     final entriesAsync = ref.watch(allPeriodEntriesStreamProvider);
     final symptomsAsync = ref.watch(allPeriodSymptomsStreamProvider);
     final dailyLogsAsync = ref.watch(allDailyLogsStreamProvider);
@@ -139,6 +141,13 @@ class PeriodScreen extends ConsumerWidget {
                 color: TraumColors.onBackgroundMuted),
             tooltip: l10n.historyTooltip,
             onPressed: () => context.go('/period/history'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.tune_rounded,
+                color: TraumColors.onBackgroundMuted),
+            tooltip: l10n.cycleSettingsTitle,
+            onPressed: () =>
+                _showCycleSettingsSheet(context, ref, profile),
           ),
         ],
       ),
@@ -246,6 +255,24 @@ class PeriodScreen extends ConsumerWidget {
         existing: existing,
         onSave: (companion) =>
             ref.read(periodDaoProvider).upsertDailyLog(companion),
+      ),
+    );
+  }
+
+  void _showCycleSettingsSheet(
+      BuildContext context, WidgetRef ref, CycleProfileData? profile) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: TraumColors.surfaceElevated,
+      shape: const RoundedRectangleBorder(
+        borderRadius:
+            BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+      ),
+      builder: (ctx) => CycleSettingsSheet(
+        menarcheDate: profile?.menarcheDate,
+        lutealPhaseOverride: profile?.lutealPhaseOverride,
+        onSave: (c) => ref.read(periodDaoProvider).updateCycleProfile(c),
       ),
     );
   }
