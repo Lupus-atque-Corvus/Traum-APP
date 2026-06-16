@@ -11,12 +11,18 @@ class DailyLogSheet extends StatefulWidget {
   final DateTime date;
   final DailyLog? existing;
   final Future<void> Function(DailyLogsCompanion) onSave;
+  final List<PeriodSymptom> existingSymptoms;
+  final Future<void> Function(String symptom, int intensity)? onAddSymptom;
+  final Future<void> Function(int symptomId)? onRemoveSymptom;
 
   const DailyLogSheet({
     super.key,
     required this.date,
     required this.existing,
     required this.onSave,
+    this.existingSymptoms = const [],
+    this.onAddSymptom,
+    this.onRemoveSymptom,
   });
 
   @override
@@ -30,11 +36,15 @@ class _DailyLogSheetState extends State<DailyLogSheet> {
   SexEvent _sex = SexEvent.none;
   final _bbtCtrl = TextEditingController();
   final _noteCtrl = TextEditingController();
+  final _customSymptomCtrl = TextEditingController();
   bool _saving = false;
+  late List<PeriodSymptom> _symptoms;
+  int _intensity = 2;
 
   @override
   void initState() {
     super.initState();
+    _symptoms = [...widget.existingSymptoms];
     final e = widget.existing;
     if (e != null) {
       _mood = e.mood;
@@ -50,6 +60,7 @@ class _DailyLogSheetState extends State<DailyLogSheet> {
   void dispose() {
     _bbtCtrl.dispose();
     _noteCtrl.dispose();
+    _customSymptomCtrl.dispose();
     super.dispose();
   }
 
@@ -107,6 +118,130 @@ class _DailyLogSheetState extends State<DailyLogSheet> {
               ),
             ),
             const SizedBox(height: 12),
+
+            // Symptom section (only shown when onAddSymptom is wired up)
+            if (widget.onAddSymptom != null) ...[
+              _SectionLabel(l10n.symptomsToday),
+              const SizedBox(height: 6),
+              // Existing symptoms as removable chips
+              if (_symptoms.isNotEmpty)
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: _symptoms.map((s) {
+                    return GestureDetector(
+                      onTap: () async {
+                        await widget.onRemoveSymptom?.call(s.id);
+                        setState(() => _symptoms.removeWhere((x) => x.id == s.id));
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: TraumColors.periodRose.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: TraumColors.periodRose),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              s.symptom,
+                              style: const TextStyle(
+                                color: TraumColors.periodRose,
+                                fontFamily: 'DMSans',
+                                fontSize: 12,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            const Icon(Icons.close_rounded,
+                                color: TraumColors.periodRose, size: 14),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              if (_symptoms.isNotEmpty) const SizedBox(height: 8),
+              // Preset symptom chips
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  l10n.symptomCramps,
+                  l10n.symptomHeadache,
+                  l10n.symptomBackPain,
+                  l10n.symptomBreastTension,
+                  l10n.symptomBloating,
+                  l10n.symptomNausea,
+                  l10n.symptomMoodSwings,
+                  l10n.symptomTiredness,
+                  l10n.symptomAcne,
+                  l10n.symptomSleepIssues,
+                ].map((preset) {
+                  return _Chip(
+                    label: preset,
+                    selected: false,
+                    onTap: () async {
+                      await widget.onAddSymptom!(preset, _intensity);
+                    },
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 8),
+              // Custom symptom text field
+              TextField(
+                controller: _customSymptomCtrl,
+                style: const TextStyle(
+                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                decoration: InputDecoration(
+                  labelText: l10n.orCustomSymptom,
+                  labelStyle: const TextStyle(
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans'),
+                  filled: true,
+                  fillColor: TraumColors.surface,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(TraumRadius.card),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.add_rounded,
+                        color: TraumColors.periodRose),
+                    onPressed: () async {
+                      final text = _customSymptomCtrl.text.trim();
+                      if (text.isEmpty) return;
+                      await widget.onAddSymptom!(text, _intensity);
+                      _customSymptomCtrl.clear();
+                    },
+                  ),
+                ),
+                onSubmitted: (text) async {
+                  final trimmed = text.trim();
+                  if (trimmed.isEmpty) return;
+                  await widget.onAddSymptom!(trimmed, _intensity);
+                  _customSymptomCtrl.clear();
+                },
+              ),
+              const SizedBox(height: 8),
+              // Intensity selector
+              _SectionLabel(l10n.intensityLabel),
+              Slider(
+                value: _intensity.toDouble(),
+                min: 1,
+                max: 3,
+                divisions: 2,
+                activeColor: TraumColors.periodRose,
+                label: [
+                  l10n.intensityLight,
+                  l10n.intensityMedium,
+                  l10n.intensityStrong,
+                ][_intensity - 1],
+                onChanged: (v) => setState(() => _intensity = v.round()),
+              ),
+              const SizedBox(height: 4),
+            ],
 
             // Mood row
             _SectionLabel(l10n.moodLabel),

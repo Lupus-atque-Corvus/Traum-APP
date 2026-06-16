@@ -162,7 +162,7 @@ class PeriodScreen extends ConsumerWidget {
                   analysis: analysis,
                   l10n: l10n,
                   onLogPeriod: () => _showLogPeriodSheet(context, ref),
-                  onLogDaily: () => _showDailyLogSheet(context, ref, todayLog),
+                  onLogDaily: () => _showDailyLogSheet(context, ref, todayLog, todaySymptoms),
                 ),
                 const SizedBox(height: 12),
 
@@ -241,7 +241,10 @@ class PeriodScreen extends ConsumerWidget {
   }
 
   void _showDailyLogSheet(
-      BuildContext context, WidgetRef ref, DailyLog? existing) {
+      BuildContext context,
+      WidgetRef ref,
+      DailyLog? existing,
+      List<PeriodSymptom> todaySymptoms) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -255,6 +258,17 @@ class PeriodScreen extends ConsumerWidget {
         existing: existing,
         onSave: (companion) =>
             ref.read(periodDaoProvider).upsertDailyLog(companion),
+        existingSymptoms: todaySymptoms,
+        onAddSymptom: (name, intensity) =>
+            ref.read(periodDaoProvider).insertSymptom(
+              PeriodSymptomsCompanion.insert(
+                logDate: DateTime.now(),
+                symptom: name,
+                intensity: Value(intensity),
+              ),
+            ),
+        onRemoveSymptom: (id) =>
+            ref.read(periodDaoProvider).deleteSymptom(id),
       ),
     );
   }
