@@ -49,7 +49,7 @@ dependencies:
   workmanager: ^0.9.0
 
   # Homescreen Widgets
-  home_widget: ^0.6.0
+  home_widget: ^0.9.0
 
   # Biometrie
   local_auth: ^3.0.0
