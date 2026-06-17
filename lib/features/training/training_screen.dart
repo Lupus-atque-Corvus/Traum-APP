@@ -17,31 +17,31 @@ class TrainingScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
 
     final activePlanAsync = ref.watch(activePlanProvider);
-    final activePlan = activePlanAsync.valueOrNull;
+    final activePlan = activePlanAsync.value;
 
     final days = activePlan != null
-        ? ref.watch(workoutDaysForPlanProvider(activePlan.id)).valueOrNull ?? []
+        ? ref.watch(workoutDaysForPlanProvider(activePlan.id)).value ?? []
         : <WorkoutDay>[];
 
     final sessions =
-        ref.watch(trainingSessionsThisWeekProvider).valueOrNull ?? [];
+        ref.watch(trainingSessionsThisWeekProvider).value ?? [];
 
-    final streak = ref.watch(workoutStreakProvider).valueOrNull ?? 0;
+    final streak = ref.watch(workoutStreakProvider).value ?? 0;
 
     final recentSets =
-        ref.watch(recentTrainingSetsProvider(7)).valueOrNull ?? [];
+        ref.watch(recentTrainingSetsProvider(7)).value ?? [];
 
     final exercises =
-        ref.watch(allExercisesStreamProvider).valueOrNull ?? [];
+        ref.watch(allExercisesStreamProvider).value ?? [];
 
     final sessions72h =
-        ref.watch(sessionsLast72hProvider).valueOrNull ?? [];
+        ref.watch(sessionsLast72hProvider).value ?? [];
 
     final recentSets72h =
-        ref.watch(recentTrainingSetsProvider(3)).valueOrNull ?? [];
+        ref.watch(recentTrainingSetsProvider(3)).value ?? [];
 
     final plans =
-        ref.watch(allWorkoutPlansStreamProvider).valueOrNull ?? [];
+        ref.watch(allWorkoutPlansStreamProvider).value ?? [];
 
     final totalVolume = recentSets.fold<double>(
       0.0,
@@ -72,7 +72,7 @@ class TrainingScreen extends ConsumerWidget {
         : null;
 
     final todayExerciseCount = todayDay != null
-        ? (ref.watch(dayExercisesProvider(todayDay.id)).valueOrNull ?? []).length
+        ? (ref.watch(dayExercisesProvider(todayDay.id)).value ?? []).length
         : 0;
 
     // Last completed session time label

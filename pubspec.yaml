@@ -14,8 +14,8 @@ dependencies:
     sdk: flutter
 
   # State
-  flutter_riverpod: ^2.5.1
-  riverpod_annotation: ^2.3.5
+  flutter_riverpod: ^3.0.0
+  riverpod_annotation: ^4.0.0
 
   # Navigation
   go_router: ^17.0.0
@@ -153,7 +153,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   build_runner: ^2.4.0
   drift_dev: ^2.20.0
-  riverpod_generator: ^2.4.0
+  riverpod_generator: ^4.0.0
   flutter_launcher_icons: ^0.14.1
   flutter_native_splash: ^2.4.1
 

@@ -265,8 +265,8 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
     AsyncValue<List<Note>> notesAsync,
     AppLocalizations l10n,
   ) {
-    final folders = foldersAsync.valueOrNull ?? [];
-    final notes = notesAsync.valueOrNull ?? [];
+    final folders = foldersAsync.value ?? [];
+    final notes = notesAsync.value ?? [];
     final rows = <Widget>[];
     _appendFolderLevel(rows, null, 0, folders, notes, l10n);
     if (rows.isEmpty) {

@@ -89,20 +89,20 @@ class _NotesSearchScreenState extends ConsumerState<NotesSearchScreen> {
                 : ListView(
                     children: [
                       // Quick-Switcher (Titel)
-                      ...?titles.valueOrNull?.map((n) => NoteListTile(
+                      ...?titles.value?.map((n) => NoteListTile(
                             note: n,
                             onTap: () => context
                                 .pushReplacement(Routes.noteDetailPath(n.id)),
                           )),
-                      _createRow(l10n, titles.valueOrNull ?? const []),
+                      _createRow(l10n, titles.value ?? const []),
                       // Volltext
-                      ...?fts.valueOrNull?.where((h) =>
-                          !(titles.valueOrNull ?? const [])
+                      ...?fts.value?.where((h) =>
+                          !(titles.value ?? const [])
                               .any((t) => t.id == h.note.id)).map(
                             (h) => _snippetTile(h),
                           ),
-                      if ((fts.valueOrNull ?? const []).isEmpty &&
-                          (titles.valueOrNull ?? const []).isEmpty)
+                      if ((fts.value ?? const []).isEmpty &&
+                          (titles.value ?? const []).isEmpty)
                         Padding(
                           padding: const EdgeInsets.all(24),
                           child: Center(

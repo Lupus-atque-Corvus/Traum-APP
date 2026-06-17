@@ -190,9 +190,9 @@ final dailyLogForDateProvider =
 
 // Combined cycle analysis (entries + daily logs + profile → CycleAnalysis).
 final cycleAnalysisProvider = Provider.autoDispose<CycleAnalysis>((ref) {
-  final entries = ref.watch(allPeriodEntriesStreamProvider).valueOrNull ?? const [];
-  final logs = ref.watch(allDailyLogsStreamProvider).valueOrNull ?? const [];
-  final profile = ref.watch(cycleProfileStreamProvider).valueOrNull;
+  final entries = ref.watch(allPeriodEntriesStreamProvider).value ?? const [];
+  final logs = ref.watch(allDailyLogsStreamProvider).value ?? const [];
+  final profile = ref.watch(cycleProfileStreamProvider).value;
   return CycleAnalyzer.analyze(
     entries: entries,
     dailyLogs: logs,
@@ -209,7 +209,7 @@ final allTransactionsStreamProvider = StreamProvider.autoDispose<List<Transactio
 final planMuscleGroupsProvider = FutureProvider.autoDispose.family<List<String>, int>((ref, planId) async {
   final dao = ref.watch(trainingDaoProvider);
   final days = await dao.getDaysForPlan(planId);
-  final allExercises = ref.watch(allExercisesStreamProvider).valueOrNull ?? [];
+  final allExercises = ref.watch(allExercisesStreamProvider).value ?? [];
   final exerciseById = {for (final e in allExercises) e.id: e};
   final Set<String> groups = {};
   for (final day in days) {
@@ -294,8 +294,8 @@ final interactionServiceProvider = Provider<InteractionService>((ref) =>
 
 final interactionAlertsProvider =
     FutureProvider.autoDispose<List<InteractionAlert>>((ref) async {
-  final supps = ref.watch(supplementsStreamProvider).valueOrNull ?? [];
-  final meds = ref.watch(allMedicationsStreamProvider).valueOrNull ?? [];
+  final supps = ref.watch(supplementsStreamProvider).value ?? [];
+  final meds = ref.watch(allMedicationsStreamProvider).value ?? [];
   final activeNames = [
     ...supps.where((s) => s.isActive).map((s) => s.name),
     ...meds.where((m) => m.isActive).map((m) => m.name),

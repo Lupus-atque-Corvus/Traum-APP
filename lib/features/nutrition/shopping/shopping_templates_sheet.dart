@@ -59,7 +59,7 @@ class ShoppingTemplatesSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final templates =
-        ref.watch(shoppingTemplatesStreamProvider).valueOrNull ?? [];
+        ref.watch(shoppingTemplatesStreamProvider).value ?? [];
     return Padding(
       padding: EdgeInsets.only(
         left: 20,

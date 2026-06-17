@@ -115,7 +115,7 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
   @override
   Widget build(BuildContext context) {
     final exercisesAsync = ref.watch(allExercisesStreamProvider);
-    final counts = ref.watch(exerciseSetCountsProvider).valueOrNull ?? {};
+    final counts = ref.watch(exerciseSetCountsProvider).value ?? {};
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(

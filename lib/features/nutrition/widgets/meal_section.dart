@@ -175,7 +175,7 @@ class _EntryRow extends StatelessWidget {
                   builder: (context, ref, _) {
                     final name = ref
                         .watch(productNameProvider(entry.productId))
-                        .valueOrNull;
+                        .value;
                     return Text(name ?? '…',
                         style: const TextStyle(
                             fontFamily: 'DMSans',

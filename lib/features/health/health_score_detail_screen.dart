@@ -49,7 +49,7 @@ class _HealthScoreDetailScreenState
             child: Text('$e',
                 style: const TextStyle(color: TraumColors.roseRed))),
         data: (result) {
-          final history = historyAsync.valueOrNull ?? [];
+          final history = historyAsync.value ?? [];
           final yesterday =
               history.length >= 2 ? history[history.length - 2] : null;
           final diff =

@@ -43,7 +43,7 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
       if (_suggestionLabel != null) setState(() => _suggestionLabel = null);
       return;
     }
-    final entries = ref.read(groceryPriceEntriesProvider).valueOrNull ?? [];
+    final entries = ref.read(groceryPriceEntriesProvider).value ?? [];
     final match = GroceryPriceService.match(value, entries);
     if (match != null) {
       _priceCtrl.text = match.price.toStringAsFixed(2).replaceAll('.', ',');

@@ -93,7 +93,7 @@ class _NotesTagsScreenState extends ConsumerState<NotesTagsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final tags = ref.watch(tagsStreamProvider);
-    final counts = ref.watch(tagCountsProvider).valueOrNull ?? const {};
+    final counts = ref.watch(tagCountsProvider).value ?? const {};
 
     return Scaffold(
       backgroundColor: TraumColors.background,

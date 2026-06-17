@@ -93,7 +93,7 @@ class _SupplementsToday extends ConsumerWidget {
       data: (supps) {
         final active = supps.where((s) => s.isActive).toList();
         if (active.isEmpty) return const SizedBox.shrink();
-        final logs = logsAsync.valueOrNull ?? const [];
+        final logs = logsAsync.value ?? const [];
         final takenIds = logs.map((l) => l.supplementId).toSet();
 
         return Column(

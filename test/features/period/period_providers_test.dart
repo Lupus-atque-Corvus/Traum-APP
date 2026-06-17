@@ -13,6 +13,12 @@ void main() {
     );
     addTearDown(container.dispose);
 
+    // Keep the autoDispose stream provider alive while awaiting its first
+    // value — under Riverpod 3 an unlistened autoDispose provider may be
+    // disposed during the loading state before the stream emits.
+    final sub = container.listen(cycleProfileStreamProvider, (_, _) {});
+    addTearDown(sub.close);
+
     final profile = await container.read(cycleProfileStreamProvider.future);
     expect(profile?.id, 0);
   });

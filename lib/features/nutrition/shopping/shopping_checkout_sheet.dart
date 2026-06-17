@@ -120,9 +120,9 @@ class _ShoppingCheckoutSheetState extends ConsumerState<ShoppingCheckoutSheet> {
   @override
   Widget build(BuildContext context) {
     final items =
-        ref.watch(allShoppingItemsStreamProvider).valueOrNull ?? [];
+        ref.watch(allShoppingItemsStreamProvider).value ?? [];
     final cats =
-        ref.watch(allBudgetCategoriesStreamProvider).valueOrNull ?? [];
+        ref.watch(allBudgetCategoriesStreamProvider).value ?? [];
     final expenseCats = cats.where((c) => c.isExpense).toList();
 
     // Auto-select a "Lebensmittel" category on first build, fall back to first

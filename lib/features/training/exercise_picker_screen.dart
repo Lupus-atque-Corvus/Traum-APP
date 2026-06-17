@@ -121,7 +121,7 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
   @override
   Widget build(BuildContext context) {
     final exercisesAsync = ref.watch(allExercisesStreamProvider);
-    final counts = ref.watch(exerciseSetCountsProvider).valueOrNull ?? {};
+    final counts = ref.watch(exerciseSetCountsProvider).value ?? {};
 
     return Scaffold(
       backgroundColor: TraumColors.background,

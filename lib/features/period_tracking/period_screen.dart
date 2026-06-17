@@ -92,14 +92,14 @@ class PeriodScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final analysis = ref.watch(cycleAnalysisProvider);
-    final profile = ref.watch(cycleProfileStreamProvider).valueOrNull;
+    final profile = ref.watch(cycleProfileStreamProvider).value;
     final entriesAsync = ref.watch(allPeriodEntriesStreamProvider);
     final symptomsAsync = ref.watch(allPeriodSymptomsStreamProvider);
     final dailyLogsAsync = ref.watch(allDailyLogsStreamProvider);
 
-    final entries = entriesAsync.valueOrNull ?? const [];
-    final symptoms = symptomsAsync.valueOrNull ?? const [];
-    final dailyLogs = dailyLogsAsync.valueOrNull ?? const [];
+    final entries = entriesAsync.value ?? const [];
+    final symptoms = symptomsAsync.value ?? const [];
+    final dailyLogs = dailyLogsAsync.value ?? const [];
 
     final todaySymptoms = symptoms.where((s) => _isToday(s.logDate)).toList();
     final todayLog = dailyLogs.cast<DailyLog?>().firstWhere(

@@ -28,13 +28,13 @@ class _MapGalleryScreenState extends ConsumerState<MapGalleryScreen> {
   Widget build(BuildContext context) {
     final collectionInfo = ref.watch(activeCollectionInfoProvider);
     final hashtagFilter = ref.watch(activeHashtagFilterProvider);
-    final hashtags = ref.watch(allHashtagsProvider).valueOrNull ?? const [];
+    final hashtags = ref.watch(allHashtagsProvider).value ?? const [];
     final markersAsync = _query.isEmpty
         ? ref.watch(activeMarkersProvider)
         : ref.watch(markerSearchProvider(_query));
-    final collection = collectionInfo.valueOrNull;
+    final collection = collectionInfo.value;
 
-    final all = markersAsync.valueOrNull ?? const [];
+    final all = markersAsync.value ?? const [];
     final filtered = hashtagFilter == null
         ? all
         : all.where((d) {

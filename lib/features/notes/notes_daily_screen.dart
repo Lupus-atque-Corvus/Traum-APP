@@ -55,7 +55,7 @@ class _NotesDailyScreenState extends ConsumerState<NotesDailyScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final daily = ref.watch(dailyNotesStreamProvider);
-    final dailyNotes = daily.valueOrNull ?? const <Note>[];
+    final dailyNotes = daily.value ?? const <Note>[];
     final byDay = <DateTime, Note>{
       for (final n in dailyNotes)
         if (n.dailyDate != null)

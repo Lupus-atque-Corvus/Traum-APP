@@ -2402,7 +2402,7 @@ class _OnboardingAddSupplementSheetState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final dbAvailable = ref.watch(substanceDbAvailableProvider).valueOrNull ?? false;
+    final dbAvailable = ref.watch(substanceDbAvailableProvider).value ?? false;
 
     return Padding(
       padding: EdgeInsets.only(
@@ -2677,7 +2677,7 @@ class _OnboardingAddMedicationSheetState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final dbAvailable = ref.watch(substanceDbAvailableProvider).valueOrNull ?? false;
+    final dbAvailable = ref.watch(substanceDbAvailableProvider).value ?? false;
 
     return Padding(
       padding: EdgeInsets.only(

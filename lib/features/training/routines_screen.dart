@@ -103,7 +103,7 @@ class _PlanCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final muscleGroupsAsync = ref.watch(planMuscleGroupsProvider(plan.id));
-    final muscleGroups = muscleGroupsAsync.valueOrNull ?? [];
+    final muscleGroups = muscleGroupsAsync.value ?? [];
 
     // Convert German muscle groups to body map muscle keys
     final Set<String> primaryMuscles = {};

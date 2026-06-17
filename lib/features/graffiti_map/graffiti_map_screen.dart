@@ -78,9 +78,9 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     final markersAsync = _query.isEmpty
         ? ref.watch(activeMarkersProvider)
         : ref.watch(markerSearchProvider(_query));
-    final hasRating = collectionInfo.valueOrNull?.hasRating ?? false;
+    final hasRating = collectionInfo.value?.hasRating ?? false;
 
-    final all = markersAsync.valueOrNull ?? const [];
+    final all = markersAsync.value ?? const [];
     final filtered = hashtagFilter == null
         ? all
         : all.where((d) {

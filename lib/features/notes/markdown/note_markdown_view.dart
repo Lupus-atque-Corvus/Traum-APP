@@ -35,7 +35,7 @@ class NoteMarkdownView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notes = ref.watch(allNotesStreamProvider).valueOrNull ?? const <Note>[];
+    final notes = ref.watch(allNotesStreamProvider).value ?? const <Note>[];
 
     // Titel/Alias-Index für die Link-Auflösung und Embed-Expansion.
     final byTitle = <String, Note>{};

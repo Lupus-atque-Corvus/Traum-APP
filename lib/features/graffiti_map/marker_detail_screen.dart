@@ -204,7 +204,7 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
   Widget build(BuildContext context) {
     final collectionAsync =
         ref.watch(collectionByIdProvider(marker.collectionId));
-    final collection = collectionAsync.valueOrNull;
+    final collection = collectionAsync.value;
     final config = collection != null
         ? jsonDecode(collection.fieldConfig) as Map<String, dynamic>
         : const <String, dynamic>{};

@@ -113,7 +113,7 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
           child:
               Text('$e', style: const TextStyle(color: TraumColors.roseRed))),
       data: (result) {
-        final history = historyAsync.valueOrNull ?? [];
+        final history = historyAsync.value ?? [];
         final yesterday =
             history.length >= 2 ? history[history.length - 2] : null;
         final diff =
@@ -604,7 +604,7 @@ class _DailySummaryCard extends ConsumerWidget {
     final nutritionAsync = ref.watch(_todayNutritionProvider);
     final kcalGoal = ref.watch(kcalGoalNotifierProvider);
 
-    final totalKcal = nutritionAsync.valueOrNull?.fold<double>(
+    final totalKcal = nutritionAsync.value?.fold<double>(
           0,
           (sum, l) => sum + l.kcal,
         ) ??
