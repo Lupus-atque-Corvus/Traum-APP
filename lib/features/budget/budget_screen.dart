@@ -372,7 +372,7 @@ class _GesamtsaldoCard extends ConsumerWidget {
                       touchTooltipData: LineTouchTooltipData(
                         getTooltipColor: (_) =>
                             TraumColors.surfaceVariant,
-                        tooltipRoundedRadius: 10,
+                        tooltipBorderRadius: BorderRadius.circular(10),
                         getTooltipItems: (spots) => spots
                             .map((sp) => LineTooltipItem(
                                   '${sp.y.toStringAsFixed(0)} €',
