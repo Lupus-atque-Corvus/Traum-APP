@@ -206,7 +206,7 @@ class _ExerciseTile extends ConsumerWidget {
         );
       },
       loading: () => const SizedBox(height: 36),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
     );
   }
 }

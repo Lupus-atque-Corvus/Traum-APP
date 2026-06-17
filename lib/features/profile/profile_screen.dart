@@ -123,7 +123,7 @@ class ProfileScreen extends ConsumerWidget {
                   ]);
                 },
                 loading: () => ShimmerLoader(width: double.infinity, height: 60),
-                error: (_, __) => const SizedBox.shrink(),
+                error: (_, _) => const SizedBox.shrink(),
               ),
             ]),
           ),
@@ -173,7 +173,7 @@ class ProfileScreen extends ConsumerWidget {
               );
             },
             loading: () => ShimmerLoader(width: double.infinity, height: 60),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           ),
           const SizedBox(height: 16),
 
@@ -214,11 +214,11 @@ class ProfileScreen extends ConsumerWidget {
                   );
                 },
                 loading: () => ShimmerLoader(width: double.infinity, height: 60),
-                error: (_, __) => const SizedBox.shrink(),
+                error: (_, _) => const SizedBox.shrink(),
               );
             },
             loading: () => ShimmerLoader(width: double.infinity, height: 60),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           ),
           const SizedBox(height: 16),
 
@@ -290,7 +290,7 @@ class ProfileScreen extends ConsumerWidget {
               );
             },
             loading: () => ShimmerLoader(width: double.infinity, height: 60),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           ),
           const SizedBox(height: 80),
         ],

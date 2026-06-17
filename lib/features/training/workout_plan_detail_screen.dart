@@ -51,7 +51,7 @@ class WorkoutPlanDetailScreen extends ConsumerWidget {
           loading: () => Text(AppLocalizations.of(context)!.trainingPlan,
               style: const TextStyle(
                   color: TraumColors.onBackground, fontFamily: 'DMSans')),
-          error: (_, __) => Text(AppLocalizations.of(context)!.trainingPlan),
+          error: (_, _) => Text(AppLocalizations.of(context)!.trainingPlan),
         ),
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
         elevation: 0,
@@ -186,7 +186,7 @@ class _DayCard extends ConsumerWidget {
                 height: 32,
                 child: Center(child: CircularProgressIndicator(
                     strokeWidth: 2, color: TraumColors.coralOrange))),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           ),
           const SizedBox(height: 6),
         ],
@@ -232,7 +232,7 @@ class _ExerciseRow extends ConsumerWidget {
         );
       },
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
     );
   }
 }

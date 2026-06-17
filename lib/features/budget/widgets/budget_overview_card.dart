@@ -69,7 +69,7 @@ class BudgetOverviewCard extends ConsumerWidget {
                     strokeWidth: 2, color: TraumColors.amberGold),
               ),
             ),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           ),
         ],
       ),

@@ -47,7 +47,7 @@ class DiaryYearHeatmap extends ConsumerWidget {
                   fontWeight: FontWeight.w600,
                   color: TraumColors.onBackground,
                   fontSize: 16)),
-          error: (_, __) => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
         ),
         const SizedBox(height: 12),
         datesAsync.when(
@@ -91,7 +91,7 @@ class DiaryYearHeatmap extends ConsumerWidget {
           loading: () => const Center(
               child: CircularProgressIndicator(
                   color: TraumColors.lavender, strokeWidth: 2)),
-          error: (_, __) => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
         ),
       ]),
     );

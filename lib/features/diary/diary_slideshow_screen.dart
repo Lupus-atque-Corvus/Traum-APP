@@ -178,7 +178,7 @@ class _DiarySlideShowScreenState
         loading: () => const Center(
           child: CircularProgressIndicator(color: TraumColors.lavender),
         ),
-        error: (_, __) => const SizedBox.shrink(),
+        error: (_, _) => const SizedBox.shrink(),
       ),
     );
   }

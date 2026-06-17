@@ -60,7 +60,7 @@ class BudgetCategoriesScreen extends ConsumerWidget {
           return ListView.separated(
             padding: const EdgeInsets.all(16),
             itemCount: cats.length,
-            separatorBuilder: (_, __) =>
+            separatorBuilder: (_, _) =>
                 const Divider(height: 1, color: TraumColors.surfaceVariant),
             itemBuilder: (_, i) {
               final cat = cats[i];
@@ -113,7 +113,7 @@ class BudgetCategoriesScreen extends ConsumerWidget {
         loading: () => const Center(
           child: CircularProgressIndicator(color: TraumColors.amberGold),
         ),
-        error: (_, __) => const SizedBox.shrink(),
+        error: (_, _) => const SizedBox.shrink(),
       ),
     );
   }

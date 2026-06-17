@@ -593,7 +593,7 @@ class _TransactionDetailScreenState
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const Padding(
+                      errorBuilder: (_, _, _) => const Padding(
                         padding: EdgeInsets.all(16),
                         child: Text('Foto nicht verfügbar',
                             style: TextStyle(

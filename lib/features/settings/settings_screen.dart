@@ -1805,7 +1805,7 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
                   padding: EdgeInsets.all(8),
                   child: CircularProgressIndicator(color: TraumColors.cyanBlue),
                 ),
-                error: (_, __) => const SizedBox.shrink(),
+                error: (_, _) => const SizedBox.shrink(),
               ),
           const SizedBox(height: 8),
         ],

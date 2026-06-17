@@ -18,7 +18,7 @@ void main() {
     expect(m[WidgetKeys.sleepHours], '7.5');
     expect(m[WidgetKeys.waterMl], '1200');
     expect(m[WidgetKeys.nextTodo], 'Einkaufen');
-    expect(m.values.every((v) => v is String), isTrue);
+    expect(m.values, everyElement(isA<String>()));
   });
 
   test('empty() liefert Platzhalter-Snapshot ohne Nullwerte', () {

@@ -127,7 +127,7 @@ class _BudgetHeaderCard extends ConsumerWidget {
                 loading: () => Text('— €',
                     style: _style(
                         36, FontWeight.w700, TraumColors.onBackgroundMuted)),
-                error: (_, __) => const SizedBox.shrink(),
+                error: (_, _) => const SizedBox.shrink(),
               ),
               const Spacer(),
               GestureDetector(
@@ -186,7 +186,7 @@ class _BudgetHeaderCard extends ConsumerWidget {
                 ],
               ),
               loading: () => const SizedBox(height: 48),
-              error: (_, __) => const SizedBox.shrink(),
+              error: (_, _) => const SizedBox.shrink(),
             ),
             const SizedBox(height: 14),
             summary.when(
@@ -198,7 +198,7 @@ class _BudgetHeaderCard extends ConsumerWidget {
                         12, FontWeight.w400, TraumColors.onBackgroundMuted));
               },
               loading: () => const SizedBox.shrink(),
-              error: (_, __) => const SizedBox.shrink(),
+              error: (_, _) => const SizedBox.shrink(),
             ),
           ]),
     );
@@ -267,7 +267,7 @@ class _GesamtsaldoCard extends ConsumerWidget {
                 loading: () => Text('€ —',
                     style: _style(
                         30, FontWeight.w700, TraumColors.onBackgroundMuted)),
-                error: (_, __) => const SizedBox.shrink(),
+                error: (_, _) => const SizedBox.shrink(),
               ),
               const SizedBox(width: 10),
               change.when(
@@ -299,7 +299,7 @@ class _GesamtsaldoCard extends ConsumerWidget {
                   );
                 },
                 loading: () => const SizedBox.shrink(),
-                error: (_, __) => const SizedBox.shrink(),
+                error: (_, _) => const SizedBox.shrink(),
               ),
             ]),
             const SizedBox(height: 2),
@@ -389,7 +389,7 @@ class _GesamtsaldoCard extends ConsumerWidget {
                         color: TraumColors.mintGreen,
                         barWidth: 2,
                         dotData: FlDotData(
-                          getDotPainter: (spot, _, __, index) {
+                          getDotPainter: (spot, _, _, index) {
                             if (index != s.length - 1) {
                               return FlDotCirclePainter(
                                 radius: 0,
@@ -427,7 +427,7 @@ class _GesamtsaldoCard extends ConsumerWidget {
                   child: CircularProgressIndicator(
                       color: TraumColors.mintGreen),
                 ),
-                error: (_, __) => const SizedBox.shrink(),
+                error: (_, _) => const SizedBox.shrink(),
               ),
             ),
           ]),
@@ -591,7 +591,7 @@ class _DonutChartCard extends ConsumerWidget {
                   color: TraumColors.amberGold, strokeWidth: 2),
             ),
           ),
-          error: (_, __) => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
         ),
       ]),
     );
@@ -701,7 +701,7 @@ class _KategorieListeCard extends ConsumerWidget {
                       color: TraumColors.amberGold),
                 ),
               ),
-              error: (_, __) => const SizedBox.shrink(),
+              error: (_, _) => const SizedBox.shrink(),
             ),
           ]),
     );
@@ -831,7 +831,7 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                       color: TraumColors.amberGold),
                 ),
               ),
-              error: (_, __) => const SizedBox.shrink(),
+              error: (_, _) => const SizedBox.shrink(),
             ),
           ]),
     );

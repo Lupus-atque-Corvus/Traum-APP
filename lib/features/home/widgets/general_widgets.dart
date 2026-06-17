@@ -150,7 +150,7 @@ class _ClockDateContentState extends State<_ClockDateContent> {
   Widget build(BuildContext context) {
     return StreamBuilder<void>(
       stream: _ticker,
-      builder: (_, __) {
+      builder: (_, _) {
         final now = DateTime.now();
         final timeStr =
             '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';

@@ -164,7 +164,7 @@ class _MealTemplateSheetState
                 child: CircularProgressIndicator(
                     color: TraumColors.mintGreen,
                     strokeWidth: 2)),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           ),
         ),
       ]),

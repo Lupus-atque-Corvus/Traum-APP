@@ -39,17 +39,17 @@ class MySubstancesTab extends ConsumerWidget {
                 ? const SizedBox.shrink()
                 : _InteractionBanner(alerts: alerts),
             loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           ),
           const SizedBox(height: 8),
           medsAsync.when(
             data: (meds) => logsAsync.when(
               data: (logs) => _TodayStatusCard(meds: meds, logs: logs),
               loading: () => const ShimmerLoader(width: double.infinity, height: 80),
-              error: (_, __) => const SizedBox.shrink(),
+              error: (_, _) => const SizedBox.shrink(),
             ),
             loading: () => const ShimmerLoader(width: double.infinity, height: 80),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           ),
           const SizedBox(height: 16),
           suppsAsync.when(

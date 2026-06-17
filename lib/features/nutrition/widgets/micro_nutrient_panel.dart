@@ -75,7 +75,7 @@ class _MicroNutrientPanelState extends ConsumerState<MicroNutrientPanel> {
             child: CircularProgressIndicator(
                 color: TraumColors.mintGreen, strokeWidth: 2)),
       ),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
     );
   }
 }
@@ -136,7 +136,7 @@ class _SupplementsToday extends ConsumerWidget {
         );
       },
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
     );
   }
 

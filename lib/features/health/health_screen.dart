@@ -1,4 +1,4 @@
-﻿import 'package:drift/drift.dart' show Value;
+import 'package:drift/drift.dart' show Value;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -760,7 +760,7 @@ class _OverviewTab extends ConsumerWidget {
             );
           },
           loading: () => const ShimmerLoader(width: double.infinity, height: 120),
-          error: (_, __) => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
         ),
         const SizedBox(height: 12),
         // Latest weight
@@ -785,7 +785,7 @@ class _OverviewTab extends ConsumerWidget {
             ]),
           ),
           loading: () => const ShimmerLoader(width: double.infinity, height: 80),
-          error: (_, __) => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
         ),
         const SizedBox(height: 12),
         // Latest mood
@@ -811,7 +811,7 @@ class _OverviewTab extends ConsumerWidget {
             ]),
           ),
           loading: () => const ShimmerLoader(width: double.infinity, height: 80),
-          error: (_, __) => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
         ),
       ],
     );

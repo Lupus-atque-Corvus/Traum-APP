@@ -430,7 +430,7 @@ class _AllCountersContent extends ConsumerWidget {
     return ListView.separated(
       padding: EdgeInsets.zero,
       itemCount: sorted.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 6),
+      separatorBuilder: (_, _) => const SizedBox(height: 6),
       itemBuilder: (context, i) {
         final t = sorted[i];
         final days = _daysSince(t.startDate);

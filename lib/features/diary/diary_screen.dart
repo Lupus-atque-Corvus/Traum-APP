@@ -54,7 +54,7 @@ class DiaryScreen extends ConsumerWidget {
                                   color: TraumColors.onBackgroundMuted,
                                   fontSize: 13)),
                           loading: () => const SizedBox.shrink(),
-                          error: (_, __) => const SizedBox.shrink(),
+                          error: (_, _) => const SizedBox.shrink(),
                         ),
                         const Text(' · ',
                             style: TextStyle(
@@ -68,7 +68,7 @@ class DiaryScreen extends ConsumerWidget {
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500)),
                           loading: () => const SizedBox.shrink(),
-                          error: (_, __) => const SizedBox.shrink(),
+                          error: (_, _) => const SizedBox.shrink(),
                         ),
                       ]),
                     ],
@@ -95,7 +95,7 @@ class DiaryScreen extends ConsumerWidget {
                     )
                   : _TodayFilledCard(entry: entry),
               loading: () => const SizedBox(height: 80),
-              error: (_, __) => const SizedBox.shrink(),
+              error: (_, _) => const SizedBox.shrink(),
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 4)),
@@ -128,13 +128,13 @@ class DiaryScreen extends ConsumerWidget {
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     itemCount: entries.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 10),
+                    separatorBuilder: (_, _) => const SizedBox(width: 10),
                     itemBuilder: (_, i) => DiaryEntryCard(entry: entries[i]),
                   ),
                 );
               },
               loading: () => const SizedBox.shrink(),
-              error: (_, __) => const SizedBox.shrink(),
+              error: (_, _) => const SizedBox.shrink(),
             ),
           ),
 

@@ -568,7 +568,7 @@ class _HabitsTab extends ConsumerWidget {
             loading: () => const Center(
                 child:
                     CircularProgressIndicator(color: TraumColors.lavender)),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           );
         },
         loading: () => const Center(
@@ -680,7 +680,7 @@ class _HabitTile extends ConsumerWidget {
                     habitName: '', weekStatus: weekStatus);
               },
               loading: () => const SizedBox(height: 28),
-              error: (_, __) => const SizedBox.shrink(),
+              error: (_, _) => const SizedBox.shrink(),
             ),
           ]),
         ),

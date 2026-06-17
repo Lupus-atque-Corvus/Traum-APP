@@ -18,7 +18,7 @@ class DiaryHomeCard extends ConsumerWidget {
           ? const _EmptyCard()
           : _FilledCard(entry: entry),
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
     );
   }
 }

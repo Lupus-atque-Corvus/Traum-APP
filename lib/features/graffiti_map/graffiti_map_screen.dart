@@ -714,7 +714,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
               padding: EdgeInsets.all(32),
               child: CircularProgressIndicator(color: TraumColors.cyanBlue),
             ),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           );
         },
       ),

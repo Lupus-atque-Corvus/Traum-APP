@@ -198,7 +198,7 @@ class _TemplateEditorState extends ConsumerState<_TemplateEditor> {
                   ? SingleChildScrollView(
                       child: NoteMarkdownView(
                         content: _content.text,
-                        onTapWikilink: (_, __) {},
+                        onTapWikilink: (_, _) {},
                         onTapTag: (_) {},
                       ),
                     )

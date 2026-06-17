@@ -220,7 +220,7 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
               );
             },
             loading: () => const SizedBox(height: 20),
-            error: (_, __) => const SizedBox(height: 20),
+            error: (_, _) => const SizedBox(height: 20),
           ),
 
           // ── Divider ──────────────────────────────────────────────────────

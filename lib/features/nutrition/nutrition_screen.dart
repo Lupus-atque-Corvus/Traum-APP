@@ -203,7 +203,7 @@ class _TodayTab extends ConsumerWidget {
                     child: CircularProgressIndicator(
                         color: TraumColors.mintGreen,
                         strokeWidth: 2))),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           ),
         ),
 
@@ -228,7 +228,7 @@ class _TodayTab extends ConsumerWidget {
                   child: CircularProgressIndicator(
                       color: TraumColors.mintGreen,
                       strokeWidth: 2))),
-          error: (_, __) => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
         ),
 
         // Water section
@@ -265,7 +265,7 @@ class _TodayTab extends ConsumerWidget {
                               fontWeight: FontWeight.w500));
                     },
                     loading: () => const SizedBox.shrink(),
-                    error: (_, __) => const SizedBox.shrink(),
+                    error: (_, _) => const SizedBox.shrink(),
                   ),
                 ]),
                 const SizedBox(height: 8),
@@ -288,7 +288,7 @@ class _TodayTab extends ConsumerWidget {
                     );
                   },
                   loading: () => const SizedBox.shrink(),
-                  error: (_, __) => const SizedBox.shrink(),
+                  error: (_, _) => const SizedBox.shrink(),
                 ),
                 const SizedBox(height: 10),
                 Row(children: [
@@ -399,7 +399,7 @@ class _WeekTab extends ConsumerWidget {
                       child: CircularProgressIndicator(
                           color: TraumColors.mintGreen,
                           strokeWidth: 2)),
-                  error: (_, __) => const SizedBox.shrink(),
+                  error: (_, _) => const SizedBox.shrink(),
                 ),
               ]),
         ),
@@ -546,7 +546,7 @@ class _ProductsTabState extends ConsumerState<_ProductsTab> {
               child: CircularProgressIndicator(
                   color: TraumColors.mintGreen,
                   strokeWidth: 2)),
-          error: (_, __) => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
         ),
       ),
       Padding(

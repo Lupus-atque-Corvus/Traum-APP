@@ -200,7 +200,7 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
               );
             },
             loading: () => const SizedBox(height: 20),
-            error: (_, __) => const SizedBox(height: 20),
+            error: (_, _) => const SizedBox(height: 20),
           ),
 
           Container(height: 1, color: TraumColors.surfaceVariant),

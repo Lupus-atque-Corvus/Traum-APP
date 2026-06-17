@@ -82,42 +82,42 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: Routes.onboarding,
-        builder: (_, __) => const OnboardingScreen(),
+        builder: (_, _) => const OnboardingScreen(),
       ),
       GoRoute(
         path: Routes.biometricLock,
-        builder: (_, __) => const BiometricLockScreen(),
+        builder: (_, _) => const BiometricLockScreen(),
       ),
       GoRoute(
         path: Routes.pinEntry,
-        builder: (_, __) => const PinLockScreen(),
+        builder: (_, _) => const PinLockScreen(),
       ),
       GoRoute(
         path: Routes.trainingSetup,
-        builder: (_, __) => const TrainingWizardScreen(),
+        builder: (_, _) => const TrainingWizardScreen(),
       ),
       ShellRoute(
         builder: (context, state, child) => TraumScaffold(child: child),
         routes: [
           GoRoute(
             path: Routes.home,
-            builder: (_, __) => const HomeScreen(),
+            builder: (_, _) => const HomeScreen(),
           ),
           GoRoute(
             path: Routes.notifications,
-            builder: (_, __) => const NotificationCenterScreen(),
+            builder: (_, _) => const NotificationCenterScreen(),
           ),
           GoRoute(
             path: Routes.training,
-            builder: (_, __) => const TrainingScreen(),
+            builder: (_, _) => const TrainingScreen(),
             routes: [
               GoRoute(
                 path: 'active',
-                builder: (_, __) => const ActiveWorkoutScreen(),
+                builder: (_, _) => const ActiveWorkoutScreen(),
               ),
               GoRoute(
                 path: 'exercises',
-                builder: (_, __) => const ExerciseLibraryScreen(),
+                builder: (_, _) => const ExerciseLibraryScreen(),
               ),
               GoRoute(
                 path: 'session/:id',
@@ -139,79 +139,79 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
               GoRoute(
                 path: 'routines',
-                builder: (_, __) => const RoutinesScreen(),
+                builder: (_, _) => const RoutinesScreen(),
                 routes: [
                   GoRoute(
                     path: 'new',
-                    builder: (_, __) => const NewRoutineScreen(),
+                    builder: (_, _) => const NewRoutineScreen(),
                   ),
                 ],
               ),
               GoRoute(
                 path: 'heatmap',
-                builder: (_, __) => const MuscleHeatmapScreen(),
+                builder: (_, _) => const MuscleHeatmapScreen(),
               ),
               GoRoute(
                 path: 'history',
-                builder: (_, __) => const WorkoutHistoryScreen(),
+                builder: (_, _) => const WorkoutHistoryScreen(),
               ),
             ],
           ),
           GoRoute(
             path: Routes.health,
-            builder: (_, __) => const HealthScreen(),
+            builder: (_, _) => const HealthScreen(),
             routes: [
               GoRoute(
                 path: 'score-detail',
-                builder: (_, __) => const HealthScoreDetailScreen(),
+                builder: (_, _) => const HealthScoreDetailScreen(),
               ),
             ],
           ),
           GoRoute(
             path: Routes.nutrition,
-            builder: (_, __) => const NutritionScreen(),
+            builder: (_, _) => const NutritionScreen(),
             routes: [
               GoRoute(
                 path: 'log',
-                builder: (_, __) => const MealLogScreen(),
+                builder: (_, _) => const MealLogScreen(),
               ),
               GoRoute(
                 path: 'search',
-                builder: (_, __) => const FoodSearchScreen(),
+                builder: (_, _) => const FoodSearchScreen(),
               ),
               GoRoute(
                 path: 'shopping',
-                builder: (_, __) => const ShoppingListScreen(),
+                builder: (_, _) => const ShoppingListScreen(),
               ),
             ],
           ),
           GoRoute(
             path: Routes.substances,
-            builder: (_, __) => const SubstancesScreen(),
+            builder: (_, _) => const SubstancesScreen(),
           ),
           GoRoute(
             path: Routes.supplements,
-            redirect: (_, __) => Routes.substances,
+            redirect: (_, _) => Routes.substances,
           ),
           GoRoute(
             path: Routes.medication,
-            redirect: (_, __) => Routes.substances,
+            redirect: (_, _) => Routes.substances,
           ),
           GoRoute(
             path: Routes.planning,
-            builder: (_, __) => const PlanningScreen(),
+            builder: (_, _) => const PlanningScreen(),
           ),
           GoRoute(
             path: Routes.abstinence,
-            builder: (_, __) => const AbstinenceScreen(),
+            builder: (_, _) => const AbstinenceScreen(),
           ),
           GoRoute(
             path: Routes.budget,
-            builder: (_, __) => const BudgetScreen(),
+            builder: (_, _) => const BudgetScreen(),
             routes: [
               GoRoute(
                 path: 'categories',
-                builder: (_, __) => const BudgetCategoriesScreen(),
+                builder: (_, _) => const BudgetCategoriesScreen(),
               ),
               GoRoute(
                 path: 'transaction/:id',
@@ -221,21 +221,21 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
               GoRoute(
                 path: 'transactions',
-                builder: (_, __) => const TransactionListScreen(),
+                builder: (_, _) => const TransactionListScreen(),
               ),
               GoRoute(
                 path: 'stats',
-                builder: (_, __) => const BudgetStatsScreen(),
+                builder: (_, _) => const BudgetStatsScreen(),
               ),
               GoRoute(
                 path: 'savings',
-                builder: (_, __) => const SavingsScreen(),
+                builder: (_, _) => const SavingsScreen(),
               ),
             ],
           ),
           GoRoute(
             path: Routes.diary,
-            builder: (_, __) => const DiaryScreen(),
+            builder: (_, _) => const DiaryScreen(),
             routes: [
               GoRoute(
                 path: 'entry/:date',
@@ -245,27 +245,27 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
               GoRoute(
                 path: 'slideshow',
-                builder: (_, __) => const DiarySlideShowScreen(),
+                builder: (_, _) => const DiarySlideShowScreen(),
               ),
             ],
           ),
           GoRoute(
             path: Routes.period,
-            builder: (_, __) => const PeriodScreen(),
+            builder: (_, _) => const PeriodScreen(),
             routes: [
               GoRoute(
                 path: 'calendar',
-                builder: (_, __) => const PeriodCalendarScreen(),
+                builder: (_, _) => const PeriodCalendarScreen(),
               ),
               GoRoute(
                 path: 'history',
-                builder: (_, __) => const CycleHistoryScreen(),
+                builder: (_, _) => const CycleHistoryScreen(),
               ),
             ],
           ),
           GoRoute(
             path: Routes.graffitiMap,
-            builder: (_, __) => const GraffitiMapScreen(),
+            builder: (_, _) => const GraffitiMapScreen(),
             routes: [
               GoRoute(
                 path: 'marker/:id',
@@ -281,11 +281,11 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
               GoRoute(
                 path: 'gallery',
-                builder: (_, __) => const MapGalleryScreen(),
+                builder: (_, _) => const MapGalleryScreen(),
               ),
               GoRoute(
                 path: 'create',
-                builder: (_, __) => const CreateCollectionScreen(),
+                builder: (_, _) => const CreateCollectionScreen(),
               ),
               GoRoute(
                 path: 'edit/:id',
@@ -297,7 +297,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: Routes.notes,
-            builder: (_, __) => const NotesScreen(),
+            builder: (_, _) => const NotesScreen(),
             routes: [
               GoRoute(
                 path: 'note/:id',
@@ -307,37 +307,37 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
               GoRoute(
                 path: 'graph',
-                builder: (_, __) => const NotesGraphScreen(),
+                builder: (_, _) => const NotesGraphScreen(),
               ),
               GoRoute(
                 path: 'tags',
-                builder: (_, __) => const NotesTagsScreen(),
+                builder: (_, _) => const NotesTagsScreen(),
               ),
               GoRoute(
                 path: 'search',
-                builder: (_, __) => const NotesSearchScreen(),
+                builder: (_, _) => const NotesSearchScreen(),
               ),
               GoRoute(
                 path: 'daily',
-                builder: (_, __) => const NotesDailyScreen(),
+                builder: (_, _) => const NotesDailyScreen(),
               ),
               GoRoute(
                 path: 'templates',
-                builder: (_, __) => const NotesTemplatesScreen(),
+                builder: (_, _) => const NotesTemplatesScreen(),
               ),
               GoRoute(
                 path: 'trash',
-                builder: (_, __) => const NotesTrashScreen(),
+                builder: (_, _) => const NotesTrashScreen(),
               ),
             ],
           ),
           GoRoute(
             path: Routes.settings,
-            builder: (_, __) => const SettingsScreen(),
+            builder: (_, _) => const SettingsScreen(),
           ),
           GoRoute(
             path: Routes.profile,
-            builder: (_, __) => const ProfileScreen(),
+            builder: (_, _) => const ProfileScreen(),
           ),
         ],
       ),

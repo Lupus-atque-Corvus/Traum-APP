@@ -707,7 +707,7 @@ class _PhotoGalleryState extends State<_PhotoGallery> {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: photos.length + 1,
-            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            separatorBuilder: (_, _) => const SizedBox(width: 8),
             itemBuilder: (_, i) {
               if (i == photos.length) {
                 return GestureDetector(
