@@ -1,5 +1,53 @@
 # Changelog
 
+## v0.7.12 (2026-06-16) — Zyklus-Tracking komplett überarbeitet
+
+### Neu
+
+- **Neues Zyklus-Ring-Dashboard:** Aktueller Zyklustag und Phase auf einen Blick als Ring-Visualisierung.
+- **Studienbasierte Zyklus-Engine:** Eisprung-Schätzung mit fruchtbarem Fenster (nach Wilcox), symptothermale Eisprung-Bestätigung (Sensiplan, 3-über-6-Regel), Perioden-Vorhersage mit Unsicherheitsbereich, Zykluslängen-Statistik, Regelmäßigkeits-Klassifikation, gynäkologisches Alter und Schwangerschaftswahrscheinlichkeit.
+- **Tages-Log-Sheet:** Stimmung, Energie, Basaltemperatur (BBT), Zervixschleim und Sex pro Tag erfassen — ein Eintrag pro Tag (Upsert-Schutz).
+- **Symptom-Erfassung** zurück im Tages-Log; Perioden-Ende und Eintrag-Löschen in der Historie.
+- **Zyklus-Einstellungen:** Menarche und Lutealphasen-Länge konfigurierbar.
+- **Diagramme:** Zykluslängen- und BBT-Verlauf.
+- **Gesundheits-Flags** mit Menarche-basierter Abschwächung; Kalender mit Phasen-Färbung.
+
+### Technik
+
+- DB-Schema **v17**: neue Tabellen `DailyLogs` + `CycleProfile` inkl. DAO und Migration. Alter `CycleCalculator` entfernt — Kalender und Historie lesen jetzt die neue Engine.
+
+---
+
+## v0.7.11 (2026-06-15) — Widget-Vorschau: statische Bilder
+
+### Verbesserung
+
+- **Statisches Vorschaubild je Widget-Gruppe:** Die Vorschau im Widget-Picker funktioniert jetzt launcher-unabhängig.
+
+---
+
+## v0.7.10 (2026-06-15) — Widget-Picker-Vorschau
+
+### Verbesserung
+
+- **Vorschau-Layout für alle Widget-Konfigurationen** inkl. Gradient- und Icon-Defaults — der Android-Picker zeigt jetzt eine echte Vorschau.
+
+---
+
+## v0.7.9 (2026-06-15) — Visuelle Widgets v2
+
+### Neu
+
+- **27 neue visuelle Widgets (v2)** im Funktions-Katalog.
+- **Android:** Canvas-Grafik-Engine (Ringe, Balken, Sparkline, Donut), Gradient-Hintergründe je Widget-Gruppe und eigener Vektor-Icon-Satz.
+- **iOS:** grafische Views mit Gradienten, SF-Symbol-Header und `widgetURL`-Deeplinks.
+
+### Verbesserung
+
+- iOS Widget-Klick-Routing und Android-Größen-API (die Datenquellen waren bereits seit v0.7.8 echt).
+
+---
+
 ## v0.7.8 (2026-06-14) — Datenlücken geschlossen
 
 ### Neu
