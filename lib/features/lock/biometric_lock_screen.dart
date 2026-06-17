@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:local_auth/error_codes.dart' as auth_error;
 import '../../core/navigation/routes.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
@@ -50,11 +49,8 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
     try {
       final authenticated = await _auth.authenticate(
         localizedReason: l10n.unlockReason,
-        options: const AuthenticationOptions(
-          biometricOnly: false,
-          stickyAuth: true,
-          useErrorDialogs: true,
-        ),
+        biometricOnly: false,
+        persistAcrossBackgrounding: true,
       );
       if (!mounted) return;
       if (authenticated) {
@@ -68,15 +64,17 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
     } on PlatformException catch (e) {
       if (!mounted) return;
       String message;
+      // local_auth 3 removed error_codes.dart; the platform plugins still
+      // throw PlatformException with these stable string codes.
       switch (e.code) {
-        case auth_error.notAvailable:
+        case 'NotAvailable':
           message = l10n.biometricNotAvailable;
           break;
-        case auth_error.notEnrolled:
+        case 'NotEnrolled':
           message = l10n.biometricNotEnrolled;
           break;
-        case auth_error.lockedOut:
-        case auth_error.permanentlyLockedOut:
+        case 'LockedOut':
+        case 'PermanentlyLockedOut':
           message = l10n.biometricLockedOut;
           break;
         default:

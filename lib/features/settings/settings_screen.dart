@@ -1349,11 +1349,8 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
         final l10n = AppLocalizations.of(context)!;
         final authenticated = await _auth.authenticate(
           localizedReason: l10n.unlockReason,
-          options: const AuthenticationOptions(
-            biometricOnly: false,
-            stickyAuth: true,
-            useErrorDialogs: true,
-          ),
+          biometricOnly: false,
+          persistAcrossBackgrounding: true,
         );
         if (authenticated) {
           await ref.read(biometricLockProvider.notifier).set(true);

@@ -52,7 +52,7 @@ dependencies:
   home_widget: ^0.6.0
 
   # Biometrie
-  local_auth: ^2.3.0
+  local_auth: ^3.0.0
 
   # HTTP
   http: ^1.2.2

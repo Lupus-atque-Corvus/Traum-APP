@@ -1837,11 +1837,8 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
       final l10n = AppLocalizations.of(context)!;
       final ok = await _auth.authenticate(
         localizedReason: l10n.biometricSetupReason,
-        options: const AuthenticationOptions(
-          biometricOnly: false,
-          stickyAuth: true,
-          useErrorDialogs: true,
-        ),
+        biometricOnly: false,
+        persistAcrossBackgrounding: true,
       );
       if (!mounted) return;
       if (ok) {
