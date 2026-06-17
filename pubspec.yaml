@@ -84,7 +84,7 @@ dependencies:
   video_thumbnail: ^0.5.3
 
   # Barcode-Scanner
-  mobile_scanner: ^5.2.3
+  mobile_scanner: ^7.0.0
 
   # OCR
   google_mlkit_text_recognition: ^0.13.0
