@@ -327,7 +327,7 @@ class BackupService {
 
   /// Lets the user pick a backup ZIP and merges it into the database.
   Future<ImportResult> importBackup() async {
-    final picked = await FilePicker.platform.pickFiles(
+    final picked = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['zip', 'json'],
       withData: true,

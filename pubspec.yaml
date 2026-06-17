@@ -70,7 +70,7 @@ dependencies:
   archive: ^3.6.0
 
   # Datei-Auswahl (Vault-Import)
-  file_picker: ^8.1.2
+  file_picker: ^11.0.0
 
   # Links
   url_launcher: ^6.3.0

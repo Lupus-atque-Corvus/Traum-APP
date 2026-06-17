@@ -50,7 +50,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
 
   Future<void> _importVault() async {
     final l10n = AppLocalizations.of(context)!;
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['zip'],
       withData: true,
