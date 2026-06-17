@@ -85,9 +85,11 @@ class BackupService {
       final outFile = File(p.join(dir.path, 'traum_backup_$stamp.zip'));
       await outFile.writeAsBytes(built.zipBytes);
 
-      await Share.shareXFiles(
-        [XFile(outFile.path, mimeType: 'application/zip')],
-        subject: 'TRAUM Backup',
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(outFile.path, mimeType: 'application/zip')],
+          subject: 'TRAUM Backup',
+        ),
       );
 
       return ExportResult(
@@ -252,7 +254,8 @@ class BackupService {
         shared = XFile(file.path, mimeType: 'application/json');
       }
 
-      await Share.shareXFiles([shared], subject: 'TRAUM Export');
+      await SharePlus.instance
+          .share(ShareParams(files: [shared], subject: 'TRAUM Export'));
       return ExportResult(
         success: true,
         tableCount: tables.length,

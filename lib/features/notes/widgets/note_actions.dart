@@ -209,7 +209,8 @@ Future<void> exportNoteAsMarkdown(Note note) async {
   final safe = note.title.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
   final file = File(p.join(dir.path, '$safe.md'));
   await file.writeAsString(note.content);
-  await Share.shareXFiles([XFile(file.path)], text: note.title);
+  await SharePlus.instance
+      .share(ShareParams(files: [XFile(file.path)], text: note.title));
 }
 
 Widget _grabber() => Padding(

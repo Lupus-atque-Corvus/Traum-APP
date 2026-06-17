@@ -24,8 +24,8 @@ class MapExportService {
     final dir = await getTemporaryDirectory();
     final file = File('${dir.path}/${_safe(c.name)}_export.gpx');
     await file.writeAsString(GpxWriter().asString(gpx, pretty: true));
-    await Share.shareXFiles([XFile(file.path)],
-        text: '${c.name} — TRAUM Export');
+    await SharePlus.instance.share(ShareParams(
+        files: [XFile(file.path)], text: '${c.name} — TRAUM Export'));
   }
 
   static Future<void> exportJson(TraumDatabase db, MapCollection c) async {
@@ -50,8 +50,8 @@ class MapExportService {
     final dir = await getTemporaryDirectory();
     final file = File('${dir.path}/${_safe(c.name)}_export.json');
     await file.writeAsString(const JsonEncoder.withIndent('  ').convert(data));
-    await Share.shareXFiles([XFile(file.path)],
-        text: '${c.name} — TRAUM Export');
+    await SharePlus.instance.share(ShareParams(
+        files: [XFile(file.path)], text: '${c.name} — TRAUM Export'));
   }
 
   static String _safe(String name) =>

@@ -153,9 +153,11 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
       if (marker.locationName != null) marker.locationName!,
     ].join('\n');
     if (photo != null) {
-      await Share.shareXFiles([XFile(photo.photoPath)], text: text);
+      await SharePlus.instance
+          .share(ShareParams(files: [XFile(photo.photoPath)], text: text));
     } else {
-      await Share.share(text.isEmpty ? 'TRAUM Marker' : text);
+      await SharePlus.instance
+          .share(ShareParams(text: text.isEmpty ? 'TRAUM Marker' : text));
     }
   }
 

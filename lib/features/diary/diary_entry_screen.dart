@@ -72,9 +72,11 @@ class _DiaryEntryBody extends ConsumerWidget {
                 color: TraumColors.surface,
                 onSelected: (value) async {
                   if (value == 'share') {
-                    await Share.shareXFiles(
-                      [XFile(entry.mediaPath)],
-                      text: 'Tagebucheintrag ${entry.date}',
+                    await SharePlus.instance.share(
+                      ShareParams(
+                        files: [XFile(entry.mediaPath)],
+                        text: 'Tagebucheintrag ${entry.date}',
+                      ),
                     );
                   } else if (value == 'delete') {
                     final confirm = await showDialog<bool>(

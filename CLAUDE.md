@@ -142,7 +142,7 @@ periodRose: #FF8FAB · ovulationCyan: #00C9C8 · fertileCyan: #0093AB
 8. **Material 3:** `CardThemeData`, `DialogThemeData`, `TabBarThemeData` (keine Legacy-Namen)
 9. **Timezone vor `zonedSchedule`** initialisieren (`timezone` + `flutter_timezone`)
 10. **iOS App Group / Widget-Channel** konsistent: App Group `group.de.traum.widgets`, Widget-Channel `MethodChannel('de.traum/widget')`, Widget-URIs `traum://…`
-11. **`Share.shareXFiles()`** verwenden (nicht `SharePlus.instance.shareXFiles()`)
+11. **`SharePlus.instance.share(ShareParams(...))`** verwenden (share_plus ≥12). Dateien über `ShareParams(files: [XFile(...)], text:, subject:)`, reiner Text über `ShareParams(text: …)`. Die alte `Share.shareXFiles()`/`Share.share()`-API ist ab share_plus 11 deprecated und NICHT mehr verwenden.
 12. **`table_calendar`** für alle Kalender-UI
 13. **ARB nur de + en** pflegen — neue Strings in beide ARB-Dateien
 14. **Widget-Deep-Links validieren** gegen `widgetCatalog` (keine beliebigen Routen zulassen)

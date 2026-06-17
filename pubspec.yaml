@@ -64,7 +64,7 @@ dependencies:
   geolocator: ^12.0.0
 
   # Teilen
-  share_plus: ^10.0.0
+  share_plus: ^12.0.0
 
   # Archiv
   archive: ^3.6.0
@@ -99,7 +99,7 @@ dependencies:
   flutter_svg: ^2.0.10+1
 
   # Gerätinfos
-  device_info_plus: ^10.1.0
+  device_info_plus: ^11.0.0
 
   # Verbindung
   connectivity_plus: ^6.1.0

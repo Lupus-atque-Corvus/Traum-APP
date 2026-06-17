@@ -64,7 +64,8 @@ class NotesVaultService {
     final file = File(p.join(dir.path,
         'traum-notes-${DateTime.now().millisecondsSinceEpoch}.zip'));
     await file.writeAsBytes(zipped);
-    await Share.shareXFiles([XFile(file.path)], text: 'TRAUM Notes Vault');
+    await SharePlus.instance.share(
+        ShareParams(files: [XFile(file.path)], text: 'TRAUM Notes Vault'));
   }
 
   // ─── Import ────────────────────────────────────────────────────────────────
