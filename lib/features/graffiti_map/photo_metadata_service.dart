@@ -60,8 +60,10 @@ class PhotoMetadataService {
         if (perm != LocationPermission.deniedForever &&
             perm != LocationPermission.denied) {
           final pos = await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.high,
-            timeLimit: const Duration(seconds: 6),
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.high,
+              timeLimit: Duration(seconds: 6),
+            ),
           );
           lat = pos.latitude;
           lon = pos.longitude;

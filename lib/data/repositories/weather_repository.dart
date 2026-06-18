@@ -83,8 +83,10 @@ class WeatherRepository {
 
     try {
       final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low,
-        timeLimit: const Duration(seconds: 5),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.low,
+          timeLimit: Duration(seconds: 5),
+        ),
       );
       await prefs.setDouble('weather_lat', position.latitude);
       await prefs.setDouble('weather_lon', position.longitude);
