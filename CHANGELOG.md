@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.7.13 (2026-06-18) — Wartung: Abhängigkeiten modernisiert
+
+### Technik
+
+- **12 zentrale Abhängigkeiten auf aktuelle Major-Versionen gehoben** — keine sichtbaren Änderungen, aber modernere und länger gepflegte Bibliotheken unter der Haube: `flutter_riverpod` 2→3, `fl_chart` 0.69→1, `flutter_map` 7→8 (inkl. Marker-Clustering, Standort-Layer), `go_router` 14→17, `mobile_scanner` 5→7, `share_plus` 10→12, `local_auth` 2→3, `file_picker` 8→11, `permission_handler` 11→12, `home_widget` 0.6→0.9, `geocoding` 3→4, `geolocator` 12→14.
+- Außerdem `flutter_local_notifications` 17→18, `device_info_plus` 10→11 sowie zahlreiche kleinere Aktualisierungen; Lint-Regeln auf `flutter_lints` 6 angehoben (Code entsprechend bereinigt).
+- Interne Test-Abdeckung deutlich erweitert (neue Logik-Tests für Budget, Gesundheits-Score und Notizen). `flutter analyze`: 0 Issues · Testsuite grün.
+
+---
+
 ## v0.7.12 (2026-06-16) — Zyklus-Tracking komplett überarbeitet
 
 ### Neu
