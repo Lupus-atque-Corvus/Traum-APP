@@ -34,7 +34,7 @@ class BudgetCategoriesScreen extends ConsumerWidget {
               context: context,
               isScrollControlled: true,
               backgroundColor: Colors.transparent,
-              builder: (_) => _AddCategorySheet(),
+              builder: (_) => const _CategorySheet(),
             ),
           ),
         ],
@@ -64,48 +64,67 @@ class BudgetCategoriesScreen extends ConsumerWidget {
                 const Divider(height: 1, color: TraumColors.surfaceVariant),
             itemBuilder: (_, i) {
               final cat = cats[i];
-              return ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Container(
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    color: TraumColors.surfaceVariant,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Text(cat.emoji ?? '📦',
-                        style: const TextStyle(fontSize: 20)),
-                  ),
+              return Dismissible(
+                key: ValueKey(cat.id),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 20),
+                  child: const Icon(Icons.delete_rounded,
+                      color: TraumColors.roseRed),
                 ),
-                title: Text(
-                  cat.name,
-                  style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackground,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
+                confirmDismiss: (_) => _confirmDelete(context, cat.name),
+                onDismissed: (_) =>
+                    ref.read(budgetDaoProvider).deleteCategory(cat.id),
+                child: ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  onTap: () => showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (_) => _CategorySheet(category: cat),
                   ),
-                ),
-                subtitle: Text(
-                  cat.isExpense ? 'Ausgabe' : 'Einnahme',
-                  style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackgroundMuted,
-                    fontSize: 12,
+                  leading: Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: TraumColors.surfaceVariant,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(cat.emoji ?? '📦',
+                          style: const TextStyle(fontSize: 20)),
+                    ),
                   ),
+                  title: Text(
+                    cat.name,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackground,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                  ),
+                  subtitle: Text(
+                    cat.isExpense ? 'Ausgabe' : 'Einnahme',
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackgroundMuted,
+                      fontSize: 12,
+                    ),
+                  ),
+                  trailing: cat.monthlyLimit != null
+                      ? Text(
+                          '${cat.monthlyLimit!.toStringAsFixed(0)} € / Mo.',
+                          style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            color: TraumColors.amberGold,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        )
+                      : null,
                 ),
-                trailing: cat.monthlyLimit != null
-                    ? Text(
-                        '${cat.monthlyLimit!.toStringAsFixed(0)} € / Mo.',
-                        style: const TextStyle(
-                          fontFamily: 'DMSans',
-                          color: TraumColors.amberGold,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      )
-                    : null,
               );
             },
           );
@@ -117,21 +136,79 @@ class BudgetCategoriesScreen extends ConsumerWidget {
       ),
     );
   }
+
+  Future<bool> _confirmDelete(BuildContext context, String name) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: TraumColors.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Kategorie löschen?',
+            style: TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
+                fontWeight: FontWeight.w700,
+                fontSize: 18)),
+        content: Text(
+          '„$name" wird entfernt. Bestehende Transaktionen bleiben erhalten und erscheinen als „Sonstiges".',
+          style: const TextStyle(
+              fontFamily: 'DMSans',
+              color: TraumColors.onBackgroundMuted,
+              fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Abbrechen',
+                style: TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackgroundMuted)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Löschen',
+                style: TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.roseRed,
+                    fontWeight: FontWeight.w600)),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
+  }
 }
 
-class _AddCategorySheet extends ConsumerStatefulWidget {
-  const _AddCategorySheet();
+class _CategorySheet extends ConsumerStatefulWidget {
+  final BudgetCategory? category;
+  const _CategorySheet({this.category});
 
   @override
-  ConsumerState<_AddCategorySheet> createState() => _AddCategorySheetState();
+  ConsumerState<_CategorySheet> createState() => _CategorySheetState();
 }
 
-class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
+class _CategorySheetState extends ConsumerState<_CategorySheet> {
   final _nameCtrl = TextEditingController();
   final _limitCtrl = TextEditingController();
   String _selectedIconName = 'category';
   bool _isExpense = true;
   bool _saving = false;
+
+  bool get _isEditing => widget.category != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final cat = widget.category;
+    if (cat != null) {
+      _nameCtrl.text = cat.name;
+      if (cat.monthlyLimit != null) {
+        _limitCtrl.text = cat.monthlyLimit!.toStringAsFixed(0);
+      }
+      _selectedIconName = cat.emoji ?? 'category';
+      _isExpense = cat.isExpense;
+    }
+  }
 
   @override
   void dispose() {
@@ -147,15 +224,30 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
     try {
       final limit =
           double.tryParse(_limitCtrl.text.trim().replaceAll(',', '.'));
-      await ref.read(budgetDaoProvider).insertCategory(
-            BudgetCategoriesCompanion.insert(
-              name: name,
-              emoji: Value(_selectedIconName),
-              isExpense: Value(_isExpense),
-              monthlyLimit: Value(limit),
-              color: const Value(null),
-            ),
-          );
+      final dao = ref.read(budgetDaoProvider);
+      final cat = widget.category;
+      if (cat != null) {
+        await dao.updateCategory(
+          BudgetCategoriesCompanion(
+            id: Value(cat.id),
+            name: Value(name),
+            emoji: Value(_selectedIconName),
+            isExpense: Value(_isExpense),
+            monthlyLimit: Value(limit),
+            color: Value(cat.color),
+          ),
+        );
+      } else {
+        await dao.insertCategory(
+          BudgetCategoriesCompanion.insert(
+            name: name,
+            emoji: Value(_selectedIconName),
+            isExpense: Value(_isExpense),
+            monthlyLimit: Value(limit),
+            color: const Value(null),
+          ),
+        );
+      }
       if (mounted) Navigator.of(context).pop();
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -177,9 +269,9 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Kategorie anlegen',
-            style: TextStyle(
+          Text(
+            _isEditing ? 'Kategorie bearbeiten' : 'Kategorie anlegen',
+            style: const TextStyle(
               fontFamily: 'DMSans',
               fontWeight: FontWeight.w700,
               color: TraumColors.onBackground,

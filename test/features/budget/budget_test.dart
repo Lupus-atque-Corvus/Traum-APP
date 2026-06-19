@@ -255,6 +255,8 @@ void main() {
       await addTx(amount: 300);
       await addTx(amount: 200);
 
+      // StreamProvider.autoDispose: keep alive so .future resolves before dispose.
+      container.listen(budgetSummaryProvider((2026, 6)), (_, _) {});
       final s = await container.read(budgetSummaryProvider((2026, 6)).future);
       expect(s.income, 2000);
       expect(s.expenses, 500);
@@ -269,6 +271,7 @@ void main() {
       await addTx(amount: 20, categoryId: foodId);
       await addTx(amount: 100, categoryId: null); // uncategorized
 
+      container.listen(categoryExpensesProvider((2026, 6)), (_, _) {});
       final list =
           await container.read(categoryExpensesProvider((2026, 6)).future);
       expect(list.first.category.name, 'Sonstiges');
@@ -294,6 +297,7 @@ void main() {
 
       await addTx(amount: 80, categoryId: withLimit);
 
+      container.listen(budgetCategoriesWithSpendingProvider((2026, 6)), (_, _) {});
       final list = await container
           .read(budgetCategoriesWithSpendingProvider((2026, 6)).future);
       expect(list.length, 1);
@@ -306,6 +310,7 @@ void main() {
         () async {
       await addTx(amount: 12, categoryId: null);
 
+      container.listen(recentTransactionItemsProvider(5), (_, _) {});
       final items =
           await container.read(recentTransactionItemsProvider(5).future);
       expect(items.single.categoryName, 'Sonstiges');

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import 'budget_category_colors.dart';
 import 'budget_category_icons.dart';
@@ -81,6 +82,7 @@ class _BudgetHeaderCard extends ConsumerWidget {
     final summary =
         ref.watch(budgetSummaryProvider((month.year, month.month)));
     final visible = ref.watch(budgetBalanceVisibleProvider);
+    final currency = ref.watch(currencySymbolProvider);
 
     return _Card(
       child: Column(
@@ -114,8 +116,8 @@ class _BudgetHeaderCard extends ConsumerWidget {
               summary.when(
                 data: (s) => Text(
                   visible
-                      ? '${s.balance < 0 ? '−' : ''}${_fmt(s.balance)} €'
-                      : '•••• €',
+                      ? '${s.balance < 0 ? '−' : ''}${_fmt(s.balance)} $currency'
+                      : '•••• $currency',
                   style: _style(
                     36,
                     FontWeight.w700,
@@ -124,7 +126,7 @@ class _BudgetHeaderCard extends ConsumerWidget {
                         : TraumColors.roseRed,
                   ),
                 ),
-                loading: () => Text('— €',
+                loading: () => Text('— $currency',
                     style: _style(
                         36, FontWeight.w700, TraumColors.onBackgroundMuted)),
                 error: (_, _) => const SizedBox.shrink(),
@@ -163,14 +165,14 @@ class _BudgetHeaderCard extends ConsumerWidget {
                   _Metric(
                     icon: Icons.arrow_downward_rounded,
                     iconColor: TraumColors.mintGreen,
-                    value: '${_fmt(s.income)} €',
+                    value: '${_fmt(s.income)} $currency',
                     valueColor: TraumColors.mintGreen,
                     label: 'Einnahmen',
                   ),
                   _Metric(
                     icon: Icons.arrow_upward_rounded,
                     iconColor: TraumColors.roseRed,
-                    value: '${_fmt(s.expenses)} €',
+                    value: '${_fmt(s.expenses)} $currency',
                     valueColor: TraumColors.roseRed,
                     label: 'Ausgaben',
                   ),
@@ -236,6 +238,7 @@ class _GesamtsaldoCard extends ConsumerWidget {
     final month = ref.watch(selectedBudgetMonthProvider);
     final spots = ref
         .watch(dailyBalanceSpotsProvider((month.year, month.month)));
+    final currency = ref.watch(currencySymbolProvider);
 
     return _Card(
       child: Column(
@@ -244,27 +247,63 @@ class _GesamtsaldoCard extends ConsumerWidget {
             Row(children: [
               Text('Gesamtsaldo', style: _style(16, FontWeight.w600)),
               const SizedBox(width: 8),
-              Icon(
-                visible
-                    ? Icons.visibility_outlined
-                    : Icons.visibility_off_outlined,
-                color: TraumColors.onBackgroundMuted,
-                size: 18,
+              GestureDetector(
+                onTap: () => ref
+                    .read(budgetBalanceVisibleProvider.notifier)
+                    .state = !visible,
+                child: Icon(
+                  visible
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                  color: TraumColors.onBackgroundMuted,
+                  size: 18,
+                ),
               ),
               const Spacer(),
-              Icon(Icons.more_horiz,
-                  color: TraumColors.onBackgroundMuted, size: 20),
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.more_horiz,
+                    color: TraumColors.onBackgroundMuted, size: 20),
+                color: TraumColors.surfaceVariant,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
+                onSelected: (value) {
+                  switch (value) {
+                    case 'savings':
+                      context.go('/budget/savings');
+                      break;
+                    case 'transactions':
+                      context.go('/budget/transactions');
+                      break;
+                    case 'toggle':
+                      ref
+                          .read(budgetBalanceVisibleProvider.notifier)
+                          .state = !visible;
+                      break;
+                  }
+                },
+                itemBuilder: (_) => [
+                  _menuItem('savings', Icons.savings_outlined, 'Sparziele'),
+                  _menuItem('transactions', Icons.receipt_long_outlined,
+                      'Alle Transaktionen'),
+                  _menuItem(
+                      'toggle',
+                      visible
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      visible ? 'Saldo ausblenden' : 'Saldo einblenden'),
+                ],
+              ),
             ]),
             const SizedBox(height: 14),
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               balance.when(
                 data: (b) => Text(
                   visible
-                      ? '${b < 0 ? '−' : ''}€${_fmt(b)}'
-                      : '€ ••••',
+                      ? '${b < 0 ? '−' : ''}$currency${_fmt(b)}'
+                      : '$currency ••••',
                   style: _style(30, FontWeight.w700),
                 ),
-                loading: () => Text('€ —',
+                loading: () => Text('$currency —',
                     style: _style(
                         30, FontWeight.w700, TraumColors.onBackgroundMuted)),
                 error: (_, _) => const SizedBox.shrink(),
@@ -338,8 +377,8 @@ class _GesamtsaldoCard extends ConsumerWidget {
                           reservedSize: 44,
                           getTitlesWidget: (v, _) => Text(
                             v >= 1000
-                                ? '${(v / 1000).toStringAsFixed(0)}k €'
-                                : '${v.toInt()} €',
+                                ? '${(v / 1000).toStringAsFixed(0)}k $currency'
+                                : '${v.toInt()} $currency',
                             style: _style(9, FontWeight.w400,
                                 TraumColors.onBackgroundSubtle),
                           ),
@@ -375,7 +414,7 @@ class _GesamtsaldoCard extends ConsumerWidget {
                         tooltipBorderRadius: BorderRadius.circular(10),
                         getTooltipItems: (spots) => spots
                             .map((sp) => LineTooltipItem(
-                                  '${sp.y.toStringAsFixed(0)} €',
+                                  '${sp.y.toStringAsFixed(0)} $currency',
                                   _style(12, FontWeight.w600),
                                 ))
                             .toList(),
@@ -474,6 +513,7 @@ class _DonutChartCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final month = ref.watch(selectedBudgetMonthProvider);
     final cats = ref.watch(categoryExpensesProvider((month.year, month.month)));
+    final currency = ref.watch(currencySymbolProvider);
 
     return _Card(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -529,7 +569,7 @@ class _DonutChartCard extends ConsumerWidget {
                         }).toList(),
                       )),
                       Column(mainAxisSize: MainAxisSize.min, children: [
-                        Text('€${_fmtShort(total)}',
+                        Text('$currency${_fmtShort(total)}',
                             style: _style(15, FontWeight.w700),
                             textAlign: TextAlign.center),
                         Text('Gesamt',
@@ -566,7 +606,7 @@ class _DonutChartCard extends ConsumerWidget {
                                 style: _style(11, FontWeight.w500),
                                 overflow: TextOverflow.ellipsis),
                           ),
-                          Text('€${_fmtShort(cat.amount)}',
+                          Text('$currency${_fmtShort(cat.amount)}',
                               style: _style(11, FontWeight.w600)),
                           const SizedBox(width: 4),
                           SizedBox(
@@ -608,6 +648,7 @@ class _KategorieListeCard extends ConsumerWidget {
     final month = ref.watch(selectedBudgetMonthProvider);
     final cats = ref
         .watch(categoryExpensesProvider((month.year, month.month)));
+    final currency = ref.watch(currencySymbolProvider);
 
     return _Card(
       child: Column(
@@ -617,8 +658,29 @@ class _KategorieListeCard extends ConsumerWidget {
               Text('Kategorie-Detail',
                   style: _style(16, FontWeight.w600)),
               const Spacer(),
-              Icon(Icons.more_horiz,
-                  color: TraumColors.onBackgroundMuted, size: 20),
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.more_horiz,
+                    color: TraumColors.onBackgroundMuted, size: 20),
+                color: TraumColors.surfaceVariant,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
+                onSelected: (value) {
+                  switch (value) {
+                    case 'categories':
+                      context.go('/budget/categories');
+                      break;
+                    case 'stats':
+                      context.go('/budget/stats');
+                      break;
+                  }
+                },
+                itemBuilder: (_) => [
+                  _menuItem('categories', Icons.category_outlined,
+                      'Kategorien verwalten'),
+                  _menuItem(
+                      'stats', Icons.bar_chart_outlined, 'Statistik'),
+                ],
+              ),
             ]),
             const SizedBox(height: 14),
             cats.when(
@@ -682,7 +744,7 @@ class _KategorieListeCard extends ConsumerWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text('€${_fmt(cat.amount)}',
+                            Text('$currency${_fmt(cat.amount)}',
                                 style: _style(13, FontWeight.w600)),
                             Text('$percent%',
                                 style: _style(11, FontWeight.w400,
@@ -730,6 +792,7 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final txs = ref.watch(recentTransactionItemsProvider(5));
+    final currency = ref.watch(currencySymbolProvider);
 
     return _Card(
       child: Column(
@@ -805,7 +868,7 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text('$prefix€${_fmt(tx.amount.abs())}',
+                            Text('$prefix$currency${_fmt(tx.amount.abs())}',
                                 style: _style(
                                     14, FontWeight.w700, amountColor)),
                             Text(_dateLabel(tx.date),
@@ -882,6 +945,17 @@ TextStyle _style(double size, FontWeight weight, [Color? color]) =>
       fontSize: size,
       fontWeight: weight,
       color: color ?? TraumColors.onBackground,
+    );
+
+PopupMenuItem<String> _menuItem(String value, IconData icon, String label) =>
+    PopupMenuItem<String>(
+      value: value,
+      height: 44,
+      child: Row(children: [
+        Icon(icon, color: TraumColors.onBackgroundMuted, size: 18),
+        const SizedBox(width: 10),
+        Text(label, style: _style(13, FontWeight.w500)),
+      ]),
     );
 
 class _NavBtn extends StatelessWidget {

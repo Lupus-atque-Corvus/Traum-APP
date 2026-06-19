@@ -91,28 +91,26 @@ final trendBarDateRangeProvider =
 
 // ─── Data Providers ───────────────────────────────────────────────────────────
 
-final budgetSummaryProvider = FutureProvider.autoDispose
-    .family<BudgetSummary, (int, int)>((ref, ym) async {
+final budgetSummaryProvider = StreamProvider.autoDispose
+    .family<BudgetSummary, (int, int)>((ref, ym) {
   final dao = ref.watch(budgetDaoProvider);
-  final txs = await dao.getTransactionsForMonth(ym.$1, ym.$2);
-  final income =
-      txs.where((t) => t.type == 'income').fold(0.0, (s, t) => s + t.amount);
-  final expenses =
-      txs.where((t) => t.type == 'expense').fold(0.0, (s, t) => s + t.amount);
-  return BudgetSummary(income: income, expenses: expenses, balance: income - expenses);
+  return dao.watchTransactionsForMonth(ym.$1, ym.$2).map((txs) {
+    final income =
+        txs.where((t) => t.type == 'income').fold(0.0, (s, t) => s + t.amount);
+    final expenses =
+        txs.where((t) => t.type == 'expense').fold(0.0, (s, t) => s + t.amount);
+    return BudgetSummary(
+        income: income, expenses: expenses, balance: income - expenses);
+  });
 });
 
-final categoryExpensesProvider = FutureProvider.autoDispose
-    .family<List<CategoryExpense>, (int, int)>((ref, ym) async {
+final categoryExpensesProvider = StreamProvider.autoDispose
+    .family<List<CategoryExpense>, (int, int)>((ref, ym) {
   final dao = ref.watch(budgetDaoProvider);
-  final txs = await dao.getTransactionsForMonth(ym.$1, ym.$2);
-  final cats = await dao.getAllCategories();
+  // Categories rarely change but stay reactive: a category edit rebuilds this
+  // provider, which re-subscribes the transaction stream below.
+  final cats = ref.watch(allBudgetCategoriesStreamProvider).value ?? const [];
   final catMap = {for (final c in cats) c.id: c};
-
-  final spending = <int?, double>{};
-  for (final t in txs.where((t) => t.type == 'expense')) {
-    spending[t.categoryId] = (spending[t.categoryId] ?? 0) + t.amount;
-  }
 
   final sonstigesCat = BudgetCategory(
     id: 0,
@@ -123,38 +121,45 @@ final categoryExpensesProvider = FutureProvider.autoDispose
     isExpense: true,
   );
 
-  final result = spending.entries
-      .map((e) => CategoryExpense(
-            category: e.key != null
-                ? (catMap[e.key!] ?? sonstigesCat)
-                : sonstigesCat,
-            amount: e.value,
-          ))
-      .toList()
-    ..sort((a, b) => b.amount.compareTo(a.amount));
-  return result;
+  return dao.watchTransactionsForMonth(ym.$1, ym.$2).map((txs) {
+    final spending = <int?, double>{};
+    for (final t in txs.where((t) => t.type == 'expense')) {
+      spending[t.categoryId] = (spending[t.categoryId] ?? 0) + t.amount;
+    }
+
+    return spending.entries
+        .map((e) => CategoryExpense(
+              category: e.key != null
+                  ? (catMap[e.key!] ?? sonstigesCat)
+                  : sonstigesCat,
+              amount: e.value,
+            ))
+        .toList()
+      ..sort((a, b) => b.amount.compareTo(a.amount));
+  });
 });
 
-final dailyBalanceSpotsProvider = FutureProvider.autoDispose
-    .family<List<FlSpot>, (int, int)>((ref, ym) async {
+final dailyBalanceSpotsProvider = StreamProvider.autoDispose
+    .family<List<FlSpot>, (int, int)>((ref, ym) {
   final dao = ref.watch(budgetDaoProvider);
   final prefs = ref.read(sharedPreferencesProvider);
-  final txs = await dao.getTransactionsForMonth(ym.$1, ym.$2);
   final daysInMonth = DateTime(ym.$1, ym.$2 + 1, 0).day;
   final startBalance =
       prefs.getDouble('monthly_start_balance_${ym.$1}_${ym.$2}') ?? 0.0;
 
-  final Map<int, double> daily = {};
-  for (final t in txs) {
-    final day = t.date.day;
-    daily[day] =
-        (daily[day] ?? 0) + (t.type == 'income' ? t.amount : -t.amount);
-  }
+  return dao.watchTransactionsForMonth(ym.$1, ym.$2).map((txs) {
+    final Map<int, double> daily = {};
+    for (final t in txs) {
+      final day = t.date.day;
+      daily[day] =
+          (daily[day] ?? 0) + (t.type == 'income' ? t.amount : -t.amount);
+    }
 
-  double cumulative = startBalance;
-  return List.generate(daysInMonth, (i) {
-    cumulative += daily[i + 1] ?? 0;
-    return FlSpot(i.toDouble(), cumulative);
+    double cumulative = startBalance;
+    return List.generate(daysInMonth, (i) {
+      cumulative += daily[i + 1] ?? 0;
+      return FlSpot(i.toDouble(), cumulative);
+    });
   });
 });
 
@@ -171,90 +176,81 @@ final recurringTransactionsProvider =
   (ref) => ref.watch(budgetDaoProvider).watchRecurringTransactions(),
 );
 
-final trendDataProvider = FutureProvider.autoDispose
-    .family<List<TrendBar>, TrendPeriod>((ref, period) async {
+final trendDataProvider = StreamProvider.autoDispose
+    .family<List<TrendBar>, TrendPeriod>((ref, period) {
   final dao = ref.watch(budgetDaoProvider);
-  final now = DateTime.now();
+  return dao.watchAllTransactions().map((all) {
+    final now = DateTime.now();
 
-  switch (period) {
-    case TrendPeriod.week:
-      // Last 7 days as individual bars
-      final bars = <TrendBar>[];
-      for (int i = 6; i >= 0; i--) {
-        final day = now.subtract(Duration(days: i));
-        final txs = await dao.getTransactionsForMonth(day.year, day.month);
-        final dayTxs = txs.where((t) => t.date.day == day.day).toList();
-        final income = dayTxs
-            .where((t) => t.type == 'income')
-            .fold(0.0, (s, t) => s + t.amount);
-        final expenses = dayTxs
-            .where((t) => t.type == 'expense')
-            .fold(0.0, (s, t) => s + t.amount);
-        final label = _weekdayLabel(day.weekday);
-        bars.add(TrendBar(label: label, income: income, expenses: expenses));
-      }
-      return bars;
+    double income(Iterable<Transaction> txs) =>
+        txs.where((t) => t.type == 'income').fold(0.0, (s, t) => s + t.amount);
+    double expenses(Iterable<Transaction> txs) =>
+        txs.where((t) => t.type == 'expense').fold(0.0, (s, t) => s + t.amount);
+    bool sameDay(Transaction t, DateTime d) =>
+        t.date.year == d.year && t.date.month == d.month && t.date.day == d.day;
+    bool sameMonth(Transaction t, DateTime d) =>
+        t.date.year == d.year && t.date.month == d.month;
 
-    case TrendPeriod.month:
-      // Last 4 weeks
-      final bars = <TrendBar>[];
-      for (int w = 3; w >= 0; w--) {
-        final weekStart = now.subtract(Duration(days: w * 7 + now.weekday - 1));
-        double income = 0, expenses = 0;
-        for (int d = 0; d < 7; d++) {
-          final day = weekStart.add(Duration(days: d));
-          if (day.isAfter(now)) break;
-          final txs = await dao.getTransactionsForMonth(day.year, day.month);
-          final dayTxs = txs.where((t) => t.date.day == day.day).toList();
-          income += dayTxs
-              .where((t) => t.type == 'income')
-              .fold(0.0, (s, t) => s + t.amount);
-          expenses += dayTxs
-              .where((t) => t.type == 'expense')
-              .fold(0.0, (s, t) => s + t.amount);
+    switch (period) {
+      case TrendPeriod.week:
+        // Last 7 days as individual bars
+        final bars = <TrendBar>[];
+        for (int i = 6; i >= 0; i--) {
+          final day = now.subtract(Duration(days: i));
+          final dayTxs = all.where((t) => sameDay(t, day));
+          bars.add(TrendBar(
+            label: _weekdayLabel(day.weekday),
+            income: income(dayTxs),
+            expenses: expenses(dayTxs),
+          ));
         }
-        bars.add(TrendBar(label: 'KW${3 - w + 1}', income: income, expenses: expenses));
-      }
-      return bars;
+        return bars;
 
-    case TrendPeriod.sixMonths:
-      final bars = <TrendBar>[];
-      for (int i = 5; i >= 0; i--) {
-        final month = DateTime(now.year, now.month - i, 1);
-        final txs = await dao.getTransactionsForMonth(month.year, month.month);
-        final income = txs
-            .where((t) => t.type == 'income')
-            .fold(0.0, (s, t) => s + t.amount);
-        final expenses = txs
-            .where((t) => t.type == 'expense')
-            .fold(0.0, (s, t) => s + t.amount);
-        bars.add(TrendBar(
-          label: _monthLabel(month.month),
-          income: income,
-          expenses: expenses,
-        ));
-      }
-      return bars;
+      case TrendPeriod.month:
+        // Last 4 weeks
+        final bars = <TrendBar>[];
+        for (int w = 3; w >= 0; w--) {
+          final weekStart =
+              now.subtract(Duration(days: w * 7 + now.weekday - 1));
+          double inc = 0, exp = 0;
+          for (int d = 0; d < 7; d++) {
+            final day = weekStart.add(Duration(days: d));
+            if (day.isAfter(now)) break;
+            final dayTxs = all.where((t) => sameDay(t, day));
+            inc += income(dayTxs);
+            exp += expenses(dayTxs);
+          }
+          bars.add(TrendBar(label: 'KW${3 - w + 1}', income: inc, expenses: exp));
+        }
+        return bars;
 
-    case TrendPeriod.year:
-      final bars = <TrendBar>[];
-      for (int i = 11; i >= 0; i--) {
-        final month = DateTime(now.year, now.month - i, 1);
-        final txs = await dao.getTransactionsForMonth(month.year, month.month);
-        final income = txs
-            .where((t) => t.type == 'income')
-            .fold(0.0, (s, t) => s + t.amount);
-        final expenses = txs
-            .where((t) => t.type == 'expense')
-            .fold(0.0, (s, t) => s + t.amount);
-        bars.add(TrendBar(
-          label: _monthLabel(month.month),
-          income: income,
-          expenses: expenses,
-        ));
-      }
-      return bars;
-  }
+      case TrendPeriod.sixMonths:
+        final bars = <TrendBar>[];
+        for (int i = 5; i >= 0; i--) {
+          final month = DateTime(now.year, now.month - i, 1);
+          final mTxs = all.where((t) => sameMonth(t, month));
+          bars.add(TrendBar(
+            label: _monthLabel(month.month),
+            income: income(mTxs),
+            expenses: expenses(mTxs),
+          ));
+        }
+        return bars;
+
+      case TrendPeriod.year:
+        final bars = <TrendBar>[];
+        for (int i = 11; i >= 0; i--) {
+          final month = DateTime(now.year, now.month - i, 1);
+          final mTxs = all.where((t) => sameMonth(t, month));
+          bars.add(TrendBar(
+            label: _monthLabel(month.month),
+            income: income(mTxs),
+            expenses: expenses(mTxs),
+          ));
+        }
+        return bars;
+    }
+  });
 });
 
 String _weekdayLabel(int weekday) {
@@ -270,61 +266,82 @@ String _monthLabel(int month) {
 
 // ─── Accounts ─────────────────────────────────────────────────────────────────
 
-final totalAccountBalanceProvider = FutureProvider.autoDispose<double>((ref) async {
-  return ref.watch(accountsDaoProvider).getTotalBalance();
+final totalAccountBalanceProvider = StreamProvider.autoDispose<double>((ref) {
+  return ref.watch(accountsDaoProvider).watchAll().map((accounts) {
+    return accounts.fold<double>(0.0, (sum, a) {
+      final contribution = a.type == 'credit' ? -a.balance.abs() : a.balance;
+      return sum + contribution;
+    });
+  });
 });
 
 final monthlyBalanceChangeProvider =
-    FutureProvider.autoDispose<double?>((ref) async {
+    StreamProvider.autoDispose<double?>((ref) {
   final dao = ref.watch(budgetDaoProvider);
   final now = DateTime.now();
-  final thisMonth = await dao.getNetForMonth(now.year, now.month);
   final prevYear = now.month == 1 ? now.year - 1 : now.year;
   final prevMonth = now.month == 1 ? 12 : now.month - 1;
-  final lastMonth = await dao.getNetForMonth(prevYear, prevMonth);
-  if (lastMonth == 0) return null;
-  return (thisMonth - lastMonth) / lastMonth.abs() * 100;
+
+  double netForMonth(List<Transaction> all, int year, int month) {
+    final txs = all.where((t) => t.date.year == year && t.date.month == month);
+    final income =
+        txs.where((t) => t.type == 'income').fold(0.0, (s, t) => s + t.amount);
+    final expenses =
+        txs.where((t) => t.type == 'expense').fold(0.0, (s, t) => s + t.amount);
+    return income - expenses;
+  }
+
+  return dao.watchAllTransactions().map((all) {
+    final thisMonth = netForMonth(all, now.year, now.month);
+    final lastMonth = netForMonth(all, prevYear, prevMonth);
+    if (lastMonth == 0) return null;
+    return (thisMonth - lastMonth) / lastMonth.abs() * 100;
+  });
 });
 
 // ─── Budget Overview ──────────────────────────────────────────────────────────
 
 final budgetCategoriesWithSpendingProvider =
-    FutureProvider.autoDispose.family<List<BudgetCategoryWithSpending>, (int, int)>(
-        (ref, ym) async {
+    StreamProvider.autoDispose.family<List<BudgetCategoryWithSpending>, (int, int)>(
+        (ref, ym) {
   final dao = ref.watch(budgetDaoProvider);
-  final txs = await dao.getTransactionsForMonth(ym.$1, ym.$2);
-  final cats = await dao.getAllCategories();
+  final cats = ref.watch(allBudgetCategoriesStreamProvider).value ?? const [];
 
-  final spendingById = <int, double>{};
-  for (final t in txs.where((t) => t.type == 'expense')) {
-    if (t.categoryId != null) {
-      spendingById[t.categoryId!] =
-          (spendingById[t.categoryId!] ?? 0) + t.amount;
+  return dao.watchTransactionsForMonth(ym.$1, ym.$2).map((txs) {
+    final spendingById = <int, double>{};
+    for (final t in txs.where((t) => t.type == 'expense')) {
+      if (t.categoryId != null) {
+        spendingById[t.categoryId!] =
+            (spendingById[t.categoryId!] ?? 0) + t.amount;
+      }
     }
-  }
 
-  return cats
-      .where((c) => c.isExpense && c.monthlyLimit != null && c.monthlyLimit! > 0)
-      .map((cat) => BudgetCategoryWithSpending(
-            category: cat,
-            spent: spendingById[cat.id] ?? 0,
-            budgetLimit: cat.monthlyLimit!,
-          ))
-      .toList()
-    ..sort((a, b) => b.ratio.compareTo(a.ratio));
+    return cats
+        .where(
+            (c) => c.isExpense && c.monthlyLimit != null && c.monthlyLimit! > 0)
+        .map((cat) => BudgetCategoryWithSpending(
+              category: cat,
+              spent: spendingById[cat.id] ?? 0,
+              budgetLimit: cat.monthlyLimit!,
+            ))
+        .toList()
+      ..sort((a, b) => b.ratio.compareTo(a.ratio));
+  });
 });
 
 // ─── Recent Transactions ──────────────────────────────────────────────────────
 
 final recentTransactionItemsProvider =
-    FutureProvider.autoDispose.family<List<RecentTransactionItem>, int>(
-        (ref, limit) async {
+    StreamProvider.autoDispose.family<List<RecentTransactionItem>, int>(
+        (ref, limit) {
   final dao = ref.watch(budgetDaoProvider);
-  final txs = await dao.getRecentTransactions(limit: limit);
-  final cats = await dao.getAllCategories();
+  final cats = ref.watch(allBudgetCategoriesStreamProvider).value ?? const [];
   final catMap = {for (final c in cats) c.id: c};
-  return txs.map((tx) {
-    final cat = tx.categoryId != null ? catMap[tx.categoryId!] : null;
-    return RecentTransactionItem(tx: tx, category: cat);
-  }).toList();
+  // watchAllTransactions() is already ordered newest-first; take the first N.
+  return dao.watchAllTransactions().map((all) {
+    return all.take(limit).map((tx) {
+      final cat = tx.categoryId != null ? catMap[tx.categoryId!] : null;
+      return RecentTransactionItem(tx: tx, category: cat);
+    }).toList();
+  });
 });

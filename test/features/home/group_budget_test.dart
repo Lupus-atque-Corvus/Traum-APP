@@ -40,9 +40,16 @@ void main() {
             ),
           ),
         ));
-        await tester.pump();
+        // Let stream-backed providers deliver their first value before the
+        // next iteration replaces the scope (StreamProvider.autoDispose reports
+        // an error if disposed while still in its initial loading state).
+        await tester.pump(const Duration(milliseconds: 100));
         expect(tester.takeException(), isNull, reason: '$t @ $size threw');
       }
     }
+    // Unmount and flush the final widget's Drift stream-close timer so the
+    // test does not trip the "Timer still pending" teardown check.
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 1));
   });
 }

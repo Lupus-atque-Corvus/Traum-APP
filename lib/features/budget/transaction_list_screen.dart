@@ -1,11 +1,14 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'budget_helpers.dart';
 import 'quick_entry_bottom_sheet.dart';
 
 class TransactionListScreen extends ConsumerStatefulWidget {
@@ -17,6 +20,38 @@ class TransactionListScreen extends ConsumerStatefulWidget {
 
 class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
   String _filter = 'all';
+
+  Future<void> _deleteWithUndo(Transaction t) async {
+    await ref.read(budgetDaoProvider).deleteTransaction(t.id);
+    if (!mounted) return;
+    final messenger = ScaffoldMessenger.of(context)..clearSnackBars();
+    messenger.showSnackBar(
+      SnackBar(
+        content: const Text('Transaktion gelöscht'),
+        action: SnackBarAction(
+          label: 'Rückgängig',
+          textColor: TraumColors.amberGold,
+          onPressed: () {
+            ref.read(budgetDaoProvider).insertTransaction(
+                  TransactionsCompanion.insert(
+                    amount: t.amount,
+                    description: t.description,
+                    date: t.date,
+                    type: Value(t.type),
+                    categoryId: Value(t.categoryId),
+                    note: Value(t.note),
+                    receiptImagePath: Value(t.receiptImagePath),
+                    isRecurring: Value(t.isRecurring),
+                    recurringDay: Value(t.recurringDay),
+                    templateName: Value(t.templateName),
+                    splitFromId: Value(t.splitFromId),
+                  ),
+                );
+          },
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +157,7 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                                           fontFamily: 'DMSans',
                                           fontWeight: FontWeight.w700,
                                           fontSize: 13)),
-                                  Text('${monthTotal.toStringAsFixed(2)} $currency',
+                                  Text('${fmtAmount(monthTotal)} $currency',
                                       style: const TextStyle(
                                           color: TraumColors.onBackgroundMuted,
                                           fontFamily: 'DMSans',
@@ -134,8 +169,9 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                                   transaction: t,
                                   categories: categories,
                                   currency: currency,
-                                  onDelete: () =>
-                                      ref.read(budgetDaoProvider).deleteTransaction(t.id),
+                                  onTap: () => context
+                                      .push('/budget/transaction/${t.id}'),
+                                  onDelete: () => _deleteWithUndo(t),
                                 )),
                           ],
                         );
@@ -200,12 +236,14 @@ class _TxTile extends StatelessWidget {
   final Transaction transaction;
   final List<BudgetCategory> categories;
   final String currency;
+  final VoidCallback onTap;
   final VoidCallback onDelete;
 
   const _TxTile({
     required this.transaction,
     required this.categories,
     required this.currency,
+    required this.onTap,
     required this.onDelete,
   });
 
@@ -238,6 +276,7 @@ class _TxTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(TraumRadius.card),
         ),
         child: ListTile(
+          onTap: onTap,
           leading: Container(
             width: 40,
             height: 40,
@@ -267,7 +306,7 @@ class _TxTile extends StatelessWidget {
                 color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 11),
           ),
           trailing: Text(
-            '${isIncome ? '+' : '-'}${transaction.amount.toStringAsFixed(2)} $currency',
+            '${isIncome ? '+' : '-'}${fmtAmount(transaction.amount)} $currency',
             style: TextStyle(
                 color: isIncome ? TraumColors.mintGreen : TraumColors.roseRed,
                 fontFamily: 'DMSans',

@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../core/components/components.dart';
@@ -378,14 +379,9 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                       if (i == filtered.length) {
                         return GestureDetector(
                           onTap: () {
+                            final router = GoRouter.of(context);
                             Navigator.of(context).pop();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Kategorien in Einstellungen › Budget verwalten',
-                                ),
-                              ),
-                            );
+                            router.push('/budget/categories');
                           },
                           child: Container(
                             decoration: BoxDecoration(
