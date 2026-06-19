@@ -266,12 +266,41 @@ String _monthLabel(int month) {
 
 // ─── Accounts ─────────────────────────────────────────────────────────────────
 
+/// Konto-ID → abgeleiteter Stand (Startsaldo + verknüpfte Buchungen + Transfers).
+final accountDerivedBalancesProvider =
+    StreamProvider.autoDispose<Map<int, double>>((ref) {
+  final accounts = ref.watch(accountsStreamProvider).value ?? const [];
+  return ref.watch(budgetDaoProvider).watchAllTransactions().map((txs) {
+    final m = {for (final a in accounts) a.id: a.balance};
+    for (final t in txs) {
+      switch (t.type) {
+        case 'income':
+          if (t.accountId != null) m[t.accountId!] = (m[t.accountId!] ?? 0) + t.amount;
+          break;
+        case 'expense':
+          if (t.accountId != null) m[t.accountId!] = (m[t.accountId!] ?? 0) - t.amount;
+          break;
+        case 'transfer':
+          if (t.accountId != null) m[t.accountId!] = (m[t.accountId!] ?? 0) - t.amount;
+          if (t.toAccountId != null) m[t.toAccountId!] = (m[t.toAccountId!] ?? 0) + t.amount;
+          break;
+      }
+    }
+    return m;
+  });
+});
+
 final totalAccountBalanceProvider = StreamProvider.autoDispose<double>((ref) {
-  return ref.watch(accountsDaoProvider).watchAll().map((accounts) {
-    return accounts.fold<double>(0.0, (sum, a) {
-      final contribution = a.type == 'credit' ? -a.balance.abs() : a.balance;
-      return sum + contribution;
+  final accounts = ref.watch(accountsStreamProvider).value ?? const [];
+  final typeById = {for (final a in accounts) a.id: a.type};
+  final balancesAsync = ref.watch(accountDerivedBalancesProvider);
+  return ref.watch(budgetDaoProvider).watchAllTransactions().map((_) {
+    final balances = balancesAsync.value ?? {};
+    var sum = 0.0;
+    balances.forEach((id, bal) {
+      sum += typeById[id] == 'credit' ? -bal.abs() : bal;
     });
+    return sum;
   });
 });
 
