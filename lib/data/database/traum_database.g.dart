@@ -14394,6 +14394,39 @@ class $TransactionsTable extends Transactions
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _accountIdMeta = const VerificationMeta(
+    'accountId',
+  );
+  @override
+  late final GeneratedColumn<int> accountId = GeneratedColumn<int>(
+    'account_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _toAccountIdMeta = const VerificationMeta(
+    'toAccountId',
+  );
+  @override
+  late final GeneratedColumn<int> toAccountId = GeneratedColumn<int>(
+    'to_account_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastPostedMonthMeta = const VerificationMeta(
+    'lastPostedMonth',
+  );
+  @override
+  late final GeneratedColumn<String> lastPostedMonth = GeneratedColumn<String>(
+    'last_posted_month',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -14409,6 +14442,9 @@ class $TransactionsTable extends Transactions
     recurringDay,
     templateName,
     splitFromId,
+    accountId,
+    toAccountId,
+    lastPostedMonth,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -14521,6 +14557,30 @@ class $TransactionsTable extends Transactions
         ),
       );
     }
+    if (data.containsKey('account_id')) {
+      context.handle(
+        _accountIdMeta,
+        accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta),
+      );
+    }
+    if (data.containsKey('to_account_id')) {
+      context.handle(
+        _toAccountIdMeta,
+        toAccountId.isAcceptableOrUnknown(
+          data['to_account_id']!,
+          _toAccountIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_posted_month')) {
+      context.handle(
+        _lastPostedMonthMeta,
+        lastPostedMonth.isAcceptableOrUnknown(
+          data['last_posted_month']!,
+          _lastPostedMonthMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -14582,6 +14642,18 @@ class $TransactionsTable extends Transactions
         DriftSqlType.int,
         data['${effectivePrefix}split_from_id'],
       ),
+      accountId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}account_id'],
+      ),
+      toAccountId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}to_account_id'],
+      ),
+      lastPostedMonth: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_posted_month'],
+      ),
     );
   }
 
@@ -14605,6 +14677,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   final int? recurringDay;
   final String? templateName;
   final int? splitFromId;
+  final int? accountId;
+  final int? toAccountId;
+  final String? lastPostedMonth;
   const Transaction({
     required this.id,
     required this.amount,
@@ -14619,6 +14694,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     this.recurringDay,
     this.templateName,
     this.splitFromId,
+    this.accountId,
+    this.toAccountId,
+    this.lastPostedMonth,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -14648,6 +14726,15 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     if (!nullToAbsent || splitFromId != null) {
       map['split_from_id'] = Variable<int>(splitFromId);
     }
+    if (!nullToAbsent || accountId != null) {
+      map['account_id'] = Variable<int>(accountId);
+    }
+    if (!nullToAbsent || toAccountId != null) {
+      map['to_account_id'] = Variable<int>(toAccountId);
+    }
+    if (!nullToAbsent || lastPostedMonth != null) {
+      map['last_posted_month'] = Variable<String>(lastPostedMonth);
+    }
     return map;
   }
 
@@ -14676,6 +14763,15 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       splitFromId: splitFromId == null && nullToAbsent
           ? const Value.absent()
           : Value(splitFromId),
+      accountId: accountId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(accountId),
+      toAccountId: toAccountId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(toAccountId),
+      lastPostedMonth: lastPostedMonth == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastPostedMonth),
     );
   }
 
@@ -14698,6 +14794,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       recurringDay: serializer.fromJson<int?>(json['recurringDay']),
       templateName: serializer.fromJson<String?>(json['templateName']),
       splitFromId: serializer.fromJson<int?>(json['splitFromId']),
+      accountId: serializer.fromJson<int?>(json['accountId']),
+      toAccountId: serializer.fromJson<int?>(json['toAccountId']),
+      lastPostedMonth: serializer.fromJson<String?>(json['lastPostedMonth']),
     );
   }
   @override
@@ -14717,6 +14816,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       'recurringDay': serializer.toJson<int?>(recurringDay),
       'templateName': serializer.toJson<String?>(templateName),
       'splitFromId': serializer.toJson<int?>(splitFromId),
+      'accountId': serializer.toJson<int?>(accountId),
+      'toAccountId': serializer.toJson<int?>(toAccountId),
+      'lastPostedMonth': serializer.toJson<String?>(lastPostedMonth),
     };
   }
 
@@ -14734,6 +14836,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     Value<int?> recurringDay = const Value.absent(),
     Value<String?> templateName = const Value.absent(),
     Value<int?> splitFromId = const Value.absent(),
+    Value<int?> accountId = const Value.absent(),
+    Value<int?> toAccountId = const Value.absent(),
+    Value<String?> lastPostedMonth = const Value.absent(),
   }) => Transaction(
     id: id ?? this.id,
     amount: amount ?? this.amount,
@@ -14750,6 +14855,11 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     recurringDay: recurringDay.present ? recurringDay.value : this.recurringDay,
     templateName: templateName.present ? templateName.value : this.templateName,
     splitFromId: splitFromId.present ? splitFromId.value : this.splitFromId,
+    accountId: accountId.present ? accountId.value : this.accountId,
+    toAccountId: toAccountId.present ? toAccountId.value : this.toAccountId,
+    lastPostedMonth: lastPostedMonth.present
+        ? lastPostedMonth.value
+        : this.lastPostedMonth,
   );
   Transaction copyWithCompanion(TransactionsCompanion data) {
     return Transaction(
@@ -14780,6 +14890,13 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       splitFromId: data.splitFromId.present
           ? data.splitFromId.value
           : this.splitFromId,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
+      toAccountId: data.toAccountId.present
+          ? data.toAccountId.value
+          : this.toAccountId,
+      lastPostedMonth: data.lastPostedMonth.present
+          ? data.lastPostedMonth.value
+          : this.lastPostedMonth,
     );
   }
 
@@ -14798,7 +14915,10 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           ..write('isRecurring: $isRecurring, ')
           ..write('recurringDay: $recurringDay, ')
           ..write('templateName: $templateName, ')
-          ..write('splitFromId: $splitFromId')
+          ..write('splitFromId: $splitFromId, ')
+          ..write('accountId: $accountId, ')
+          ..write('toAccountId: $toAccountId, ')
+          ..write('lastPostedMonth: $lastPostedMonth')
           ..write(')'))
         .toString();
   }
@@ -14818,6 +14938,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     recurringDay,
     templateName,
     splitFromId,
+    accountId,
+    toAccountId,
+    lastPostedMonth,
   );
   @override
   bool operator ==(Object other) =>
@@ -14835,7 +14958,10 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           other.isRecurring == this.isRecurring &&
           other.recurringDay == this.recurringDay &&
           other.templateName == this.templateName &&
-          other.splitFromId == this.splitFromId);
+          other.splitFromId == this.splitFromId &&
+          other.accountId == this.accountId &&
+          other.toAccountId == this.toAccountId &&
+          other.lastPostedMonth == this.lastPostedMonth);
 }
 
 class TransactionsCompanion extends UpdateCompanion<Transaction> {
@@ -14852,6 +14978,9 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<int?> recurringDay;
   final Value<String?> templateName;
   final Value<int?> splitFromId;
+  final Value<int?> accountId;
+  final Value<int?> toAccountId;
+  final Value<String?> lastPostedMonth;
   const TransactionsCompanion({
     this.id = const Value.absent(),
     this.amount = const Value.absent(),
@@ -14866,6 +14995,9 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.recurringDay = const Value.absent(),
     this.templateName = const Value.absent(),
     this.splitFromId = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.toAccountId = const Value.absent(),
+    this.lastPostedMonth = const Value.absent(),
   });
   TransactionsCompanion.insert({
     this.id = const Value.absent(),
@@ -14881,6 +15013,9 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.recurringDay = const Value.absent(),
     this.templateName = const Value.absent(),
     this.splitFromId = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.toAccountId = const Value.absent(),
+    this.lastPostedMonth = const Value.absent(),
   }) : amount = Value(amount),
        description = Value(description),
        date = Value(date);
@@ -14898,6 +15033,9 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     Expression<int>? recurringDay,
     Expression<String>? templateName,
     Expression<int>? splitFromId,
+    Expression<int>? accountId,
+    Expression<int>? toAccountId,
+    Expression<String>? lastPostedMonth,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -14913,6 +15051,9 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       if (recurringDay != null) 'recurring_day': recurringDay,
       if (templateName != null) 'template_name': templateName,
       if (splitFromId != null) 'split_from_id': splitFromId,
+      if (accountId != null) 'account_id': accountId,
+      if (toAccountId != null) 'to_account_id': toAccountId,
+      if (lastPostedMonth != null) 'last_posted_month': lastPostedMonth,
     });
   }
 
@@ -14930,6 +15071,9 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     Value<int?>? recurringDay,
     Value<String?>? templateName,
     Value<int?>? splitFromId,
+    Value<int?>? accountId,
+    Value<int?>? toAccountId,
+    Value<String?>? lastPostedMonth,
   }) {
     return TransactionsCompanion(
       id: id ?? this.id,
@@ -14945,6 +15089,9 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       recurringDay: recurringDay ?? this.recurringDay,
       templateName: templateName ?? this.templateName,
       splitFromId: splitFromId ?? this.splitFromId,
+      accountId: accountId ?? this.accountId,
+      toAccountId: toAccountId ?? this.toAccountId,
+      lastPostedMonth: lastPostedMonth ?? this.lastPostedMonth,
     );
   }
 
@@ -14990,6 +15137,15 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     if (splitFromId.present) {
       map['split_from_id'] = Variable<int>(splitFromId.value);
     }
+    if (accountId.present) {
+      map['account_id'] = Variable<int>(accountId.value);
+    }
+    if (toAccountId.present) {
+      map['to_account_id'] = Variable<int>(toAccountId.value);
+    }
+    if (lastPostedMonth.present) {
+      map['last_posted_month'] = Variable<String>(lastPostedMonth.value);
+    }
     return map;
   }
 
@@ -15008,7 +15164,10 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
           ..write('isRecurring: $isRecurring, ')
           ..write('recurringDay: $recurringDay, ')
           ..write('templateName: $templateName, ')
-          ..write('splitFromId: $splitFromId')
+          ..write('splitFromId: $splitFromId, ')
+          ..write('accountId: $accountId, ')
+          ..write('toAccountId: $toAccountId, ')
+          ..write('lastPostedMonth: $lastPostedMonth')
           ..write(')'))
         .toString();
   }
@@ -37813,6 +37972,9 @@ typedef $$TransactionsTableCreateCompanionBuilder =
       Value<int?> recurringDay,
       Value<String?> templateName,
       Value<int?> splitFromId,
+      Value<int?> accountId,
+      Value<int?> toAccountId,
+      Value<String?> lastPostedMonth,
     });
 typedef $$TransactionsTableUpdateCompanionBuilder =
     TransactionsCompanion Function({
@@ -37829,6 +37991,9 @@ typedef $$TransactionsTableUpdateCompanionBuilder =
       Value<int?> recurringDay,
       Value<String?> templateName,
       Value<int?> splitFromId,
+      Value<int?> accountId,
+      Value<int?> toAccountId,
+      Value<String?> lastPostedMonth,
     });
 
 class $$TransactionsTableFilterComposer
@@ -37902,6 +38067,21 @@ class $$TransactionsTableFilterComposer
 
   ColumnFilters<int> get splitFromId => $composableBuilder(
     column: $table.splitFromId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get accountId => $composableBuilder(
+    column: $table.accountId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get toAccountId => $composableBuilder(
+    column: $table.toAccountId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastPostedMonth => $composableBuilder(
+    column: $table.lastPostedMonth,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -37979,6 +38159,21 @@ class $$TransactionsTableOrderingComposer
     column: $table.splitFromId,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get accountId => $composableBuilder(
+    column: $table.accountId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get toAccountId => $composableBuilder(
+    column: $table.toAccountId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastPostedMonth => $composableBuilder(
+    column: $table.lastPostedMonth,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TransactionsTableAnnotationComposer
@@ -38042,6 +38237,19 @@ class $$TransactionsTableAnnotationComposer
     column: $table.splitFromId,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get accountId =>
+      $composableBuilder(column: $table.accountId, builder: (column) => column);
+
+  GeneratedColumn<int> get toAccountId => $composableBuilder(
+    column: $table.toAccountId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastPostedMonth => $composableBuilder(
+    column: $table.lastPostedMonth,
+    builder: (column) => column,
+  );
 }
 
 class $$TransactionsTableTableManager
@@ -38088,6 +38296,9 @@ class $$TransactionsTableTableManager
                 Value<int?> recurringDay = const Value.absent(),
                 Value<String?> templateName = const Value.absent(),
                 Value<int?> splitFromId = const Value.absent(),
+                Value<int?> accountId = const Value.absent(),
+                Value<int?> toAccountId = const Value.absent(),
+                Value<String?> lastPostedMonth = const Value.absent(),
               }) => TransactionsCompanion(
                 id: id,
                 amount: amount,
@@ -38102,6 +38313,9 @@ class $$TransactionsTableTableManager
                 recurringDay: recurringDay,
                 templateName: templateName,
                 splitFromId: splitFromId,
+                accountId: accountId,
+                toAccountId: toAccountId,
+                lastPostedMonth: lastPostedMonth,
               ),
           createCompanionCallback:
               ({
@@ -38118,6 +38332,9 @@ class $$TransactionsTableTableManager
                 Value<int?> recurringDay = const Value.absent(),
                 Value<String?> templateName = const Value.absent(),
                 Value<int?> splitFromId = const Value.absent(),
+                Value<int?> accountId = const Value.absent(),
+                Value<int?> toAccountId = const Value.absent(),
+                Value<String?> lastPostedMonth = const Value.absent(),
               }) => TransactionsCompanion.insert(
                 id: id,
                 amount: amount,
@@ -38132,6 +38349,9 @@ class $$TransactionsTableTableManager
                 recurringDay: recurringDay,
                 templateName: templateName,
                 splitFromId: splitFromId,
+                accountId: accountId,
+                toAccountId: toAccountId,
+                lastPostedMonth: lastPostedMonth,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

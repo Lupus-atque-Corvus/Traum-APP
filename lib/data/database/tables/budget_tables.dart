@@ -23,6 +23,9 @@ class Transactions extends Table {
   IntColumn get recurringDay => integer().nullable()();
   TextColumn get templateName => text().nullable()();
   IntColumn get splitFromId => integer().nullable()();
+  IntColumn get accountId => integer().nullable()();
+  IntColumn get toAccountId => integer().nullable()();
+  TextColumn get lastPostedMonth => text().nullable()();
 }
 
 class SavingsGoals extends Table {

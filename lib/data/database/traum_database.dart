@@ -210,7 +210,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 17;
+  int get schemaVersion => 18;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -332,6 +332,11 @@ class TraumDatabase extends _$TraumDatabase {
           const CycleProfileCompanion(id: Value(0)),
           mode: InsertMode.insertOrIgnore,
         );
+      }
+      if (from < 18) {
+        await migrator.addColumn(transactions, transactions.accountId);
+        await migrator.addColumn(transactions, transactions.toAccountId);
+        await migrator.addColumn(transactions, transactions.lastPostedMonth);
       }
     },
   );
