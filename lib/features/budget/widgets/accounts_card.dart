@@ -9,6 +9,7 @@ import '../../../core/theme/colors.dart';
 import '../../../core/theme/radius.dart';
 import '../../../data/database/traum_database.dart';
 import '../budget_helpers.dart';
+import '../budget_providers.dart';
 
 class AccountsCard extends ConsumerWidget {
   const AccountsCard({super.key});
@@ -16,6 +17,7 @@ class AccountsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final accountsAsync = ref.watch(accountsStreamProvider);
+    final derived = ref.watch(accountDerivedBalancesProvider).value ?? const {};
 
     return TraumCard(
       child: Column(
@@ -51,7 +53,7 @@ class AccountsCard extends ConsumerWidget {
                 : Column(
                     children: [
                       for (int i = 0; i < list.length; i++) ...[
-                        _AccountRow(account: list[i]),
+                        _AccountRow(account: list[i], balance: derived[list[i].id] ?? list[i].balance),
                         if (i < list.length - 1)
                           Divider(
                             color: Colors.white.withValues(alpha: 0.06),
@@ -105,8 +107,9 @@ class AccountsCard extends ConsumerWidget {
 
 class _AccountRow extends StatelessWidget {
   final Account account;
+  final double balance;
 
-  const _AccountRow({required this.account});
+  const _AccountRow({required this.account, required this.balance});
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +180,7 @@ class _AccountRow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '${isCredit ? '-' : ''}€${fmtAmount(account.balance.abs())}',
+              '${isCredit ? '-' : ''}€${fmtAmount(balance.abs())}',
               style: TextStyle(
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700,
