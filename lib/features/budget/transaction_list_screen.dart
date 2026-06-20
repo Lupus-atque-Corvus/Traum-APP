@@ -249,12 +249,16 @@ class _TxTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isTransfer = transaction.type == 'transfer';
     final isIncome = transaction.type == 'income';
     final cat = transaction.categoryId != null
         ? categories.cast<BudgetCategory?>().firstWhere(
             (c) => c?.id == transaction.categoryId,
             orElse: () => null)
         : null;
+
+    final dateStr =
+        '${transaction.date.day.toString().padLeft(2, '0')}.${transaction.date.month.toString().padLeft(2, '0')}.${transaction.date.year}';
 
     return Dismissible(
       key: ValueKey(transaction.id),
@@ -275,45 +279,83 @@ class _TxTile extends StatelessWidget {
           color: TraumColors.surface,
           borderRadius: BorderRadius.circular(TraumRadius.card),
         ),
-        child: ListTile(
-          onTap: onTap,
-          leading: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: isIncome ? TraumColors.mintGreenDim : TraumColors.amberGoldDim,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: cat?.emoji != null
-                  ? Text(cat!.emoji!, style: const TextStyle(fontSize: 18))
-                  : Icon(
-                      isIncome ? Icons.add_rounded : Icons.remove_rounded,
-                      color: isIncome ? TraumColors.mintGreen : TraumColors.amberGold,
+        child: isTransfer
+            ? ListTile(
+                onTap: onTap,
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(
+                    color: TraumColors.cyanDim,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.swap_horiz_rounded,
+                      color: TraumColors.cyanBlue,
                       size: 20,
                     ),
-            ),
-          ),
-          title: Text(transaction.description,
-              style: const TextStyle(
-                  color: TraumColors.onBackground,
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w500)),
-          subtitle: Text(
-            '${transaction.date.day.toString().padLeft(2, '0')}.${transaction.date.month.toString().padLeft(2, '0')}.${transaction.date.year}'
-            '${cat != null ? '  •  ${cat.name}' : ''}',
-            style: const TextStyle(
-                color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 11),
-          ),
-          trailing: Text(
-            '${isIncome ? '+' : '-'}${fmtAmount(transaction.amount)} $currency',
-            style: TextStyle(
-                color: isIncome ? TraumColors.mintGreen : TraumColors.roseRed,
-                fontFamily: 'DMSans',
-                fontWeight: FontWeight.w600,
-                fontSize: 14),
-          ),
-        ),
+                  ),
+                ),
+                title: Text(transaction.description,
+                    style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w500)),
+                subtitle: Text(
+                  '$dateStr  •  Umbuchung',
+                  style: const TextStyle(
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontSize: 11),
+                ),
+                trailing: Text(
+                  '${fmtAmount(transaction.amount)} $currency',
+                  style: const TextStyle(
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14),
+                ),
+              )
+            : ListTile(
+                onTap: onTap,
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: isIncome ? TraumColors.mintGreenDim : TraumColors.amberGoldDim,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: cat?.emoji != null
+                        ? Text(cat!.emoji!, style: const TextStyle(fontSize: 18))
+                        : Icon(
+                            isIncome ? Icons.add_rounded : Icons.remove_rounded,
+                            color: isIncome ? TraumColors.mintGreen : TraumColors.amberGold,
+                            size: 20,
+                          ),
+                  ),
+                ),
+                title: Text(transaction.description,
+                    style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w500)),
+                subtitle: Text(
+                  '$dateStr${cat != null ? '  •  ${cat.name}' : ''}',
+                  style: const TextStyle(
+                      color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 11),
+                ),
+                trailing: Text(
+                  '${isIncome ? '+' : '-'}${fmtAmount(transaction.amount)} $currency',
+                  style: TextStyle(
+                      color: isIncome ? TraumColors.mintGreen : TraumColors.roseRed,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14),
+                ),
+              ),
       ),
     );
   }

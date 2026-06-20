@@ -441,11 +441,13 @@ class _TransactionDetailScreenState
     }
 
     final tx = _transaction!;
+    final isTransfer = tx.type == 'transfer';
     final isIncome = tx.type == 'income';
     final cat = _category;
-    final amountColor =
-        isIncome ? TraumColors.mintGreen : TraumColors.roseRed;
-    final amountPrefix = isIncome ? '+' : '−';
+    final amountColor = isTransfer
+        ? TraumColors.onBackgroundMuted
+        : (isIncome ? TraumColors.mintGreen : TraumColors.roseRed);
+    final amountPrefix = isTransfer ? '' : (isIncome ? '+' : '−');
 
     return Scaffold(
       backgroundColor: TraumColors.background,
@@ -480,8 +482,34 @@ class _TransactionDetailScreenState
             ),
             const SizedBox(height: 8),
 
-            // Category
-            if (cat != null)
+            // Category / transfer badge
+            if (isTransfer)
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: TraumColors.cyanDim,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.swap_horiz_rounded,
+                          color: TraumColors.cyanBlue, size: 16),
+                      SizedBox(width: 6),
+                      Text(
+                        'Umbuchung',
+                        style: TextStyle(
+                            color: TraumColors.cyanBlue,
+                            fontFamily: 'DMSans',
+                            fontSize: 13),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else if (cat != null)
               Center(
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -607,8 +635,8 @@ class _TransactionDetailScreenState
               const SizedBox(height: 16),
             ],
 
-            // Split button — only for non-split-parent, non-split-child
-            if (tx.templateName != 'SPLIT_PARENT' && tx.splitFromId == null)
+            // Split button — only for non-split-parent, non-split-child, non-transfer
+            if (!isTransfer && tx.templateName != 'SPLIT_PARENT' && tx.splitFromId == null)
               OutlinedButton.icon(
                 onPressed: _showSplitDialog,
                 icon: const Icon(Icons.call_split_rounded,
@@ -629,22 +657,23 @@ class _TransactionDetailScreenState
               ),
             const SizedBox(height: 12),
 
-            // Save as template
-            OutlinedButton.icon(
-              onPressed: _saveAsTemplateDialog,
-              icon: const Icon(Icons.bookmark_add_outlined,
-                  color: TraumColors.amberGold),
-              label: const Text('Als Vorlage speichern',
-                  style: TextStyle(
-                      color: TraumColors.amberGold, fontFamily: 'DMSans')),
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: TraumColors.amberGold),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(TraumRadius.card),
+            // Save as template — not applicable for transfers
+            if (!isTransfer)
+              OutlinedButton.icon(
+                onPressed: _saveAsTemplateDialog,
+                icon: const Icon(Icons.bookmark_add_outlined,
+                    color: TraumColors.amberGold),
+                label: const Text('Als Vorlage speichern',
+                    style: TextStyle(
+                        color: TraumColors.amberGold, fontFamily: 'DMSans')),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: TraumColors.amberGold),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(TraumRadius.card),
+                  ),
                 ),
               ),
-            ),
             const SizedBox(height: 12),
 
             // Delete button
