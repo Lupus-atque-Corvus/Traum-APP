@@ -9,7 +9,9 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
 
   // Transactions
   Stream<List<Transaction>> watchAllTransactions() =>
-      (select(transactions)..orderBy([(t) => OrderingTerm.desc(t.date)]))
+      (select(transactions)
+            ..where((t) => t.isRecurring.equals(false))
+            ..orderBy([(t) => OrderingTerm.desc(t.date)]))
           .watch();
 
   Stream<List<Transaction>> watchTransactionsForMonth(int year, int month) {
@@ -18,7 +20,8 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
     return (select(transactions)
           ..where((t) =>
               t.date.isBiggerOrEqualValue(start) &
-              t.date.isSmallerThanValue(end))
+              t.date.isSmallerThanValue(end) &
+              t.isRecurring.equals(false))
           ..orderBy([(t) => OrderingTerm.desc(t.date)]))
         .watch();
   }
@@ -78,7 +81,8 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
     return (select(transactions)
           ..where((t) =>
               t.date.isBiggerOrEqualValue(start) &
-              t.date.isSmallerThanValue(end))
+              t.date.isSmallerThanValue(end) &
+              t.isRecurring.equals(false))
           ..orderBy([(t) => OrderingTerm.desc(t.date)]))
         .get();
   }
@@ -134,6 +138,7 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
 
   Future<List<Transaction>> getRecentTransactions({int limit = 5}) =>
       (select(transactions)
+            ..where((t) => t.isRecurring.equals(false))
             ..orderBy([(t) => OrderingTerm.desc(t.date)])
             ..limit(limit))
           .get();
