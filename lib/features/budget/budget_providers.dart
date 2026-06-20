@@ -2,7 +2,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import '../../core/providers/database_provider.dart';
-import '../../core/providers/preferences_provider.dart';
 import '../../data/database/traum_database.dart';
 
 // ─── Models ──────────────────────────────────────────────────────────────────
@@ -141,21 +140,22 @@ final categoryExpensesProvider = StreamProvider.autoDispose
 
 final dailyBalanceSpotsProvider = StreamProvider.autoDispose
     .family<List<FlSpot>, (int, int)>((ref, ym) {
-  final dao = ref.watch(budgetDaoProvider);
-  final prefs = ref.read(sharedPreferencesProvider);
+  final accounts = ref.watch(accountsStreamProvider).value ?? const [];
+  final opening = accounts.fold<double>(0.0, (s, a) => s + a.balance);
+  final monthStart = DateTime(ym.$1, ym.$2, 1);
   final daysInMonth = DateTime(ym.$1, ym.$2 + 1, 0).day;
-  final startBalance =
-      prefs.getDouble('monthly_start_balance_${ym.$1}_${ym.$2}') ?? 0.0;
-
-  return dao.watchTransactionsForMonth(ym.$1, ym.$2).map((txs) {
+  double net(Transaction t) =>
+      t.type == 'income' ? t.amount : (t.type == 'expense' ? -t.amount : 0.0);
+  return ref.watch(budgetDaoProvider).watchAllTransactions().map((all) {
+    final prior = all
+        .where((t) => t.date.isBefore(monthStart))
+        .fold(0.0, (s, t) => s + net(t));
     final Map<int, double> daily = {};
-    for (final t in txs) {
-      final day = t.date.day;
-      daily[day] =
-          (daily[day] ?? 0) + (t.type == 'income' ? t.amount : -t.amount);
+    for (final t in all.where((t) =>
+        t.date.year == ym.$1 && t.date.month == ym.$2)) {
+      daily[t.date.day] = (daily[t.date.day] ?? 0) + net(t);
     }
-
-    double cumulative = startBalance;
+    double cumulative = opening + prior;
     return List.generate(daysInMonth, (i) {
       cumulative += daily[i + 1] ?? 0;
       return FlSpot(i.toDouble(), cumulative);
