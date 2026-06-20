@@ -195,7 +195,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
               description: description,
               type: Value(_type),
               date: _date,
-              categoryId: Value(_categoryId),
+              categoryId: Value(_type == 'transfer' ? null : _categoryId),
               note: Value(
                 _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim(),
               ),
