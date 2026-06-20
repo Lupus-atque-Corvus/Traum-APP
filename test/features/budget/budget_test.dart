@@ -200,17 +200,17 @@ void main() {
           updatedAt: DateTime(2026, 6, 1),
         ));
 
-    test('credit accounts subtract their absolute balance, others add', () async {
+    test('sums every account\'s real balance regardless of type', () async {
       await addAccount('checking', 1000);
       await addAccount('savings', 500);
-      await addAccount('credit', 200); // positive stored, counts as -200
+      await addAccount('credit', 200); // real value, counts as +200
 
-      expect(await db.accountsDao.getTotalBalance(), 1300.0);
+      expect(await db.accountsDao.getTotalBalance(), 1700.0);
     });
 
-    test('credit balance already negative still subtracts its magnitude', () async {
+    test('a negative balance lowers the total by its magnitude', () async {
       await addAccount('checking', 1000);
-      await addAccount('credit', -300); // abs → -300 contribution
+      await addAccount('credit', -300); // counts as -300
 
       expect(await db.accountsDao.getTotalBalance(), 700.0);
     });

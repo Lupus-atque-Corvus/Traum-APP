@@ -55,7 +55,15 @@ class AccountsCard extends ConsumerWidget {
                 : Column(
                     children: [
                       for (int i = 0; i < list.length; i++) ...[
-                        _AccountRow(account: list[i], balance: derived[list[i].id] ?? list[i].balance, currency: currency),
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () =>
+                              _showAccountSheet(context, account: list[i]),
+                          child: _AccountRow(
+                              account: list[i],
+                              balance: derived[list[i].id] ?? list[i].balance,
+                              currency: currency),
+                        ),
                         if (i < list.length - 1)
                           Divider(
                             color: Colors.white.withValues(alpha: 0.06),
@@ -72,7 +80,7 @@ class AccountsCard extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           GestureDetector(
-            onTap: () => _showAddAccountSheet(context),
+            onTap: () => _showAccountSheet(context),
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -97,12 +105,12 @@ class AccountsCard extends ConsumerWidget {
     );
   }
 
-  void _showAddAccountSheet(BuildContext context) {
+  void _showAccountSheet(BuildContext context, {Account? account}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => const AddAccountSheet(),
+      builder: (_) => AddAccountSheet(account: account),
     );
   }
 }
@@ -117,10 +125,10 @@ class _AccountRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isCredit = account.type == 'credit';
     final isInvestment = account.type == 'investment';
+    final negative = balance < 0;
     final balanceColor =
-        isCredit ? TraumColors.roseRed : TraumColors.onBackground;
+        negative ? TraumColors.roseRed : TraumColors.onBackground;
 
     final iconColor = switch (account.type) {
       'checking' => TraumColors.coralOrange,
@@ -184,7 +192,7 @@ class _AccountRow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '${isCredit ? '-' : ''}$currency${fmtAmount(balance.abs())}',
+              '${negative ? '-' : ''}$currency${fmtAmount(balance.abs())}',
               style: TextStyle(
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700,
@@ -215,14 +223,6 @@ class _AccountRow extends StatelessWidget {
                     fontFamily: 'DMSans',
                     color: TraumColors.mintGreen,
                     fontSize: 11),
-              )
-            else if (isCredit)
-              const Text(
-                'Ausstehend',
-                style: TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackgroundMuted,
-                    fontSize: 11),
               ),
           ],
         ),
@@ -232,7 +232,8 @@ class _AccountRow extends StatelessWidget {
 }
 
 class AddAccountSheet extends ConsumerStatefulWidget {
-  const AddAccountSheet({super.key});
+  final Account? account;
+  const AddAccountSheet({super.key, this.account});
 
   @override
   ConsumerState<AddAccountSheet> createState() => _AddAccountSheetState();
@@ -247,6 +248,27 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
   String _type = 'checking';
   bool _isPrimary = false;
   bool _saving = false;
+
+  bool get _isEditing => widget.account != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final a = widget.account;
+    if (a != null) {
+      _nameCtrl.text = a.name;
+      _institutionCtrl.text = a.institution ?? '';
+      _balanceCtrl.text =
+          a.balance.toStringAsFixed(2).replaceAll('.', ',');
+      _lastFourCtrl.text = a.lastFour ?? '';
+      if (a.returnRate != null) {
+        _returnRateCtrl.text =
+            a.returnRate!.toStringAsFixed(2).replaceAll('.', ',');
+      }
+      _type = a.type;
+      _isPrimary = a.isPrimary;
+    }
+  }
 
   @override
   void dispose() {
@@ -273,25 +295,73 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
           _type == 'credit' && _lastFourCtrl.text.trim().isNotEmpty
               ? _lastFourCtrl.text.trim()
               : null;
+      final institution = _institutionCtrl.text.trim().isNotEmpty
+          ? _institutionCtrl.text.trim()
+          : null;
+      final existing = widget.account;
       await ref.read(accountsDaoProvider).upsertAccount(
-            AccountsCompanion.insert(
-              name: name,
-              institution: Value(_institutionCtrl.text.trim().isNotEmpty
-                  ? _institutionCtrl.text.trim()
-                  : null),
-              type: _type,
-              balance: balance,
+            AccountsCompanion(
+              id: existing != null ? Value(existing.id) : const Value.absent(),
+              name: Value(name),
+              institution: Value(institution),
+              type: Value(_type),
+              balance: Value(balance),
               lastFour: Value(lastFour),
               returnRate: Value(returnRate),
               isPrimary: Value(_isPrimary),
-              sortOrder: const Value(0),
-              updatedAt: DateTime.now(),
+              sortOrder: Value(existing?.sortOrder ?? 0),
+              updatedAt: Value(DateTime.now()),
             ),
           );
       if (mounted) Navigator.of(context).pop();
     } finally {
       if (mounted) setState(() => _saving = false);
     }
+  }
+
+  Future<void> _delete() async {
+    final account = widget.account;
+    if (account == null) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: TraumColors.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Konto löschen?',
+            style: TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
+                fontWeight: FontWeight.w700,
+                fontSize: 18)),
+        content: Text(
+          '„${account.name}" wird entfernt. Bereits erfasste Transaktionen bleiben erhalten.',
+          style: const TextStyle(
+              fontFamily: 'DMSans',
+              color: TraumColors.onBackgroundMuted,
+              fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Abbrechen',
+                style: TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackgroundMuted)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Löschen',
+                style: TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.roseRed,
+                    fontWeight: FontWeight.w600)),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await ref.read(accountsDaoProvider).deleteAccount(account.id);
+    if (mounted) Navigator.of(context).pop();
   }
 
   @override
@@ -308,9 +378,9 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Konto hinzufügen',
-            style: TextStyle(
+          Text(
+            _isEditing ? 'Konto bearbeiten' : 'Konto hinzufügen',
+            style: const TextStyle(
               fontFamily: 'DMSans',
               fontWeight: FontWeight.w700,
               color: TraumColors.onBackground,
@@ -422,6 +492,24 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
                     ),
             ),
           ),
+          if (_isEditing) ...[
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: TextButton.icon(
+                onPressed: _saving ? null : _delete,
+                icon: const Icon(Icons.delete_outline,
+                    color: TraumColors.roseRed, size: 18),
+                label: const Text(
+                  'Konto löschen',
+                  style: TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.roseRed,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

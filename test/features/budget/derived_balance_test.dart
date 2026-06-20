@@ -37,7 +37,7 @@ void main() {
     expect(map[spar], 0 + 300);                  // 300
   });
 
-  test('totalAccountBalanceProvider applies credit rule: checking +, credit −', () async {
+  test('totalAccountBalanceProvider sums every account\'s real derived balance', () async {
     final checking = await db.accountsDao.into(db.accounts).insert(
       AccountsCompanion.insert(name: 'Checking', type: 'checking',
           balance: 1000, updatedAt: DateTime.now()));
@@ -50,11 +50,11 @@ void main() {
           type: Value(t), accountId: Value(acc)));
     // checking: 1000 opening + 200 income = 1200 → contributes +1200
     await tx(200, 'income', acc: checking);
-    // credit: 500 opening − 100 expense = 400 derived → contributes −400 (credit rule)
+    // credit: 500 opening − 100 expense = 400 derived → contributes +400 (real value)
     await tx(100, 'expense', acc: credit);
 
     c.listen(totalAccountBalanceProvider, (_, _) {});
     final total = await c.read(totalAccountBalanceProvider.future);
-    expect(total, 800.0); // 1200 + (−400) = 800
+    expect(total, 1600.0); // 1200 + 400 = 1600
   });
 }

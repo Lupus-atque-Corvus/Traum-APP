@@ -2,7 +2,7 @@ name: traum
 description: "TRAUM — Dein persönliches Dashboard"
 publish_to: 'none'
 
-version: 0.7.14+63
+version: 0.7.15+64
 
 environment:
   sdk: ^3.9.2

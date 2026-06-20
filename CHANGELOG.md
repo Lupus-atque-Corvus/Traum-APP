@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.7.15 (2026-06-21) — Konten: echter Wert + bearbeitbar
+
+### Behoben
+
+- **Kontostand wird wieder korrekt angezeigt:** Die alte Kreditkarten-Sonderlogik (erzwungenes Minus, rot, vom Gesamtvermögen abgezogen) ist entfernt. Jeder Kontotyp zeigt jetzt den **echten Wert** — ein positiv eingegebener Betrag erscheint positiv; Minus/Rot nur bei tatsächlich negativem Saldo. Der Gesamtsaldo summiert die echten Werte (konsistent mit den Zeilen).
+- **Konten sind jetzt bearbeit- und löschbar:** Tippen auf eine Kontozeile öffnet ein Bearbeiten-Sheet (alle Felder vorausgefüllt) inkl. „Konto löschen" mit Bestätigung. Vorher gab es nach dem Anlegen keine Möglichkeit, ein Konto zu ändern.
+
+---
+
 ## v0.7.14 (2026-06-20) — Budget-Tab vervollständigt
 
 ### Neu

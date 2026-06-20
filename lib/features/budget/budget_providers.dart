@@ -291,14 +291,9 @@ final accountDerivedBalancesProvider =
 
 final totalAccountBalanceProvider = StreamProvider.autoDispose<double>((ref) {
   final accounts = ref.watch(accountsStreamProvider).value ?? const [];
-  final typeById = {for (final a in accounts) a.id: a.type};
   return ref.watch(budgetDaoProvider).watchAllTransactions().map((txs) {
     final balances = deriveAccountBalances(accounts, txs);
-    var sum = 0.0;
-    balances.forEach((id, bal) {
-      sum += typeById[id] == 'credit' ? -bal.abs() : bal;
-    });
-    return sum;
+    return balances.values.fold<double>(0.0, (sum, bal) => sum + bal);
   });
 });
 
