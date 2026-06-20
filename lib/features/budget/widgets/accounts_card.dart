@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/components/traum_card.dart';
 import '../../../core/navigation/routes.dart';
 import '../../../core/providers/database_provider.dart';
+import '../../../core/providers/preferences_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/radius.dart';
 import '../../../data/database/traum_database.dart';
@@ -18,6 +19,7 @@ class AccountsCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final accountsAsync = ref.watch(accountsStreamProvider);
     final derived = ref.watch(accountDerivedBalancesProvider).value ?? const {};
+    final currency = ref.watch(currencySymbolProvider);
 
     return TraumCard(
       child: Column(
@@ -53,7 +55,7 @@ class AccountsCard extends ConsumerWidget {
                 : Column(
                     children: [
                       for (int i = 0; i < list.length; i++) ...[
-                        _AccountRow(account: list[i], balance: derived[list[i].id] ?? list[i].balance),
+                        _AccountRow(account: list[i], balance: derived[list[i].id] ?? list[i].balance, currency: currency),
                         if (i < list.length - 1)
                           Divider(
                             color: Colors.white.withValues(alpha: 0.06),
@@ -108,8 +110,10 @@ class AccountsCard extends ConsumerWidget {
 class _AccountRow extends StatelessWidget {
   final Account account;
   final double balance;
+  final String currency;
 
-  const _AccountRow({required this.account, required this.balance});
+  const _AccountRow(
+      {required this.account, required this.balance, required this.currency});
 
   @override
   Widget build(BuildContext context) {
@@ -180,7 +184,7 @@ class _AccountRow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '${isCredit ? '-' : ''}€${fmtAmount(balance.abs())}',
+              '${isCredit ? '-' : ''}$currency${fmtAmount(balance.abs())}',
               style: TextStyle(
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700,

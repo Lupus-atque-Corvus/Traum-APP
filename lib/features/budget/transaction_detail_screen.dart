@@ -207,6 +207,7 @@ class _TransactionDetailScreenState
     if (_transaction == null) return;
     final cats = _categories.where((c) => c.isExpense).toList();
     final total = _transaction!.amount;
+    final currency = ref.read(currencySymbolProvider);
 
     // Controllers for each split part (start with 2 parts)
     final parts = <_SplitPart>[
@@ -237,7 +238,7 @@ class _TransactionDetailScreenState
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Originalbetrag: ${total.toStringAsFixed(2)} €',
+                    'Originalbetrag: ${total.toStringAsFixed(2)} $currency',
                     style: const TextStyle(
                         color: TraumColors.onBackgroundMuted,
                         fontFamily: 'DMSans',
@@ -331,7 +332,7 @@ class _TransactionDetailScreenState
                   ),
                   const Divider(color: TraumColors.surfaceVariant),
                   Text(
-                    'Verbleibend: ${remaining.toStringAsFixed(2)} €',
+                    'Verbleibend: ${remaining.toStringAsFixed(2)} $currency',
                     style: TextStyle(
                       color: remaining.abs() < 0.01
                           ? TraumColors.mintGreen

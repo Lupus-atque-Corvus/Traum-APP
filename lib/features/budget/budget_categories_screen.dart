@@ -2,6 +2,7 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
+import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
 import 'budget_category_colors.dart';
@@ -13,6 +14,7 @@ class BudgetCategoriesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final catsAsync = ref.watch(allBudgetCategoriesStreamProvider);
+    final currency = ref.watch(currencySymbolProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,
@@ -116,7 +118,7 @@ class BudgetCategoriesScreen extends ConsumerWidget {
                   ),
                   trailing: cat.monthlyLimit != null
                       ? Text(
-                          '${cat.monthlyLimit!.toStringAsFixed(0)} € / Mo.',
+                          '${cat.monthlyLimit!.toStringAsFixed(0)} $currency / Mo.',
                           style: const TextStyle(
                             fontFamily: 'DMSans',
                             color: TraumColors.amberGold,

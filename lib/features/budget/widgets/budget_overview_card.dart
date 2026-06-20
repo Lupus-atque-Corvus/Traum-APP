@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/components/traum_card.dart';
 import '../../../core/navigation/routes.dart';
+import '../../../core/providers/preferences_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../budget_helpers.dart';
 import '../budget_providers.dart';
@@ -15,6 +16,7 @@ class BudgetOverviewCard extends ConsumerWidget {
     final month = ref.watch(selectedBudgetMonthProvider);
     final ym = (month.year, month.month);
     final catsAsync = ref.watch(budgetCategoriesWithSpendingProvider(ym));
+    final currency = ref.watch(currencySymbolProvider);
 
     return TraumCard(
       child: Column(
@@ -59,7 +61,7 @@ class BudgetOverviewCard extends ConsumerWidget {
                   )
                 : Column(
                     children: cats
-                        .map((cat) => _BudgetCategoryRow(cat: cat))
+                        .map((cat) => _BudgetCategoryRow(cat: cat, currency: currency))
                         .toList(),
                   ),
             loading: () => const SizedBox(
@@ -79,8 +81,9 @@ class BudgetOverviewCard extends ConsumerWidget {
 
 class _BudgetCategoryRow extends StatelessWidget {
   final BudgetCategoryWithSpending cat;
+  final String currency;
 
-  const _BudgetCategoryRow({required this.cat});
+  const _BudgetCategoryRow({required this.cat, required this.currency});
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +132,7 @@ class _BudgetCategoryRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '€${fmtAmount(cat.spent)} von €${fmtAmount(cat.budgetLimit)}',
+                  '$currency${fmtAmount(cat.spent)} von $currency${fmtAmount(cat.budgetLimit)}',
                   style: const TextStyle(
                     fontFamily: 'DMSans',
                     color: TraumColors.onBackgroundMuted,
