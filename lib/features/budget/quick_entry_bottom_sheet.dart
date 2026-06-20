@@ -35,6 +35,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
   bool _saveAsTemplate = false;
   final _templateNameCtrl = TextEditingController();
   int? _accountId;
+  int? _toAccountId;
   bool _saving = false;
   bool _scanning = false;
 
@@ -145,6 +146,14 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
   }
 
   Future<void> _save() async {
+    if (_type == 'transfer') {
+      if (_accountId == null || _toAccountId == null || _accountId == _toAccountId) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Von- und Nach-Konto wählen (verschieden)')));
+        return;
+      }
+    }
+
     final amount = _parsedAmount;
     if (amount == null || amount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -158,14 +167,21 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
     setState(() => _saving = true);
     try {
       final accounts = ref.read(accountsStreamProvider).value ?? const [];
-      final effectiveAccount = _accountId ??
-          (accounts.where((a) => a.isPrimary).isNotEmpty
-              ? accounts.firstWhere((a) => a.isPrimary).id
-              : null);
+      final effectiveAccount = _type == 'transfer'
+          ? _accountId
+          : (_accountId ??
+              (accounts.where((a) => a.isPrimary).isNotEmpty
+                  ? accounts.firstWhere((a) => a.isPrimary).id
+                  : null));
 
       final description = _noteCtrl.text.trim().isNotEmpty
           ? _noteCtrl.text.trim()
-          : (_categoryName ?? (_type == 'expense' ? 'Ausgabe' : 'Einnahme'));
+          : (_categoryName ??
+              (_type == 'expense'
+                  ? 'Ausgabe'
+                  : _type == 'income'
+                      ? 'Einnahme'
+                      : 'Umbuchung'));
 
       await ref.read(budgetDaoProvider).insertTransaction(
             TransactionsCompanion.insert(
@@ -179,6 +195,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
               ),
               receiptImagePath: Value(_receiptImagePath),
               accountId: Value(effectiveAccount),
+              toAccountId: Value(_type == 'transfer' ? _toAccountId : null),
             ),
           );
 
@@ -265,6 +282,15 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                       onTap: () => setState(() => _type = 'income'),
                     ),
                   ),
+                  Expanded(
+                    child: _TypeButton(
+                      label: '⇄ Umbuchung',
+                      isSelected: _type == 'transfer',
+                      selectedColor: TraumColors.cyanBlue,
+                      isLeft: false,
+                      onTap: () => setState(() => _type = 'transfer'),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -278,7 +304,9 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                   style: TextStyle(
                     color: _type == 'expense'
                         ? TraumColors.roseRed
-                        : TraumColors.mintGreen,
+                        : _type == 'income'
+                            ? TraumColors.mintGreen
+                            : TraumColors.cyanBlue,
                     fontFamily: 'DMSans',
                     fontWeight: FontWeight.w700,
                     fontSize: 36,
@@ -395,7 +423,37 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                 );
               }),
 
+              // Von/Nach pickers for transfer
+              if (_type == 'transfer')
+                Consumer(builder: (ctx, r, _) {
+                  final accounts = r.watch(accountsStreamProvider).value ?? const [];
+                  Widget picker(String title, int? sel, ValueChanged<int?> onSel) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(title, style: const TextStyle(
+                              fontFamily: 'DMSans', color: TraumColors.onBackgroundMuted, fontSize: 12)),
+                          const SizedBox(height: 6),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(children: [
+                              for (final a in accounts) ...[
+                                _AccountChip(label: a.name, selected: sel == a.id,
+                                    onTap: () => onSel(a.id)),
+                                const SizedBox(width: 8),
+                              ],
+                            ]),
+                          ),
+                          const SizedBox(height: 12),
+                        ],
+                      );
+                  return Column(children: [
+                    picker('Von', _accountId, (v) => setState(() => _accountId = v)),
+                    picker('Nach', _toAccountId, (v) => setState(() => _toAccountId = v)),
+                  ]);
+                }),
+
               // Category grid
+              if (_type != 'transfer')
               categoriesAsync.when(
                 data: (cats) {
                   final filtered = cats
@@ -619,7 +677,9 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                       ? l10n.saving
                       : _type == 'expense'
                           ? '${l10n.budgetAddExpense}  ${_numpadValue.isNotEmpty ? "−$_numpadValue $currency" : ""}'
-                          : '${l10n.budgetAddIncome}  ${_numpadValue.isNotEmpty ? "+$_numpadValue $currency" : ""}',
+                          : _type == 'income'
+                              ? '${l10n.budgetAddIncome}  ${_numpadValue.isNotEmpty ? "+$_numpadValue $currency" : ""}'
+                              : '⇄ Umbuchung  ${_numpadValue.isNotEmpty ? "$_numpadValue $currency" : ""}',
                   onPressed: _saving ? null : _save,
                 );
               }),
