@@ -31,6 +31,7 @@ import '../../features/budget/transaction_list_screen.dart';
 import '../../features/budget/transaction_detail_screen.dart';
 import '../../features/budget/budget_stats_screen.dart';
 import '../../features/budget/savings_screen.dart';
+import '../../features/budget/recurring_screen.dart';
 import '../../features/period_tracking/period_screen.dart';
 import '../../features/period_tracking/period_calendar_screen.dart';
 import '../../features/period_tracking/cycle_history_screen.dart';
@@ -230,6 +231,10 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'savings',
                 builder: (_, _) => const SavingsScreen(),
+              ),
+              GoRoute(
+                path: 'recurring',
+                builder: (_, _) => const RecurringScreen(),
               ),
             ],
           ),

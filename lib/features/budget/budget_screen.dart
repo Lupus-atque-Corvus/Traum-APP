@@ -274,6 +274,9 @@ class _GesamtsaldoCard extends ConsumerWidget {
                     case 'transactions':
                       context.go('/budget/transactions');
                       break;
+                    case 'recurring':
+                      context.go('/budget/recurring');
+                      break;
                     case 'toggle':
                       ref
                           .read(budgetBalanceVisibleProvider.notifier)
@@ -285,6 +288,7 @@ class _GesamtsaldoCard extends ConsumerWidget {
                   _menuItem('savings', Icons.savings_outlined, 'Sparziele'),
                   _menuItem('transactions', Icons.receipt_long_outlined,
                       'Alle Transaktionen'),
+                  _menuItem('recurring', Icons.repeat_rounded, 'Wiederkehrend'),
                   _menuItem(
                       'toggle',
                       visible

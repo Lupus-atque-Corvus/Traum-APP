@@ -33,6 +33,7 @@ class Routes {
   static const String transactionList = '/budget/transactions';
   static const String budgetStats = '/budget/stats';
   static const String savings = '/budget/savings';
+  static const String recurring = '/budget/recurring';
   static const String period = '/period';
   static const String periodCalendar = '/period/calendar';
   static const String cycleHistory = '/period/history';
