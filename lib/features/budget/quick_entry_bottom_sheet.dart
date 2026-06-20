@@ -34,6 +34,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
   String? _receiptImagePath;
   bool _saveAsTemplate = false;
   final _templateNameCtrl = TextEditingController();
+  int? _accountId;
   bool _saving = false;
   bool _scanning = false;
 
@@ -156,6 +157,12 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
 
     setState(() => _saving = true);
     try {
+      final accounts = ref.read(accountsStreamProvider).value ?? const [];
+      final effectiveAccount = _accountId ??
+          (accounts.where((a) => a.isPrimary).isNotEmpty
+              ? accounts.firstWhere((a) => a.isPrimary).id
+              : null);
+
       final description = _noteCtrl.text.trim().isNotEmpty
           ? _noteCtrl.text.trim()
           : (_categoryName ?? (_type == 'expense' ? 'Ausgabe' : 'Einnahme'));
@@ -171,6 +178,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                 _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim(),
               ),
               receiptImagePath: Value(_receiptImagePath),
+              accountId: Value(effectiveAccount),
             ),
           );
 
@@ -355,6 +363,37 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                 ),
               ),
               const SizedBox(height: 16),
+
+              // Account picker (income/expense only)
+              Consumer(builder: (ctx, r, _) {
+                final accounts = r.watch(accountsStreamProvider).value ?? const [];
+                if (accounts.isEmpty || _type == 'transfer') return const SizedBox.shrink();
+                final selected = _accountId ??
+                    (accounts.where((a) => a.isPrimary).isNotEmpty
+                        ? accounts.firstWhere((a) => a.isPrimary).id
+                        : null);
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: [
+                      _AccountChip(
+                        label: 'Kein Konto',
+                        selected: selected == null,
+                        onTap: () => setState(() => _accountId = null),
+                      ),
+                      for (final a in accounts) ...[
+                        const SizedBox(width: 8),
+                        _AccountChip(
+                          label: a.name,
+                          selected: selected == a.id,
+                          onTap: () => setState(() => _accountId = a.id),
+                        ),
+                      ],
+                    ]),
+                  ),
+                );
+              }),
 
               // Category grid
               categoriesAsync.when(
@@ -747,6 +786,30 @@ class _CalendarSheetState extends State<_CalendarSheet> {
       ),
     );
   }
+}
+
+class _AccountChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  const _AccountChip({required this.label, required this.selected, required this.onTap});
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: selected ? TraumColors.amberGoldDim : TraumColors.surface,
+            borderRadius: BorderRadius.circular(20),
+            border: selected ? Border.all(color: TraumColors.amberGold) : null,
+          ),
+          child: Text(label,
+              style: TextStyle(
+                  color: selected ? TraumColors.amberGold : TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans', fontSize: 13,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400)),
+        ),
+      );
 }
 
 class _DateChip extends StatelessWidget {
