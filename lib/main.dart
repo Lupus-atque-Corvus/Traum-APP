@@ -12,6 +12,7 @@ import 'data/repositories/grocery_price_seeder.dart';
 import 'data/repositories/map_collection_seeder.dart';
 import 'data/repositories/substance_database_copier.dart';
 import 'data/repositories/supplement_seeder.dart';
+import 'data/services/recurring_poster.dart';
 import 'widget/widget_data_service.dart';
 import 'widget/widget_update_scheduler.dart';
 
@@ -36,6 +37,8 @@ void main() async {
     MapCollectionSeeder.seedIfNeeded(db, prefs),
     GroceryPriceSeeder.seedIfNeeded(db, prefs),
   ]);
+
+  await RecurringPoster.runIfNeeded(db);
 
   runApp(
     ProviderScope(
