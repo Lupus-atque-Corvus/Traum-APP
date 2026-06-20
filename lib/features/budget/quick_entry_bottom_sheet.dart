@@ -10,6 +10,7 @@ import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../data/services/recurring_poster.dart';
 import '../../l10n/app_localizations.dart';
 import 'receipt_scanner.dart';
 import 'widgets/numpad_widget.dart';
@@ -38,6 +39,8 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
   int? _toAccountId;
   bool _saving = false;
   bool _scanning = false;
+  bool _recurring = false;
+  int _recurringDay = 1;
 
   @override
   void initState() {
@@ -165,6 +168,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
     }
 
     setState(() => _saving = true);
+    final isDef = _recurring && _type != 'transfer';
     try {
       final accounts = ref.read(accountsStreamProvider).value ?? const [];
       final effectiveAccount = _type == 'transfer'
@@ -196,6 +200,9 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
               receiptImagePath: Value(_receiptImagePath),
               accountId: Value(effectiveAccount),
               toAccountId: Value(_type == 'transfer' ? _toAccountId : null),
+              isRecurring: Value(isDef),
+              recurringDay: Value(isDef ? _recurringDay : null),
+              lastPostedMonth: const Value(null),
             ),
           );
 
@@ -214,6 +221,10 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
         await ref
             .read(budgetDaoProvider)
             .incrementTemplateUsage(widget.initialTemplate!.id, amount);
+      }
+
+      if (isDef) {
+        await RecurringPoster.runIfNeeded(ref.read(databaseProvider));
       }
 
       if (mounted) Navigator.of(context).pop(true);
@@ -667,6 +678,36 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                     ),
                 ],
               ),
+
+              // Recurring toggle (income/expense only)
+              if (_type != 'transfer')
+                Row(children: [
+                  Checkbox(
+                    value: _recurring,
+                    onChanged: (v) => setState(() => _recurring = v ?? false),
+                    activeColor: TraumColors.amberGold,
+                  ),
+                  const Text('Monatlich wiederkehrend am',
+                      style: TextStyle(
+                          fontFamily: 'DMSans',
+                          color: TraumColors.onBackgroundMuted,
+                          fontSize: 13)),
+                  const SizedBox(width: 8),
+                  if (_recurring)
+                    DropdownButton<int>(
+                      value: _recurringDay,
+                      dropdownColor: TraumColors.surfaceVariant,
+                      style: const TextStyle(
+                          fontFamily: 'DMSans',
+                          color: TraumColors.onBackground),
+                      items: [
+                        for (var d = 1; d <= 28; d++)
+                          DropdownMenuItem(value: d, child: Text('$d.'))
+                      ],
+                      onChanged: (v) =>
+                          setState(() => _recurringDay = v ?? 1),
+                    ),
+                ]),
               const SizedBox(height: 16),
 
               // Save button
