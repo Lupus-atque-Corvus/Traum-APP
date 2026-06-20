@@ -12,6 +12,7 @@ import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../data/services/recurring_poster.dart';
 import '../../l10n/app_localizations.dart';
+import 'budget_providers.dart';
 import 'receipt_scanner.dart';
 import 'widgets/numpad_widget.dart';
 
@@ -41,6 +42,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
   bool _scanning = false;
   bool _recurring = false;
   int _recurringDay = 1;
+  QuickTemplate? _appliedTemplate;
 
   @override
   void initState() {
@@ -223,6 +225,11 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
             .incrementTemplateUsage(widget.initialTemplate!.id, amount);
       }
 
+      if (_appliedTemplate != null) {
+        await ref.read(budgetDaoProvider)
+            .incrementTemplateUsage(_appliedTemplate!.id, amount);
+      }
+
       if (isDef) {
         await RecurringPoster.runIfNeeded(ref.read(databaseProvider));
       }
@@ -271,6 +278,45 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                   ),
                 ),
               ),
+
+              // Template chips (only when not transfer)
+              if (_type != 'transfer')
+                Consumer(builder: (ctx, r, _) {
+                  final tpls = r.watch(quickTemplatesProvider).value ?? const [];
+                  if (tpls.isEmpty) return const SizedBox.shrink();
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(children: [
+                        for (final t in tpls) ...[
+                          GestureDetector(
+                            onTap: () => setState(() {
+                              _appliedTemplate = t;
+                              _type = t.type;
+                              _categoryId = t.categoryId;
+                              if (t.defaultAmount != null) {
+                                _numpadValue = t.defaultAmount!.toStringAsFixed(2).replaceAll('.', ',');
+                              }
+                            }),
+                            onLongPress: () => ref.read(budgetDaoProvider).deleteTemplate(t.id),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: TraumColors.surface,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: TraumColors.amberGold.withValues(alpha: 0.4)),
+                              ),
+                              child: Text(t.name, style: const TextStyle(
+                                  fontFamily: 'DMSans', color: TraumColors.onBackground, fontSize: 13)),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                        ],
+                      ]),
+                    ),
+                  );
+                }),
 
               // Type toggle
               Row(
