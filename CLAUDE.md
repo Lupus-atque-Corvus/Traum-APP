@@ -1,8 +1,8 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.12+61** · schemaVersion **17**.
-> Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert (Stand v0.7.12).
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.14+63** · schemaVersion **18**.
+> Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert (Stand v0.7.14).
 
 ---
 
@@ -17,7 +17,7 @@
 
 ## Projekt-Fakten (aus dem Code verifiziert)
 - **Name / App-ID:** TRAUM · `de.traum.traum` (Android applicationId + iOS Bundle, beide Plattformen)
-- **Version:** 0.7.12+61 · Drift schemaVersion: 17
+- **Version:** 0.7.14+63 · Drift schemaVersion: 18
 - **Plattformen:** Android (minSdk 26) · iOS (Deployment Target 13.0)
 - **SDK:** Dart ^3.9.2
 - **Datenablage:** ausschließlich lokal — kein Backend, kein Server, keine Internet-Pflicht
@@ -62,7 +62,7 @@ lib/
 │   └── utils/
 ├── data/
 │   ├── database/
-│   │   ├── traum_database.dart   # @DriftDatabase — ~62 Tabellen, 19 DAOs, schemaVersion 17
+│   │   ├── traum_database.dart   # @DriftDatabase — ~62 Tabellen, 19 DAOs, schemaVersion 18
 │   │   ├── tables/               # 14 Tabellen-Dateien
 │   │   └── daos/                 # 19 DAO-Dateien
 │   ├── models/
@@ -103,7 +103,7 @@ periodRose: #FF8FAB · ovulationCyan: #00C9C8 · fertileCyan: #0093AB
 > aktiv schalten oder entfernen; wenn Light Mode wieder live werden soll, ist das eine bewusste
 > Entscheidung (dann themeProvider + Settings-Umschalter sauber einbauen) — vorher mit mir abstimmen.
 
-## Datenbank — ~62 Tabellen, 19 DAOs (echt, schemaVersion 17)
+## Datenbank — ~62 Tabellen, 19 DAOs (echt, schemaVersion 18)
 - Planning: Appointments, Todos, Goals, SubTasks, Habits, HabitLogs
 - Training: WorkoutPlans, WorkoutDays, Exercises, WorkoutSessions, WorkoutSets, WorkoutDayExercises
 - Health: WeightLogs, BodyMeasurements, SleepLogs, MoodLogs, PhotoLogs
@@ -179,5 +179,5 @@ was modernisiert werden sollte. Warte auf meine Bestätigung, bevor du implement
 - Handle: Lupus-atque-Corvus
 
 > Hinweis: Es existiert noch ein älteres, abweichendes Repo (`Android-app-`, v1.2.1). Dieses hier
-> (`Traum-APP`, v0.7.12) ist der aktuelle, weiter entwickelte Stand (19 Module, embedded DM Sans,
+> (`Traum-APP`, v0.7.14) ist der aktuelle, weiter entwickelte Stand (19 Module, embedded DM Sans,
 > Dark hartkodiert, Notes/Diary/Graffiti-Map/Substances vorhanden). Nicht verwechseln.

@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.7.14 (2026-06-20) — Budget-Tab vervollständigt
+
+### Neu
+
+- **Konten & Salden:** Transaktionen lassen sich einem Konto zuordnen; Kontostände werden aus Startsaldo + verknüpften Buchungen abgeleitet (nichts wird mutiert — Bearbeiten/Löschen/Rückgängig bleiben immer korrekt).
+- **Überweisungen (Umbuchungen)** zwischen Konten — fließen nicht in Einnahmen/Ausgaben-Summen ein, bewegen aber beide Kontostände.
+- **Wiederkehrende Transaktionen:** monatlich nach Tag-des-Monats, mit idempotenter Auto-Buchung beim App-Start und eigenem Verwaltungs-Screen.
+- **Vorlagen nutzbar:** gespeicherte Schnell-Vorlagen erscheinen als Chips im Schnell-Eintrag (Tippen füllt aus, Long-press löscht).
+- **Schulden-Screen:** Schulden anlegen, Raten zahlen, löschen.
+
+### Verbesserung
+
+- **Gesamtsaldo-Verlaufslinie** startet jetzt beim echten Saldo statt bei 0 (toter Pref entfernt); Überweisungen sind ausgenommen.
+- **Tab-weite Währungs-Konsistenz:** überall das eingestellte Währungssymbol statt hartkodiertem €.
+- **Tote Buttons funktionsfähig** (Gesamtsaldo-/Kategorie-Menüs, Auge-Umschalter), Transaktion antippen → Detail, Swipe-Löschen mit Rückgängig, Kategorien bearbeiten/löschen, einheitliche Kategorie-Farben + Farb-Picker.
+- **Stream-first-Provider** beheben hängende Ladebalken und aktualisieren alle Karten + Home-Widgets sofort nach jeder Buchung.
+
+### Technik
+
+- DB-Schema **v18**: `Transactions` um `accountId`, `toAccountId`, `lastPostedMonth` erweitert (additive Migration). Neuer `RecurringPoster`-Service (idempotente Auto-Buchung). `flutter analyze`: 0 Issues · 301 Tests grün.
+
+---
+
 ## v0.7.13 (2026-06-18) — Wartung: Abhängigkeiten modernisiert
 
 ### Technik
