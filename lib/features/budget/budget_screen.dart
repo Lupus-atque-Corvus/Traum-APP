@@ -568,7 +568,7 @@ class _DonutChartCard extends ConsumerWidget {
                           final cat = entry.value;
                           return PieChartSectionData(
                             value: cat.amount,
-                            color: categoryColor(cat.category.id),
+                            color: colorForCategory(cat.category, entry.key),
                             radius: 40,
                             showTitle: false,
                             borderSide: BorderSide(
@@ -598,7 +598,7 @@ class _DonutChartCard extends ConsumerWidget {
                       final percent = total > 0
                           ? (cat.amount / total * 100).round()
                           : 0;
-                      final color = categoryColor(cat.category.id);
+                      final color = colorForCategory(cat.category, entry.key);
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 7),
                         child: Row(children: [
@@ -709,7 +709,7 @@ class _KategorieListeCard extends ConsumerWidget {
                     final cat = entry.value;
                     final ratio = total > 0 ? cat.amount / total : 0.0;
                     final percent = (ratio * 100).round();
-                    final color = categoryColor(cat.category.id);
+                    final color = colorForCategory(cat.category, entry.key);
 
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 16),

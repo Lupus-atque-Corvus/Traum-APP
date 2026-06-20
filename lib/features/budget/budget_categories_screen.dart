@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
+import 'budget_category_colors.dart';
 import 'widgets/icon_picker_grid.dart';
 
 class BudgetCategoriesScreen extends ConsumerWidget {
@@ -193,6 +194,7 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
   String _selectedIconName = 'category';
   bool _isExpense = true;
   bool _saving = false;
+  int? _color;
 
   bool get _isEditing => widget.category != null;
 
@@ -207,6 +209,7 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
       }
       _selectedIconName = cat.emoji ?? 'category';
       _isExpense = cat.isExpense;
+      _color = cat.color;
     }
   }
 
@@ -234,7 +237,7 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
             emoji: Value(_selectedIconName),
             isExpense: Value(_isExpense),
             monthlyLimit: Value(limit),
-            color: Value(cat.color),
+            color: Value(_color),
           ),
         );
       } else {
@@ -244,7 +247,7 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
             emoji: Value(_selectedIconName),
             isExpense: Value(_isExpense),
             monthlyLimit: Value(limit),
-            color: const Value(null),
+            color: Value(_color),
           ),
         );
       }
@@ -302,6 +305,24 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
             selectedIconName: _selectedIconName,
             onSelected: (name) => setState(() => _selectedIconName = name),
           ),
+          const SizedBox(height: 12),
+          Wrap(spacing: 8, children: [
+            for (final col in kBudgetCategoryColors)
+              GestureDetector(
+                onTap: () => setState(() => _color = col.toARGB32()),
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: col,
+                    shape: BoxShape.circle,
+                    border: _color == col.toARGB32()
+                        ? Border.all(color: Colors.white, width: 2)
+                        : null,
+                  ),
+                ),
+              ),
+          ]),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,

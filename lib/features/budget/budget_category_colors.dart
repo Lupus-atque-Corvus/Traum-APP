@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../data/database/traum_database.dart';
+
 const List<Color> kBudgetCategoryColors = [
   Color(0xFFFF6B3D), // coralOrange — Wohnen
   Color(0xFF3DD68C), // mintGreen   — Lebensmittel
@@ -13,3 +15,6 @@ const List<Color> kBudgetCategoryColors = [
 
 Color categoryColor(int index) =>
     kBudgetCategoryColors[index % kBudgetCategoryColors.length];
+
+Color colorForCategory(BudgetCategory cat, int index) =>
+    cat.color != null ? Color(cat.color!) : categoryColor(index);
