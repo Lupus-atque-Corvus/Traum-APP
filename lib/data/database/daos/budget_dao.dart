@@ -153,4 +153,8 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
         .fold(0.0, (s, t) => s + t.amount);
     return income - expenses;
   }
+
+  Future<void> setLastPostedMonth(int id, String? month) =>
+      (update(transactions)..where((t) => t.id.equals(id)))
+          .write(TransactionsCompanion(lastPostedMonth: Value(month)));
 }
