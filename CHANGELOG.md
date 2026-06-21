@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.7.16 (2026-06-21) — Budget-Tab: UI-Redesign
+
+### Neu
+
+- **Neue Hero-Card** auf der Budget-Hauptansicht: „Verfügbar diesen Monat" groß, Tag-/Prognose-Zeile, drei Mini-Kacheln (Einnahmen · Ausgaben · Sparquote) und ein integrierter **Gesamtsaldo-Footer mit Mini-Sparkline** und Δ%-Anzeige. Die bisherige separate Gesamtsaldo-Karte ist darin aufgegangen.
+- **Quick-Action-Chips** direkt unter der Hero-Card (Sparziele · Transaktionen · Wiederkehrend · Schulden) statt verstecktem Overflow-Menü.
+- **Soll-Tempo-Marker** auf jedem Budget-Balken (vertikale Linie = erwarteter Stand nach Tag im Monat) plus **„ÜBER"-Badge** und „noch / + X €" bei Überschreitung.
+- **Verbergen = echter Weichzeichner:** Ein Tipp blurt jetzt wirklich **alle** Beträge des Tabs (Hero, Kacheln, Budget-Zeilen, Konten, Transaktionen) über einen gemeinsamen `HiddenAmount`-Baustein.
+- **Statistik:** neue Tabelle „Monatliche Übersicht" (Einnahmen/Ausgaben/Bilanz der letzten 6 Monate).
+- **Schulden:** Gesamt-Hero oben (offene Summe + offen/beglichen-Zähler). **Wiederkehrend:** Zusammenfassung monatlicher Einnahmen vs. Ausgaben oben.
+
+### Verbesserung
+
+- **Schnell-Eintrag** übersichtlicher: Template-Chips mit Bolt-Icon, „Wiederkehrend" und „Als Vorlage speichern" als klar sichtbare Schalter, Betragsfarbe je Typ.
+- **Transaktionsliste:** Monats-Header (Großschreibung + Monatssumme) und Chevrons auf den Zeilen.
+- **Kategorien:** farbiger Icon-Container und Typ-Badge (Ausgabe/Einnahme) je Zeile.
+- **FAB** unten rechts; einheitliche Transfer-Farbe (Cyan) im ganzen Tab.
+
+### Technik
+
+- Reines UI-Redesign (keine Schema-Änderung, Schema bleibt v18). Neuer `HiddenAmount`-Baustein. `flutter analyze`: 0 Issues · 301 Tests grün.
+
+---
+
 ## v0.7.15 (2026-06-21) — Konten: echter Wert + bearbeitbar
 
 ### Behoben

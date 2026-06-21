@@ -67,6 +67,9 @@ class BudgetCategoriesScreen extends ConsumerWidget {
                 const Divider(height: 1, color: TraumColors.surfaceVariant),
             itemBuilder: (_, i) {
               final cat = cats[i];
+              final catColor = cat.color != null
+                  ? Color(cat.color!)
+                  : TraumColors.amberGold;
               return Dismissible(
                 key: ValueKey(cat.id),
                 direction: DismissDirection.endToStart,
@@ -91,7 +94,7 @@ class BudgetCategoriesScreen extends ConsumerWidget {
                     width: 42,
                     height: 42,
                     decoration: BoxDecoration(
-                      color: TraumColors.surfaceVariant,
+                      color: catColor.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Center(
@@ -108,25 +111,42 @@ class BudgetCategoriesScreen extends ConsumerWidget {
                       fontSize: 14,
                     ),
                   ),
-                  subtitle: Text(
-                    cat.isExpense ? 'Ausgabe' : 'Einnahme',
-                    style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackgroundMuted,
-                      fontSize: 12,
-                    ),
-                  ),
-                  trailing: cat.monthlyLimit != null
-                      ? Text(
-                          '${cat.monthlyLimit!.toStringAsFixed(0)} $currency / Mo.',
+                  subtitle: Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Row(children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: cat.isExpense
+                              ? TraumColors.surfaceVariant
+                              : TraumColors.mintGreenDim,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          cat.isExpense ? 'Ausgabe' : 'Einnahme',
+                          style: TextStyle(
+                            fontFamily: 'DMSans',
+                            fontSize: 9,
+                            color: cat.isExpense
+                                ? TraumColors.onBackgroundMuted
+                                : TraumColors.mintGreen,
+                          ),
+                        ),
+                      ),
+                      if (cat.monthlyLimit != null) ...[
+                        const SizedBox(width: 6),
+                        Text(
+                          'Limit: ${cat.monthlyLimit!.toStringAsFixed(0)} $currency / Mo.',
                           style: const TextStyle(
                             fontFamily: 'DMSans',
-                            color: TraumColors.amberGold,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 9,
+                            color: TraumColors.onBackgroundMuted,
                           ),
-                        )
-                      : null,
+                        ),
+                      ],
+                    ]),
+                  ),
                 ),
               );
             },

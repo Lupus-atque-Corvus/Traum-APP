@@ -29,27 +29,47 @@ class DebtsScreen extends ConsumerWidget {
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),
       body: debts.when(
-        data: (list) => list.isEmpty
-            ? const Center(child: Text('Keine Schulden erfasst',
-                style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')))
-            : ListView.builder(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
-                itemCount: list.length,
-                itemBuilder: (_, i) => _DebtCard(
-                  debt: list[i], currency: currency,
-                  onPay: (amt) {
-                    final rem = (list[i].remainingAmount - amt).clamp(0.0, list[i].originalAmount);
-                    ref.read(budgetDaoProvider).updateDebt(DebtsCompanion(
-                      id: Value(list[i].id),
-                      creditor: Value(list[i].creditor),
-                      originalAmount: Value(list[i].originalAmount),
-                      remainingAmount: Value(rem),
-                      isPaidOff: Value(rem <= 0),
-                    ));
-                  },
-                  onDelete: () => ref.read(budgetDaoProvider).deleteDebt(list[i].id),
-                ),
-              ),
+        data: (list) {
+          if (list.isEmpty) {
+            return const Center(child: Text('Keine Schulden erfasst',
+                style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')));
+          }
+          final totalDebt = list
+              .where((d) => !d.isPaidOff)
+              .fold(0.0, (s, d) => s + d.remainingAmount);
+          final openCount = list.where((d) => !d.isPaidOff).length;
+          final paidCount = list.where((d) => d.isPaidOff).length;
+          return ListView.builder(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+            itemCount: list.length + 1,
+            itemBuilder: (_, i) {
+              if (i == 0) {
+                return _DebtsHero(
+                  totalDebt: totalDebt,
+                  openCount: openCount,
+                  paidCount: paidCount,
+                  currency: currency,
+                );
+              }
+              final debt = list[i - 1];
+              return _DebtCard(
+                debt: debt, currency: currency,
+                onPay: (amt) {
+                  final rem = (debt.remainingAmount - amt)
+                      .clamp(0.0, debt.originalAmount);
+                  ref.read(budgetDaoProvider).updateDebt(DebtsCompanion(
+                    id: Value(debt.id),
+                    creditor: Value(debt.creditor),
+                    originalAmount: Value(debt.originalAmount),
+                    remainingAmount: Value(rem),
+                    isPaidOff: Value(rem <= 0),
+                  ));
+                },
+                onDelete: () => ref.read(budgetDaoProvider).deleteDebt(debt.id),
+              );
+            },
+          );
+        },
         loading: () => const Center(child: CircularProgressIndicator(color: TraumColors.roseRed)),
         error: (_, _) => const SizedBox.shrink(),
       ),
@@ -104,6 +124,51 @@ class DebtsScreen extends ConsumerWidget {
           labelStyle: const TextStyle(fontFamily: 'DMSans', color: TraumColors.onBackgroundMuted, fontSize: 13),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10)));
+}
+
+class _DebtsHero extends StatelessWidget {
+  final double totalDebt;
+  final int openCount;
+  final int paidCount;
+  final String currency;
+  const _DebtsHero({
+    required this.totalDebt,
+    required this.openCount,
+    required this.paidCount,
+    required this.currency,
+  });
+
+  @override
+  Widget build(BuildContext context) => Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: TraumColors.roseRed.withValues(alpha: 0.07),
+          borderRadius: BorderRadius.circular(TraumRadius.card),
+          border: Border.all(
+              color: TraumColors.roseRed.withValues(alpha: 0.2)),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Text('Offene Schulden gesamt',
+              style: TextStyle(
+                  fontSize: 9,
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans')),
+          const SizedBox(height: 2),
+          Text('${fmtAmount(totalDebt)} $currency',
+              style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: TraumColors.roseRed,
+                  fontFamily: 'DMSans')),
+          const SizedBox(height: 2),
+          Text('$openCount offen · $paidCount beglichen',
+              style: const TextStyle(
+                  fontSize: 9,
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans')),
+        ]),
+      );
 }
 
 class _DebtCard extends StatelessWidget {

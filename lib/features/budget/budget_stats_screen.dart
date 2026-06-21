@@ -7,6 +7,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'budget_helpers.dart';
 
 class BudgetStatsScreen extends ConsumerWidget {
   const BudgetStatsScreen({super.key});
@@ -208,7 +209,128 @@ class _StatsBody extends StatelessWidget {
             ),
           ),
         ],
+        const SizedBox(height: 16),
+        _MonthlyTableCard(monthlyData: monthlyData, currency: currency),
       ],
+    );
+  }
+}
+
+class _MonthlyTableCard extends StatelessWidget {
+  final List<_MonthData> monthlyData;
+  final String currency;
+
+  const _MonthlyTableCard(
+      {required this.monthlyData, required this.currency});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final monthShort = [
+      l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
+      l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
+      l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
+      l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
+    ];
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: TraumColors.surface,
+        borderRadius: BorderRadius.circular(TraumRadius.card),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Monatliche Übersicht',
+              style: TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14)),
+          const SizedBox(height: 8),
+          const _TableRow(
+            month: '',
+            income: 'Einnahmen',
+            expense: 'Ausgaben',
+            balance: 'Bilanz',
+            isHeader: true,
+          ),
+          for (final m in monthlyData.reversed.take(6))
+            _TableRow(
+              month: monthShort[m.month.month - 1],
+              income: fmtAmount(m.income),
+              expense: fmtAmount(m.expense),
+              balance: '${m.income - m.expense < 0 ? '−' : ''}'
+                  '${fmtAmount(m.income - m.expense)}',
+              isPositive: m.income >= m.expense,
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TableRow extends StatelessWidget {
+  final String month;
+  final String income;
+  final String expense;
+  final String balance;
+  final bool isHeader;
+  final bool isPositive;
+
+  const _TableRow({
+    required this.month,
+    required this.income,
+    required this.expense,
+    required this.balance,
+    this.isHeader = false,
+    this.isPositive = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final baseColor = isHeader
+        ? TraumColors.onBackgroundSubtle
+        : TraumColors.onBackgroundMuted;
+    TextStyle cell(Color color) => TextStyle(
+          fontFamily: 'DMSans',
+          fontSize: 11,
+          fontWeight: isHeader ? FontWeight.w600 : FontWeight.w400,
+          color: color,
+        );
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(children: [
+        Expanded(
+          flex: 2,
+          child: Text(month,
+              style: cell(isHeader
+                  ? baseColor
+                  : TraumColors.onBackground)),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(income,
+              textAlign: TextAlign.right,
+              style: cell(isHeader ? baseColor : TraumColors.mintGreen)),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(expense,
+              textAlign: TextAlign.right,
+              style: cell(isHeader ? baseColor : TraumColors.roseRed)),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(balance,
+              textAlign: TextAlign.right,
+              style: cell(isHeader
+                  ? baseColor
+                  : isPositive
+                      ? TraumColors.mintGreen
+                      : TraumColors.roseRed)),
+        ),
+      ]),
     );
   }
 }

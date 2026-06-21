@@ -28,22 +28,55 @@ class RecurringScreen extends ConsumerWidget {
         ),
       ),
       body: defs.when(
-        data: (list) => list.isEmpty
-            ? const Center(
-                child: Text(
-                  'Keine wiederkehrenden Buchungen',
-                  style: TextStyle(
-                    color: TraumColors.onBackgroundMuted,
-                    fontFamily: 'DMSans',
-                  ),
+        data: (list) {
+          if (list.isEmpty) {
+            return const Center(
+              child: Text(
+                'Keine wiederkehrenden Buchungen',
+                style: TextStyle(
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
                 ),
-              )
-            : ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: list.length,
-                separatorBuilder: (_, _) =>
-                    const Divider(height: 1, color: TraumColors.surfaceVariant),
-                itemBuilder: (_, i) {
+              ),
+            );
+          }
+          final totalIncome = list
+              .where((d) => d.type == 'income')
+              .fold(0.0, (s, d) => s + d.amount);
+          final totalExpense = list
+              .where((d) => d.type != 'income')
+              .fold(0.0, (s, d) => s + d.amount);
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                child: Row(children: [
+                  Expanded(
+                    child: _RecurringSummaryTile(
+                      label: 'Monatliche Einnahmen',
+                      amount: totalIncome,
+                      currency: currency,
+                      color: TraumColors.mintGreen,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _RecurringSummaryTile(
+                      label: 'Monatliche Ausgaben',
+                      amount: totalExpense,
+                      currency: currency,
+                      color: TraumColors.roseRed,
+                    ),
+                  ),
+                ]),
+              ),
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: list.length,
+                  separatorBuilder: (_, _) =>
+                      const Divider(height: 1, color: TraumColors.surfaceVariant),
+                  itemBuilder: (_, i) {
                   final d = list[i];
                   final income = d.type == 'income';
                   return ListTile(
@@ -88,8 +121,12 @@ class RecurringScreen extends ConsumerWidget {
                       ],
                     ),
                   );
-                },
+                  },
+                ),
               ),
+            ],
+          );
+        },
         loading: () => const Center(
           child: CircularProgressIndicator(color: TraumColors.amberGold),
         ),
@@ -97,4 +134,41 @@ class RecurringScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+class _RecurringSummaryTile extends StatelessWidget {
+  final String label;
+  final double amount;
+  final String currency;
+  final Color color;
+  const _RecurringSummaryTile({
+    required this.label,
+    required this.amount,
+    required this.currency,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: TraumColors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withValues(alpha: 0.3)),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(label,
+              style: const TextStyle(
+                  fontSize: 11,
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans')),
+          const SizedBox(height: 4),
+          Text('${fmtAmount(amount)} $currency',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: color,
+                  fontFamily: 'DMSans')),
+        ]),
+      );
 }

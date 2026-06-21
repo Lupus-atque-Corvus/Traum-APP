@@ -151,17 +151,18 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('${monthNames[month - 1]} $year',
+                                  Text('${monthNames[month - 1]} $year'.toUpperCase(),
                                       style: const TextStyle(
                                           color: TraumColors.amberGold,
                                           fontFamily: 'DMSans',
                                           fontWeight: FontWeight.w700,
-                                          fontSize: 13)),
-                                  Text('${fmtAmount(monthTotal)} $currency',
+                                          fontSize: 11,
+                                          letterSpacing: 0.6)),
+                                  Text('−${fmtAmount(monthTotal)} $currency',
                                       style: const TextStyle(
                                           color: TraumColors.onBackgroundMuted,
                                           fontFamily: 'DMSans',
-                                          fontSize: 12)),
+                                          fontSize: 10)),
                                 ],
                               ),
                             ),
@@ -309,13 +310,21 @@ class _TxTile extends StatelessWidget {
                       fontFamily: 'DMSans',
                       fontSize: 11),
                 ),
-                trailing: Text(
-                  '${fmtAmount(transaction.amount)} $currency',
-                  style: const TextStyle(
-                      color: TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '${fmtAmount(transaction.amount)} $currency',
+                      style: const TextStyle(
+                          color: TraumColors.onBackgroundMuted,
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14),
+                    ),
+                    const SizedBox(width: 2),
+                    const Icon(Icons.chevron_right_rounded,
+                        size: 16, color: TraumColors.onBackgroundSubtle),
+                  ],
                 ),
               )
             : ListTile(
@@ -347,13 +356,23 @@ class _TxTile extends StatelessWidget {
                   style: const TextStyle(
                       color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 11),
                 ),
-                trailing: Text(
-                  '${isIncome ? '+' : '-'}${fmtAmount(transaction.amount)} $currency',
-                  style: TextStyle(
-                      color: isIncome ? TraumColors.mintGreen : TraumColors.roseRed,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '${isIncome ? '+' : '-'}${fmtAmount(transaction.amount)} $currency',
+                      style: TextStyle(
+                          color: isIncome
+                              ? TraumColors.mintGreen
+                              : TraumColors.roseRed,
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14),
+                    ),
+                    const SizedBox(width: 2),
+                    const Icon(Icons.chevron_right_rounded,
+                        size: 16, color: TraumColors.onBackgroundSubtle),
+                  ],
                 ),
               ),
       ),

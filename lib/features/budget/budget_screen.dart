@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/navigation/routes.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import 'budget_category_colors.dart';
@@ -13,6 +14,7 @@ import 'budget_providers.dart';
 import 'quick_entry_bottom_sheet.dart';
 import 'widgets/accounts_card.dart';
 import 'widgets/budget_overview_card.dart';
+import 'widgets/hidden_amount.dart';
 import 'widgets/trend_bar_chart.dart';
 
 class BudgetScreen extends ConsumerWidget {
@@ -29,7 +31,7 @@ class BudgetScreen extends ConsumerWidget {
             child: SizedBox(height: MediaQuery.of(context).padding.top + 8),
           ),
           const SliverToBoxAdapter(child: _BudgetHeaderCard()),
-          const SliverToBoxAdapter(child: _GesamtsaldoCard()),
+          const SliverToBoxAdapter(child: _QuickActionChips()),
           const SliverToBoxAdapter(child: _KontenCard()),
           const SliverToBoxAdapter(child: _BudgetUebersichtCard()),
           const SliverToBoxAdapter(child: _DonutChartCard()),
@@ -66,7 +68,7 @@ class BudgetScreen extends ConsumerWidget {
                   fontSize: 15)),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
@@ -84,126 +86,161 @@ class _BudgetHeaderCard extends ConsumerWidget {
     final visible = ref.watch(budgetBalanceVisibleProvider);
     final currency = ref.watch(currencySymbolProvider);
 
-    return _Card(
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 2, 16, 9),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [TraumColors.surfaceElevated, TraumColors.surface],
+        ),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+            color: TraumColors.amberGold.withValues(alpha: 0.18), width: 1),
+      ),
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _NavBtn(
-                  icon: Icons.chevron_left,
-                  onTap: () => ref
-                      .read(selectedBudgetMonthProvider.notifier)
-                      .state = DateTime(month.year, month.month - 1),
-                ),
-                Text(_monthYear(month),
-                    style: _style(17, FontWeight.w700)),
-                _NavBtn(
-                  icon: Icons.chevron_right,
-                  onTap: () => ref
-                      .read(selectedBudgetMonthProvider.notifier)
-                      .state = DateTime(month.year, month.month + 1),
-                ),
-              ],
-            ),
-            const SizedBox(height: 18),
-            Text('Verfügbares Guthaben',
-                style: _style(
-                    12, FontWeight.w400, TraumColors.onBackgroundMuted)),
-            const SizedBox(height: 8),
-            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              summary.when(
-                data: (s) => Text(
-                  visible
-                      ? '${s.balance < 0 ? '−' : ''}${_fmt(s.balance)} $currency'
-                      : '•••• $currency',
-                  style: _style(
-                    36,
-                    FontWeight.w700,
-                    s.balance >= 0
-                        ? TraumColors.mintGreen
-                        : TraumColors.roseRed,
-                  ),
-                ),
-                loading: () => Text('— $currency',
-                    style: _style(
-                        36, FontWeight.w700, TraumColors.onBackgroundMuted)),
-                error: (_, _) => const SizedBox.shrink(),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Monatsnavigation
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _NavBtn(
+                icon: Icons.chevron_left,
+                onTap: () => ref
+                    .read(selectedBudgetMonthProvider.notifier)
+                    .state = DateTime(month.year, month.month - 1),
               ),
+              Text(_monthYear(month), style: _style(16, FontWeight.w700)),
+              _NavBtn(
+                icon: Icons.chevron_right,
+                onTap: () => ref
+                    .read(selectedBudgetMonthProvider.notifier)
+                    .state = DateTime(month.year, month.month + 1),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          // Verfügbar + Verbergen-Pill
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Verfügbar diesen Monat',
+                  style: _style(
+                      11, FontWeight.w400, TraumColors.onBackgroundMuted)),
               const Spacer(),
               GestureDetector(
                 onTap: () => ref
                     .read(budgetBalanceVisibleProvider.notifier)
                     .state = !visible,
-                child: Icon(
-                  visible
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  color: TraumColors.onBackgroundMuted,
-                  size: 22,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: TraumColors.surfaceVariant,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Icon(
+                      visible
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      color: TraumColors.onBackgroundMuted,
+                      size: 11,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(visible ? 'Verbergen' : 'Anzeigen',
+                        style: _style(10, FontWeight.w600,
+                            TraumColors.onBackgroundMuted)),
+                  ]),
                 ),
               ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          summary.when(
+            data: (s) => HiddenAmount(
+              child: Text(
+                '${s.balance < 0 ? '−' : ''}${_fmt(s.balance)} $currency',
+                style: _style(
+                  34,
+                  FontWeight.w700,
+                  s.balance >= 0
+                      ? TraumColors.mintGreen
+                      : TraumColors.roseRed,
+                ),
+              ),
+            ),
+            loading: () => Text('— $currency',
+                style: _style(
+                    34, FontWeight.w700, TraumColors.onBackgroundMuted)),
+            error: (_, _) => const SizedBox.shrink(),
+          ),
+          const SizedBox(height: 3),
+          summary.when(
+            data: (s) => _prognoseRow(s, month, currency),
+            loading: () => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
+          ),
+          const SizedBox(height: 10),
+          // Einnahmen / Ausgaben / Sparquote
+          summary.when(
+            data: (s) => Row(children: [
+              _MiniStat(
+                dotColor: TraumColors.mintGreen,
+                label: 'Einnahmen',
+                value: '${_fmt(s.income)} $currency',
+                valueColor: TraumColors.mintGreen,
+              ),
+              const SizedBox(width: 5),
+              _MiniStat(
+                dotColor: TraumColors.roseRed,
+                label: 'Ausgaben',
+                value: '${_fmt(s.expenses)} $currency',
+                valueColor: TraumColors.roseRed,
+              ),
+              const SizedBox(width: 5),
+              _MiniStat(
+                dotColor: TraumColors.amberGold,
+                label: 'Sparquote',
+                value: s.income > 0
+                    ? '${((s.income - s.expenses) / s.income * 100).toStringAsFixed(0)} %'
+                    : '0 %',
+                valueColor: TraumColors.amberGold,
+              ),
             ]),
-            const SizedBox(height: 20),
-            Container(
-              height: 1,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  Colors.transparent,
-                  TraumColors.amberGold.withValues(alpha: 0.7),
-                  TraumColors.coralOrange.withValues(alpha: 0.5),
-                  Colors.transparent,
-                ]),
-              ),
-            ),
-            const SizedBox(height: 16),
-            summary.when(
-              data: (s) => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _Metric(
-                    icon: Icons.arrow_downward_rounded,
-                    iconColor: TraumColors.mintGreen,
-                    value: '${_fmt(s.income)} $currency',
-                    valueColor: TraumColors.mintGreen,
-                    label: 'Einnahmen',
-                  ),
-                  _Metric(
-                    icon: Icons.arrow_upward_rounded,
-                    iconColor: TraumColors.roseRed,
-                    value: '${_fmt(s.expenses)} $currency',
-                    valueColor: TraumColors.roseRed,
-                    label: 'Ausgaben',
-                  ),
-                  _Metric(
-                    icon: Icons.savings_outlined,
-                    iconColor: TraumColors.amberGold,
-                    value: s.income > 0
-                        ? '${((s.income - s.expenses) / s.income * 100).toStringAsFixed(0)}%'
-                        : '0%',
-                    valueColor: TraumColors.amberGold,
-                    label: 'Gespart',
-                  ),
-                ],
-              ),
-              loading: () => const SizedBox(height: 48),
-              error: (_, _) => const SizedBox.shrink(),
-            ),
-            const SizedBox(height: 14),
-            summary.when(
-              data: (s) {
-                final text = _prognose(s, month);
-                if (text.isEmpty) return const SizedBox.shrink();
-                return Text(text,
-                    style: _style(
-                        12, FontWeight.w400, TraumColors.onBackgroundMuted));
-              },
-              loading: () => const SizedBox.shrink(),
-              error: (_, _) => const SizedBox.shrink(),
-            ),
-          ]),
+            loading: () => const SizedBox(height: 48),
+            error: (_, _) => const SizedBox.shrink(),
+          ),
+          const SizedBox(height: 10),
+          // Gesamtsaldo-Footer
+          const _GesamtsaldoFooter(),
+        ],
+      ),
     );
+  }
+
+  Widget _prognoseRow(BudgetSummary s, DateTime month, String currency) {
+    final now = DateTime.now();
+    if (now.month != month.month || now.year != month.year) {
+      return const SizedBox.shrink();
+    }
+    final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
+    if (now.day < 5) {
+      return Text('Tag ${now.day} von $daysInMonth',
+          style: _style(10, FontWeight.w400, TraumColors.onBackgroundMuted));
+    }
+    final daily = s.expenses / now.day;
+    final forecast = s.balance - daily * (daysInMonth - now.day);
+    return Row(children: [
+      Text('Tag ${now.day} von $daysInMonth · Prognose ',
+          style: _style(10, FontWeight.w400, TraumColors.onBackgroundMuted)),
+      HiddenAmount(
+        child: Text('~${_fmt(forecast)} $currency übrig',
+            style: _style(10, FontWeight.w600, TraumColors.onBackground)),
+      ),
+    ]);
   }
 
   String _monthYear(DateTime d) {
@@ -213,273 +250,257 @@ class _BudgetHeaderCard extends ConsumerWidget {
     ];
     return '${m[d.month - 1]} ${d.year}';
   }
-
-  String _prognose(BudgetSummary s, DateTime month) {
-    final now = DateTime.now();
-    if (now.month != month.month || now.year != month.year) return '';
-    if (now.day < 5) return '';
-    final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
-    final daily = s.expenses / now.day;
-    final forecast = s.balance - daily * (daysInMonth - now.day);
-    return 'Prognose: Bei aktuellem Tempo hast du am Monatsende ~${_fmt(forecast)} übrig.';
-  }
 }
 
-// ─── 2. Gesamtsaldo Card ──────────────────────────────────────────────────────
+// ─── Gesamtsaldo-Footer (in Hero integriert) ──────────────────────────────────
 
-class _GesamtsaldoCard extends ConsumerWidget {
-  const _GesamtsaldoCard();
+class _GesamtsaldoFooter extends ConsumerWidget {
+  const _GesamtsaldoFooter();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final visible = ref.watch(budgetBalanceVisibleProvider);
     final balance = ref.watch(totalAccountBalanceProvider);
     final change = ref.watch(monthlyBalanceChangeProvider);
     final month = ref.watch(selectedBudgetMonthProvider);
-    final spots = ref
-        .watch(dailyBalanceSpotsProvider((month.year, month.month)));
+    final spots =
+        ref.watch(dailyBalanceSpotsProvider((month.year, month.month)));
     final currency = ref.watch(currencySymbolProvider);
 
-    return _Card(
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(children: [
-              Text('Gesamtsaldo', style: _style(16, FontWeight.w600)),
-              const SizedBox(width: 8),
-              GestureDetector(
-                onTap: () => ref
-                    .read(budgetBalanceVisibleProvider.notifier)
-                    .state = !visible,
-                child: Icon(
-                  visible
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  color: TraumColors.onBackgroundMuted,
-                  size: 18,
-                ),
-              ),
-              const Spacer(),
-              PopupMenuButton<String>(
-                icon: const Icon(Icons.more_horiz,
-                    color: TraumColors.onBackgroundMuted, size: 20),
-                color: TraumColors.surfaceVariant,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
-                onSelected: (value) {
-                  switch (value) {
-                    case 'savings':
-                      context.go('/budget/savings');
-                      break;
-                    case 'transactions':
-                      context.go('/budget/transactions');
-                      break;
-                    case 'recurring':
-                      context.go('/budget/recurring');
-                      break;
-                    case 'debts':
-                      context.go('/budget/debts');
-                      break;
-                    case 'toggle':
-                      ref
-                          .read(budgetBalanceVisibleProvider.notifier)
-                          .state = !visible;
-                      break;
-                  }
-                },
-                itemBuilder: (_) => [
-                  _menuItem('savings', Icons.savings_outlined, 'Sparziele'),
-                  _menuItem('transactions', Icons.receipt_long_outlined,
-                      'Alle Transaktionen'),
-                  _menuItem('recurring', Icons.repeat_rounded, 'Wiederkehrend'),
-                  _menuItem('debts', Icons.credit_card_outlined, 'Schulden'),
-                  _menuItem(
-                      'toggle',
-                      visible
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      visible ? 'Saldo ausblenden' : 'Saldo einblenden'),
-                ],
-              ),
-            ]),
-            const SizedBox(height: 14),
-            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              balance.when(
-                data: (b) => Text(
-                  visible
-                      ? '${b < 0 ? '−' : ''}$currency${_fmt(b)}'
-                      : '$currency ••••',
-                  style: _style(30, FontWeight.w700),
-                ),
-                loading: () => Text('$currency —',
-                    style: _style(
-                        30, FontWeight.w700, TraumColors.onBackgroundMuted)),
-                error: (_, _) => const SizedBox.shrink(),
-              ),
-              const SizedBox(width: 10),
-              change.when(
-                data: (c) {
-                  if (c == null) return const SizedBox.shrink();
-                  final pos = c >= 0;
-                  final color =
-                      pos ? TraumColors.mintGreen : TraumColors.roseRed;
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8),
+    return Container(
+      padding: const EdgeInsets.only(top: 10),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: Colors.white.withValues(alpha: 0.07)),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Gesamtsaldo · alle Konten',
+                  style: _style(
+                      9, FontWeight.w400, TraumColors.onBackgroundMuted)),
+              const SizedBox(height: 1),
+              Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                balance.when(
+                  data: (b) => HiddenAmount(
+                    child: Text(
+                      '${b < 0 ? '−' : ''}${_fmt(b)} $currency',
+                      style: _style(15, FontWeight.w700),
                     ),
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(
-                          pos
-                              ? Icons.arrow_upward
-                              : Icons.arrow_downward,
-                          color: color,
-                          size: 11),
-                      const SizedBox(width: 2),
-                      Text(
-                        '${pos ? '+' : ''}${c.toStringAsFixed(1)}%',
-                        style: _style(12, FontWeight.w600, color),
+                  ),
+                  loading: () => Text('— $currency',
+                      style: _style(
+                          15, FontWeight.w700, TraumColors.onBackgroundMuted)),
+                  error: (_, _) => const SizedBox.shrink(),
+                ),
+                const SizedBox(width: 6),
+                change.when(
+                  data: (c) {
+                    if (c == null) return const SizedBox.shrink();
+                    final pos = c >= 0;
+                    final color =
+                        pos ? TraumColors.mintGreen : TraumColors.roseRed;
+                    return HiddenAmount(
+                      child: Text(
+                        '${pos ? '▲' : '▼'} ${c.abs().toStringAsFixed(1)} %',
+                        style: _style(9, FontWeight.w600, color),
                       ),
-                    ]),
-                  );
-                },
-                loading: () => const SizedBox.shrink(),
-                error: (_, _) => const SizedBox.shrink(),
-              ),
-            ]),
-            const SizedBox(height: 2),
-            Text('vs. letzter Monat',
-                style: _style(
-                    12, FontWeight.w400, TraumColors.onBackgroundMuted)),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: 130,
-              child: spots.when(
-                data: (s) {
-                  if (s.isEmpty || s.every((p) => p.y == 0)) {
-                    return Center(
-                      child: Text('Noch keine Transaktionen',
-                          style: _style(12, FontWeight.w400,
-                              TraumColors.onBackgroundSubtle)),
                     );
-                  }
-                  final minY = s.map((p) => p.y).reduce(min);
-                  final maxY = s.map((p) => p.y).reduce(max);
-                  final padding = (maxY - minY) * 0.15;
-
-                  return LineChart(LineChartData(
-                    gridData: const FlGridData(show: false),
-                    borderData: FlBorderData(show: false),
-                    minY: minY - padding,
-                    maxY: maxY + padding,
-                    titlesData: FlTitlesData(
-                      topTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false)),
-                      rightTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false)),
-                      leftTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          reservedSize: 44,
-                          getTitlesWidget: (v, _) => Text(
-                            v >= 1000
-                                ? '${(v / 1000).toStringAsFixed(0)}k $currency'
-                                : '${v.toInt()} $currency',
-                            style: _style(9, FontWeight.w400,
-                                TraumColors.onBackgroundSubtle),
-                          ),
-                        ),
-                      ),
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          getTitlesWidget: (v, _) {
-                            final day = v.toInt() + 1;
-                            if (day != 1 &&
-                                day % 7 != 0 &&
-                                day != s.length) {
-                              return const SizedBox.shrink();
-                            }
-                            const abbrs = [
-                              'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
-                              'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'
-                            ];
-                            return Text(
-                              '$day. ${abbrs[month.month - 1]}',
-                              style: _style(9, FontWeight.w400,
-                                  TraumColors.onBackgroundSubtle),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    lineTouchData: LineTouchData(
-                      touchTooltipData: LineTouchTooltipData(
-                        getTooltipColor: (_) =>
-                            TraumColors.surfaceVariant,
-                        tooltipBorderRadius: BorderRadius.circular(10),
-                        getTooltipItems: (spots) => spots
-                            .map((sp) => LineTooltipItem(
-                                  '${sp.y.toStringAsFixed(0)} $currency',
-                                  _style(12, FontWeight.w600),
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: s,
-                        isCurved: true,
-                        curveSmoothness: 0.3,
-                        color: TraumColors.mintGreen,
-                        barWidth: 2,
-                        dotData: FlDotData(
-                          getDotPainter: (spot, _, _, index) {
-                            if (index != s.length - 1) {
-                              return FlDotCirclePainter(
-                                radius: 0,
-                                color: Colors.transparent,
-                                strokeColor: Colors.transparent,
-                                strokeWidth: 0,
-                              );
-                            }
-                            return FlDotCirclePainter(
-                              radius: 5,
-                              color: TraumColors.mintGreen,
-                              strokeColor: TraumColors.background,
-                              strokeWidth: 2,
-                            );
-                          },
-                        ),
-                        belowBarData: BarAreaData(
-                          show: true,
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              TraumColors.mintGreen
-                                  .withValues(alpha: 0.25),
-                              TraumColors.mintGreen
-                                  .withValues(alpha: 0.0),
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ));
-                },
-                loading: () => const Center(
-                  child: CircularProgressIndicator(
-                      color: TraumColors.mintGreen),
+                  },
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, _) => const SizedBox.shrink(),
                 ),
-                error: (_, _) => const SizedBox.shrink(),
-              ),
+              ]),
+            ],
+          ),
+          SizedBox(
+            width: 68,
+            height: 26,
+            child: spots.when(
+              data: (s) => _MiniSparkline(spots: s),
+              loading: () => const SizedBox.shrink(),
+              error: (_, _) => const SizedBox.shrink(),
             ),
-          ]),
+          ),
+        ],
+      ),
     );
   }
+}
+
+class _MiniSparkline extends StatelessWidget {
+  final List<FlSpot> spots;
+  const _MiniSparkline({required this.spots});
+
+  @override
+  Widget build(BuildContext context) {
+    if (spots.isEmpty || spots.every((p) => p.y == 0)) {
+      return const SizedBox.shrink();
+    }
+    final minY = spots.map((p) => p.y).reduce(min);
+    final maxY = spots.map((p) => p.y).reduce(max);
+    final pad = (maxY - minY) * 0.15;
+    return LineChart(LineChartData(
+      gridData: const FlGridData(show: false),
+      borderData: FlBorderData(show: false),
+      titlesData: const FlTitlesData(show: false),
+      lineTouchData: const LineTouchData(enabled: false),
+      minY: minY - pad,
+      maxY: maxY + pad,
+      lineBarsData: [
+        LineChartBarData(
+          spots: spots,
+          isCurved: true,
+          curveSmoothness: 0.3,
+          color: TraumColors.mintGreen,
+          barWidth: 1.8,
+          dotData: FlDotData(
+            getDotPainter: (spot, _, _, index) => index == spots.length - 1
+                ? FlDotCirclePainter(
+                    radius: 2.5,
+                    color: TraumColors.mintGreen,
+                    strokeWidth: 0,
+                    strokeColor: Colors.transparent,
+                  )
+                : FlDotCirclePainter(
+                    radius: 0,
+                    color: Colors.transparent,
+                    strokeWidth: 0,
+                    strokeColor: Colors.transparent,
+                  ),
+          ),
+        ),
+      ],
+    ));
+  }
+}
+
+// ─── Quick-Action-Chips ───────────────────────────────────────────────────────
+
+class _QuickActionChips extends StatelessWidget {
+  const _QuickActionChips();
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Row(children: [
+        _QuickChip(
+          label: 'Sparziele',
+          icon: Icons.layers_rounded,
+          color: TraumColors.amberGold,
+          onTap: () => context.push(Routes.savings),
+        ),
+        const SizedBox(width: 6),
+        _QuickChip(
+          label: 'Transaktionen',
+          icon: Icons.receipt_long_rounded,
+          color: TraumColors.cyanBlue,
+          onTap: () => context.push(Routes.transactionList),
+        ),
+        const SizedBox(width: 6),
+        _QuickChip(
+          label: 'Wiederkehrend',
+          icon: Icons.repeat_rounded,
+          color: TraumColors.indigoBlue,
+          onTap: () => context.push(Routes.recurring),
+        ),
+        const SizedBox(width: 6),
+        _QuickChip(
+          label: 'Schulden',
+          icon: Icons.shield_rounded,
+          color: TraumColors.roseRed,
+          onTap: () => context.push(Routes.debts),
+        ),
+      ]),
+    );
+  }
+}
+
+class _QuickChip extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+  const _QuickChip({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
+          decoration: BoxDecoration(
+            color: TraumColors.surface,
+            borderRadius: BorderRadius.circular(11),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+          ),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Icon(icon, color: color, size: 14),
+            const SizedBox(width: 5),
+            Text(label, style: _style(11, FontWeight.w600)),
+          ]),
+        ),
+      );
+}
+
+class _MiniStat extends StatelessWidget {
+  final Color dotColor;
+  final String label;
+  final String value;
+  final Color valueColor;
+  const _MiniStat({
+    required this.dotColor,
+    required this.label,
+    required this.value,
+    required this.valueColor,
+  });
+
+  @override
+  Widget build(BuildContext context) => Expanded(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
+          decoration: BoxDecoration(
+            color: TraumColors.background,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                Container(
+                  width: 5,
+                  height: 5,
+                  decoration:
+                      BoxDecoration(color: dotColor, shape: BoxShape.circle),
+                ),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(label,
+                      style: _style(
+                          9, FontWeight.w400, TraumColors.onBackgroundMuted),
+                      overflow: TextOverflow.ellipsis),
+                ),
+              ]),
+              const SizedBox(height: 2),
+              HiddenAmount(
+                child: Text(value,
+                    style: _style(12, FontWeight.w700, valueColor),
+                    overflow: TextOverflow.ellipsis),
+              ),
+            ],
+          ),
+        ),
+      );
 }
 
 // ─── 3. Konten Card ───────────────────────────────────────────────────────────
@@ -577,9 +598,11 @@ class _DonutChartCard extends ConsumerWidget {
                         }).toList(),
                       )),
                       Column(mainAxisSize: MainAxisSize.min, children: [
-                        Text('$currency${_fmtShort(total)}',
-                            style: _style(15, FontWeight.w700),
-                            textAlign: TextAlign.center),
+                        HiddenAmount(
+                          child: Text('$currency${_fmtShort(total)}',
+                              style: _style(15, FontWeight.w700),
+                              textAlign: TextAlign.center),
+                        ),
                         Text('Gesamt',
                             style: _style(10, FontWeight.w400,
                                 TraumColors.onBackgroundMuted),
@@ -614,8 +637,10 @@ class _DonutChartCard extends ConsumerWidget {
                                 style: _style(11, FontWeight.w500),
                                 overflow: TextOverflow.ellipsis),
                           ),
-                          Text('$currency${_fmtShort(cat.amount)}',
-                              style: _style(11, FontWeight.w600)),
+                          HiddenAmount(
+                            child: Text('$currency${_fmtShort(cat.amount)}',
+                                style: _style(11, FontWeight.w600)),
+                          ),
                           const SizedBox(width: 4),
                           SizedBox(
                             width: 28,
@@ -752,8 +777,10 @@ class _KategorieListeCard extends ConsumerWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text('$currency${_fmt(cat.amount)}',
-                                style: _style(13, FontWeight.w600)),
+                            HiddenAmount(
+                              child: Text('$currency${_fmt(cat.amount)}',
+                                  style: _style(13, FontWeight.w600)),
+                            ),
                             Text('$percent%',
                                 style: _style(11, FontWeight.w400,
                                     TraumColors.onBackgroundMuted)),
@@ -846,10 +873,13 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                     final i = entry.key;
                     final tx = entry.value;
                     final isIncome = tx.type == 'income';
+                    final isTransfer = tx.type == 'transfer';
                     final amountColor = isIncome
                         ? TraumColors.mintGreen
-                        : TraumColors.onBackground;
-                    final prefix = isIncome ? '+' : '−';
+                        : isTransfer
+                            ? TraumColors.cyanBlue
+                            : TraumColors.onBackground;
+                    final prefix = isIncome ? '+' : (isTransfer ? '' : '−');
                     final catColor = _catColor(tx.tx.categoryId);
 
                     return Column(children: [
@@ -872,16 +902,28 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                         subtitle: Text(tx.categoryName,
                             style: _style(12, FontWeight.w400,
                                 TraumColors.onBackgroundMuted)),
-                        trailing: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('$prefix$currency${_fmt(tx.amount.abs())}',
-                                style: _style(
-                                    14, FontWeight.w700, amountColor)),
-                            Text(_dateLabel(tx.date),
-                                style: _style(12, FontWeight.w400,
-                                    TraumColors.onBackgroundMuted)),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                HiddenAmount(
+                                  child: Text(
+                                      '$prefix$currency${_fmt(tx.amount.abs())}',
+                                      style: _style(
+                                          14, FontWeight.w700, amountColor)),
+                                ),
+                                Text(_dateLabel(tx.date),
+                                    style: _style(12, FontWeight.w400,
+                                        TraumColors.onBackgroundMuted)),
+                              ],
+                            ),
+                            const SizedBox(width: 2),
+                            const Icon(Icons.chevron_right_rounded,
+                                size: 16,
+                                color: TraumColors.onBackgroundSubtle),
                           ],
                         ),
                         onTap: () => context
@@ -976,31 +1018,6 @@ class _NavBtn extends StatelessWidget {
         onTap: onTap,
         child: Icon(icon, color: TraumColors.onBackground, size: 24),
       );
-}
-
-class _Metric extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String value;
-  final Color valueColor;
-  final String label;
-  const _Metric({
-    required this.icon,
-    required this.iconColor,
-    required this.value,
-    required this.valueColor,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) => Column(children: [
-        Icon(icon, color: iconColor, size: 16),
-        const SizedBox(height: 4),
-        Text(value, style: _style(14, FontWeight.w700, valueColor)),
-        Text(label,
-            style:
-                _style(11, FontWeight.w400, TraumColors.onBackgroundMuted)),
-      ]);
 }
 
 String _fmt(double v) => v

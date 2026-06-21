@@ -7,6 +7,7 @@ import '../../../core/providers/preferences_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../budget_helpers.dart';
 import '../budget_providers.dart';
+import 'hidden_amount.dart';
 
 class BudgetOverviewCard extends ConsumerWidget {
   const BudgetOverviewCard({super.key});
@@ -95,6 +96,10 @@ class _BudgetCategoryRow extends StatelessWidget {
                 ? Color(cat.category.color!)
                 : TraumColors.amberGold;
     final percent = (cat.ratio * 100).toStringAsFixed(0);
+    final remaining = cat.budgetLimit - cat.spent;
+    final now = DateTime.now();
+    final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    final pacingRatio = (now.day / daysInMonth).clamp(0.0, 1.0);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
@@ -118,55 +123,125 @@ class _BudgetCategoryRow extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: Text(
-                cat.name,
-                style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w500,
-                  color: TraumColors.onBackground,
-                  fontSize: 14,
+              child: Row(children: [
+                Flexible(
+                  child: Text(
+                    cat.name,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w500,
+                      color: TraumColors.onBackground,
+                      fontSize: 14,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
+                if (cat.isOverBudget) ...[
+                  const SizedBox(width: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 5, vertical: 1),
+                    decoration: BoxDecoration(
+                      color: TraumColors.roseRed.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text(
+                      'ÜBER',
+                      style: TextStyle(
+                        fontFamily: 'DMSans',
+                        fontSize: 9,
+                        fontWeight: FontWeight.w700,
+                        color: TraumColors.roseRed,
+                      ),
+                    ),
+                  ),
+                ],
+              ]),
             ),
+            const SizedBox(width: 8),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  '$currency${fmtAmount(cat.spent)} von $currency${fmtAmount(cat.budgetLimit)}',
-                  style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackgroundMuted,
-                    fontSize: 12,
-                  ),
-                ),
-                Row(children: [
-                  Text(
-                    '$percent%',
-                    style: TextStyle(
+                HiddenAmount(
+                  child: Text(
+                    '$currency${fmtAmount(cat.spent)} von $currency${fmtAmount(cat.budgetLimit)}',
+                    style: const TextStyle(
                       fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600,
-                      color: barColor,
+                      color: TraumColors.onBackgroundMuted,
                       fontSize: 12,
                     ),
                   ),
-                  if (cat.isOverBudget) ...[
-                    const SizedBox(width: 4),
-                    const Icon(Icons.warning_amber_rounded,
-                        color: TraumColors.roseRed, size: 14),
-                  ],
-                ]),
+                ),
+                HiddenAmount(
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Text(
+                      '$percent%',
+                      style: TextStyle(
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                        color: barColor,
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      cat.isOverBudget
+                          ? '+$currency${fmtAmount(remaining.abs())}'
+                          : 'noch $currency${fmtAmount(remaining)}',
+                      style: TextStyle(
+                        fontFamily: 'DMSans',
+                        fontSize: 11,
+                        color: cat.isOverBudget
+                            ? TraumColors.roseRed
+                            : TraumColors.onBackgroundMuted,
+                      ),
+                    ),
+                  ]),
+                ),
               ],
             ),
           ]),
           const SizedBox(height: 6),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: cat.ratio,
-              minHeight: 6,
-              backgroundColor: TraumColors.surfaceVariant,
-              valueColor: AlwaysStoppedAnimation(barColor),
-            ),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final width = constraints.maxWidth;
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: TraumColors.surfaceVariant,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                  FractionallySizedBox(
+                    widthFactor: cat.ratio.clamp(0.0, 1.0),
+                    child: Container(
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: barColor,
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                    ),
+                  ),
+                  // Soll-Tempo-Marker
+                  Positioned(
+                    left: (width * pacingRatio - 1)
+                        .clamp(0.0, width - 2),
+                    top: -2,
+                    bottom: -2,
+                    child: Container(
+                      width: 2,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.55),
+                        borderRadius: BorderRadius.circular(1),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ],
       ),

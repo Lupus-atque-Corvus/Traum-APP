@@ -301,14 +301,22 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                             }),
                             onLongPress: () => ref.read(budgetDaoProvider).deleteTemplate(t.id),
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                               decoration: BoxDecoration(
-                                color: TraumColors.surface,
+                                color: TraumColors.amberGold.withValues(alpha: 0.08),
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(color: TraumColors.amberGold.withValues(alpha: 0.4)),
                               ),
-                              child: Text(t.name, style: const TextStyle(
-                                  fontFamily: 'DMSans', color: TraumColors.onBackground, fontSize: 13)),
+                              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                const Icon(Icons.bolt_rounded,
+                                    size: 12, color: TraumColors.amberGold),
+                                const SizedBox(width: 4),
+                                Text(t.name, style: const TextStyle(
+                                    fontFamily: 'DMSans',
+                                    color: TraumColors.amberGold,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12)),
+                              ]),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -359,11 +367,11 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                       ? '0,00 $currency'
                       : '$_numpadValue $currency',
                   style: TextStyle(
-                    color: _type == 'expense'
-                        ? TraumColors.roseRed
-                        : _type == 'income'
-                            ? TraumColors.mintGreen
-                            : TraumColors.cyanBlue,
+                    color: _type == 'income'
+                        ? TraumColors.mintGreen
+                        : _type == 'transfer'
+                            ? TraumColors.cyanBlue
+                            : TraumColors.onBackground,
                     fontFamily: 'DMSans',
                     fontWeight: FontWeight.w700,
                     fontSize: 36,
@@ -675,71 +683,79 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
               const SizedBox(height: 12),
 
               // Save as template
-              Row(
-                children: [
-                  Checkbox(
-                    value: _saveAsTemplate,
-                    onChanged: (v) =>
-                        setState(() => _saveAsTemplate = v ?? false),
-                    activeColor: TraumColors.amberGold,
+              SwitchListTile.adaptive(
+                value: _saveAsTemplate,
+                onChanged: (v) => setState(() => _saveAsTemplate = v),
+                title: const Text(
+                  'Als Vorlage speichern',
+                  style: TextStyle(
+                    fontFamily: 'DMSans',
+                    fontSize: 13,
+                    color: TraumColors.onBackground,
                   ),
-                  const Text(
-                    'Als Vorlage speichern:',
-                    style: TextStyle(
-                      color: TraumColors.onBackgroundMuted,
+                ),
+                secondary: const Icon(Icons.bookmark_add_rounded,
+                    color: TraumColors.onBackgroundMuted, size: 18),
+                activeThumbColor: TraumColors.amberGold,
+                dense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
+              if (_saveAsTemplate)
+                TextField(
+                  controller: _templateNameCtrl,
+                  style: const TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                    fontSize: 13,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Vorlagen-Name...',
+                    hintStyle: const TextStyle(
+                      color: TraumColors.onBackgroundSubtle,
                       fontFamily: 'DMSans',
                       fontSize: 13,
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  if (_saveAsTemplate)
-                    Expanded(
-                      child: TextField(
-                        controller: _templateNameCtrl,
-                        style: const TextStyle(
-                          color: TraumColors.onBackground,
-                          fontFamily: 'DMSans',
-                          fontSize: 13,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'Name...',
-                          hintStyle: const TextStyle(
-                            color: TraumColors.onBackgroundSubtle,
-                            fontFamily: 'DMSans',
-                            fontSize: 13,
-                          ),
-                          filled: true,
-                          fillColor: TraumColors.surface,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 8,
-                          ),
-                          isDense: true,
-                        ),
-                      ),
+                    filled: true,
+                    fillColor: TraumColors.surface,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
                     ),
-                ],
-              ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 8,
+                    ),
+                    isDense: true,
+                  ),
+                ),
 
               // Recurring toggle (income/expense only)
-              if (_type != 'transfer')
-                Row(children: [
-                  Checkbox(
-                    value: _recurring,
-                    onChanged: (v) => setState(() => _recurring = v ?? false),
-                    activeColor: TraumColors.amberGold,
+              if (_type != 'transfer') ...[
+                SwitchListTile.adaptive(
+                  value: _recurring,
+                  onChanged: (v) => setState(() => _recurring = v),
+                  title: const Text(
+                    'Monatlich wiederkehrend',
+                    style: TextStyle(
+                      fontFamily: 'DMSans',
+                      fontSize: 13,
+                      color: TraumColors.onBackground,
+                    ),
                   ),
-                  const Text('Monatlich wiederkehrend am',
-                      style: TextStyle(
-                          fontFamily: 'DMSans',
-                          color: TraumColors.onBackgroundMuted,
-                          fontSize: 13)),
-                  const SizedBox(width: 8),
-                  if (_recurring)
+                  secondary: const Icon(Icons.repeat_rounded,
+                      color: TraumColors.onBackgroundMuted, size: 18),
+                  activeThumbColor: TraumColors.amberGold,
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                if (_recurring)
+                  Row(children: [
+                    const Text('Am Tag des Monats:',
+                        style: TextStyle(
+                            fontFamily: 'DMSans',
+                            color: TraumColors.onBackgroundMuted,
+                            fontSize: 13)),
+                    const SizedBox(width: 8),
                     DropdownButton<int>(
                       value: _recurringDay,
                       dropdownColor: TraumColors.surfaceVariant,
@@ -753,7 +769,8 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                       onChanged: (v) =>
                           setState(() => _recurringDay = v ?? 1),
                     ),
-                ]),
+                  ]),
+              ],
               const SizedBox(height: 16),
 
               // Save button

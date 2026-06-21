@@ -11,6 +11,7 @@ import '../../../core/theme/radius.dart';
 import '../../../data/database/traum_database.dart';
 import '../budget_helpers.dart';
 import '../budget_providers.dart';
+import 'hidden_amount.dart';
 
 class AccountsCard extends ConsumerWidget {
   const AccountsCard({super.key});
@@ -191,13 +192,15 @@ class _AccountRow extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(
-              '${negative ? '-' : ''}$currency${fmtAmount(balance.abs())}',
-              style: TextStyle(
-                fontFamily: 'DMSans',
-                fontWeight: FontWeight.w700,
-                color: balanceColor,
-                fontSize: 14,
+            HiddenAmount(
+              child: Text(
+                '${negative ? '-' : ''}$currency${fmtAmount(balance.abs())}',
+                style: TextStyle(
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w700,
+                  color: balanceColor,
+                  fontSize: 14,
+                ),
               ),
             ),
             if (account.isPrimary)
