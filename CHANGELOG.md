@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.7.17 (2026-06-22) — Budget-Tab: Feinschliff & Korrekturen
+
+### Neu
+
+- **Überlauf-Indikator** am Budget-Balken: bei Überschreitung füllt sich der Balken bis 100 %, bekommt eine eckige rechte Kante und einen roten Auslauf-Gradienten als Hinweis auf das Über-Budget.
+- **Wiederkehrende Buchungen bearbeiten:** jede Zeile hat jetzt einen blauen Stift-Button, der ein Bearbeiten-Sheet öffnet (Beschreibung, Betrag, Tag des Monats); der Löschen-Button ist als rundes Icon vereinheitlicht.
+- **Sticky Monats-Pille:** der Titel „Budget" scrollt weg, während die Monats-Navigation oben angeheftet bleibt.
+
+### Verbesserung
+
+- **Soll-Tempo-Marker** ist breiter und kräftiger mit weichem Glow, dadurch auf vollen Balken besser erkennbar.
+
+### Korrektur
+
+- **Kategorie-Icons** wurden an mehreren Stellen (Budgetübersicht, Kategorieliste, Schnell-Eintrag, Transaktionsliste/-detail, Statistik) als roher Name angezeigt, wenn ein Icon aus dem Picker gewählt war. Ein gemeinsamer Glyph-Baustein rendert jetzt überall korrekt Icon **oder** Emoji.
+- **Hauptkonto-Eindeutigkeit:** beim Markieren eines neuen Hauptkontos werden alle anderen automatisch entmarkiert, sodass nie zwei Konten gleichzeitig als Hauptkonto gelten (verlässliches Default-Konto bei neuen Buchungen).
+
 ## v0.7.16 (2026-06-21) — Budget-Tab: UI-Redesign
 
 ### Neu

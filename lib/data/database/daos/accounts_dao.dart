@@ -26,8 +26,21 @@ class AccountsDao extends DatabaseAccessor<TraumDatabase>
     return all.fold<double>(0.0, (sum, a) => sum + a.balance);
   }
 
-  Future<void> upsertAccount(AccountsCompanion account) =>
-      into(accounts).insertOnConflictUpdate(account);
+  /// Inserts or updates an account. When the incoming account is flagged as the
+  /// primary account, all other accounts are demoted first so that at most one
+  /// account is ever marked primary (the default account for new bookings).
+  Future<void> upsertAccount(AccountsCompanion account) async {
+    final makesPrimary = account.isPrimary.present && account.isPrimary.value;
+    if (!makesPrimary) {
+      await into(accounts).insertOnConflictUpdate(account);
+      return;
+    }
+    await transaction(() async {
+      await (update(accounts)..where((a) => a.isPrimary.equals(true)))
+          .write(const AccountsCompanion(isPrimary: Value(false)));
+      await into(accounts).insertOnConflictUpdate(account);
+    });
+  }
 
   Future<void> deleteAccount(int id) =>
       (delete(accounts)..where((a) => a.id.equals(id))).go();
