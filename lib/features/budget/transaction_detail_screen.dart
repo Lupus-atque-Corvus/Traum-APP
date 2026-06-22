@@ -9,6 +9,7 @@ import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import 'budget_category_icons.dart';
 
 class TransactionDetailScreen extends ConsumerStatefulWidget {
   final int transactionId;
@@ -277,7 +278,7 @@ class _TransactionDetailScreenState
                               ...cats.map((c) => DropdownMenuItem(
                                     value: c.id,
                                     child: Text(
-                                        '${c.emoji ?? ''} ${c.name}'.trim()),
+                                        '${budgetCategoryEmojiPrefix(c.emoji)}${c.name}'.trim()),
                                   )),
                             ],
                             onChanged: (v) =>
@@ -520,7 +521,7 @@ class _TransactionDetailScreenState
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    '${cat.emoji ?? ''} ${cat.name}'.trim(),
+                    '${budgetCategoryEmojiPrefix(cat.emoji)}${cat.name}'.trim(),
                     style: const TextStyle(
                         color: TraumColors.onBackgroundMuted,
                         fontFamily: 'DMSans',

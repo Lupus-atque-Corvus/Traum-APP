@@ -5,6 +5,7 @@ import '../../../core/components/traum_card.dart';
 import '../../../core/navigation/routes.dart';
 import '../../../core/providers/preferences_provider.dart';
 import '../../../core/theme/colors.dart';
+import '../budget_category_icons.dart';
 import '../budget_helpers.dart';
 import '../budget_providers.dart';
 import 'hidden_amount.dart';
@@ -115,10 +116,8 @@ class _BudgetCategoryRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
-                child: Text(
-                  cat.emoji,
-                  style: const TextStyle(fontSize: 16),
-                ),
+                child: budgetCategoryGlyph(cat.emoji,
+                    color: barColor, size: 18),
               ),
             ),
             const SizedBox(width: 10),
@@ -221,21 +220,52 @@ class _BudgetCategoryRow extends StatelessWidget {
                       height: 5,
                       decoration: BoxDecoration(
                         color: barColor,
-                        borderRadius: BorderRadius.circular(3),
+                        borderRadius: cat.isOverBudget
+                            ? const BorderRadius.horizontal(
+                                left: Radius.circular(3))
+                            : BorderRadius.circular(3),
                       ),
                     ),
                   ),
-                  // Soll-Tempo-Marker
+                  // Überlauf-Indikator (nur wenn > 100 %)
+                  if (cat.isOverBudget)
+                    Positioned(
+                      right: 0,
+                      top: -2,
+                      bottom: -2,
+                      child: Container(
+                        width: 10,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              TraumColors.roseRed,
+                              TraumColors.roseRed.withValues(alpha: 0),
+                            ],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          ),
+                          borderRadius: const BorderRadius.horizontal(
+                              right: Radius.circular(3)),
+                        ),
+                      ),
+                    ),
+                  // Soll-Tempo-Marker (breiter, mit Glow)
                   Positioned(
-                    left: (width * pacingRatio - 1)
-                        .clamp(0.0, width - 2),
-                    top: -2,
-                    bottom: -2,
+                    left: (width * pacingRatio - 1.5)
+                        .clamp(0.0, width - 3),
+                    top: -3,
+                    bottom: -3,
                     child: Container(
-                      width: 2,
+                      width: 3,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.55),
-                        borderRadius: BorderRadius.circular(1),
+                        color: Colors.white.withValues(alpha: 0.9),
+                        borderRadius: BorderRadius.circular(2),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.white.withValues(alpha: 0.35),
+                            blurRadius: 6,
+                          ),
+                        ],
                       ),
                     ),
                   ),

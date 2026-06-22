@@ -55,3 +55,28 @@ IconData iconFromName(String? name) {
   if (name == null) return Icons.category_outlined;
   return kBudgetCategoryIcons[name] ?? Icons.category_outlined;
 }
+
+/// Renders a category glyph from a stored value that may be either a Material
+/// icon name (from the icon picker) or a literal emoji character.
+///
+/// Known icon names render as the mapped [Icon]; anything else (emoji) renders
+/// as [Text]. Falls back to a generic category icon when [value] is empty.
+Widget budgetCategoryGlyph(String? value,
+    {required Color color, double size = 20}) {
+  if (value == null || value.isEmpty) {
+    return Icon(Icons.category_outlined, color: color, size: size);
+  }
+  final iconData = kBudgetCategoryIcons[value];
+  if (iconData != null) {
+    return Icon(iconData, color: color, size: size);
+  }
+  return Text(value, style: TextStyle(fontSize: size * 0.9));
+}
+
+/// Returns an emoji prefix (with trailing space) for inline text labels, or an
+/// empty string when [value] is an icon name (which has no textual glyph).
+String budgetCategoryEmojiPrefix(String? value) {
+  if (value == null || value.isEmpty) return '';
+  if (kBudgetCategoryIcons.containsKey(value)) return '';
+  return '$value ';
+}

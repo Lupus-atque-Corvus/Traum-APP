@@ -30,6 +30,16 @@ class BudgetScreen extends ConsumerWidget {
           SliverToBoxAdapter(
             child: SizedBox(height: MediaQuery.of(context).padding.top + 8),
           ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+              child: Text('Budget', style: _style(24, FontWeight.w700)),
+            ),
+          ),
+          const SliverPersistentHeader(
+            pinned: true,
+            delegate: _MonthPillDelegate(),
+          ),
           const SliverToBoxAdapter(child: _BudgetHeaderCard()),
           const SliverToBoxAdapter(child: _QuickActionChips()),
           const SliverToBoxAdapter(child: _KontenCard()),
@@ -102,26 +112,6 @@ class _BudgetHeaderCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Monatsnavigation
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _NavBtn(
-                icon: Icons.chevron_left,
-                onTap: () => ref
-                    .read(selectedBudgetMonthProvider.notifier)
-                    .state = DateTime(month.year, month.month - 1),
-              ),
-              Text(_monthYear(month), style: _style(16, FontWeight.w700)),
-              _NavBtn(
-                icon: Icons.chevron_right,
-                onTap: () => ref
-                    .read(selectedBudgetMonthProvider.notifier)
-                    .state = DateTime(month.year, month.month + 1),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
           // Verfügbar + Verbergen-Pill
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -243,12 +233,70 @@ class _BudgetHeaderCard extends ConsumerWidget {
     ]);
   }
 
-  String _monthYear(DateTime d) {
-    const m = [
-      'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'
-    ];
-    return '${m[d.month - 1]} ${d.year}';
+}
+
+String _monthYear(DateTime d) {
+  const m = [
+    'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'
+  ];
+  return '${m[d.month - 1]} ${d.year}';
+}
+
+// ─── Sticky Monats-Pille ──────────────────────────────────────────────────────
+
+class _MonthPillDelegate extends SliverPersistentHeaderDelegate {
+  const _MonthPillDelegate();
+
+  @override
+  double get minExtent => 44;
+  @override
+  double get maxExtent => 44;
+  @override
+  bool shouldRebuild(_MonthPillDelegate oldDelegate) => false;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: TraumColors.background,
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: const _MonthPill(),
+    );
+  }
+}
+
+class _MonthPill extends ConsumerWidget {
+  const _MonthPill();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final month = ref.watch(selectedBudgetMonthProvider);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+      decoration: BoxDecoration(
+        color: TraumColors.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        _NavBtn(
+          icon: Icons.chevron_left,
+          onTap: () => ref.read(selectedBudgetMonthProvider.notifier).state =
+              DateTime(month.year, month.month - 1),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Text(_monthYear(month), style: _style(13, FontWeight.w600)),
+        ),
+        _NavBtn(
+          icon: Icons.chevron_right,
+          onTap: () => ref.read(selectedBudgetMonthProvider.notifier).state =
+              DateTime(month.year, month.month + 1),
+        ),
+      ]),
+    );
   }
 }
 
@@ -1036,14 +1084,6 @@ String _fmtShort(double v) {
   return v.toStringAsFixed(0);
 }
 
-Widget _catIcon(String? emojiOrIcon, Color color, double size) {
-  if (emojiOrIcon == null) {
-    return Icon(Icons.category_outlined, color: color, size: size);
-  }
-  final iconData = kBudgetCategoryIcons[emojiOrIcon];
-  if (iconData != null) {
-    return Icon(iconData, color: color, size: size);
-  }
-  return Text(emojiOrIcon, style: TextStyle(fontSize: size * 0.9));
-}
+Widget _catIcon(String? emojiOrIcon, Color color, double size) =>
+    budgetCategoryGlyph(emojiOrIcon, color: color, size: size);
 

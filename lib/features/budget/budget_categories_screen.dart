@@ -6,6 +6,7 @@ import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
 import 'budget_category_colors.dart';
+import 'budget_category_icons.dart';
 import 'widgets/icon_picker_grid.dart';
 
 class BudgetCategoriesScreen extends ConsumerWidget {
@@ -98,8 +99,8 @@ class BudgetCategoriesScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Center(
-                      child: Text(cat.emoji ?? '📦',
-                          style: const TextStyle(fontSize: 20)),
+                      child: budgetCategoryGlyph(cat.emoji,
+                          color: catColor, size: 20),
                     ),
                   ),
                   title: Text(

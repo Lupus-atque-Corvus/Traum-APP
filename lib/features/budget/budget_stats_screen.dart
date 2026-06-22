@@ -7,6 +7,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'budget_category_icons.dart';
 import 'budget_helpers.dart';
 
 class BudgetStatsScreen extends ConsumerWidget {
@@ -171,7 +172,7 @@ class _StatsBody extends StatelessWidget {
                       (c) => c?.id == entry.key,
                       orElse: () => null);
                   final name = cat != null
-                      ? '${cat.emoji ?? ''} ${cat.name}'.trim()
+                      ? '${budgetCategoryEmojiPrefix(cat.emoji)}${cat.name}'.trim()
                       : AppLocalizations.of(context)!.categoryOther;
                   final ratio = totalExpense > 0 ? entry.value / totalExpense : 0.0;
                   return Padding(

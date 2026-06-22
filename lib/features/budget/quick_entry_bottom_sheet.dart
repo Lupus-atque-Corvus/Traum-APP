@@ -12,6 +12,7 @@ import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../data/services/recurring_poster.dart';
 import '../../l10n/app_localizations.dart';
+import 'budget_category_icons.dart';
 import 'budget_providers.dart';
 import 'receipt_scanner.dart';
 import 'widgets/numpad_widget.dart';
@@ -600,9 +601,10 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                cat.emoji ?? '📦',
-                                style: const TextStyle(fontSize: 22),
+                              budgetCategoryGlyph(
+                                cat.emoji,
+                                color: TraumColors.onBackground,
+                                size: 24,
                               ),
                               const SizedBox(height: 2),
                               Text(

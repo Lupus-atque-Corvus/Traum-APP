@@ -8,6 +8,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'budget_category_icons.dart';
 import 'budget_helpers.dart';
 import 'quick_entry_bottom_sheet.dart';
 
@@ -338,7 +339,11 @@ class _TxTile extends StatelessWidget {
                   ),
                   child: Center(
                     child: cat?.emoji != null
-                        ? Text(cat!.emoji!, style: const TextStyle(fontSize: 18))
+                        ? budgetCategoryGlyph(cat!.emoji,
+                            color: isIncome
+                                ? TraumColors.mintGreen
+                                : TraumColors.amberGold,
+                            size: 18)
                         : Icon(
                             isIncome ? Icons.add_rounded : Icons.remove_rounded,
                             color: isIncome ? TraumColors.mintGreen : TraumColors.amberGold,
