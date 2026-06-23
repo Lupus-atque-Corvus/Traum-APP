@@ -500,16 +500,16 @@ class _QuickChip extends StatelessWidget {
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
           decoration: BoxDecoration(
             color: TraumColors.surface,
-            borderRadius: BorderRadius.circular(11),
+            borderRadius: BorderRadius.circular(10),
             border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            Icon(icon, color: color, size: 14),
+            Icon(icon, color: color, size: 12),
             const SizedBox(width: 5),
-            Text(label, style: _style(11, FontWeight.w600)),
+            Text(label, style: _style(10, FontWeight.w600)),
           ]),
         ),
       );
