@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.7.19 (2026-06-23) — Budget-Header: Pille-Position beim Scrollen
+
+### Korrektur
+
+- **Sticky Monats-Pille:** sitzt im angehefteten Zustand (beim Herunterscrollen) jetzt 15px tiefer, damit sie nicht zu weit oben unter der Statusleiste klebt. Im aufgeklappten Zustand bleibt der Titel „Budget" links und blendet beim Scrollen weich aus.
+
 ## v0.7.18 (2026-06-23) — Budget-Tab: Prototyp-Feinschliff
 
 ### Neu

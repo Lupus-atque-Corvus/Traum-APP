@@ -241,22 +241,25 @@ class _BudgetHeaderDelegate extends SliverPersistentHeaderDelegate {
   const _BudgetHeaderDelegate();
 
   @override
-  double get minExtent => 44;
+  double get minExtent => 59;
   @override
-  double get maxExtent => 52;
+  double get maxExtent => 67;
   @override
   bool shouldRebuild(_BudgetHeaderDelegate oldDelegate) => false;
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final progress = (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
     // Titel blendet aus, je mehr gescrollt wird
-    final titleOpacity =
-        (1.0 - shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
+    final titleOpacity = 1.0 - progress;
+    // Beim Einrollen (gepinnt) die Pille 15px nach unten schieben, damit sie
+    // nicht zu weit oben unter der Statusleiste klebt.
+    final topPad = 4.0 + 15.0 * progress;
 
     return Container(
       color: TraumColors.background,
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+      padding: EdgeInsets.fromLTRB(16, topPad, 16, 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
