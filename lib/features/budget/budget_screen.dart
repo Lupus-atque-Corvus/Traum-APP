@@ -241,35 +241,36 @@ class _BudgetHeaderDelegate extends SliverPersistentHeaderDelegate {
   const _BudgetHeaderDelegate();
 
   @override
-  double get minExtent => 59;
+  double get minExtent => 44;
+
   @override
-  double get maxExtent => 67;
+  double get maxExtent => 60; // 16px Spielraum → Titel blendet sanft aus
+
   @override
-  bool shouldRebuild(_BudgetHeaderDelegate oldDelegate) => false;
+  bool shouldRebuild(_BudgetHeaderDelegate old) => false;
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    final progress = (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
-    // Titel blendet aus, je mehr gescrollt wird
-    final titleOpacity = 1.0 - progress;
-    // Beim Einrollen (gepinnt) die Pille 15px nach unten schieben, damit sie
-    // nicht zu weit oben unter der Statusleiste klebt.
-    final topPad = 4.0 + 15.0 * progress;
+    // Titel blendet über 16px Scroll vollständig aus
+    final titleOpacity =
+        (1.0 - shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
 
-    return Container(
-      color: TraumColors.background,
-      padding: EdgeInsets.fromLTRB(16, topPad, 16, 4),
+    return Padding( // ← Padding statt Container — KEIN Hintergrund!
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Titel scrollt weg
+          // Titel scrollt weg (opacity → 0)
           Opacity(
             opacity: titleOpacity,
-            child: Text('Budget', style: _style(24, FontWeight.w700)),
+            child: Text(
+              'Budget',
+              style: _style(20, FontWeight.w700), // ← 20px wie im HTML
+            ),
           ),
           const Spacer(),
-          // Pille bleibt immer sichtbar, rechts ausgerichtet
+          // Pille hat eigenen Hintergrund — schwebt transparent über Content
           const _MonthPill(),
         ],
       ),

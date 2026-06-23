@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.7.20 (2026-06-23) — Budget-Header: schwebende Monats-Pille (HTML-treu)
+
+### Verbesserung
+
+- **Sticky Monats-Pille schwebt jetzt transparent:** Der angeheftete Header hat keinen dunklen Vollbreite-Balken mehr — nur die Pille selbst hat einen Hintergrund (`surface`), der Content scrollt sichtbar dahinter durch (entspricht dem HTML-Prototyp).
+- **Titel „Budget"** ist auf 20px verkleinert (wie im Design) und blendet beim Scrollen über einen längeren Weg (16px) sanfter aus.
+
 ## v0.7.19 (2026-06-23) — Budget-Header: Pille-Position beim Scrollen
 
 ### Korrektur
