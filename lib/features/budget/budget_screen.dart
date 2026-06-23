@@ -30,15 +30,9 @@ class BudgetScreen extends ConsumerWidget {
           SliverToBoxAdapter(
             child: SizedBox(height: MediaQuery.of(context).padding.top + 8),
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-              child: Text('Budget', style: _style(24, FontWeight.w700)),
-            ),
-          ),
           const SliverPersistentHeader(
             pinned: true,
-            delegate: _MonthPillDelegate(),
+            delegate: _BudgetHeaderDelegate(),
           ),
           const SliverToBoxAdapter(child: _BudgetHeaderCard()),
           const SliverToBoxAdapter(child: _QuickActionChips()),
@@ -245,24 +239,39 @@ String _monthYear(DateTime d) {
 
 // ─── Sticky Monats-Pille ──────────────────────────────────────────────────────
 
-class _MonthPillDelegate extends SliverPersistentHeaderDelegate {
-  const _MonthPillDelegate();
+class _BudgetHeaderDelegate extends SliverPersistentHeaderDelegate {
+  const _BudgetHeaderDelegate();
 
   @override
   double get minExtent => 44;
   @override
-  double get maxExtent => 44;
+  double get maxExtent => 52;
   @override
-  bool shouldRebuild(_MonthPillDelegate oldDelegate) => false;
+  bool shouldRebuild(_BudgetHeaderDelegate oldDelegate) => false;
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
+    // Titel blendet aus, je mehr gescrollt wird
+    final titleOpacity =
+        (1.0 - shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
+
     return Container(
       color: TraumColors.background,
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: const _MonthPill(),
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Titel scrollt weg
+          Opacity(
+            opacity: titleOpacity,
+            child: Text('Budget', style: _style(24, FontWeight.w700)),
+          ),
+          const Spacer(),
+          // Pille bleibt immer sichtbar, rechts ausgerichtet
+          const _MonthPill(),
+        ],
+      ),
     );
   }
 }

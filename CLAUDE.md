@@ -1,8 +1,8 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.15+64** · schemaVersion **18**.
-> Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert (Stand v0.7.15).
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.17+66** · schemaVersion **18**.
+> Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert (Stand v0.7.17).
 
 ---
 
@@ -17,7 +17,7 @@
 
 ## Projekt-Fakten (aus dem Code verifiziert)
 - **Name / App-ID:** TRAUM · `de.traum.traum` (Android applicationId + iOS Bundle, beide Plattformen)
-- **Version:** 0.7.15+64 · Drift schemaVersion: 18
+- **Version:** 0.7.17+66 · Drift schemaVersion: 18
 - **Plattformen:** Android (minSdk 26) · iOS (Deployment Target 13.0)
 - **SDK:** Dart ^3.9.2
 - **Datenablage:** ausschließlich lokal — kein Backend, kein Server, keine Internet-Pflicht
@@ -179,5 +179,5 @@ was modernisiert werden sollte. Warte auf meine Bestätigung, bevor du implement
 - Handle: Lupus-atque-Corvus
 
 > Hinweis: Es existiert noch ein älteres, abweichendes Repo (`Android-app-`, v1.2.1). Dieses hier
-> (`Traum-APP`, v0.7.15) ist der aktuelle, weiter entwickelte Stand (19 Module, embedded DM Sans,
+> (`Traum-APP`, v0.7.17) ist der aktuelle, weiter entwickelte Stand (19 Module, embedded DM Sans,
 > Dark hartkodiert, Notes/Diary/Graffiti-Map/Substances vorhanden). Nicht verwechseln.

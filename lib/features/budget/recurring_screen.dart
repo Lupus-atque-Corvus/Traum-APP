@@ -279,6 +279,17 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: TraumColors.surfaceVariant,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
             const Text('Wiederkehrend bearbeiten',
                 style: TextStyle(
                     fontFamily: 'DMSans',

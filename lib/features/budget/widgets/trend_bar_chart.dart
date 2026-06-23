@@ -35,46 +35,51 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
             ),
           ),
           const SizedBox(height: 12),
-          // Period tabs
-          Wrap(
-            spacing: 8,
-            children: TrendPeriod.values.map((p) {
-              final isSelected = p == period;
-              final label = switch (p) {
-                TrendPeriod.week => 'Woche',
-                TrendPeriod.month => 'Monat',
-                TrendPeriod.sixMonths => '6 Monate',
-                TrendPeriod.year => 'Jahr',
-              };
-              return GestureDetector(
-                onTap: () =>
-                    ref.read(selectedTrendPeriodProvider.notifier).state =
-                        p,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? TraumColors.amberGold
-                        : TraumColors.surface,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      color: isSelected
-                          ? Colors.white
-                          : TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontSize: 12,
-                      fontWeight: isSelected
-                          ? FontWeight.w600
-                          : FontWeight.w400,
+          // Period tabs — horizontal scrollbar, kein Umbruch
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: TrendPeriod.values.map((p) {
+                final isSelected = p == period;
+                final label = switch (p) {
+                  TrendPeriod.week => 'Woche',
+                  TrendPeriod.month => 'Monat',
+                  TrendPeriod.sixMonths => '6 Monate',
+                  TrendPeriod.year => 'Jahr',
+                };
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: GestureDetector(
+                    onTap: () =>
+                        ref.read(selectedTrendPeriodProvider.notifier).state =
+                            p,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? TraumColors.amberGold
+                            : TraumColors.surface,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        label,
+                        style: TextStyle(
+                          color: isSelected
+                              ? Colors.white
+                              : TraumColors.onBackgroundMuted,
+                          fontFamily: 'DMSans',
+                          fontSize: 12,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w400,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              );
-            }).toList(),
+                );
+              }).toList(),
+            ),
           ),
           const SizedBox(height: 16),
           barsAsync.when(

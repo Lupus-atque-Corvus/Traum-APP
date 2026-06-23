@@ -73,6 +73,20 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
     return double.tryParse(_numpadValue.replaceAll(',', '.'));
   }
 
+  String _formatDisplay(String raw) {
+    if (raw.isEmpty) return '0,00';
+    if (raw.endsWith(',')) return '$raw—'; // Komma gerade eingegeben
+    if (raw.contains(',')) {
+      final parts = raw.split(',');
+      final euros = parts[0].replaceAllMapped(
+          RegExp(r'(\d{1,3})(?=(\d{3})+$)'), (m) => '${m[1]}.');
+      final cents = parts[1].padRight(2, '0');
+      return '$euros,$cents';
+    }
+    return raw.replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+$)'), (m) => '${m[1]}.');
+  }
+
   void _setDateChip(DateTime date) => setState(() => _date = date);
 
   Future<void> _scanReceipt(ImageSource source) async {
@@ -364,9 +378,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
               // Amount display
               Center(
                 child: Text(
-                  _numpadValue.isEmpty
-                      ? '0,00 $currency'
-                      : '$_numpadValue $currency',
+                  '${_formatDisplay(_numpadValue)} $currency',
                   style: TextStyle(
                     color: _type == 'income'
                         ? TraumColors.mintGreen
