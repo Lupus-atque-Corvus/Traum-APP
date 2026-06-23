@@ -90,13 +90,9 @@ class _BudgetHeaderCard extends ConsumerWidget {
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 2, 16, 9),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [TraumColors.surfaceElevated, TraumColors.surface],
-        ),
+        gradient: TraumColors.gradientHero,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
             color: TraumColors.amberGold.withValues(alpha: 0.18), width: 1),
@@ -220,7 +216,7 @@ class _BudgetHeaderCard extends ConsumerWidget {
           style: _style(10, FontWeight.w400, TraumColors.onBackgroundMuted)),
       HiddenAmount(
         child: Text('~${_fmt(forecast)} $currency übrig',
-            style: _style(10, FontWeight.w600, TraumColors.onBackground)),
+            style: _style(10, FontWeight.w600, TraumColors.textBright)),
       ),
     ]);
   }
@@ -299,7 +295,14 @@ class _MonthPill extends ConsumerWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Text(_monthYear(month), style: _style(13, FontWeight.w600)),
+          child: SizedBox(
+            width: 56,
+            child: Text(
+              _monthYear(month),
+              style: _style(12, FontWeight.w600),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ),
         _NavBtn(
           icon: Icons.chevron_right,
@@ -529,7 +532,7 @@ class _MiniStat extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
           decoration: BoxDecoration(
-            color: TraumColors.background,
+            color: TraumColors.heroInner,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
@@ -792,7 +795,14 @@ class _NavBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
-        child: Icon(icon, color: TraumColors.onBackground, size: 24),
+        child: Container(
+          width: 26,
+          height: 26,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(13),
+          ),
+          child: Icon(icon, color: Colors.white, size: 14),
+        ),
       );
 }
 
