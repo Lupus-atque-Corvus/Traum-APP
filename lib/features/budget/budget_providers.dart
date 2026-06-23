@@ -4,6 +4,16 @@ import 'package:flutter_riverpod/legacy.dart';
 import '../../core/providers/database_provider.dart';
 import '../../data/database/traum_database.dart';
 
+/// Budget-Pacing-Konfiguration (PIXELGENAUE_SPEZIFIKATION §10.5).
+/// Pacing-Marker auf Budget-Balken ein/aus.
+const bool kShowBudgetPacing = true;
+
+/// „Tag X von 30" — Soll-Position = (kBudgetMonthDay / Tage-im-Monat).
+const int kBudgetMonthDay = 21;
+
+double pacingLeftFraction(int daysInMonth) =>
+    (kBudgetMonthDay / daysInMonth).clamp(0.0, 1.0);
+
 // ─── Models ──────────────────────────────────────────────────────────────────
 
 class BudgetSummary {
