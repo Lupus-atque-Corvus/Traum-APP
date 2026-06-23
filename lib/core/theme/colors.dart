@@ -10,10 +10,20 @@ class TraumColors {
   static const Color bottomNav = Color(0xFF12121F);
   static const Color surfaceElevated = Color(0xFF1E1E32);
 
+  // Budget-Spec-spezifische Flächen (PIXELGENAUE_SPEZIFIKATION §0.1)
+  static const Color heroGradA = Color(0xFF1D1D33);   // Hero-Verlauf oben (155°)
+  static const Color heroGradB = Color(0xFF181828);   // Hero-Verlauf unten
+  static const Color heroInner = Color(0xFF15152A);   // Mini-Kacheln in Hero
+  static const Color sheetBg = Color(0xFF161628);      // Add-Sheet-Hintergrund
+  static const Color numKey = Color(0xFF1F1F36);       // Numpad-Ziffern
+  static const Color surfaceHover = Color(0xFF2A2A45); // Numpad Hover
+  static const Color dimBar = Color(0xFF3A3A52);       // Grabber-Handle im Sheet
+
   // Text
   static const Color onBackground = Color(0xFFFFFFFF);
   static const Color onBackgroundMuted = Color(0xFF8888AA);
   static const Color onBackgroundSubtle = Color(0xFF555577);
+  static const Color textBright = Color(0xFFCFCFE0);   // helle Sekundärtexte (Status-Bar, Prognose)
 
   // Akzente Warm
   static const Color coralOrange = Color(0xFFFF6B3D);
@@ -101,6 +111,12 @@ class TraumColors {
     colors: [periodRose, ovulationCyan],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
+  );
+
+  static const LinearGradient gradientHero = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [heroGradA, heroGradB],
   );
 
   // Modul-Farben
