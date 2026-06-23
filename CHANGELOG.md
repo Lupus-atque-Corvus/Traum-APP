@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.7.18 (2026-06-23) — Budget-Tab: Prototyp-Feinschliff
+
+### Neu
+
+- **Kombinierter Sticky-Header:** Titel „Budget" und Monats-Pille stehen jetzt auf einer Zeile; beim Scrollen blendet der Titel aus und nur die rechtsbündige Monats-Navigation bleibt oben angeheftet.
+- **Soll-Legende** im Budgets-Card-Header (kleiner weißer Strich + „Soll") erklärt den Tempo-Marker direkt an Ort und Stelle.
+
+### Verbesserung
+
+- **Schlankerer Hauptscreen:** Donut-Chart und Kategorie-Detailliste sind von der Budget-Hauptansicht entfernt — beides bleibt über „Verwalten ›" bzw. die Statistik erreichbar. Reihenfolge jetzt: Hero · Quick-Chips · Konten · Budgets · Verlauf · Letzte Transaktionen.
+- **Budgets-Card** heißt jetzt „Budgets" (statt „Budgetübersicht") mit „Verwalten ›"-Link in die Kategorienverwaltung.
+- **Schnell-Eintrag:** Beträge werden überall sauber mit zwei Nachkommastellen und Tausenderpunkten angezeigt — in der großen Anzeige **und** im Speichern-Button. Der mittlere Typ-Umschalter („Einnahme") hat jetzt korrekt eckige Ecken.
+- **Verlauf-Card:** Perioden-Tabs sind kompakter und brechen auf schmalen Screens nicht mehr um (horizontal scrollbar).
+- **Wiederkehrend bearbeiten:** Bearbeiten-Sheet hat jetzt einen Drag-Handle am oberen Rand.
+
+### Technik
+
+- Reines UI-Feintuning (keine Schema-Änderung, Schema bleibt v18). Toter Code (Donut-/Kategorie-Karten samt ungenutzter Helfer) entfernt. Release-Signing-Config für Android ergänzt (liest `android/key.properties`, fällt ohne Datei auf Debug-Signing zurück). `flutter analyze`: 0 Issues.
+
 ## v0.7.17 (2026-06-22) — Budget-Tab: Feinschliff & Korrekturen
 
 ### Neu
