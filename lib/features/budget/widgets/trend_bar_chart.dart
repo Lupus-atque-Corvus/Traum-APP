@@ -1,10 +1,31 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/components/components.dart';
 import '../../../core/theme/colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../budget_providers.dart';
+
+// Local card container — same pattern as Tasks 3–4
+class _LocalCard extends StatelessWidget {
+  final Widget child;
+
+  const _LocalCard({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        color: TraumColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.08),
+        ),
+      ),
+      child: child,
+    );
+  }
+}
 
 class TrendBarChart extends ConsumerStatefulWidget {
   const TrendBarChart({super.key});
@@ -21,7 +42,7 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
     final period = ref.watch(selectedTrendPeriodProvider);
     final barsAsync = ref.watch(trendDataProvider(period));
 
-    return TraumCard(
+    return _LocalCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -30,11 +51,11 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
             style: TextStyle(
               color: TraumColors.onBackground,
               fontFamily: 'DMSans',
-              fontWeight: FontWeight.w700,
-              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           // Period tabs — horizontal scrollbar, kein Umbruch
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -59,8 +80,8 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? TraumColors.amberGold
-                            : TraumColors.surface,
-                        borderRadius: BorderRadius.circular(20),
+                            : TraumColors.background,
+                        borderRadius: BorderRadius.circular(11),
                       ),
                       child: Text(
                         label,
@@ -69,10 +90,8 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                               ? Colors.white
                               : TraumColors.onBackgroundMuted,
                           fontFamily: 'DMSans',
-                          fontSize: 11,
-                          fontWeight: isSelected
-                              ? FontWeight.w600
-                              : FontWeight.w500,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -104,7 +123,7 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                       .fold(0.0, (a, b) => a > b ? a : b) *
                   1.2;
               return SizedBox(
-                height: 160,
+                height: 72,
                 child: BarChart(
                   BarChartData(
                     alignment: BarChartAlignment.spaceAround,
@@ -154,7 +173,7 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                                 style: const TextStyle(
                                   color: TraumColors.onBackgroundMuted,
                                   fontFamily: 'DMSans',
-                                  fontSize: 10,
+                                  fontSize: 7,
                                 ),
                               ),
                             );
@@ -171,14 +190,7 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                         sideTitles: SideTitles(showTitles: false),
                       ),
                     ),
-                    gridData: FlGridData(
-                      show: true,
-                      getDrawingHorizontalLine: (_) => const FlLine(
-                        color: TraumColors.surfaceVariant,
-                        strokeWidth: 1,
-                      ),
-                      drawVerticalLine: false,
-                    ),
+                    gridData: const FlGridData(show: false),
                     borderData: FlBorderData(show: false),
                     barGroups: List.generate(bars.length, (i) {
                       final bar = bars[i];
@@ -190,15 +202,17 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                             toY: bar.income,
                             color: TraumColors.mintGreen
                                 .withValues(alpha: isTouched ? 1.0 : 0.7),
-                            width: 8,
-                            borderRadius: BorderRadius.circular(4),
+                            width: 9,
+                            borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(2)),
                           ),
                           BarChartRodData(
                             toY: bar.expenses,
                             color: TraumColors.roseRed
                                 .withValues(alpha: isTouched ? 1.0 : 0.7),
-                            width: 8,
-                            borderRadius: BorderRadius.circular(4),
+                            width: 9,
+                            borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(2)),
                           ),
                         ],
                       );
@@ -230,7 +244,7 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
               _LegendDot(
                   color: TraumColors.mintGreen,
                   label: AppLocalizations.of(context)!.budgetIncome),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12),
               _LegendDot(
                   color: TraumColors.roseRed,
                   label: AppLocalizations.of(context)!.budgetExpenses),
@@ -252,8 +266,8 @@ class _LegendDot extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(children: [
       Container(
-        width: 8,
-        height: 8,
+        width: 6,
+        height: 6,
         decoration: BoxDecoration(color: color, shape: BoxShape.circle),
       ),
       const SizedBox(width: 4),
@@ -262,7 +276,7 @@ class _LegendDot extends StatelessWidget {
         style: const TextStyle(
           color: TraumColors.onBackgroundMuted,
           fontFamily: 'DMSans',
-          fontSize: 11,
+          fontSize: 8,
         ),
       ),
     ]);
