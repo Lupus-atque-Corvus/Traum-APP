@@ -26,23 +26,41 @@ class BudgetOverviewCard extends ConsumerWidget {
         children: [
           Row(children: [
             const Text(
-              'Budgetübersicht',
+              'Budgets',
               style: TextStyle(
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w600,
                 color: TraumColors.onBackground,
-                fontSize: 16,
+                fontSize: 13,
               ),
             ),
             const Spacer(),
-            GestureDetector(
-              onTap: () => context.push(Routes.budgetStats),
-              child: const Text(
-                'Mehr ›',
+            // Soll-Legende (Pacing-Marker Erklärung)
+            Row(children: [
+              Container(
+                width: 10,
+                height: 1.5,
+                color: Colors.white.withValues(alpha: 0.5),
+              ),
+              const SizedBox(width: 3),
+              const Text(
+                'Soll',
                 style: TextStyle(
                   fontFamily: 'DMSans',
+                  fontSize: 8,
+                  color: TraumColors.onBackgroundMuted,
+                ),
+              ),
+            ]),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: () => context.push(Routes.budgetCategories),
+              child: const Text(
+                'Verwalten ›',
+                style: TextStyle(
+                  fontFamily: 'DMSans',
+                  fontSize: 11,
                   color: TraumColors.amberGold,
-                  fontSize: 13,
                 ),
               ),
             ),

@@ -55,7 +55,7 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                             p,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
+                          horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
                         color: isSelected
                             ? TraumColors.amberGold
@@ -69,10 +69,10 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                               ? Colors.white
                               : TraumColors.onBackgroundMuted,
                           fontFamily: 'DMSans',
-                          fontSize: 12,
+                          fontSize: 11,
                           fontWeight: isSelected
                               ? FontWeight.w600
-                              : FontWeight.w400,
+                              : FontWeight.w500,
                         ),
                       ),
                     ),

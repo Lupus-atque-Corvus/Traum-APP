@@ -350,6 +350,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                       isSelected: _type == 'expense',
                       selectedColor: TraumColors.roseRed,
                       isLeft: true,
+                      isRight: false,
                       onTap: () => setState(() => _type = 'expense'),
                     ),
                   ),
@@ -359,6 +360,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                       isSelected: _type == 'income',
                       selectedColor: TraumColors.mintGreen,
                       isLeft: false,
+                      isRight: false,
                       onTap: () => setState(() => _type = 'income'),
                     ),
                   ),
@@ -368,6 +370,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                       isSelected: _type == 'transfer',
                       selectedColor: TraumColors.cyanBlue,
                       isLeft: false,
+                      isRight: true,
                       onTap: () => setState(() => _type = 'transfer'),
                     ),
                   ),
@@ -794,10 +797,10 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                   label: _saving
                       ? l10n.saving
                       : _type == 'expense'
-                          ? '${l10n.budgetAddExpense}  ${_numpadValue.isNotEmpty ? "−$_numpadValue $currency" : ""}'
+                          ? '${l10n.budgetAddExpense}  ${_numpadValue.isNotEmpty ? "−${_formatDisplay(_numpadValue)} $currency" : ""}'
                           : _type == 'income'
-                              ? '${l10n.budgetAddIncome}  ${_numpadValue.isNotEmpty ? "+$_numpadValue $currency" : ""}'
-                              : '⇄ Umbuchung  ${_numpadValue.isNotEmpty ? "$_numpadValue $currency" : ""}',
+                              ? '${l10n.budgetAddIncome}  ${_numpadValue.isNotEmpty ? "+${_formatDisplay(_numpadValue)} $currency" : ""}'
+                              : '⇄ Umbuchung  ${_numpadValue.isNotEmpty ? "${_formatDisplay(_numpadValue)} $currency" : ""}',
                   onPressed: _saving ? null : _save,
                 );
               }),
@@ -817,6 +820,7 @@ class _TypeButton extends StatelessWidget {
   final bool isSelected;
   final Color selectedColor;
   final bool isLeft;
+  final bool isRight;
   final VoidCallback onTap;
 
   const _TypeButton({
@@ -824,6 +828,7 @@ class _TypeButton extends StatelessWidget {
     required this.isSelected,
     required this.selectedColor,
     required this.isLeft,
+    required this.isRight,
     required this.onTap,
   });
 
@@ -844,10 +849,10 @@ class _TypeButton extends StatelessWidget {
             bottomLeft: isLeft
                 ? const Radius.circular(TraumRadius.card)
                 : Radius.zero,
-            topRight: !isLeft
+            topRight: isRight
                 ? const Radius.circular(TraumRadius.card)
                 : Radius.zero,
-            bottomRight: !isLeft
+            bottomRight: isRight
                 ? const Radius.circular(TraumRadius.card)
                 : Radius.zero,
           ),
