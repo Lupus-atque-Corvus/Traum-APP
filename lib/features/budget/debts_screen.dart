@@ -7,6 +7,7 @@ import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
 import 'budget_helpers.dart';
 import 'budget_providers.dart';
+import 'budget_scale.dart';
 import 'widgets/budget_sub_header.dart';
 
 class DebtsScreen extends ConsumerWidget {
@@ -21,7 +22,7 @@ class DebtsScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: TraumColors.roseRed,
         onPressed: () => _showAddSheet(context, ref),
-        child: const Icon(Icons.add_rounded, color: Colors.white, size: 20),
+        child: Icon(Icons.add_rounded, color: Colors.white, size: bs(20)),
       ),
       body: SafeArea(
         child: Column(
@@ -48,7 +49,7 @@ class DebtsScreen extends ConsumerWidget {
                   final openCount = list.where((d) => !d.isPaidOff).length;
                   final paidCount = list.where((d) => d.isPaidOff).length;
                   return ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 80),
+                    padding: EdgeInsets.fromLTRB(bs(12), 0, bs(12), bs(80)),
                     itemCount: list.length + 1,
                     itemBuilder: (_, i) {
                       if (i == 0) {
@@ -220,11 +221,11 @@ class _DebtsHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.only(bottom: 10),
-        padding: const EdgeInsets.all(12),
+        margin: EdgeInsets.only(bottom: bs(10)),
+        padding: EdgeInsets.all(bs(12)),
         decoration: BoxDecoration(
           color: TraumColors.roseRed.withValues(alpha: 0.07),
-          borderRadius: BorderRadius.circular(13),
+          borderRadius: BorderRadius.circular(bs(13)),
           border: Border.all(
             color: TraumColors.roseRed.withValues(alpha: 0.2),
           ),
@@ -240,7 +241,7 @@ class _DebtsHero extends StatelessWidget {
                 fontFamily: 'DMSans',
               ),
             ),
-            const SizedBox(height: 2),
+            SizedBox(height: bs(2)),
             Text(
               '${fmtAmount(totalDebt)} $currency',
               style: const TextStyle(
@@ -250,7 +251,7 @@ class _DebtsHero extends StatelessWidget {
                 fontFamily: 'DMSans',
               ),
             ),
-            const SizedBox(height: 2),
+            SizedBox(height: bs(2)),
             Text(
               '$openCount offen · $paidCount beglichen',
               style: const TextStyle(
@@ -302,21 +303,21 @@ class _DebtCard extends StatelessWidget {
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
+        padding: EdgeInsets.only(right: bs(20)),
         decoration: BoxDecoration(
           color: TraumColors.roseRed.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(bs(15)),
         ),
-        child: const Icon(Icons.delete_outline,
-            color: TraumColors.roseRed, size: 22),
+        child: Icon(Icons.delete_outline,
+            color: TraumColors.roseRed, size: bs(22)),
       ),
       onDismissed: (_) => onDelete(),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 9),
-        padding: const EdgeInsets.all(13),
+        margin: EdgeInsets.only(bottom: bs(9)),
+        padding: EdgeInsets.all(bs(13)),
         decoration: BoxDecoration(
           color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(bs(15)),
           border: Border.all(
             color: debt.isPaidOff
                 ? TraumColors.mintGreen.withValues(alpha: 0.2)
@@ -332,19 +333,19 @@ class _DebtCard extends StatelessWidget {
               children: [
                 // Icon container 38×38, radius 10
                 Container(
-                  width: 38,
-                  height: 38,
+                  width: bs(38),
+                  height: bs(38),
                   decoration: BoxDecoration(
                     color: _accentColor.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(bs(10)),
                   ),
                   child: Icon(
                     _defaultIcon,
-                    size: 16,
+                    size: bs(16),
                     color: _accentColor,
                   ),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: bs(10)),
                 // Name + original amount
                 Expanded(
                   child: Column(
@@ -359,7 +360,7 @@ class _DebtCard extends StatelessWidget {
                           color: TraumColors.onBackground,
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: bs(2)),
                       Text(
                         'Ursprünglich: ${fmtAmount(debt.originalAmount)} $currency',
                         style: const TextStyle(
@@ -371,16 +372,16 @@ class _DebtCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: bs(8)),
                 // Right side: remaining amount OR paid badge
                 debt.isPaidOff
                     ? Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
+                        children: [
                           Icon(Icons.check_circle_rounded,
-                              size: 14, color: TraumColors.mintGreen),
-                          SizedBox(width: 4),
-                          Text(
+                              size: bs(14), color: TraumColors.mintGreen),
+                          SizedBox(width: bs(4)),
+                          const Text(
                             'Bezahlt',
                             style: TextStyle(
                               fontFamily: 'DMSans',
@@ -417,11 +418,11 @@ class _DebtCard extends StatelessWidget {
             ),
             // ── Progress bar ─────────────────────────────────────────────
             if (!debt.isPaidOff) ...[
-              const SizedBox(height: 10),
+              SizedBox(height: bs(10)),
               ClipRRect(
-                borderRadius: BorderRadius.circular(3),
+                borderRadius: BorderRadius.circular(bs(3)),
                 child: SizedBox(
-                  height: 6,
+                  height: bs(6),
                   child: LinearProgressIndicator(
                     value: ratio,
                     backgroundColor: TraumColors.surfaceVariant,
@@ -431,11 +432,11 @@ class _DebtCard extends StatelessWidget {
               ),
               // Overlay the gradient fill on top of the progress track
               Transform.translate(
-                offset: const Offset(0, -6),
+                offset: Offset(0, -bs(6)),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(3),
+                  borderRadius: BorderRadius.circular(bs(3)),
                   child: SizedBox(
-                    height: 6,
+                    height: bs(6),
                     child: LayoutBuilder(
                       builder: (ctx, constraints) => Stack(
                         children: [
@@ -476,11 +477,11 @@ class _DebtCard extends StatelessWidget {
                   GestureDetector(
                     onTap: () => _payDialog(context),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: bs(10), vertical: bs(5)),
                       decoration: BoxDecoration(
                         color: TraumColors.roseRed.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(bs(8)),
                       ),
                       child: const Text(
                         'Rate zahlen',

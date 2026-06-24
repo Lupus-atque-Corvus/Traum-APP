@@ -8,6 +8,7 @@ import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'budget_category_icons.dart';
 import 'budget_helpers.dart';
+import 'budget_scale.dart';
 import 'widgets/budget_sub_header.dart';
 
 // ---------------------------------------------------------------------------
@@ -192,7 +193,7 @@ class _StatsBody extends StatelessWidget {
         donutSpendingByCategory.values.fold(0.0, (a, b) => a + b);
 
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: bs(12), vertical: bs(8)),
       children: [
         // §5.1 Summary cards
         Row(children: [
@@ -205,7 +206,7 @@ class _StatsBody extends StatelessWidget {
               icon: Icons.trending_up_rounded,
             ),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: bs(10)),
           Expanded(
             child: _SummaryCard(
               label: AppLocalizations.of(context)!.totalExpense,
@@ -216,14 +217,14 @@ class _StatsBody extends StatelessWidget {
             ),
           ),
         ]),
-        const SizedBox(height: 12),
+        SizedBox(height: bs(12)),
 
         // §5.2 Monthly bar chart
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(bs(12)),
           decoration: BoxDecoration(
             color: TraumColors.surface,
-            borderRadius: BorderRadius.circular(13),
+            borderRadius: BorderRadius.circular(bs(13)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,20 +237,20 @@ class _StatsBody extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     fontSize: 12),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: bs(12)),
               _MonthlyBarChart(monthlyData: monthlyData, currency: currency),
             ],
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: bs(12)),
 
         // §5.3 Category donut
         if (donutSlices.isNotEmpty) ...[
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(bs(12)),
             decoration: BoxDecoration(
               color: TraumColors.surface,
-              borderRadius: BorderRadius.circular(13),
+              borderRadius: BorderRadius.circular(bs(13)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,7 +263,7 @@ class _StatsBody extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                       fontSize: 12),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: bs(12)),
                 _CategoryDonut(
                     slices: donutSlices,
                     totalExpense: donutMonthTotal,
@@ -270,16 +271,16 @@ class _StatsBody extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: bs(12)),
         ],
 
         // §5.4 Top categories
         if (sortedCats.isNotEmpty) ...[
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(bs(12)),
             decoration: BoxDecoration(
               color: TraumColors.surface,
-              borderRadius: BorderRadius.circular(13),
+              borderRadius: BorderRadius.circular(bs(13)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -292,7 +293,7 @@ class _StatsBody extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                       fontSize: 12),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: bs(10)),
                 ...sortedCats.take(5).map((entry) {
                   final cat = categories.cast<BudgetCategory?>().firstWhere(
                       (c) => c?.id == entry.key,
@@ -304,22 +305,22 @@ class _StatsBody extends StatelessWidget {
                   final color = _kDonutColors[
                       sortedCats.indexOf(entry) % _kDonutColors.length];
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
+                    padding: EdgeInsets.only(bottom: bs(8)),
                     child: Row(
                       children: [
                         Container(
-                          width: 28,
-                          height: 28,
+                          width: bs(28),
+                          height: bs(28),
                           decoration: BoxDecoration(
                             color: color.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(bs(8)),
                           ),
                           child: Center(
                             child: budgetCategoryGlyph(cat?.emoji,
-                                color: color, size: 12),
+                                color: color, size: bs(12)),
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: bs(8)),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -332,23 +333,23 @@ class _StatsBody extends StatelessWidget {
                                       fontSize: 10),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis),
-                              const SizedBox(height: 3),
+                              SizedBox(height: bs(3)),
                               LayoutBuilder(builder: (ctx, constraints) {
                                 return Stack(children: [
                                   Container(
-                                    height: 3,
+                                    height: bs(3),
                                     width: constraints.maxWidth,
                                     decoration: BoxDecoration(
                                       color: TraumColors.surfaceVariant,
-                                      borderRadius: BorderRadius.circular(2),
+                                      borderRadius: BorderRadius.circular(bs(2)),
                                     ),
                                   ),
                                   Container(
-                                    height: 3,
+                                    height: bs(3),
                                     width: constraints.maxWidth * ratio,
                                     decoration: BoxDecoration(
                                       color: color,
-                                      borderRadius: BorderRadius.circular(2),
+                                      borderRadius: BorderRadius.circular(bs(2)),
                                     ),
                                   ),
                                 ]);
@@ -356,9 +357,9 @@ class _StatsBody extends StatelessWidget {
                             ],
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: bs(8)),
                         SizedBox(
-                          width: 40,
+                          width: bs(40),
                           child: Text(
                             '${entry.value.toStringAsFixed(0)} $currency',
                             textAlign: TextAlign.right,
@@ -376,12 +377,12 @@ class _StatsBody extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: bs(12)),
         ],
 
         // §5.5 Monthly table
         _MonthlyTableCard(monthlyData: monthlyData, currency: currency),
-        const SizedBox(height: 16),
+        SizedBox(height: bs(16)),
       ],
     );
   }
@@ -409,14 +410,14 @@ class _CategoryDonut extends StatelessWidget {
       children: [
         // Donut
         SizedBox(
-          width: 100,
-          height: 100,
+          width: bs(100),
+          height: bs(100),
           child: CustomPaint(
             painter: _DonutPainter(slices: slices),
             child: Center(
               child: Container(
-                width: 66,
-                height: 66,
+                width: bs(66),
+                height: bs(66),
                 decoration: const BoxDecoration(
                   color: TraumColors.surface,
                   shape: BoxShape.circle,
@@ -446,7 +447,7 @@ class _CategoryDonut extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 16),
+        SizedBox(width: bs(16)),
         // Legend
         Expanded(
           child: Column(
@@ -454,18 +455,18 @@ class _CategoryDonut extends StatelessWidget {
             children: slices.take(6).map((s) {
               final pct = (s.fraction * 100).toStringAsFixed(0);
               return Padding(
-                padding: const EdgeInsets.only(bottom: 5),
+                padding: EdgeInsets.only(bottom: bs(5)),
                 child: Row(
                   children: [
                     Container(
-                      width: 7,
-                      height: 7,
+                      width: bs(7),
+                      height: bs(7),
                       decoration: BoxDecoration(
                         color: s.color,
                         shape: BoxShape.circle,
                       ),
                     ),
-                    const SizedBox(width: 5),
+                    SizedBox(width: bs(5)),
                     Expanded(
                       child: Text(
                         s.name,
@@ -477,7 +478,7 @@ class _CategoryDonut extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(width: 4),
+                    SizedBox(width: bs(4)),
                     Text(
                       fmtAmount(s.amount),
                       style: const TextStyle(
@@ -486,9 +487,9 @@ class _CategoryDonut extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           fontSize: 10),
                     ),
-                    const SizedBox(width: 4),
+                    SizedBox(width: bs(4)),
                     SizedBox(
-                      width: 22,
+                      width: bs(22),
                       child: Text(
                         '$pct%',
                         textAlign: TextAlign.right,
@@ -522,7 +523,7 @@ class _DonutPainter extends CustomPainter {
 
     final paint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = (size.width - 66) / 2; // ring width
+      ..strokeWidth = (size.width - bs(66)) / 2; // ring width
 
     for (final slice in slices) {
       final sweepAngle =
@@ -566,17 +567,17 @@ class _SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(11),
+      padding: EdgeInsets.all(bs(11)),
       decoration: BoxDecoration(
         color: TraumColors.surface,
-        borderRadius: BorderRadius.circular(13),
+        borderRadius: BorderRadius.circular(bs(13)),
         border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 16),
-          const SizedBox(height: 6),
+          Icon(icon, color: color, size: bs(16)),
+          SizedBox(height: bs(6)),
           Text(
             '${value.toStringAsFixed(2)} $currency',
             style: TextStyle(
@@ -623,18 +624,18 @@ class _MonthlyBarChart extends StatelessWidget {
       l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
     ];
 
-    const bandHeight = 58.0;
+    final bandHeight = bs(58.0);
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: monthlyData.map((m) {
         final incomeH =
-            maxVal > 0 ? (m.income / maxVal) * bandHeight : 2.0;
+            maxVal > 0 ? (m.income / maxVal) * bandHeight : bs(2.0);
         final expenseH =
-            maxVal > 0 ? (m.expense / maxVal) * bandHeight : 2.0;
+            maxVal > 0 ? (m.expense / maxVal) * bandHeight : bs(2.0);
         return Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2),
+            padding: EdgeInsets.symmetric(horizontal: bs(2)),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -643,25 +644,25 @@ class _MonthlyBarChart extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Container(
-                      width: 8,
-                      height: incomeH.clamp(2.0, bandHeight),
+                      width: bs(8),
+                      height: incomeH.clamp(bs(2.0), bandHeight),
                       decoration: BoxDecoration(
                         color: TraumColors.mintGreen,
-                        borderRadius: BorderRadius.circular(3),
+                        borderRadius: BorderRadius.circular(bs(3)),
                       ),
                     ),
-                    const SizedBox(width: 2),
+                    SizedBox(width: bs(2)),
                     Container(
-                      width: 8,
-                      height: expenseH.clamp(2.0, bandHeight),
+                      width: bs(8),
+                      height: expenseH.clamp(bs(2.0), bandHeight),
                       decoration: BoxDecoration(
                         color: TraumColors.roseRed,
-                        borderRadius: BorderRadius.circular(3),
+                        borderRadius: BorderRadius.circular(bs(3)),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: bs(4)),
                 Text(
                   monthShort[m.month.month - 1],
                   style: const TextStyle(
@@ -701,10 +702,10 @@ class _MonthlyTableCard extends StatelessWidget {
     ];
 
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(bs(12)),
       decoration: BoxDecoration(
         color: TraumColors.surface,
-        borderRadius: BorderRadius.circular(13),
+        borderRadius: BorderRadius.circular(bs(13)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -717,7 +718,7 @@ class _MonthlyTableCard extends StatelessWidget {
                 fontWeight: FontWeight.w600,
                 fontSize: 12),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: bs(8)),
           // Header row
           _TableRow(
             month: '',
@@ -788,10 +789,10 @@ class _TableRow extends StatelessWidget {
                 ),
               ),
             ),
-      padding: const EdgeInsets.symmetric(vertical: 5),
+      padding: EdgeInsets.symmetric(vertical: bs(5)),
       child: Row(children: [
         SizedBox(
-          width: 48,
+          width: bs(48),
           child: Text(month, style: cell(textColor)),
         ),
         Expanded(

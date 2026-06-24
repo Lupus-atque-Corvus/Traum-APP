@@ -7,6 +7,7 @@ import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
 import 'budget_helpers.dart';
 import 'budget_providers.dart';
+import 'budget_scale.dart';
 import 'widgets/budget_sub_header.dart';
 
 void _showEditSheet(
@@ -66,7 +67,7 @@ class RecurringScreen extends ConsumerWidget {
                       .where((d) => d.type != 'income')
                       .fold(0.0, (s, d) => s + d.amount);
                   return SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 80),
+                    padding: EdgeInsets.fromLTRB(bs(12), 0, bs(12), bs(80)),
                     child: Column(
                       children: [
                         _SummaryBar(
@@ -77,7 +78,7 @@ class RecurringScreen extends ConsumerWidget {
                         Container(
                           decoration: BoxDecoration(
                             color: TraumColors.surface,
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(bs(14)),
                             border: Border.all(
                               color: Colors.white.withValues(alpha: 0.07),
                             ),
@@ -87,8 +88,8 @@ class RecurringScreen extends ConsumerWidget {
                               for (int i = 0; i < list.length; i++) ...[
                                 if (i > 0)
                                   Divider(
-                                    height: 1,
-                                    thickness: 1,
+                                    height: bs(1),
+                                    thickness: bs(1),
                                     color: Colors.white.withValues(alpha: 0.05),
                                     indent: 0,
                                     endIndent: 0,
@@ -138,11 +139,11 @@ class _SummaryBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+      margin: EdgeInsets.fromLTRB(0, 0, 0, bs(10)),
+      padding: EdgeInsets.symmetric(vertical: bs(10), horizontal: bs(12)),
       decoration: BoxDecoration(
         color: TraumColors.surface,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(bs(12)),
         border: Border.all(
           color: Colors.white.withValues(alpha: 0.07),
         ),
@@ -161,7 +162,7 @@ class _SummaryBar extends StatelessWidget {
                     fontFamily: 'DMSans',
                   ),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: bs(2)),
                 Text(
                   '+${fmtAmount(totalIncome)} $currency',
                   style: const TextStyle(
@@ -175,10 +176,10 @@ class _SummaryBar extends StatelessWidget {
             ),
           ),
           Container(
-            width: 1,
-            height: 28,
+            width: bs(1),
+            height: bs(28),
             color: Colors.white.withValues(alpha: 0.08),
-            margin: const EdgeInsets.symmetric(horizontal: 12),
+            margin: EdgeInsets.symmetric(horizontal: bs(12)),
           ),
           Expanded(
             child: Column(
@@ -192,7 +193,7 @@ class _SummaryBar extends StatelessWidget {
                     fontFamily: 'DMSans',
                   ),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: bs(2)),
                 Text(
                   '−${fmtAmount(totalExpense)} $currency',
                   style: const TextStyle(
@@ -231,24 +232,24 @@ class _RecurringRow extends StatelessWidget {
     final iconData = income ? Icons.south_west_rounded : Icons.repeat_rounded;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 11),
+      padding: EdgeInsets.symmetric(vertical: bs(10), horizontal: bs(11)),
       child: Row(
         children: [
           // Leading icon container 34×34 radius 9 accentColor@0.15
           Container(
-            width: 34,
-            height: 34,
+            width: bs(34),
+            height: bs(34),
             decoration: BoxDecoration(
               color: accentColor.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(9),
+              borderRadius: BorderRadius.circular(bs(9)),
             ),
             child: Icon(
               iconData,
-              size: 14,
+              size: bs(14),
               color: accentColor,
             ),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: bs(10)),
           // Name 11/w600 + interval 9/muted
           Expanded(
             child: Column(
@@ -265,7 +266,7 @@ class _RecurringRow extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: bs(2)),
                 Text(
                   'Jeden ${d.recurringDay ?? d.date.day}. im Monat',
                   style: const TextStyle(
@@ -279,7 +280,7 @@ class _RecurringRow extends StatelessWidget {
           ),
           // Amount 11/w700 margin-right 4
           Padding(
-            padding: const EdgeInsets.only(right: 4),
+            padding: EdgeInsets.only(right: bs(4)),
             child: Text(
               '${income ? '+' : '−'}${fmtAmount(d.amount)} $currency',
               style: TextStyle(
@@ -290,38 +291,38 @@ class _RecurringRow extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 6),
+          SizedBox(width: bs(6)),
           // Edit: 26×26 radius 13 bg indigo@0.1 pencil 11 indigo
           GestureDetector(
             onTap: onEdit,
             child: Container(
-              width: 26,
-              height: 26,
+              width: bs(26),
+              height: bs(26),
               decoration: BoxDecoration(
                 color: TraumColors.indigoBlue.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(13),
+                borderRadius: BorderRadius.circular(bs(13)),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.edit_rounded,
-                size: 11,
+                size: bs(11),
                 color: TraumColors.indigoBlue,
               ),
             ),
           ),
-          const SizedBox(width: 4),
+          SizedBox(width: bs(4)),
           // Delete: 26×26 bg rose@0.1 trash 12 rose
           GestureDetector(
             onTap: onDelete,
             child: Container(
-              width: 26,
-              height: 26,
+              width: bs(26),
+              height: bs(26),
               decoration: BoxDecoration(
                 color: TraumColors.roseRed.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(13),
+                borderRadius: BorderRadius.circular(bs(13)),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.delete_rounded,
-                size: 12,
+                size: bs(12),
                 color: TraumColors.roseRed,
               ),
             ),

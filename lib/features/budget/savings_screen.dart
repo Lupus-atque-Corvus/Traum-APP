@@ -8,6 +8,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'budget_scale.dart';
 import 'widgets/budget_sub_header.dart';
 
 class SavingsScreen extends ConsumerWidget {
@@ -55,7 +56,7 @@ class SavingsScreen extends ConsumerWidget {
                     );
                   }
                   return ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(12, 4, 12, 80),
+                    padding: EdgeInsets.fromLTRB(bs(12), bs(4), bs(12), bs(80)),
                     itemCount: goals.length,
                     itemBuilder: (ctx, i) => _SavingsGoalCard(
                       goal: goals[i],
@@ -82,8 +83,8 @@ class SavingsScreen extends ConsumerWidget {
         backgroundColor: TraumColors.mintGreen,
         elevation: 0,
         onPressed: () => _showAddGoalSheet(context, ref, currency),
-        child: const Icon(Icons.add_rounded,
-            size: 20, color: TraumColors.background),
+        child: Icon(Icons.add_rounded,
+            size: bs(20), color: TraumColors.background),
       ),
     );
   }
@@ -156,21 +157,21 @@ class _SavingsGoalCard extends StatelessWidget {
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
+        padding: EdgeInsets.only(right: bs(20)),
         decoration: BoxDecoration(
           color: TraumColors.roseRed.withValues(alpha: 0.2),
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(bs(15)),
         ),
         child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
       ),
       onDismissed: (_) => onDelete(),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 9),
-        padding: const EdgeInsets.all(13),
+        margin: EdgeInsets.only(bottom: bs(9)),
+        padding: EdgeInsets.all(bs(13)),
         decoration: BoxDecoration(
           color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: borderColor, width: 1),
+          borderRadius: BorderRadius.circular(bs(15)),
+          border: Border.all(color: borderColor, width: bs(1)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,16 +182,16 @@ class _SavingsGoalCard extends StatelessWidget {
               children: [
                 // Icon container 40×40 / radius 11 / accent@15%
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: bs(40),
+                  height: bs(40),
                   decoration: BoxDecoration(
                     color: _accent.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(11),
+                    borderRadius: BorderRadius.circular(bs(11)),
                   ),
-                  child: const Icon(Icons.savings_rounded,
-                      size: 18, color: _accent),
+                  child: Icon(Icons.savings_rounded,
+                      size: bs(18), color: _accent),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: bs(10)),
                 // Title + "Ziel: …" subtitle
                 Expanded(
                   child: Column(
@@ -202,7 +203,7 @@ class _SavingsGoalCard extends StatelessWidget {
                               fontWeight: FontWeight.w700,
                               fontSize: 13,
                               color: TraumColors.onBackground)),
-                      const SizedBox(height: 2),
+                      SizedBox(height: bs(2)),
                       Text(
                           '${AppLocalizations.of(context)!.goal}: '
                           '${goal.targetAmount.toStringAsFixed(2)} $currency'
@@ -214,7 +215,7 @@ class _SavingsGoalCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: bs(8)),
                 // Percent display — right aligned
                 Text('$percent%',
                     style: const TextStyle(
@@ -224,25 +225,25 @@ class _SavingsGoalCard extends StatelessWidget {
                         color: _accent)),
               ],
             ),
-            const SizedBox(height: 9),
+            SizedBox(height: bs(9)),
             // ── Progress bar ─────────────────────────────────────────────
             GradientProgressBar(
               value: progress,
-              height: 6,
+              height: bs(6),
               gradient: const LinearGradient(
                   colors: [TraumColors.mintGreen, TraumColors.cyanBlue]),
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: bs(6)),
             // ── Footer ───────────────────────────────────────────────────
             if (goal.isCompleted)
               // Completed badge — no deposit row
               Row(children: [
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      EdgeInsets.symmetric(horizontal: bs(6), vertical: bs(2)),
                   decoration: BoxDecoration(
                     color: TraumColors.mintGreen.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(bs(5)),
                   ),
                   child: Text(
                     AppLocalizations.of(context)!.reached.toUpperCase(),
@@ -271,11 +272,11 @@ class _SavingsGoalCard extends StatelessWidget {
                   GestureDetector(
                     onTap: () => _showDepositDialog(context),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: bs(10), vertical: bs(5)),
                       decoration: BoxDecoration(
                         color: _accent.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(bs(8)),
                       ),
                       child: Text(
                           '+ ${AppLocalizations.of(context)!.deposit}',
