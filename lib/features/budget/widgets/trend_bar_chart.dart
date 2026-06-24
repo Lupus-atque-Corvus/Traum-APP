@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../budget_providers.dart';
+import '../budget_scale.dart';
 
 // Local card container — same pattern as Tasks 3–4
 class _LocalCard extends StatelessWidget {
@@ -14,10 +15,10 @@ class _LocalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(13),
+      padding: EdgeInsets.all(bs(13)),
       decoration: BoxDecoration(
         color: TraumColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(bs(16)),
         border: Border.all(
           color: Colors.white.withValues(alpha: 0.08),
         ),
@@ -55,7 +56,7 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
               fontSize: 13,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: bs(8)),
           // Period tabs — horizontal scrollbar, kein Umbruch
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -69,19 +70,19 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                   TrendPeriod.year => 'Jahr',
                 };
                 return Padding(
-                  padding: const EdgeInsets.only(right: 8),
+                  padding: EdgeInsets.only(right: bs(8)),
                   child: GestureDetector(
                     onTap: () =>
                         ref.read(selectedTrendPeriodProvider.notifier).state =
                             p,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: bs(8), vertical: bs(3)),
                       decoration: BoxDecoration(
                         color: isSelected
                             ? TraumColors.amberGold
                             : TraumColors.background,
-                        borderRadius: BorderRadius.circular(11),
+                        borderRadius: BorderRadius.circular(bs(11)),
                       ),
                       child: Text(
                         label,
@@ -100,14 +101,14 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
               }).toList(),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: bs(16)),
           barsAsync.when(
             data: (bars) {
               if (bars.isEmpty) {
-                return const Center(
+                return Center(
                   child: Padding(
-                    padding: EdgeInsets.all(24),
-                    child: Text(
+                    padding: EdgeInsets.all(bs(24)),
+                    child: const Text(
                       'Keine Daten',
                       style: TextStyle(
                         color: TraumColors.onBackgroundMuted,
@@ -123,7 +124,7 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                       .fold(0.0, (a, b) => a > b ? a : b) *
                   1.2;
               return SizedBox(
-                height: 72,
+                height: bs(72),
                 child: BarChart(
                   BarChartData(
                     alignment: BarChartAlignment.spaceAround,
@@ -167,7 +168,7 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                               return const SizedBox.shrink();
                             }
                             return Padding(
-                              padding: const EdgeInsets.only(top: 4),
+                              padding: EdgeInsets.only(top: bs(4)),
                               child: Text(
                                 bars[i].label,
                                 style: const TextStyle(
@@ -202,17 +203,17 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                             toY: bar.income,
                             color: TraumColors.mintGreen
                                 .withValues(alpha: isTouched ? 1.0 : 0.7),
-                            width: 9,
-                            borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(2)),
+                            width: bs(9),
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(bs(2))),
                           ),
                           BarChartRodData(
                             toY: bar.expenses,
                             color: TraumColors.roseRed
                                 .withValues(alpha: isTouched ? 1.0 : 0.7),
-                            width: 9,
-                            borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(2)),
+                            width: bs(9),
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(bs(2))),
                           ),
                         ],
                       );
@@ -237,14 +238,14 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
             ),
           ),
           // Legend
-          const SizedBox(height: 8),
+          SizedBox(height: bs(8)),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _LegendDot(
                   color: TraumColors.mintGreen,
                   label: AppLocalizations.of(context)!.budgetIncome),
-              const SizedBox(width: 12),
+              SizedBox(width: bs(12)),
               _LegendDot(
                   color: TraumColors.roseRed,
                   label: AppLocalizations.of(context)!.budgetExpenses),
@@ -266,11 +267,11 @@ class _LegendDot extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(children: [
       Container(
-        width: 6,
-        height: 6,
+        width: bs(6),
+        height: bs(6),
         decoration: BoxDecoration(color: color, shape: BoxShape.circle),
       ),
-      const SizedBox(width: 4),
+      SizedBox(width: bs(4)),
       Text(
         label,
         style: const TextStyle(

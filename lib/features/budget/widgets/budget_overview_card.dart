@@ -7,6 +7,7 @@ import '../../../core/theme/colors.dart';
 import '../budget_category_icons.dart';
 import '../budget_helpers.dart';
 import '../budget_providers.dart';
+import '../budget_scale.dart';
 import 'hidden_amount.dart';
 
 class BudgetOverviewCard extends ConsumerWidget {
@@ -37,11 +38,11 @@ class BudgetOverviewCard extends ConsumerWidget {
             // Soll-Legende (Pacing-Marker Erklärung)
             Row(children: [
               Container(
-                width: 10,
-                height: 1.5,
+                width: bs(10),
+                height: bs(1.5),
                 color: Colors.white.withValues(alpha: 0.5),
               ),
-              const SizedBox(width: 3),
+              SizedBox(width: bs(3)),
               const Text(
                 'Soll',
                 style: TextStyle(
@@ -51,7 +52,7 @@ class BudgetOverviewCard extends ConsumerWidget {
                 ),
               ),
             ]),
-            const SizedBox(width: 8),
+            SizedBox(width: bs(8)),
             GestureDetector(
               onTap: () => context.push(Routes.budgetCategories),
               child: const Text(
@@ -64,12 +65,12 @@ class BudgetOverviewCard extends ConsumerWidget {
               ),
             ),
           ]),
-          const SizedBox(height: 6),
+          SizedBox(height: bs(6)),
           catsAsync.when(
             data: (cats) => cats.isEmpty
-                ? const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Text(
+                ? Padding(
+                    padding: EdgeInsets.symmetric(vertical: bs(8)),
+                    child: const Text(
                       'Keine Budgetkategorien mit Limit konfiguriert.',
                       style: TextStyle(
                         fontFamily: 'DMSans',
@@ -88,9 +89,9 @@ class BudgetOverviewCard extends ConsumerWidget {
                         ),
                     ],
                   ),
-            loading: () => const SizedBox(
-              height: 40,
-              child: Center(
+            loading: () => SizedBox(
+              height: bs(40),
+              child: const Center(
                 child: CircularProgressIndicator(
                     strokeWidth: 2, color: TraumColors.amberGold),
               ),
@@ -109,12 +110,12 @@ class _BudgetContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(13),
+        padding: EdgeInsets.all(bs(13)),
         decoration: BoxDecoration(
           color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(bs(16)),
           border: Border.all(
-              color: Colors.white.withValues(alpha: 0.08), width: 1),
+              color: Colors.white.withValues(alpha: 0.08), width: bs(1)),
         ),
         child: child,
       );
@@ -152,28 +153,28 @@ class _BudgetCategoryRow extends StatelessWidget {
         if (!isFirst)
           Divider(
             color: Colors.white.withValues(alpha: 0.05),
-            height: 1,
-            thickness: 1,
+            height: bs(1),
+            thickness: bs(1),
           ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6),
+          padding: EdgeInsets.symmetric(vertical: bs(6)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(children: [
                 Container(
-                  width: 30,
-                  height: 30,
+                  width: bs(30),
+                  height: bs(30),
                   decoration: BoxDecoration(
                     color: barColor.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(bs(8)),
                   ),
                   child: Center(
                     child: budgetCategoryGlyph(cat.emoji,
-                        color: barColor, size: 14),
+                        color: barColor, size: bs(14)),
                   ),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: bs(10)),
                 Expanded(
                   child: Row(children: [
                     Flexible(
@@ -189,13 +190,13 @@ class _BudgetCategoryRow extends StatelessWidget {
                       ),
                     ),
                     if (cat.isOverBudget) ...[
-                      const SizedBox(width: 6),
+                      SizedBox(width: bs(6)),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 1),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: bs(4), vertical: bs(1)),
                         decoration: BoxDecoration(
                           color: TraumColors.roseRed.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(3),
+                          borderRadius: BorderRadius.circular(bs(3)),
                         ),
                         child: const Text(
                           'ÜBER',
@@ -210,7 +211,7 @@ class _BudgetCategoryRow extends StatelessWidget {
                     ],
                   ]),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: bs(8)),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -235,7 +236,7 @@ class _BudgetCategoryRow extends StatelessWidget {
                             fontSize: 11,
                           ),
                         ),
-                        const SizedBox(width: 6),
+                        SizedBox(width: bs(6)),
                         Text(
                           cat.isOverBudget
                               ? '+$currency${fmtAmount(remaining.abs())}'
@@ -253,7 +254,7 @@ class _BudgetCategoryRow extends StatelessWidget {
                   ],
                 ),
               ]),
-              const SizedBox(height: 6),
+              SizedBox(height: bs(6)),
               LayoutBuilder(
                 builder: (context, constraints) {
                   final width = constraints.maxWidth;
@@ -261,22 +262,22 @@ class _BudgetCategoryRow extends StatelessWidget {
                     clipBehavior: Clip.none,
                     children: [
                       Container(
-                        height: 4,
+                        height: bs(4),
                         decoration: BoxDecoration(
                           color: TraumColors.surfaceVariant,
-                          borderRadius: BorderRadius.circular(2),
+                          borderRadius: BorderRadius.circular(bs(2)),
                         ),
                       ),
                       FractionallySizedBox(
                         widthFactor: cat.ratio.clamp(0.0, 1.0),
                         child: Container(
-                          height: 4,
+                          height: bs(4),
                           decoration: BoxDecoration(
                             color: barColor,
                             borderRadius: cat.isOverBudget
-                                ? const BorderRadius.horizontal(
-                                    left: Radius.circular(2))
-                                : BorderRadius.circular(2),
+                                ? BorderRadius.horizontal(
+                                    left: Radius.circular(bs(2)))
+                                : BorderRadius.circular(bs(2)),
                           ),
                         ),
                       ),
@@ -287,7 +288,7 @@ class _BudgetCategoryRow extends StatelessWidget {
                           top: -2,
                           bottom: -2,
                           child: Container(
-                            width: 10,
+                            width: bs(10),
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
@@ -297,27 +298,27 @@ class _BudgetCategoryRow extends StatelessWidget {
                                 begin: Alignment.centerLeft,
                                 end: Alignment.centerRight,
                               ),
-                              borderRadius: const BorderRadius.horizontal(
-                                  right: Radius.circular(3)),
+                              borderRadius: BorderRadius.horizontal(
+                                  right: Radius.circular(bs(3))),
                             ),
                           ),
                         ),
                       // Soll-Tempo-Marker (breiter, mit Glow)
                       if (kShowBudgetPacing)
                         Positioned(
-                          left: (width * pacingRatio - 1.5)
-                              .clamp(0.0, width - 3),
+                          left: (width * pacingRatio - bs(1.5))
+                              .clamp(0.0, width - bs(3)),
                           top: -3,
                           bottom: -3,
                           child: Container(
-                            width: 3,
+                            width: bs(3),
                             decoration: BoxDecoration(
                               color: Colors.white.withValues(alpha: 0.9),
-                              borderRadius: BorderRadius.circular(2),
+                              borderRadius: BorderRadius.circular(bs(2)),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.white.withValues(alpha: 0.35),
-                                  blurRadius: 6,
+                                  blurRadius: bs(6),
                                 ),
                               ],
                             ),

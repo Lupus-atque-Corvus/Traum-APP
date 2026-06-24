@@ -10,6 +10,7 @@ import '../../../core/theme/radius.dart';
 import '../../../data/database/traum_database.dart';
 import '../budget_helpers.dart';
 import '../budget_providers.dart';
+import '../budget_scale.dart';
 import 'hidden_amount.dart';
 
 class AccountsCard extends ConsumerWidget {
@@ -48,7 +49,7 @@ class AccountsCard extends ConsumerWidget {
               ),
             ),
           ]),
-          const SizedBox(height: 8),
+          SizedBox(height: bs(8)),
           accountsAsync.when(
             data: (list) => list.isEmpty
                 ? const SizedBox.shrink()
@@ -67,26 +68,26 @@ class AccountsCard extends ConsumerWidget {
                         if (i < list.length - 1)
                           Divider(
                             color: Colors.white.withValues(alpha: 0.05),
-                            height: 1,
+                            height: bs(1),
                           ),
                       ],
                     ],
                   ),
-            loading: () => const Center(
+            loading: () => Center(
               child: CircularProgressIndicator(
-                  strokeWidth: 2, color: TraumColors.amberGold),
+                  strokeWidth: bs(2), color: TraumColors.amberGold),
             ),
             error: (_, _) => const SizedBox.shrink(),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: bs(8)),
           GestureDetector(
             onTap: () => _showAccountSheet(context),
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: EdgeInsets.symmetric(vertical: bs(8)),
               decoration: BoxDecoration(
                 color: TraumColors.surfaceVariant,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(bs(10)),
               ),
               child: const Text(
                 '+ Konto hinzufügen',
@@ -151,18 +152,18 @@ class _AccountRow extends StatelessWidget {
         : account.institution ?? '';
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 7),
+      padding: EdgeInsets.symmetric(vertical: bs(7)),
       child: Row(children: [
         Container(
-          width: 34,
-          height: 34,
+          width: bs(34),
+          height: bs(34),
           decoration: BoxDecoration(
             color: iconColor.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(9),
+            borderRadius: BorderRadius.circular(bs(9)),
           ),
-          child: Icon(icon, color: iconColor, size: 16),
+          child: Icon(icon, color: iconColor, size: bs(16)),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: bs(12)),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -239,12 +240,12 @@ class _AccountsContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(13),
+        padding: EdgeInsets.all(bs(13)),
         decoration: BoxDecoration(
           color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(bs(16)),
           border:
-              Border.all(color: Colors.white.withValues(alpha: 0.08), width: 1),
+              Border.all(color: Colors.white.withValues(alpha: 0.08), width: bs(1)),
         ),
         child: child,
       );
@@ -345,7 +346,7 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(bs(20))),
         title: const Text('Konto löschen?',
             style: TextStyle(
                 fontFamily: 'DMSans',
@@ -388,10 +389,10 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
     final bottom = MediaQuery.of(context).viewInsets.bottom;
     return Container(
       margin: EdgeInsets.only(bottom: bottom),
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
-      decoration: const BoxDecoration(
+      padding: EdgeInsets.fromLTRB(bs(16), bs(20), bs(16), bs(32)),
+      decoration: BoxDecoration(
         color: TraumColors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(bs(20))),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -406,7 +407,7 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
               fontSize: 18,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: bs(16)),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -416,19 +417,19 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
                     value: 'checking',
                     selected: _type,
                     onTap: (v) => setState(() => _type = v)),
-                const SizedBox(width: 8),
+                SizedBox(width: bs(8)),
                 _TypeChip(
                     label: 'Sparkonto',
                     value: 'savings',
                     selected: _type,
                     onTap: (v) => setState(() => _type = v)),
-                const SizedBox(width: 8),
+                SizedBox(width: bs(8)),
                 _TypeChip(
                     label: 'Kreditkarte',
                     value: 'credit',
                     selected: _type,
                     onTap: (v) => setState(() => _type = v)),
-                const SizedBox(width: 8),
+                SizedBox(width: bs(8)),
                 _TypeChip(
                     label: 'Investment',
                     value: 'investment',
@@ -437,21 +438,21 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: bs(12)),
           _Field(ctrl: _nameCtrl, label: 'Name *', hint: 'z.B. Girokonto'),
-          const SizedBox(height: 8),
+          SizedBox(height: bs(8)),
           _Field(
               ctrl: _institutionCtrl,
               label: 'Bank / Institut',
               hint: 'z.B. Sparkasse'),
-          const SizedBox(height: 8),
+          SizedBox(height: bs(8)),
           _Field(
               ctrl: _balanceCtrl,
               label: 'Kontostand *',
               hint: '0,00',
               keyboardType: TextInputType.number),
           if (_type == 'credit') ...[
-            const SizedBox(height: 8),
+            SizedBox(height: bs(8)),
             _Field(
                 ctrl: _lastFourCtrl,
                 label: 'Letzte 4 Stellen',
@@ -459,14 +460,14 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
                 keyboardType: TextInputType.number),
           ],
           if (_type == 'savings' || _type == 'investment') ...[
-            const SizedBox(height: 8),
+            SizedBox(height: bs(8)),
             _Field(
                 ctrl: _returnRateCtrl,
                 label: 'Rendite %',
                 hint: '3,5',
                 keyboardType: TextInputType.number),
           ],
-          const SizedBox(height: 8),
+          SizedBox(height: bs(8)),
           Row(children: [
             const Text(
               'Als Hauptkonto markieren',
@@ -483,7 +484,7 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
               activeThumbColor: TraumColors.amberGold,
             ),
           ]),
-          const SizedBox(height: 16),
+          SizedBox(height: bs(16)),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -494,14 +495,14 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
                 shape: RoundedRectangleBorder(
                     borderRadius:
                         BorderRadius.circular(TraumRadius.button)),
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: EdgeInsets.symmetric(vertical: bs(14)),
               ),
               child: _saving
-                  ? const SizedBox(
-                      height: 18,
-                      width: 18,
+                  ? SizedBox(
+                      height: bs(18),
+                      width: bs(18),
                       child: CircularProgressIndicator(
-                          strokeWidth: 2, color: Colors.white),
+                          strokeWidth: bs(2), color: Colors.white),
                     )
                   : const Text(
                       'Speichern',
@@ -512,13 +513,13 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
             ),
           ),
           if (_isEditing) ...[
-            const SizedBox(height: 8),
+            SizedBox(height: bs(8)),
             SizedBox(
               width: double.infinity,
               child: TextButton.icon(
                 onPressed: _saving ? null : _delete,
-                icon: const Icon(Icons.delete_outline,
-                    color: TraumColors.roseRed, size: 18),
+                icon: Icon(Icons.delete_outline,
+                    color: TraumColors.roseRed, size: bs(18)),
                 label: const Text(
                   'Konto löschen',
                   style: TextStyle(
@@ -553,14 +554,14 @@ class _TypeChip extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap(value),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: bs(12), vertical: bs(8)),
         decoration: BoxDecoration(
           color: isSelected
               ? TraumColors.amberGold.withValues(alpha: 0.2)
               : TraumColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(bs(20)),
           border: isSelected
-              ? Border.all(color: TraumColors.amberGold, width: 1)
+              ? Border.all(color: TraumColors.amberGold, width: bs(1))
               : null,
         ),
         child: Text(
@@ -619,7 +620,7 @@ class _Field extends StatelessWidget {
           borderSide: BorderSide.none,
         ),
         contentPadding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            EdgeInsets.symmetric(horizontal: bs(12), vertical: bs(10)),
       ),
     );
   }
