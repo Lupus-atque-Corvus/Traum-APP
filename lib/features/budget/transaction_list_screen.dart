@@ -9,6 +9,7 @@ import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'budget_category_icons.dart';
 import 'budget_helpers.dart';
+import 'budget_scale.dart';
 import 'quick_entry_bottom_sheet.dart';
 import 'widgets/budget_sub_header.dart';
 
@@ -63,8 +64,8 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
     return Scaffold(
       backgroundColor: TraumColors.background,
       floatingActionButton: SizedBox(
-        width: 44,
-        height: 44,
+        width: bs(44),
+        height: bs(44),
         child: FloatingActionButton(
           backgroundColor: TraumColors.amberGold,
           elevation: 4,
@@ -74,9 +75,9 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
             backgroundColor: Colors.transparent,
             builder: (_) => const QuickEntryBottomSheet(),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.add_rounded,
-            size: 20,
+            size: bs(20),
             color: TraumColors.background,
           ),
         ),
@@ -86,7 +87,7 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
           BudgetSubHeader(title: AppLocalizations.of(context)!.allTransactions),
           // Filter chips
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: bs(16), vertical: bs(8)),
             child: Row(
               children: [
                 _FilterChip(
@@ -95,14 +96,14 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                   current: _filter,
                   onTap: () => setState(() => _filter = 'all'),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: bs(8)),
                 _FilterChip(
                   label: AppLocalizations.of(context)!.expense,
                   value: 'expense',
                   current: _filter,
                   onTap: () => setState(() => _filter = 'expense'),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: bs(8)),
                 _FilterChip(
                   label: AppLocalizations.of(context)!.income,
                   value: 'income',
@@ -126,12 +127,12 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.receipt_long_rounded,
-                              size: 48,
+                              size: bs(48),
                               color: TraumColors.onBackgroundSubtle,
                             ),
-                            const SizedBox(height: 12),
+                            SizedBox(height: bs(12)),
                             Text(
                               AppLocalizations.of(context)!.noTransactions,
                               style: const TextStyle(
@@ -153,7 +154,7 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                     }
 
                     return ListView(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+                      padding: EdgeInsets.fromLTRB(bs(16), 0, bs(16), bs(80)),
                       children: grouped.entries.map((entry) {
                         final parts = entry.key.split('-');
                         final year = int.parse(parts[0]);
@@ -173,7 +174,7 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(top: 16, bottom: 8),
+                              padding: EdgeInsets.only(top: bs(16), bottom: bs(8)),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -200,10 +201,10 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                             ),
                             // Group container: all rows in one surface card
                             Container(
-                              margin: const EdgeInsets.only(bottom: 12),
+                              margin: EdgeInsets.only(bottom: bs(12)),
                               decoration: BoxDecoration(
                                 color: TraumColors.surface,
-                                borderRadius: BorderRadius.circular(13),
+                                borderRadius: BorderRadius.circular(bs(13)),
                                 border: Border.all(
                                   color: Colors.white.withValues(alpha: 0.07),
                                 ),
@@ -214,8 +215,8 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                                   for (int i = 0; i < entry.value.length; i++) ...[
                                     if (i > 0)
                                       Divider(
-                                        height: 1,
-                                        thickness: 1,
+                                        height: bs(1),
+                                        thickness: bs(1),
                                         color: Colors.white.withValues(alpha: 0.05),
                                       ),
                                     _TxTile(
@@ -277,12 +278,12 @@ class _FilterChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+        padding: EdgeInsets.symmetric(horizontal: bs(12), vertical: bs(5)),
         decoration: BoxDecoration(
           color: selected
               ? TraumColors.amberGold.withValues(alpha: 0.2)
               : TraumColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(bs(16)),
           border: Border.all(
             color: TraumColors.amberGold.withValues(alpha: 0.3),
           ),
@@ -343,7 +344,7 @@ class _TxTile extends StatelessWidget {
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
+        padding: EdgeInsets.only(right: bs(20)),
         color: TraumColors.roseRed.withValues(alpha: 0.2),
         child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
       ),
@@ -351,38 +352,38 @@ class _TxTile extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 11),
+          padding: EdgeInsets.symmetric(horizontal: bs(10), vertical: bs(11)),
           child: Row(
             children: [
               // Icon container: 32×32, radius 9, accent@15%
               Container(
-                width: 32,
-                height: 32,
+                width: bs(32),
+                height: bs(32),
                 decoration: BoxDecoration(
                   color: accentColor.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(9),
+                  borderRadius: BorderRadius.circular(bs(9)),
                 ),
                 child: Center(
                   child: isTransfer
                       ? Icon(
                           Icons.swap_horiz_rounded,
                           color: iconColor,
-                          size: 13,
+                          size: bs(13),
                         )
                       : (cat?.emoji != null
                           ? budgetCategoryGlyph(
                               cat!.emoji,
                               color: iconColor,
-                              size: 13,
+                              size: bs(13),
                             )
                           : Icon(
                               isIncome ? Icons.add_rounded : Icons.remove_rounded,
                               color: iconColor,
-                              size: 13,
+                              size: bs(13),
                             )),
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: bs(10)),
               // Name + subtitle
               Expanded(
                 child: Column(
@@ -400,7 +401,7 @@ class _TxTile extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: bs(2)),
                     Text(
                       isTransfer
                           ? '$dateStr  •  Umbuchung'
@@ -416,7 +417,7 @@ class _TxTile extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: bs(8)),
               // Amount + chevron
               Text(
                 isTransfer
@@ -433,10 +434,10 @@ class _TxTile extends StatelessWidget {
                   fontSize: 11,
                 ),
               ),
-              const SizedBox(width: 2),
-              const Icon(
+              SizedBox(width: bs(2)),
+              Icon(
                 Icons.chevron_right_rounded,
-                size: 10,
+                size: bs(10),
                 color: TraumColors.onBackgroundSubtle,
               ),
             ],

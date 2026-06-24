@@ -7,6 +7,7 @@ import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
 import 'budget_category_colors.dart';
 import 'budget_category_icons.dart';
+import 'budget_scale.dart';
 import 'widgets/budget_sub_header.dart';
 import 'widgets/icon_picker_grid.dart';
 
@@ -30,13 +31,13 @@ class BudgetCategoriesScreen extends ConsumerWidget {
     final plusButton = GestureDetector(
       onTap: () => _openSheet(context),
       child: Container(
-        width: 28,
-        height: 28,
+        width: bs(28),
+        height: bs(28),
         decoration: BoxDecoration(
           color: TraumColors.amberGold.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(bs(14)),
         ),
-        child: const Icon(Icons.add, size: 14, color: TraumColors.amberGold),
+        child: Icon(Icons.add, size: bs(14), color: TraumColors.amberGold),
       ),
     );
 
@@ -97,14 +98,14 @@ class BudgetCategoriesScreen extends ConsumerWidget {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+      padding: EdgeInsets.fromLTRB(bs(12), 0, bs(12), bs(12)),
       child: Column(
         children: [
           // List container
           Container(
             decoration: BoxDecoration(
               color: TraumColors.surface,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(bs(14)),
               border: Border.all(
                 color: Colors.white.withValues(alpha: 0.07),
               ),
@@ -115,7 +116,7 @@ class BudgetCategoriesScreen extends ConsumerWidget {
                 for (int i = 0; i < cats.length; i++) ...[
                   if (i > 0)
                     Container(
-                      height: 1,
+                      height: bs(1),
                       color: Colors.white.withValues(alpha: 0.05),
                     ),
                   _CategoryRow(
@@ -132,7 +133,7 @@ class BudgetCategoriesScreen extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: bs(10)),
           _NewCategoryButton(onTap: () => _openSheet(context)),
         ],
       ),
@@ -216,7 +217,7 @@ class _CategoryRow extends StatelessWidget {
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
+        padding: EdgeInsets.only(right: bs(20)),
         color: TraumColors.roseRed.withValues(alpha: 0.15),
         child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
       ),
@@ -226,23 +227,23 @@ class _CategoryRow extends StatelessWidget {
         onTap: onTap,
         child: Container(
           color: Colors.transparent,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+          padding: EdgeInsets.symmetric(horizontal: bs(12), vertical: bs(11)),
           child: Row(
             children: [
               // Icon container 38×38 radius 10
               Container(
-                width: 38,
-                height: 38,
+                width: bs(38),
+                height: bs(38),
                 decoration: BoxDecoration(
                   color: catColor.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(bs(10)),
                 ),
                 child: Center(
                   child: budgetCategoryGlyph(cat.emoji,
-                      color: catColor, size: 16),
+                      color: catColor, size: bs(16)),
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: bs(10)),
               // Name + sub row
               Expanded(
                 child: Column(
@@ -257,20 +258,20 @@ class _CategoryRow extends StatelessWidget {
                         fontSize: 12,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: bs(2)),
                     Row(
                       children: [
                         // Type badge
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 5,
-                            vertical: 1,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: bs(5),
+                            vertical: bs(1),
                           ),
                           decoration: BoxDecoration(
                             color: cat.isExpense
                                 ? TraumColors.surfaceVariant
                                 : TraumColors.mintGreen.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(bs(4)),
                           ),
                           child: Text(
                             cat.isExpense ? 'Ausgabe' : 'Einnahme',
@@ -284,7 +285,7 @@ class _CategoryRow extends StatelessWidget {
                           ),
                         ),
                         if (cat.monthlyLimit != null) ...[
-                          const SizedBox(width: 5),
+                          SizedBox(width: bs(5)),
                           Text(
                             'Limit: ${cat.monthlyLimit!.toStringAsFixed(0)} $currency / Mo.',
                             style: const TextStyle(
@@ -299,11 +300,11 @@ class _CategoryRow extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: bs(8)),
               // Chevron
-              const Icon(
+              Icon(
                 Icons.chevron_right,
-                size: 11,
+                size: bs(11),
                 color: TraumColors.onBackgroundSubtle,
               ),
             ],
@@ -325,10 +326,10 @@ class _NewCategoryButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+        padding: EdgeInsets.symmetric(horizontal: bs(12), vertical: bs(11)),
         decoration: BoxDecoration(
           color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(13),
+          borderRadius: BorderRadius.circular(bs(13)),
           border: Border.all(
             color: TraumColors.amberGold.withValues(alpha: 0.2),
           ),
