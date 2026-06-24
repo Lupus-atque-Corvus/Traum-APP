@@ -188,6 +188,8 @@ class _StatsBody extends StatelessWidget {
     }
 
     final donutSlices = buildDonutSlices(donutSpendingByCategory, categories);
+    final donutMonthTotal =
+        donutSpendingByCategory.values.fold(0.0, (a, b) => a + b);
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -263,7 +265,7 @@ class _StatsBody extends StatelessWidget {
                 const SizedBox(height: 12),
                 _CategoryDonut(
                     slices: donutSlices,
-                    totalExpense: totalExpense,
+                    totalExpense: donutMonthTotal,
                     currency: currency),
               ],
             ),
