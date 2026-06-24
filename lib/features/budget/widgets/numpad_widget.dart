@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
+import '../budget_scale.dart';
 
 class NumpadWidget extends StatelessWidget {
   final String displayValue;
@@ -57,32 +58,32 @@ class NumpadWidget extends StatelessWidget {
     return Column(
       children: keys.map((row) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 5),
+          padding: EdgeInsets.only(bottom: bs(5)),
           child: Row(
             children: row.map((key) {
               final isDelete = key == '⌫';
               final isComma = key == ',';
               return Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  padding: EdgeInsets.symmetric(horizontal: bs(5)),
                   child: Material(
                     color: isDelete
                         ? TraumColors.heroInner
                         : TraumColors.numKey,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(bs(10)),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(bs(10)),
                       highlightColor: isDelete ? null : TraumColors.surfaceHover,
                       hoverColor: isDelete ? null : TraumColors.surfaceHover,
                       onTap: () => _handleKey(key),
                       child: Container(
-                        height: 42,
+                        height: bs(42),
                         alignment: Alignment.center,
                         child: isDelete
-                            ? const Icon(
+                            ? Icon(
                                 Icons.backspace_outlined,
                                 color: TraumColors.onBackgroundMuted,
-                                size: 16,
+                                size: bs(16),
                               )
                             : Text(
                                 key,

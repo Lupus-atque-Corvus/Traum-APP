@@ -276,11 +276,11 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
       child: Container(
         decoration: BoxDecoration(
           color: TraumColors.sheetBg,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(bs(22))),
           border: Border(
             top: BorderSide(
               color: TraumColors.onBackground.withValues(alpha: 0.08),
-              width: 1,
+              width: bs(1),
             ),
           ),
         ),
@@ -292,14 +292,14 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
             children: [
               // Step 2: Grabber — 32×3, dimBar, margin bottom 10
               Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                padding: EdgeInsets.only(top: bs(10), bottom: bs(10)),
                 child: Center(
                   child: Container(
-                    width: 32,
-                    height: 3,
+                    width: bs(32),
+                    height: bs(3),
                     decoration: BoxDecoration(
                       color: TraumColors.dimBar,
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(bs(2)),
                     ),
                   ),
                 ),
@@ -307,7 +307,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
 
               // Step 3: Title row — "Hinzufügen" + close button
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: EdgeInsets.symmetric(horizontal: bs(16)),
                 child: Row(
                   children: [
                     const Text(
@@ -323,16 +323,16 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: Container(
-                        width: 26,
-                        height: 26,
+                        width: bs(26),
+                        height: bs(26),
                         decoration: BoxDecoration(
                           color: TraumColors.surfaceVariant,
-                          borderRadius: BorderRadius.circular(13),
+                          borderRadius: BorderRadius.circular(bs(13)),
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Icon(
                             Icons.close,
-                            size: 12,
+                            size: bs(12),
                             color: TraumColors.onBackgroundMuted,
                           ),
                         ),
@@ -341,12 +341,12 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                   ],
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: bs(10)),
 
               // Scrollable body
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(horizontal: bs(16)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -355,7 +355,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                         selected: _type,
                         onChanged: (v) => setState(() => _type = v),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: bs(16)),
 
                       // Step 5: Amount display — "Betrag" label + 34/w700 amount
                       Column(
@@ -368,7 +368,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                               color: TraumColors.onBackgroundMuted,
                             ),
                           ),
-                          const SizedBox(height: 2),
+                          SizedBox(height: bs(2)),
                           Text(
                             '${_formatDisplay(_numpadValue)} $currency',
                             style: TextStyle(
@@ -384,20 +384,20 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: bs(12)),
 
                       // Numpad or scanning indicator
                       if (_scanning)
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: bs(16)),
                           child: Center(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                CircularProgressIndicator(
+                                const CircularProgressIndicator(
                                     color: TraumColors.amberGold),
-                                SizedBox(height: 8),
-                                Text(
+                                SizedBox(height: bs(8)),
+                                const Text(
                                   'Kassenzettel wird analysiert...',
                                   style: TextStyle(
                                     color: TraumColors.onBackgroundMuted,
@@ -413,7 +413,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                           displayValue: _numpadValue,
                           onChanged: (v) => setState(() => _numpadValue = v),
                         ),
-                      const SizedBox(height: 14),
+                      SizedBox(height: bs(14)),
 
                       // Step 6: Template chips — amberGold@0.1 bg, border amberGold@0.35,
                       //           radius 18, padding 5×10, zap icon 11
@@ -422,7 +422,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                           final tpls = r.watch(quickTemplatesProvider).value ?? const [];
                           if (tpls.isEmpty) return const SizedBox.shrink();
                           return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
+                            padding: EdgeInsets.only(bottom: bs(12)),
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Row(children: [
@@ -441,18 +441,18 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                     onLongPress: () =>
                                         ref.read(budgetDaoProvider).deleteTemplate(t.id),
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 5),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: bs(10), vertical: bs(5)),
                                       decoration: BoxDecoration(
                                         color: TraumColors.amberGold.withValues(alpha: 0.1),
-                                        borderRadius: BorderRadius.circular(18),
+                                        borderRadius: BorderRadius.circular(bs(18)),
                                         border: Border.all(
                                             color: TraumColors.amberGold.withValues(alpha: 0.35)),
                                       ),
                                       child: Row(mainAxisSize: MainAxisSize.min, children: [
-                                        const Icon(Icons.bolt_rounded,
-                                            size: 11, color: TraumColors.amberGold),
-                                        const SizedBox(width: 4),
+                                        Icon(Icons.bolt_rounded,
+                                            size: bs(11), color: TraumColors.amberGold),
+                                        SizedBox(width: bs(4)),
                                         Text(
                                           t.name,
                                           style: const TextStyle(
@@ -465,7 +465,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                       ]),
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
+                                  SizedBox(width: bs(8)),
                                 ],
                               ]),
                             ),
@@ -481,7 +481,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                 .toList();
                             if (filtered.isEmpty) return const SizedBox.shrink();
                             return Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
+                              padding: EdgeInsets.only(bottom: bs(12)),
                               child: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
@@ -496,7 +496,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                           _categoryName = isSelected ? null : filtered[i].name;
                                         }),
                                       ),
-                                      const SizedBox(width: 6),
+                                      SizedBox(width: bs(6)),
                                     ],
                                     // "+ Neu" tile
                                     GestureDetector(
@@ -506,26 +506,26 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                         router.push('/budget/categories');
                                       },
                                       child: Container(
-                                        width: 50,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 3, vertical: 7),
+                                        width: bs(50),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: bs(3), vertical: bs(7)),
                                         decoration: BoxDecoration(
                                           color: TraumColors.background,
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(bs(10)),
                                           border: Border.all(
                                             color: TraumColors.amberGold.withValues(alpha: 0.5),
                                           ),
                                         ),
-                                        child: const Column(
+                                        child: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Icon(
                                               Icons.add_rounded,
                                               color: TraumColors.amberGold,
-                                              size: 18,
+                                              size: bs(18),
                                             ),
-                                            SizedBox(height: 2),
-                                            Text(
+                                            SizedBox(height: bs(2)),
+                                            const Text(
                                               'Neu',
                                               style: TextStyle(
                                                 color: TraumColors.amberGold,
@@ -559,7 +559,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                 ? accounts.firstWhere((a) => a.isPrimary).id
                                 : null);
                         return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
+                          padding: EdgeInsets.only(bottom: bs(12)),
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(children: [
@@ -569,7 +569,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                 onTap: () => setState(() => _accountId = null),
                               ),
                               for (final a in accounts) ...[
-                                const SizedBox(width: 8),
+                                SizedBox(width: bs(8)),
                                 _AccountChip(
                                   label: a.name,
                                   selected: selected == a.id,
@@ -592,18 +592,18 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                       fontFamily: 'DMSans',
                                       color: TraumColors.onBackgroundMuted,
                                       fontSize: 12)),
-                                  const SizedBox(height: 6),
+                                  SizedBox(height: bs(6)),
                                   SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     child: Row(children: [
                                       for (final a in accounts) ...[
                                         _AccountChip(label: a.name, selected: sel == a.id,
                                             onTap: () => onSel(a.id)),
-                                        const SizedBox(width: 8),
+                                        SizedBox(width: bs(8)),
                                       ],
                                     ]),
                                   ),
-                                  const SizedBox(height: 12),
+                                  SizedBox(height: bs(12)),
                                 ],
                               );
                           return Column(children: [
@@ -622,7 +622,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                               onTap: () => _setDateChip(today),
                             ),
                           ),
-                          const SizedBox(width: 6),
+                          SizedBox(width: bs(6)),
                           Expanded(
                             child: _DateChip(
                               label: 'Gestern',
@@ -630,7 +630,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                               onTap: () => _setDateChip(yesterday),
                             ),
                           ),
-                          const SizedBox(width: 6),
+                          SizedBox(width: bs(6)),
                           Expanded(
                             child: _DateChip(
                               label: 'Vorgestern',
@@ -638,7 +638,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                               onTap: () => _setDateChip(dayBefore),
                             ),
                           ),
-                          const SizedBox(width: 6),
+                          SizedBox(width: bs(6)),
                           Expanded(
                             child: _DateChip(
                               label: (!isToday && !isYesterday && !isDayBefore)
@@ -663,24 +663,24 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: bs(12)),
 
                       // Step 9: Note field — bg background, radius 10, pencil icon + camera
                       Container(
                         decoration: BoxDecoration(
                           color: TraumColors.background,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(bs(10)),
                           border: Border.all(
                             color: TraumColors.onBackground.withValues(alpha: 0.06),
                           ),
                         ),
                         child: Row(
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: bs(10)),
                               child: Icon(
                                 Icons.edit_outlined,
-                                size: 13,
+                                size: bs(13),
                                 color: TraumColors.onBackgroundSubtle,
                               ),
                             ),
@@ -703,8 +703,8 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                   ),
                                   border: InputBorder.none,
                                   isDense: true,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: bs(10),
                                   ),
                                 ),
                               ),
@@ -712,12 +712,12 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                             GestureDetector(
                               onTap: _showReceiptSourceDialog,
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                padding: EdgeInsets.symmetric(horizontal: bs(10)),
                                 child: Icon(
                                   _receiptImagePath != null
                                       ? Icons.receipt_long_rounded
                                       : Icons.camera_alt_outlined,
-                                  size: 13,
+                                  size: bs(13),
                                   color: _receiptImagePath != null
                                       ? TraumColors.amberGold
                                       : TraumColors.onBackgroundSubtle,
@@ -727,7 +727,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: bs(10)),
 
                       // Step 10: Save-as-template toggle — custom 34×18 switch
                       _ToggleRow(
@@ -737,11 +737,11 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                         onChanged: (v) => setState(() => _saveAsTemplate = v),
                       ),
                       if (_saveAsTemplate) ...[
-                        const SizedBox(height: 6),
+                        SizedBox(height: bs(6)),
                         Container(
                           decoration: BoxDecoration(
                             color: TraumColors.background,
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(bs(8)),
                             border: Border.all(
                               color: TraumColors.onBackground.withValues(alpha: 0.06),
                             ),
@@ -753,9 +753,9 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                               fontFamily: 'DMSans',
                               fontSize: 13,
                             ),
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               hintText: 'Vorlagen-Name...',
-                              hintStyle: TextStyle(
+                              hintStyle: const TextStyle(
                                 color: TraumColors.onBackgroundSubtle,
                                 fontFamily: 'DMSans',
                                 fontSize: 13,
@@ -763,8 +763,8 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                               border: InputBorder.none,
                               isDense: true,
                               contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 8,
+                                horizontal: bs(10),
+                                vertical: bs(8),
                               ),
                             ),
                           ),
@@ -773,7 +773,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
 
                       // Step 10: Recurring toggle (income/expense only)
                       if (_type != 'transfer') ...[
-                        const SizedBox(height: 6),
+                        SizedBox(height: bs(6)),
                         _ToggleRow(
                           icon: Icons.repeat_rounded,
                           label: 'Monatlich wiederkehrend',
@@ -781,14 +781,14 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                           onChanged: (v) => setState(() => _recurring = v),
                         ),
                         if (_recurring) ...[
-                          const SizedBox(height: 6),
+                          SizedBox(height: bs(6)),
                           Row(children: [
                             const Text('Am Tag des Monats:',
                                 style: TextStyle(
                                     fontFamily: 'DMSans',
                                     color: TraumColors.onBackgroundMuted,
                                     fontSize: 13)),
-                            const SizedBox(width: 8),
+                            SizedBox(width: bs(8)),
                             DropdownButton<int>(
                               value: _recurringDay,
                               dropdownColor: TraumColors.surfaceVariant,
@@ -806,7 +806,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                         ],
                       ],
                       // Bottom padding so content isn't hidden behind footer
-                      const SizedBox(height: 70),
+                      SizedBox(height: bs(70)),
                     ],
                   ),
                 ),
@@ -814,18 +814,18 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
 
               // Step 11: Pinned Speichern footer — 44px, radius 12, amberGold
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                padding: EdgeInsets.fromLTRB(bs(16), bs(8), bs(16), bs(8)),
                 child: Builder(builder: (ctx) {
                   final l10n = AppLocalizations.of(ctx)!;
                   return GestureDetector(
                     onTap: _saving ? null : _save,
                     child: Container(
-                      height: 44,
+                      height: bs(44),
                       decoration: BoxDecoration(
                         color: _saving
                             ? TraumColors.amberGold.withValues(alpha: 0.5)
                             : TraumColors.amberGold,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(bs(12)),
                       ),
                       child: Center(
                         child: Text(
@@ -865,10 +865,10 @@ class _SegmentedTypeToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(3),
+      padding: EdgeInsets.all(bs(3)),
       decoration: BoxDecoration(
         color: TraumColors.background,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(bs(10)),
       ),
       child: Row(
         children: [
@@ -920,10 +920,10 @@ class _Segment extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 7),
+          padding: EdgeInsets.symmetric(vertical: bs(7)),
           decoration: BoxDecoration(
             color: isSelected ? activeColor : Colors.transparent,
-            borderRadius: BorderRadius.circular(7),
+            borderRadius: BorderRadius.circular(bs(7)),
           ),
           child: Center(
             child: Text(
@@ -959,13 +959,13 @@ class _CategoryColumnChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 50,
-        padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 7),
+        width: bs(50),
+        padding: EdgeInsets.symmetric(horizontal: bs(3), vertical: bs(7)),
         decoration: BoxDecoration(
           color: isSelected
               ? TraumColors.amberGold.withValues(alpha: 0.16)
               : TraumColors.background,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(bs(10)),
           border: Border.all(
             color: isSelected
                 ? TraumColors.amberGold
@@ -978,9 +978,9 @@ class _CategoryColumnChip extends StatelessWidget {
             budgetCategoryGlyph(
               cat.emoji,
               color: isSelected ? TraumColors.amberGold : TraumColors.onBackgroundSubtle,
-              size: 18,
+              size: bs(18),
             ),
-            const SizedBox(height: 2),
+            SizedBox(height: bs(2)),
             Text(
               cat.name,
               style: TextStyle(
@@ -1019,18 +1019,18 @@ class _ToggleRow extends StatelessWidget {
     return GestureDetector(
       onTap: () => onChanged(!value),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+        padding: EdgeInsets.symmetric(horizontal: bs(10), vertical: bs(9)),
         decoration: BoxDecoration(
           color: TraumColors.background,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(bs(10)),
           border: Border.all(
             color: TraumColors.onBackground.withValues(alpha: 0.06),
           ),
         ),
         child: Row(
           children: [
-            Icon(icon, size: 14, color: TraumColors.onBackgroundMuted),
-            const SizedBox(width: 8),
+            Icon(icon, size: bs(14), color: TraumColors.onBackgroundMuted),
+            SizedBox(width: bs(8)),
             Expanded(
               child: Text(
                 label,
@@ -1061,22 +1061,22 @@ class _MiniSwitch extends StatelessWidget {
       onTap: () => onChanged(!value),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        width: 34,
-        height: 18,
-        padding: const EdgeInsets.all(2),
+        width: bs(34),
+        height: bs(18),
+        padding: EdgeInsets.all(bs(2)),
         decoration: BoxDecoration(
           color: value ? TraumColors.amberGold : TraumColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(9),
+          borderRadius: BorderRadius.circular(bs(9)),
         ),
         child: AnimatedAlign(
           duration: const Duration(milliseconds: 150),
           alignment: value ? Alignment.centerRight : Alignment.centerLeft,
           child: Container(
-            width: 14,
-            height: 14,
+            width: bs(14),
+            height: bs(14),
             decoration: BoxDecoration(
               color: TraumColors.onBackground,
-              borderRadius: BorderRadius.circular(7),
+              borderRadius: BorderRadius.circular(bs(7)),
             ),
           ),
         ),
@@ -1102,10 +1102,10 @@ class _DateChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(6),
+        padding: EdgeInsets.all(bs(6)),
         decoration: BoxDecoration(
           color: isSelected ? TraumColors.amberGold : TraumColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(9),
+          borderRadius: BorderRadius.circular(bs(9)),
         ),
         child: Center(
           child: Text(
@@ -1152,21 +1152,21 @@ class _CalendarSheetState extends State<_CalendarSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: TraumColors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(bs(20))),
       ),
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+      padding: EdgeInsets.fromLTRB(bs(16), bs(12), bs(16), bs(24)),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 40,
-            height: 4,
-            margin: const EdgeInsets.only(bottom: 16),
+            width: bs(40),
+            height: bs(4),
+            margin: EdgeInsets.only(bottom: bs(16)),
             decoration: BoxDecoration(
               color: TraumColors.onBackgroundMuted,
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(bs(2)),
             ),
           ),
           TableCalendar(
@@ -1234,10 +1234,10 @@ class _AccountChip extends StatelessWidget {
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          padding: EdgeInsets.symmetric(horizontal: bs(14), vertical: bs(8)),
           decoration: BoxDecoration(
             color: selected ? TraumColors.amberGoldDim : TraumColors.surface,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(bs(20)),
             border: selected ? Border.all(color: TraumColors.amberGold) : null,
           ),
           child: Text(label,
