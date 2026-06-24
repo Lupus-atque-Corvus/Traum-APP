@@ -26,6 +26,7 @@ import '../../features/substances/substances_screen.dart';
 import '../../features/planning/planning_screen.dart';
 import '../../features/abstinence/abstinence_screen.dart';
 import '../../features/budget/budget_categories_screen.dart';
+import '../../features/budget/budget_scale.dart';
 import '../../features/budget/budget_screen.dart';
 import '../../features/budget/transaction_list_screen.dart';
 import '../../features/budget/transaction_detail_screen.dart';
@@ -213,33 +214,41 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: 'categories',
-                builder: (_, _) => const BudgetCategoriesScreen(),
+                builder: (_, _) =>
+                    const BudgetTextScale(child: BudgetCategoriesScreen()),
               ),
               GoRoute(
                 path: 'transaction/:id',
-                builder: (_, state) => TransactionDetailScreen(
-                  transactionId: int.parse(state.pathParameters['id']!),
+                builder: (_, state) => BudgetTextScale(
+                  child: TransactionDetailScreen(
+                    transactionId: int.parse(state.pathParameters['id']!),
+                  ),
                 ),
               ),
               GoRoute(
                 path: 'transactions',
-                builder: (_, _) => const TransactionListScreen(),
+                builder: (_, _) =>
+                    const BudgetTextScale(child: TransactionListScreen()),
               ),
               GoRoute(
                 path: 'stats',
-                builder: (_, _) => const BudgetStatsScreen(),
+                builder: (_, _) =>
+                    const BudgetTextScale(child: BudgetStatsScreen()),
               ),
               GoRoute(
                 path: 'savings',
-                builder: (_, _) => const SavingsScreen(),
+                builder: (_, _) =>
+                    const BudgetTextScale(child: SavingsScreen()),
               ),
               GoRoute(
                 path: 'debts',
-                builder: (_, _) => const DebtsScreen(),
+                builder: (_, _) =>
+                    const BudgetTextScale(child: DebtsScreen()),
               ),
               GoRoute(
                 path: 'recurring',
-                builder: (_, _) => const RecurringScreen(),
+                builder: (_, _) =>
+                    const BudgetTextScale(child: RecurringScreen()),
               ),
             ],
           ),

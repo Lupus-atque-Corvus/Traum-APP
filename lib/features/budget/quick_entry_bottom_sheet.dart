@@ -13,6 +13,7 @@ import '../../data/services/recurring_poster.dart';
 import '../../l10n/app_localizations.dart';
 import 'budget_category_icons.dart';
 import 'budget_providers.dart';
+import 'budget_scale.dart';
 import 'receipt_scanner.dart';
 import 'widgets/numpad_widget.dart';
 
@@ -267,7 +268,8 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
     final isDayBefore = isSameDay(_date, dayBefore);
 
     // Step 1: Container — sheetBg, radius 22, border-top white@0.08, max 91%
-    return ConstrainedBox(
+    return BudgetTextScale(
+      child: ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.91,
       ),
@@ -844,7 +846,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
           ),
         ),
       ),
-    );
+    ));
   }
 }
 
