@@ -54,8 +54,8 @@ class BudgetScreen extends ConsumerWidget {
           bottom: MediaQuery.of(context).padding.bottom + 16,
         ),
         child: SizedBox(
-          width: 48,
-          height: 48,
+          width: bs(48),
+          height: bs(48),
           child: FloatingActionButton(
             onPressed: () => showModalBottomSheet(
               context: context,
@@ -67,7 +67,7 @@ class BudgetScreen extends ConsumerWidget {
             elevation: 6,
             shape: const CircleBorder(),
             child: Icon(Icons.add,
-                size: 22, color: TraumColors.background),
+                size: bs(22), color: TraumColors.background),
           ),
         ),
       ),
@@ -91,13 +91,13 @@ class _BudgetHeaderCard extends ConsumerWidget {
     final currency = ref.watch(currencySymbolProvider);
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 2, 16, 9),
-      padding: const EdgeInsets.all(14),
+      margin: EdgeInsets.fromLTRB(bs(16), bs(2), bs(16), bs(9)),
+      padding: EdgeInsets.all(bs(14)),
       decoration: BoxDecoration(
         gradient: TraumColors.gradientHero,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(bs(18)),
         border: Border.all(
-            color: TraumColors.amberGold.withValues(alpha: 0.18), width: 1),
+            color: TraumColors.amberGold.withValues(alpha: 0.18), width: bs(1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,10 +116,10 @@ class _BudgetHeaderCard extends ConsumerWidget {
                     .state = !visible,
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                      EdgeInsets.symmetric(horizontal: bs(8), vertical: bs(5)),
                   decoration: BoxDecoration(
                     color: TraumColors.surfaceVariant,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(bs(16)),
                   ),
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     Icon(
@@ -127,9 +127,9 @@ class _BudgetHeaderCard extends ConsumerWidget {
                           ? Icons.visibility_outlined
                           : Icons.visibility_off_outlined,
                       color: TraumColors.onBackgroundMuted,
-                      size: 11,
+                      size: bs(11),
                     ),
-                    const SizedBox(width: 4),
+                    SizedBox(width: bs(4)),
                     Text(visible ? 'Verbergen' : 'Anzeigen',
                         style: _style(10, FontWeight.w600,
                             TraumColors.onBackgroundMuted)),
@@ -138,7 +138,7 @@ class _BudgetHeaderCard extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: bs(4)),
           summary.when(
             data: (s) => HiddenAmount(
               child: Text(
@@ -157,13 +157,13 @@ class _BudgetHeaderCard extends ConsumerWidget {
                     34, FontWeight.w700, TraumColors.onBackgroundMuted)),
             error: (_, _) => const SizedBox.shrink(),
           ),
-          const SizedBox(height: 3),
+          SizedBox(height: bs(3)),
           summary.when(
             data: (s) => _prognoseRow(s, month, currency),
             loading: () => const SizedBox.shrink(),
             error: (_, _) => const SizedBox.shrink(),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: bs(10)),
           // Einnahmen / Ausgaben / Sparquote
           summary.when(
             data: (s) => Row(children: [
@@ -173,14 +173,14 @@ class _BudgetHeaderCard extends ConsumerWidget {
                 value: '${_fmt(s.income)} $currency',
                 valueColor: TraumColors.mintGreen,
               ),
-              const SizedBox(width: 5),
+              SizedBox(width: bs(5)),
               _MiniStat(
                 dotColor: TraumColors.roseRed,
                 label: 'Ausgaben',
                 value: '${_fmt(s.expenses)} $currency',
                 valueColor: TraumColors.roseRed,
               ),
-              const SizedBox(width: 5),
+              SizedBox(width: bs(5)),
               _MiniStat(
                 dotColor: TraumColors.amberGold,
                 label: 'Sparquote',
@@ -190,10 +190,10 @@ class _BudgetHeaderCard extends ConsumerWidget {
                 valueColor: TraumColors.amberGold,
               ),
             ]),
-            loading: () => const SizedBox(height: 48),
+            loading: () => SizedBox(height: bs(48)),
             error: (_, _) => const SizedBox.shrink(),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: bs(10)),
           // Gesamtsaldo-Footer
           const _GesamtsaldoFooter(),
         ],
@@ -255,7 +255,7 @@ class _BudgetHeaderDelegate extends SliverPersistentHeaderDelegate {
         (1.0 - shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
 
     return Padding( // ← Padding statt Container — KEIN Hintergrund!
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+      padding: EdgeInsets.fromLTRB(bs(16), bs(8), bs(16), bs(4)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -283,10 +283,10 @@ class _MonthPill extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final month = ref.watch(selectedBudgetMonthProvider);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: bs(5), vertical: bs(4)),
       decoration: BoxDecoration(
         color: TraumColors.surface,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(bs(20)),
         border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -296,9 +296,9 @@ class _MonthPill extends ConsumerWidget {
               DateTime(month.year, month.month - 1),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: EdgeInsets.symmetric(horizontal: bs(10)),
           child: SizedBox(
-            width: 56,
+            width: bs(56),
             child: Text(
               _monthYear(month),
               style: _style(12, FontWeight.w600),
@@ -331,7 +331,7 @@ class _GesamtsaldoFooter extends ConsumerWidget {
     final currency = ref.watch(currencySymbolProvider);
 
     return Container(
-      padding: const EdgeInsets.only(top: 10),
+      padding: EdgeInsets.only(top: bs(10)),
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(color: Colors.white.withValues(alpha: 0.07)),
@@ -347,7 +347,7 @@ class _GesamtsaldoFooter extends ConsumerWidget {
               Text('Gesamtsaldo · alle Konten',
                   style: _style(
                       9, FontWeight.w400, TraumColors.onBackgroundMuted)),
-              const SizedBox(height: 1),
+              SizedBox(height: bs(1)),
               Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                 balance.when(
                   data: (b) => HiddenAmount(
@@ -361,7 +361,7 @@ class _GesamtsaldoFooter extends ConsumerWidget {
                           15, FontWeight.w700, TraumColors.onBackgroundMuted)),
                   error: (_, _) => const SizedBox.shrink(),
                 ),
-                const SizedBox(width: 6),
+                SizedBox(width: bs(6)),
                 change.when(
                   data: (c) {
                     if (c == null) return const SizedBox.shrink();
@@ -382,8 +382,8 @@ class _GesamtsaldoFooter extends ConsumerWidget {
             ],
           ),
           SizedBox(
-            width: 68,
-            height: 26,
+            width: bs(68),
+            height: bs(26),
             child: spots.when(
               data: (s) => _MiniSparkline(spots: s),
               loading: () => const SizedBox.shrink(),
@@ -421,11 +421,11 @@ class _MiniSparkline extends StatelessWidget {
           isCurved: true,
           curveSmoothness: 0.3,
           color: TraumColors.mintGreen,
-          barWidth: 1.8,
+          barWidth: bs(1.8),
           dotData: FlDotData(
             getDotPainter: (spot, _, _, index) => index == spots.length - 1
                 ? FlDotCirclePainter(
-                    radius: 2.5,
+                    radius: bs(2.5),
                     color: TraumColors.mintGreen,
                     strokeWidth: 0,
                     strokeColor: Colors.transparent,
@@ -452,7 +452,7 @@ class _QuickActionChips extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      padding: EdgeInsets.fromLTRB(bs(16), 0, bs(16), bs(8)),
       child: Row(children: [
         _QuickChip(
           label: 'Sparziele',
@@ -460,21 +460,21 @@ class _QuickActionChips extends StatelessWidget {
           color: TraumColors.amberGold,
           onTap: () => context.push(Routes.savings),
         ),
-        const SizedBox(width: 6),
+        SizedBox(width: bs(6)),
         _QuickChip(
           label: 'Transaktionen',
           icon: Icons.receipt_long_rounded,
           color: TraumColors.cyanBlue,
           onTap: () => context.push(Routes.transactionList),
         ),
-        const SizedBox(width: 6),
+        SizedBox(width: bs(6)),
         _QuickChip(
           label: 'Wiederkehrend',
           icon: Icons.repeat_rounded,
           color: TraumColors.indigoBlue,
           onTap: () => context.push(Routes.recurring),
         ),
-        const SizedBox(width: 6),
+        SizedBox(width: bs(6)),
         _QuickChip(
           label: 'Schulden',
           icon: Icons.shield_rounded,
@@ -502,15 +502,15 @@ class _QuickChip extends StatelessWidget {
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+          padding: EdgeInsets.symmetric(horizontal: bs(10), vertical: bs(7)),
           decoration: BoxDecoration(
             color: TraumColors.surface,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(bs(10)),
             border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            Icon(icon, color: color, size: 12),
-            const SizedBox(width: 5),
+            Icon(icon, color: color, size: bs(12)),
+            SizedBox(width: bs(5)),
             Text(label, style: _style(10, FontWeight.w600)),
           ]),
         ),
@@ -532,22 +532,22 @@ class _MiniStat extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Expanded(
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
+          padding: EdgeInsets.symmetric(horizontal: bs(9), vertical: bs(8)),
           decoration: BoxDecoration(
             color: TraumColors.heroInner,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(bs(10)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(children: [
                 Container(
-                  width: 5,
-                  height: 5,
+                  width: bs(5),
+                  height: bs(5),
                   decoration:
                       BoxDecoration(color: dotColor, shape: BoxShape.circle),
                 ),
-                const SizedBox(width: 4),
+                SizedBox(width: bs(4)),
                 Flexible(
                   child: Text(label,
                       style: _style(
@@ -555,7 +555,7 @@ class _MiniStat extends StatelessWidget {
                       overflow: TextOverflow.ellipsis),
                 ),
               ]),
-              const SizedBox(height: 2),
+              SizedBox(height: bs(2)),
               HiddenAmount(
                 child: Text(value,
                     style: _style(12, FontWeight.w700, valueColor),
@@ -636,22 +636,22 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                         11, FontWeight.w500, TraumColors.amberGold)),
               ),
             ]),
-            const SizedBox(height: 8),
+            SizedBox(height: bs(8)),
             txs.when(
               data: (list) {
                 if (list.isEmpty) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    padding: EdgeInsets.symmetric(vertical: bs(20)),
                     child: Center(
                       child: Column(children: [
-                        const Icon(Icons.receipt_long_outlined,
+                        Icon(Icons.receipt_long_outlined,
                             color: TraumColors.onBackgroundSubtle,
-                            size: 32),
-                        const SizedBox(height: 8),
+                            size: bs(32)),
+                        SizedBox(height: bs(8)),
                         Text('Noch keine Transaktionen',
                             style: _style(13, FontWeight.w400,
                                 TraumColors.onBackgroundMuted)),
-                        const SizedBox(height: 4),
+                        SizedBox(height: bs(4)),
                         Text('Tippe auf + Neu um eine einzutragen',
                             style: _style(12, FontWeight.w400,
                                 TraumColors.onBackgroundSubtle)),
@@ -679,15 +679,15 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                       ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: Container(
-                          width: 34,
-                          height: 34,
+                          width: bs(34),
+                          height: bs(34),
                           decoration: BoxDecoration(
                             color: catColor.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(9),
+                            borderRadius: BorderRadius.circular(bs(9)),
                           ),
                           child: Center(
                             child: _catIcon(
-                                tx.category?.emoji, catColor, 14),
+                                tx.category?.emoji, catColor, bs(14)),
                           ),
                         ),
                         title: Text(tx.name,
@@ -705,9 +705,9 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                                   style: _style(
                                       11, FontWeight.w700, amountColor)),
                             ),
-                            const SizedBox(width: 2),
-                            const Icon(Icons.chevron_right_rounded,
-                                size: 12,
+                            SizedBox(width: bs(2)),
+                            Icon(Icons.chevron_right_rounded,
+                                size: bs(12),
                                 color: TraumColors.onBackgroundSubtle),
                           ],
                         ),
@@ -716,15 +716,15 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                       ),
                       if (i < list.length - 1)
                         Divider(
-                            height: 1,
+                            height: bs(1),
                             color: Colors.white.withValues(alpha: 0.05)),
                     ]);
                   }).toList(),
                 );
               },
-              loading: () => const SizedBox(
-                height: 80,
-                child: Center(
+              loading: () => SizedBox(
+                height: bs(80),
+                child: const Center(
                   child: CircularProgressIndicator(
                       color: TraumColors.amberGold),
                 ),
