@@ -11,6 +11,7 @@ import '../../core/theme/colors.dart';
 import 'budget_category_colors.dart';
 import 'budget_category_icons.dart';
 import 'budget_providers.dart';
+import 'budget_scale.dart';
 import 'quick_entry_bottom_sheet.dart';
 import 'widgets/accounts_card.dart';
 import 'widgets/budget_overview_card.dart';
@@ -22,7 +23,8 @@ class BudgetScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
+    return BudgetTextScale(
+      child: Scaffold(
       backgroundColor: TraumColors.background,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
@@ -70,6 +72,7 @@ class BudgetScreen extends ConsumerWidget {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      ),
     );
   }
 }
@@ -759,11 +762,11 @@ class _Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        padding: const EdgeInsets.all(13),
+        margin: EdgeInsets.symmetric(horizontal: bs(16), vertical: bs(6)),
+        padding: EdgeInsets.all(bs(13)),
         decoration: BoxDecoration(
           color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(bs(16)),
           border: Border.all(
               color: Colors.white.withValues(alpha: 0.08), width: 1),
         ),
@@ -788,12 +791,12 @@ class _NavBtn extends StatelessWidget {
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
         child: Container(
-          width: 26,
-          height: 26,
+          width: bs(26),
+          height: bs(26),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(13),
+            borderRadius: BorderRadius.circular(bs(13)),
           ),
-          child: Icon(icon, color: Colors.white, size: 14),
+          child: Icon(icon, color: Colors.white, size: bs(14)),
         ),
       );
 }
