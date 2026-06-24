@@ -57,37 +57,40 @@ class NumpadWidget extends StatelessWidget {
     return Column(
       children: keys.map((row) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.only(bottom: 5),
           child: Row(
             children: row.map((key) {
               final isDelete = key == '⌫';
+              final isComma = key == ',';
               return Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: Material(
                     color: isDelete
-                        ? TraumColors.surfaceVariant
-                        : TraumColors.surface,
-                    borderRadius: BorderRadius.circular(12),
+                        ? TraumColors.heroInner
+                        : TraumColors.numKey,
+                    borderRadius: BorderRadius.circular(10),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(10),
                       onTap: () => _handleKey(key),
                       child: Container(
-                        height: 56,
+                        height: 42,
                         alignment: Alignment.center,
                         child: isDelete
                             ? const Icon(
                                 Icons.backspace_outlined,
                                 color: TraumColors.onBackgroundMuted,
-                                size: 20,
+                                size: 16,
                               )
                             : Text(
                                 key,
-                                style: const TextStyle(
-                                  color: TraumColors.onBackground,
+                                style: TextStyle(
+                                  color: isComma
+                                      ? TraumColors.textBright
+                                      : TraumColors.onBackground,
                                   fontFamily: 'DMSans',
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 20,
+                                  fontWeight: isComma ? FontWeight.w300 : FontWeight.w600,
+                                  fontSize: isComma ? 22 : 20,
                                 ),
                               ),
                       ),
