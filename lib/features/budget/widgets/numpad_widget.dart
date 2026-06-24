@@ -72,6 +72,8 @@ class NumpadWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(10),
+                      highlightColor: isDelete ? null : TraumColors.surfaceHover,
+                      hoverColor: isDelete ? null : TraumColors.surfaceHover,
                       onTap: () => _handleKey(key),
                       child: Container(
                         height: 42,

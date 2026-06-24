@@ -494,8 +494,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                           _categoryName = isSelected ? null : filtered[i].name;
                                         }),
                                       ),
-                                      if (i < filtered.length - 1 || true)
-                                        const SizedBox(width: 6),
+                                      const SizedBox(width: 6),
                                     ],
                                     // "+ Neu" tile
                                     GestureDetector(

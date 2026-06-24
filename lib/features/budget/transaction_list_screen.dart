@@ -284,9 +284,7 @@ class _FilterChip extends StatelessWidget {
               : TraumColors.surfaceVariant,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: selected
-                ? TraumColors.amberGold.withValues(alpha: 0.3)
-                : TraumColors.amberGold.withValues(alpha: 0.3),
+            color: TraumColors.amberGold.withValues(alpha: 0.3),
           ),
         ),
         child: Text(

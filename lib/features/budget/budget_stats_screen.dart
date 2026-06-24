@@ -781,10 +781,10 @@ class _TableRow extends StatelessWidget {
     return Container(
       decoration: isHeader
           ? null
-          : const BoxDecoration(
+          : BoxDecoration(
               border: Border(
                 top: BorderSide(
-                  color: Color(0x0DFFFFFF), // white@0.05
+                  color: Colors.white.withValues(alpha: 0.05),
                 ),
               ),
             ),
