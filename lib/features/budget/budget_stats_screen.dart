@@ -150,7 +150,7 @@ class _StatsBody extends StatelessWidget {
       return _MonthData(month: m, income: income, expense: expense);
     }).toList();
 
-    // Category spending totals (all time)
+    // Category spending totals (all time) — used for top-categories §5.4 and summary cards
     final spendingByCategory = <int, double>{};
     for (final t in transactions.where((t) => t.type == 'expense')) {
       if (t.categoryId != null) {
@@ -175,7 +175,19 @@ class _StatsBody extends StatelessWidget {
     ];
     final currentMonthLabel = monthNames[now.month - 1];
 
-    final donutSlices = buildDonutSlices(spendingByCategory, categories);
+    // §5.3 Donut data scoped to current month only
+    final donutSpendingByCategory = <int, double>{};
+    for (final t in transactions.where((t) =>
+        t.type == 'expense' &&
+        t.date.year == now.year &&
+        t.date.month == now.month)) {
+      if (t.categoryId != null) {
+        donutSpendingByCategory[t.categoryId!] =
+            (donutSpendingByCategory[t.categoryId!] ?? 0) + t.amount;
+      }
+    }
+
+    final donutSlices = buildDonutSlices(donutSpendingByCategory, categories);
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -777,7 +789,7 @@ class _TableRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(children: [
         SizedBox(
-          width: 28,
+          width: 48,
           child: Text(month, style: cell(textColor)),
         ),
         Expanded(
