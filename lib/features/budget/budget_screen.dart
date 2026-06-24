@@ -51,23 +51,22 @@ class BudgetScreen extends ConsumerWidget {
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).padding.bottom + 16,
         ),
-        child: FloatingActionButton.extended(
-          onPressed: () => showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (_) => const QuickEntryBottomSheet(),
+        child: SizedBox(
+          width: 48,
+          height: 48,
+          child: FloatingActionButton(
+            onPressed: () => showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (_) => const QuickEntryBottomSheet(),
+            ),
+            backgroundColor: TraumColors.amberGold,
+            elevation: 6,
+            shape: const CircleBorder(),
+            child: Icon(Icons.add,
+                size: 22, color: TraumColors.background),
           ),
-          backgroundColor: TraumColors.amberGold,
-          foregroundColor: Colors.white,
-          elevation: 6,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(50)),
-          label: const Text('+ Neu',
-              style: TextStyle(
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 15)),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -90,13 +89,9 @@ class _BudgetHeaderCard extends ConsumerWidget {
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 2, 16, 9),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [TraumColors.surfaceElevated, TraumColors.surface],
-        ),
+        gradient: TraumColors.gradientHero,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
             color: TraumColors.amberGold.withValues(alpha: 0.18), width: 1),
@@ -220,7 +215,7 @@ class _BudgetHeaderCard extends ConsumerWidget {
           style: _style(10, FontWeight.w400, TraumColors.onBackgroundMuted)),
       HiddenAmount(
         child: Text('~${_fmt(forecast)} $currency übrig',
-            style: _style(10, FontWeight.w600, TraumColors.onBackground)),
+            style: _style(10, FontWeight.w600, TraumColors.textBright)),
       ),
     ]);
   }
@@ -299,7 +294,14 @@ class _MonthPill extends ConsumerWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Text(_monthYear(month), style: _style(13, FontWeight.w600)),
+          child: SizedBox(
+            width: 56,
+            child: Text(
+              _monthYear(month),
+              style: _style(12, FontWeight.w600),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ),
         _NavBtn(
           icon: Icons.chevron_right,
@@ -497,16 +499,16 @@ class _QuickChip extends StatelessWidget {
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
           decoration: BoxDecoration(
             color: TraumColors.surface,
-            borderRadius: BorderRadius.circular(11),
+            borderRadius: BorderRadius.circular(10),
             border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            Icon(icon, color: color, size: 14),
+            Icon(icon, color: color, size: 12),
             const SizedBox(width: 5),
-            Text(label, style: _style(11, FontWeight.w600)),
+            Text(label, style: _style(10, FontWeight.w600)),
           ]),
         ),
       );
@@ -529,7 +531,7 @@ class _MiniStat extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
           decoration: BoxDecoration(
-            color: TraumColors.background,
+            color: TraumColors.heroInner,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
@@ -622,13 +624,13 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
           children: [
             Row(children: [
               Text('Letzte Transaktionen',
-                  style: _style(16, FontWeight.w600)),
+                  style: _style(13, FontWeight.w600)),
               const Spacer(),
               GestureDetector(
                 onTap: () => context.go('/budget/transactions'),
-                child: Text('Mehr ›',
+                child: Text('Alle ›',
                     style: _style(
-                        13, FontWeight.w500, TraumColors.amberGold)),
+                        11, FontWeight.w500, TraumColors.amberGold)),
               ),
             ]),
             const SizedBox(height: 8),
@@ -669,47 +671,40 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                     final prefix = isIncome ? '+' : (isTransfer ? '' : '−');
                     final catColor = _catColor(tx.tx.categoryId);
 
+                    final timeLabel = _dateLabel(tx.date);
                     return Column(children: [
                       ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: Container(
-                          width: 44,
-                          height: 44,
+                          width: 34,
+                          height: 34,
                           decoration: BoxDecoration(
                             color: catColor.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(9),
                           ),
                           child: Center(
                             child: _catIcon(
-                                tx.category?.emoji, catColor, 20),
+                                tx.category?.emoji, catColor, 14),
                           ),
                         ),
                         title: Text(tx.name,
-                            style: _style(14, FontWeight.w600)),
-                        subtitle: Text(tx.categoryName,
-                            style: _style(12, FontWeight.w400,
+                            style: _style(11, FontWeight.w600)),
+                        subtitle: Text(
+                            '${tx.categoryName} · $timeLabel',
+                            style: _style(9, FontWeight.w400,
                                 TraumColors.onBackgroundMuted)),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                HiddenAmount(
-                                  child: Text(
-                                      '$prefix$currency${_fmt(tx.amount.abs())}',
-                                      style: _style(
-                                          14, FontWeight.w700, amountColor)),
-                                ),
-                                Text(_dateLabel(tx.date),
-                                    style: _style(12, FontWeight.w400,
-                                        TraumColors.onBackgroundMuted)),
-                              ],
+                            HiddenAmount(
+                              child: Text(
+                                  '$prefix$currency${_fmt(tx.amount.abs())}',
+                                  style: _style(
+                                      11, FontWeight.w700, amountColor)),
                             ),
                             const SizedBox(width: 2),
                             const Icon(Icons.chevron_right_rounded,
-                                size: 16,
+                                size: 12,
                                 color: TraumColors.onBackgroundSubtle),
                           ],
                         ),
@@ -719,7 +714,7 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                       if (i < list.length - 1)
                         Divider(
                             height: 1,
-                            color: Colors.white.withValues(alpha: 0.06)),
+                            color: Colors.white.withValues(alpha: 0.05)),
                     ]);
                   }).toList(),
                 );
@@ -765,10 +760,10 @@ class _Card extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(13),
         decoration: BoxDecoration(
           color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
               color: Colors.white.withValues(alpha: 0.08), width: 1),
         ),
@@ -792,7 +787,14 @@ class _NavBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
-        child: Icon(icon, color: TraumColors.onBackground, size: 24),
+        child: Container(
+          width: 26,
+          height: 26,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(13),
+          ),
+          child: Icon(icon, color: Colors.white, size: 14),
+        ),
       );
 }
 

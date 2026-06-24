@@ -2,7 +2,6 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/components/traum_card.dart';
 import '../../../core/navigation/routes.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/preferences_provider.dart';
@@ -22,7 +21,7 @@ class AccountsCard extends ConsumerWidget {
     final derived = ref.watch(accountDerivedBalancesProvider).value ?? const {};
     final currency = ref.watch(currencySymbolProvider);
 
-    return TraumCard(
+    return _AccountsContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -33,7 +32,7 @@ class AccountsCard extends ConsumerWidget {
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w600,
                 color: TraumColors.onBackground,
-                fontSize: 16,
+                fontSize: 13,
               ),
             ),
             const Spacer(),
@@ -44,12 +43,12 @@ class AccountsCard extends ConsumerWidget {
                 style: TextStyle(
                   fontFamily: 'DMSans',
                   color: TraumColors.amberGold,
-                  fontSize: 13,
+                  fontSize: 11,
                 ),
               ),
             ),
           ]),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           accountsAsync.when(
             data: (list) => list.isEmpty
                 ? const SizedBox.shrink()
@@ -67,7 +66,7 @@ class AccountsCard extends ConsumerWidget {
                         ),
                         if (i < list.length - 1)
                           Divider(
-                            color: Colors.white.withValues(alpha: 0.06),
+                            color: Colors.white.withValues(alpha: 0.05),
                             height: 1,
                           ),
                       ],
@@ -84,10 +83,10 @@ class AccountsCard extends ConsumerWidget {
             onTap: () => _showAccountSheet(context),
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
                 color: TraumColors.surfaceVariant,
-                borderRadius: BorderRadius.circular(TraumRadius.input),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: const Text(
                 '+ Konto hinzufügen',
@@ -95,7 +94,7 @@ class AccountsCard extends ConsumerWidget {
                 style: TextStyle(
                   fontFamily: 'DMSans',
                   color: TraumColors.onBackgroundMuted,
-                  fontSize: 13,
+                  fontSize: 11,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -140,7 +139,7 @@ class _AccountRow extends StatelessWidget {
     };
 
     final icon = switch (account.type) {
-      'checking' => Icons.account_balance_outlined,
+      'checking' => Icons.credit_card_outlined,
       'savings' => Icons.savings_outlined,
       'credit' => Icons.credit_card_outlined,
       'investment' => Icons.show_chart_outlined,
@@ -152,16 +151,16 @@ class _AccountRow extends StatelessWidget {
         : account.institution ?? '';
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 7),
       child: Row(children: [
         Container(
-          width: 44,
-          height: 44,
+          width: 34,
+          height: 34,
           decoration: BoxDecoration(
             color: iconColor.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(9),
           ),
-          child: Icon(icon, color: iconColor, size: 20),
+          child: Icon(icon, color: iconColor, size: 16),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -174,7 +173,7 @@ class _AccountRow extends StatelessWidget {
                   fontFamily: 'DMSans',
                   fontWeight: FontWeight.w600,
                   color: TraumColors.onBackground,
-                  fontSize: 14,
+                  fontSize: 12,
                 ),
               ),
               if (subtitle.isNotEmpty)
@@ -183,7 +182,7 @@ class _AccountRow extends StatelessWidget {
                   style: const TextStyle(
                     fontFamily: 'DMSans',
                     color: TraumColors.onBackgroundMuted,
-                    fontSize: 12,
+                    fontSize: 9,
                   ),
                 ),
             ],
@@ -199,7 +198,7 @@ class _AccountRow extends StatelessWidget {
                   fontFamily: 'DMSans',
                   fontWeight: FontWeight.w700,
                   color: balanceColor,
-                  fontSize: 14,
+                  fontSize: 12,
                 ),
               ),
             ),
@@ -209,7 +208,7 @@ class _AccountRow extends StatelessWidget {
                 style: TextStyle(
                     fontFamily: 'DMSans',
                     color: TraumColors.mintGreen,
-                    fontSize: 11),
+                    fontSize: 9),
               )
             else if (account.returnRate != null && isInvestment)
               Text(
@@ -217,7 +216,7 @@ class _AccountRow extends StatelessWidget {
                 style: const TextStyle(
                     fontFamily: 'DMSans',
                     color: TraumColors.mintGreen,
-                    fontSize: 11),
+                    fontSize: 9),
               )
             else if (account.returnRate != null)
               Text(
@@ -225,13 +224,30 @@ class _AccountRow extends StatelessWidget {
                 style: const TextStyle(
                     fontFamily: 'DMSans',
                     color: TraumColors.mintGreen,
-                    fontSize: 11),
+                    fontSize: 9),
               ),
           ],
         ),
       ]),
     );
   }
+}
+
+class _AccountsContainer extends StatelessWidget {
+  final Widget child;
+  const _AccountsContainer({required this.child});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.all(13),
+        decoration: BoxDecoration(
+          color: TraumColors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border:
+              Border.all(color: Colors.white.withValues(alpha: 0.08), width: 1),
+        ),
+        child: child,
+      );
 }
 
 class AddAccountSheet extends ConsumerStatefulWidget {

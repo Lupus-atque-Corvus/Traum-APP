@@ -8,6 +8,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'widgets/budget_sub_header.dart';
 
 class SavingsScreen extends ConsumerWidget {
   const SavingsScreen({super.key});
@@ -19,68 +20,77 @@ class SavingsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: TraumColors.background,
-      appBar: AppBar(
-        backgroundColor: TraumColors.background,
-        title: Text(AppLocalizations.of(context)!.savingsGoals,
-            style: const TextStyle(
-                color: TraumColors.onBackground,
-                fontFamily: 'DMSans',
-                fontWeight: FontWeight.w700)),
-        iconTheme: const IconThemeData(color: TraumColors.onBackground),
-        elevation: 0,
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BudgetSubHeader(title: AppLocalizations.of(context)!.savingsGoals),
+            Expanded(
+              child: goalsAsync.when(
+                data: (goals) {
+                  if (goals.isEmpty) {
+                    return Center(
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        Icon(Icons.savings_rounded,
+                            size: 64,
+                            color: TraumColors.onBackgroundSubtle
+                                .withValues(alpha: 0.5)),
+                        const SizedBox(height: 16),
+                        Text(AppLocalizations.of(context)!.noSavingsGoals,
+                            style: const TextStyle(
+                                color: TraumColors.onBackgroundMuted,
+                                fontFamily: 'DMSans',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16)),
+                        const SizedBox(height: 8),
+                        Text(
+                            AppLocalizations.of(context)!
+                                .tapToCreateSavingsGoal,
+                            style: const TextStyle(
+                                color: TraumColors.onBackgroundSubtle,
+                                fontFamily: 'DMSans',
+                                fontSize: 13),
+                            textAlign: TextAlign.center),
+                      ]),
+                    );
+                  }
+                  return ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(12, 4, 12, 80),
+                    itemCount: goals.length,
+                    itemBuilder: (ctx, i) => _SavingsGoalCard(
+                      goal: goals[i],
+                      currency: currency,
+                      onDelete: () =>
+                          ref.read(budgetDaoProvider).deleteSavingsGoal(goals[i].id),
+                      onAddAmount: (amount) => _addToGoal(ref, goals[i], amount),
+                    ),
+                  );
+                },
+                loading: () => const Center(
+                    child: CircularProgressIndicator(
+                        color: TraumColors.mintGreen)),
+                error: (e, _) => Center(
+                    child: Text('${AppLocalizations.of(context)!.error}: $e',
+                        style:
+                            const TextStyle(color: TraumColors.roseRed))),
+              ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: TraumColors.mintGreen,
+        elevation: 0,
         onPressed: () => _showAddGoalSheet(context, ref, currency),
-        child: const Icon(Icons.add_rounded, color: Colors.white),
-      ),
-      body: goalsAsync.when(
-        data: (goals) {
-          if (goals.isEmpty) {
-            return Center(
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.savings_rounded,
-                    size: 64,
-                    color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
-                const SizedBox(height: 16),
-                Text(AppLocalizations.of(context)!.noSavingsGoals,
-                    style: const TextStyle(
-                        color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16)),
-                const SizedBox(height: 8),
-                Text(AppLocalizations.of(context)!.tapToCreateSavingsGoal,
-                    style: const TextStyle(
-                        color: TraumColors.onBackgroundSubtle,
-                        fontFamily: 'DMSans',
-                        fontSize: 13),
-                    textAlign: TextAlign.center),
-              ]),
-            );
-          }
-          return ListView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
-            itemCount: goals.length,
-            itemBuilder: (ctx, i) => _SavingsGoalCard(
-              goal: goals[i],
-              currency: currency,
-              onDelete: () => ref.read(budgetDaoProvider).deleteSavingsGoal(goals[i].id),
-              onAddAmount: (amount) => _addToGoal(ref, goals[i], amount),
-            ),
-          );
-        },
-        loading: () =>
-            const Center(child: CircularProgressIndicator(color: TraumColors.mintGreen)),
-        error: (e, _) => Center(
-            child: Text('${AppLocalizations.of(context)!.error}: $e',
-                style: const TextStyle(color: TraumColors.roseRed))),
+        child: const Icon(Icons.add_rounded,
+            size: 20, color: TraumColors.background),
       ),
     );
   }
 
   Future<void> _addToGoal(WidgetRef ref, SavingsGoal goal, double amount) async {
-    final newAmount = (goal.currentAmount + amount).clamp(0.0, goal.targetAmount);
+    final newAmount =
+        (goal.currentAmount + amount).clamp(0.0, goal.targetAmount);
     await ref.read(budgetDaoProvider).updateSavingsGoal(
           SavingsGoalsCompanion(
             id: Value(goal.id),
@@ -92,13 +102,15 @@ class SavingsScreen extends ConsumerWidget {
         );
   }
 
-  void _showAddGoalSheet(BuildContext context, WidgetRef ref, String currency) {
+  void _showAddGoalSheet(
+      BuildContext context, WidgetRef ref, String currency) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+        borderRadius:
+            BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
       ),
       builder: (ctx) => _AddGoalSheet(
         currency: currency,
@@ -107,6 +119,10 @@ class SavingsScreen extends ConsumerWidget {
     );
   }
 }
+
+// ---------------------------------------------------------------------------
+// Goal card
+// ---------------------------------------------------------------------------
 
 class _SavingsGoalCard extends StatelessWidget {
   final SavingsGoal goal;
@@ -121,12 +137,19 @@ class _SavingsGoalCard extends StatelessWidget {
     required this.onAddAmount,
   });
 
+  // Default accent for savings goals — no per-goal color in data model.
+  static const _accent = TraumColors.mintGreen;
+
   @override
   Widget build(BuildContext context) {
     final progress = goal.targetAmount > 0
         ? (goal.currentAmount / goal.targetAmount).clamp(0.0, 1.0)
         : 0.0;
-    final remaining = goal.targetAmount - goal.currentAmount;
+    final percent = (progress * 100).round();
+
+    final borderColor = goal.isCompleted
+        ? TraumColors.mintGreen.withValues(alpha: 0.3)
+        : Colors.white.withValues(alpha: 0.07);
 
     return Dismissible(
       key: ValueKey(goal.id),
@@ -136,109 +159,136 @@ class _SavingsGoalCard extends StatelessWidget {
         padding: const EdgeInsets.only(right: 20),
         decoration: BoxDecoration(
           color: TraumColors.roseRed.withValues(alpha: 0.2),
-          borderRadius: BorderRadius.circular(TraumRadius.card),
+          borderRadius: BorderRadius.circular(15),
         ),
         child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
       ),
       onDismissed: (_) => onDelete(),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
+        margin: const EdgeInsets.only(bottom: 9),
+        padding: const EdgeInsets.all(13),
         decoration: BoxDecoration(
           color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(TraumRadius.card),
-          border: Border.all(
-            color: goal.isCompleted
-                ? TraumColors.mintGreen.withValues(alpha: 0.4)
-                : TraumColors.mintGreen.withValues(alpha: 0.15),
-          ),
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: borderColor, width: 1),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(children: [
-                Expanded(
-                  child: Text(goal.name,
-                      style: const TextStyle(
-                          color: TraumColors.onBackground,
-                          fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16)),
-                ),
-                if (goal.isCompleted)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: TraumColors.mintGreenDim,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(AppLocalizations.of(context)!.reached,
-                        style: const TextStyle(
-                            color: TraumColors.mintGreen,
-                            fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 11)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Header row ──────────────────────────────────────────────
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Icon container 40×40 / radius 11 / accent@15%
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: _accent.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(11),
                   ),
-              ]),
-              const SizedBox(height: 12),
-              GradientProgressBar(
-                value: progress,
-                gradient: const LinearGradient(
-                    colors: [TraumColors.mintGreen, TraumColors.cyanBlue]),
-              ),
-              const SizedBox(height: 8),
+                  child: const Icon(Icons.savings_rounded,
+                      size: 18, color: _accent),
+                ),
+                const SizedBox(width: 10),
+                // Title + "Ziel: …" subtitle
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(goal.name,
+                          style: const TextStyle(
+                              fontFamily: 'DMSans',
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13,
+                              color: TraumColors.onBackground)),
+                      const SizedBox(height: 2),
+                      Text(
+                          '${AppLocalizations.of(context)!.goal}: '
+                          '${goal.targetAmount.toStringAsFixed(2)} $currency'
+                          '${goal.targetDate != null ? ' · bis ${goal.targetDate!.month}/${goal.targetDate!.year}' : ''}',
+                          style: const TextStyle(
+                              fontFamily: 'DMSans',
+                              fontSize: 9,
+                              color: TraumColors.onBackgroundMuted)),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Percent display — right aligned
+                Text('$percent%',
+                    style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        color: _accent)),
+              ],
+            ),
+            const SizedBox(height: 9),
+            // ── Progress bar ─────────────────────────────────────────────
+            GradientProgressBar(
+              value: progress,
+              height: 6,
+              gradient: const LinearGradient(
+                  colors: [TraumColors.mintGreen, TraumColors.cyanBlue]),
+            ),
+            const SizedBox(height: 6),
+            // ── Footer ───────────────────────────────────────────────────
+            if (goal.isCompleted)
+              // Completed badge — no deposit row
+              Row(children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: TraumColors.mintGreen.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.reached.toUpperCase(),
+                    style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 9,
+                        color: TraumColors.mintGreen),
+                  ),
+                ),
+              ])
+            else
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('${goal.currentAmount.toStringAsFixed(2)} $currency',
+                  // "X € von Y €"
+                  Text(
+                      '${goal.currentAmount.toStringAsFixed(2)} $currency '
+                      'von '
+                      '${goal.targetAmount.toStringAsFixed(2)} $currency',
                       style: const TextStyle(
-                          color: TraumColors.mintGreen,
                           fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14)),
-                  Text('${AppLocalizations.of(context)!.goal}: ${goal.targetAmount.toStringAsFixed(2)} $currency',
-                      style: const TextStyle(
-                          color: TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans',
-                          fontSize: 12)),
-                ],
-              ),
-              if (!goal.isCompleted) ...[
-                const SizedBox(height: 4),
-                Text(AppLocalizations.of(context)!.remainingAmount(remaining.toStringAsFixed(2), currency),
-                    style: const TextStyle(
-                        color: TraumColors.onBackgroundSubtle,
-                        fontFamily: 'DMSans',
-                        fontSize: 11)),
-              ],
-              if (goal.targetDate != null) ...[
-                const SizedBox(height: 4),
-                Text(
-                    AppLocalizations.of(context)!.targetDate('${goal.targetDate!.day}.${goal.targetDate!.month}.${goal.targetDate!.year}'),
-                    style: const TextStyle(
-                        color: TraumColors.onBackgroundSubtle,
-                        fontFamily: 'DMSans',
-                        fontSize: 11)),
-              ],
-              if (!goal.isCompleted) ...[
-                const SizedBox(height: 12),
-                Row(children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => _showDepositDialog(context),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: TraumColors.mintGreen,
-                        side: const BorderSide(color: TraumColors.mintGreen),
+                          fontSize: 10,
+                          color: TraumColors.onBackgroundMuted)),
+                  // "+ Einzahlen" pill
+                  GestureDetector(
+                    onTap: () => _showDepositDialog(context),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: _accent.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(AppLocalizations.of(context)!.deposit,
-                          style: const TextStyle(fontFamily: 'DMSans')),
+                      child: Text(
+                          '+ ${AppLocalizations.of(context)!.deposit}',
+                          style: const TextStyle(
+                              fontFamily: 'DMSans',
+                              fontWeight: FontWeight.w600,
+                              fontSize: 10,
+                              color: _accent)),
                     ),
                   ),
-                ]),
-              ],
-            ],
-          ),
+                ],
+              ),
+          ],
         ),
       ),
     );
@@ -251,20 +301,25 @@ class _SavingsGoalCard extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surfaceElevated,
         title: Text(AppLocalizations.of(ctx)!.depositAmount,
-            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+            style: const TextStyle(
+                color: TraumColors.onBackground, fontFamily: 'DMSans')),
         content: TextField(
           controller: ctrl,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          keyboardType:
+              const TextInputType.numberWithOptions(decimal: true),
           autofocus: true,
-          style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
+          style: const TextStyle(
+              color: TraumColors.onBackground, fontFamily: 'DMSans'),
           decoration: InputDecoration(
             hintText: '0.00',
-            hintStyle: const TextStyle(color: TraumColors.onBackgroundSubtle),
+            hintStyle:
+                const TextStyle(color: TraumColors.onBackgroundSubtle),
             suffixText: currency,
             filled: true,
             fillColor: TraumColors.surface,
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(TraumRadius.card),
+                borderRadius:
+                    BorderRadius.circular(TraumRadius.card),
                 borderSide: BorderSide.none),
           ),
         ),
@@ -272,24 +327,32 @@ class _SavingsGoalCard extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: Text(AppLocalizations.of(ctx)!.cancel,
-                style: const TextStyle(color: TraumColors.onBackgroundMuted)),
+                style: const TextStyle(
+                    color: TraumColors.onBackgroundMuted)),
           ),
           TextButton(
             onPressed: () async {
-              final v = double.tryParse(ctrl.text.replaceAll(',', '.'));
+              final v =
+                  double.tryParse(ctrl.text.replaceAll(',', '.'));
               if (v != null && v > 0) {
                 Navigator.pop(ctx);
                 await onAddAmount(v);
               }
             },
             child: Text(AppLocalizations.of(ctx)!.deposit,
-                style: const TextStyle(color: TraumColors.mintGreen, fontWeight: FontWeight.w700)),
+                style: const TextStyle(
+                    color: TraumColors.mintGreen,
+                    fontWeight: FontWeight.w700)),
           ),
         ],
       ),
     );
   }
 }
+
+// ---------------------------------------------------------------------------
+// Add-goal bottom sheet
+// ---------------------------------------------------------------------------
 
 class _AddGoalSheet extends StatefulWidget {
   final String currency;
@@ -322,7 +385,9 @@ class _AddGoalSheetState extends State<_AddGoalSheet> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        left: 20, right: 20, top: 16,
+        left: 20,
+        right: 20,
+        top: 16,
         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
       ),
       child: SingleChildScrollView(
@@ -332,7 +397,8 @@ class _AddGoalSheetState extends State<_AddGoalSheet> {
           children: [
             Center(
               child: Container(
-                  width: 40, height: 4,
+                  width: 40,
+                  height: 4,
                   decoration: BoxDecoration(
                       color: TraumColors.onBackgroundSubtle,
                       borderRadius: BorderRadius.circular(2))),
@@ -345,13 +411,21 @@ class _AddGoalSheetState extends State<_AddGoalSheet> {
                     fontWeight: FontWeight.w700,
                     fontSize: 18)),
             const SizedBox(height: 16),
-            _buildTextField(AppLocalizations.of(context)!.fieldName, _nameCtrl, hint: AppLocalizations.of(context)!.savingsGoalNameHint),
+            _buildTextField(
+                AppLocalizations.of(context)!.fieldName, _nameCtrl,
+                hint: AppLocalizations.of(context)!.savingsGoalNameHint),
             const SizedBox(height: 12),
-            _buildTextField('${AppLocalizations.of(context)!.targetAmountLabel} (${widget.currency})', _targetCtrl,
-                hint: '1000.00', numeric: true),
+            _buildTextField(
+                '${AppLocalizations.of(context)!.targetAmountLabel} (${widget.currency})',
+                _targetCtrl,
+                hint: '1000.00',
+                numeric: true),
             const SizedBox(height: 12),
-            _buildTextField('${AppLocalizations.of(context)!.alreadySaved} (${widget.currency})', _currentCtrl,
-                hint: '0.00', numeric: true),
+            _buildTextField(
+                '${AppLocalizations.of(context)!.alreadySaved} (${widget.currency})',
+                _currentCtrl,
+                hint: '0.00',
+                numeric: true),
             const SizedBox(height: 12),
             ListTile(
               contentPadding: EdgeInsets.zero,
@@ -372,23 +446,28 @@ class _AddGoalSheetState extends State<_AddGoalSheet> {
               onTap: () async {
                 final picked = await showDatePicker(
                   context: context,
-                  initialDate: DateTime.now().add(const Duration(days: 30)),
+                  initialDate:
+                      DateTime.now().add(const Duration(days: 30)),
                   firstDate: DateTime.now(),
                   lastDate: DateTime(2100),
                   builder: (ctx, child) => Theme(
                     data: ThemeData.dark().copyWith(
-                        colorScheme:
-                            const ColorScheme.dark(primary: TraumColors.mintGreen)),
+                        colorScheme: const ColorScheme.dark(
+                            primary: TraumColors.mintGreen)),
                     child: child!,
                   ),
                 );
                 if (picked != null) setState(() => _targetDate = picked);
               },
             ),
-            _buildTextField(AppLocalizations.of(context)!.fieldNoteOptional, _noteCtrl, hint: AppLocalizations.of(context)!.whatSavingFor),
+            _buildTextField(
+                AppLocalizations.of(context)!.fieldNoteOptional, _noteCtrl,
+                hint: AppLocalizations.of(context)!.whatSavingFor),
             const SizedBox(height: 20),
             GradientButton(
-              label: _saving ? AppLocalizations.of(context)!.saving : AppLocalizations.of(context)!.createSavingsGoal,
+              label: _saving
+                  ? AppLocalizations.of(context)!.saving
+                  : AppLocalizations.of(context)!.createSavingsGoal,
               onPressed: _saving ? null : _save,
             ),
             const SizedBox(height: 8),
@@ -414,11 +493,13 @@ class _AddGoalSheetState extends State<_AddGoalSheet> {
           keyboardType: numeric
               ? const TextInputType.numberWithOptions(decimal: true)
               : TextInputType.text,
-          style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
+          style: const TextStyle(
+              color: TraumColors.onBackground, fontFamily: 'DMSans'),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: const TextStyle(
-                color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
+                color: TraumColors.onBackgroundSubtle,
+                fontFamily: 'DMSans'),
             filled: true,
             fillColor: TraumColors.surface,
             border: OutlineInputBorder(
@@ -434,24 +515,30 @@ class _AddGoalSheetState extends State<_AddGoalSheet> {
 
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              Text(AppLocalizations.of(context)!.nameRequired)));
       return;
     }
-    final target = double.tryParse(_targetCtrl.text.replaceAll(',', '.'));
+    final target =
+        double.tryParse(_targetCtrl.text.replaceAll(',', '.'));
     if (target == null || target <= 0) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.pleaseEnterValidTargetAmount)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context)!
+              .pleaseEnterValidTargetAmount)));
       return;
     }
-    final current = double.tryParse(_currentCtrl.text.replaceAll(',', '.')) ?? 0;
+    final current =
+        double.tryParse(_currentCtrl.text.replaceAll(',', '.')) ?? 0;
     setState(() => _saving = true);
     await widget.onAdd(SavingsGoalsCompanion.insert(
       name: _nameCtrl.text.trim(),
       targetAmount: target,
       currentAmount: Value(current),
       targetDate: Value(_targetDate),
-      note: Value(_noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim()),
+      note: Value(_noteCtrl.text.trim().isEmpty
+          ? null
+          : _noteCtrl.text.trim()),
     ));
     if (mounted) Navigator.pop(context);
   }

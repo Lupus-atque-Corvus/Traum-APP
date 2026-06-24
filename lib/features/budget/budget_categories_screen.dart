@@ -7,46 +7,75 @@ import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
 import 'budget_category_colors.dart';
 import 'budget_category_icons.dart';
+import 'widgets/budget_sub_header.dart';
 import 'widgets/icon_picker_grid.dart';
 
 class BudgetCategoriesScreen extends ConsumerWidget {
   const BudgetCategoriesScreen({super.key});
+
+  void _openSheet(BuildContext context, {BudgetCategory? category}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _CategorySheet(category: category),
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final catsAsync = ref.watch(allBudgetCategoriesStreamProvider);
     final currency = ref.watch(currencySymbolProvider);
 
+    final plusButton = GestureDetector(
+      onTap: () => _openSheet(context),
+      child: Container(
+        width: 28,
+        height: 28,
+        decoration: BoxDecoration(
+          color: TraumColors.amberGold.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: const Icon(Icons.add, size: 14, color: TraumColors.amberGold),
+      ),
+    );
+
     return Scaffold(
       backgroundColor: TraumColors.background,
-      appBar: AppBar(
-        backgroundColor: TraumColors.surface,
-        leading: BackButton(color: TraumColors.onBackground),
-        title: const Text(
-          'Budget-Kategorien',
-          style: TextStyle(
-            fontFamily: 'DMSans',
-            color: TraumColors.onBackground,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add_rounded, color: TraumColors.amberGold),
-            onPressed: () => showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (_) => const _CategorySheet(),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BudgetSubHeader(
+              title: 'Budget-Kategorien',
+              actions: [plusButton],
             ),
-          ),
-        ],
+            Expanded(
+              child: catsAsync.when(
+                data: (cats) => _buildBody(context, ref, cats, currency),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(color: TraumColors.amberGold),
+                ),
+                error: (_, _) => const SizedBox.shrink(),
+              ),
+            ),
+          ],
+        ),
       ),
-      body: catsAsync.when(
-        data: (cats) {
-          if (cats.isEmpty) {
-            return const Center(
+    );
+  }
+
+  Widget _buildBody(
+    BuildContext context,
+    WidgetRef ref,
+    List<BudgetCategory> cats,
+    String currency,
+  ) {
+    if (cats.isEmpty) {
+      return Column(
+        children: [
+          const Expanded(
+            child: Center(
               child: Padding(
                 padding: EdgeInsets.all(32),
                 child: Text(
@@ -59,104 +88,53 @@ class BudgetCategoriesScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-            );
-          }
-          return ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: cats.length,
-            separatorBuilder: (_, _) =>
-                const Divider(height: 1, color: TraumColors.surfaceVariant),
-            itemBuilder: (_, i) {
-              final cat = cats[i];
-              final catColor = cat.color != null
-                  ? Color(cat.color!)
-                  : TraumColors.amberGold;
-              return Dismissible(
-                key: ValueKey(cat.id),
-                direction: DismissDirection.endToStart,
-                background: Container(
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 20),
-                  child: const Icon(Icons.delete_rounded,
-                      color: TraumColors.roseRed),
-                ),
-                confirmDismiss: (_) => _confirmDelete(context, cat.name),
-                onDismissed: (_) =>
-                    ref.read(budgetDaoProvider).deleteCategory(cat.id),
-                child: ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  onTap: () => showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    builder: (_) => _CategorySheet(category: cat),
-                  ),
-                  leading: Container(
-                    width: 42,
-                    height: 42,
-                    decoration: BoxDecoration(
-                      color: catColor.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          _NewCategoryButton(onTap: () => _openSheet(context)),
+          const SizedBox(height: 12),
+        ],
+      );
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+      child: Column(
+        children: [
+          // List container
+          Container(
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.07),
+              ),
+            ),
+            clipBehavior: Clip.hardEdge,
+            child: Column(
+              children: [
+                for (int i = 0; i < cats.length; i++) ...[
+                  if (i > 0)
+                    Container(
+                      height: 1,
+                      color: Colors.white.withValues(alpha: 0.05),
                     ),
-                    child: Center(
-                      child: budgetCategoryGlyph(cat.emoji,
-                          color: catColor, size: 20),
-                    ),
+                  _CategoryRow(
+                    cat: cats[i],
+                    currency: currency,
+                    onTap: () => _openSheet(context, category: cats[i]),
+                    onDelete: () => ref
+                        .read(budgetDaoProvider)
+                        .deleteCategory(cats[i].id),
+                    onConfirmDelete: () =>
+                        _confirmDelete(context, cats[i].name),
                   ),
-                  title: Text(
-                    cat.name,
-                    style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackground,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                    ),
-                  ),
-                  subtitle: Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Row(children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 1),
-                        decoration: BoxDecoration(
-                          color: cat.isExpense
-                              ? TraumColors.surfaceVariant
-                              : TraumColors.mintGreenDim,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          cat.isExpense ? 'Ausgabe' : 'Einnahme',
-                          style: TextStyle(
-                            fontFamily: 'DMSans',
-                            fontSize: 9,
-                            color: cat.isExpense
-                                ? TraumColors.onBackgroundMuted
-                                : TraumColors.mintGreen,
-                          ),
-                        ),
-                      ),
-                      if (cat.monthlyLimit != null) ...[
-                        const SizedBox(width: 6),
-                        Text(
-                          'Limit: ${cat.monthlyLimit!.toStringAsFixed(0)} $currency / Mo.',
-                          style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            fontSize: 9,
-                            color: TraumColors.onBackgroundMuted,
-                          ),
-                        ),
-                      ],
-                    ]),
-                  ),
-                ),
-              );
-            },
-          );
-        },
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: TraumColors.amberGold),
-        ),
-        error: (_, _) => const SizedBox.shrink(),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          _NewCategoryButton(onTap: () => _openSheet(context)),
+        ],
       ),
     );
   }
@@ -167,39 +145,207 @@ class BudgetCategoriesScreen extends ConsumerWidget {
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Kategorie löschen?',
-            style: TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackground,
-                fontWeight: FontWeight.w700,
-                fontSize: 18)),
+        title: const Text(
+          'Kategorie löschen?',
+          style: TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackground,
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
+          ),
+        ),
         content: Text(
           '„$name" wird entfernt. Bestehende Transaktionen bleiben erhalten und erscheinen als „Sonstiges".',
           style: const TextStyle(
-              fontFamily: 'DMSans',
-              color: TraumColors.onBackgroundMuted,
-              fontSize: 14),
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackgroundMuted,
+            fontSize: 14,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Abbrechen',
-                style: TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackgroundMuted)),
+            child: const Text(
+              'Abbrechen',
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackgroundMuted,
+              ),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Löschen',
-                style: TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.roseRed,
-                    fontWeight: FontWeight.w600)),
+            child: const Text(
+              'Löschen',
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.roseRed,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ],
       ),
     );
     return result ?? false;
+  }
+}
+
+class _CategoryRow extends StatelessWidget {
+  final BudgetCategory cat;
+  final String currency;
+  final VoidCallback onTap;
+  final VoidCallback onDelete;
+  final Future<bool> Function() onConfirmDelete;
+
+  const _CategoryRow({
+    required this.cat,
+    required this.currency,
+    required this.onTap,
+    required this.onDelete,
+    required this.onConfirmDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final catColor =
+        cat.color != null ? Color(cat.color!) : TraumColors.amberGold;
+
+    return Dismissible(
+      key: ValueKey(cat.id),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        color: TraumColors.roseRed.withValues(alpha: 0.15),
+        child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
+      ),
+      confirmDismiss: (_) => onConfirmDelete(),
+      onDismissed: (_) => onDelete(),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          color: Colors.transparent,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+          child: Row(
+            children: [
+              // Icon container 38×38 radius 10
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: catColor.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                  child: budgetCategoryGlyph(cat.emoji,
+                      color: catColor, size: 16),
+                ),
+              ),
+              const SizedBox(width: 10),
+              // Name + sub row
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      cat.name,
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        color: TraumColors.onBackground,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        // Type badge
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 5,
+                            vertical: 1,
+                          ),
+                          decoration: BoxDecoration(
+                            color: cat.isExpense
+                                ? TraumColors.surfaceVariant
+                                : TraumColors.mintGreen.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            cat.isExpense ? 'Ausgabe' : 'Einnahme',
+                            style: TextStyle(
+                              fontFamily: 'DMSans',
+                              fontSize: 9,
+                              color: cat.isExpense
+                                  ? TraumColors.onBackgroundMuted
+                                  : TraumColors.mintGreen,
+                            ),
+                          ),
+                        ),
+                        if (cat.monthlyLimit != null) ...[
+                          const SizedBox(width: 5),
+                          Text(
+                            'Limit: ${cat.monthlyLimit!.toStringAsFixed(0)} $currency / Mo.',
+                            style: const TextStyle(
+                              fontFamily: 'DMSans',
+                              fontSize: 9,
+                              color: TraumColors.onBackgroundMuted,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              // Chevron
+              const Icon(
+                Icons.chevron_right,
+                size: 11,
+                color: TraumColors.onBackgroundSubtle,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NewCategoryButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _NewCategoryButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+        decoration: BoxDecoration(
+          color: TraumColors.surface,
+          borderRadius: BorderRadius.circular(13),
+          border: Border.all(
+            color: TraumColors.amberGold.withValues(alpha: 0.2),
+          ),
+        ),
+        child: const Center(
+          child: Text(
+            '+ Neue Kategorie',
+            style: TextStyle(
+              fontFamily: 'DMSans',
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: TraumColors.amberGold,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -292,112 +438,136 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
       ),
       child: SingleChildScrollView(
         child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            _isEditing ? 'Kategorie bearbeiten' : 'Kategorie anlegen',
-            style: const TextStyle(
-              fontFamily: 'DMSans',
-              fontWeight: FontWeight.w700,
-              color: TraumColors.onBackground,
-              fontSize: 18,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _isEditing ? 'Kategorie bearbeiten' : 'Kategorie anlegen',
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+                color: TraumColors.onBackground,
+                fontSize: 18,
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          _field(_nameCtrl, 'Name *', 'z.B. Lebensmittel'),
-          const SizedBox(height: 8),
-          _field(_limitCtrl, 'Monatslimit (optional)', '0',
-              type: TextInputType.number),
-          const SizedBox(height: 12),
-          Row(children: [
-            const Text('Typ:',
+            const SizedBox(height: 16),
+            _field(_nameCtrl, 'Name *', 'z.B. Lebensmittel'),
+            const SizedBox(height: 8),
+            _field(_limitCtrl, 'Monatslimit (optional)', '0',
+                type: TextInputType.number),
+            const SizedBox(height: 12),
+            Row(children: [
+              const Text(
+                'Typ:',
                 style: TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackground,
-                    fontSize: 14)),
-            const SizedBox(width: 12),
-            _chip('Ausgabe', _isExpense,
-                () => setState(() => _isExpense = true)),
-            const SizedBox(width: 8),
-            _chip('Einnahme', !_isExpense,
-                () => setState(() => _isExpense = false)),
-          ]),
-          const SizedBox(height: 12),
-          IconPickerGrid(
-            selectedIconName: _selectedIconName,
-            onSelected: (name) => setState(() => _selectedIconName = name),
-          ),
-          const SizedBox(height: 12),
-          Wrap(spacing: 8, children: [
-            for (final col in kBudgetCategoryColors)
-              GestureDetector(
-                onTap: () => setState(() => _color = col.toARGB32()),
-                child: Container(
-                  width: 30,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: col,
-                    shape: BoxShape.circle,
-                    border: _color == col.toARGB32()
-                        ? Border.all(color: Colors.white, width: 2)
-                        : null,
-                  ),
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                  fontSize: 14,
                 ),
               ),
-          ]),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _saving ? null : _save,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: TraumColors.amberGold,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-              child: _saving
-                  ? const SizedBox(
-                      height: 18,
-                      width: 18,
-                      child: CircularProgressIndicator(
-                          strokeWidth: 2, color: Colors.white))
-                  : const Text('Speichern',
-                      style: TextStyle(
-                          fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
+              const SizedBox(width: 12),
+              _chip('Ausgabe', _isExpense,
+                  () => setState(() => _isExpense = true)),
+              const SizedBox(width: 8),
+              _chip('Einnahme', !_isExpense,
+                  () => setState(() => _isExpense = false)),
+            ]),
+            const SizedBox(height: 12),
+            IconPickerGrid(
+              selectedIconName: _selectedIconName,
+              onSelected: (name) => setState(() => _selectedIconName = name),
             ),
-          ),
-        ],
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              children: [
+                for (final col in kBudgetCategoryColors)
+                  GestureDetector(
+                    onTap: () => setState(() => _color = col.toARGB32()),
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: col,
+                        shape: BoxShape.circle,
+                        border: _color == col.toARGB32()
+                            ? Border.all(color: Colors.white, width: 2)
+                            : null,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _saving ? null : _save,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: TraumColors.amberGold,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                child: _saving
+                    ? const SizedBox(
+                        height: 18,
+                        width: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text(
+                        'Speichern',
+                        style: TextStyle(
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _field(TextEditingController ctrl, String label, String hint,
-      {TextInputType type = TextInputType.text}) {
+  Widget _field(
+    TextEditingController ctrl,
+    String label,
+    String hint, {
+    TextInputType type = TextInputType.text,
+  }) {
     return TextField(
       controller: ctrl,
       keyboardType: type,
       style: const TextStyle(
-          fontFamily: 'DMSans', color: TraumColors.onBackground, fontSize: 14),
+        fontFamily: 'DMSans',
+        color: TraumColors.onBackground,
+        fontSize: 14,
+      ),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
         labelStyle: const TextStyle(
-            fontFamily: 'DMSans',
-            color: TraumColors.onBackgroundMuted,
-            fontSize: 13),
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackgroundMuted,
+          fontSize: 13,
+        ),
         hintStyle: const TextStyle(
-            fontFamily: 'DMSans',
-            color: TraumColors.onBackgroundSubtle,
-            fontSize: 13),
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackgroundSubtle,
+          fontSize: 13,
+        ),
         filled: true,
         fillColor: TraumColors.surfaceVariant,
         border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide.none,
+        ),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       ),
@@ -408,8 +578,7 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
       GestureDetector(
         onTap: onTap,
         child: Container(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             color: selected
                 ? TraumColors.amberGold.withValues(alpha: 0.2)
@@ -427,8 +596,7 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
                   ? TraumColors.amberGold
                   : TraumColors.onBackgroundMuted,
               fontSize: 13,
-              fontWeight:
-                  selected ? FontWeight.w600 : FontWeight.normal,
+              fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
             ),
           ),
         ),

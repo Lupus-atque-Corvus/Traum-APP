@@ -7,6 +7,7 @@ import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
 import 'budget_helpers.dart';
 import 'budget_providers.dart';
+import 'widgets/budget_sub_header.dart';
 
 void _showEditSheet(
     BuildContext context, WidgetRef ref, Transaction d, String currency) {
@@ -39,184 +40,296 @@ class RecurringScreen extends ConsumerWidget {
     final currency = ref.watch(currencySymbolProvider);
     return Scaffold(
       backgroundColor: TraumColors.background,
-      appBar: AppBar(
-        backgroundColor: TraumColors.background,
-        iconTheme: const IconThemeData(color: TraumColors.onBackground),
-        title: const Text(
-          'Wiederkehrend',
-          style: TextStyle(
-            color: TraumColors.onBackground,
-            fontFamily: 'DMSans',
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-      body: defs.when(
-        data: (list) {
-          if (list.isEmpty) {
-            return const Center(
-              child: Text(
-                'Keine wiederkehrenden Buchungen',
-                style: TextStyle(
-                  color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans',
-                ),
-              ),
-            );
-          }
-          final totalIncome = list
-              .where((d) => d.type == 'income')
-              .fold(0.0, (s, d) => s + d.amount);
-          final totalExpense = list
-              .where((d) => d.type != 'income')
-              .fold(0.0, (s, d) => s + d.amount);
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-                child: Row(children: [
-                  Expanded(
-                    child: _RecurringSummaryTile(
-                      label: 'Monatliche Einnahmen',
-                      amount: totalIncome,
-                      currency: currency,
-                      color: TraumColors.mintGreen,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _RecurringSummaryTile(
-                      label: 'Monatliche Ausgaben',
-                      amount: totalExpense,
-                      currency: currency,
-                      color: TraumColors.roseRed,
-                    ),
-                  ),
-                ]),
-              ),
-              Expanded(
-                child: ListView.separated(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: list.length,
-                  separatorBuilder: (_, _) =>
-                      const Divider(height: 1, color: TraumColors.surfaceVariant),
-                  itemBuilder: (_, i) {
-                  final d = list[i];
-                  final income = d.type == 'income';
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      d.description,
-                      style: const TextStyle(
-                        color: TraumColors.onBackground,
-                        fontFamily: 'DMSans',
-                        fontWeight: FontWeight.w500,
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const BudgetSubHeader(title: 'Wiederkehrend'),
+            Expanded(
+              child: defs.when(
+                data: (list) {
+                  if (list.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'Keine wiederkehrenden Buchungen',
+                        style: TextStyle(
+                          color: TraumColors.onBackgroundMuted,
+                          fontFamily: 'DMSans',
+                        ),
                       ),
-                    ),
-                    subtitle: Text(
-                      'Jeden ${d.recurringDay ?? d.date.day}. im Monat',
-                      style: const TextStyle(
-                        color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans',
-                        fontSize: 12,
-                      ),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
+                    );
+                  }
+                  final totalIncome = list
+                      .where((d) => d.type == 'income')
+                      .fold(0.0, (s, d) => s + d.amount);
+                  final totalExpense = list
+                      .where((d) => d.type != 'income')
+                      .fold(0.0, (s, d) => s + d.amount);
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 80),
+                    child: Column(
                       children: [
-                        Text(
-                          '${income ? '+' : '−'}${fmtAmount(d.amount)} $currency',
-                          style: TextStyle(
-                            color: income
-                                ? TraumColors.mintGreen
-                                : TraumColors.roseRed,
-                            fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w600,
-                          ),
+                        _SummaryBar(
+                          totalIncome: totalIncome,
+                          totalExpense: totalExpense,
+                          currency: currency,
                         ),
-                        const SizedBox(width: 8),
-                        IconButton(
-                          icon: const Icon(Icons.edit_rounded, size: 14),
-                          color: TraumColors.indigoBlue,
-                          style: IconButton.styleFrom(
-                            backgroundColor:
-                                TraumColors.indigoBlue.withValues(alpha: 0.1),
-                            minimumSize: const Size(26, 26),
-                            padding: EdgeInsets.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            shape: const CircleBorder(),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: TraumColors.surface,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.07),
+                            ),
                           ),
-                          onPressed: () =>
-                              _showEditSheet(context, ref, d, currency),
-                        ),
-                        const SizedBox(width: 4),
-                        IconButton(
-                          icon: const Icon(Icons.delete_rounded, size: 14),
-                          color: TraumColors.roseRed,
-                          style: IconButton.styleFrom(
-                            backgroundColor:
-                                TraumColors.roseRed.withValues(alpha: 0.1),
-                            minimumSize: const Size(26, 26),
-                            padding: EdgeInsets.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            shape: const CircleBorder(),
+                          child: Column(
+                            children: [
+                              for (int i = 0; i < list.length; i++) ...[
+                                if (i > 0)
+                                  Divider(
+                                    height: 1,
+                                    thickness: 1,
+                                    color: Colors.white.withValues(alpha: 0.05),
+                                    indent: 0,
+                                    endIndent: 0,
+                                  ),
+                                _RecurringRow(
+                                  d: list[i],
+                                  currency: currency,
+                                  onEdit: () => _showEditSheet(
+                                      context, ref, list[i], currency),
+                                  onDelete: () => ref
+                                      .read(budgetDaoProvider)
+                                      .deleteTransaction(list[i].id),
+                                ),
+                              ],
+                            ],
                           ),
-                          onPressed: () =>
-                              ref.read(budgetDaoProvider).deleteTransaction(d.id),
                         ),
                       ],
                     ),
                   );
-                  },
+                },
+                loading: () => const Center(
+                  child: CircularProgressIndicator(
+                      color: TraumColors.amberGold),
                 ),
+                error: (_, _) => const SizedBox.shrink(),
               ),
-            ],
-          );
-        },
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: TraumColors.amberGold),
+            ),
+          ],
         ),
-        error: (_, _) => const SizedBox.shrink(),
       ),
     );
   }
 }
 
-class _RecurringSummaryTile extends StatelessWidget {
-  final String label;
-  final double amount;
+class _SummaryBar extends StatelessWidget {
+  final double totalIncome;
+  final double totalExpense;
   final String currency;
-  final Color color;
-  const _RecurringSummaryTile({
-    required this.label,
-    required this.amount,
+
+  const _SummaryBar({
+    required this.totalIncome,
+    required this.totalExpense,
     required this.currency,
-    required this.color,
   });
 
   @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withValues(alpha: 0.3)),
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+      decoration: BoxDecoration(
+        color: TraumColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.07),
         ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(label,
-              style: const TextStyle(
-                  fontSize: 11,
-                  color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans')),
-          const SizedBox(height: 4),
-          Text('${fmtAmount(amount)} $currency',
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Monatliche Einnahmen',
+                  style: TextStyle(
+                    fontSize: 8,
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '+${fmtAmount(totalIncome)} $currency',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: TraumColors.mintGreen,
+                    fontFamily: 'DMSans',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: 1,
+            height: 28,
+            color: Colors.white.withValues(alpha: 0.08),
+            margin: const EdgeInsets.symmetric(horizontal: 12),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Monatliche Ausgaben',
+                  style: TextStyle(
+                    fontSize: 8,
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '−${fmtAmount(totalExpense)} $currency',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: TraumColors.roseRed,
+                    fontFamily: 'DMSans',
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RecurringRow extends StatelessWidget {
+  final Transaction d;
+  final String currency;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  const _RecurringRow({
+    required this.d,
+    required this.currency,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final income = d.type == 'income';
+    final accentColor = income ? TraumColors.mintGreen : TraumColors.roseRed;
+    final iconData = income ? Icons.south_west_rounded : Icons.repeat_rounded;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 11),
+      child: Row(
+        children: [
+          // Leading icon container 34×34 radius 9 accentColor@0.15
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: accentColor.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(9),
+            ),
+            child: Icon(
+              iconData,
+              size: 14,
+              color: accentColor,
+            ),
+          ),
+          const SizedBox(width: 10),
+          // Name 11/w600 + interval 9/muted
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  d.description,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Jeden ${d.recurringDay ?? d.date.day}. im Monat',
+                  style: const TextStyle(
+                    fontSize: 9,
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Amount 11/w700 margin-right 4
+          Padding(
+            padding: const EdgeInsets.only(right: 4),
+            child: Text(
+              '${income ? '+' : '−'}${fmtAmount(d.amount)} $currency',
               style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: color,
-                  fontFamily: 'DMSans')),
-        ]),
-      );
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: accentColor,
+                fontFamily: 'DMSans',
+              ),
+            ),
+          ),
+          const SizedBox(width: 6),
+          // Edit: 26×26 radius 13 bg indigo@0.1 pencil 11 indigo
+          GestureDetector(
+            onTap: onEdit,
+            child: Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
+                color: TraumColors.indigoBlue.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(13),
+              ),
+              child: const Icon(
+                Icons.edit_rounded,
+                size: 11,
+                color: TraumColors.indigoBlue,
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+          // Delete: 26×26 bg rose@0.1 trash 12 rose
+          GestureDetector(
+            onTap: onDelete,
+            child: Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
+                color: TraumColors.roseRed.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(13),
+              ),
+              child: const Icon(
+                Icons.delete_rounded,
+                size: 12,
+                color: TraumColors.roseRed,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _EditRecurringSheet extends StatefulWidget {
@@ -268,7 +381,8 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
         decoration: const BoxDecoration(
@@ -290,36 +404,44 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                 ),
               ),
             ),
-            const Text('Wiederkehrend bearbeiten',
-                style: TextStyle(
-                    fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w700,
-                    color: TraumColors.onBackground,
-                    fontSize: 18)),
+            const Text(
+              'Wiederkehrend bearbeiten',
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+                color: TraumColors.onBackground,
+                fontSize: 18,
+              ),
+            ),
             const SizedBox(height: 16),
             _field(_descCtrl, 'Beschreibung'),
             const SizedBox(height: 8),
             _field(_amountCtrl, 'Betrag (${widget.currency})', number: true),
             const SizedBox(height: 12),
-            Row(children: [
-              const Text('Am Tag des Monats:',
+            Row(
+              children: [
+                const Text(
+                  'Am Tag des Monats:',
                   style: TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackgroundMuted,
-                      fontSize: 13)),
-              const SizedBox(width: 8),
-              DropdownButton<int>(
-                value: _day,
-                dropdownColor: TraumColors.surfaceVariant,
-                style: const TextStyle(
-                    fontFamily: 'DMSans', color: TraumColors.onBackground),
-                items: [
-                  for (var d = 1; d <= 28; d++)
-                    DropdownMenuItem(value: d, child: Text('$d.')),
-                ],
-                onChanged: (v) => setState(() => _day = v ?? 1),
-              ),
-            ]),
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackgroundMuted,
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                DropdownButton<int>(
+                  value: _day,
+                  dropdownColor: TraumColors.surfaceVariant,
+                  style: const TextStyle(
+                      fontFamily: 'DMSans', color: TraumColors.onBackground),
+                  items: [
+                    for (var d = 1; d <= 28; d++)
+                      DropdownMenuItem(value: d, child: Text('$d.')),
+                  ],
+                  onChanged: (v) => setState(() => _day = v ?? 1),
+                ),
+              ],
+            ),
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
@@ -332,9 +454,11 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                       borderRadius: BorderRadius.circular(12)),
                 ),
                 onPressed: _save,
-                child: const Text('Speichern',
-                    style: TextStyle(
-                        fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
+                child: const Text(
+                  'Speichern',
+                  style: TextStyle(
+                      fontFamily: 'DMSans', fontWeight: FontWeight.w600),
+                ),
               ),
             ),
           ],
@@ -343,14 +467,17 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
     );
   }
 
-  Widget _field(TextEditingController c, String label, {bool number = false}) =>
+  Widget _field(TextEditingController c, String label,
+          {bool number = false}) =>
       TextField(
         controller: c,
         keyboardType: number
             ? const TextInputType.numberWithOptions(decimal: true)
             : TextInputType.text,
         style: const TextStyle(
-            fontFamily: 'DMSans', color: TraumColors.onBackground, fontSize: 14),
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackground,
+            fontSize: 14),
         decoration: InputDecoration(
           labelText: label,
           labelStyle: const TextStyle(
