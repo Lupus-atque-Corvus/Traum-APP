@@ -12,6 +12,7 @@ import '../../data/database/traum_database.dart';
 import '../../data/services/recurring_poster.dart';
 import '../../l10n/app_localizations.dart';
 import 'budget_category_icons.dart';
+import 'budget_helpers.dart';
 import 'budget_providers.dart';
 import 'budget_scale.dart';
 import 'receipt_scanner.dart';
@@ -19,8 +20,13 @@ import 'widgets/numpad_widget.dart';
 
 class QuickEntryBottomSheet extends ConsumerStatefulWidget {
   final QuickTemplate? initialTemplate;
+  final Transaction? editTransaction;
 
-  const QuickEntryBottomSheet({super.key, this.initialTemplate});
+  const QuickEntryBottomSheet({
+    super.key,
+    this.initialTemplate,
+    this.editTransaction,
+  });
 
   @override
   ConsumerState<QuickEntryBottomSheet> createState() =>
@@ -33,7 +39,9 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
   DateTime _date = DateTime.now();
   int? _categoryId;
   String? _categoryName;
+  final _descCtrl = TextEditingController();
   final _noteCtrl = TextEditingController();
+  bool get _isEditing => widget.editTransaction != null;
   String? _receiptImagePath;
   bool _saveAsTemplate = false;
   final _templateNameCtrl = TextEditingController();
@@ -59,10 +67,26 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
             .replaceAll('.', ',');
       }
     }
+
+    final e = widget.editTransaction;
+    if (e != null) {
+      _type = e.type;
+      _numpadValue = e.amount.toStringAsFixed(2).replaceAll('.', ',');
+      _categoryId = e.categoryId;
+      _date = e.date;
+      _descCtrl.text = e.description;
+      _noteCtrl.text = e.note ?? '';
+      _receiptImagePath = e.receiptImagePath;
+      _accountId = e.accountId;
+      _toAccountId = e.toAccountId;
+      _recurring = e.isRecurring;
+      _recurringDay = e.recurringDay ?? 1;
+    }
   }
 
   @override
   void dispose() {
+    _descCtrl.dispose();
     _noteCtrl.dispose();
     _templateNameCtrl.dispose();
     super.dispose();
@@ -195,14 +219,36 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                   ? accounts.firstWhere((a) => a.isPrimary).id
                   : null));
 
-      final description = _noteCtrl.text.trim().isNotEmpty
-          ? _noteCtrl.text.trim()
+      final description = _descCtrl.text.trim().isNotEmpty
+          ? _descCtrl.text.trim()
           : (_categoryName ??
               (_type == 'expense'
                   ? 'Ausgabe'
                   : _type == 'income'
                       ? 'Einnahme'
                       : 'Umbuchung'));
+      final note =
+          _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim();
+
+      if (_isEditing) {
+        await ref.read(budgetDaoProvider).updateTransaction(
+              fullTransactionCompanion(widget.editTransaction!).copyWith(
+                amount: Value(amount),
+                description: Value(description),
+                type: Value(_type),
+                date: Value(_date),
+                categoryId: Value(_type == 'transfer' ? null : _categoryId),
+                note: Value(note),
+                receiptImagePath: Value(_receiptImagePath),
+                accountId: Value(effectiveAccount),
+                toAccountId: Value(_type == 'transfer' ? _toAccountId : null),
+                isRecurring: Value(isDef),
+                recurringDay: Value(isDef ? _recurringDay : null),
+              ),
+            );
+        if (mounted) Navigator.of(context).pop(true);
+        return;
+      }
 
       await ref.read(budgetDaoProvider).insertTransaction(
             TransactionsCompanion.insert(
@@ -211,9 +257,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
               type: Value(_type),
               date: _date,
               categoryId: Value(_type == 'transfer' ? null : _categoryId),
-              note: Value(
-                _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim(),
-              ),
+              note: Value(note),
               receiptImagePath: Value(_receiptImagePath),
               accountId: Value(effectiveAccount),
               toAccountId: Value(_type == 'transfer' ? _toAccountId : null),
@@ -310,9 +354,9 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                 padding: EdgeInsets.symmetric(horizontal: bs(16)),
                 child: Row(
                   children: [
-                    const Text(
-                      'Hinzufügen',
-                      style: TextStyle(
+                    Text(
+                      _isEditing ? 'Bearbeiten' : 'Hinzufügen',
+                      style: const TextStyle(
                         fontFamily: 'DMSans',
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
@@ -665,6 +709,50 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                       ),
                       SizedBox(height: bs(12)),
 
+                      // Beschreibung (Titel der Transaktion)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: TraumColors.background,
+                          borderRadius: BorderRadius.circular(bs(10)),
+                          border: Border.all(
+                            color: TraumColors.onBackground.withValues(alpha: 0.06),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: bs(10)),
+                              child: Icon(
+                                Icons.title_rounded,
+                                size: bs(13),
+                                color: TraumColors.onBackgroundSubtle,
+                              ),
+                            ),
+                            Expanded(
+                              child: TextField(
+                                controller: _descCtrl,
+                                style: const TextStyle(
+                                  color: TraumColors.onBackground,
+                                  fontFamily: 'DMSans',
+                                  fontSize: 11,
+                                ),
+                                decoration: const InputDecoration(
+                                  hintText: 'Beschreibung...',
+                                  hintStyle: TextStyle(
+                                    color: TraumColors.onBackgroundSubtle,
+                                    fontFamily: 'DMSans',
+                                    fontSize: 11,
+                                  ),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: bs(8)),
+
                       // Step 9: Note field — bg background, radius 10, pencil icon + camera
                       Container(
                         decoration: BoxDecoration(
@@ -695,7 +783,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                 decoration: InputDecoration(
                                   hintText: _receiptImagePath != null
                                       ? 'Kassenbon angehängt'
-                                      : 'Notiz hinzufügen...',
+                                      : 'Notiz (optional)...',
                                   hintStyle: const TextStyle(
                                     color: TraumColors.onBackgroundSubtle,
                                     fontFamily: 'DMSans',
@@ -730,45 +818,48 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                       SizedBox(height: bs(10)),
 
                       // Step 10: Save-as-template toggle — custom 34×18 switch
-                      _ToggleRow(
-                        icon: Icons.bookmark_add_rounded,
-                        label: 'Als Vorlage speichern',
-                        value: _saveAsTemplate,
-                        onChanged: (v) => setState(() => _saveAsTemplate = v),
-                      ),
-                      if (_saveAsTemplate) ...[
-                        SizedBox(height: bs(6)),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: TraumColors.background,
-                            borderRadius: BorderRadius.circular(bs(8)),
-                            border: Border.all(
-                              color: TraumColors.onBackground.withValues(alpha: 0.06),
+                      // (nur beim Anlegen, nicht beim Bearbeiten)
+                      if (!_isEditing) ...[
+                        _ToggleRow(
+                          icon: Icons.bookmark_add_rounded,
+                          label: 'Als Vorlage speichern',
+                          value: _saveAsTemplate,
+                          onChanged: (v) => setState(() => _saveAsTemplate = v),
+                        ),
+                        if (_saveAsTemplate) ...[
+                          SizedBox(height: bs(6)),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: TraumColors.background,
+                              borderRadius: BorderRadius.circular(bs(8)),
+                              border: Border.all(
+                                color: TraumColors.onBackground.withValues(alpha: 0.06),
+                              ),
                             ),
-                          ),
-                          child: TextField(
-                            controller: _templateNameCtrl,
-                            style: const TextStyle(
-                              color: TraumColors.onBackground,
-                              fontFamily: 'DMSans',
-                              fontSize: 13,
-                            ),
-                            decoration: InputDecoration(
-                              hintText: 'Vorlagen-Name...',
-                              hintStyle: const TextStyle(
-                                color: TraumColors.onBackgroundSubtle,
+                            child: TextField(
+                              controller: _templateNameCtrl,
+                              style: const TextStyle(
+                                color: TraumColors.onBackground,
                                 fontFamily: 'DMSans',
                                 fontSize: 13,
                               ),
-                              border: InputBorder.none,
-                              isDense: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: bs(10),
-                                vertical: bs(8),
+                              decoration: InputDecoration(
+                                hintText: 'Vorlagen-Name...',
+                                hintStyle: const TextStyle(
+                                  color: TraumColors.onBackgroundSubtle,
+                                  fontFamily: 'DMSans',
+                                  fontSize: 13,
+                                ),
+                                border: InputBorder.none,
+                                isDense: true,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: bs(10),
+                                  vertical: bs(8),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                        ],
                       ],
 
                       // Step 10: Recurring toggle (income/expense only)
