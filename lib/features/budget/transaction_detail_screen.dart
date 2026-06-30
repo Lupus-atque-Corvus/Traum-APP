@@ -10,6 +10,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import 'budget_category_icons.dart';
+import 'budget_helpers.dart';
 
 class TransactionDetailScreen extends ConsumerStatefulWidget {
   final int transactionId;
@@ -61,37 +62,6 @@ class _TransactionDetailScreenState
           (c) => c?.id == _transaction!.categoryId,
           orElse: () => null)
       : null;
-
-  /// Build a full companion from the current transaction, overriding only
-  /// the specified fields. Drift's replace() sets absent fields to table
-  /// defaults, so we must supply every non-default column explicitly.
-  TransactionsCompanion _fullCompanion({
-    String? noteOverride,
-    bool clearNote = false,
-    String? templateNameOverride,
-  }) {
-    final tx = _transaction!;
-    return TransactionsCompanion(
-      id: Value(tx.id),
-      amount: Value(tx.amount),
-      description: Value(tx.description),
-      categoryId: Value(tx.categoryId),
-      type: Value(tx.type),
-      date: Value(tx.date),
-      note: clearNote
-          ? const Value(null)
-          : noteOverride != null
-              ? Value(noteOverride)
-              : Value(tx.note),
-      receiptImagePath: Value(tx.receiptImagePath),
-      isRecurring: Value(tx.isRecurring),
-      recurringDay: Value(tx.recurringDay),
-      templateName: templateNameOverride != null
-          ? Value(templateNameOverride)
-          : Value(tx.templateName),
-      splitFromId: Value(tx.splitFromId),
-    );
-  }
 
   Future<void> _saveAsTemplateDialog() async {
     if (_transaction == null) return;
@@ -161,9 +131,8 @@ class _TransactionDetailScreenState
     final dao = ref.read(budgetDaoProvider);
     final trimmed = _noteCtrl.text.trim();
     await dao.updateTransaction(
-      trimmed.isEmpty
-          ? _fullCompanion(clearNote: true)
-          : _fullCompanion(noteOverride: trimmed),
+      fullTransactionCompanion(_transaction!)
+          .copyWith(note: Value(trimmed.isEmpty ? null : trimmed)),
     );
     await _load();
     setState(() => _editingNote = false);
@@ -388,7 +357,8 @@ class _TransactionDetailScreenState
 
     // Mark original as split parent (full companion to avoid data loss)
     await dao.updateTransaction(
-      _fullCompanion(templateNameOverride: 'SPLIT_PARENT'),
+      fullTransactionCompanion(_transaction!)
+          .copyWith(templateName: const Value('SPLIT_PARENT')),
     );
 
     // Insert split children
