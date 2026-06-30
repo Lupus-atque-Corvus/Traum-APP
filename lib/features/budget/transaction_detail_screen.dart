@@ -11,6 +11,7 @@ import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import 'budget_category_icons.dart';
 import 'budget_helpers.dart';
+import 'quick_entry_bottom_sheet.dart';
 
 class TransactionDetailScreen extends ConsumerStatefulWidget {
   final int transactionId;
@@ -136,6 +137,17 @@ class _TransactionDetailScreenState
     );
     await _load();
     setState(() => _editingNote = false);
+  }
+
+  Future<void> _edit() async {
+    if (_transaction == null) return;
+    final changed = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => QuickEntryBottomSheet(editTransaction: _transaction),
+    );
+    if (changed == true) await _load();
   }
 
   Future<void> _delete() async {
@@ -606,6 +618,24 @@ class _TransactionDetailScreenState
               ),
               const SizedBox(height: 16),
             ],
+
+            // Edit button — alle Transaktionsarten
+            OutlinedButton.icon(
+              onPressed: _edit,
+              icon: const Icon(Icons.edit_rounded,
+                  color: TraumColors.amberGold),
+              label: const Text('Bearbeiten',
+                  style: TextStyle(
+                      color: TraumColors.amberGold, fontFamily: 'DMSans')),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: TraumColors.amberGold),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(TraumRadius.card),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
 
             // Split button — only for non-split-parent, non-split-child, non-transfer
             if (!isTransfer && tx.templateName != 'SPLIT_PARENT' && tx.splitFromId == null)
