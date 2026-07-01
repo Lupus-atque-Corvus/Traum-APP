@@ -71,8 +71,10 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
       update(debts).replace(entry);
 
   Future<int> deleteDebt(int id) async {
-    await (delete(debtItems)..where((i) => i.debtId.equals(id))).go();
-    return (delete(debts)..where((t) => t.id.equals(id))).go();
+    return transaction(() async {
+      await (delete(debtItems)..where((i) => i.debtId.equals(id))).go();
+      return (delete(debts)..where((t) => t.id.equals(id))).go();
+    });
   }
 
   // Debt items (positions)
@@ -83,33 +85,46 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
           .watch();
 
   Future<int> insertDebtItem(DebtItemsCompanion entry) async {
-    final id = await into(debtItems).insert(entry);
-    await _recomputeDebtTotals(entry.debtId.value);
-    return id;
+    return transaction(() async {
+      final id = await into(debtItems).insert(entry);
+      await _recomputeDebtTotals(entry.debtId.value);
+      return id;
+    });
   }
 
   Future<bool> updateDebtItem(DebtItemsCompanion entry) async {
-    final ok = await update(debtItems).replace(entry);
-    await _recomputeDebtTotals(entry.debtId.value);
-    return ok;
+    return transaction(() async {
+      final rows = await (update(debtItems)
+            ..where((i) => i.id.equals(entry.id.value)))
+          .write(entry);
+      final row = await (select(debtItems)
+            ..where((i) => i.id.equals(entry.id.value)))
+          .getSingleOrNull();
+      if (row != null) await _recomputeDebtTotals(row.debtId);
+      return rows > 0;
+    });
   }
 
   Future<int> deleteDebtItem(int itemId) async {
-    final item = await (select(debtItems)..where((i) => i.id.equals(itemId)))
-        .getSingleOrNull();
-    final rows =
-        await (delete(debtItems)..where((i) => i.id.equals(itemId))).go();
-    if (item != null) await _recomputeDebtTotals(item.debtId);
-    return rows;
+    return transaction(() async {
+      final item = await (select(debtItems)..where((i) => i.id.equals(itemId)))
+          .getSingleOrNull();
+      final rows =
+          await (delete(debtItems)..where((i) => i.id.equals(itemId))).go();
+      if (item != null) await _recomputeDebtTotals(item.debtId);
+      return rows;
+    });
   }
 
   Future<void> payDebtRate(int debtId, double amount) async {
-    final debt = await (select(debts)..where((d) => d.id.equals(debtId)))
-        .getSingleOrNull();
-    if (debt == null) return;
-    await (update(debts)..where((d) => d.id.equals(debtId)))
-        .write(DebtsCompanion(paidAmount: Value(debt.paidAmount + amount)));
-    await _recomputeDebtTotals(debtId);
+    return transaction(() async {
+      final debt = await (select(debts)..where((d) => d.id.equals(debtId)))
+          .getSingleOrNull();
+      if (debt == null) return;
+      await (update(debts)..where((d) => d.id.equals(debtId)))
+          .write(DebtsCompanion(paidAmount: Value(debt.paidAmount + amount)));
+      await _recomputeDebtTotals(debtId);
+    });
   }
 
   /// Hält originalAmount/remainingAmount/isPaidOff einer Schuld konsistent:

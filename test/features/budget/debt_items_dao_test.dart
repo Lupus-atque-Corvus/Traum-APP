@@ -1,4 +1,5 @@
 // test/features/budget/debt_items_dao_test.dart
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:traum/data/database/traum_database.dart';
@@ -86,5 +87,18 @@ void main() {
     final items =
         await (db.select(db.debtItems)..where((i) => i.debtId.equals(id))).get();
     expect(items, isEmpty);
+  });
+
+  test('updateDebtItem recomputes even when companion omits debtId', () async {
+    final id = await newDebt();
+    final itemId = await db.budgetDao.insertDebtItem(
+        DebtItemsCompanion.insert(debtId: id, description: 'A', amount: 60));
+    await db.budgetDao.updateDebtItem(DebtItemsCompanion(
+      id: Value(itemId),
+      description: const Value('A2'),
+      amount: const Value(90),
+    ));
+    final debt = await readDebt(id);
+    expect(debt.originalAmount, 90);
   });
 }
