@@ -2637,6 +2637,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get budgetDebts => 'Debts';
 
   @override
+  String get addDebtItem => 'Add item';
+
+  @override
+  String get debtItemDescription => 'Description';
+
+  @override
+  String get debtItemPrice => 'Price';
+
+  @override
+  String debtTotalFromItems(int count) {
+    return 'Total from $count items';
+  }
+
+  @override
+  String get debtExistingAmount => 'Existing amount';
+
+  @override
   String get budgetQuickTemplates => 'Quick templates';
 
   @override

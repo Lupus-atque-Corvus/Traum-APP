@@ -44,10 +44,19 @@ class Debts extends Table {
   TextColumn get creditor => text()();
   RealColumn get originalAmount => real()();
   RealColumn get remainingAmount => real()();
+  RealColumn get paidAmount => real().withDefault(const Constant(0))();
   RealColumn get interestRate => real().withDefault(const Constant(0))();
   DateTimeColumn get dueDate => dateTime().nullable()();
   TextColumn get note => text().nullable()();
   BoolColumn get isPaidOff => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+}
+
+class DebtItems extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get debtId => integer()();
+  TextColumn get description => text()();
+  RealColumn get amount => real()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
 

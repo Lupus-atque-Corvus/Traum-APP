@@ -174,6 +174,11 @@ final allDebtsStreamProvider = StreamProvider.autoDispose<List<Debt>>(
   (ref) => ref.watch(budgetDaoProvider).watchAllDebts(),
 );
 
+final debtItemsStreamProvider =
+    StreamProvider.autoDispose.family<List<DebtItem>, int>(
+  (ref, debtId) => ref.watch(budgetDaoProvider).watchDebtItems(debtId),
+);
+
 final recurringTransactionsProvider =
     StreamProvider.autoDispose<List<Transaction>>(
   (ref) => ref.watch(budgetDaoProvider).watchRecurringTransactions(),

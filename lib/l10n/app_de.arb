@@ -1130,6 +1130,18 @@
   "budgetFixedCosts": "Fixkosten",
   "budgetSavingGoals": "Sparziele",
   "budgetDebts": "Schulden",
+  "addDebtItem": "Position hinzufügen",
+  "@addDebtItem": {},
+  "debtItemDescription": "Beschreibung",
+  "@debtItemDescription": {},
+  "debtItemPrice": "Preis",
+  "@debtItemPrice": {},
+  "debtTotalFromItems": "Gesamt aus {count} Positionen",
+  "@debtTotalFromItems": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "debtExistingAmount": "Bestehender Betrag",
+  "@debtExistingAmount": {},
   "budgetQuickTemplates": "Schnellvorlagen",
   "budgetAddExpense": "Ausgabe speichern",
   "budgetAddIncome": "Einnahme speichern",

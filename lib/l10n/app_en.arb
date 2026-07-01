@@ -1108,6 +1108,18 @@
   "budgetFixedCosts": "Fixed costs",
   "budgetSavingGoals": "Savings goals",
   "budgetDebts": "Debts",
+  "addDebtItem": "Add item",
+  "@addDebtItem": {},
+  "debtItemDescription": "Description",
+  "@debtItemDescription": {},
+  "debtItemPrice": "Price",
+  "@debtItemPrice": {},
+  "debtTotalFromItems": "Total from {count} items",
+  "@debtTotalFromItems": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "debtExistingAmount": "Existing amount",
+  "@debtExistingAmount": {},
   "budgetQuickTemplates": "Quick templates",
   "budgetAddExpense": "Save expense",
   "budgetAddIncome": "Save income",

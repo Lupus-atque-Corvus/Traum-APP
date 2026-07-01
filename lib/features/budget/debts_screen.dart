@@ -1,10 +1,11 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
+import '../../core/providers/repository_providers.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 import 'budget_helpers.dart';
 import 'budget_providers.dart';
 import 'budget_scale.dart';
@@ -62,21 +63,15 @@ class DebtsScreen extends ConsumerWidget {
                       }
                       final debt = list[i - 1];
                       return _DebtCard(
+                        key: ValueKey(debt.id),
                         debt: debt,
                         currency: currency,
-                        onPay: (amt) {
-                          final rem = (debt.remainingAmount - amt)
-                              .clamp(0.0, debt.originalAmount);
-                          ref.read(budgetDaoProvider).updateDebt(DebtsCompanion(
-                            id: Value(debt.id),
-                            creditor: Value(debt.creditor),
-                            originalAmount: Value(debt.originalAmount),
-                            remainingAmount: Value(rem),
-                            isPaidOff: Value(rem <= 0),
-                          ));
-                        },
-                        onDelete: () =>
-                            ref.read(budgetDaoProvider).deleteDebt(debt.id),
+                        onPay: (amt) => ref
+                            .read(budgetRepositoryProvider)
+                            .payDebtRate(debt.id, amt),
+                        onDelete: () => ref
+                            .read(budgetRepositoryProvider)
+                            .deleteDebt(debt.id),
                       );
                     },
                   );
@@ -95,7 +90,6 @@ class DebtsScreen extends ConsumerWidget {
 
   void _showAddSheet(BuildContext context, WidgetRef ref) {
     final creditor = TextEditingController();
-    final amount = TextEditingController();
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -123,9 +117,7 @@ class DebtsScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              _debtField(creditor, 'Gläubiger *', 'z.B. Bank'),
-              const SizedBox(height: 8),
-              _debtField(amount, 'Betrag *', '0,00', number: true),
+              debtField(creditor, 'Gläubiger *', 'z.B. Bank'),
               const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
@@ -140,15 +132,12 @@ class DebtsScreen extends ConsumerWidget {
                   ),
                   onPressed: () {
                     final c = creditor.text.trim();
-                    final a = double.tryParse(
-                            amount.text.trim().replaceAll(',', '.')) ??
-                        0;
-                    if (c.isEmpty || a <= 0) return;
-                    ref.read(budgetDaoProvider).insertDebt(
+                    if (c.isEmpty) return;
+                    ref.read(budgetRepositoryProvider).addDebt(
                           DebtsCompanion.insert(
                             creditor: c,
-                            originalAmount: a,
-                            remainingAmount: a,
+                            originalAmount: 0,
+                            remainingAmount: 0,
                           ),
                         );
                     Navigator.of(ctx).pop();
@@ -167,7 +156,7 @@ class DebtsScreen extends ConsumerWidget {
     );
   }
 
-  static Widget _debtField(
+  static Widget debtField(
     TextEditingController c,
     String label,
     String hint, {
@@ -175,8 +164,7 @@ class DebtsScreen extends ConsumerWidget {
   }) =>
       TextField(
         controller: c,
-        keyboardType:
-            number ? TextInputType.number : TextInputType.text,
+        keyboardType: number ? TextInputType.number : TextInputType.text,
         style: const TextStyle(
           fontFamily: 'DMSans',
           color: TraumColors.onBackground,
@@ -269,37 +257,46 @@ class _DebtsHero extends StatelessWidget {
 // Debt card
 // ---------------------------------------------------------------------------
 
-class _DebtCard extends StatelessWidget {
+class _DebtCard extends ConsumerStatefulWidget {
   final Debt debt;
   final String currency;
   final void Function(double) onPay;
   final VoidCallback onDelete;
 
   const _DebtCard({
+    super.key,
     required this.debt,
     required this.currency,
     required this.onPay,
     required this.onDelete,
   });
 
-  // Default icon: open debts use account_balance_rounded (bank/landmark),
-  // paid-off debts show a checkmark so this icon is only for the container.
+  @override
+  ConsumerState<_DebtCard> createState() => _DebtCardState();
+}
+
+class _DebtCardState extends ConsumerState<_DebtCard> {
+  bool _expanded = false;
+
   static const IconData _defaultIcon = Icons.account_balance_rounded;
 
-  // Accent color for this card — roseRed for open, mintGreen for paid.
   Color get _accentColor =>
-      debt.isPaidOff ? TraumColors.mintGreen : TraumColors.roseRed;
+      widget.debt.isPaidOff ? TraumColors.mintGreen : TraumColors.roseRed;
 
   @override
   Widget build(BuildContext context) {
-    final ratio = debt.originalAmount > 0
-        ? (1 - debt.remainingAmount / debt.originalAmount).clamp(0.0, 1.0)
+    final itemsAsync = ref.watch(debtItemsStreamProvider(widget.debt.id));
+    final items = itemsAsync.value ?? const <DebtItem>[];
+    final l10n = AppLocalizations.of(context)!;
+    final ratio = widget.debt.originalAmount > 0
+        ? (1 - widget.debt.remainingAmount / widget.debt.originalAmount)
+            .clamp(0.0, 1.0)
         : 0.0;
-    final paidAmount = debt.originalAmount - debt.remainingAmount;
+    final paidAmount = widget.debt.originalAmount - widget.debt.remainingAmount;
     final paidPct = (ratio * 100).round();
 
     return Dismissible(
-      key: ValueKey(debt.id),
+      key: ValueKey(widget.debt.id),
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
@@ -311,7 +308,7 @@ class _DebtCard extends StatelessWidget {
         child: Icon(Icons.delete_outline,
             color: TraumColors.roseRed, size: bs(22)),
       ),
-      onDismissed: (_) => onDelete(),
+      onDismissed: (_) => widget.onDelete(),
       child: Container(
         margin: EdgeInsets.only(bottom: bs(9)),
         padding: EdgeInsets.all(bs(13)),
@@ -319,7 +316,7 @@ class _DebtCard extends StatelessWidget {
           color: TraumColors.surface,
           borderRadius: BorderRadius.circular(bs(15)),
           border: Border.all(
-            color: debt.isPaidOff
+            color: widget.debt.isPaidOff
                 ? TraumColors.mintGreen.withValues(alpha: 0.2)
                 : Colors.white.withValues(alpha: 0.07),
           ),
@@ -328,96 +325,108 @@ class _DebtCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Card header ──────────────────────────────────────────────
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Icon container 38×38, radius 10
-                Container(
-                  width: bs(38),
-                  height: bs(38),
-                  decoration: BoxDecoration(
-                    color: _accentColor.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(bs(10)),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => setState(() => _expanded = !_expanded),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Icon container 38×38, radius 10
+                  Container(
+                    width: bs(38),
+                    height: bs(38),
+                    decoration: BoxDecoration(
+                      color: _accentColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(bs(10)),
+                    ),
+                    child: Icon(
+                      _defaultIcon,
+                      size: bs(16),
+                      color: _accentColor,
+                    ),
                   ),
-                  child: Icon(
-                    _defaultIcon,
-                    size: bs(16),
-                    color: _accentColor,
-                  ),
-                ),
-                SizedBox(width: bs(10)),
-                // Name + original amount
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        debt.creditor,
-                        style: const TextStyle(
-                          fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 13,
-                          color: TraumColors.onBackground,
+                  SizedBox(width: bs(10)),
+                  // Name + item count subtitle
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.debt.creditor,
+                          style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 13,
+                            color: TraumColors.onBackground,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: bs(2)),
-                      Text(
-                        'Ursprünglich: ${fmtAmount(debt.originalAmount)} $currency',
-                        style: const TextStyle(
-                          fontFamily: 'DMSans',
-                          fontSize: 9,
-                          color: TraumColors.onBackgroundMuted,
+                        SizedBox(height: bs(2)),
+                        Text(
+                          l10n.debtTotalFromItems(items.length),
+                          style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            fontSize: 9,
+                            color: TraumColors.onBackgroundMuted,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(width: bs(8)),
-                // Right side: remaining amount OR paid badge
-                debt.isPaidOff
-                    ? Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.check_circle_rounded,
-                              size: bs(14), color: TraumColors.mintGreen),
-                          SizedBox(width: bs(4)),
-                          const Text(
-                            'Bezahlt',
-                            style: TextStyle(
-                              fontFamily: 'DMSans',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 13,
-                              color: TraumColors.mintGreen,
+                  SizedBox(width: bs(8)),
+                  // Right side: remaining amount OR paid badge
+                  widget.debt.isPaidOff
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.check_circle_rounded,
+                                size: bs(14), color: TraumColors.mintGreen),
+                            SizedBox(width: bs(4)),
+                            const Text(
+                              'Bezahlt',
+                              style: TextStyle(
+                                fontFamily: 'DMSans',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 13,
+                                color: TraumColors.mintGreen,
+                              ),
                             ),
-                          ),
-                        ],
-                      )
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            '${fmtAmount(debt.remainingAmount)} $currency',
-                            style: const TextStyle(
-                              fontFamily: 'DMSans',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 15,
-                              color: TraumColors.roseRed,
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              '${fmtAmount(widget.debt.remainingAmount)} ${widget.currency}',
+                              style: const TextStyle(
+                                fontFamily: 'DMSans',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 15,
+                                color: TraumColors.roseRed,
+                              ),
                             ),
-                          ),
-                          const Text(
-                            'offen',
-                            style: TextStyle(
-                              fontFamily: 'DMSans',
-                              fontSize: 9,
-                              color: TraumColors.onBackgroundMuted,
+                            const Text(
+                              'offen',
+                              style: TextStyle(
+                                fontFamily: 'DMSans',
+                                fontSize: 9,
+                                color: TraumColors.onBackgroundMuted,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-              ],
+                          ],
+                        ),
+                  SizedBox(width: bs(6)),
+                  Icon(
+                    _expanded
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
+                    size: bs(18),
+                    color: TraumColors.onBackgroundMuted,
+                  ),
+                ],
+              ),
             ),
             // ── Progress bar ─────────────────────────────────────────────
-            if (!debt.isPaidOff) ...[
+            if (!widget.debt.isPaidOff) ...[
               SizedBox(height: bs(10)),
               ClipRRect(
                 borderRadius: BorderRadius.circular(bs(3)),
@@ -426,7 +435,8 @@ class _DebtCard extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: ratio,
                     backgroundColor: TraumColors.surfaceVariant,
-                    valueColor: const AlwaysStoppedAnimation(Colors.transparent),
+                    valueColor:
+                        const AlwaysStoppedAnimation(Colors.transparent),
                   ),
                 ),
               ),
@@ -466,7 +476,7 @@ class _DebtCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '$paidPct% getilgt · ${fmtAmount(paidAmount)} $currency bezahlt',
+                    '$paidPct% getilgt · ${fmtAmount(paidAmount)} ${widget.currency} bezahlt',
                     style: const TextStyle(
                       fontFamily: 'DMSans',
                       fontSize: 9,
@@ -495,6 +505,43 @@ class _DebtCard extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ],
+            // ── Expandable items section ──────────────────────────────────
+            if (_expanded) ...[
+              SizedBox(height: bs(10)),
+              Container(
+                  height: 1, color: Colors.white.withValues(alpha: 0.06)),
+              SizedBox(height: bs(6)),
+              ...items.map((item) => _DebtItemRow(
+                    item: item,
+                    currency: widget.currency,
+                    onDelete: () => ref
+                        .read(budgetRepositoryProvider)
+                        .deleteDebtItem(item.id),
+                    onEdit: () => _showItemSheet(context, item: item),
+                  )),
+              GestureDetector(
+                onTap: () => _showItemSheet(context),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: bs(8)),
+                  child: Row(
+                    children: [
+                      Icon(Icons.add_rounded,
+                          size: bs(16), color: TraumColors.roseRed),
+                      SizedBox(width: bs(6)),
+                      Text(
+                        l10n.addDebtItem,
+                        style: const TextStyle(
+                          fontFamily: 'DMSans',
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: TraumColors.roseRed,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ],
@@ -532,7 +579,7 @@ class _DebtCard extends StatelessWidget {
               final a =
                   double.tryParse(ctrl.text.trim().replaceAll(',', '.')) ??
                       0;
-              if (a > 0) onPay(a);
+              if (a > 0) widget.onPay(a);
               Navigator.pop(ctx);
             },
             child: const Text('OK'),
@@ -541,4 +588,149 @@ class _DebtCard extends StatelessWidget {
       ),
     );
   }
+
+  void _showItemSheet(BuildContext context, {DebtItem? item}) {
+    final desc = TextEditingController(text: item?.description ?? '');
+    final price = TextEditingController(
+        text: item == null ? '' : fmtAmount(item.amount));
+    final l10n = AppLocalizations.of(context)!;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+          decoration: const BoxDecoration(
+            color: TraumColors.surface,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.addDebtItem,
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w700,
+                  color: TraumColors.onBackground,
+                  fontSize: 18,
+                ),
+              ),
+              const SizedBox(height: 16),
+              DebtsScreen.debtField(desc, l10n.debtItemDescription, ''),
+              const SizedBox(height: 8),
+              DebtsScreen.debtField(price, l10n.debtItemPrice, '0,00',
+                  number: true),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: TraumColors.roseRed,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                  onPressed: () {
+                    final d = desc.text.trim();
+                    final a = double.tryParse(
+                            price.text.trim().replaceAll(',', '.')) ??
+                        0;
+                    if (d.isEmpty || a <= 0) return;
+                    final repo = ref.read(budgetRepositoryProvider);
+                    if (item == null) {
+                      repo.addDebtItem(DebtItemsCompanion.insert(
+                          debtId: widget.debt.id,
+                          description: d,
+                          amount: a));
+                    } else {
+                      repo.updateDebtItem(DebtItemsCompanion(
+                        id: Value(item.id),
+                        debtId: Value(item.debtId),
+                        description: Value(d),
+                        amount: Value(a),
+                        createdAt: Value(item.createdAt),
+                      ));
+                    }
+                    Navigator.of(ctx).pop();
+                  },
+                  child: const Text(
+                    'Speichern',
+                    style: TextStyle(
+                        fontFamily: 'DMSans', fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Debt item row
+// ---------------------------------------------------------------------------
+
+class _DebtItemRow extends StatelessWidget {
+  final DebtItem item;
+  final String currency;
+  final VoidCallback onDelete;
+  final VoidCallback onEdit;
+
+  const _DebtItemRow({
+    required this.item,
+    required this.currency,
+    required this.onDelete,
+    required this.onEdit,
+  });
+
+  @override
+  Widget build(BuildContext context) => Dismissible(
+        key: ValueKey('item_${item.id}'),
+        direction: DismissDirection.endToStart,
+        background: Container(
+          alignment: Alignment.centerRight,
+          padding: EdgeInsets.only(right: bs(12)),
+          child: Icon(Icons.delete_outline,
+              color: TraumColors.roseRed, size: bs(18)),
+        ),
+        onDismissed: (_) => onDelete(),
+        child: GestureDetector(
+          onTap: onEdit,
+          behavior: HitTestBehavior.opaque,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: bs(6)),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    item.description,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      fontSize: 12,
+                      color: TraumColors.onBackground,
+                    ),
+                  ),
+                ),
+                Text(
+                  '${fmtAmount(item.amount)} $currency',
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: TraumColors.onBackground,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
 }
