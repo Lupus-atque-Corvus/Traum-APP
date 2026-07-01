@@ -1,7 +1,7 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.20+69** · schemaVersion **18**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.25+74** · schemaVersion **19**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert (Stand v0.7.20).
 
 ---
@@ -17,7 +17,7 @@
 
 ## Projekt-Fakten (aus dem Code verifiziert)
 - **Name / App-ID:** TRAUM · `de.traum.traum` (Android applicationId + iOS Bundle, beide Plattformen)
-- **Version:** 0.7.20+69 · Drift schemaVersion: 18
+- **Version:** 0.7.25+74 · Drift schemaVersion: 19
 - **Plattformen:** Android (minSdk 26) · iOS (Deployment Target 13.0)
 - **SDK:** Dart ^3.9.2
 - **Datenablage:** ausschließlich lokal — kein Backend, kein Server, keine Internet-Pflicht
@@ -62,7 +62,7 @@ lib/
 │   └── utils/
 ├── data/
 │   ├── database/
-│   │   ├── traum_database.dart   # @DriftDatabase — ~62 Tabellen, 19 DAOs, schemaVersion 18
+│   │   ├── traum_database.dart   # @DriftDatabase — ~63 Tabellen, 19 DAOs, schemaVersion 19
 │   │   ├── tables/               # 14 Tabellen-Dateien
 │   │   └── daos/                 # 19 DAO-Dateien
 │   ├── models/
@@ -103,7 +103,7 @@ periodRose: #FF8FAB · ovulationCyan: #00C9C8 · fertileCyan: #0093AB
 > aktiv schalten oder entfernen; wenn Light Mode wieder live werden soll, ist das eine bewusste
 > Entscheidung (dann themeProvider + Settings-Umschalter sauber einbauen) — vorher mit mir abstimmen.
 
-## Datenbank — ~62 Tabellen, 19 DAOs (echt, schemaVersion 18)
+## Datenbank — ~63 Tabellen, 19 DAOs (echt, schemaVersion 19)
 - Planning: Appointments, Todos, Goals, SubTasks, Habits, HabitLogs
 - Training: WorkoutPlans, WorkoutDays, Exercises, WorkoutSessions, WorkoutSets, WorkoutDayExercises
 - Health: WeightLogs, BodyMeasurements, SleepLogs, MoodLogs, PhotoLogs
@@ -113,7 +113,7 @@ periodRose: #FF8FAB · ovulationCyan: #00C9C8 · fertileCyan: #0093AB
 - Supplements: Supplements, SupplementLogs
 - Medication: Medications, MedicationLogs
 - Abstinence: AbstinenceTrackers, AbstinenceEvents
-- Budget: BudgetCategories, Transactions, SavingsGoals, Debts, QuickTemplates, Accounts
+- Budget: BudgetCategories, Transactions, SavingsGoals, Debts, DebtItems, QuickTemplates, Accounts
 - Period: PeriodEntries, CycleCalculations, PeriodSymptoms, DailyLogs, CycleProfile
 - Substances: SubstanceCaches, SubstanceIntakeLogs, SubstanceDatabaseEntries (Offline-DB)
 - Diary: DiaryEntries

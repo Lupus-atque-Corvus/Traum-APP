@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.7.25 (2026-07-01) — Schulden mit Einzelpositionen
+
+### Neu
+
+- **Aufklappbare Schulden:** Jede Schuld lässt sich antippen und zeigt ihre Einzelpositionen (Beschreibung + Preis). Der Gesamtbetrag einer Schuld ergibt sich aus der Summe ihrer Positionen.
+- **Positionen nachträglich pflegen:** Positionen lassen sich jederzeit hinzufügen (＋ Position hinzufügen), per Tippen bearbeiten und per Wischen löschen — der offene Betrag rechnet sich automatisch neu.
+- **„Rate zahlen" bleibt erhalten:** Teilzahlungen auf die ganze Schuld funktionieren weiterhin zusätzlich zu den Positionen.
+
+### Technisch
+
+- Neue Tabelle `DebtItems` (1:n zu `Debts`) + Spalte `paidAmount`; Schema-Migration v18 → v19 (bestehende Beträge werden zu je einer Startposition migriert).
+- Löschen einer Schuld entfernt ihre Positionen mit (kein Waisen-Datensatz); DAO-Mutationen laufen transaktional.
+
 ## v0.7.20 (2026-06-23) — Budget-Header: schwebende Monats-Pille (HTML-treu)
 
 ### Verbesserung
