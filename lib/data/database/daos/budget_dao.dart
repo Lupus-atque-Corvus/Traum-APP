@@ -3,7 +3,7 @@ import '../traum_database.dart';
 
 part 'budget_dao.g.dart';
 
-@DriftAccessor(tables: [Transactions, BudgetCategories, SavingsGoals, Debts, QuickTemplates])
+@DriftAccessor(tables: [Transactions, BudgetCategories, SavingsGoals, Debts, QuickTemplates, DebtItems])
 class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
   BudgetDao(super.db);
 

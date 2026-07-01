@@ -118,11 +118,12 @@ part 'traum_database.g.dart';
     // Abstinence (2)
     AbstinenceTrackers,
     AbstinenceEvents,
-    // Budget (6)
+    // Budget (7)
     BudgetCategories,
     Transactions,
     SavingsGoals,
     Debts,
+    DebtItems,
     QuickTemplates,
     Accounts,
     // Period (5)
@@ -210,7 +211,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 18;
+  int get schemaVersion => 19;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -337,6 +338,18 @@ class TraumDatabase extends _$TraumDatabase {
         await migrator.addColumn(transactions, transactions.accountId);
         await migrator.addColumn(transactions, transactions.toAccountId);
         await migrator.addColumn(transactions, transactions.lastPostedMonth);
+      }
+      if (from < 19) {
+        await migrator.createTable(debtItems);
+        await migrator.addColumn(debts, debts.paidAmount);
+        // Bisher getilgten Anteil als paidAmount übernehmen.
+        await customStatement(
+            'UPDATE debts SET paid_amount = original_amount - remaining_amount');
+        // Bestehenden Betrag jeder Schuld als eine Startposition migrieren.
+        await customStatement(
+            "INSERT INTO debt_items (debt_id, description, amount, created_at) "
+            "SELECT id, 'Bestehender Betrag', original_amount, strftime('%s','now') "
+            "FROM debts WHERE original_amount > 0");
       }
     },
   );
