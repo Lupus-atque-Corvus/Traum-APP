@@ -63,6 +63,7 @@ class DebtsScreen extends ConsumerWidget {
                       }
                       final debt = list[i - 1];
                       return _DebtCard(
+                        key: ValueKey(debt.id),
                         debt: debt,
                         currency: currency,
                         onPay: (amt) => ref
@@ -263,6 +264,7 @@ class _DebtCard extends ConsumerStatefulWidget {
   final VoidCallback onDelete;
 
   const _DebtCard({
+    super.key,
     required this.debt,
     required this.currency,
     required this.onPay,
