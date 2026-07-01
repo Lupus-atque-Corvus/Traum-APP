@@ -70,8 +70,66 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
   Future<bool> updateDebt(DebtsCompanion entry) =>
       update(debts).replace(entry);
 
-  Future<int> deleteDebt(int id) =>
-      (delete(debts)..where((t) => t.id.equals(id))).go();
+  Future<int> deleteDebt(int id) async {
+    await (delete(debtItems)..where((i) => i.debtId.equals(id))).go();
+    return (delete(debts)..where((t) => t.id.equals(id))).go();
+  }
+
+  // Debt items (positions)
+  Stream<List<DebtItem>> watchDebtItems(int debtId) =>
+      (select(debtItems)
+            ..where((i) => i.debtId.equals(debtId))
+            ..orderBy([(i) => OrderingTerm.asc(i.createdAt)]))
+          .watch();
+
+  Future<int> insertDebtItem(DebtItemsCompanion entry) async {
+    final id = await into(debtItems).insert(entry);
+    await _recomputeDebtTotals(entry.debtId.value);
+    return id;
+  }
+
+  Future<bool> updateDebtItem(DebtItemsCompanion entry) async {
+    final ok = await update(debtItems).replace(entry);
+    await _recomputeDebtTotals(entry.debtId.value);
+    return ok;
+  }
+
+  Future<int> deleteDebtItem(int itemId) async {
+    final item = await (select(debtItems)..where((i) => i.id.equals(itemId)))
+        .getSingleOrNull();
+    final rows =
+        await (delete(debtItems)..where((i) => i.id.equals(itemId))).go();
+    if (item != null) await _recomputeDebtTotals(item.debtId);
+    return rows;
+  }
+
+  Future<void> payDebtRate(int debtId, double amount) async {
+    final debt = await (select(debts)..where((d) => d.id.equals(debtId)))
+        .getSingleOrNull();
+    if (debt == null) return;
+    await (update(debts)..where((d) => d.id.equals(debtId)))
+        .write(DebtsCompanion(paidAmount: Value(debt.paidAmount + amount)));
+    await _recomputeDebtTotals(debtId);
+  }
+
+  /// Hält originalAmount/remainingAmount/isPaidOff einer Schuld konsistent:
+  /// original = Summe der Positionen, remaining = clamp(original - paidAmount).
+  Future<void> _recomputeDebtTotals(int debtId) async {
+    final items =
+        await (select(debtItems)..where((i) => i.debtId.equals(debtId))).get();
+    final total = items.fold<double>(0.0, (s, i) => s + i.amount);
+    final debt = await (select(debts)..where((d) => d.id.equals(debtId)))
+        .getSingleOrNull();
+    if (debt == null) return;
+    final remaining = (total - debt.paidAmount).clamp(0.0, total);
+    await (update(debts)..where((d) => d.id.equals(debtId))).write(
+      DebtsCompanion(
+        originalAmount: Value(total),
+        remainingAmount: Value(remaining),
+        isPaidOff: Value(total > 0 && remaining <= 0),
+      ),
+    );
+  }
 
   // --- New Transaction methods ---
 
