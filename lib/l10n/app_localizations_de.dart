@@ -2647,6 +2647,23 @@ class AppLocalizationsDe extends AppLocalizations {
   String get budgetDebts => 'Schulden';
 
   @override
+  String get addDebtItem => 'Position hinzufügen';
+
+  @override
+  String get debtItemDescription => 'Beschreibung';
+
+  @override
+  String get debtItemPrice => 'Preis';
+
+  @override
+  String debtTotalFromItems(int count) {
+    return 'Gesamt aus $count Positionen';
+  }
+
+  @override
+  String get debtExistingAmount => 'Bestehender Betrag';
+
+  @override
   String get budgetQuickTemplates => 'Schnellvorlagen';
 
   @override

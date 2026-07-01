@@ -5108,6 +5108,36 @@ abstract class AppLocalizations {
   /// **'Schulden'**
   String get budgetDebts;
 
+  /// No description provided for @addDebtItem.
+  ///
+  /// In de, this message translates to:
+  /// **'Position hinzufügen'**
+  String get addDebtItem;
+
+  /// No description provided for @debtItemDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Beschreibung'**
+  String get debtItemDescription;
+
+  /// No description provided for @debtItemPrice.
+  ///
+  /// In de, this message translates to:
+  /// **'Preis'**
+  String get debtItemPrice;
+
+  /// No description provided for @debtTotalFromItems.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesamt aus {count} Positionen'**
+  String debtTotalFromItems(int count);
+
+  /// No description provided for @debtExistingAmount.
+  ///
+  /// In de, this message translates to:
+  /// **'Bestehender Betrag'**
+  String get debtExistingAmount;
+
   /// No description provided for @budgetQuickTemplates.
   ///
   /// In de, this message translates to:
