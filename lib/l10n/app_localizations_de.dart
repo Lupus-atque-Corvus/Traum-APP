@@ -2650,6 +2650,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addDebtItem => 'Position hinzufügen';
 
   @override
+  String get editDebtItem => 'Position bearbeiten';
+
+  @override
   String get debtItemDescription => 'Beschreibung';
 
   @override

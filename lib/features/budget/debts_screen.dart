@@ -153,7 +153,7 @@ class DebtsScreen extends ConsumerWidget {
           ),
         ),
       ),
-    );
+    ).whenComplete(creditor.dispose);
   }
 
   static Widget debtField(
@@ -586,7 +586,7 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
           ),
         ],
       ),
-    );
+    ).whenComplete(ctrl.dispose);
   }
 
   void _showItemSheet(BuildContext context, {DebtItem? item}) {
@@ -611,7 +611,7 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                l10n.addDebtItem,
+                item == null ? l10n.addDebtItem : l10n.editDebtItem,
                 style: const TextStyle(
                   fontFamily: 'DMSans',
                   fontWeight: FontWeight.w700,
@@ -670,7 +670,10 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
           ),
         ),
       ),
-    );
+    ).whenComplete(() {
+      desc.dispose();
+      price.dispose();
+    });
   }
 }
 

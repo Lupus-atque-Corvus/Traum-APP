@@ -1110,6 +1110,8 @@
   "budgetDebts": "Debts",
   "addDebtItem": "Add item",
   "@addDebtItem": {},
+  "editDebtItem": "Edit item",
+  "@editDebtItem": {},
   "debtItemDescription": "Description",
   "@debtItemDescription": {},
   "debtItemPrice": "Price",

@@ -5114,6 +5114,12 @@ abstract class AppLocalizations {
   /// **'Position hinzufügen'**
   String get addDebtItem;
 
+  /// No description provided for @editDebtItem.
+  ///
+  /// In de, this message translates to:
+  /// **'Position bearbeiten'**
+  String get editDebtItem;
+
   /// No description provided for @debtItemDescription.
   ///
   /// In de, this message translates to:

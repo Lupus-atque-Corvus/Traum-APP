@@ -58,4 +58,35 @@ void main() {
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 1));
   });
+
+  testWidgets('tapping a position opens the edit sheet with the edit title',
+      (tester) async {
+    final prefs = await SharedPreferences.getInstance();
+    final db = TraumDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(db.close);
+
+    final debtId = await db.budgetDao.insertDebt(
+      DebtsCompanion.insert(
+          creditor: 'Mama', originalAmount: 0, remainingAmount: 0),
+    );
+    await db.budgetDao.insertDebtItem(DebtItemsCompanion.insert(
+        debtId: debtId, description: 'Tankfüllung', amount: 60));
+
+    await tester.pumpWidget(_wrap(db, prefs));
+    await tester.pump(const Duration(milliseconds: 100));
+
+    // Expand the card, then tap the position to open its edit sheet.
+    await tester.tap(find.text('Mama'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.tap(find.text('Tankfüllung'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    // Edit variant shows "Position bearbeiten", not the add title.
+    expect(find.text('Position bearbeiten'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 1));
+  });
 }

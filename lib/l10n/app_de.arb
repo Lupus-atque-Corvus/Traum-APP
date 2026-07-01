@@ -1132,6 +1132,8 @@
   "budgetDebts": "Schulden",
   "addDebtItem": "Position hinzufügen",
   "@addDebtItem": {},
+  "editDebtItem": "Position bearbeiten",
+  "@editDebtItem": {},
   "debtItemDescription": "Beschreibung",
   "@debtItemDescription": {},
   "debtItemPrice": "Preis",

@@ -2640,6 +2640,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addDebtItem => 'Add item';
 
   @override
+  String get editDebtItem => 'Edit item';
+
+  @override
   String get debtItemDescription => 'Description';
 
   @override
