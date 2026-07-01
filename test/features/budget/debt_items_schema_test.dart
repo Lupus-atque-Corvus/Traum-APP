@@ -1,5 +1,4 @@
 // test/features/budget/debt_items_schema_test.dart
-import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:traum/data/database/traum_database.dart';
