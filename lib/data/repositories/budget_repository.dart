@@ -32,4 +32,12 @@ class BudgetRepository {
   Future<int> addDebt(DebtsCompanion e) => _dao.insertDebt(e);
   Future<bool> updateDebt(DebtsCompanion e) => _dao.updateDebt(e);
   Future<int> deleteDebt(int id) => _dao.deleteDebt(id);
+
+  Stream<List<DebtItem>> watchDebtItems(int debtId) =>
+      _dao.watchDebtItems(debtId);
+  Future<int> addDebtItem(DebtItemsCompanion e) => _dao.insertDebtItem(e);
+  Future<bool> updateDebtItem(DebtItemsCompanion e) => _dao.updateDebtItem(e);
+  Future<int> deleteDebtItem(int id) => _dao.deleteDebtItem(id);
+  Future<void> payDebtRate(int debtId, double amount) =>
+      _dao.payDebtRate(debtId, amount);
 }
