@@ -2,6 +2,7 @@ import 'calendar_picker_dialog.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../core/components/components.dart';
 import '../../core/providers/database_provider.dart';
@@ -181,12 +182,14 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
                   ),
                   markerDecoration: const BoxDecoration(color: TraumColors.coralOrange, shape: BoxShape.circle),
                 ),
-                headerStyle: const HeaderStyle(
+                headerStyle: HeaderStyle(
                   formatButtonVisible: false,
                   titleCentered: true,
-                  titleTextStyle: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700),
-                  leftChevronIcon: Icon(Icons.chevron_left, color: TraumColors.onBackground),
-                  rightChevronIcon: Icon(Icons.chevron_right, color: TraumColors.onBackground),
+                  titleTextFormatter: (date, locale) =>
+                      '${DateFormat.yMMMM(locale).format(date)} · ${date.month}',
+                  titleTextStyle: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700),
+                  leftChevronIcon: const Icon(Icons.chevron_left, color: TraumColors.onBackground),
+                  rightChevronIcon: const Icon(Icons.chevron_right, color: TraumColors.onBackground),
                 ),
                 daysOfWeekStyle: const DaysOfWeekStyle(
                   weekdayStyle: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12),
