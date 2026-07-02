@@ -68,9 +68,9 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
   Future<int> deleteAppointment(int id) =>
       (delete(appointments)..where((t) => t.id.equals(id))).go();
 
-  // Reserved for CalendarSyncService conflict resolution — not yet called because
-  // device_calendar v4.x does not expose lastModifiedDate. Will be used when upgrading
-  // to a version that provides per-event modification timestamps.
+  /// Overwrites a local appointment's content with the device event's
+  /// content (device wins a content conflict). Also marks the row as
+  /// device-origin and records the sync metadata.
   Future<void> updateAppointmentFromDevice({
     required int id,
     required String title,
@@ -80,6 +80,8 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
     DateTime? endTime,
     required bool allDay,
     required DateTime updatedAt,
+    String? sourceCalendarId,
+    DateTime? lastSyncedAt,
   }) =>
       (update(appointments)..where((t) => t.id.equals(id))).write(
         AppointmentsCompanion(
@@ -90,6 +92,30 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
           endTime: Value(endTime),
           allDay: Value(allDay),
           updatedAt: Value(updatedAt),
+          isAppOrigin: const Value(false),
+          sourceCalendarId: sourceCalendarId != null
+              ? Value(sourceCalendarId)
+              : const Value.absent(),
+          lastSyncedAt:
+              lastSyncedAt != null ? Value(lastSyncedAt) : const Value.absent(),
+        ),
+      );
+
+  /// Persists sync metadata (external id, source calendar, last-synced
+  /// timestamp) after successfully pushing an app appointment to the
+  /// device (insert or update).
+  Future<void> updateAppointmentAfterPush({
+    required int id,
+    required String externalEventId,
+    required String sourceCalendarId,
+    required DateTime lastSyncedAt,
+  }) =>
+      (update(appointments)..where((t) => t.id.equals(id))).write(
+        AppointmentsCompanion(
+          externalEventId: Value(externalEventId),
+          sourceCalendarId: Value(sourceCalendarId),
+          lastSyncedAt: Value(lastSyncedAt),
+          updatedAt: Value(lastSyncedAt),
         ),
       );
 

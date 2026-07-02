@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:timezone/timezone.dart' as tz;
 import '../../data/database/traum_database.dart';
 import '../../data/preferences/preferences_repository.dart';
+import 'calendar_sync_merge.dart';
 
 class SyncResult {
   final bool permissionDenied;
@@ -154,7 +155,7 @@ class CalendarSyncService {
     return result?.data;
   }
 
-  Future<void> _pullNativeEvent(_NativeEvent event) async {
+  Future<void> _pullInsertEvent(_NativeEvent event, DateTime now) async {
     await _dao.insertAppointment(AppointmentsCompanion.insert(
       title: event.title,
       description: Value(event.description),
@@ -163,9 +164,34 @@ class CalendarSyncService {
       endTime: Value(event.endTime),
       allDay: Value(event.allDay),
       externalEventId: Value(event.id),
-      updatedAt: Value(DateTime.now()),
+      sourceCalendarId: Value(event.calendarId),
+      isAppOrigin: const Value(false),
+      lastSyncedAt: Value(now),
+      updatedAt: Value(now),
     ));
   }
+
+  AppointmentSyncView _toSyncView(Appointment a) => AppointmentSyncView(
+        id: a.id,
+        externalEventId: a.externalEventId,
+        isAppOrigin: a.isAppOrigin,
+        title: a.title,
+        description: a.description,
+        location: a.location,
+        start: a.startTime,
+        end: a.endTime ?? a.startTime.add(const Duration(hours: 1)),
+        allDay: a.allDay,
+      );
+
+  SyncEventData _toSyncEventData(_NativeEvent e) => SyncEventData(
+        externalId: e.id,
+        title: e.title,
+        description: e.description,
+        location: e.location,
+        start: e.startTime,
+        end: e.endTime,
+        allDay: e.allDay,
+      );
 
   /// Push a single newly created app appointment to the primary device calendar.
   Future<void> syncNewAppointment(int appointmentId) async {
@@ -208,44 +234,86 @@ class CalendarSyncService {
         await _getNativeEvents(calendarIds, windowStart, windowEnd);
     final appAppointments = await _dao.getAllAppointments();
 
-    final appByExternalId = <String, Appointment>{
-      for (final a in appAppointments)
-        if (a.externalEventId != null) a.externalEventId!: a,
-    };
-    final deviceEventIds = {for (final e in deviceEvents) e.id};
+    final appById = {for (final a in appAppointments) a.id: a};
+    final deviceById = {for (final e in deviceEvents) e.id: e};
+
+    final actions = computeSyncActions(
+      appAppointments: appAppointments.map(_toSyncView).toList(),
+      deviceEvents: deviceEvents.map(_toSyncEventData).toList(),
+      windowStart: windowStart,
+      windowEnd: windowEnd,
+    );
 
     int synced = 0;
     int errors = 0;
 
-    // Device → App: import new events
-    for (final event in deviceEvents) {
+    for (final action in actions) {
       try {
-        if (!appByExternalId.containsKey(event.id)) {
-          await _pullNativeEvent(event);
-          synced++;
-        }
-      } catch (_) {
-        errors++;
-      }
-    }
+        switch (action.type) {
+          case SyncActionType.none:
+            break;
 
-    // App → Device: push new app appointments to primary calendar + handle deletions
-    final primaryCalendarId = calendarIds.first;
-    for (final apt in appAppointments) {
-      try {
-        if (apt.externalEventId != null) {
-          final inWindow = apt.startTime.isAfter(windowStart) &&
-              apt.startTime.isBefore(windowEnd);
-          if (inWindow && !deviceEventIds.contains(apt.externalEventId!)) {
-            await _dao.deleteAppointment(apt.id);
+          case SyncActionType.pullInsert:
+            final event = deviceById[action.externalId];
+            if (event == null) break;
+            await _pullInsertEvent(event, now);
             synced++;
-          }
-        } else {
-          final newId = await _pushToDevice(apt, primaryCalendarId);
-          if (newId != null) {
-            await _dao.updateExternalEventId(apt.id, newId);
+            break;
+
+          case SyncActionType.pullUpdate:
+            final event = deviceById[action.externalId];
+            final appointmentId = action.appointmentId;
+            if (event == null || appointmentId == null) break;
+            await _dao.updateAppointmentFromDevice(
+              id: appointmentId,
+              title: event.title,
+              description: event.description,
+              location: event.location,
+              startTime: event.startTime,
+              endTime: event.endTime,
+              allDay: event.allDay,
+              updatedAt: now,
+              sourceCalendarId: event.calendarId,
+              lastSyncedAt: now,
+            );
             synced++;
-          }
+            break;
+
+          case SyncActionType.pushInsert:
+          case SyncActionType.pushUpdate:
+            final appointmentId = action.appointmentId;
+            if (appointmentId == null) break;
+            final apt = appById[appointmentId];
+            if (apt == null) break;
+            final targetCalendarId = apt.sourceCalendarId ?? calendarIds.first;
+            final resultId = await _pushToDevice(apt, targetCalendarId);
+            if (resultId != null) {
+              await _dao.updateAppointmentAfterPush(
+                id: apt.id,
+                externalEventId: resultId,
+                sourceCalendarId: targetCalendarId,
+                lastSyncedAt: now,
+              );
+              synced++;
+            }
+            break;
+
+          case SyncActionType.deleteLocal:
+            final appointmentId = action.appointmentId;
+            if (appointmentId == null) break;
+            await _dao.deleteAppointment(appointmentId);
+            synced++;
+            break;
+
+          case SyncActionType.deleteRemote:
+            final externalId = action.externalId;
+            if (externalId == null) break;
+            final apt =
+                action.appointmentId != null ? appById[action.appointmentId] : null;
+            final targetCalendarId = apt?.sourceCalendarId ?? calendarIds.first;
+            await _plugin.deleteEvent(targetCalendarId, externalId);
+            synced++;
+            break;
         }
       } catch (_) {
         errors++;
@@ -254,5 +322,4 @@ class CalendarSyncService {
 
     return SyncResult(synced: synced, errors: errors);
   }
-
 }
