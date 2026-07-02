@@ -72,6 +72,10 @@ class Routes {
     'settings': settings,
   };
 
+  /// True nur auf Modul-Startseiten — dort ist die NavBar sichtbar.
+  static bool isModuleRoot(String location) =>
+      location == home || moduleRoutes.containsValue(location);
+
   static String labelFor(String module, AppLocalizations l10n) {
     switch (module) {
       case 'home':
