@@ -133,6 +133,17 @@ class _CalendarTab extends ConsumerStatefulWidget {
 class _CalendarTabState extends ConsumerState<_CalendarTab> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
+  late CalendarFormat _calendarFormat;
+
+  @override
+  void initState() {
+    super.initState();
+    _calendarFormat =
+        ref.read(preferencesRepositoryProvider).planningCalendarFormat ==
+                'week'
+            ? CalendarFormat.week
+            : CalendarFormat.month;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,6 +170,16 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
                 firstDay: DateTime(2000),
                 lastDay: DateTime(2100),
                 focusedDay: _focusedDay,
+                calendarFormat: _calendarFormat,
+                availableCalendarFormats: {
+                  CalendarFormat.month: AppLocalizations.of(context)!.periodMonth,
+                  CalendarFormat.week: AppLocalizations.of(context)!.periodWeek,
+                },
+                onFormatChanged: (format) {
+                  setState(() => _calendarFormat = format);
+                  ref.read(preferencesRepositoryProvider).setPlanningCalendarFormat(
+                      format == CalendarFormat.week ? 'week' : 'month');
+                },
                 selectedDayPredicate: (d) => isSameDay(d, _selectedDay),
                 eventLoader: (day) {
                   final key = DateTime(day.year, day.month, day.day);
@@ -184,13 +205,21 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
                   markerDecoration: const BoxDecoration(color: TraumColors.coralOrange, shape: BoxShape.circle),
                 ),
                 headerStyle: HeaderStyle(
-                  formatButtonVisible: false,
+                  formatButtonVisible: true,
+                  formatButtonShowsNext: false,
                   titleCentered: true,
                   titleTextFormatter: (date, locale) =>
                       '${DateFormat.yMMMM(locale).format(date)} · ${date.month}',
                   titleTextStyle: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700),
                   leftChevronIcon: const Icon(Icons.chevron_left, color: TraumColors.onBackground),
                   rightChevronIcon: const Icon(Icons.chevron_right, color: TraumColors.onBackground),
+                  formatButtonTextStyle: const TextStyle(
+                      color: TraumColors.lavender, fontFamily: 'DMSans', fontSize: 12,
+                      fontWeight: FontWeight.w600),
+                  formatButtonDecoration: BoxDecoration(
+                    border: Border.all(color: TraumColors.lavender.withValues(alpha: 0.4)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 daysOfWeekStyle: const DaysOfWeekStyle(
                   weekdayStyle: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12),

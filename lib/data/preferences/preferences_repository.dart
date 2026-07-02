@@ -53,6 +53,12 @@ class PreferencesRepository {
     await _prefs.setString('calendar_sync_ids', jsonEncode(ids));
   }
 
+  // Planning
+  String get planningCalendarFormat =>
+      _prefs.getString('planning_calendar_format') ?? 'month';
+  Future<void> setPlanningCalendarFormat(String v) =>
+      _prefs.setString('planning_calendar_format', v);
+
   bool get onboardingComplete =>
       _prefs.getBool('onboarding_complete') ?? false;
   Future<void> setOnboardingComplete(bool v) =>
