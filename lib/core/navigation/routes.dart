@@ -86,17 +86,17 @@ class Routes {
       case 'nutrition':
         return l10n.nutrition;
       case 'substances':
-        return 'Mittel';
+        return l10n.moduleSubstances;
       case 'planning':
         return l10n.planning;
       case 'abstinence':
-        return 'Fortschritt';
+        return l10n.moduleProgress;
       case 'budget':
         return l10n.budget;
       case 'diary':
         return l10n.diaryModuleLabel;
       case 'graffitiMap':
-        return 'Graffiti Map';
+        return l10n.moduleGraffitiMap;
       case 'notes':
         return l10n.notes_title;
       case 'period':

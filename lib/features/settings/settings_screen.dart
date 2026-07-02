@@ -1741,9 +1741,9 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
                 _anySelected ? () => _runSelectiveExport(context) : null,
           ),
           const SizedBox(height: 20),
-          const Text(
-            'Graffiti Map',
-            style: TextStyle(
+          Text(
+            l10n.moduleGraffitiMap,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontWeight: FontWeight.w600,

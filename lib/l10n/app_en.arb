@@ -1468,5 +1468,15 @@
   "sexUnprotected": "Unprotected",
   "logTodayTitle": "Log today",
   "saveLog": "Save",
-  "periodMedicalDisclaimer": "Not medical advice and not a contraceptive guarantee."
+  "periodMedicalDisclaimer": "Not medical advice and not a contraceptive guarantee.",
+  "periodWeek": "Week",
+  "periodMonth": "Month",
+  "periodSixMonths": "6 months",
+  "periodYear": "Year",
+  "moduleSubstances": "Substances",
+  "moduleProgress": "Progress",
+  "moduleGraffitiMap": "Graffiti Map",
+  "calendarAccessDeniedSyncOff": "Calendar access denied — sync disabled",
+  "calendarFallbackName": "Calendar",
+  "eventNoTitle": "(No title)"
 }

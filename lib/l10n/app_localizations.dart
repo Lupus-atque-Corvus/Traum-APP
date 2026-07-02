@@ -6967,6 +6967,66 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Kein medizinischer Rat und keine Verhütungsgarantie.'**
   String get periodMedicalDisclaimer;
+
+  /// No description provided for @periodWeek.
+  ///
+  /// In de, this message translates to:
+  /// **'Woche'**
+  String get periodWeek;
+
+  /// No description provided for @periodMonth.
+  ///
+  /// In de, this message translates to:
+  /// **'Monat'**
+  String get periodMonth;
+
+  /// No description provided for @periodSixMonths.
+  ///
+  /// In de, this message translates to:
+  /// **'6 Monate'**
+  String get periodSixMonths;
+
+  /// No description provided for @periodYear.
+  ///
+  /// In de, this message translates to:
+  /// **'Jahr'**
+  String get periodYear;
+
+  /// No description provided for @moduleSubstances.
+  ///
+  /// In de, this message translates to:
+  /// **'Mittel'**
+  String get moduleSubstances;
+
+  /// No description provided for @moduleProgress.
+  ///
+  /// In de, this message translates to:
+  /// **'Fortschritt'**
+  String get moduleProgress;
+
+  /// No description provided for @moduleGraffitiMap.
+  ///
+  /// In de, this message translates to:
+  /// **'Graffiti Map'**
+  String get moduleGraffitiMap;
+
+  /// No description provided for @calendarAccessDeniedSyncOff.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalender-Zugriff verweigert — Sync deaktiviert'**
+  String get calendarAccessDeniedSyncOff;
+
+  /// No description provided for @calendarFallbackName.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalender'**
+  String get calendarFallbackName;
+
+  /// No description provided for @eventNoTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'(Kein Titel)'**
+  String get eventNoTitle;
 }
 
 class _AppLocalizationsDelegate

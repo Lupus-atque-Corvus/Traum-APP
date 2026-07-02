@@ -44,6 +44,7 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
   Widget build(BuildContext context) {
     final period = ref.watch(selectedTrendPeriodProvider);
     final barsAsync = ref.watch(trendDataProvider(period));
+    final l10n = AppLocalizations.of(context)!;
 
     return _LocalCard(
       child: Column(
@@ -80,10 +81,10 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
               children: TrendPeriod.values.map((p) {
                 final isSelected = p == period;
                 final label = switch (p) {
-                  TrendPeriod.week => 'Woche',
-                  TrendPeriod.month => 'Monat',
-                  TrendPeriod.sixMonths => '6 Monate',
-                  TrendPeriod.year => 'Jahr',
+                  TrendPeriod.week => l10n.periodWeek,
+                  TrendPeriod.month => l10n.periodMonth,
+                  TrendPeriod.sixMonths => l10n.periodSixMonths,
+                  TrendPeriod.year => l10n.periodYear,
                 };
                 return Padding(
                   padding: EdgeInsets.only(right: bs(8)),
@@ -124,9 +125,9 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                 return Center(
                   child: Padding(
                     padding: EdgeInsets.all(bs(24)),
-                    child: const Text(
-                      'Keine Daten',
-                      style: TextStyle(
+                    child: Text(
+                      l10n.noData,
+                      style: const TextStyle(
                         color: TraumColors.onBackgroundMuted,
                         fontFamily: 'DMSans',
                       ),

@@ -1490,5 +1490,15 @@
   "sexUnprotected": "Ungeschützt",
   "logTodayTitle": "Heute eintragen",
   "saveLog": "Speichern",
-  "periodMedicalDisclaimer": "Kein medizinischer Rat und keine Verhütungsgarantie."
+  "periodMedicalDisclaimer": "Kein medizinischer Rat und keine Verhütungsgarantie.",
+  "periodWeek": "Woche",
+  "periodMonth": "Monat",
+  "periodSixMonths": "6 Monate",
+  "periodYear": "Jahr",
+  "moduleSubstances": "Mittel",
+  "moduleProgress": "Fortschritt",
+  "moduleGraffitiMap": "Graffiti Map",
+  "calendarAccessDeniedSyncOff": "Kalender-Zugriff verweigert — Sync deaktiviert",
+  "calendarFallbackName": "Kalender",
+  "eventNoTitle": "(Kein Titel)"
 }

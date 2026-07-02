@@ -3625,4 +3625,35 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get periodMedicalDisclaimer =>
       'Kein medizinischer Rat und keine Verhütungsgarantie.';
+
+  @override
+  String get periodWeek => 'Woche';
+
+  @override
+  String get periodMonth => 'Monat';
+
+  @override
+  String get periodSixMonths => '6 Monate';
+
+  @override
+  String get periodYear => 'Jahr';
+
+  @override
+  String get moduleSubstances => 'Mittel';
+
+  @override
+  String get moduleProgress => 'Fortschritt';
+
+  @override
+  String get moduleGraffitiMap => 'Graffiti Map';
+
+  @override
+  String get calendarAccessDeniedSyncOff =>
+      'Kalender-Zugriff verweigert — Sync deaktiviert';
+
+  @override
+  String get calendarFallbackName => 'Kalender';
+
+  @override
+  String get eventNoTitle => '(Kein Titel)';
 }

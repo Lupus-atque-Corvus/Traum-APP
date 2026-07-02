@@ -42,9 +42,10 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
 
       if (result.permissionDenied) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Kalender-Zugriff verweigert — Sync deaktiviert'),
-            duration: Duration(seconds: 4),
+          SnackBar(
+            content: Text(
+                AppLocalizations.of(context)!.calendarAccessDeniedSyncOff),
+            duration: const Duration(seconds: 4),
           ),
         );
         return;
