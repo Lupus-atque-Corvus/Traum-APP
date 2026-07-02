@@ -19,9 +19,6 @@ import '../../features/training/training_wizard_screen.dart';
 import '../../features/health/health_screen.dart';
 import '../../features/health/health_score_detail_screen.dart';
 import '../../features/nutrition/nutrition_screen.dart';
-import '../../features/nutrition/meal_log_screen.dart';
-import '../../features/nutrition/food_search_screen.dart';
-import '../../features/nutrition/shopping_list_screen.dart';
 import '../../features/substances/substances_screen.dart';
 import '../../features/planning/planning_screen.dart';
 import '../../features/abstinence/abstinence_screen.dart';
@@ -173,20 +170,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: Routes.nutrition,
             builder: (_, _) => const NutritionScreen(),
-            routes: [
-              GoRoute(
-                path: 'log',
-                builder: (_, _) => const MealLogScreen(),
-              ),
-              GoRoute(
-                path: 'search',
-                builder: (_, _) => const FoodSearchScreen(),
-              ),
-              GoRoute(
-                path: 'shopping',
-                builder: (_, _) => const ShoppingListScreen(),
-              ),
-            ],
           ),
           GoRoute(
             path: Routes.substances,

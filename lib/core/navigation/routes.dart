@@ -19,9 +19,6 @@ class Routes {
   static const String health = '/health';
   static const String healthScoreDetail = '/health/score-detail';
   static const String nutrition = '/nutrition';
-  static const String mealLog = '/nutrition/log';
-  static const String foodSearch = '/nutrition/search';
-  static const String shoppingList = '/nutrition/shopping';
   static const String substances = '/substances';
   static const String supplements = '/supplements';
   static const String planning = '/planning';
