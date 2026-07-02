@@ -43,6 +43,7 @@ class _NativeEvent {
   final DateTime startTime;
   final DateTime endTime;
   final bool allDay;
+  final String calendarId;
 
   const _NativeEvent({
     required this.id,
@@ -52,6 +53,7 @@ class _NativeEvent {
     required this.startTime,
     required this.endTime,
     this.allDay = false,
+    this.calendarId = '',
   });
 }
 
@@ -129,6 +131,7 @@ class CalendarSyncService {
           startTime: DateTime.fromMillisecondsSinceEpoch(startMs),
           endTime: DateTime.fromMillisecondsSinceEpoch(endMs),
           allDay: m['allDay'] as bool? ?? false,
+          calendarId: m['calendarId']?.toString() ?? '',
         );
       }).toList();
     } catch (_) {

@@ -35,6 +35,7 @@ class MainActivity : FlutterFragmentActivity() {
                             CalendarContract.Events.DTSTART,
                             CalendarContract.Events.DTEND,
                             CalendarContract.Events.ALL_DAY,
+                            CalendarContract.Events.CALENDAR_ID,
                         )
                         val placeholders = calendarIds.joinToString(",") { "?" }
                         val selection = "(${CalendarContract.Events.CALENDAR_ID} IN ($placeholders)) " +
@@ -56,6 +57,7 @@ class MainActivity : FlutterFragmentActivity() {
                                     "startMs" to it.getLong(it.getColumnIndexOrThrow(CalendarContract.Events.DTSTART)),
                                     "endMs" to it.getLong(it.getColumnIndexOrThrow(CalendarContract.Events.DTEND)),
                                     "allDay" to (it.getInt(it.getColumnIndexOrThrow(CalendarContract.Events.ALL_DAY)) == 1),
+                                    "calendarId" to it.getLong(it.getColumnIndexOrThrow(CalendarContract.Events.CALENDAR_ID)).toString(),
                                 ))
                             }
                         }
