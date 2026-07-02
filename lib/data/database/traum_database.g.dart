@@ -143,6 +143,43 @@ class $AppointmentsTable extends Appointments
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
+  static const VerificationMeta _sourceCalendarIdMeta = const VerificationMeta(
+    'sourceCalendarId',
+  );
+  @override
+  late final GeneratedColumn<String> sourceCalendarId = GeneratedColumn<String>(
+    'source_calendar_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isAppOriginMeta = const VerificationMeta(
+    'isAppOrigin',
+  );
+  @override
+  late final GeneratedColumn<bool> isAppOrigin = GeneratedColumn<bool>(
+    'is_app_origin',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_app_origin" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _lastSyncedAtMeta = const VerificationMeta(
+    'lastSyncedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncedAt = GeneratedColumn<DateTime>(
+    'last_synced_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -157,6 +194,9 @@ class $AppointmentsTable extends Appointments
     externalEventId,
     updatedAt,
     createdAt,
+    sourceCalendarId,
+    isAppOrigin,
+    lastSyncedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -252,6 +292,33 @@ class $AppointmentsTable extends Appointments
         createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
       );
     }
+    if (data.containsKey('source_calendar_id')) {
+      context.handle(
+        _sourceCalendarIdMeta,
+        sourceCalendarId.isAcceptableOrUnknown(
+          data['source_calendar_id']!,
+          _sourceCalendarIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_app_origin')) {
+      context.handle(
+        _isAppOriginMeta,
+        isAppOrigin.isAcceptableOrUnknown(
+          data['is_app_origin']!,
+          _isAppOriginMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_synced_at')) {
+      context.handle(
+        _lastSyncedAtMeta,
+        lastSyncedAt.isAcceptableOrUnknown(
+          data['last_synced_at']!,
+          _lastSyncedAtMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -309,6 +376,18 @@ class $AppointmentsTable extends Appointments
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      sourceCalendarId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_calendar_id'],
+      ),
+      isAppOrigin: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_app_origin'],
+      )!,
+      lastSyncedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_synced_at'],
+      ),
     );
   }
 
@@ -331,6 +410,13 @@ class Appointment extends DataClass implements Insertable<Appointment> {
   final String? externalEventId;
   final DateTime updatedAt;
   final DateTime createdAt;
+
+  /// Geräte-Kalender, aus dem das Event stammt bzw. in den es gepusht wurde.
+  final String? sourceCalendarId;
+
+  /// true = Termin wurde in der App erstellt (App ist Quelle der Wahrheit).
+  final bool isAppOrigin;
+  final DateTime? lastSyncedAt;
   const Appointment({
     required this.id,
     required this.title,
@@ -344,6 +430,9 @@ class Appointment extends DataClass implements Insertable<Appointment> {
     this.externalEventId,
     required this.updatedAt,
     required this.createdAt,
+    this.sourceCalendarId,
+    required this.isAppOrigin,
+    this.lastSyncedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -372,6 +461,13 @@ class Appointment extends DataClass implements Insertable<Appointment> {
     }
     map['updated_at'] = Variable<DateTime>(updatedAt);
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || sourceCalendarId != null) {
+      map['source_calendar_id'] = Variable<String>(sourceCalendarId);
+    }
+    map['is_app_origin'] = Variable<bool>(isAppOrigin);
+    if (!nullToAbsent || lastSyncedAt != null) {
+      map['last_synced_at'] = Variable<DateTime>(lastSyncedAt);
+    }
     return map;
   }
 
@@ -401,6 +497,13 @@ class Appointment extends DataClass implements Insertable<Appointment> {
           : Value(externalEventId),
       updatedAt: Value(updatedAt),
       createdAt: Value(createdAt),
+      sourceCalendarId: sourceCalendarId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceCalendarId),
+      isAppOrigin: Value(isAppOrigin),
+      lastSyncedAt: lastSyncedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncedAt),
     );
   }
 
@@ -422,6 +525,9 @@ class Appointment extends DataClass implements Insertable<Appointment> {
       externalEventId: serializer.fromJson<String?>(json['externalEventId']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      sourceCalendarId: serializer.fromJson<String?>(json['sourceCalendarId']),
+      isAppOrigin: serializer.fromJson<bool>(json['isAppOrigin']),
+      lastSyncedAt: serializer.fromJson<DateTime?>(json['lastSyncedAt']),
     );
   }
   @override
@@ -440,6 +546,9 @@ class Appointment extends DataClass implements Insertable<Appointment> {
       'externalEventId': serializer.toJson<String?>(externalEventId),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'sourceCalendarId': serializer.toJson<String?>(sourceCalendarId),
+      'isAppOrigin': serializer.toJson<bool>(isAppOrigin),
+      'lastSyncedAt': serializer.toJson<DateTime?>(lastSyncedAt),
     };
   }
 
@@ -456,6 +565,9 @@ class Appointment extends DataClass implements Insertable<Appointment> {
     Value<String?> externalEventId = const Value.absent(),
     DateTime? updatedAt,
     DateTime? createdAt,
+    Value<String?> sourceCalendarId = const Value.absent(),
+    bool? isAppOrigin,
+    Value<DateTime?> lastSyncedAt = const Value.absent(),
   }) => Appointment(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -473,6 +585,11 @@ class Appointment extends DataClass implements Insertable<Appointment> {
         : this.externalEventId,
     updatedAt: updatedAt ?? this.updatedAt,
     createdAt: createdAt ?? this.createdAt,
+    sourceCalendarId: sourceCalendarId.present
+        ? sourceCalendarId.value
+        : this.sourceCalendarId,
+    isAppOrigin: isAppOrigin ?? this.isAppOrigin,
+    lastSyncedAt: lastSyncedAt.present ? lastSyncedAt.value : this.lastSyncedAt,
   );
   Appointment copyWithCompanion(AppointmentsCompanion data) {
     return Appointment(
@@ -494,6 +611,15 @@ class Appointment extends DataClass implements Insertable<Appointment> {
           : this.externalEventId,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      sourceCalendarId: data.sourceCalendarId.present
+          ? data.sourceCalendarId.value
+          : this.sourceCalendarId,
+      isAppOrigin: data.isAppOrigin.present
+          ? data.isAppOrigin.value
+          : this.isAppOrigin,
+      lastSyncedAt: data.lastSyncedAt.present
+          ? data.lastSyncedAt.value
+          : this.lastSyncedAt,
     );
   }
 
@@ -511,7 +637,10 @@ class Appointment extends DataClass implements Insertable<Appointment> {
           ..write('color: $color, ')
           ..write('externalEventId: $externalEventId, ')
           ..write('updatedAt: $updatedAt, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('sourceCalendarId: $sourceCalendarId, ')
+          ..write('isAppOrigin: $isAppOrigin, ')
+          ..write('lastSyncedAt: $lastSyncedAt')
           ..write(')'))
         .toString();
   }
@@ -530,6 +659,9 @@ class Appointment extends DataClass implements Insertable<Appointment> {
     externalEventId,
     updatedAt,
     createdAt,
+    sourceCalendarId,
+    isAppOrigin,
+    lastSyncedAt,
   );
   @override
   bool operator ==(Object other) =>
@@ -546,7 +678,10 @@ class Appointment extends DataClass implements Insertable<Appointment> {
           other.color == this.color &&
           other.externalEventId == this.externalEventId &&
           other.updatedAt == this.updatedAt &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.sourceCalendarId == this.sourceCalendarId &&
+          other.isAppOrigin == this.isAppOrigin &&
+          other.lastSyncedAt == this.lastSyncedAt);
 }
 
 class AppointmentsCompanion extends UpdateCompanion<Appointment> {
@@ -562,6 +697,9 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
   final Value<String?> externalEventId;
   final Value<DateTime> updatedAt;
   final Value<DateTime> createdAt;
+  final Value<String?> sourceCalendarId;
+  final Value<bool> isAppOrigin;
+  final Value<DateTime?> lastSyncedAt;
   const AppointmentsCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
@@ -575,6 +713,9 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
     this.externalEventId = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.sourceCalendarId = const Value.absent(),
+    this.isAppOrigin = const Value.absent(),
+    this.lastSyncedAt = const Value.absent(),
   });
   AppointmentsCompanion.insert({
     this.id = const Value.absent(),
@@ -589,6 +730,9 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
     this.externalEventId = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.sourceCalendarId = const Value.absent(),
+    this.isAppOrigin = const Value.absent(),
+    this.lastSyncedAt = const Value.absent(),
   }) : title = Value(title),
        startTime = Value(startTime);
   static Insertable<Appointment> custom({
@@ -604,6 +748,9 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
     Expression<String>? externalEventId,
     Expression<DateTime>? updatedAt,
     Expression<DateTime>? createdAt,
+    Expression<String>? sourceCalendarId,
+    Expression<bool>? isAppOrigin,
+    Expression<DateTime>? lastSyncedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -618,6 +765,9 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
       if (externalEventId != null) 'external_event_id': externalEventId,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (createdAt != null) 'created_at': createdAt,
+      if (sourceCalendarId != null) 'source_calendar_id': sourceCalendarId,
+      if (isAppOrigin != null) 'is_app_origin': isAppOrigin,
+      if (lastSyncedAt != null) 'last_synced_at': lastSyncedAt,
     });
   }
 
@@ -634,6 +784,9 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
     Value<String?>? externalEventId,
     Value<DateTime>? updatedAt,
     Value<DateTime>? createdAt,
+    Value<String?>? sourceCalendarId,
+    Value<bool>? isAppOrigin,
+    Value<DateTime?>? lastSyncedAt,
   }) {
     return AppointmentsCompanion(
       id: id ?? this.id,
@@ -648,6 +801,9 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
       externalEventId: externalEventId ?? this.externalEventId,
       updatedAt: updatedAt ?? this.updatedAt,
       createdAt: createdAt ?? this.createdAt,
+      sourceCalendarId: sourceCalendarId ?? this.sourceCalendarId,
+      isAppOrigin: isAppOrigin ?? this.isAppOrigin,
+      lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
     );
   }
 
@@ -690,6 +846,15 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (sourceCalendarId.present) {
+      map['source_calendar_id'] = Variable<String>(sourceCalendarId.value);
+    }
+    if (isAppOrigin.present) {
+      map['is_app_origin'] = Variable<bool>(isAppOrigin.value);
+    }
+    if (lastSyncedAt.present) {
+      map['last_synced_at'] = Variable<DateTime>(lastSyncedAt.value);
+    }
     return map;
   }
 
@@ -707,7 +872,10 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
           ..write('color: $color, ')
           ..write('externalEventId: $externalEventId, ')
           ..write('updatedAt: $updatedAt, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('sourceCalendarId: $sourceCalendarId, ')
+          ..write('isAppOrigin: $isAppOrigin, ')
+          ..write('lastSyncedAt: $lastSyncedAt')
           ..write(')'))
         .toString();
   }
@@ -28511,6 +28679,9 @@ typedef $$AppointmentsTableCreateCompanionBuilder =
       Value<String?> externalEventId,
       Value<DateTime> updatedAt,
       Value<DateTime> createdAt,
+      Value<String?> sourceCalendarId,
+      Value<bool> isAppOrigin,
+      Value<DateTime?> lastSyncedAt,
     });
 typedef $$AppointmentsTableUpdateCompanionBuilder =
     AppointmentsCompanion Function({
@@ -28526,6 +28697,9 @@ typedef $$AppointmentsTableUpdateCompanionBuilder =
       Value<String?> externalEventId,
       Value<DateTime> updatedAt,
       Value<DateTime> createdAt,
+      Value<String?> sourceCalendarId,
+      Value<bool> isAppOrigin,
+      Value<DateTime?> lastSyncedAt,
     });
 
 class $$AppointmentsTableFilterComposer
@@ -28594,6 +28768,21 @@ class $$AppointmentsTableFilterComposer
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceCalendarId => $composableBuilder(
+    column: $table.sourceCalendarId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isAppOrigin => $composableBuilder(
+    column: $table.isAppOrigin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncedAt => $composableBuilder(
+    column: $table.lastSyncedAt,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -28666,6 +28855,21 @@ class $$AppointmentsTableOrderingComposer
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get sourceCalendarId => $composableBuilder(
+    column: $table.sourceCalendarId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isAppOrigin => $composableBuilder(
+    column: $table.isAppOrigin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncedAt => $composableBuilder(
+    column: $table.lastSyncedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$AppointmentsTableAnnotationComposer
@@ -28718,6 +28922,21 @@ class $$AppointmentsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceCalendarId => $composableBuilder(
+    column: $table.sourceCalendarId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isAppOrigin => $composableBuilder(
+    column: $table.isAppOrigin,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastSyncedAt => $composableBuilder(
+    column: $table.lastSyncedAt,
+    builder: (column) => column,
+  );
 }
 
 class $$AppointmentsTableTableManager
@@ -28763,6 +28982,9 @@ class $$AppointmentsTableTableManager
                 Value<String?> externalEventId = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> sourceCalendarId = const Value.absent(),
+                Value<bool> isAppOrigin = const Value.absent(),
+                Value<DateTime?> lastSyncedAt = const Value.absent(),
               }) => AppointmentsCompanion(
                 id: id,
                 title: title,
@@ -28776,6 +28998,9 @@ class $$AppointmentsTableTableManager
                 externalEventId: externalEventId,
                 updatedAt: updatedAt,
                 createdAt: createdAt,
+                sourceCalendarId: sourceCalendarId,
+                isAppOrigin: isAppOrigin,
+                lastSyncedAt: lastSyncedAt,
               ),
           createCompanionCallback:
               ({
@@ -28791,6 +29016,9 @@ class $$AppointmentsTableTableManager
                 Value<String?> externalEventId = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> sourceCalendarId = const Value.absent(),
+                Value<bool> isAppOrigin = const Value.absent(),
+                Value<DateTime?> lastSyncedAt = const Value.absent(),
               }) => AppointmentsCompanion.insert(
                 id: id,
                 title: title,
@@ -28804,6 +29032,9 @@ class $$AppointmentsTableTableManager
                 externalEventId: externalEventId,
                 updatedAt: updatedAt,
                 createdAt: createdAt,
+                sourceCalendarId: sourceCalendarId,
+                isAppOrigin: isAppOrigin,
+                lastSyncedAt: lastSyncedAt,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

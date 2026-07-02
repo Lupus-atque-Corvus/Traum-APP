@@ -211,7 +211,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 19;
+  int get schemaVersion => 20;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -350,6 +350,15 @@ class TraumDatabase extends _$TraumDatabase {
             "INSERT INTO debt_items (debt_id, description, amount, created_at) "
             "SELECT id, 'Bestehender Betrag', original_amount, strftime('%s','now') "
             "FROM debts WHERE original_amount > 0");
+      }
+      if (from < 20) {
+        await migrator.addColumn(appointments, appointments.sourceCalendarId);
+        await migrator.addColumn(appointments, appointments.isAppOrigin);
+        await migrator.addColumn(appointments, appointments.lastSyncedAt);
+        // Bestand: alles mit externalEventId, das je gepullt wurde, ist nicht unterscheidbar —
+        // konservativ: vorhandene externe Verknüpfungen als Geräte-Ursprung markieren.
+        await customStatement(
+            'UPDATE appointments SET is_app_origin = 0 WHERE external_event_id IS NOT NULL');
       }
     },
   );

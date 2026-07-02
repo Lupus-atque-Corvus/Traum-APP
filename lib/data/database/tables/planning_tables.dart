@@ -13,6 +13,11 @@ class Appointments extends Table {
   TextColumn get externalEventId => text().nullable()();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  /// Geräte-Kalender, aus dem das Event stammt bzw. in den es gepusht wurde.
+  TextColumn get sourceCalendarId => text().nullable()();
+  /// true = Termin wurde in der App erstellt (App ist Quelle der Wahrheit).
+  BoolColumn get isAppOrigin => boolean().withDefault(const Constant(true))();
+  DateTimeColumn get lastSyncedAt => dateTime().nullable()();
 }
 
 class Todos extends Table {
