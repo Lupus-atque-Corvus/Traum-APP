@@ -1,6 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../core/navigation/routes.dart';
 import '../../../core/theme/colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../budget_providers.dart';
@@ -47,13 +49,27 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Verlauf',
-            style: TextStyle(
-              color: TraumColors.onBackground,
-              fontFamily: 'DMSans',
-              fontWeight: FontWeight.w600,
-              fontSize: 13,
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => context.push(Routes.budgetStats),
+            child: Row(
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.budgetTrend,
+                  style: const TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                  ),
+                ),
+                const Spacer(),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: TraumColors.onBackgroundMuted,
+                  size: 18,
+                ),
+              ],
             ),
           ),
           SizedBox(height: bs(8)),
@@ -136,6 +152,9 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                         setState(() {
                           _touchedGroupIndex = groupIndex;
                         });
+                        if (event is FlTapUpEvent && groupIndex == null) {
+                          context.push(Routes.budgetStats);
+                        }
                       },
                       touchTooltipData: BarTouchTooltipData(
                         getTooltipItem:

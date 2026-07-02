@@ -2610,6 +2610,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get budgetTrend => 'Trend';
+
+  @override
   String get budgetIncome => 'Income';
 
   @override

@@ -5054,6 +5054,12 @@ abstract class AppLocalizations {
   /// **'{name} fällig in {days} Tagen'**
   String budgetRecurringWarning(String name, String days);
 
+  /// No description provided for @budgetTrend.
+  ///
+  /// In de, this message translates to:
+  /// **'Verlauf'**
+  String get budgetTrend;
+
   /// No description provided for @budgetIncome.
   ///
   /// In de, this message translates to:

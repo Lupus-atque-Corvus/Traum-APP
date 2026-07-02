@@ -2620,6 +2620,9 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get budgetTrend => 'Verlauf';
+
+  @override
   String get budgetIncome => 'Einnahmen';
 
   @override
