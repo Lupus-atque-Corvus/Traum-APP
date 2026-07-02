@@ -186,6 +186,8 @@ class _TraumScaffoldState extends ConsumerState<TraumScaffold> {
     final isPeriodEnabled = ref.watch(isPeriodTrackingEnabledProvider);
     final safeBottom = MediaQuery.of(context).padding.bottom;
     final currentModule = _currentRoute(context);
+    final location = GoRouterState.of(context).matchedLocation;
+    final navVisible = !keyboardOpen && Routes.isModuleRoot(location);
 
     final filteredSlots = navSlots
         .where((m) => m != 'period' || isPeriodEnabled)
@@ -206,13 +208,15 @@ class _TraumScaffoldState extends ConsumerState<TraumScaffold> {
         resizeToAvoidBottomInset: true,
         body: Stack(
           children: [
-            Padding(
+            AnimatedPadding(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
               padding: EdgeInsets.only(
-                bottom: keyboardOpen ? 0 : _navBarHeight + 12 + safeBottom,
+                bottom: navVisible ? _navBarHeight + 12 + safeBottom : 0,
               ),
               child: widget.child,
             ),
-            if (!keyboardOpen)
+            if (navVisible)
               Positioned(
                 bottom: 12,
                 left: 16,
@@ -228,7 +232,7 @@ class _TraumScaffoldState extends ConsumerState<TraumScaffold> {
                   onSwitchEnd: _onSwitchEnd,
                 ),
               ),
-            if (!keyboardOpen && _switcherActive && _switcherModules.isNotEmpty)
+            if (navVisible && _switcherActive && _switcherModules.isNotEmpty)
               Positioned(
                 bottom: _navBarHeight + 12 + safeBottom + 16,
                 left: 0,
