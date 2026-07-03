@@ -32,7 +32,7 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) => _runSync());
   }
 
-  Future<void> _runSync({int depth = 0}) async {
+  Future<void> _runSync({int depth = 0, bool showResult = false}) async {
     if (depth > 1 || !mounted) return;
     setState(() => _isSyncing = true);
     try {
@@ -59,7 +59,18 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
         if (picked == null || picked.isEmpty || !mounted) return;
         await ref.read(preferencesRepositoryProvider).setSelectedCalendarIds(picked);
         if (!mounted) return;
-        await _runSync(depth: depth + 1);
+        await _runSync(depth: depth + 1, showResult: showResult);
+        return;
+      }
+
+      if (showResult) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!
+                .syncDone(result.synced, result.errors)),
+            duration: const Duration(seconds: 3),
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _isSyncing = false);
@@ -83,20 +94,19 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
         elevation: 0,
         actions: [
-          if (_isSyncing)
-            const Padding(
-              padding: EdgeInsets.only(right: 16),
-              child: Center(
-                child: SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: TraumColors.lavender,
-                  ),
-                ),
-              ),
-            ),
+          IconButton(
+            icon: _isSyncing
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: TraumColors.lavender,
+                    ),
+                  )
+                : const Icon(Icons.sync_rounded),
+            onPressed: _isSyncing ? null : () => _runSync(showResult: true),
+          ),
         ],
         bottom: TabBar(
           controller: _tabController,
@@ -264,6 +274,7 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
                         title: a.title,
                         time: '${a.startTime.hour.toString().padLeft(2, '0')}:${a.startTime.minute.toString().padLeft(2, '0')}',
                         color: a.color != null ? Color(a.color!) : TraumColors.lavender,
+                        onTap: () => _showAddAppointment(context, existing: a),
                       ),
                     );
                   },
@@ -278,7 +289,7 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
     );
   }
 
-  void _showAddAppointment(BuildContext context) {
+  void _showAddAppointment(BuildContext context, {Appointment? existing}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -288,10 +299,16 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
       ),
       builder: (ctx) => _AddAppointmentSheet(
         initialDate: _selectedDay,
+        existing: existing,
         onAdd: (c) async {
           final id = await ref.read(planningDaoProvider).insertAppointment(c);
           // Push immediately to device calendar without waiting
           ref.read(calendarSyncServiceProvider).syncNewAppointment(id);
+        },
+        onEdit: (c) async {
+          await ref.read(planningDaoProvider).updateAppointment(c);
+          // Push the update to the device calendar without waiting
+          ref.read(calendarSyncServiceProvider).syncUpdatedAppointment(c.id.value);
         },
       ),
     );
@@ -300,8 +317,15 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
 
 class _AddAppointmentSheet extends StatefulWidget {
   final DateTime initialDate;
+  final Appointment? existing;
   final Future<void> Function(AppointmentsCompanion) onAdd;
-  const _AddAppointmentSheet({required this.initialDate, required this.onAdd});
+  final Future<void> Function(AppointmentsCompanion)? onEdit;
+  const _AddAppointmentSheet({
+    required this.initialDate,
+    this.existing,
+    required this.onAdd,
+    this.onEdit,
+  });
 
   @override
   State<_AddAppointmentSheet> createState() => _AddAppointmentSheetState();
@@ -314,11 +338,22 @@ class _AddAppointmentSheetState extends State<_AddAppointmentSheet> {
   late DateTime _startTime;
   late DateTime _endTime;
 
+  bool get _isEditing => widget.existing != null;
+
   @override
   void initState() {
     super.initState();
-    _startTime = DateTime(widget.initialDate.year, widget.initialDate.month, widget.initialDate.day, DateTime.now().hour + 1, 0);
-    _endTime = _startTime.add(const Duration(hours: 1));
+    final existing = widget.existing;
+    if (existing != null) {
+      _titleCtrl.text = existing.title;
+      _descCtrl.text = existing.description ?? '';
+      _locationCtrl.text = existing.location ?? '';
+      _startTime = existing.startTime;
+      _endTime = existing.endTime ?? existing.startTime.add(const Duration(hours: 1));
+    } else {
+      _startTime = DateTime(widget.initialDate.year, widget.initialDate.month, widget.initialDate.day, DateTime.now().hour + 1, 0);
+      _endTime = _startTime.add(const Duration(hours: 1));
+    }
   }
 
   @override
@@ -342,7 +377,11 @@ class _AddAppointmentSheetState extends State<_AddAppointmentSheet> {
             Center(child: Container(width: 40, height: 4,
                 decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle, borderRadius: BorderRadius.circular(2)))),
             const SizedBox(height: 16),
-            Text(AppLocalizations.of(context)!.addAppointment, style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
+            Text(
+                _isEditing
+                    ? AppLocalizations.of(context)!.editAppointment
+                    : AppLocalizations.of(context)!.addAppointment,
+                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700, fontSize: 18)),
             const SizedBox(height: 16),
             _buildField(AppLocalizations.of(context)!.titleRequiredField, _titleCtrl),
@@ -374,13 +413,25 @@ class _AddAppointmentSheetState extends State<_AddAppointmentSheet> {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.titleRequired)));
                   return;
                 }
-                await widget.onAdd(AppointmentsCompanion.insert(
-                  title: _titleCtrl.text.trim(),
-                  description: Value(_descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim()),
-                  location: Value(_locationCtrl.text.trim().isEmpty ? null : _locationCtrl.text.trim()),
-                  startTime: _startTime,
-                  endTime: Value(_endTime),
-                ));
+                final existing = widget.existing;
+                if (existing != null) {
+                  final companion = existing.toCompanion(true).copyWith(
+                        title: Value(_titleCtrl.text.trim()),
+                        description: Value(_descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim()),
+                        location: Value(_locationCtrl.text.trim().isEmpty ? null : _locationCtrl.text.trim()),
+                        startTime: Value(_startTime),
+                        endTime: Value(_endTime),
+                      );
+                  await widget.onEdit?.call(companion);
+                } else {
+                  await widget.onAdd(AppointmentsCompanion.insert(
+                    title: _titleCtrl.text.trim(),
+                    description: Value(_descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim()),
+                    location: Value(_locationCtrl.text.trim().isEmpty ? null : _locationCtrl.text.trim()),
+                    startTime: _startTime,
+                    endTime: Value(_endTime),
+                  ));
+                }
                 if (context.mounted) Navigator.pop(context);
               },
             ),

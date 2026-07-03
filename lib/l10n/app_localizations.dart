@@ -7027,6 +7027,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'(Kein Titel)'**
   String get eventNoTitle;
+
+  /// No description provided for @editAppointment.
+  ///
+  /// In de, this message translates to:
+  /// **'Termin bearbeiten'**
+  String get editAppointment;
+
+  /// No description provided for @syncDone.
+  ///
+  /// In de, this message translates to:
+  /// **'{synced} synchronisiert, {errors} Fehler'**
+  String syncDone(int synced, int errors);
 }
 
 class _AppLocalizationsDelegate

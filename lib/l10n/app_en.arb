@@ -1478,5 +1478,13 @@
   "moduleGraffitiMap": "Graffiti Map",
   "calendarAccessDeniedSyncOff": "Calendar access denied — sync disabled",
   "calendarFallbackName": "Calendar",
-  "eventNoTitle": "(No title)"
+  "eventNoTitle": "(No title)",
+  "editAppointment": "Edit appointment",
+  "syncDone": "{synced} synced, {errors} errors",
+  "@syncDone": {
+    "placeholders": {
+      "synced": {"type": "int"},
+      "errors": {"type": "int"}
+    }
+  }
 }

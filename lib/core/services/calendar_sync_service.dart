@@ -205,6 +205,30 @@ class CalendarSyncService {
     } catch (_) {}
   }
 
+  /// Push an app appointment that was just edited to the device calendar.
+  /// Uses `pushUpdate` semantics: if the appointment already has an
+  /// [Appointment.externalEventId], [_pushToDevice] updates that exact
+  /// device event (app-origin wins a conflict); otherwise it behaves like
+  /// [syncNewAppointment] and creates one.
+  Future<void> syncUpdatedAppointment(int appointmentId) async {
+    final ids = _prefs.selectedCalendarIds;
+    if (ids.isEmpty) return;
+    final apt = await _dao.getAppointmentById(appointmentId);
+    if (apt == null) return;
+    try {
+      final targetCalendarId = apt.sourceCalendarId ?? ids.first;
+      final resultId = await _pushToDevice(apt, targetCalendarId);
+      if (resultId != null) {
+        await _dao.updateAppointmentAfterPush(
+          id: apt.id,
+          externalEventId: resultId,
+          sourceCalendarId: targetCalendarId,
+          lastSyncedAt: DateTime.now(),
+        );
+      }
+    } catch (_) {}
+  }
+
   Future<void> deleteAppointmentWithSync(int appointmentId) async {
     final apt = await _dao.getAppointmentById(appointmentId);
     if (apt != null && apt.externalEventId != null) {

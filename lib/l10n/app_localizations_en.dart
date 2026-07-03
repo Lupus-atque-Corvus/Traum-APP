@@ -3640,4 +3640,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get eventNoTitle => '(No title)';
+
+  @override
+  String get editAppointment => 'Edit appointment';
+
+  @override
+  String syncDone(int synced, int errors) {
+    return '$synced synced, $errors errors';
+  }
 }
