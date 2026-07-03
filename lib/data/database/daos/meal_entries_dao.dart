@@ -14,6 +14,27 @@ class MealEntriesDao extends DatabaseAccessor<TraumDatabase>
             ..orderBy([(t) => OrderingTerm.asc(t.loggedAt)]))
           .get();
 
+  /// Entries whose `date` (stored as `yyyy-MM-dd` text) falls within
+  /// `[from, to]` inclusive. Follows the string-date convention already
+  /// used by [getForDate] / `nutrition_providers.dart`'s `weeklyCaloriesProvider`
+  /// rather than comparing against a `DateTimeColumn` (this table has none).
+  Future<List<MealEntry>> getEntriesBetween(DateTime from, DateTime to) {
+    final fromStr = _dateStr(from);
+    final toStr = _dateStr(to);
+    return (select(mealEntries)
+          ..where((t) =>
+              t.date.isBiggerOrEqualValue(fromStr) &
+              t.date.isSmallerOrEqualValue(toStr))
+          ..orderBy([
+            (t) => OrderingTerm.asc(t.date),
+            (t) => OrderingTerm.asc(t.loggedAt),
+          ]))
+        .get();
+  }
+
+  String _dateStr(DateTime d) =>
+      '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
   Future<int> insertEntry(MealEntriesCompanion entry) =>
       into(mealEntries).insert(entry);
 

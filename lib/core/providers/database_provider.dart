@@ -9,6 +9,7 @@ import '../../data/services/substance_api_service.dart';
 import '../services/backup_service.dart';
 import '../services/calendar_sync_service.dart';
 import '../services/interaction_service.dart';
+import '../../data/services/nutrition_report_service.dart';
 import 'preferences_provider.dart';
 
 final databaseProvider = Provider<TraumDatabase>((ref) {
@@ -336,4 +337,9 @@ final calendarSyncServiceProvider = Provider<CalendarSyncService>((ref) {
 // ─── Backup (Export/Import) ───────────────────────────────────────────────────
 final backupServiceProvider = Provider<BackupService>((ref) {
   return BackupService(ref.watch(databaseProvider));
+});
+
+// ─── Nutrition Report (PDF Export) ─────────────────────────────────────────────
+final nutritionReportServiceProvider = Provider<NutritionReportService>((ref) {
+  return NutritionReportService(ref.watch(databaseProvider));
 });
