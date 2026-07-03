@@ -92,6 +92,10 @@ class FoodProducts extends Table {
   IntColumn get useCount =>
       integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAt => dateTime()();
+  /// Herkunft: 'off' | 'usda' | 'custom' | 'merged'
+  TextColumn get sourceApi => text().nullable()();
+  /// Externe ID in der Quelle (z.B. USDA fdcId), für Dedupe/Refresh.
+  TextColumn get sourceId => text().nullable()();
 }
 
 class MealEntries extends Table {

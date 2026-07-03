@@ -211,7 +211,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 20;
+  int get schemaVersion => 21;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -359,6 +359,16 @@ class TraumDatabase extends _$TraumDatabase {
         // konservativ: vorhandene externe Verknüpfungen als Geräte-Ursprung markieren.
         await customStatement(
             'UPDATE appointments SET is_app_origin = 0 WHERE external_event_id IS NOT NULL');
+      }
+      if (from < 21) {
+        await migrator.addColumn(foodProducts, foodProducts.sourceApi);
+        await migrator.addColumn(foodProducts, foodProducts.sourceId);
+        // Bestand: Herkunft rückwirkend ableiten — Barcode-Produkte stammen aus OFF,
+        // manuell angelegte Produkte sind 'custom'.
+        await customStatement(
+            "UPDATE food_products SET source_api = 'off' WHERE barcode IS NOT NULL AND is_custom = 0");
+        await customStatement(
+            "UPDATE food_products SET source_api = 'custom' WHERE is_custom = 1");
       }
     },
   );

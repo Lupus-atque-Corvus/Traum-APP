@@ -22136,6 +22136,28 @@ class $FoodProductsTable extends FoodProducts
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _sourceApiMeta = const VerificationMeta(
+    'sourceApi',
+  );
+  @override
+  late final GeneratedColumn<String> sourceApi = GeneratedColumn<String>(
+    'source_api',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sourceIdMeta = const VerificationMeta(
+    'sourceId',
+  );
+  @override
+  late final GeneratedColumn<String> sourceId = GeneratedColumn<String>(
+    'source_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -22156,6 +22178,8 @@ class $FoodProductsTable extends FoodProducts
     lastUsed,
     useCount,
     createdAt,
+    sourceApi,
+    sourceId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -22307,6 +22331,18 @@ class $FoodProductsTable extends FoodProducts
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
+    if (data.containsKey('source_api')) {
+      context.handle(
+        _sourceApiMeta,
+        sourceApi.isAcceptableOrUnknown(data['source_api']!, _sourceApiMeta),
+      );
+    }
+    if (data.containsKey('source_id')) {
+      context.handle(
+        _sourceIdMeta,
+        sourceId.isAcceptableOrUnknown(data['source_id']!, _sourceIdMeta),
+      );
+    }
     return context;
   }
 
@@ -22388,6 +22424,14 @@ class $FoodProductsTable extends FoodProducts
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      sourceApi: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_api'],
+      ),
+      sourceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_id'],
+      ),
     );
   }
 
@@ -22416,6 +22460,12 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
   final DateTime? lastUsed;
   final int useCount;
   final DateTime createdAt;
+
+  /// Herkunft: 'off' | 'usda' | 'custom' | 'merged'
+  final String? sourceApi;
+
+  /// Externe ID in der Quelle (z.B. USDA fdcId), für Dedupe/Refresh.
+  final String? sourceId;
   const FoodProduct({
     required this.id,
     this.barcode,
@@ -22435,6 +22485,8 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
     this.lastUsed,
     required this.useCount,
     required this.createdAt,
+    this.sourceApi,
+    this.sourceId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -22475,6 +22527,12 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
     }
     map['use_count'] = Variable<int>(useCount);
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || sourceApi != null) {
+      map['source_api'] = Variable<String>(sourceApi);
+    }
+    if (!nullToAbsent || sourceId != null) {
+      map['source_id'] = Variable<String>(sourceId);
+    }
     return map;
   }
 
@@ -22516,6 +22574,12 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
           : Value(lastUsed),
       useCount: Value(useCount),
       createdAt: Value(createdAt),
+      sourceApi: sourceApi == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceApi),
+      sourceId: sourceId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceId),
     );
   }
 
@@ -22545,6 +22609,8 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
       lastUsed: serializer.fromJson<DateTime?>(json['lastUsed']),
       useCount: serializer.fromJson<int>(json['useCount']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      sourceApi: serializer.fromJson<String?>(json['sourceApi']),
+      sourceId: serializer.fromJson<String?>(json['sourceId']),
     );
   }
   @override
@@ -22569,6 +22635,8 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
       'lastUsed': serializer.toJson<DateTime?>(lastUsed),
       'useCount': serializer.toJson<int>(useCount),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'sourceApi': serializer.toJson<String?>(sourceApi),
+      'sourceId': serializer.toJson<String?>(sourceId),
     };
   }
 
@@ -22591,6 +22659,8 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
     Value<DateTime?> lastUsed = const Value.absent(),
     int? useCount,
     DateTime? createdAt,
+    Value<String?> sourceApi = const Value.absent(),
+    Value<String?> sourceId = const Value.absent(),
   }) => FoodProduct(
     id: id ?? this.id,
     barcode: barcode.present ? barcode.value : this.barcode,
@@ -22612,6 +22682,8 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
     lastUsed: lastUsed.present ? lastUsed.value : this.lastUsed,
     useCount: useCount ?? this.useCount,
     createdAt: createdAt ?? this.createdAt,
+    sourceApi: sourceApi.present ? sourceApi.value : this.sourceApi,
+    sourceId: sourceId.present ? sourceId.value : this.sourceId,
   );
   FoodProduct copyWithCompanion(FoodProductsCompanion data) {
     return FoodProduct(
@@ -22651,6 +22723,8 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
       lastUsed: data.lastUsed.present ? data.lastUsed.value : this.lastUsed,
       useCount: data.useCount.present ? data.useCount.value : this.useCount,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      sourceApi: data.sourceApi.present ? data.sourceApi.value : this.sourceApi,
+      sourceId: data.sourceId.present ? data.sourceId.value : this.sourceId,
     );
   }
 
@@ -22674,7 +22748,9 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
           ..write('isCustom: $isCustom, ')
           ..write('lastUsed: $lastUsed, ')
           ..write('useCount: $useCount, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('sourceApi: $sourceApi, ')
+          ..write('sourceId: $sourceId')
           ..write(')'))
         .toString();
   }
@@ -22699,6 +22775,8 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
     lastUsed,
     useCount,
     createdAt,
+    sourceApi,
+    sourceId,
   );
   @override
   bool operator ==(Object other) =>
@@ -22721,7 +22799,9 @@ class FoodProduct extends DataClass implements Insertable<FoodProduct> {
           other.isCustom == this.isCustom &&
           other.lastUsed == this.lastUsed &&
           other.useCount == this.useCount &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.sourceApi == this.sourceApi &&
+          other.sourceId == this.sourceId);
 }
 
 class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
@@ -22743,6 +22823,8 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
   final Value<DateTime?> lastUsed;
   final Value<int> useCount;
   final Value<DateTime> createdAt;
+  final Value<String?> sourceApi;
+  final Value<String?> sourceId;
   const FoodProductsCompanion({
     this.id = const Value.absent(),
     this.barcode = const Value.absent(),
@@ -22762,6 +22844,8 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
     this.lastUsed = const Value.absent(),
     this.useCount = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.sourceApi = const Value.absent(),
+    this.sourceId = const Value.absent(),
   });
   FoodProductsCompanion.insert({
     this.id = const Value.absent(),
@@ -22782,6 +22866,8 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
     this.lastUsed = const Value.absent(),
     this.useCount = const Value.absent(),
     required DateTime createdAt,
+    this.sourceApi = const Value.absent(),
+    this.sourceId = const Value.absent(),
   }) : name = Value(name),
        caloriesPer100g = Value(caloriesPer100g),
        proteinPer100g = Value(proteinPer100g),
@@ -22807,6 +22893,8 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
     Expression<DateTime>? lastUsed,
     Expression<int>? useCount,
     Expression<DateTime>? createdAt,
+    Expression<String>? sourceApi,
+    Expression<String>? sourceId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -22828,6 +22916,8 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
       if (lastUsed != null) 'last_used': lastUsed,
       if (useCount != null) 'use_count': useCount,
       if (createdAt != null) 'created_at': createdAt,
+      if (sourceApi != null) 'source_api': sourceApi,
+      if (sourceId != null) 'source_id': sourceId,
     });
   }
 
@@ -22850,6 +22940,8 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
     Value<DateTime?>? lastUsed,
     Value<int>? useCount,
     Value<DateTime>? createdAt,
+    Value<String?>? sourceApi,
+    Value<String?>? sourceId,
   }) {
     return FoodProductsCompanion(
       id: id ?? this.id,
@@ -22870,6 +22962,8 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
       lastUsed: lastUsed ?? this.lastUsed,
       useCount: useCount ?? this.useCount,
       createdAt: createdAt ?? this.createdAt,
+      sourceApi: sourceApi ?? this.sourceApi,
+      sourceId: sourceId ?? this.sourceId,
     );
   }
 
@@ -22932,6 +23026,12 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (sourceApi.present) {
+      map['source_api'] = Variable<String>(sourceApi.value);
+    }
+    if (sourceId.present) {
+      map['source_id'] = Variable<String>(sourceId.value);
+    }
     return map;
   }
 
@@ -22955,7 +23055,9 @@ class FoodProductsCompanion extends UpdateCompanion<FoodProduct> {
           ..write('isCustom: $isCustom, ')
           ..write('lastUsed: $lastUsed, ')
           ..write('useCount: $useCount, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('sourceApi: $sourceApi, ')
+          ..write('sourceId: $sourceId')
           ..write(')'))
         .toString();
   }
@@ -42700,6 +42802,8 @@ typedef $$FoodProductsTableCreateCompanionBuilder =
       Value<DateTime?> lastUsed,
       Value<int> useCount,
       required DateTime createdAt,
+      Value<String?> sourceApi,
+      Value<String?> sourceId,
     });
 typedef $$FoodProductsTableUpdateCompanionBuilder =
     FoodProductsCompanion Function({
@@ -42721,6 +42825,8 @@ typedef $$FoodProductsTableUpdateCompanionBuilder =
       Value<DateTime?> lastUsed,
       Value<int> useCount,
       Value<DateTime> createdAt,
+      Value<String?> sourceApi,
+      Value<String?> sourceId,
     });
 
 class $$FoodProductsTableFilterComposer
@@ -42819,6 +42925,16 @@ class $$FoodProductsTableFilterComposer
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceApi => $composableBuilder(
+    column: $table.sourceApi,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceId => $composableBuilder(
+    column: $table.sourceId,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -42921,6 +43037,16 @@ class $$FoodProductsTableOrderingComposer
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get sourceApi => $composableBuilder(
+    column: $table.sourceApi,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceId => $composableBuilder(
+    column: $table.sourceId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$FoodProductsTableAnnotationComposer
@@ -43003,6 +43129,12 @@ class $$FoodProductsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceApi =>
+      $composableBuilder(column: $table.sourceApi, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceId =>
+      $composableBuilder(column: $table.sourceId, builder: (column) => column);
 }
 
 class $$FoodProductsTableTableManager
@@ -43054,6 +43186,8 @@ class $$FoodProductsTableTableManager
                 Value<DateTime?> lastUsed = const Value.absent(),
                 Value<int> useCount = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> sourceApi = const Value.absent(),
+                Value<String?> sourceId = const Value.absent(),
               }) => FoodProductsCompanion(
                 id: id,
                 barcode: barcode,
@@ -43073,6 +43207,8 @@ class $$FoodProductsTableTableManager
                 lastUsed: lastUsed,
                 useCount: useCount,
                 createdAt: createdAt,
+                sourceApi: sourceApi,
+                sourceId: sourceId,
               ),
           createCompanionCallback:
               ({
@@ -43094,6 +43230,8 @@ class $$FoodProductsTableTableManager
                 Value<DateTime?> lastUsed = const Value.absent(),
                 Value<int> useCount = const Value.absent(),
                 required DateTime createdAt,
+                Value<String?> sourceApi = const Value.absent(),
+                Value<String?> sourceId = const Value.absent(),
               }) => FoodProductsCompanion.insert(
                 id: id,
                 barcode: barcode,
@@ -43113,6 +43251,8 @@ class $$FoodProductsTableTableManager
                 lastUsed: lastUsed,
                 useCount: useCount,
                 createdAt: createdAt,
+                sourceApi: sourceApi,
+                sourceId: sourceId,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
