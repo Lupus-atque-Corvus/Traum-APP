@@ -135,4 +135,25 @@ void main() {
       await db.close();
     });
   });
+
+  group('NutritionReportService.generatePdf empty-range guard', () {
+    test('throws EmptyReportException when the range has no entries',
+        () async {
+      final db = TraumDatabase.forTesting(NativeDatabase.memory());
+      final service = NutritionReportService(db);
+
+      // No mealEntries inserted at all -> the range is guaranteed empty.
+      // This exercises the guard added ahead of pw.Font.ttf()/PDF
+      // rendering, so it does not depend on the (stubbed) font assets.
+      expect(
+        () => service.generatePdf(
+          from: DateTime(2026, 1, 1),
+          to: DateTime(2026, 1, 31),
+        ),
+        throwsA(isA<EmptyReportException>()),
+      );
+
+      await db.close();
+    });
+  });
 }

@@ -7,8 +7,10 @@ import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../core/navigation/nav_customization_sheet.dart';
 import '../../core/providers/database_provider.dart';
+import '../../data/services/nutrition_report_service.dart';
 import '../graffiti_map/graffiti_map_provider.dart';
 import '../graffiti_map/map_export_service.dart';
 import '../graffiti_map/map_visuals.dart';
@@ -1595,6 +1597,58 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
     }
   }
 
+  Future<void> _runNutritionReport(
+    BuildContext context,
+    DateTime from,
+    DateTime to,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    final service = ref.read(nutritionReportServiceProvider);
+    Navigator.pop(context);
+    messenger.showSnackBar(SnackBar(content: Text(l10n.backupRunning)));
+    try {
+      final file = await service.generatePdf(from: from, to: to);
+      messenger.hideCurrentSnackBar();
+      await SharePlus.instance.share(ShareParams(
+        files: [XFile(file.path, mimeType: 'application/pdf')],
+        subject: l10n.nutritionReport,
+      ));
+    } on EmptyReportException {
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(SnackBar(
+        content: Text(l10n.nutritionReportEmpty),
+        backgroundColor: TraumColors.amberGold,
+      ));
+    } catch (e) {
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(SnackBar(
+          content: Text(l10n.backupFailed('$e')),
+          backgroundColor: TraumColors.roseRed));
+    }
+  }
+
+  Future<void> _pickCustomNutritionRange(BuildContext context) async {
+    final now = DateTime.now();
+    final range = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2000),
+      lastDate: now,
+      initialDateRange: DateTimeRange(
+        start: now.subtract(const Duration(days: 6)),
+        end: now,
+      ),
+      builder: (ctx, child) => Theme(
+        data: ThemeData.dark().copyWith(
+          colorScheme: const ColorScheme.dark(primary: TraumColors.cyanBlue),
+        ),
+        child: child!,
+      ),
+    );
+    if (range == null || !context.mounted) return;
+    await _runNutritionReport(context, range.start, range.end);
+  }
+
   String _moduleLabel(String key, AppLocalizations l10n) {
     switch (key) {
       case 'training':
@@ -1804,6 +1858,90 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
                 ),
                 error: (_, _) => const SizedBox.shrink(),
               ),
+          const SizedBox(height: 20),
+          Text(
+            l10n.nutritionReport,
+            style: const TextStyle(
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: TraumColors.cyanBlue,
+                  side: const BorderSide(color: TraumColors.cyanBlue),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(TraumRadius.button),
+                  ),
+                ),
+                icon: const Icon(Icons.today_rounded, size: 18),
+                label: Text(
+                  l10n.nutritionReportRange7,
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                onPressed: () {
+                  final now = DateTime.now();
+                  _runNutritionReport(
+                    context,
+                    now.subtract(const Duration(days: 6)),
+                    now,
+                  );
+                },
+              ),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: TraumColors.cyanBlue,
+                  side: const BorderSide(color: TraumColors.cyanBlue),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(TraumRadius.button),
+                  ),
+                ),
+                icon: const Icon(Icons.calendar_view_month_rounded, size: 18),
+                label: Text(
+                  l10n.nutritionReportRange30,
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                onPressed: () {
+                  final now = DateTime.now();
+                  _runNutritionReport(
+                    context,
+                    now.subtract(const Duration(days: 29)),
+                    now,
+                  );
+                },
+              ),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: TraumColors.cyanBlue,
+                  side: const BorderSide(color: TraumColors.cyanBlue),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(TraumRadius.button),
+                  ),
+                ),
+                icon: const Icon(Icons.date_range_rounded, size: 18),
+                label: Text(
+                  l10n.nutritionReportRangeCustom,
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                onPressed: () => _pickCustomNutritionRange(context),
+              ),
+            ],
+          ),
           const SizedBox(height: 8),
         ],
       ),

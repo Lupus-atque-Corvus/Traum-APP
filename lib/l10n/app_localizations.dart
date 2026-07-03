@@ -4208,6 +4208,36 @@ abstract class AppLocalizations {
   /// **'Backup fehlgeschlagen: {error}'**
   String backupFailed(String error);
 
+  /// No description provided for @nutritionReport.
+  ///
+  /// In de, this message translates to:
+  /// **'Ernährungsbericht (PDF)'**
+  String get nutritionReport;
+
+  /// No description provided for @nutritionReportRange7.
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte 7 Tage'**
+  String get nutritionReportRange7;
+
+  /// No description provided for @nutritionReportRange30.
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte 30 Tage'**
+  String get nutritionReportRange30;
+
+  /// No description provided for @nutritionReportRangeCustom.
+  ///
+  /// In de, this message translates to:
+  /// **'Zeitraum wählen'**
+  String get nutritionReportRangeCustom;
+
+  /// No description provided for @nutritionReportEmpty.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Ernährungsdaten im Zeitraum'**
+  String get nutritionReportEmpty;
+
   /// No description provided for @importRunning.
   ///
   /// In de, this message translates to:

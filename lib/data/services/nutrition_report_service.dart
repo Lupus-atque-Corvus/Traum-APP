@@ -6,6 +6,17 @@ import 'package:pdf/widgets.dart' as pw;
 import '../database/traum_database.dart';
 import 'nutrition_report_data.dart';
 
+/// Thrown by [NutritionReportService.generatePdf] when the requested date
+/// range contains no nutrition entries at all. Distinct from a generic
+/// rendering/IO failure so callers can show a dedicated "no data" message
+/// instead of a generic error SnackBar — and so no blank PDF is ever
+/// generated or shared.
+class EmptyReportException implements Exception {
+  const EmptyReportException();
+  @override
+  String toString() => 'EmptyReportException: no nutrition entries in range';
+}
+
 /// Maps a [MealEntry] row (already fetched for a date range) plus its
 /// (possibly missing) [FoodProduct] into a [ReportEntry].
 ///
@@ -49,6 +60,7 @@ class NutritionReportService {
 
   Future<File> generatePdf({required DateTime from, required DateTime to}) async {
     final entries = await _loadEntries(from, to);
+    if (entries.isEmpty) throw const EmptyReportException();
     final sections = buildDailySections(entries);
 
     final fontRegular =

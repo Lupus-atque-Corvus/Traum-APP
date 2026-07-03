@@ -902,6 +902,11 @@
       "error": { "type": "String" }
     }
   },
+  "nutritionReport": "Ernährungsbericht (PDF)",
+  "nutritionReportRange7": "Letzte 7 Tage",
+  "nutritionReportRange30": "Letzte 30 Tage",
+  "nutritionReportRangeCustom": "Zeitraum wählen",
+  "nutritionReportEmpty": "Keine Ernährungsdaten im Zeitraum",
   "importRunning": "Import läuft…",
   "importDone": "{rows} Einträge importiert, {media} Medien wiederhergestellt",
   "@importDone": {

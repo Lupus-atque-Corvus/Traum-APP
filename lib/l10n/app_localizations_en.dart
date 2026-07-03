@@ -2154,6 +2154,21 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get nutritionReport => 'Nutrition report (PDF)';
+
+  @override
+  String get nutritionReportRange7 => 'Last 7 days';
+
+  @override
+  String get nutritionReportRange30 => 'Last 30 days';
+
+  @override
+  String get nutritionReportRangeCustom => 'Choose a date range';
+
+  @override
+  String get nutritionReportEmpty => 'No nutrition data in this range';
+
+  @override
   String get importRunning => 'Importing…';
 
   @override
