@@ -1,7 +1,13 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import '../../core/providers/database_provider.dart';
+import '../../core/providers/preferences_provider.dart';
 import '../../data/database/traum_database.dart';
+import 'food_api/food_source.dart';
+import 'food_api/multi_source_search_service.dart';
+import 'food_api/open_food_facts_source.dart';
+import 'food_api/usda_source.dart';
 import 'micro_nutrients.dart';
 
 // ─── Models ──────────────────────────────────────────────────────────────────
@@ -121,6 +127,41 @@ final allProductsProvider =
       recent.where((p) => !customIds.contains(p.id)).toList();
   return [...custom, ...others];
 });
+
+// ─── Multi-Source Search ─────────────────────────────────────────────────────
+
+/// Service, der die lokale Produkt-DB + alle externen [FoodSource]s
+/// (OpenFoodFacts, USDA) zusammen abfragt und rankt (Task 6.4).
+final multiSourceSearchServiceProvider =
+    Provider<MultiSourceSearchService>((ref) {
+  final prefs = ref.watch(preferencesRepositoryProvider);
+  return MultiSourceSearchService(
+    [OpenFoodFactsSource(), UsdaSource(prefs)],
+    ref.watch(foodProductsDaoProvider),
+  );
+});
+
+/// Debounced (400ms, siehe UI) Suchbegriff für die Multi-Source-Suche.
+final multiSourceSearchQueryProvider =
+    StateProvider.autoDispose<String>((_) => '');
+
+final multiSourceSearchProvider =
+    FutureProvider.autoDispose<List<FoodSearchResult>>((ref) async {
+  final query = ref.watch(multiSourceSearchQueryProvider);
+  if (query.trim().isEmpty) return [];
+  return ref.watch(multiSourceSearchServiceProvider).search(query);
+});
+
+/// Live-Konnektivitätsstatus (true = offline). Erster Wert kommt aus einer
+/// einmaligen Prüfung, danach folgen Änderungen über den Connectivity-Stream.
+final isOfflineProvider = StreamProvider.autoDispose<bool>((ref) async* {
+  final connectivity = Connectivity();
+  yield _isOffline(await connectivity.checkConnectivity());
+  yield* connectivity.onConnectivityChanged.map(_isOffline);
+});
+
+bool _isOffline(List<ConnectivityResult> results) =>
+    results.isEmpty || results.every((r) => r == ConnectivityResult.none);
 
 // ─── Home Widget Helpers ────────────────────────────────────────────────────
 

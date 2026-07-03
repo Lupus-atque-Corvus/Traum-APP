@@ -5588,6 +5588,42 @@ abstract class AppLocalizations {
   /// **'Wochenverlauf'**
   String get nutritionWeeklyChart;
 
+  /// No description provided for @myFoodsSection.
+  ///
+  /// In de, this message translates to:
+  /// **'Meine Lebensmittel'**
+  String get myFoodsSection;
+
+  /// No description provided for @searchOnlineSection.
+  ///
+  /// In de, this message translates to:
+  /// **'Online gefunden'**
+  String get searchOnlineSection;
+
+  /// No description provided for @sourceMerged.
+  ///
+  /// In de, this message translates to:
+  /// **'Kombiniert'**
+  String get sourceMerged;
+
+  /// No description provided for @searchOffline.
+  ///
+  /// In de, this message translates to:
+  /// **'Offline — nur lokale Ergebnisse'**
+  String get searchOffline;
+
+  /// No description provided for @usdaApiKeyLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'USDA API-Key'**
+  String get usdaApiKeyLabel;
+
+  /// No description provided for @usdaApiKeyHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Leer = DEMO_KEY (eingeschränktes Limit)'**
+  String get usdaApiKeyHint;
+
   /// No description provided for @notes_title.
   ///
   /// In de, this message translates to:

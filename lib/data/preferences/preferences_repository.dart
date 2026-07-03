@@ -253,7 +253,11 @@ class PreferencesRepository {
       _prefs.setBool('medications_seeded', v);
 
   // Nutrition — Food-Source APIs
-  String get usdaApiKey => _prefs.getString('usda_api_key') ?? 'DEMO_KEY';
+  String get usdaApiKey {
+    final v = _prefs.getString('usda_api_key');
+    return (v == null || v.isEmpty) ? 'DEMO_KEY' : v;
+  }
+
   Future<void> setUsdaApiKey(String v) => _prefs.setString('usda_api_key', v);
 
   Future<void> clearAll() => _prefs.clear();

@@ -57,6 +57,7 @@ class SettingsScreen extends ConsumerWidget {
           _NotificationsSection(),
           _GoalsSection(),
           _CurrencySection(),
+          _NutritionApiSection(),
           _PeriodSection(),
           _SecuritySection(),
           if (Platform.isAndroid) _ExperimentalSection(),
@@ -965,6 +966,105 @@ class _CurrencySection extends ConsumerWidget {
             child: Text(
               l10n.cancel,
               style: const TextStyle(color: TraumColors.onBackgroundMuted),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Nutrition API (USDA-Key) ────────────────────────────────────────────────
+
+class _NutritionApiSection extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final key = ref.watch(usdaApiKeyProvider);
+    final display = key == 'DEMO_KEY' ? 'DEMO_KEY' : '•' * 6;
+    return _Section(
+      title: l10n.nutritionTitle,
+      child: ListTile(
+        title: Text(
+          l10n.usdaApiKeyLabel,
+          style: const TextStyle(
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+          ),
+        ),
+        subtitle: Text(
+          l10n.usdaApiKeyHint,
+          style: const TextStyle(
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            fontSize: 12,
+          ),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              display,
+              style: const TextStyle(
+                color: TraumColors.cyanBlue,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(width: 4),
+            const Icon(
+              Icons.edit_outlined,
+              color: TraumColors.onBackgroundSubtle,
+              size: 16,
+            ),
+          ],
+        ),
+        onTap: () => _editKeyDialog(context, ref, key),
+      ),
+    );
+  }
+
+  void _editKeyDialog(BuildContext context, WidgetRef ref, String current) {
+    final l10n = AppLocalizations.of(context)!;
+    final ctrl = TextEditingController(
+      text: current == 'DEMO_KEY' ? '' : current,
+    );
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: TraumColors.surfaceElevated,
+        title: Text(
+          l10n.usdaApiKeyLabel,
+          style: const TextStyle(
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+          ),
+        ),
+        content: TextField(
+          controller: ctrl,
+          autofocus: true,
+          style: const TextStyle(color: TraumColors.onBackground),
+          decoration: InputDecoration(
+            hintText: 'DEMO_KEY',
+            hintStyle: const TextStyle(color: TraumColors.onBackgroundSubtle),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              l10n.cancel,
+              style: const TextStyle(color: TraumColors.onBackgroundMuted),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              ref.read(usdaApiKeyProvider.notifier).set(ctrl.text);
+              Navigator.pop(ctx);
+            },
+            child: Text(
+              l10n.save,
+              style: const TextStyle(color: TraumColors.coralOrange),
             ),
           ),
         ],

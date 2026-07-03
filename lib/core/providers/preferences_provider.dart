@@ -254,6 +254,20 @@ class CurrencySymbolNotifier extends Notifier<String> {
 final currencySymbolProvider =
     NotifierProvider<CurrencySymbolNotifier, String>(CurrencySymbolNotifier.new);
 
+class UsdaApiKeyNotifier extends Notifier<String> {
+  @override
+  String build() => ref.watch(preferencesRepositoryProvider).usdaApiKey;
+  Future<void> set(String v) async {
+    final trimmed = v.trim();
+    await ref.read(preferencesRepositoryProvider).setUsdaApiKey(trimmed);
+    // Getter maps '' → 'DEMO_KEY' (see PreferencesRepository.usdaApiKey).
+    state = ref.read(preferencesRepositoryProvider).usdaApiKey;
+  }
+}
+
+final usdaApiKeyProvider =
+    NotifierProvider<UsdaApiKeyNotifier, String>(UsdaApiKeyNotifier.new);
+
 class KcalGoalNotifier extends Notifier<int> {
   @override
   int build() => ref.watch(preferencesRepositoryProvider).kcalGoal;

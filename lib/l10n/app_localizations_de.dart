@@ -2898,6 +2898,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get nutritionWeeklyChart => 'Wochenverlauf';
 
   @override
+  String get myFoodsSection => 'Meine Lebensmittel';
+
+  @override
+  String get searchOnlineSection => 'Online gefunden';
+
+  @override
+  String get sourceMerged => 'Kombiniert';
+
+  @override
+  String get searchOffline => 'Offline — nur lokale Ergebnisse';
+
+  @override
+  String get usdaApiKeyLabel => 'USDA API-Key';
+
+  @override
+  String get usdaApiKeyHint => 'Leer = DEMO_KEY (eingeschränktes Limit)';
+
+  @override
   String get notes_title => 'Notizen';
 
   @override
