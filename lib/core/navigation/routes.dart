@@ -52,8 +52,14 @@ class Routes {
 
   static String noteDetailPath(int id) => '/notes/note/$id';
   static String workoutDetailPath(int id) => '/training/session/$id';
-  static String exerciseProgressPath(int id) => '/training/exercise/$id/progress';
+  static String exerciseProgressPath(int id) =>
+      '/training/exercise/$id/progress';
   static String workoutPlanPath(int id) => '/training/plan/$id';
+
+  /// New-routine screen, optionally pre-filled with a planType
+  /// ('workout' | 'morning' | 'evening') via query parameter.
+  static String newRoutinePath({String? type}) =>
+      type != null ? '$newRoutine?type=$type' : newRoutine;
 
   static const Map<String, String> moduleRoutes = {
     'home': home,

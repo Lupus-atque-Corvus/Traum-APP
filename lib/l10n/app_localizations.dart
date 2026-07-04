@@ -4454,6 +4454,48 @@ abstract class AppLocalizations {
   /// **'Tippe, um eine Routine zu erstellen'**
   String get tapToCreateRoutine;
 
+  /// No description provided for @dailyRoutines.
+  ///
+  /// In de, this message translates to:
+  /// **'Tägliche Routinen'**
+  String get dailyRoutines;
+
+  /// No description provided for @morningRoutine.
+  ///
+  /// In de, this message translates to:
+  /// **'Morgenroutine'**
+  String get morningRoutine;
+
+  /// No description provided for @eveningRoutine.
+  ///
+  /// In de, this message translates to:
+  /// **'Abendroutine'**
+  String get eveningRoutine;
+
+  /// No description provided for @routineTypeWorkout.
+  ///
+  /// In de, this message translates to:
+  /// **'Workout'**
+  String get routineTypeWorkout;
+
+  /// No description provided for @startRoutine.
+  ///
+  /// In de, this message translates to:
+  /// **'Starten'**
+  String get startRoutine;
+
+  /// No description provided for @noRoutinesYet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Routinen — lege deine erste Morgen- oder Abendroutine an.'**
+  String get noRoutinesYet;
+
+  /// No description provided for @pickExercisesAfterSave.
+  ///
+  /// In de, this message translates to:
+  /// **'Nach dem Speichern wählst du direkt die Übungen für diese Routine aus.'**
+  String get pickExercisesAfterSave;
+
   /// No description provided for @activate.
   ///
   /// In de, this message translates to:

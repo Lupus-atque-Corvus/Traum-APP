@@ -88,10 +88,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.biometricLock,
         builder: (_, _) => const BiometricLockScreen(),
       ),
-      GoRoute(
-        path: Routes.pinEntry,
-        builder: (_, _) => const PinLockScreen(),
-      ),
+      GoRoute(path: Routes.pinEntry, builder: (_, _) => const PinLockScreen()),
       GoRoute(
         path: Routes.trainingSetup,
         builder: (_, _) => const TrainingWizardScreen(),
@@ -99,10 +96,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ShellRoute(
         builder: (context, state, child) => TraumScaffold(child: child),
         routes: [
-          GoRoute(
-            path: Routes.home,
-            builder: (_, _) => const HomeScreen(),
-          ),
+          GoRoute(path: Routes.home, builder: (_, _) => const HomeScreen()),
           GoRoute(
             path: Routes.notifications,
             builder: (_, _) => const NotificationCenterScreen(),
@@ -143,7 +137,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: 'new',
-                    builder: (_, _) => const NewRoutineScreen(),
+                    builder: (_, state) => NewRoutineScreen(
+                      initialPlanType: state.uri.queryParameters['type'],
+                    ),
                   ),
                 ],
               ),
@@ -225,8 +221,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
               GoRoute(
                 path: 'debts',
-                builder: (_, _) =>
-                    const BudgetTextScale(child: DebtsScreen()),
+                builder: (_, _) => const BudgetTextScale(child: DebtsScreen()),
               ),
               GoRoute(
                 path: 'recurring',
@@ -241,9 +236,8 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: 'entry/:date',
-                builder: (_, state) => DiaryEntryScreen(
-                  date: state.pathParameters['date']!,
-                ),
+                builder: (_, state) =>
+                    DiaryEntryScreen(date: state.pathParameters['date']!),
               ),
               GoRoute(
                 path: 'slideshow',
@@ -311,10 +305,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: 'graph',
                 builder: (_, _) => const NotesGraphScreen(),
               ),
-              GoRoute(
-                path: 'tags',
-                builder: (_, _) => const NotesTagsScreen(),
-              ),
+              GoRoute(path: 'tags', builder: (_, _) => const NotesTagsScreen()),
               GoRoute(
                 path: 'search',
                 builder: (_, _) => const NotesSearchScreen(),

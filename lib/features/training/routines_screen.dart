@@ -2,6 +2,8 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/components/section_header.dart';
+import '../../core/navigation/routes.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
@@ -20,67 +22,123 @@ class RoutinesScreen extends ConsumerWidget {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: Text(AppLocalizations.of(context)!.trainingRoutines,
-            style: const TextStyle(
-                color: TraumColors.onBackground,
-                fontFamily: 'DMSans',
-                fontWeight: FontWeight.w700)),
+        title: Text(
+          AppLocalizations.of(context)!.trainingRoutines,
+          style: const TextStyle(
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
         elevation: 0,
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: TraumColors.coralOrange,
-        onPressed: () => context.go('/training/routines/new'),
+        onPressed: () => context.push(Routes.newRoutine),
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),
       body: plansAsync.when(
         data: (plans) {
           if (plans.isEmpty) {
             return Center(
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.fitness_center_rounded,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.fitness_center_rounded,
                     size: 64,
-                    color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
-                const SizedBox(height: 16),
-                Text(AppLocalizations.of(context)!.noRoutines,
-                    style: const TextStyle(
-                        color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16)),
-                const SizedBox(height: 8),
-                Text(AppLocalizations.of(context)!.tapToCreateRoutine,
-                    style: const TextStyle(
-                        color: TraumColors.onBackgroundSubtle,
-                        fontFamily: 'DMSans',
-                        fontSize: 13),
-                    textAlign: TextAlign.center),
-              ]),
-            );
-          }
-          return ListView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
-            itemCount: plans.length,
-            itemBuilder: (ctx, i) => _PlanCard(
-              plan: plans[i],
-              onTap: () => context.go('/training/plan/${plans[i].id}'),
-              onSetActive: () => ref.read(trainingDaoProvider).updatePlan(
-                    WorkoutPlansCompanion(
-                      id: Value(plans[i].id),
-                      name: Value(plans[i].name),
-                      description: Value(plans[i].description),
-                      isActive: const Value(true),
+                    color: TraumColors.onBackgroundSubtle.withValues(
+                      alpha: 0.5,
                     ),
                   ),
-              onDelete: () => ref.read(trainingDaoProvider).deletePlan(plans[i].id),
-            ),
+                  const SizedBox(height: 16),
+                  Text(
+                    AppLocalizations.of(context)!.noRoutines,
+                    style: const TextStyle(
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    AppLocalizations.of(context)!.tapToCreateRoutine,
+                    style: const TextStyle(
+                      color: TraumColors.onBackgroundSubtle,
+                      fontFamily: 'DMSans',
+                      fontSize: 13,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            );
+          }
+
+          final l10n = AppLocalizations.of(context)!;
+          final workoutPlans = plans
+              .where((p) => p.planType == 'workout')
+              .toList();
+          final morningPlans = plans
+              .where((p) => p.planType == 'morning')
+              .toList();
+          final eveningPlans = plans
+              .where((p) => p.planType == 'evening')
+              .toList();
+
+          Widget planCard(WorkoutPlan plan) => _PlanCard(
+            plan: plan,
+            onTap: () => context.go('/training/plan/${plan.id}'),
+            onSetActive: () => ref
+                .read(trainingDaoProvider)
+                .updatePlan(
+                  WorkoutPlansCompanion(
+                    id: Value(plan.id),
+                    name: Value(plan.name),
+                    description: Value(plan.description),
+                    isActive: const Value(true),
+                  ),
+                ),
+            onDelete: () => ref.read(trainingDaoProvider).deletePlan(plan.id),
+          );
+
+          final items = <Widget>[
+            if (workoutPlans.isNotEmpty) ...[
+              SectionHeader(title: l10n.routineTypeWorkout),
+              const SizedBox(height: 10),
+              ...workoutPlans.map(planCard),
+              const SizedBox(height: 8),
+            ],
+            if (morningPlans.isNotEmpty) ...[
+              SectionHeader(title: l10n.morningRoutine),
+              const SizedBox(height: 10),
+              ...morningPlans.map(planCard),
+              const SizedBox(height: 8),
+            ],
+            if (eveningPlans.isNotEmpty) ...[
+              SectionHeader(title: l10n.eveningRoutine),
+              const SizedBox(height: 10),
+              ...eveningPlans.map(planCard),
+              const SizedBox(height: 8),
+            ],
+          ];
+
+          return ListView(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+            children: items,
           );
         },
-        loading: () =>
-            const Center(child: CircularProgressIndicator(color: TraumColors.coralOrange)),
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: TraumColors.coralOrange),
+        ),
         error: (e, _) => Center(
-            child: Text('${AppLocalizations.of(context)!.error}: $e',
-                style: const TextStyle(color: TraumColors.roseRed))),
+          child: Text(
+            '${AppLocalizations.of(context)!.error}: $e',
+            style: const TextStyle(color: TraumColors.roseRed),
+          ),
+        ),
       ),
     );
   }
@@ -143,47 +201,71 @@ class _PlanCard extends ConsumerWidget {
               // Header row
               Padding(
                 padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
-                child: Row(children: [
-                  Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(plan.name,
-                          style: const TextStyle(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            plan.name,
+                            style: const TextStyle(
                               color: TraumColors.onBackground,
                               fontFamily: 'DMSans',
                               fontWeight: FontWeight.w700,
-                              fontSize: 15)),
-                      if (plan.description != null)
-                        Text(plan.description!,
-                            style: const TextStyle(
+                              fontSize: 15,
+                            ),
+                          ),
+                          if (plan.description != null)
+                            Text(
+                              plan.description!,
+                              style: const TextStyle(
                                 color: TraumColors.onBackgroundMuted,
                                 fontFamily: 'DMSans',
-                                fontSize: 12),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis),
-                    ]),
-                  ),
-                  if (!plan.isActive)
-                    TextButton(
-                      onPressed: onSetActive,
-                      style: TextButton.styleFrom(foregroundColor: TraumColors.coralOrange),
-                      child: Text(l10n.activate,
-                          style: const TextStyle(fontFamily: 'DMSans', fontSize: 12)),
-                    )
-                  else
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: TraumColors.coralDim,
-                        borderRadius: BorderRadius.circular(12),
+                                fontSize: 12,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                        ],
                       ),
-                      child: Text(l10n.active,
-                          style: const TextStyle(
-                              color: TraumColors.coralOrange,
-                              fontFamily: 'DMSans',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 11)),
                     ),
-                ]),
+                    if (!plan.isActive)
+                      TextButton(
+                        onPressed: onSetActive,
+                        style: TextButton.styleFrom(
+                          foregroundColor: TraumColors.coralOrange,
+                        ),
+                        child: Text(
+                          l10n.activate,
+                          style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            fontSize: 12,
+                          ),
+                        ),
+                      )
+                    else
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: TraumColors.coralDim,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          l10n.active,
+                          style: const TextStyle(
+                            color: TraumColors.coralOrange,
+                            fontFamily: 'DMSans',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
 
               // Body map preview (only show if there are muscles to display)

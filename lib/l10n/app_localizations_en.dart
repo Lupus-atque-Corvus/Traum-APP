@@ -2283,6 +2283,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tapToCreateRoutine => 'Tap to create a routine';
 
   @override
+  String get dailyRoutines => 'Daily Routines';
+
+  @override
+  String get morningRoutine => 'Morning Routine';
+
+  @override
+  String get eveningRoutine => 'Evening Routine';
+
+  @override
+  String get routineTypeWorkout => 'Workout';
+
+  @override
+  String get startRoutine => 'Start';
+
+  @override
+  String get noRoutinesYet =>
+      'No routines yet — create your first morning or evening routine.';
+
+  @override
+  String get pickExercisesAfterSave =>
+      'After saving you\'ll pick the exercises for this routine right away.';
+
+  @override
   String get activate => 'Activate';
 
   @override
