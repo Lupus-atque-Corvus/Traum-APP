@@ -55,5 +55,6 @@ List<FoodSearchResult> localToResults(List<FoodProduct> products) => products
           sourceId: p.id.toString(),
           barcode: p.barcode,
           imageUrl: p.imageUrl,
+          localId: p.id,
         ))
     .toList();

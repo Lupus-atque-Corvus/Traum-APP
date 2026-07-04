@@ -504,17 +504,21 @@ class _ProductsTabState extends ConsumerState<_ProductsTab> {
     _openAmountEntry(product);
   }
 
-  /// Tap auf einen Multi-Source-Suchtreffer: lokale Treffer werden per ID
-  /// zurückgeholt, Online-Treffer erst in der DB gecached (Task 6.4).
+  /// Tap auf einen Multi-Source-Suchtreffer: Treffer mit lokalem Ursprung
+  /// (auch gemergte, siehe [FoodSearchResult.localId]) werden per ID
+  /// zurückgeholt statt neu angelegt/upsertet — sonst würde ein gemergtes
+  /// Ergebnis ohne Barcode (source='merged') fälschlich einen doppelten
+  /// Datensatz erzeugen, statt das bestehende lokale Produkt zu verwenden.
+  /// Rein online-basierte Treffer (kein `localId`) werden wie zuvor erst in
+  /// der DB gecached (Task 6.4).
   Future<void> _handleSearchResultTap(FoodSearchResult result) async {
     final dao = ref.read(foodProductsDaoProvider);
     FoodProduct? product;
-    if (result.source == 'local') {
-      final id = int.tryParse(result.sourceId ?? '');
-      if (id != null) product = await dao.getById(id);
+    if (result.localId != null) {
+      product = await dao.getById(result.localId!);
     }
     product ??= await dao.upsertFromSource(_toCompanion(result));
-    if (result.source != 'local') {
+    if (result.localId == null) {
       ref.invalidate(allProductsProvider);
     }
     await _openAmountEntry(product);

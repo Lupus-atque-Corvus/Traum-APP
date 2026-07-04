@@ -16,6 +16,7 @@ FoodSearchResult _r({
   String? sourceId,
   String? barcode,
   String? imageUrl,
+  int? localId,
 }) {
   return FoodSearchResult(
     name: name,
@@ -31,6 +32,7 @@ FoodSearchResult _r({
     sourceId: sourceId,
     barcode: barcode,
     imageUrl: imageUrl,
+    localId: localId,
   );
 }
 
@@ -288,6 +290,40 @@ void main() {
 
       expect(result.first.source, 'local');
       expect(result.last.source, 'usda');
+    });
+
+    test('merged-with-local: no barcode on either side, merged result '
+        'carries the local contributor\'s localId (regression for '
+        'stray-row bug — tapping a merged result must update the existing '
+        'local product, not insert a duplicate)', () {
+      final local = _r(
+        name: 'Reis',
+        kcal: 130,
+        protein: 2.7,
+        carbs: 28,
+        fat: 0.3,
+        source: 'local',
+        localId: 42,
+      );
+      final off = _r(
+        name: 'Reis',
+        kcal: 132,
+        protein: 2.6,
+        carbs: 28.5,
+        fat: 0.3,
+        source: 'off',
+      );
+
+      final result = aggregateAndRank('reis', [
+        [local],
+        [off],
+      ]);
+
+      expect(result.length, 1);
+      final merged = result.single;
+      expect(merged.source, 'merged');
+      expect(merged.barcode, isNull);
+      expect(merged.localId, 42);
     });
   });
 }

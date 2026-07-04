@@ -21,6 +21,14 @@ class FoodSearchResult {
   final String? barcode;
   final String? imageUrl;
 
+  /// Echte DB-ID des lokalen `FoodProducts`-Datensatzes, falls dieses
+  /// Ergebnis (direkt oder als gemergter Beitrag) von einem bereits
+  /// existierenden lokalen Produkt stammt — sonst `null` (rein
+  /// online-basiertes Ergebnis). Wird von der UI genutzt, um bei einem Tap
+  /// das bestehende Produkt zu verwenden statt einen doppelten Datensatz
+  /// per [FoodSearchResult.source]='merged' anzulegen.
+  final int? localId;
+
   const FoodSearchResult({
     required this.name,
     this.brand,
@@ -35,6 +43,7 @@ class FoodSearchResult {
     this.sourceId,
     this.barcode,
     this.imageUrl,
+    this.localId,
   });
 
   /// 0..1 — Anteil gefüllter Nährwertfelder (für Ranking).

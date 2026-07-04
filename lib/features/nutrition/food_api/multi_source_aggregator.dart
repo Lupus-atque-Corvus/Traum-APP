@@ -115,6 +115,17 @@ _Resolved _mergeCluster(List<FoodSearchResult> cluster) {
     return nonNull.reduce((a, b) => a + b) / nonNull.length;
   }
 
+  // Trägt die echte DB-ID des ersten lokalen Beitrags (falls vorhanden) auf
+  // das gemergte Ergebnis über — verhindert, dass ein Tap auf ein gemergtes
+  // Ergebnis mit lokalem Ursprung einen doppelten Datensatz anlegt (siehe
+  // FoodSearchResult.localId).
+  int? firstLocalId() {
+    for (final r in byPriority) {
+      if (r.source == 'local' && r.localId != null) return r.localId;
+    }
+    return null;
+  }
+
   final merged = FoodSearchResult(
     name: byPriority.first.name,
     brand: firstNonNullString((r) => r.brand),
@@ -129,6 +140,7 @@ _Resolved _mergeCluster(List<FoodSearchResult> cluster) {
     sourceId: firstNonNullString((r) => r.sourceId),
     barcode: firstNonNullString((r) => r.barcode),
     imageUrl: firstNonNullString((r) => r.imageUrl),
+    localId: firstLocalId(),
   );
 
   final topSource = byPriority.first.source;
