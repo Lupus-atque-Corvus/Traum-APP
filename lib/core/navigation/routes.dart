@@ -61,6 +61,12 @@ class Routes {
   static String newRoutinePath({String? type}) =>
       type != null ? '$newRoutine?type=$type' : newRoutine;
 
+  /// Active-workout screen, optionally prefilled from a WorkoutDay's saved
+  /// exercises via query parameter. Without [dayId] it opens an empty session
+  /// exactly like today.
+  static String activeWorkoutPath({int? dayId}) =>
+      dayId != null ? '$activeWorkout?dayId=$dayId' : activeWorkout;
+
   static const Map<String, String> moduleRoutes = {
     'home': home,
     'training': training,

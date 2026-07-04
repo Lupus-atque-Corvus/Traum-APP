@@ -428,7 +428,8 @@ class _RoutineSlotRow extends ConsumerWidget {
         const SizedBox(width: 8),
         if (plan != null && day != null)
           TextButton(
-            onPressed: () => context.push(Routes.activeWorkout),
+            onPressed: () =>
+                context.push(Routes.activeWorkoutPath(dayId: day!.id)),
             style: TextButton.styleFrom(
               backgroundColor: iconColor.withValues(alpha: 0.15),
               foregroundColor: iconColor,

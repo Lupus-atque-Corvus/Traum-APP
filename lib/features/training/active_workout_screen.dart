@@ -70,11 +70,16 @@ class _ExerciseBlock {
   String mode = 'Bilateral';
   String? note;
   bool supersetWithNext = false;
+  /// Rest duration in seconds carried over from a prefilled plan/day
+  /// (`WorkoutDayExercise.defaultRestSeconds`). Null for manually added
+  /// exercises, in which case the global rest-duration setting applies.
+  int? restSeconds;
   final List<_SetRow> sets;
 
   _ExerciseBlock({
     required this.exercise,
     String? equipment,
+    this.restSeconds,
     List<_SetRow>? sets,
   })  : equipment = equipment ?? exercise.equipment ?? '',
         sets = sets ?? [_SetRow(setNumber: 1)];
@@ -107,7 +112,12 @@ bool _isCardio(Exercise ex) => ex.muscleGroup.toLowerCase() == 'cardio';
 // ActiveWorkoutScreen
 // ─────────────────────────────────────────────────────────────────────────────
 class ActiveWorkoutScreen extends ConsumerStatefulWidget {
-  const ActiveWorkoutScreen({super.key});
+  /// Optional WorkoutDay to prefill the session's exercise blocks from
+  /// (e.g. a daily routine's "Routine" day). Null → today's exact behavior:
+  /// an empty session the user builds up manually.
+  final int? dayId;
+
+  const ActiveWorkoutScreen({super.key, this.dayId});
 
   @override
   ConsumerState<ActiveWorkoutScreen> createState() => _ActiveWorkoutScreenState();
@@ -137,6 +147,10 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
       if (mounted) setState(() => _elapsed = DateTime.now().difference(_startedAt));
     });
     _createSession();
+    final dayId = widget.dayId;
+    if (dayId != null) {
+      _prefillFromDay(dayId);
+    }
   }
 
   Future<void> _createSession() async {
@@ -144,6 +158,41 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
           WorkoutSessionsCompanion.insert(startedAt: _startedAt),
         );
     if (mounted) setState(() => _sessionId = id);
+  }
+
+  /// Prefills the session's exercise blocks from a plan/day (e.g. a routine's
+  /// "Routine" day) via `getDayExercises` + Exercise lookup. Builds blocks
+  /// through the same `_ExerciseBlock` constructor the manual "add exercise"
+  /// flow uses, just with `defaultSets`/`defaultReps`/`defaultRestSeconds`
+  /// carried over. Robust against an empty or deleted day — falls back to an
+  /// empty session, never crashes.
+  Future<void> _prefillFromDay(int dayId) async {
+    final dao = ref.read(trainingDaoProvider);
+    final dayExercises = await dao.getDayExercises(dayId);
+    if (dayExercises.isEmpty || !mounted) return;
+
+    final allExercises = await dao.getAllExercisesOnce();
+    final exerciseById = {for (final e in allExercises) e.id: e};
+
+    final newBlocks = <_ExerciseBlock>[];
+    for (final de in dayExercises) {
+      final exercise = exerciseById[de.exerciseId];
+      if (exercise == null) continue; // exercise deleted since — skip it
+      final setCount = de.defaultSets > 0 ? de.defaultSets : 1;
+      newBlocks.add(_ExerciseBlock(
+        exercise: exercise,
+        restSeconds: de.defaultRestSeconds,
+        sets: List.generate(
+          setCount,
+          (i) => _SetRow(setNumber: i + 1, reps: de.defaultReps),
+        ),
+      ));
+    }
+    if (!mounted || newBlocks.isEmpty) return;
+    setState(() {
+      _blocks.addAll(newBlocks);
+      _blockKeys.addAll(List.generate(newBlocks.length, (_) => GlobalKey()));
+    });
   }
 
   @override
@@ -308,7 +357,10 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
                               }),
                               onNavigateToDetail: () =>
                                   context.go('/training/exercise/${_blocks[i].exercise.id}/progress'),
-                              onShowRestTimer: () => _showRestTimer(context),
+                              onShowRestTimer: () => _showRestTimer(
+                                context,
+                                overrideSeconds: _blocks[i].restSeconds,
+                              ),
                             );
                           },
                         ),
@@ -385,8 +437,8 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
     });
   }
 
-  void _showRestTimer(BuildContext context) {
-    final restDuration = ref.read(restDurationProvider);
+  void _showRestTimer(BuildContext context, {int? overrideSeconds}) {
+    final int restDuration = overrideSeconds ?? ref.read(restDurationProvider);
     showModalBottomSheet(
       context: context,
       backgroundColor: TraumColors.surfaceElevated,

@@ -107,7 +107,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: 'active',
-                builder: (_, _) => const ActiveWorkoutScreen(),
+                builder: (_, state) {
+                  final dayIdStr = state.uri.queryParameters['dayId'];
+                  final dayId = dayIdStr != null ? int.tryParse(dayIdStr) : null;
+                  return ActiveWorkoutScreen(dayId: dayId);
+                },
               ),
               GoRoute(
                 path: 'exercises',
