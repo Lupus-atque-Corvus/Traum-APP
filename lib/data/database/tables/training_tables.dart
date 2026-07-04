@@ -6,6 +6,8 @@ class WorkoutPlans extends Table {
   TextColumn get description => text().nullable()();
   BoolColumn get isActive => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  /// 'workout' | 'morning' | 'evening'
+  TextColumn get planType => text().withDefault(const Constant('workout'))();
 }
 
 class WorkoutDays extends Table {

@@ -3041,6 +3041,18 @@ class $WorkoutPlansTable extends WorkoutPlans
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
+  static const VerificationMeta _planTypeMeta = const VerificationMeta(
+    'planType',
+  );
+  @override
+  late final GeneratedColumn<String> planType = GeneratedColumn<String>(
+    'plan_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('workout'),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -3048,6 +3060,7 @@ class $WorkoutPlansTable extends WorkoutPlans
     description,
     isActive,
     createdAt,
+    planType,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -3093,6 +3106,12 @@ class $WorkoutPlansTable extends WorkoutPlans
         createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
       );
     }
+    if (data.containsKey('plan_type')) {
+      context.handle(
+        _planTypeMeta,
+        planType.isAcceptableOrUnknown(data['plan_type']!, _planTypeMeta),
+      );
+    }
     return context;
   }
 
@@ -3122,6 +3141,10 @@ class $WorkoutPlansTable extends WorkoutPlans
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      planType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}plan_type'],
+      )!,
     );
   }
 
@@ -3137,12 +3160,16 @@ class WorkoutPlan extends DataClass implements Insertable<WorkoutPlan> {
   final String? description;
   final bool isActive;
   final DateTime createdAt;
+
+  /// 'workout' | 'morning' | 'evening'
+  final String planType;
   const WorkoutPlan({
     required this.id,
     required this.name,
     this.description,
     required this.isActive,
     required this.createdAt,
+    required this.planType,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -3154,6 +3181,7 @@ class WorkoutPlan extends DataClass implements Insertable<WorkoutPlan> {
     }
     map['is_active'] = Variable<bool>(isActive);
     map['created_at'] = Variable<DateTime>(createdAt);
+    map['plan_type'] = Variable<String>(planType);
     return map;
   }
 
@@ -3166,6 +3194,7 @@ class WorkoutPlan extends DataClass implements Insertable<WorkoutPlan> {
           : Value(description),
       isActive: Value(isActive),
       createdAt: Value(createdAt),
+      planType: Value(planType),
     );
   }
 
@@ -3180,6 +3209,7 @@ class WorkoutPlan extends DataClass implements Insertable<WorkoutPlan> {
       description: serializer.fromJson<String?>(json['description']),
       isActive: serializer.fromJson<bool>(json['isActive']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      planType: serializer.fromJson<String>(json['planType']),
     );
   }
   @override
@@ -3191,6 +3221,7 @@ class WorkoutPlan extends DataClass implements Insertable<WorkoutPlan> {
       'description': serializer.toJson<String?>(description),
       'isActive': serializer.toJson<bool>(isActive),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'planType': serializer.toJson<String>(planType),
     };
   }
 
@@ -3200,12 +3231,14 @@ class WorkoutPlan extends DataClass implements Insertable<WorkoutPlan> {
     Value<String?> description = const Value.absent(),
     bool? isActive,
     DateTime? createdAt,
+    String? planType,
   }) => WorkoutPlan(
     id: id ?? this.id,
     name: name ?? this.name,
     description: description.present ? description.value : this.description,
     isActive: isActive ?? this.isActive,
     createdAt: createdAt ?? this.createdAt,
+    planType: planType ?? this.planType,
   );
   WorkoutPlan copyWithCompanion(WorkoutPlansCompanion data) {
     return WorkoutPlan(
@@ -3216,6 +3249,7 @@ class WorkoutPlan extends DataClass implements Insertable<WorkoutPlan> {
           : this.description,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      planType: data.planType.present ? data.planType.value : this.planType,
     );
   }
 
@@ -3226,13 +3260,15 @@ class WorkoutPlan extends DataClass implements Insertable<WorkoutPlan> {
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('isActive: $isActive, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('planType: $planType')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, description, isActive, createdAt);
+  int get hashCode =>
+      Object.hash(id, name, description, isActive, createdAt, planType);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3241,7 +3277,8 @@ class WorkoutPlan extends DataClass implements Insertable<WorkoutPlan> {
           other.name == this.name &&
           other.description == this.description &&
           other.isActive == this.isActive &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.planType == this.planType);
 }
 
 class WorkoutPlansCompanion extends UpdateCompanion<WorkoutPlan> {
@@ -3250,12 +3287,14 @@ class WorkoutPlansCompanion extends UpdateCompanion<WorkoutPlan> {
   final Value<String?> description;
   final Value<bool> isActive;
   final Value<DateTime> createdAt;
+  final Value<String> planType;
   const WorkoutPlansCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.description = const Value.absent(),
     this.isActive = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.planType = const Value.absent(),
   });
   WorkoutPlansCompanion.insert({
     this.id = const Value.absent(),
@@ -3263,6 +3302,7 @@ class WorkoutPlansCompanion extends UpdateCompanion<WorkoutPlan> {
     this.description = const Value.absent(),
     this.isActive = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.planType = const Value.absent(),
   }) : name = Value(name);
   static Insertable<WorkoutPlan> custom({
     Expression<int>? id,
@@ -3270,6 +3310,7 @@ class WorkoutPlansCompanion extends UpdateCompanion<WorkoutPlan> {
     Expression<String>? description,
     Expression<bool>? isActive,
     Expression<DateTime>? createdAt,
+    Expression<String>? planType,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -3277,6 +3318,7 @@ class WorkoutPlansCompanion extends UpdateCompanion<WorkoutPlan> {
       if (description != null) 'description': description,
       if (isActive != null) 'is_active': isActive,
       if (createdAt != null) 'created_at': createdAt,
+      if (planType != null) 'plan_type': planType,
     });
   }
 
@@ -3286,6 +3328,7 @@ class WorkoutPlansCompanion extends UpdateCompanion<WorkoutPlan> {
     Value<String?>? description,
     Value<bool>? isActive,
     Value<DateTime>? createdAt,
+    Value<String>? planType,
   }) {
     return WorkoutPlansCompanion(
       id: id ?? this.id,
@@ -3293,6 +3336,7 @@ class WorkoutPlansCompanion extends UpdateCompanion<WorkoutPlan> {
       description: description ?? this.description,
       isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
+      planType: planType ?? this.planType,
     );
   }
 
@@ -3314,6 +3358,9 @@ class WorkoutPlansCompanion extends UpdateCompanion<WorkoutPlan> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (planType.present) {
+      map['plan_type'] = Variable<String>(planType.value);
+    }
     return map;
   }
 
@@ -3324,7 +3371,8 @@ class WorkoutPlansCompanion extends UpdateCompanion<WorkoutPlan> {
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('isActive: $isActive, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('planType: $planType')
           ..write(')'))
         .toString();
   }
@@ -30697,6 +30745,7 @@ typedef $$WorkoutPlansTableCreateCompanionBuilder =
       Value<String?> description,
       Value<bool> isActive,
       Value<DateTime> createdAt,
+      Value<String> planType,
     });
 typedef $$WorkoutPlansTableUpdateCompanionBuilder =
     WorkoutPlansCompanion Function({
@@ -30705,6 +30754,7 @@ typedef $$WorkoutPlansTableUpdateCompanionBuilder =
       Value<String?> description,
       Value<bool> isActive,
       Value<DateTime> createdAt,
+      Value<String> planType,
     });
 
 final class $$WorkoutPlansTableReferences
@@ -30761,6 +30811,11 @@ class $$WorkoutPlansTableFilterComposer
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get planType => $composableBuilder(
+    column: $table.planType,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -30823,6 +30878,11 @@ class $$WorkoutPlansTableOrderingComposer
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get planType => $composableBuilder(
+    column: $table.planType,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$WorkoutPlansTableAnnotationComposer
@@ -30850,6 +30910,9 @@ class $$WorkoutPlansTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get planType =>
+      $composableBuilder(column: $table.planType, builder: (column) => column);
 
   Expression<T> workoutDaysRefs<T extends Object>(
     Expression<T> Function($$WorkoutDaysTableAnnotationComposer a) f,
@@ -30910,12 +30973,14 @@ class $$WorkoutPlansTableTableManager
                 Value<String?> description = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String> planType = const Value.absent(),
               }) => WorkoutPlansCompanion(
                 id: id,
                 name: name,
                 description: description,
                 isActive: isActive,
                 createdAt: createdAt,
+                planType: planType,
               ),
           createCompanionCallback:
               ({
@@ -30924,12 +30989,14 @@ class $$WorkoutPlansTableTableManager
                 Value<String?> description = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String> planType = const Value.absent(),
               }) => WorkoutPlansCompanion.insert(
                 id: id,
                 name: name,
                 description: description,
                 isActive: isActive,
                 createdAt: createdAt,
+                planType: planType,
               ),
           withReferenceMapper: (p0) => p0
               .map(

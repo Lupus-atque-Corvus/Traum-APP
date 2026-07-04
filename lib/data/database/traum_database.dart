@@ -211,7 +211,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 21;
+  int get schemaVersion => 22;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -369,6 +369,9 @@ class TraumDatabase extends _$TraumDatabase {
             "UPDATE food_products SET source_api = 'off' WHERE barcode IS NOT NULL AND is_custom = 0");
         await customStatement(
             "UPDATE food_products SET source_api = 'custom' WHERE is_custom = 1");
+      }
+      if (from < 22) {
+        await migrator.addColumn(workoutPlans, workoutPlans.planType);
       }
     },
   );

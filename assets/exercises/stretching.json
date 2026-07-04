@@ -1,0 +1,20 @@
+[
+  {"name": "Nacken-Seitdehnung", "equipment": null, "muscleGroup": "shoulders", "instructions": "Kopf langsam zur Schulter neigen, Gegenschulter aktiv nach unten ziehen. 30 s je Seite."},
+  {"name": "Schulterkreisen", "equipment": null, "muscleGroup": "shoulders", "instructions": "Große, langsame Kreise rückwärts. 2×10 Wiederholungen."},
+  {"name": "Brust-Türrahmendehnung", "equipment": "Türrahmen", "muscleGroup": "chest", "instructions": "Unterarm am Rahmen, Körper leicht vordrehen. 30 s je Seite."},
+  {"name": "Katze-Kuh", "equipment": "Matte", "muscleGroup": "back", "instructions": "Im Vierfüßlerstand Wirbelsäule abwechselnd runden und strecken. 10 langsame Zyklen."},
+  {"name": "Kindhaltung", "equipment": "Matte", "muscleGroup": "back", "instructions": "Gesäß zu den Fersen, Arme lang nach vorn. 45–60 s halten."},
+  {"name": "Drehsitz-Rotation", "equipment": "Matte", "muscleGroup": "back", "instructions": "Sitzend Bein überschlagen, Oberkörper zur Seite drehen. 30 s je Seite."},
+  {"name": "Hüftbeuger-Ausfallschritt", "equipment": "Matte", "muscleGroup": "legs", "instructions": "Halber Kniestand, Becken nach vorn schieben. 30 s je Seite."},
+  {"name": "Beinrückseite-Dehnung stehend", "equipment": null, "muscleGroup": "legs", "instructions": "Bein aufstellen, Oberkörper mit geradem Rücken vorneigen. 30 s je Seite."},
+  {"name": "Quadrizeps-Dehnung stehend", "equipment": null, "muscleGroup": "legs", "instructions": "Ferse zum Gesäß ziehen, Knie zeigen zueinander. 30 s je Seite."},
+  {"name": "Taube", "equipment": "Matte", "muscleGroup": "legs", "instructions": "Vorderes Bein angewinkelt ablegen, hinteres lang. 45 s je Seite."},
+  {"name": "Waden-Dehnung an der Wand", "equipment": "Wand", "muscleGroup": "legs", "instructions": "Hinteres Bein gestreckt, Ferse am Boden. 30 s je Seite."},
+  {"name": "Seitliche Rumpfdehnung", "equipment": null, "muscleGroup": "core", "instructions": "Arm über den Kopf, zur Gegenseite neigen. 30 s je Seite."},
+  {"name": "Kobra", "equipment": "Matte", "muscleGroup": "core", "instructions": "Aus der Bauchlage Oberkörper aufrichten, Becken bleibt am Boden. 3×15 s."},
+  {"name": "Handgelenk-Mobilisation", "equipment": null, "muscleGroup": "full_body", "instructions": "Handflächen wechselnd auf/ab, sanfte Kreise. 60 s."},
+  {"name": "Weltbeste Dehnung (World's Greatest Stretch)", "equipment": "Matte", "muscleGroup": "full_body", "instructions": "Ausfallschritt, Ellbogen zum Boden, dann Rotation nach oben. 5 je Seite."},
+  {"name": "Beinpendel", "equipment": null, "muscleGroup": "legs", "instructions": "Bein locker vor/zurück schwingen. 15 je Seite."},
+  {"name": "Armkreisen", "equipment": null, "muscleGroup": "shoulders", "instructions": "Beide Arme groß kreisen, vorwärts und rückwärts. 2×10."},
+  {"name": "Tiefer Hockstand", "equipment": null, "muscleGroup": "legs", "instructions": "Füße schulterbreit, tief hocken, Knie mit Ellbogen aufdrücken. 45 s."}
+]
