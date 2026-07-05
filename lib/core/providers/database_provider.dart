@@ -150,10 +150,23 @@ final latestMoodProvider = FutureProvider.autoDispose<MoodLog?>(
   (ref) => ref.watch(healthDaoProvider).getLatestMood(),
 );
 
+// One-shot variant. The home training widgets deliberately read via one-shot
+// DAO `getX()` methods (not drift `.watch()` streams) to avoid live
+// subscriptions — see the note in home/widgets/training_widgets.dart. Keep
+// this a FutureProvider so those widgets (and their build test) are unaffected.
 final recentTrainingSetsProvider = FutureProvider.autoDispose
     .family<List<WorkoutSet>, int>(
       (ref, days) =>
           ref.watch(trainingDaoProvider).getRecentSets(Duration(days: days)),
+    );
+
+// Stream variant (task 8.2 / Non-Negotiable #4): the muscle heatmap screen
+// watches this so it re-emits as soon as a session/set changes — i.e. the
+// heatmap updates right after a workout is finished, without an app restart.
+final recentTrainingSetsStreamProvider = StreamProvider.autoDispose
+    .family<List<WorkoutSet>, int>(
+      (ref, days) =>
+          ref.watch(trainingDaoProvider).watchRecentSets(Duration(days: days)),
     );
 
 final trainingSessionsThisWeekProvider =

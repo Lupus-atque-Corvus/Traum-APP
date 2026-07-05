@@ -55,8 +55,9 @@ class TrainingScreen extends ConsumerWidget {
         orElse: () => null,
       );
       if (ex == null) continue;
-      final muscles =
-          BodyMapWidget.musclesForGroup(canonicalMuscleGroup(ex.muscleGroup));
+      final muscles = BodyMapWidget.musclesForGroup(
+        canonicalMuscleGroup(ex.muscleGroup),
+      );
       for (final muscle in muscles) {
         final existing = muscleLastTrainedAt[muscle];
         if (existing == null || session.startedAt.isAfter(existing)) {
@@ -197,77 +198,81 @@ class _HeatMapCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: TraumColors.surface,
-        borderRadius: BorderRadius.circular(TraumRadius.card),
-      ),
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l10n.muscleHeatmapTitle,
-                  style: const TextStyle(
-                    color: TraumColors.onBackground,
-                    fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
+    return InkWell(
+      borderRadius: BorderRadius.circular(TraumRadius.card),
+      onTap: () => context.push(Routes.muscleHeatmap),
+      child: Container(
+        decoration: BoxDecoration(
+          color: TraumColors.surface,
+          borderRadius: BorderRadius.circular(TraumRadius.card),
+        ),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.muscleHeatmapTitle,
+                    style: const TextStyle(
+                      color: TraumColors.onBackground,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                    ),
                   ),
                 ),
-              ),
-              Text(
-                '72h',
-                style: const TextStyle(
-                  color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans',
-                  fontSize: 12,
+                Text(
+                  '72h',
+                  style: const TextStyle(
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                    fontSize: 12,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
+              ],
+            ),
+            const SizedBox(height: 12),
 
-          // Front + Back body maps
-          Row(
-            children: [
-              Expanded(
-                child: BodyMapWidget(
-                  primaryMuscles: const [],
-                  secondaryMuscles: const [],
-                  heatMap: heatMap,
-                  showBack: false,
-                  height: 180,
+            // Front + Back body maps
+            Row(
+              children: [
+                Expanded(
+                  child: BodyMapWidget(
+                    primaryMuscles: const [],
+                    secondaryMuscles: const [],
+                    heatMap: heatMap,
+                    showBack: false,
+                    height: 180,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: BodyMapWidget(
-                  primaryMuscles: const [],
-                  secondaryMuscles: const [],
-                  heatMap: heatMap,
-                  showBack: true,
-                  height: 180,
+                Expanded(
+                  child: BodyMapWidget(
+                    primaryMuscles: const [],
+                    secondaryMuscles: const [],
+                    heatMap: heatMap,
+                    showBack: true,
+                    height: 180,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
+              ],
+            ),
+            const SizedBox(height: 12),
 
-          // Legend
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _LegendItem(color: const Color(0xFFE97B4A), label: '24h'),
-              const SizedBox(width: 16),
-              _LegendItem(color: const Color(0xFFA0442A), label: '48h'),
-              const SizedBox(width: 16),
-              _LegendItem(color: const Color(0xFF5C2116), label: '72h'),
-            ],
-          ),
-        ],
+            // Legend
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _LegendItem(color: const Color(0xFFE97B4A), label: '24h'),
+                const SizedBox(width: 16),
+                _LegendItem(color: const Color(0xFFA0442A), label: '48h'),
+                const SizedBox(width: 16),
+                _LegendItem(color: const Color(0xFF5C2116), label: '72h'),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -2519,6 +2519,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notTrainedHeatmap => 'Not trained';
 
   @override
+  String get heatmapDays7 => '7 days';
+
+  @override
+  String get heatmapDays14 => '14 days';
+
+  @override
+  String get heatmapDays30 => '30 days';
+
+  @override
+  String get heatmapExercisesIn => 'Exercises in period';
+
+  @override
   String get restTimer => 'Rest';
 
   @override

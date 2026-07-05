@@ -4898,6 +4898,30 @@ abstract class AppLocalizations {
   /// **'Nicht trainiert'**
   String get notTrainedHeatmap;
 
+  /// No description provided for @heatmapDays7.
+  ///
+  /// In de, this message translates to:
+  /// **'7 Tage'**
+  String get heatmapDays7;
+
+  /// No description provided for @heatmapDays14.
+  ///
+  /// In de, this message translates to:
+  /// **'14 Tage'**
+  String get heatmapDays14;
+
+  /// No description provided for @heatmapDays30.
+  ///
+  /// In de, this message translates to:
+  /// **'30 Tage'**
+  String get heatmapDays30;
+
+  /// No description provided for @heatmapExercisesIn.
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen im Zeitraum'**
+  String get heatmapExercisesIn;
+
   /// No description provided for @restTimer.
   ///
   /// In de, this message translates to:

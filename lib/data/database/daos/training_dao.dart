@@ -126,6 +126,26 @@ class TrainingDao extends DatabaseAccessor<TraumDatabase>
     workoutSets,
   )..where((t) => t.sessionId.equals(sessionId))).watch();
 
+  /// Stream-based (Non-Negotiable #4): emits again whenever a workout
+  /// session/set changes, so screens watching this update live (e.g. the
+  /// muscle heatmap right after a workout is finished) without a restart.
+  Stream<List<WorkoutSet>> watchRecentSets(Duration since) {
+    final cutoff = DateTime.now().subtract(since);
+    final query = select(workoutSets).join([
+      innerJoin(
+        workoutSessions,
+        workoutSessions.id.equalsExp(workoutSets.sessionId),
+      ),
+    ])..where(workoutSessions.startedAt.isBiggerOrEqualValue(cutoff));
+    return query.watch().map(
+      (rows) => rows.map((row) => row.readTable(workoutSets)).toList(),
+    );
+  }
+
+  /// One-shot variant. Used by the home widgets, which deliberately read via
+  /// `getX()` methods (not drift `.watch()` streams) — see the note in
+  /// `home/widgets/training_widgets.dart`. The heatmap screen uses
+  /// [watchRecentSets] instead for live auto-update.
   Future<List<WorkoutSet>> getRecentSets(Duration since) {
     final cutoff = DateTime.now().subtract(since);
     final query = select(workoutSets).join([
