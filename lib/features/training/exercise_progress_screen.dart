@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -6,8 +8,23 @@ import '../../core/providers/unit_preference_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 import '../settings/feedback/feedback_bottom_sheet.dart';
 import 'widgets/body_map_widget.dart';
+
+/// Decodes an exercise's `primaryMuscles`/`secondaryMuscles` JSON-array
+/// string column (Task 9.1/9.2, e.g. `'["pectorals","deltoids"]'`) into a
+/// list of body-map muscle names for [BodyMapWidget]. Falls back to `[]` for
+/// malformed/empty values so legacy rows never crash the detail view.
+List<String> _decodeMuscleList(String raw) {
+  try {
+    final decoded = jsonDecode(raw);
+    if (decoded is List) return decoded.cast<String>();
+  } catch (_) {
+    // Ignore — treated as empty below.
+  }
+  return const [];
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 String _mgDisplay(String key) {
@@ -230,7 +247,20 @@ class _InfoTab extends StatelessWidget {
       );
     }
     final ex = exercise!;
-    final muscles = BodyMapWidget.musclesForGroup(ex.muscleGroup);
+    final l10n = AppLocalizations.of(context)!;
+
+    // Prefer the per-exercise primary/secondary muscle lists seeded in
+    // Task 9.2 (`Exercise.primaryMuscles`/`secondaryMuscles`, JSON-array
+    // strings of body-map muscle names). Hand-seeded/legacy exercises that
+    // never got these filled in (`'[]'`) fall back to the coarse
+    // muscleGroup → body-map mapping so the map is never empty.
+    final decodedPrimary = _decodeMuscleList(ex.primaryMuscles);
+    final decodedSecondary = _decodeMuscleList(ex.secondaryMuscles);
+    final primaryMuscles = decodedPrimary.isNotEmpty
+        ? decodedPrimary
+        : BodyMapWidget.musclesForGroup(ex.muscleGroup);
+    final secondaryMuscles = decodedSecondary;
+
     final similar = exercises
         .where((e) => e.id != ex.id && e.muscleGroup == ex.muscleGroup)
         .take(5)
@@ -290,16 +320,16 @@ class _InfoTab extends StatelessWidget {
                   SizedBox(
                     height: 180,
                     child: BodyMapWidget(
-                      primaryMuscles: muscles,
-                      secondaryMuscles: const [],
+                      primaryMuscles: primaryMuscles,
+                      secondaryMuscles: secondaryMuscles,
                       height: 180,
                     ),
                   ),
                   SizedBox(
                     height: 180,
                     child: BodyMapWidget(
-                      primaryMuscles: muscles,
-                      secondaryMuscles: const [],
+                      primaryMuscles: primaryMuscles,
+                      secondaryMuscles: secondaryMuscles,
                       showBack: true,
                       height: 180,
                     ),
@@ -311,6 +341,38 @@ class _InfoTab extends StatelessWidget {
         ),
         const SizedBox(height: 8),
 
+        // Details: equipment + difficulty (if any)
+        if ((ex.equipment != null && ex.equipment!.isNotEmpty) ||
+            (ex.difficulty != null && ex.difficulty!.isNotEmpty)) ...[
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              borderRadius: BorderRadius.circular(TraumRadius.card),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.detailsLabel,
+                  style: const TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                if (ex.equipment != null && ex.equipment!.isNotEmpty)
+                  _StatRow(label: l10n.equipmentLabel, value: ex.equipment!),
+                if (ex.difficulty != null && ex.difficulty!.isNotEmpty)
+                  _StatRow(label: l10n.difficultyLabel, value: ex.difficulty!),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+
         // Instructions (if any)
         if (ex.instructions != null && ex.instructions!.isNotEmpty) ...[
           Container(
@@ -319,14 +381,29 @@ class _InfoTab extends StatelessWidget {
               color: TraumColors.surface,
               borderRadius: BorderRadius.circular(TraumRadius.card),
             ),
-            child: Text(
-              ex.instructions!,
-              style: const TextStyle(
-                color: TraumColors.onBackgroundMuted,
-                fontFamily: 'DMSans',
-                fontSize: 13,
-                height: 1.6,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.instructionsLabel,
+                  style: const TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  ex.instructions!,
+                  style: const TextStyle(
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                    fontSize: 13,
+                    height: 1.6,
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 8),

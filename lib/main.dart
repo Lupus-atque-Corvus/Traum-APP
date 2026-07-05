@@ -7,6 +7,7 @@ import 'core/notifications/notification_service.dart';
 import 'core/providers/database_provider.dart';
 import 'core/providers/preferences_provider.dart';
 import 'data/database/traum_database.dart';
+import 'data/repositories/exercise_library_seeder.dart';
 import 'data/repositories/exercise_seeder.dart';
 import 'data/repositories/grocery_price_seeder.dart';
 import 'data/repositories/map_collection_seeder.dart';
@@ -30,8 +31,15 @@ void main() async {
   // Register the periodic background widget refresh (internally guarded).
   await registerWidgetPeriodicRefresh();
 
+  // ExerciseSeeder must finish before ExerciseLibrarySeeder runs: the latter
+  // looks up existing exercises by name to avoid inserting duplicates, so it
+  // needs to see ExerciseSeeder's rows already committed. Both seeders write
+  // to the same `Exercises` table, so this pair runs sequentially while the
+  // remaining (unrelated-table) seeders still run concurrently.
+  await ExerciseSeeder.seedIfNeeded(db, prefs);
+  await ExerciseLibrarySeeder.seedIfNeeded(db, prefs);
+
   await Future.wait([
-    ExerciseSeeder.seedIfNeeded(db, prefs),
     SupplementSeeder.seedIfNeeded(db, prefs),
     SubstanceDatabaseCopier.copyIfNeeded(db, prefs),
     MapCollectionSeeder.seedIfNeeded(db, prefs),

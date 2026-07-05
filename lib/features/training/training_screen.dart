@@ -164,6 +164,10 @@ class TrainingScreen extends ConsumerWidget {
                 _HeatMapCard(heatMap: muscleLastTrainedAt, l10n: l10n),
                 const SizedBox(height: 12),
 
+                // ── Exercise library entry point ─────────────────────────
+                _ExerciseLibraryCard(l10n: l10n),
+                const SizedBox(height: 12),
+
                 // ── Daily Routines (morning/evening stretching) ──────────
                 const _DailyRoutinesCard(),
                 const SizedBox(height: 12),
@@ -270,6 +274,63 @@ class _HeatMapCard extends StatelessWidget {
                 const SizedBox(width: 16),
                 _LegendItem(color: const Color(0xFF5C2116), label: '72h'),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Exercise Library Card ───────────────────────────────────────────────────
+
+class _ExerciseLibraryCard extends StatelessWidget {
+  final AppLocalizations l10n;
+
+  const _ExerciseLibraryCard({required this.l10n});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(TraumRadius.card),
+      onTap: () => context.push(Routes.exerciseLibrary),
+      child: Container(
+        decoration: BoxDecoration(
+          color: TraumColors.surface,
+          borderRadius: BorderRadius.circular(TraumRadius.card),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: TraumColors.cyanBlue.withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.fitness_center_rounded,
+                color: TraumColors.cyanBlue,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                l10n.exerciseLibrary,
+                style: const TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: TraumColors.onBackgroundSubtle,
+              size: 20,
             ),
           ],
         ),

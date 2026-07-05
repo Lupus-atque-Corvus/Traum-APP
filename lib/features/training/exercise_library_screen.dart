@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,11 +83,22 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
   String _search = '';
   bool _searchActive = false;
   final Set<int> _selectedCats = {};
+  Timer? _searchDebounce;
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _searchCtrl.dispose();
     super.dispose();
+  }
+
+  // 815+ exercises — debounce search so filtering/re-sorting the full list
+  // doesn't run on every keystroke while typing.
+  void _onSearchChanged(String value) {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 250), () {
+      if (mounted) setState(() => _search = value);
+    });
   }
 
   List<Exercise> _applyFilters(List<Exercise> all) {
@@ -300,7 +313,7 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
             hintText: 'Search exercises...',
             hintStyle: TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
           ),
-          onChanged: (v) => setState(() => _search = v),
+          onChanged: _onSearchChanged,
         ),
         actions: [
           IconButton(
