@@ -34,7 +34,16 @@ void main() {
     expect(BodyMapWidget.musclesForGroup('Rücken'), contains('lats'));
   });
 
-  test('musclesForGroup returns empty for unknown group', () {
-    expect(BodyMapWidget.musclesForGroup('Unbekannt'), isEmpty);
+  test('musclesForGroup falls back to full-body muscles for unknown group', () {
+    // Post-fix behavior (Bugfix Audit 6.1): an unrecognized group now
+    // normalizes to 'full_body' (same fallback ExerciseIcon already used)
+    // instead of silently returning [] (which was the heatmap bug).
+    expect(BodyMapWidget.musclesForGroup('Unbekannt'), isNotEmpty);
+    expect(BodyMapWidget.musclesForGroup('Unbekannt'), contains('pectorals'));
+  });
+
+  test('musclesForGroup understands English seeder keys too', () {
+    expect(BodyMapWidget.musclesForGroup('chest'), contains('pectorals'));
+    expect(BodyMapWidget.musclesForGroup('back'), contains('lats'));
   });
 }

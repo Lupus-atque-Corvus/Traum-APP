@@ -4328,6 +4328,18 @@ abstract class AppLocalizations {
   /// **'Ganzkörper'**
   String get muscleGanzkoerper;
 
+  /// No description provided for @muscleForearms.
+  ///
+  /// In de, this message translates to:
+  /// **'Unterarme'**
+  String get muscleForearms;
+
+  /// No description provided for @muscleCardio.
+  ///
+  /// In de, this message translates to:
+  /// **'Cardio'**
+  String get muscleCardio;
+
   /// No description provided for @noWorkoutPlanned.
   ///
   /// In de, this message translates to:

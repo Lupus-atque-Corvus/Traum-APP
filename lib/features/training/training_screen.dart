@@ -8,6 +8,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'muscle_groups.dart';
 import 'widgets/body_map_widget.dart';
 
 class TrainingScreen extends ConsumerWidget {
@@ -54,7 +55,8 @@ class TrainingScreen extends ConsumerWidget {
         orElse: () => null,
       );
       if (ex == null) continue;
-      final muscles = BodyMapWidget.musclesForGroup(ex.muscleGroup);
+      final muscles =
+          BodyMapWidget.musclesForGroup(canonicalMuscleGroup(ex.muscleGroup));
       for (final muscle in muscles) {
         final existing = muscleLastTrainedAt[muscle];
         if (existing == null || session.startedAt.isAfter(existing)) {

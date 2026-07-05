@@ -7,23 +7,8 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'muscle_groups.dart';
 import 'widgets/exercise_icon.dart';
-
-String _muscleGroupKey(String germanKey) {
-  switch (germanKey) {
-    case 'Brust': return 'chest';
-    case 'Rücken': return 'back';
-    case 'Schulter': return 'shoulders';
-    case 'Bizeps': return 'biceps';
-    case 'Trizeps': return 'triceps';
-    case 'Bauch': return 'core';
-    case 'Beine': return 'legs';
-    case 'Gesäß': return 'legs';
-    case 'Waden': return 'legs';
-    case 'Ganzkörper': return 'full_body';
-    default: return 'full_body';
-  }
-}
 
 class WorkoutPlanDetailScreen extends ConsumerWidget {
   final int planId;
@@ -212,7 +197,7 @@ class _ExerciseRow extends ConsumerWidget {
         return Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
           child: Row(children: [
-            ExerciseIcon(muscleGroup: _muscleGroupKey(exercise.muscleGroup), size: 36),
+            ExerciseIcon(muscleGroup: canonicalMuscleGroup(exercise.muscleGroup), size: 36),
             const SizedBox(width: 12),
             Expanded(
               child: Text(exercise.name,

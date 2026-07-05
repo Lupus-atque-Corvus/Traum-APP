@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../muscle_groups.dart';
 import 'body_map_svg_data.dart';
 
 class BodyMapWidget extends StatelessWidget {
@@ -45,22 +46,14 @@ class BodyMapWidget extends StatelessWidget {
     this.height = 260,
   });
 
-  static List<String> musclesForGroup(String group) {
-    switch (group.toLowerCase().trim()) {
-      case 'brust':      return ['pectorals'];
-      case 'rücken':     return ['lats', 'rhomboids', 'lower_back', 'trapezes'];
-      case 'schulter':   return ['deltoids'];
-      case 'bizeps':     return ['biceps'];
-      case 'trizeps':    return ['triceps'];
-      case 'bauch':      return ['abdominals', 'obliques'];
-      case 'beine':      return ['quadriceps', 'hamstrings', 'hip_adductors', 'hip_abductors'];
-      case 'gesäß':      return ['glutes'];
-      case 'waden':      return ['calves'];
-      case 'unterarme':  return ['forearms'];
-      case 'ganzkörper': return allMuscles;
-      default:           return [];
-    }
-  }
+  /// Delegates to the canonical normalization + body-map mapping in
+  /// `muscle_groups.dart` (Bugfix Audit 6.1: this used to only understand
+  /// German keys, so it returned [] for the English keys the
+  /// ExerciseSeeder actually stores). Still accepts whatever it accepted
+  /// before (German or English, any casing) — canonicalization is
+  /// backward-compatible.
+  static List<String> musclesForGroup(String group) =>
+      bodyMapMusclesFor(canonicalMuscleGroup(group));
 
   // Heat-map hex colors by recency
   static String _heatHex(DateTime? lastTrained) {

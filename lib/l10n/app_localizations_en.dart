@@ -2218,6 +2218,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get muscleGanzkoerper => 'Full body';
 
   @override
+  String get muscleForearms => 'Forearms';
+
+  @override
+  String get muscleCardio => 'Cardio';
+
+  @override
   String get noWorkoutPlanned => 'No workout planned';
 
   @override

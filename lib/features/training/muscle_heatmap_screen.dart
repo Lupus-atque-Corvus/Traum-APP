@@ -5,31 +5,11 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'muscle_groups.dart';
 import 'widgets/body_map_widget.dart';
-
-String _muscleLabel(String key, AppLocalizations l10n) {
-  switch (key) {
-    case 'Brust': return l10n.muscleBrust;
-    case 'Rücken': return l10n.muscleRuecken;
-    case 'Schulter': return l10n.muscleSchulter;
-    case 'Bizeps': return l10n.muscleBizeps;
-    case 'Trizeps': return l10n.muscleTrizeps;
-    case 'Bauch': return l10n.muscleBauch;
-    case 'Beine': return l10n.muscleBeine;
-    case 'Gesäß': return l10n.muscleGesaess;
-    case 'Waden': return l10n.muscleWaden;
-    case 'Ganzkörper': return l10n.muscleGanzkoerper;
-    default: return key;
-  }
-}
 
 class MuscleHeatmapScreen extends ConsumerWidget {
   const MuscleHeatmapScreen({super.key});
-
-  static const _muscleGroups = [
-    'Brust', 'Rücken', 'Schulter', 'Bizeps', 'Trizeps',
-    'Bauch', 'Beine', 'Gesäß', 'Waden', 'Ganzkörper',
-  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -57,8 +37,8 @@ class MuscleHeatmapScreen extends ConsumerWidget {
               final ex = exercises.cast<Exercise?>()
                   .firstWhere((e) => e?.id == s.exerciseId, orElse: () => null);
               if (ex != null) {
-                setsPerMuscle[ex.muscleGroup] =
-                    (setsPerMuscle[ex.muscleGroup] ?? 0) + 1;
+                final canonical = canonicalMuscleGroup(ex.muscleGroup);
+                setsPerMuscle[canonical] = (setsPerMuscle[canonical] ?? 0) + 1;
               }
             }
             final maxSets = setsPerMuscle.values.isEmpty
@@ -121,7 +101,7 @@ class MuscleHeatmapScreen extends ConsumerWidget {
                         fontWeight: FontWeight.w700,
                         fontSize: 15)),
                 const SizedBox(height: 16),
-                ..._muscleGroups.map((muscle) {
+                ...kAllMuscleGroups.map((muscle) {
                   final count = setsPerMuscle[muscle] ?? 0;
                   final ratio = maxSets > 0 ? count / maxSets : 0.0;
                   final heatColor = _heatColor(ratio);
@@ -148,7 +128,7 @@ class MuscleHeatmapScreen extends ConsumerWidget {
                       const SizedBox(width: 14),
                       Expanded(
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text(_muscleLabel(muscle, AppLocalizations.of(context)!),
+                          Text(muscleGroupLabel(muscle, AppLocalizations.of(context)!),
                               style: const TextStyle(
                                   color: TraumColors.onBackground,
                                   fontFamily: 'DMSans',

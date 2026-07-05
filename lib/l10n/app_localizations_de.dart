@@ -2228,6 +2228,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get muscleGanzkoerper => 'Ganzkörper';
 
   @override
+  String get muscleForearms => 'Unterarme';
+
+  @override
+  String get muscleCardio => 'Cardio';
+
+  @override
   String get noWorkoutPlanned => 'Kein Workout geplant';
 
   @override
