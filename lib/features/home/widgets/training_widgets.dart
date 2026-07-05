@@ -9,6 +9,7 @@ import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../data/database/traum_database.dart'
     show Exercise, WorkoutDay, WorkoutSession, WorkoutSet;
+import '../../training/muscle_groups.dart';
 import '../home_tile.dart';
 import '../home_widget_frame.dart';
 import '../home_widget_registry.dart';
@@ -342,7 +343,7 @@ class _MuscleHeatmapContent extends ConsumerWidget {
       if (s.isWarmup) continue;
       final ex = byId[s.exerciseId];
       if (ex == null) continue;
-      final group = _displayGroup(ex.muscleGroup);
+      final group = _displayGroup(canonicalMuscleGroup(ex.muscleGroup));
       counts[group] = (counts[group] ?? 0) + 1;
     }
     if (counts.isEmpty) {
@@ -376,17 +377,36 @@ class _MuscleHeatmapContent extends ConsumerWidget {
     );
   }
 
-  static String _displayGroup(String raw) {
-    switch (raw) {
-      case 'Bizeps':
-      case 'Trizeps':
-      case 'Unterarme':
+  /// Collapses a canonical muscle-group key (see `muscle_groups.dart`) into
+  /// one of this widget's 6 compact display buckets. Bugfix (Task 8.1b,
+  /// completes Audit 6.1 / Task 8.1): this used to switch on German literals
+  /// ('Bizeps', 'Gesäß', …) that never matched the English keys the
+  /// ExerciseSeeder actually stores, so every group silently fell through to
+  /// `default` and the heatmap bars never lined up with their labels. The
+  /// caller now normalizes the raw value via `canonicalMuscleGroup` first.
+  static String _displayGroup(String canonical) {
+    switch (canonical) {
+      case 'chest':
+        return 'Brust';
+      case 'back':
+        return 'Rücken';
+      case 'shoulders':
+        return 'Schulter';
+      case 'biceps':
+      case 'triceps':
+      case 'forearms':
         return 'Arme';
-      case 'Gesäß':
-      case 'Waden':
+      case 'core':
+        return 'Bauch';
+      case 'legs':
+      case 'glutes':
+      case 'calves':
         return 'Beine';
       default:
-        return raw;
+        // cardio / full_body / stretching have no bucket in this compact
+        // 6-row widget — keep them out of the displayed buckets rather than
+        // silently inflating an unrelated bar.
+        return canonical;
     }
   }
 }

@@ -5,22 +5,14 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import 'muscle_groups.dart';
 import 'widgets/exercise_icon.dart';
 
 // ── Helpers (same as library screen) ─────────────────────────────────────────
-String _mgKey(String g) {
-  switch (g.toLowerCase()) {
-    case 'chest':     return 'chest';
-    case 'back':      return 'back';
-    case 'shoulders': return 'shoulders';
-    case 'biceps':    return 'biceps';
-    case 'triceps':   return 'triceps';
-    case 'core':      return 'core';
-    case 'legs':      return 'legs';
-    case 'cardio':    return 'cardio';
-    default:          return 'full_body';
-  }
-}
+// Icon-selection key normalization moved to `canonicalMuscleGroup`
+// (muscle_groups.dart) — the local `_mgKey` switch duplicated that logic
+// without covering glutes/calves/forearms, so it drifted from the single
+// normalization point (Task 8.1b, completes Audit 6.1 / Task 8.1).
 
 String _mgDisplay(String key) {
   switch (key.toLowerCase()) {
@@ -403,7 +395,8 @@ class _SelectedThumb extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Center(
-              child: ExerciseIcon(muscleGroup: _mgKey(exercise.muscleGroup), size: 40),
+              child: ExerciseIcon(
+                  muscleGroup: canonicalMuscleGroup(exercise.muscleGroup), size: 40),
             ),
           ),
           Positioned(
@@ -462,7 +455,8 @@ class _PickerTile extends StatelessWidget {
                     : null,
               ),
               child: Center(
-                child: ExerciseIcon(muscleGroup: _mgKey(exercise.muscleGroup), size: 38),
+                child: ExerciseIcon(
+                    muscleGroup: canonicalMuscleGroup(exercise.muscleGroup), size: 38),
               ),
             ),
             const SizedBox(width: 12),

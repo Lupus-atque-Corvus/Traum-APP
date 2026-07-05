@@ -9,6 +9,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'muscle_groups.dart';
 import 'widgets/exercise_icon.dart';
 
 // ── Muscle group display names ────────────────────────────────────────────────
@@ -27,20 +28,10 @@ String _mgDisplay(String key) {
   }
 }
 
-// ── Muscle group icon key ─────────────────────────────────────────────────────
-String _mgKey(String g) {
-  switch (g.toLowerCase()) {
-    case 'chest':     return 'chest';
-    case 'back':      return 'back';
-    case 'shoulders': return 'shoulders';
-    case 'biceps':    return 'biceps';
-    case 'triceps':   return 'triceps';
-    case 'core':      return 'core';
-    case 'legs':      return 'legs';
-    case 'cardio':    return 'cardio';
-    default:          return 'full_body';
-  }
-}
+// Icon-selection key normalization moved to `canonicalMuscleGroup`
+// (muscle_groups.dart) — the local `_mgKey` switch duplicated that logic
+// without covering glutes/calves/forearms, so it drifted from the single
+// normalization point (Task 8.1b, completes Audit 6.1 / Task 8.1).
 
 // ── Equipment icon ────────────────────────────────────────────────────────────
 IconData _equipIcon(String? eq) {
@@ -432,7 +423,8 @@ class _ExerciseTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
-                child: ExerciseIcon(muscleGroup: _mgKey(exercise.muscleGroup), size: 42),
+                child: ExerciseIcon(
+                    muscleGroup: canonicalMuscleGroup(exercise.muscleGroup), size: 42),
               ),
             ),
             const SizedBox(width: 14),
