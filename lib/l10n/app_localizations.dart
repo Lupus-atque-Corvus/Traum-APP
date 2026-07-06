@@ -1058,6 +1058,18 @@ abstract class AppLocalizations {
   /// **'Startdatum'**
   String get startDate;
 
+  /// No description provided for @milestoneProgressCaption.
+  ///
+  /// In de, this message translates to:
+  /// **'{percent}% bis {milestone}'**
+  String milestoneProgressCaption(int percent, String milestone);
+
+  /// No description provided for @allMilestonesReached.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Meilensteine erreicht'**
+  String get allMilestonesReached;
+
   /// No description provided for @addTransaction.
   ///
   /// In de, this message translates to:
@@ -3691,6 +3703,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Gewohnheiten'**
   String get habitsTab;
+
+  /// No description provided for @habitsCompletedTodayLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'heute erledigt'**
+  String get habitsCompletedTodayLabel;
+
+  /// No description provided for @habitStreakDays.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} Tage in Folge'**
+  String habitStreakDays(int count);
 
   /// No description provided for @bmi.
   ///

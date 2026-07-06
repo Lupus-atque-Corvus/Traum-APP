@@ -495,6 +495,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get startDate => 'Startdatum';
 
   @override
+  String milestoneProgressCaption(int percent, String milestone) {
+    return '$percent% bis $milestone';
+  }
+
+  @override
+  String get allMilestonesReached => 'Alle Meilensteine erreicht';
+
+  @override
   String get addTransaction => 'Transaktion hinzufügen';
 
   @override
@@ -1886,6 +1894,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get habitsTab => 'Gewohnheiten';
+
+  @override
+  String get habitsCompletedTodayLabel => 'heute erledigt';
+
+  @override
+  String habitStreakDays(int count) {
+    return '$count Tage in Folge';
+  }
 
   @override
   String get bmi => 'BMI';

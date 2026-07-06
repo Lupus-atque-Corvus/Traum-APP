@@ -167,6 +167,14 @@
   "startTrackerButton": "Start tracker",
   "nameRequired": "Name required",
   "startDate": "Start date",
+  "milestoneProgressCaption": "{percent}% until {milestone}",
+  "@milestoneProgressCaption": {
+    "placeholders": {
+      "percent": {"type": "int"},
+      "milestone": {"type": "String"}
+    }
+  },
+  "allMilestonesReached": "All milestones reached",
 
   "addTransaction": "Add transaction",
   "expenseLabel": "Expense",
@@ -772,6 +780,13 @@
   "todosTab": "Tasks",
   "goalsTab": "Goals",
   "habitsTab": "Habits",
+  "habitsCompletedTodayLabel": "done today",
+  "habitStreakDays": "{count}-day streak",
+  "@habitStreakDays": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "bmi": "BMI",
   "weightGoalLabel": "Target weight",

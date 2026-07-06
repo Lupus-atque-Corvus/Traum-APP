@@ -229,4 +229,16 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
               t.logDate.isBiggerOrEqualValue(cutoff)))
         .get();
   }
+
+  /// Live habit logs from the last [days] days across all habits — used by
+  /// the Fortschritt tab (weekly heatmap + per-habit streak). Stream-based
+  /// (mirrors [watchHabitLogsForDate]) so check-off toggles refresh the UI
+  /// immediately, unlike the one-shot [getRecentHabitLogs].
+  Stream<List<HabitLog>> watchRecentHabitLogs({int days = 60}) {
+    final cutoff = DateTime.now().subtract(Duration(days: days));
+    final start = DateTime(cutoff.year, cutoff.month, cutoff.day);
+    return (select(habitLogs)
+          ..where((t) => t.logDate.isBiggerOrEqualValue(start)))
+        .watch();
+  }
 }

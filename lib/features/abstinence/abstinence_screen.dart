@@ -8,7 +8,12 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'widgets/goal_donut.dart';
+import 'widgets/habit_heatmap.dart';
+import 'widgets/labeled_progress_bar.dart';
+import 'widgets/milestone_timeline.dart';
 import 'widgets/progress_icon.dart';
+import 'widgets/streak_ring.dart';
 
 class AbstinenceScreen extends ConsumerStatefulWidget {
   const AbstinenceScreen({super.key});
@@ -221,10 +226,16 @@ class _GoalsTab extends ConsumerWidget {
               ]),
             );
           }
-          return ListView.builder(
+          final achieved = goals.where((g) => g.done).length;
+          return ListView(
             padding: const EdgeInsets.all(16),
-            itemCount: goals.length,
-            itemBuilder: (ctx, i) => _GoalCard(goal: goals[i], ref: ref),
+            children: [
+              Center(
+                child: GoalDonut(achieved: achieved, total: goals.length),
+              ),
+              const SizedBox(height: 24),
+              for (final goal in goals) _GoalCard(goal: goal, ref: ref),
+            ],
           );
         },
         loading: () => const Center(
@@ -259,7 +270,7 @@ class _GoalCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final progress = goal.targetValue != null && goal.targetValue! > 0
         ? (goal.currentValue / goal.targetValue!).clamp(0.0, 1.0)
-        : 0.0;
+        : (goal.done ? 1.0 : 0.0);
 
     return Dismissible(
       key: ValueKey(goal.id),
@@ -314,21 +325,15 @@ class _GoalCard extends StatelessWidget {
                       fontFamily: 'DMSans',
                       fontSize: 12)),
             ],
-            if (goal.targetValue != null) ...[
-              const SizedBox(height: 10),
-              GradientProgressBar(
-                value: progress,
-                gradient: const LinearGradient(
-                    colors: [TraumColors.lavender, TraumColors.indigoBlue]),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                  '${goal.currentValue} / ${goal.targetValue} ${goal.unit ?? ''}',
-                  style: const TextStyle(
-                      color: TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontSize: 11)),
-            ],
+            const SizedBox(height: 12),
+            LabeledProgressBar(
+              name: AppLocalizations.of(context)!.progress,
+              value: progress,
+              gradient: TraumColors.gradientPlanning,
+              metaLine: goal.targetValue != null
+                  ? '${goal.currentValue} / ${goal.targetValue} ${goal.unit ?? ''}'
+                  : null,
+            ),
             if (goal.targetDate != null) ...[
               const SizedBox(height: 6),
               Text(
@@ -508,11 +513,13 @@ class _HabitsTab extends ConsumerWidget {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final logsAsync = ref.watch(habitLogsForDateProvider(today));
+    final recentLogs =
+        ref.watch(recentHabitLogsStreamProvider).value ?? const [];
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: TraumColors.lavender,
+        backgroundColor: TraumColors.mintGreen,
         onPressed: () => _showAddHabit(context, ref),
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),
@@ -543,37 +550,93 @@ class _HabitsTab extends ConsumerWidget {
             );
           }
           return logsAsync.when(
-            data: (logs) => ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: habits.length,
-              itemBuilder: (ctx, i) => _HabitTile(
-                habit: habits[i],
-                isCheckedToday: logs.any((l) => l.habitId == habits[i].id),
-                onToggle: (checked) async {
-                  if (checked) {
-                    await ref.read(planningDaoProvider).insertHabitLog(
-                          HabitLogsCompanion.insert(
-                              habitId: habits[i].id, logDate: today),
-                        );
-                  } else {
-                    await ref
-                        .read(planningDaoProvider)
-                        .deleteHabitLog(habits[i].id, today);
+            data: (logs) {
+              final doneToday = logs.map((l) => l.habitId).toSet().length;
+              final total = habits.length;
+              final weekday = today.weekday; // 1=Mo..7=So
+              final monday = today.subtract(Duration(days: weekday - 1));
+              final weekDays =
+                  List.generate(7, (i) => monday.add(Duration(days: i)));
+              final heatmapRows = habits
+                  .map((h) => HabitHeatmapRow(
+                        name: h.name,
+                        iconKey: h.emoji,
+                        dayValues: weekDays
+                            .map((d) => recentLogs.any((l) =>
+                                    l.habitId == h.id && _isSameDay(l.logDate, d))
+                                ? 1.0
+                                : 0.0)
+                            .toList(),
+                      ))
+                  .toList();
+
+              return ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: habits.length + 2,
+                itemBuilder: (ctx, i) {
+                  if (i == 0) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 24),
+                      child: Center(
+                        child: StreakRing(
+                          value: total == 0 ? 0.0 : doneToday / total,
+                          bigNumber: '$doneToday/$total',
+                          unitLabel:
+                              AppLocalizations.of(context)!.habitsCompletedTodayLabel,
+                          color: TraumColors.mintGreen,
+                          size: 116,
+                        ),
+                      ),
+                    );
                   }
+                  if (i == 1) {
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 20),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: TraumColors.surface,
+                        borderRadius: BorderRadius.circular(TraumRadius.card),
+                        border: Border.all(
+                            color: TraumColors.mintGreen.withValues(alpha: 0.25)),
+                      ),
+                      child: WeeklyHabitHeatmap(
+                        rows: heatmapRows,
+                        accentColor: TraumColors.mintGreen,
+                        todayIndex: weekday - 1,
+                      ),
+                    );
+                  }
+                  final habit = habits[i - 2];
+                  return _HabitTile(
+                    habit: habit,
+                    isCheckedToday: logs.any((l) => l.habitId == habit.id),
+                    streak: _currentStreakForHabit(habit.id, recentLogs),
+                    onToggle: (checked) async {
+                      if (checked) {
+                        await ref.read(planningDaoProvider).insertHabitLog(
+                              HabitLogsCompanion.insert(
+                                  habitId: habit.id, logDate: today),
+                            );
+                      } else {
+                        await ref
+                            .read(planningDaoProvider)
+                            .deleteHabitLog(habit.id, today);
+                      }
+                    },
+                    onDelete: () =>
+                        ref.read(planningDaoProvider).deleteHabit(habit.id),
+                  );
                 },
-                onDelete: () =>
-                    ref.read(planningDaoProvider).deleteHabit(habits[i].id),
-                ref: ref,
-              ),
-            ),
+              );
+            },
             loading: () => const Center(
                 child:
-                    CircularProgressIndicator(color: TraumColors.lavender)),
+                    CircularProgressIndicator(color: TraumColors.mintGreen)),
             error: (_, _) => const SizedBox.shrink(),
           );
         },
         loading: () => const Center(
-            child: CircularProgressIndicator(color: TraumColors.lavender)),
+            child: CircularProgressIndicator(color: TraumColors.mintGreen)),
         error: (e, _) => Center(
             child: Text('$e',
                 style: const TextStyle(color: TraumColors.roseRed))),
@@ -595,19 +658,54 @@ class _HabitsTab extends ConsumerWidget {
   }
 }
 
+bool _isSameDay(DateTime a, DateTime b) =>
+    a.year == b.year && a.month == b.month && a.day == b.day;
+
+/// Consecutive-day streak ending today (or yesterday, if today isn't logged
+/// yet) for a single habit — same algorithm as the home-widget "best habit
+/// streak" computation (`_BestHabitStreakContent` in
+/// `features/home/widgets/planning_widgets.dart`), scoped to one habit.
+int _currentStreakForHabit(int habitId, List<HabitLog> logs) {
+  final doneDays = <int>{};
+  for (final l in logs) {
+    if (l.habitId != habitId) continue;
+    final d = l.logDate;
+    final dayKey =
+        DateTime(d.year, d.month, d.day).difference(DateTime(2000)).inDays;
+    doneDays.add(dayKey);
+  }
+  final now = DateTime.now();
+  final todayKey =
+      DateTime(now.year, now.month, now.day).difference(DateTime(2000)).inDays;
+  int? start;
+  if (doneDays.contains(todayKey)) {
+    start = todayKey;
+  } else if (doneDays.contains(todayKey - 1)) {
+    start = todayKey - 1;
+  }
+  if (start == null) return 0;
+  var anchor = start;
+  var streak = 0;
+  while (doneDays.contains(anchor)) {
+    streak++;
+    anchor -= 1;
+  }
+  return streak;
+}
+
 class _HabitTile extends ConsumerWidget {
   final Habit habit;
   final bool isCheckedToday;
+  final int streak;
   final void Function(bool) onToggle;
   final VoidCallback onDelete;
-  final WidgetRef ref;
 
   const _HabitTile(
       {required this.habit,
       required this.isCheckedToday,
+      required this.streak,
       required this.onToggle,
-      required this.onDelete,
-      required this.ref});
+      required this.onDelete});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -643,11 +741,32 @@ class _HabitTile extends ConsumerWidget {
               ProgressIcon(habit.emoji, size: 20, color: TraumColors.lavender),
               const SizedBox(width: 10),
               Expanded(
-                  child: Text(habit.name,
-                      style: const TextStyle(
-                          color: TraumColors.onBackground,
-                          fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w600))),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                    Text(habit.name,
+                        style: const TextStyle(
+                            color: TraumColors.onBackground,
+                            fontFamily: 'DMSans',
+                            fontWeight: FontWeight.w600)),
+                    if (streak > 0)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          const Icon(Icons.local_fire_department_rounded,
+                              size: 13, color: TraumColors.amberGold),
+                          const SizedBox(width: 4),
+                          Text(
+                              AppLocalizations.of(context)!
+                                  .habitStreakDays(streak),
+                              style: const TextStyle(
+                                  color: TraumColors.amberGold,
+                                  fontFamily: 'DMSans',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600)),
+                        ]),
+                      ),
+                  ])),
               GestureDetector(
                 onTap: () => onToggle(!isCheckedToday),
                 child: Container(
@@ -916,6 +1035,31 @@ class _TrackerCardState extends State<_TrackerCard> {
     final seconds = _elapsed.inSeconds % 60;
     final l10n = AppLocalizations.of(context)!;
 
+    final milestones = computeMilestones(
+        widget.tracker.startDate, kAbstinenceMilestones, DateTime.now());
+    final allReached = milestones.every((m) => m.reached);
+    MilestoneStatus? nextMilestone;
+    for (final m in milestones) {
+      if (m.isCurrent) {
+        nextMilestone = m;
+        break;
+      }
+    }
+
+    final double ringValue;
+    final String captionText;
+    if (allReached || nextMilestone == null) {
+      ringValue = 1.0;
+      captionText = l10n.allMilestonesReached;
+    } else {
+      final targetSeconds = nextMilestone.milestone.duration.inSeconds;
+      ringValue = targetSeconds == 0
+          ? 1.0
+          : (_elapsed.inSeconds / targetSeconds).clamp(0.0, 1.0);
+      captionText = l10n.milestoneProgressCaption(
+          (ringValue * 100).round(), nextMilestone.milestone.label);
+    }
+
     return Dismissible(
       key: ValueKey(widget.tracker.id),
       direction: DismissDirection.endToStart,
@@ -963,7 +1107,31 @@ class _TrackerCardState extends State<_TrackerCard> {
                           fontFamily: 'DMSans', fontSize: 12)),
                 ),
               ]),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
+              Center(
+                child: StreakRing(
+                  value: ringValue,
+                  bigNumber: '$days',
+                  unitLabel: l10n.days,
+                  color: TraumColors.roseRed,
+                  size: 116,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Center(
+                child: Text(
+                  captionText,
+                  style: const TextStyle(
+                      color: TraumColors.roseRed,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13),
+                ),
+              ),
+              const SizedBox(height: 20),
+              MilestoneTimeline(
+                  statuses: milestones, accentColor: TraumColors.roseRed),
+              const SizedBox(height: 4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -972,19 +1140,19 @@ class _TrackerCardState extends State<_TrackerCard> {
                       style: TextStyle(
                           color: TraumColors.roseRed,
                           fontWeight: FontWeight.w700,
-                          fontSize: 28)),
+                          fontSize: 20)),
                   _TimeUnit(value: hours, label: l10n.hoursShort),
                   const Text(':',
                       style: TextStyle(
                           color: TraumColors.roseRed,
                           fontWeight: FontWeight.w700,
-                          fontSize: 28)),
+                          fontSize: 20)),
                   _TimeUnit(value: minutes, label: l10n.minutesShort),
                   const Text(':',
                       style: TextStyle(
                           color: TraumColors.roseRed,
                           fontWeight: FontWeight.w700,
-                          fontSize: 28)),
+                          fontSize: 20)),
                   _TimeUnit(value: seconds, label: l10n.secondsShort),
                 ],
               ),

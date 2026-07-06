@@ -113,6 +113,14 @@ final habitLogsLast7DaysProvider = FutureProvider.autoDispose
           ref.watch(planningDaoProvider).getHabitLogsForLast7Days(habitId),
     );
 
+/// Live habit logs from the last 60 days across all habits — feeds the
+/// Fortschritt/Gewohnheiten weekly heatmap + per-habit streak computation.
+/// Stream-based so check-off toggles refresh the UI immediately.
+final recentHabitLogsStreamProvider =
+    StreamProvider.autoDispose<List<HabitLog>>(
+      (ref) => ref.watch(planningDaoProvider).watchRecentHabitLogs(),
+    );
+
 // ─── Budget ───────────────────────────────────────────────────────────────────
 final allBudgetCategoriesStreamProvider =
     StreamProvider.autoDispose<List<BudgetCategory>>(
