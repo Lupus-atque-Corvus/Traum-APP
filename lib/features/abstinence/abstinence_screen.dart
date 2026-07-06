@@ -8,6 +8,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'widgets/progress_icon.dart';
 
 class AbstinenceScreen extends ConsumerStatefulWidget {
   const AbstinenceScreen({super.key});
@@ -639,9 +640,8 @@ class _HabitTile extends ConsumerWidget {
               const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Column(children: [
             Row(children: [
-              if (habit.emoji != null)
-                Text(habit.emoji!, style: const TextStyle(fontSize: 20)),
-              if (habit.emoji != null) const SizedBox(width: 10),
+              ProgressIcon(habit.emoji, size: 20, color: TraumColors.lavender),
+              const SizedBox(width: 10),
               Expanded(
                   child: Text(habit.name,
                       style: const TextStyle(
@@ -702,12 +702,8 @@ class _AddHabitSheet extends StatefulWidget {
 
 class _AddHabitSheetState extends State<_AddHabitSheet> {
   final _nameCtrl = TextEditingController();
-  String _emoji = '⭐';
+  String _iconKey = kDefaultProgressIcon;
   String _frequency = 'daily';
-
-  static const _emojis = [
-    '⭐', '💪', '🏃', '📚', '💧', '🧘', '🍎', '😴', '✍️', '🎯'
-  ];
 
   @override
   void dispose() {
@@ -763,33 +759,33 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 12))),
               const SizedBox(height: 12),
-              Text(l10n.emoji,
+              Text('Icon',
                   style: const TextStyle(
                       color: TraumColors.onBackgroundMuted,
                       fontFamily: 'DMSans',
                       fontSize: 13)),
               const SizedBox(height: 6),
-              Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: _emojis.map((e) {
-                    final selected = e == _emoji;
-                    return GestureDetector(
-                        onTap: () => setState(() => _emoji = e),
-                        child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                                color: selected
-                                    ? TraumColors.lavenderDim
-                                    : TraumColors.surfaceVariant,
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                    color: selected
-                                        ? TraumColors.lavender
-                                        : Colors.transparent)),
-                            child: Text(e,
-                                style: const TextStyle(fontSize: 20))));
-                  }).toList()),
+              GestureDetector(
+                onTap: () async {
+                  final picked = await showIconPickerSheet(context,
+                      selected: _iconKey, accentColor: TraumColors.lavender);
+                  if (picked != null) setState(() => _iconKey = picked);
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: TraumColors.lavenderDim,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: TraumColors.lavender)),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    ProgressIcon(_iconKey,
+                        size: 22, color: TraumColors.lavender),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.edit_rounded,
+                        size: 14, color: TraumColors.onBackgroundMuted),
+                  ]),
+                ),
+              ),
               const SizedBox(height: 12),
               Text(l10n.frequency,
                   style: const TextStyle(
@@ -821,7 +817,7 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
                     }
                     await widget.onAdd(HabitsCompanion.insert(
                         name: _nameCtrl.text.trim(),
-                        emoji: Value(_emoji),
+                        emoji: Value(_iconKey),
                         frequency: Value(_frequency)));
                     if (context.mounted) Navigator.pop(context);
                   }),
@@ -947,10 +943,9 @@ class _TrackerCardState extends State<_TrackerCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(children: [
-                if (widget.tracker.emoji != null)
-                  Text(widget.tracker.emoji!,
-                      style: const TextStyle(fontSize: 24)),
-                if (widget.tracker.emoji != null) const SizedBox(width: 10),
+                ProgressIcon(widget.tracker.emoji,
+                    size: 24, color: TraumColors.roseRed),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Text(widget.tracker.name,
                       style: const TextStyle(
@@ -1073,13 +1068,9 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
   final _nameCtrl = TextEditingController();
   final _noteCtrl = TextEditingController();
   final _costCtrl = TextEditingController();
-  String _emoji = '🚫';
+  String _iconKey = kDefaultProgressIcon;
   DateTime _startDate = DateTime.now();
   bool _saving = false;
-
-  static const _emojis = [
-    '🚫', '🍺', '🚬', '🎰', '📱', '🍰', '💊', '☕', '🎮', '🛒'
-  ];
 
   @override
   void dispose() {
@@ -1138,35 +1129,31 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
               ),
             ),
             const SizedBox(height: 12),
-            Text(l10n.emoji,
+            Text('Icon',
                 style: const TextStyle(
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans',
                     fontSize: 13)),
             const SizedBox(height: 6),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: _emojis.map((e) {
-                final selected = e == _emoji;
-                return GestureDetector(
-                  onTap: () => setState(() => _emoji = e),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: selected
-                          ? TraumColors.roseRedDim
-                          : TraumColors.surfaceVariant,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                          color: selected
-                              ? TraumColors.roseRed
-                              : Colors.transparent),
-                    ),
-                    child: Text(e, style: const TextStyle(fontSize: 20)),
-                  ),
-                );
-              }).toList(),
+            GestureDetector(
+              onTap: () async {
+                final picked = await showIconPickerSheet(context,
+                    selected: _iconKey, accentColor: TraumColors.roseRed);
+                if (picked != null) setState(() => _iconKey = picked);
+              },
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    color: TraumColors.roseRedDim,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: TraumColors.roseRed)),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  ProgressIcon(_iconKey, size: 22, color: TraumColors.roseRed),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.edit_rounded,
+                      size: 14, color: TraumColors.onBackgroundMuted),
+                ]),
+              ),
             ),
             const SizedBox(height: 12),
             ListTile(
@@ -1260,7 +1247,7 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
     setState(() => _saving = true);
     await widget.onAdd(AbstinenceTrackersCompanion.insert(
       name: _nameCtrl.text.trim(),
-      emoji: Value(_emoji),
+      emoji: Value(_iconKey),
       startDate: _startDate,
       note: Value(
           _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim()),

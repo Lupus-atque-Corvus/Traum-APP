@@ -179,6 +179,7 @@ flutter:
     - assets/exercises/icons/
     - assets/supplements/
     - assets/svg/
+    - assets/icons/progress/
     - assets/legal/
     - assets/lottie/
     - assets/substances.json
