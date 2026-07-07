@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 import 'my_substances_tab.dart';
 import 'database_tab.dart';
 
@@ -14,8 +15,8 @@ class SubstancesScreen extends StatelessWidget {
         backgroundColor: TraumColors.background,
         appBar: AppBar(
           backgroundColor: TraumColors.background,
-          title: const Text('Mittel',
-              style: TextStyle(color: TraumColors.onBackground,
+          title: Text(AppLocalizations.of(context)!.moduleSubstances,
+              style: const TextStyle(color: TraumColors.onBackground,
                   fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
           elevation: 0,
           bottom: TabBar(

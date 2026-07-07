@@ -3754,4 +3754,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String syncDone(int synced, int errors) {
     return '$synced synchronisiert, $errors Fehler';
   }
+
+  @override
+  String updateAvailableTitle(String version) {
+    return 'Update verfügbar — v$version';
+  }
+
+  @override
+  String get updateNow => 'Jetzt aktualisieren';
+
+  @override
+  String get updatePreparing => 'Wird vorbereitet…';
+
+  @override
+  String get updateDownloadFailed => 'Download fehlgeschlagen';
+
+  @override
+  String get updateInstallPermissionMissing =>
+      'Berechtigung fehlt. Aktiviere \"Unbekannte Apps\" in den Einstellungen und versuche es erneut.';
 }

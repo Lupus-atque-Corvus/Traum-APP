@@ -1525,5 +1525,15 @@
       "synced": {"type": "int"},
       "errors": {"type": "int"}
     }
-  }
+  },
+  "updateAvailableTitle": "Update available — v{version}",
+  "@updateAvailableTitle": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "updateNow": "Update now",
+  "updatePreparing": "Preparing…",
+  "updateDownloadFailed": "Download failed",
+  "updateInstallPermissionMissing": "Permission missing. Enable \"Install unknown apps\" in settings and try again."
 }

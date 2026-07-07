@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../theme/colors.dart';
 import '../theme/radius.dart';
+import '../../l10n/app_localizations.dart';
 
 class UpdateService {
   static const _apiUrl =
@@ -104,7 +105,8 @@ class _UpdateDialogState extends State<_UpdateDialog> {
         if (!mounted) return;
         final nowGranted = await Permission.requestInstallPackages.isGranted;
         if (!nowGranted) {
-          setState(() => _errorMsg = 'Berechtigung fehlt. Aktiviere "Unbekannte Apps" in den Einstellungen und versuche es erneut.');
+          setState(() => _errorMsg =
+              AppLocalizations.of(context)!.updateInstallPermissionMissing);
           return;
         }
       }
@@ -140,7 +142,11 @@ class _UpdateDialogState extends State<_UpdateDialog> {
         if (mounted) setState(() => _downloading = false);
       }
     } catch (e) {
-      setState(() { _downloading = false; _errorMsg = 'Download fehlgeschlagen'; });
+      if (!mounted) return;
+      setState(() {
+        _downloading = false;
+        _errorMsg = AppLocalizations.of(context)!.updateDownloadFailed;
+      });
     }
   }
 
@@ -154,7 +160,7 @@ class _UpdateDialogState extends State<_UpdateDialog> {
       child: AlertDialog(
       backgroundColor: TraumColors.surfaceElevated,
       title: Text(
-        'Update verfügbar — v${widget.version}',
+        AppLocalizations.of(context)!.updateAvailableTitle(widget.version),
         style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700),
       ),
       content: SizedBox(
@@ -177,7 +183,7 @@ class _UpdateDialogState extends State<_UpdateDialog> {
             ],
             if (_downloading) ...[
               Text(
-                _progress != null ? '${(_progress! * 100).toStringAsFixed(0)}%' : 'Wird vorbereitet…',
+                _progress != null ? '${(_progress! * 100).toStringAsFixed(0)}%' : AppLocalizations.of(context)!.updatePreparing,
                 style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12),
               ),
               const SizedBox(height: 6),
@@ -201,7 +207,7 @@ class _UpdateDialogState extends State<_UpdateDialog> {
           : [
               TextButton(
                 onPressed: _download,
-                child: const Text('Jetzt aktualisieren', style: TextStyle(color: TraumColors.coralOrange, fontWeight: FontWeight.w700)),
+                child: Text(AppLocalizations.of(context)!.updateNow, style: const TextStyle(color: TraumColors.coralOrange, fontWeight: FontWeight.w700)),
               ),
             ],
     ),

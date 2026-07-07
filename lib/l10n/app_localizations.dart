@@ -7207,6 +7207,36 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'{synced} synchronisiert, {errors} Fehler'**
   String syncDone(int synced, int errors);
+
+  /// No description provided for @updateAvailableTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Update verfügbar — v{version}'**
+  String updateAvailableTitle(String version);
+
+  /// No description provided for @updateNow.
+  ///
+  /// In de, this message translates to:
+  /// **'Jetzt aktualisieren'**
+  String get updateNow;
+
+  /// No description provided for @updatePreparing.
+  ///
+  /// In de, this message translates to:
+  /// **'Wird vorbereitet…'**
+  String get updatePreparing;
+
+  /// No description provided for @updateDownloadFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Download fehlgeschlagen'**
+  String get updateDownloadFailed;
+
+  /// No description provided for @updateInstallPermissionMissing.
+  ///
+  /// In de, this message translates to:
+  /// **'Berechtigung fehlt. Aktiviere \"Unbekannte Apps\" in den Einstellungen und versuche es erneut.'**
+  String get updateInstallPermissionMissing;
 }
 
 class _AppLocalizationsDelegate

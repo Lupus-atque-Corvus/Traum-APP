@@ -1547,5 +1547,15 @@
       "synced": {"type": "int"},
       "errors": {"type": "int"}
     }
-  }
+  },
+  "updateAvailableTitle": "Update verfügbar — v{version}",
+  "@updateAvailableTitle": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "updateNow": "Jetzt aktualisieren",
+  "updatePreparing": "Wird vorbereitet…",
+  "updateDownloadFailed": "Download fehlgeschlagen",
+  "updateInstallPermissionMissing": "Berechtigung fehlt. Aktiviere \"Unbekannte Apps\" in den Einstellungen und versuche es erneut."
 }
