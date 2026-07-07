@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/navigation/routes.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/colors.dart';
+import '../../abstinence/widgets/progress_icon.dart';
 import '../../graffiti_map/graffiti_map_provider.dart'
     show mapMarkersDaoProvider, markerPhotosDaoProvider;
 import '../../../data/database/traum_database.dart'
@@ -437,7 +438,7 @@ class _AllCountersContent extends ConsumerWidget {
         return Row(
           children: [
             if (t.emoji != null && t.emoji!.isNotEmpty) ...[
-              Text(t.emoji!, style: const TextStyle(fontSize: 16)),
+              ProgressIcon(t.emoji, size: 16, color: TraumColors.roseRed),
               const SizedBox(width: 8),
             ],
             Expanded(
