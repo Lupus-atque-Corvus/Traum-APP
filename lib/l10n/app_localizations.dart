@@ -476,6 +476,36 @@ abstract class AppLocalizations {
   /// **'Noch kein Verlauf'**
   String get noHistoryYet;
 
+  /// No description provided for @noMatches.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Treffer'**
+  String get noMatches;
+
+  /// No description provided for @searchSupplementHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Supplement suchen…'**
+  String get searchSupplementHint;
+
+  /// No description provided for @searchMedicationHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Medikament suchen…'**
+  String get searchMedicationHint;
+
+  /// No description provided for @enterManually.
+  ///
+  /// In de, this message translates to:
+  /// **'Manuell eingeben'**
+  String get enterManually;
+
+  /// No description provided for @calendarSyncTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalender-Sync'**
+  String get calendarSyncTitle;
+
   /// No description provided for @skip.
   ///
   /// In de, this message translates to:

@@ -2309,9 +2309,9 @@ class _DbSearchResultsState extends ConsumerState<_DbSearchResults> {
         }
         final results = snap.data ?? [];
         if (results.isEmpty) {
-          return const Padding(
+          return Padding(
             padding: EdgeInsets.symmetric(vertical: 8),
-            child: Text('Keine Treffer',
+            child: Text(AppLocalizations.of(context)!.noMatches,
                 style: TextStyle(
                     color: TraumColors.onBackgroundSubtle,
                     fontFamily: 'DMSans',
@@ -2434,7 +2434,7 @@ class _OnboardingAddSupplementSheetState
                 style: const TextStyle(
                     color: TraumColors.onBackground, fontFamily: 'DMSans'),
                 decoration: InputDecoration(
-                  hintText: 'Supplement suchen…',
+                  hintText: AppLocalizations.of(context)!.searchSupplementHint,
                   hintStyle: const TextStyle(
                       color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
                   prefixIcon: const Icon(Icons.search_rounded,
@@ -2469,7 +2469,7 @@ class _OnboardingAddSupplementSheetState
               const SizedBox(height: 8),
               TextButton(
                 onPressed: () => setState(() => _showSearch = false),
-                child: const Text('Manuell eingeben',
+                child: Text(AppLocalizations.of(context)!.enterManually,
                     style: TextStyle(
                         color: TraumColors.onBackgroundSubtle,
                         fontFamily: 'DMSans', fontSize: 13)),
@@ -2733,7 +2733,7 @@ class _OnboardingAddMedicationSheetState
                 style: const TextStyle(
                     color: TraumColors.onBackground, fontFamily: 'DMSans'),
                 decoration: InputDecoration(
-                  hintText: 'Medikament suchen…',
+                  hintText: AppLocalizations.of(context)!.searchMedicationHint,
                   hintStyle: const TextStyle(
                       color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
                   prefixIcon: const Icon(Icons.search_rounded,
@@ -2768,7 +2768,7 @@ class _OnboardingAddMedicationSheetState
               const SizedBox(height: 8),
               TextButton(
                 onPressed: () => setState(() => _showSearch = false),
-                child: const Text('Manuell eingeben',
+                child: Text(AppLocalizations.of(context)!.enterManually,
                     style: TextStyle(
                         color: TraumColors.onBackgroundSubtle,
                         fontFamily: 'DMSans', fontSize: 13)),

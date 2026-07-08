@@ -201,6 +201,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noHistoryYet => 'No history yet';
 
   @override
+  String get noMatches => 'No matches';
+
+  @override
+  String get searchSupplementHint => 'Search supplement…';
+
+  @override
+  String get searchMedicationHint => 'Search medication…';
+
+  @override
+  String get enterManually => 'Enter manually';
+
+  @override
+  String get calendarSyncTitle => 'Calendar sync';
+
+  @override
   String get skip => 'Skip';
 
   @override

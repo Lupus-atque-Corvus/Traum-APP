@@ -306,7 +306,7 @@ class _CalendarSyncSectionState extends ConsumerState<_CalendarSyncSection> {
     }
 
     return _Section(
-      title: 'Kalender-Sync',
+      title: AppLocalizations.of(context)!.calendarSyncTitle,
       child: ListTile(
         leading: Container(
           width: 36,
