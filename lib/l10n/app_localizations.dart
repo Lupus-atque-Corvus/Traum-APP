@@ -380,6 +380,102 @@ abstract class AppLocalizations {
   /// **'Zu vorhandenem Ort hinzugefügt'**
   String get mapAddedToExisting;
 
+  /// No description provided for @workoutAddExercise.
+  ///
+  /// In de, this message translates to:
+  /// **'Übung hinzufügen'**
+  String get workoutAddExercise;
+
+  /// No description provided for @workoutNoExercisesYet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Übungen im Workout'**
+  String get workoutNoExercisesYet;
+
+  /// No description provided for @workoutDiscard.
+  ///
+  /// In de, this message translates to:
+  /// **'Workout verwerfen'**
+  String get workoutDiscard;
+
+  /// No description provided for @workoutDeleteSet.
+  ///
+  /// In de, this message translates to:
+  /// **'Satz löschen'**
+  String get workoutDeleteSet;
+
+  /// No description provided for @exerciseInfoTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Übungsinfo'**
+  String get exerciseInfoTitle;
+
+  /// No description provided for @workoutAddNote.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz hinzufügen'**
+  String get workoutAddNote;
+
+  /// No description provided for @workoutRemoveExercise.
+  ///
+  /// In de, this message translates to:
+  /// **'Übung entfernen'**
+  String get workoutRemoveExercise;
+
+  /// No description provided for @workoutAddNoteHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz hinzufügen...'**
+  String get workoutAddNoteHint;
+
+  /// No description provided for @exerciseSearchHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen suchen...'**
+  String get exerciseSearchHint;
+
+  /// No description provided for @supersetLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Superset'**
+  String get supersetLabel;
+
+  /// No description provided for @exerciseFeedbackTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Feedback zu dieser Übung'**
+  String get exerciseFeedbackTitle;
+
+  /// No description provided for @exerciseNotFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Übung nicht gefunden'**
+  String get exerciseNotFound;
+
+  /// No description provided for @trainingVolume.
+  ///
+  /// In de, this message translates to:
+  /// **'Trainingsvolumen'**
+  String get trainingVolume;
+
+  /// No description provided for @noDataYet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Daten'**
+  String get noDataYet;
+
+  /// No description provided for @exerciseTrainToSeeProgress.
+  ///
+  /// In de, this message translates to:
+  /// **'Trainiere diese Übung, um deinen Fortschritt zu sehen'**
+  String get exerciseTrainToSeeProgress;
+
+  /// No description provided for @noHistoryYet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch kein Verlauf'**
+  String get noHistoryYet;
+
   /// No description provided for @skip.
   ///
   /// In de, this message translates to:

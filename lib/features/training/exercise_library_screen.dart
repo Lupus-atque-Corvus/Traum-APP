@@ -308,9 +308,9 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
           controller: _searchCtrl,
           autofocus: true,
           style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontSize: 16),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: 'Search exercises...',
+            hintText: AppLocalizations.of(context)!.exerciseSearchHint,
             hintStyle: TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
           ),
           onChanged: _onSearchChanged,

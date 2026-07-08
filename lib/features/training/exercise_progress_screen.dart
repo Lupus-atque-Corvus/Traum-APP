@@ -127,7 +127,7 @@ class _ExerciseProgressScreenState
           ListTile(
             leading:
                 const Icon(Icons.feedback_outlined, color: TraumColors.cyanBlue),
-            title: const Text('Feedback zu dieser Übung',
+            title: Text(AppLocalizations.of(context)!.exerciseFeedbackTitle,
                 style: TextStyle(
                     color: TraumColors.onBackground, fontFamily: 'DMSans')),
             onTap: () {
@@ -241,8 +241,8 @@ class _InfoTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (exercise == null) {
-      return const Center(
-        child: Text('Exercise not found',
+      return Center(
+        child: Text(AppLocalizations.of(context)!.exerciseNotFound,
             style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
       );
     }
@@ -526,7 +526,7 @@ class _StatisticsTab extends StatelessWidget {
     });
 
     if (filtered.isEmpty) {
-      return _emptyState();
+      return _emptyState(context);
     }
 
     // Build chart points (max weight or volume per session)
@@ -558,7 +558,7 @@ class _StatisticsTab extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Training volume',
+              Text(AppLocalizations.of(context)!.trainingVolume,
                   style: TextStyle(
                     color: TraumColors.onBackground,
                     fontFamily: 'DMSans',
@@ -730,19 +730,19 @@ class _StatisticsTab extends StatelessWidget {
     );
   }
 
-  Widget _emptyState() {
-    return const Center(
+  Widget _emptyState(BuildContext context) {
+    return Center(
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Icon(Icons.show_chart_rounded, size: 48, color: TraumColors.onBackgroundSubtle),
         SizedBox(height: 12),
-        Text('No data yet',
+        Text(AppLocalizations.of(context)!.noDataYet,
             style: TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontWeight: FontWeight.w600,
             )),
         SizedBox(height: 4),
-        Text('Train this exercise to see your progress',
+        Text(AppLocalizations.of(context)!.exerciseTrainToSeeProgress,
             style: TextStyle(
               color: TraumColors.onBackgroundSubtle,
               fontFamily: 'DMSans',
@@ -859,11 +859,11 @@ class _HistoryTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (history.isEmpty) {
-      return const Center(
+      return Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Icon(Icons.history_rounded, size: 48, color: TraumColors.onBackgroundSubtle),
           SizedBox(height: 12),
-          Text('No history yet',
+          Text(AppLocalizations.of(context)!.noHistoryYet,
               style: TextStyle(
                 color: TraumColors.onBackgroundMuted,
                 fontFamily: 'DMSans',

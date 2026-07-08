@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/providers/database_provider.dart';
@@ -272,7 +273,7 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                           ? () => _addAll(asSuperset: true)
                           : null,
                       icon: const Icon(Icons.link_rounded, size: 18),
-                      label: const Text('Superset',
+                      label: Text(AppLocalizations.of(context)!.supersetLabel,
                           style: TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: TraumColors.onBackground,
@@ -336,9 +337,9 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
           controller: _searchCtrl,
           autofocus: true,
           style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: 'Search exercises...',
+            hintText: AppLocalizations.of(context)!.exerciseSearchHint,
             hintStyle: TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
           ),
           onChanged: (v) => setState(() => _search = v),

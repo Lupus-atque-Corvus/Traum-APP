@@ -152,6 +152,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapAddedToExisting => 'Added to existing place';
 
   @override
+  String get workoutAddExercise => 'Add exercise';
+
+  @override
+  String get workoutNoExercisesYet => 'No exercises in the workout yet';
+
+  @override
+  String get workoutDiscard => 'Discard workout';
+
+  @override
+  String get workoutDeleteSet => 'Delete set';
+
+  @override
+  String get exerciseInfoTitle => 'Exercise info';
+
+  @override
+  String get workoutAddNote => 'Add a note';
+
+  @override
+  String get workoutRemoveExercise => 'Remove exercise';
+
+  @override
+  String get workoutAddNoteHint => 'Add a note...';
+
+  @override
+  String get exerciseSearchHint => 'Search exercises...';
+
+  @override
+  String get supersetLabel => 'Superset';
+
+  @override
+  String get exerciseFeedbackTitle => 'Feedback on this exercise';
+
+  @override
+  String get exerciseNotFound => 'Exercise not found';
+
+  @override
+  String get trainingVolume => 'Training volume';
+
+  @override
+  String get noDataYet => 'No data yet';
+
+  @override
+  String get exerciseTrainToSeeProgress =>
+      'Train this exercise to see your progress';
+
+  @override
+  String get noHistoryYet => 'No history yet';
+
+  @override
   String get skip => 'Skip';
 
   @override

@@ -395,7 +395,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
         ElevatedButton.icon(
           onPressed: () => _openExercisePicker(context),
           icon: const Icon(Icons.add_rounded),
-          label: const Text('Add Exercise',
+          label: Text(AppLocalizations.of(context)!.workoutAddExercise,
               style: TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
           style: ElevatedButton.styleFrom(
             backgroundColor: TraumColors.coralOrange,
@@ -458,7 +458,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
   Future<void> _toggleFavorite() async {
     if (_blocks.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Noch keine Übungen im Workout')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.workoutNoExercisesYet)),
       );
       return;
     }
@@ -489,7 +489,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           ListTile(
             leading: const Icon(Icons.cancel_outlined, color: TraumColors.coralOrange),
-            title: const Text('Discard Workout',
+            title: Text(AppLocalizations.of(context)!.workoutDiscard,
                 style: TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
             onTap: () {
               Navigator.pop(context);
@@ -686,7 +686,7 @@ class _ExerciseCardState extends State<_ExerciseCard> {
           const Divider(color: TraumColors.surfaceVariant),
           ListTile(
             leading: const Icon(Icons.delete_rounded, color: TraumColors.coralOrange),
-            title: const Text('Delete set',
+            title: Text(AppLocalizations.of(context)!.workoutDeleteSet,
                 style: TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
             onTap: () {
               setState(() {
@@ -718,7 +718,7 @@ class _ExerciseCardState extends State<_ExerciseCard> {
           const SizedBox(height: 8),
           ListTile(
             leading: const Icon(Icons.info_outline_rounded, color: TraumColors.onBackground),
-            title: const Text('Exercise Info',
+            title: Text(AppLocalizations.of(context)!.exerciseInfoTitle,
                 style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
             onTap: () {
               Navigator.pop(context);
@@ -727,7 +727,7 @@ class _ExerciseCardState extends State<_ExerciseCard> {
           ),
           ListTile(
             leading: const Icon(Icons.note_add_outlined, color: TraumColors.coralOrange),
-            title: const Text('Add a note',
+            title: Text(AppLocalizations.of(context)!.workoutAddNote,
                 style: TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
             onTap: () {
               Navigator.pop(context);
@@ -737,7 +737,7 @@ class _ExerciseCardState extends State<_ExerciseCard> {
           const Divider(color: TraumColors.surfaceVariant),
           ListTile(
             leading: const Icon(Icons.delete_rounded, color: TraumColors.coralOrange),
-            title: const Text('Remove Exercise',
+            title: Text(AppLocalizations.of(context)!.workoutRemoveExercise,
                 style: TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
             onTap: () {
               Navigator.pop(context);
@@ -769,7 +769,7 @@ class _ExerciseCardState extends State<_ExerciseCard> {
             maxLines: 3,
             style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
             decoration: InputDecoration(
-              hintText: 'Add a note...',
+              hintText: AppLocalizations.of(context)!.workoutAddNoteHint,
               hintStyle: const TextStyle(
                   color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
               filled: true,
@@ -784,7 +784,7 @@ class _ExerciseCardState extends State<_ExerciseCard> {
             Expanded(
               child: TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel',
+                child: Text(AppLocalizations.of(context)!.cancel,
                     style: TextStyle(color: TraumColors.onBackgroundMuted)),
               ),
             ),
@@ -799,7 +799,7 @@ class _ExerciseCardState extends State<_ExerciseCard> {
                   foregroundColor: Colors.white,
                   elevation: 0,
                 ),
-                child: const Text('Save',
+                child: Text(AppLocalizations.of(context)!.save,
                     style: TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
               ),
             ),
@@ -1311,10 +1311,10 @@ class _AddExerciseFooter extends StatelessWidget {
     return TextButton(
       onPressed: onTap,
       style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 20)),
-      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Icon(Icons.add_rounded, color: TraumColors.onBackgroundMuted, size: 18),
         SizedBox(width: 6),
-        Text('Add Exercise',
+        Text(AppLocalizations.of(context)!.workoutAddExercise,
             style: TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
