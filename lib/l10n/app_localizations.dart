@@ -506,6 +506,126 @@ abstract class AppLocalizations {
   /// **'Kalender-Sync'**
   String get calendarSyncTitle;
 
+  /// No description provided for @searchSubstanceHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Substanz suchen…'**
+  String get searchSubstanceHint;
+
+  /// No description provided for @noResultsForQuery.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Ergebnisse für \"{query}\"'**
+  String noResultsForQuery(String query);
+
+  /// No description provided for @evidenceGrade.
+  ///
+  /// In de, this message translates to:
+  /// **'Evidenz {grade}'**
+  String evidenceGrade(String grade);
+
+  /// No description provided for @substanceMedications.
+  ///
+  /// In de, this message translates to:
+  /// **'Medikamente'**
+  String get substanceMedications;
+
+  /// No description provided for @substanceSupplements.
+  ///
+  /// In de, this message translates to:
+  /// **'Supplements'**
+  String get substanceSupplements;
+
+  /// No description provided for @whatToAdd.
+  ///
+  /// In de, this message translates to:
+  /// **'Was möchtest du hinzufügen?'**
+  String get whatToAdd;
+
+  /// No description provided for @interactions.
+  ///
+  /// In de, this message translates to:
+  /// **'Interaktionen'**
+  String get interactions;
+
+  /// No description provided for @noSubstancesYet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Mittel'**
+  String get noSubstancesYet;
+
+  /// No description provided for @addSubstanceHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Tippe auf + um Supplements oder\nMedikamente hinzuzufügen.'**
+  String get addSubstanceHint;
+
+  /// No description provided for @unitLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Einheit'**
+  String get unitLabel;
+
+  /// No description provided for @nutrientForNutrition.
+  ///
+  /// In de, this message translates to:
+  /// **'Nährstoff (für Ernährung)'**
+  String get nutrientForNutrition;
+
+  /// No description provided for @none.
+  ///
+  /// In de, this message translates to:
+  /// **'keiner'**
+  String get none;
+
+  /// No description provided for @form.
+  ///
+  /// In de, this message translates to:
+  /// **'Form'**
+  String get form;
+
+  /// No description provided for @reminderTimes.
+  ///
+  /// In de, this message translates to:
+  /// **'Erinnerungszeiten'**
+  String get reminderTimes;
+
+  /// No description provided for @logConsumption.
+  ///
+  /// In de, this message translates to:
+  /// **'Konsum erfassen'**
+  String get logConsumption;
+
+  /// No description provided for @timePoint.
+  ///
+  /// In de, this message translates to:
+  /// **'Zeitpunkt'**
+  String get timePoint;
+
+  /// No description provided for @pleaseEnterSubstance.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte Substanz angeben'**
+  String get pleaseEnterSubstance;
+
+  /// No description provided for @effectMechanism.
+  ///
+  /// In de, this message translates to:
+  /// **'Wirkung / Mechanismus'**
+  String get effectMechanism;
+
+  /// No description provided for @commonSideEffects.
+  ///
+  /// In de, this message translates to:
+  /// **'Häufige Nebenwirkungen'**
+  String get commonSideEffects;
+
+  /// No description provided for @knownInteractions.
+  ///
+  /// In de, this message translates to:
+  /// **'Bekannte Interaktionen'**
+  String get knownInteractions;
+
   /// No description provided for @skip.
   ///
   /// In de, this message translates to:
@@ -2509,12 +2629,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Form'**
   String get formLabel;
-
-  /// No description provided for @reminderTimes.
-  ///
-  /// In de, this message translates to:
-  /// **'Erinnerungszeiten'**
-  String get reminderTimes;
 
   /// No description provided for @addReminderTime.
   ///

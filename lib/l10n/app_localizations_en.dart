@@ -216,6 +216,70 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calendarSyncTitle => 'Calendar sync';
 
   @override
+  String get searchSubstanceHint => 'Search substance…';
+
+  @override
+  String noResultsForQuery(String query) {
+    return 'No results for \"$query\"';
+  }
+
+  @override
+  String evidenceGrade(String grade) {
+    return 'Evidence $grade';
+  }
+
+  @override
+  String get substanceMedications => 'Medications';
+
+  @override
+  String get substanceSupplements => 'Supplements';
+
+  @override
+  String get whatToAdd => 'What would you like to add?';
+
+  @override
+  String get interactions => 'Interactions';
+
+  @override
+  String get noSubstancesYet => 'No substances yet';
+
+  @override
+  String get addSubstanceHint => 'Tap + to add supplements or\nmedications.';
+
+  @override
+  String get unitLabel => 'Unit';
+
+  @override
+  String get nutrientForNutrition => 'Nutrient (for nutrition)';
+
+  @override
+  String get none => 'none';
+
+  @override
+  String get form => 'Form';
+
+  @override
+  String get reminderTimes => 'Reminder times';
+
+  @override
+  String get logConsumption => 'Log consumption';
+
+  @override
+  String get timePoint => 'Time';
+
+  @override
+  String get pleaseEnterSubstance => 'Please enter a substance';
+
+  @override
+  String get effectMechanism => 'Effect / mechanism';
+
+  @override
+  String get commonSideEffects => 'Common side effects';
+
+  @override
+  String get knownInteractions => 'Known interactions';
+
+  @override
   String get skip => 'Skip';
 
   @override
@@ -1260,9 +1324,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get formLabel => 'Form';
-
-  @override
-  String get reminderTimes => 'Reminder times';
 
   @override
   String get addReminderTime => 'Add reminder time';

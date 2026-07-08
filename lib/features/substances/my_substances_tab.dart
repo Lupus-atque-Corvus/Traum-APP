@@ -62,7 +62,7 @@ class MySubstancesTab extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (meds.isNotEmpty) ...[
-                      SectionHeader(title: 'Medikamente'),
+                      SectionHeader(title: AppLocalizations.of(context)!.substanceMedications),
                       const SizedBox(height: 8),
                       ...meds.map((med) => _MedCard(
                             med: med,
@@ -74,7 +74,7 @@ class MySubstancesTab extends ConsumerWidget {
                       const SizedBox(height: 16),
                     ],
                     if (supps.isNotEmpty) ...[
-                      SectionHeader(title: 'Supplements'),
+                      SectionHeader(title: AppLocalizations.of(context)!.substanceSupplements),
                       const SizedBox(height: 8),
                       ...supps.map((s) => _SuppCard(
                             supp: s,
@@ -120,7 +120,7 @@ class MySubstancesTab extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(2))),
           ),
           const SizedBox(height: 20),
-          const Text('Was möchtest du hinzufügen?',
+          Text(AppLocalizations.of(context)!.whatToAdd,
               style: TextStyle(color: TraumColors.onBackground,
                   fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 16)),
           const SizedBox(height: 20),
@@ -278,7 +278,7 @@ class _InteractionBanner extends StatelessWidget {
               decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle,
                   borderRadius: BorderRadius.circular(2)))),
           const SizedBox(height: 16),
-          const Text('Interaktionen',
+          Text(AppLocalizations.of(context)!.interactions,
               style: TextStyle(color: TraumColors.onBackground,
                   fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 16)),
           const SizedBox(height: 16),
@@ -329,7 +329,7 @@ class _TodayStatusCard extends ConsumerWidget {
     if (activeMeds.isEmpty) return const SizedBox.shrink();
     return TraumCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text('Heute',
+        Text(AppLocalizations.of(context)!.today,
             style: TextStyle(color: TraumColors.onBackground,
                 fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 16)),
         const SizedBox(height: 12),
@@ -558,11 +558,11 @@ class _EmptyState extends StatelessWidget {
             Icon(Icons.medication_liquid_rounded, size: 64,
                 color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
             const SizedBox(height: 16),
-            const Text('Noch keine Mittel',
+            Text(AppLocalizations.of(context)!.noSubstancesYet,
                 style: TextStyle(color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans', fontWeight: FontWeight.w600, fontSize: 16)),
             const SizedBox(height: 8),
-            const Text('Tippe auf + um Supplements oder\nMedikamente hinzuzufügen.',
+            Text(AppLocalizations.of(context)!.addSubstanceHint,
                 style: TextStyle(color: TraumColors.onBackgroundSubtle,
                     fontFamily: 'DMSans', fontSize: 13),
                 textAlign: TextAlign.center),
@@ -625,13 +625,13 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
               decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle,
                   borderRadius: BorderRadius.circular(2)))),
           const SizedBox(height: 16),
-          const Text('Supplement hinzufügen',
+          Text(AppLocalizations.of(context)!.addSupplement,
               style: TextStyle(color: TraumColors.onBackground,
                   fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
           const SizedBox(height: 16),
           _field('Name', _nameCtrl, hint: 'z.B. Vitamin D3'),
           const SizedBox(height: 12),
-          const Text('Kategorie', style: TextStyle(color: TraumColors.onBackgroundMuted,
+          Text(AppLocalizations.of(context)!.category, style: TextStyle(color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans', fontSize: 13)),
           const SizedBox(height: 6),
           DropdownButton<String>(
@@ -648,7 +648,7 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
             Expanded(child: _field('Menge', _amountCtrl, hint: '1000', keyboardType: TextInputType.number)),
             const SizedBox(width: 12),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text('Einheit', style: TextStyle(color: TraumColors.onBackgroundMuted,
+              Text(AppLocalizations.of(context)!.unitLabel, style: TextStyle(color: TraumColors.onBackgroundMuted,
                   fontFamily: 'DMSans', fontSize: 13)),
               const SizedBox(height: 6),
               DropdownButton<String>(
@@ -662,7 +662,7 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
             ]),
           ]),
           const SizedBox(height: 12),
-          const Text('Nährstoff (für Ernährung)',
+          Text(AppLocalizations.of(context)!.nutrientForNutrition,
               style: TextStyle(color: TraumColors.onBackgroundMuted,
                   fontFamily: 'DMSans', fontSize: 13)),
           const SizedBox(height: 6),
@@ -673,12 +673,12 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
             style: const TextStyle(
                 color: TraumColors.onBackground, fontFamily: 'DMSans'),
             underline: Container(height: 1, color: TraumColors.surfaceVariant),
-            hint: const Text('keiner',
+            hint: Text(AppLocalizations.of(context)!.none,
                 style: TextStyle(
                     color: TraumColors.onBackgroundSubtle,
                     fontFamily: 'DMSans')),
             items: [
-              const DropdownMenuItem<String?>(value: null, child: Text('keiner')),
+              DropdownMenuItem<String?>(value: null, child: Text(AppLocalizations.of(context)!.none)),
               ...kNutrientCatalog.map((n) =>
                   DropdownMenuItem<String?>(value: n.key, child: Text(n.label))),
             ],
@@ -724,7 +724,7 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Name ist erforderlich')));
+          SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
       return;
     }
     setState(() => _saving = true);
@@ -773,7 +773,7 @@ class _AddMedSheetState extends State<_AddMedSheet> {
               decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle,
                   borderRadius: BorderRadius.circular(2)))),
           const SizedBox(height: 16),
-          const Text('Medikament hinzufügen',
+          Text(AppLocalizations.of(context)!.addMedication,
               style: TextStyle(color: TraumColors.onBackground,
                   fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
           const SizedBox(height: 16),
@@ -781,7 +781,7 @@ class _AddMedSheetState extends State<_AddMedSheet> {
           const SizedBox(height: 12),
           _field('Dosierung', _dosageCtrl, hint: 'z.B. 400 mg'),
           const SizedBox(height: 12),
-          const Text('Form', style: TextStyle(color: TraumColors.onBackgroundMuted,
+          Text(AppLocalizations.of(context)!.form, style: TextStyle(color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans', fontSize: 13)),
           const SizedBox(height: 6),
           Wrap(
@@ -806,14 +806,14 @@ class _AddMedSheetState extends State<_AddMedSheet> {
           ),
           const SizedBox(height: 12),
           Row(children: [
-            const Text('Erinnerungszeiten',
+            Text(AppLocalizations.of(context)!.reminderTimes,
                 style: TextStyle(color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans', fontSize: 13)),
             const Spacer(),
             TextButton.icon(
               onPressed: _addTime,
               icon: const Icon(Icons.add, size: 16, color: TraumColors.coralOrange),
-              label: const Text('Hinzufügen',
+              label: Text(AppLocalizations.of(context)!.add,
                   style: TextStyle(color: TraumColors.coralOrange,
                       fontFamily: 'DMSans', fontSize: 12)),
             ),
@@ -908,7 +908,7 @@ class _AddMedSheetState extends State<_AddMedSheet> {
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Name ist erforderlich')));
+          SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
       return;
     }
     setState(() => _saving = true);
@@ -979,7 +979,7 @@ class _AddIntakeSheetState extends State<_AddIntakeSheet> {
                     borderRadius: BorderRadius.circular(2))),
           ),
           const SizedBox(height: 16),
-          const Text('Konsum erfassen',
+          Text(AppLocalizations.of(context)!.logConsumption,
               style: TextStyle(color: TraumColors.onBackground,
                   fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
           const SizedBox(height: 16),
@@ -1012,7 +1012,7 @@ class _AddIntakeSheetState extends State<_AddIntakeSheet> {
           const SizedBox(height: 12),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Zeitpunkt',
+            title: Text(AppLocalizations.of(context)!.timePoint,
                 style: TextStyle(
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans', fontSize: 13)),
@@ -1060,7 +1060,7 @@ class _AddIntakeSheetState extends State<_AddIntakeSheet> {
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Bitte Substanz angeben')));
+          SnackBar(content: Text(AppLocalizations.of(context)!.pleaseEnterSubstance)));
       return;
     }
     setState(() => _saving = true);

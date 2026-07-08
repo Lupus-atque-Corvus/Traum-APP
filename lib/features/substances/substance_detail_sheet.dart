@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/components/components.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
@@ -103,7 +104,7 @@ class _SubstanceDetailSheet extends StatelessWidget {
               _InfoRow(label: 'Halbwertszeit', value: substance.halfLife!),
             if (substance.mechanism != null) ...[
               const SizedBox(height: 12),
-              _Section(title: 'Wirkung / Mechanismus'),
+              _Section(title: AppLocalizations.of(context)!.effectMechanism),
               Text(substance.mechanism!,
                   style: const TextStyle(
                       color: TraumColors.onBackgroundMuted,
@@ -113,7 +114,7 @@ class _SubstanceDetailSheet extends StatelessWidget {
             ],
             if (substance.commonDosage != null) ...[
               const SizedBox(height: 16),
-              _Section(title: 'Dosierung'),
+              _Section(title: AppLocalizations.of(context)!.dosage),
               Text(substance.commonDosage!,
                   style: const TextStyle(
                       color: TraumColors.onBackgroundMuted,
@@ -123,7 +124,7 @@ class _SubstanceDetailSheet extends StatelessWidget {
             ],
             if (substance.adverseEvents.isNotEmpty) ...[
               const SizedBox(height: 16),
-              _Section(title: 'Häufige Nebenwirkungen'),
+              _Section(title: AppLocalizations.of(context)!.commonSideEffects),
               ...substance.adverseEvents.take(8).map((ae) => Padding(
                     padding: const EdgeInsets.only(bottom: 4),
                     child: Row(children: [
@@ -149,7 +150,7 @@ class _SubstanceDetailSheet extends StatelessWidget {
             ],
             if (substance.interactions.isNotEmpty) ...[
               const SizedBox(height: 16),
-              _Section(title: 'Bekannte Interaktionen'),
+              _Section(title: AppLocalizations.of(context)!.knownInteractions),
               ...substance.interactions.map((ix) => Container(
                     margin: const EdgeInsets.only(bottom: 8),
                     padding: const EdgeInsets.all(12),
@@ -245,7 +246,7 @@ class _EvidenceBadge extends StatelessWidget {
           color: TraumColors.mintGreenDim,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Text('Evidenz $grade',
+        child: Text(AppLocalizations.of(context)!.evidenceGrade(grade),
             style: const TextStyle(
                 color: TraumColors.mintGreen,
                 fontFamily: 'DMSans', fontSize: 11, fontWeight: FontWeight.w600)),

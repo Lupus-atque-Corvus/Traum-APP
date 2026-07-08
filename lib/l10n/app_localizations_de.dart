@@ -216,6 +216,71 @@ class AppLocalizationsDe extends AppLocalizations {
   String get calendarSyncTitle => 'Kalender-Sync';
 
   @override
+  String get searchSubstanceHint => 'Substanz suchen…';
+
+  @override
+  String noResultsForQuery(String query) {
+    return 'Keine Ergebnisse für \"$query\"';
+  }
+
+  @override
+  String evidenceGrade(String grade) {
+    return 'Evidenz $grade';
+  }
+
+  @override
+  String get substanceMedications => 'Medikamente';
+
+  @override
+  String get substanceSupplements => 'Supplements';
+
+  @override
+  String get whatToAdd => 'Was möchtest du hinzufügen?';
+
+  @override
+  String get interactions => 'Interaktionen';
+
+  @override
+  String get noSubstancesYet => 'Noch keine Mittel';
+
+  @override
+  String get addSubstanceHint =>
+      'Tippe auf + um Supplements oder\nMedikamente hinzuzufügen.';
+
+  @override
+  String get unitLabel => 'Einheit';
+
+  @override
+  String get nutrientForNutrition => 'Nährstoff (für Ernährung)';
+
+  @override
+  String get none => 'keiner';
+
+  @override
+  String get form => 'Form';
+
+  @override
+  String get reminderTimes => 'Erinnerungszeiten';
+
+  @override
+  String get logConsumption => 'Konsum erfassen';
+
+  @override
+  String get timePoint => 'Zeitpunkt';
+
+  @override
+  String get pleaseEnterSubstance => 'Bitte Substanz angeben';
+
+  @override
+  String get effectMechanism => 'Wirkung / Mechanismus';
+
+  @override
+  String get commonSideEffects => 'Häufige Nebenwirkungen';
+
+  @override
+  String get knownInteractions => 'Bekannte Interaktionen';
+
+  @override
   String get skip => 'Überspringen';
 
   @override
@@ -1268,9 +1333,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get formLabel => 'Form';
-
-  @override
-  String get reminderTimes => 'Erinnerungszeiten';
 
   @override
   String get addReminderTime => 'Erinnerungszeit hinzufügen';

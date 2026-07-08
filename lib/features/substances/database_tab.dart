@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import '../../core/providers/database_provider.dart';
@@ -44,7 +45,7 @@ class _DatabaseTabState extends ConsumerState<DatabaseTab> {
             style: const TextStyle(
                 color: TraumColors.onBackground, fontFamily: 'DMSans'),
             decoration: InputDecoration(
-              hintText: 'Substanz suchen…',
+              hintText: AppLocalizations.of(context)!.searchSubstanceHint,
               hintStyle: const TextStyle(
                   color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
               prefixIcon: const Icon(Icons.search_rounded,
@@ -243,7 +244,7 @@ class _SearchResults extends ConsumerWidget {
                   color:
                       TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
               const SizedBox(height: 12),
-              Text('Keine Ergebnisse für "$query"',
+              Text(AppLocalizations.of(context)!.noResultsForQuery(query),
                   style: const TextStyle(
                       color: TraumColors.onBackgroundMuted,
                       fontFamily: 'DMSans',
@@ -261,7 +262,7 @@ class _SearchResults extends ConsumerWidget {
           child:
               CircularProgressIndicator(color: TraumColors.coralOrange)),
       error: (e, _) => Center(
-          child: Text('Fehler: $e',
+          child: Text(AppLocalizations.of(context)!.errorWithDetail(e.toString()),
               style: const TextStyle(
                   color: TraumColors.roseRed, fontFamily: 'DMSans'))),
     );
@@ -333,7 +334,7 @@ class _ResultCard extends ConsumerWidget {
                       color: TraumColors.mintGreenDim,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Text('Evidenz ${substance.evidenceGrade}',
+                    child: Text(AppLocalizations.of(context)!.evidenceGrade('${substance.evidenceGrade}'),
                         style: const TextStyle(
                             color: TraumColors.mintGreen,
                             fontFamily: 'DMSans',
