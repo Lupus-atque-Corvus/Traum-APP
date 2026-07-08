@@ -69,6 +69,89 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirm => 'Confirm';
 
   @override
+  String get camera => 'Camera';
+
+  @override
+  String get gallery => 'Gallery';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get deleteQuestion => 'Delete?';
+
+  @override
+  String errorWithDetail(String error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get fieldTypeText => 'Text';
+
+  @override
+  String get fieldTypeSelect => 'Selection';
+
+  @override
+  String get fieldTypeToggle => 'Toggle';
+
+  @override
+  String get fieldTypeNumber => 'Number';
+
+  @override
+  String get mapEnterName => 'Please enter a name';
+
+  @override
+  String get mapStarRating => 'Star rating';
+
+  @override
+  String get mapMultiplePhotos => 'Multiple photos per point';
+
+  @override
+  String get mapAutoGroupPhotos => 'Group photos automatically';
+
+  @override
+  String get mapAddCustomField => 'Add custom field';
+
+  @override
+  String get mapCustomField => 'Custom field';
+
+  @override
+  String get mapNewEntry => 'New entry';
+
+  @override
+  String get mapNotFound => 'Map not found';
+
+  @override
+  String get mapEntryNotFound => 'Entry not found';
+
+  @override
+  String get mapDeleteEntryConfirm => 'Delete this entry and all its photos?';
+
+  @override
+  String get mapAddPhoto => 'Add photo';
+
+  @override
+  String get mapEditLocation => 'Adjust location';
+
+  @override
+  String get mapSetHere => 'Set here';
+
+  @override
+  String get mapStartNavigation => 'Start navigation';
+
+  @override
+  String get mapLocationPermissionMissing => 'Location permission missing';
+
+  @override
+  String get mapLocationUnavailable => 'Location unavailable';
+
+  @override
+  String get mapSearchHashtag => 'Search by #hashtag…';
+
+  @override
+  String get mapAddedToExisting => 'Added to existing place';
+
+  @override
   String get skip => 'Skip';
 
   @override
@@ -3523,9 +3606,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapFieldHidden => 'Private marker';
 
   @override
-  String get mapAddCustomField => 'Add custom field';
-
-  @override
   String get mapCreateButton => 'Create map';
 
   @override
@@ -3534,16 +3614,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get mapStartNavigation => 'Start navigation';
-
-  @override
   String get mapExportGpx => 'Export as GPX';
 
   @override
   String get mapExportJson => 'Export as JSON';
-
-  @override
-  String get mapNewEntry => 'New entry';
 
   @override
   String get mapAddToExisting => 'Add to existing';
@@ -3553,9 +3627,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapRating => 'Rating';
-
-  @override
-  String get mapAddPhoto => 'Add photo';
 
   @override
   String get obInterestsTitle => 'Which areas interest you?';

@@ -69,6 +69,89 @@ class AppLocalizationsDe extends AppLocalizations {
   String get confirm => 'Bestätigen';
 
   @override
+  String get camera => 'Kamera';
+
+  @override
+  String get gallery => 'Galerie';
+
+  @override
+  String get share => 'Teilen';
+
+  @override
+  String get deleteQuestion => 'Löschen?';
+
+  @override
+  String errorWithDetail(String error) {
+    return 'Fehler: $error';
+  }
+
+  @override
+  String get fieldTypeText => 'Text';
+
+  @override
+  String get fieldTypeSelect => 'Auswahl';
+
+  @override
+  String get fieldTypeToggle => 'Schalter';
+
+  @override
+  String get fieldTypeNumber => 'Zahl';
+
+  @override
+  String get mapEnterName => 'Bitte einen Namen eingeben';
+
+  @override
+  String get mapStarRating => 'Sterne-Bewertung';
+
+  @override
+  String get mapMultiplePhotos => 'Mehrere Fotos pro Punkt';
+
+  @override
+  String get mapAutoGroupPhotos => 'Fotos automatisch gruppieren';
+
+  @override
+  String get mapAddCustomField => 'Eigenes Feld hinzufügen';
+
+  @override
+  String get mapCustomField => 'Eigenes Feld';
+
+  @override
+  String get mapNewEntry => 'Neuer Eintrag';
+
+  @override
+  String get mapNotFound => 'Karte nicht gefunden';
+
+  @override
+  String get mapEntryNotFound => 'Eintrag nicht gefunden';
+
+  @override
+  String get mapDeleteEntryConfirm => 'Diesen Eintrag mit allen Fotos löschen?';
+
+  @override
+  String get mapAddPhoto => 'Foto hinzufügen';
+
+  @override
+  String get mapEditLocation => 'Standort anpassen';
+
+  @override
+  String get mapSetHere => 'Hier setzen';
+
+  @override
+  String get mapStartNavigation => 'Navigation starten';
+
+  @override
+  String get mapLocationPermissionMissing => 'Standortberechtigung fehlt';
+
+  @override
+  String get mapLocationUnavailable => 'Standort nicht verfügbar';
+
+  @override
+  String get mapSearchHashtag => 'Nach #Hashtag suchen…';
+
+  @override
+  String get mapAddedToExisting => 'Zu vorhandenem Ort hinzugefügt';
+
+  @override
   String get skip => 'Überspringen';
 
   @override
@@ -3535,9 +3618,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get mapFieldHidden => 'Privat-Markierung';
 
   @override
-  String get mapAddCustomField => 'Eigenes Feld hinzufügen';
-
-  @override
   String get mapCreateButton => 'Karte erstellen';
 
   @override
@@ -3546,16 +3626,10 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get mapStartNavigation => 'Navigation starten';
-
-  @override
   String get mapExportGpx => 'Als GPX exportieren';
 
   @override
   String get mapExportJson => 'Als JSON exportieren';
-
-  @override
-  String get mapNewEntry => 'Neuer Eintrag';
 
   @override
   String get mapAddToExisting => 'Zu bestehendem hinzufügen';
@@ -3565,9 +3639,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get mapRating => 'Bewertung';
-
-  @override
-  String get mapAddPhoto => 'Foto hinzufügen';
 
   @override
   String get obInterestsTitle => 'Welche Bereiche interessieren dich?';

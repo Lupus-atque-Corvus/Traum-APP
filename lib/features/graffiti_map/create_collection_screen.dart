@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/providers/database_provider.dart';
@@ -125,7 +126,7 @@ class _CreateCollectionScreenState
     final name = _nameController.text.trim();
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bitte einen Namen eingeben')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.mapEnterName)),
       );
       return;
     }
@@ -320,7 +321,7 @@ class _CreateCollectionScreenState
             activeThumbColor: accent,
             value: _hasRating,
             onChanged: (v) => setState(() => _hasRating = v),
-            title: const Text('Sterne-Bewertung',
+            title: Text(AppLocalizations.of(context)!.mapStarRating,
                 style: TextStyle(
                     fontFamily: 'DMSans', color: TraumColors.onBackground)),
           ),
@@ -329,7 +330,7 @@ class _CreateCollectionScreenState
             activeThumbColor: accent,
             value: _multiPhoto,
             onChanged: (v) => setState(() => _multiPhoto = v),
-            title: const Text('Mehrere Fotos pro Punkt',
+            title: Text(AppLocalizations.of(context)!.mapMultiplePhotos,
                 style: TextStyle(
                     fontFamily: 'DMSans', color: TraumColors.onBackground)),
           ),
@@ -338,7 +339,7 @@ class _CreateCollectionScreenState
             activeThumbColor: accent,
             value: _autoGroup,
             onChanged: (v) => setState(() => _autoGroup = v),
-            title: const Text('Fotos automatisch gruppieren',
+            title: Text(AppLocalizations.of(context)!.mapAutoGroupPhotos,
                 style: TextStyle(
                     fontFamily: 'DMSans', color: TraumColors.onBackground)),
             subtitle: const Text(
@@ -430,7 +431,7 @@ class _CreateCollectionScreenState
           TextButton.icon(
             onPressed: _addCustomField,
             icon: const Icon(Icons.add, color: TraumColors.cyanBlue, size: 18),
-            label: const Text('Eigenes Feld hinzufügen',
+            label: Text(AppLocalizations.of(context)!.mapAddCustomField,
                 style: TextStyle(
                     fontFamily: 'DMSans', color: TraumColors.cyanBlue)),
           ),
@@ -518,7 +519,7 @@ class _CustomFieldDialogState extends State<_CustomFieldDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: TraumColors.surface,
-      title: const Text('Eigenes Feld',
+      title: Text(AppLocalizations.of(context)!.mapCustomField,
           style: TextStyle(
               fontFamily: 'DMSans',
               color: TraumColors.onBackground,
@@ -539,15 +540,15 @@ class _CustomFieldDialogState extends State<_CustomFieldDialog> {
             decoration: mapInputDecoration(''),
             style: const TextStyle(
                 fontFamily: 'DMSans', color: TraumColors.onBackground),
-            items: const [
+            items: [
               DropdownMenuItem(
-                  value: MapFieldType.text, child: Text('Text')),
+                  value: MapFieldType.text, child: Text(AppLocalizations.of(context)!.fieldTypeText)),
               DropdownMenuItem(
-                  value: MapFieldType.select, child: Text('Auswahl')),
+                  value: MapFieldType.select, child: Text(AppLocalizations.of(context)!.fieldTypeSelect)),
               DropdownMenuItem(
-                  value: MapFieldType.toggle, child: Text('Schalter')),
+                  value: MapFieldType.toggle, child: Text(AppLocalizations.of(context)!.fieldTypeToggle)),
               DropdownMenuItem(
-                  value: MapFieldType.number, child: Text('Zahl')),
+                  value: MapFieldType.number, child: Text(AppLocalizations.of(context)!.fieldTypeNumber)),
             ],
             onChanged: (v) =>
                 setState(() => _type = v ?? MapFieldType.text),
@@ -567,12 +568,12 @@ class _CustomFieldDialogState extends State<_CustomFieldDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Abbrechen',
+          child: Text(AppLocalizations.of(context)!.cancel,
               style: TextStyle(color: TraumColors.onBackgroundMuted)),
         ),
         TextButton(
           onPressed: _submit,
-          child: const Text('Hinzufügen',
+          child: Text(AppLocalizations.of(context)!.add,
               style: TextStyle(color: TraumColors.cyanBlue)),
         ),
       ],

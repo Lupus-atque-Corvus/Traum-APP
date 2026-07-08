@@ -218,6 +218,168 @@ abstract class AppLocalizations {
   /// **'Bestätigen'**
   String get confirm;
 
+  /// No description provided for @camera.
+  ///
+  /// In de, this message translates to:
+  /// **'Kamera'**
+  String get camera;
+
+  /// No description provided for @gallery.
+  ///
+  /// In de, this message translates to:
+  /// **'Galerie'**
+  String get gallery;
+
+  /// No description provided for @share.
+  ///
+  /// In de, this message translates to:
+  /// **'Teilen'**
+  String get share;
+
+  /// No description provided for @deleteQuestion.
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen?'**
+  String get deleteQuestion;
+
+  /// No description provided for @errorWithDetail.
+  ///
+  /// In de, this message translates to:
+  /// **'Fehler: {error}'**
+  String errorWithDetail(String error);
+
+  /// No description provided for @fieldTypeText.
+  ///
+  /// In de, this message translates to:
+  /// **'Text'**
+  String get fieldTypeText;
+
+  /// No description provided for @fieldTypeSelect.
+  ///
+  /// In de, this message translates to:
+  /// **'Auswahl'**
+  String get fieldTypeSelect;
+
+  /// No description provided for @fieldTypeToggle.
+  ///
+  /// In de, this message translates to:
+  /// **'Schalter'**
+  String get fieldTypeToggle;
+
+  /// No description provided for @fieldTypeNumber.
+  ///
+  /// In de, this message translates to:
+  /// **'Zahl'**
+  String get fieldTypeNumber;
+
+  /// No description provided for @mapEnterName.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte einen Namen eingeben'**
+  String get mapEnterName;
+
+  /// No description provided for @mapStarRating.
+  ///
+  /// In de, this message translates to:
+  /// **'Sterne-Bewertung'**
+  String get mapStarRating;
+
+  /// No description provided for @mapMultiplePhotos.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrere Fotos pro Punkt'**
+  String get mapMultiplePhotos;
+
+  /// No description provided for @mapAutoGroupPhotos.
+  ///
+  /// In de, this message translates to:
+  /// **'Fotos automatisch gruppieren'**
+  String get mapAutoGroupPhotos;
+
+  /// No description provided for @mapAddCustomField.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigenes Feld hinzufügen'**
+  String get mapAddCustomField;
+
+  /// No description provided for @mapCustomField.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigenes Feld'**
+  String get mapCustomField;
+
+  /// No description provided for @mapNewEntry.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuer Eintrag'**
+  String get mapNewEntry;
+
+  /// No description provided for @mapNotFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Karte nicht gefunden'**
+  String get mapNotFound;
+
+  /// No description provided for @mapEntryNotFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag nicht gefunden'**
+  String get mapEntryNotFound;
+
+  /// No description provided for @mapDeleteEntryConfirm.
+  ///
+  /// In de, this message translates to:
+  /// **'Diesen Eintrag mit allen Fotos löschen?'**
+  String get mapDeleteEntryConfirm;
+
+  /// No description provided for @mapAddPhoto.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto hinzufügen'**
+  String get mapAddPhoto;
+
+  /// No description provided for @mapEditLocation.
+  ///
+  /// In de, this message translates to:
+  /// **'Standort anpassen'**
+  String get mapEditLocation;
+
+  /// No description provided for @mapSetHere.
+  ///
+  /// In de, this message translates to:
+  /// **'Hier setzen'**
+  String get mapSetHere;
+
+  /// No description provided for @mapStartNavigation.
+  ///
+  /// In de, this message translates to:
+  /// **'Navigation starten'**
+  String get mapStartNavigation;
+
+  /// No description provided for @mapLocationPermissionMissing.
+  ///
+  /// In de, this message translates to:
+  /// **'Standortberechtigung fehlt'**
+  String get mapLocationPermissionMissing;
+
+  /// No description provided for @mapLocationUnavailable.
+  ///
+  /// In de, this message translates to:
+  /// **'Standort nicht verfügbar'**
+  String get mapLocationUnavailable;
+
+  /// No description provided for @mapSearchHashtag.
+  ///
+  /// In de, this message translates to:
+  /// **'Nach #Hashtag suchen…'**
+  String get mapSearchHashtag;
+
+  /// No description provided for @mapAddedToExisting.
+  ///
+  /// In de, this message translates to:
+  /// **'Zu vorhandenem Ort hinzugefügt'**
+  String get mapAddedToExisting;
+
   /// No description provided for @skip.
   ///
   /// In de, this message translates to:
@@ -6794,12 +6956,6 @@ abstract class AppLocalizations {
   /// **'Privat-Markierung'**
   String get mapFieldHidden;
 
-  /// No description provided for @mapAddCustomField.
-  ///
-  /// In de, this message translates to:
-  /// **'Eigenes Feld hinzufügen'**
-  String get mapAddCustomField;
-
   /// No description provided for @mapCreateButton.
   ///
   /// In de, this message translates to:
@@ -6812,12 +6968,6 @@ abstract class AppLocalizations {
   /// **'{distance} von dir'**
   String mapDistanceFromYou(String distance);
 
-  /// No description provided for @mapStartNavigation.
-  ///
-  /// In de, this message translates to:
-  /// **'Navigation starten'**
-  String get mapStartNavigation;
-
   /// No description provided for @mapExportGpx.
   ///
   /// In de, this message translates to:
@@ -6829,12 +6979,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Als JSON exportieren'**
   String get mapExportJson;
-
-  /// No description provided for @mapNewEntry.
-  ///
-  /// In de, this message translates to:
-  /// **'Neuer Eintrag'**
-  String get mapNewEntry;
 
   /// No description provided for @mapAddToExisting.
   ///
@@ -6853,12 +6997,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Bewertung'**
   String get mapRating;
-
-  /// No description provided for @mapAddPhoto.
-  ///
-  /// In de, this message translates to:
-  /// **'Foto hinzufügen'**
-  String get mapAddPhoto;
 
   /// No description provided for @obInterestsTitle.
   ///

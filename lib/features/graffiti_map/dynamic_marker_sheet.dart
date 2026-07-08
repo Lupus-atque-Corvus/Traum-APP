@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
@@ -236,9 +237,9 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                   style: const TextStyle(
                       fontFamily: 'DMSans', color: TraumColors.onBackground),
                   items: [
-                    const DropdownMenuItem<int?>(
+                    DropdownMenuItem<int?>(
                       value: null,
-                      child: Text('Neuer Eintrag'),
+                      child: Text(AppLocalizations.of(context)!.mapNewEntry),
                     ),
                     ..._existing.map((m) => DropdownMenuItem<int?>(
                           value: m.id,

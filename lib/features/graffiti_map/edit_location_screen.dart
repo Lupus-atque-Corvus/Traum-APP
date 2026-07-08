@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
@@ -80,7 +81,7 @@ class _EditLocationScreenState extends ConsumerState<EditLocationScreen> {
           icon: const Icon(Icons.arrow_back, color: TraumColors.onBackground),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Standort anpassen',
+        title: Text(AppLocalizations.of(context)!.mapEditLocation,
             style: TextStyle(
                 fontFamily: 'DMSans',
                 color: TraumColors.onBackground,
@@ -135,7 +136,7 @@ class _EditLocationScreenState extends ConsumerState<EditLocationScreen> {
                               height: 20,
                               child: CircularProgressIndicator(
                                   strokeWidth: 2, color: Colors.white))
-                          : const Text('Hier setzen',
+                          : Text(AppLocalizations.of(context)!.mapSetHere,
                               style: TextStyle(
                                   fontFamily: 'DMSans',
                                   color: Colors.white,

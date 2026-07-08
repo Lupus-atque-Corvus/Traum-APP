@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cache/flutter_map_cache.dart';
 import 'package:http_cache_file_store/http_cache_file_store.dart';
@@ -335,7 +336,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
           perm == LocationPermission.deniedForever) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Standortberechtigung fehlt')),
+            SnackBar(content: Text(AppLocalizations.of(context)!.mapLocationPermissionMissing)),
           );
         }
         return;
@@ -345,7 +346,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Standort nicht verfügbar')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.mapLocationUnavailable)),
         );
       }
     }
@@ -385,10 +386,10 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                   fontFamily: 'DMSans',
                   color: TraumColors.onBackground,
                 ),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   isCollapsed: true,
                   border: InputBorder.none,
-                  hintText: 'Nach #Hashtag suchen…',
+                  hintText: AppLocalizations.of(context)!.mapSearchHashtag,
                   hintStyle: TextStyle(
                     fontFamily: 'DMSans',
                     color: TraumColors.onBackgroundSubtle,
@@ -520,7 +521,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Zu vorhandenem Ort hinzugefügt'),
+              content: Text(AppLocalizations.of(context)!.mapAddedToExisting),
               action: SnackBarAction(
                 label: 'Rückgängig',
                 onPressed: () async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
 import 'create_collection_screen.dart';
@@ -15,10 +16,10 @@ class EditCollectionScreen extends ConsumerWidget {
     final async = ref.watch(collectionByIdProvider(collectionId));
     return async.when(
       data: (c) => c == null
-          ? const Scaffold(
+          ? Scaffold(
               backgroundColor: TraumColors.background,
               body: Center(
-                child: Text('Karte nicht gefunden',
+                child: Text(AppLocalizations.of(context)!.mapNotFound,
                     style: TextStyle(
                         fontFamily: 'DMSans',
                         color: TraumColors.onBackgroundMuted)),
@@ -33,7 +34,7 @@ class EditCollectionScreen extends ConsumerWidget {
       error: (e, _) => Scaffold(
         backgroundColor: TraumColors.background,
         body: Center(
-          child: Text('Fehler: $e',
+          child: Text(AppLocalizations.of(context)!.errorWithDetail(e.toString()),
               style: const TextStyle(color: TraumColors.onBackgroundMuted)),
         ),
       ),

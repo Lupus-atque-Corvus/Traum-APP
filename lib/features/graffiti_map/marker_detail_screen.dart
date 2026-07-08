@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -32,8 +33,8 @@ class MarkerDetailScreen extends ConsumerWidget {
       body: markerAsync.when(
         data: (data) {
           if (data == null) {
-            return const Center(
-              child: Text('Eintrag nicht gefunden',
+            return Center(
+              child: Text(AppLocalizations.of(context)!.mapEntryNotFound,
                   style: TextStyle(
                       fontFamily: 'DMSans',
                       color: TraumColors.onBackgroundMuted)),
@@ -44,7 +45,7 @@ class MarkerDetailScreen extends ConsumerWidget {
         loading: () => const Center(
             child: CircularProgressIndicator(color: TraumColors.cyanBlue)),
         error: (e, _) => Center(
-          child: Text('Fehler: $e',
+          child: Text(AppLocalizations.of(context)!.errorWithDetail(e.toString()),
               style: const TextStyle(color: TraumColors.onBackgroundMuted)),
         ),
       ),
@@ -109,7 +110,7 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
             ListTile(
               leading: const Icon(Icons.photo_camera_rounded,
                   color: TraumColors.cyanBlue),
-              title: const Text('Kamera',
+              title: Text(AppLocalizations.of(context)!.camera,
                   style: TextStyle(
                       fontFamily: 'DMSans', color: TraumColors.onBackground)),
               onTap: () => Navigator.pop(ctx, ImageSource.camera),
@@ -117,7 +118,7 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
             ListTile(
               leading: const Icon(Icons.photo_library_outlined,
                   color: TraumColors.cyanBlue),
-              title: const Text('Galerie',
+              title: Text(AppLocalizations.of(context)!.gallery,
                   style: TextStyle(
                       fontFamily: 'DMSans', color: TraumColors.onBackground)),
               onTap: () => Navigator.pop(ctx, ImageSource.gallery),
@@ -166,22 +167,22 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surface,
-        title: const Text('Löschen?',
+        title: Text(AppLocalizations.of(context)!.deleteQuestion,
             style: TextStyle(
                 fontFamily: 'DMSans',
                 color: TraumColors.onBackground,
                 fontWeight: FontWeight.w700)),
-        content: const Text('Diesen Eintrag mit allen Fotos löschen?',
+        content: Text(AppLocalizations.of(context)!.mapDeleteEntryConfirm,
             style: TextStyle(
                 fontFamily: 'DMSans', color: TraumColors.onBackgroundMuted)),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Abbrechen',
+              child: Text(AppLocalizations.of(context)!.cancel,
                   style: TextStyle(color: TraumColors.onBackgroundMuted))),
           TextButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Löschen',
+              child: Text(AppLocalizations.of(context)!.delete,
                   style: TextStyle(color: TraumColors.roseRed))),
         ],
       ),
@@ -240,26 +241,26 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                 if (v == 'delete') _delete();
               },
               itemBuilder: (_) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                     value: 'addphoto',
-                    child: Text('Foto hinzufügen',
+                    child: Text(AppLocalizations.of(context)!.mapAddPhoto,
                         style: TextStyle(
                             fontFamily: 'DMSans',
                             color: TraumColors.onBackground))),
-                const PopupMenuItem(
+                PopupMenuItem(
                     value: 'share',
-                    child: Text('Teilen',
+                    child: Text(AppLocalizations.of(context)!.share,
                         style: TextStyle(
                             fontFamily: 'DMSans',
                             color: TraumColors.onBackground))),
                 PopupMenuItem(
                     value: 'location',
-                    child: Text('Standort anpassen',
+                    child: Text(AppLocalizations.of(context)!.mapEditLocation,
                         style: TextStyle(
                             fontFamily: 'DMSans', color: TraumColors.onBackground))),
-                const PopupMenuItem(
+                PopupMenuItem(
                     value: 'delete',
-                    child: Text('Löschen',
+                    child: Text(AppLocalizations.of(context)!.delete,
                         style: TextStyle(
                             fontFamily: 'DMSans', color: TraumColors.roseRed))),
               ],
@@ -282,14 +283,14 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                         color: TraumColors.surfaceVariant,
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.add_a_photo_outlined,
                                 color: TraumColors.cyanBlue, size: 40),
                             SizedBox(height: 8),
-                            Text('Foto hinzufügen',
+                            Text(AppLocalizations.of(context)!.mapAddPhoto,
                                 style: TextStyle(
                                     fontFamily: 'DMSans',
                                     color: TraumColors.cyanBlue,
@@ -478,7 +479,7 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                                 const EdgeInsets.symmetric(vertical: 14)),
                         icon: const Icon(Icons.navigation_rounded,
                             color: Colors.white, size: 20),
-                        label: const Text('Navigation starten',
+                        label: Text(AppLocalizations.of(context)!.mapStartNavigation,
                             style: TextStyle(
                                 fontFamily: 'DMSans',
                                 color: Colors.white,
