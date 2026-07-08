@@ -9,6 +9,7 @@ import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 import 'budget_category_icons.dart';
 import 'budget_helpers.dart';
 import 'quick_entry_bottom_sheet.dart';
@@ -66,13 +67,14 @@ class _TransactionDetailScreenState
 
   Future<void> _saveAsTemplateDialog() async {
     if (_transaction == null) return;
+    final l10n = AppLocalizations.of(context)!;
     final nameCtrl = TextEditingController(text: _transaction!.description);
     final saved = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surface,
-        title: const Text('Als Vorlage speichern',
-            style: TextStyle(
+        title: Text(l10n.budgetSaveAsTemplate,
+            style: const TextStyle(
                 color: TraumColors.onBackground, fontFamily: 'DMSans')),
         content: TextField(
           controller: nameCtrl,
@@ -80,7 +82,7 @@ class _TransactionDetailScreenState
           style: const TextStyle(
               color: TraumColors.onBackground, fontFamily: 'DMSans'),
           decoration: InputDecoration(
-            hintText: 'Vorlagenname',
+            hintText: l10n.budgetTemplateNameHint,
             hintStyle: const TextStyle(
                 color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
             filled: true,
@@ -94,15 +96,15 @@ class _TransactionDetailScreenState
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Abbrechen',
-                style: TextStyle(
+            child: Text(l10n.cancel,
+                style: const TextStyle(
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans')),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Speichern',
-                style: TextStyle(
+            child: Text(l10n.save,
+                style: const TextStyle(
                     color: TraumColors.amberGold, fontFamily: 'DMSans')),
           ),
         ],
@@ -120,7 +122,7 @@ class _TransactionDetailScreenState
           );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Als Vorlage gespeichert')),
+          SnackBar(content: Text(l10n.budgetTemplateSaved)),
         );
       }
     }
@@ -151,30 +153,31 @@ class _TransactionDetailScreenState
   }
 
   Future<void> _delete() async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: TraumColors.surface,
-        title: const Text('Transaktion löschen?',
-            style: TextStyle(
+        title: Text(l10n.budgetDeleteTransactionConfirm,
+            style: const TextStyle(
                 color: TraumColors.onBackground, fontFamily: 'DMSans')),
-        content: const Text(
-            'Diese Aktion kann nicht rückgängig gemacht werden.',
-            style: TextStyle(
+        content: Text(
+            l10n.deleteAllConfirmContent,
+            style: const TextStyle(
                 color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Abbrechen',
-                style: TextStyle(
+            child: Text(l10n.cancel,
+                style: const TextStyle(
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans')),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Löschen',
-                style:
-                    TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
+            child: Text(l10n.delete,
+                style: const TextStyle(
+                    color: TraumColors.roseRed, fontFamily: 'DMSans')),
           ),
         ],
       ),
@@ -187,6 +190,7 @@ class _TransactionDetailScreenState
 
   Future<void> _showSplitDialog() async {
     if (_transaction == null) return;
+    final l10n = AppLocalizations.of(context)!;
     final cats = _categories.where((c) => c.isExpense).toList();
     final total = _transaction!.amount;
     final currency = ref.read(currencySymbolProvider);
@@ -212,15 +216,16 @@ class _TransactionDetailScreenState
 
           return AlertDialog(
             backgroundColor: TraumColors.surface,
-            title: const Text('Betrag aufteilen',
-                style: TextStyle(
+            title: Text(l10n.budgetSplitTransaction,
+                style: const TextStyle(
                     color: TraumColors.onBackground, fontFamily: 'DMSans')),
             content: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Originalbetrag: ${total.toStringAsFixed(2)} $currency',
+                    l10n.budgetSplitOriginalAmount(
+                        '${total.toStringAsFixed(2)} $currency'),
                     style: const TextStyle(
                         color: TraumColors.onBackgroundMuted,
                         fontFamily: 'DMSans',
@@ -306,15 +311,16 @@ class _TransactionDetailScreenState
                     }),
                     icon: const Icon(Icons.add,
                         color: TraumColors.amberGold, size: 16),
-                    label: const Text('Weiteren Teil hinzufügen',
-                        style: TextStyle(
+                    label: Text(l10n.budgetSplitAddPart,
+                        style: const TextStyle(
                             color: TraumColors.amberGold,
                             fontFamily: 'DMSans',
                             fontSize: 12)),
                   ),
                   const Divider(color: TraumColors.surfaceVariant),
                   Text(
-                    'Verbleibend: ${remaining.toStringAsFixed(2)} $currency',
+                    l10n.budgetSplitRemaining(
+                        '${remaining.toStringAsFixed(2)} $currency'),
                     style: TextStyle(
                       color: remaining.abs() < 0.01
                           ? TraumColors.mintGreen
@@ -329,8 +335,8 @@ class _TransactionDetailScreenState
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text('Abbrechen',
-                    style: TextStyle(
+                child: Text(l10n.cancel,
+                    style: const TextStyle(
                         color: TraumColors.onBackgroundMuted,
                         fontFamily: 'DMSans')),
               ),
@@ -342,7 +348,7 @@ class _TransactionDetailScreenState
                       }
                     : null,
                 child: Text(
-                  'Aufteilen',
+                  l10n.budgetSplitConfirm,
                   style: TextStyle(
                     color: remaining.abs() < 0.01
                         ? TraumColors.amberGold
@@ -390,7 +396,9 @@ class _TransactionDetailScreenState
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Transaktion aufgeteilt')),
+        SnackBar(
+            content:
+                Text(AppLocalizations.of(context)!.budgetTransactionSplitDone)),
       );
       context.go('/budget');
     }
@@ -399,6 +407,7 @@ class _TransactionDetailScreenState
   @override
   Widget build(BuildContext context) {
     final currency = ref.watch(currencySymbolProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     if (_loading) {
       return const Scaffold(
@@ -416,9 +425,9 @@ class _TransactionDetailScreenState
           iconTheme: const IconThemeData(color: TraumColors.onBackground),
           elevation: 0,
         ),
-        body: const Center(
-          child: Text('Transaktion nicht gefunden',
-              style: TextStyle(
+        body: Center(
+          child: Text(l10n.budgetTransactionNotFound,
+              style: const TextStyle(
                   color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
         ),
       );
@@ -439,9 +448,9 @@ class _TransactionDetailScreenState
         backgroundColor: TraumColors.background,
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
         elevation: 0,
-        title: const Text(
-          'Details',
-          style: TextStyle(
+        title: Text(
+          l10n.details,
+          style: const TextStyle(
               color: TraumColors.onBackground,
               fontFamily: 'DMSans',
               fontWeight: FontWeight.w700),
@@ -476,15 +485,15 @@ class _TransactionDetailScreenState
                     color: TraumColors.cyanDim,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.swap_horiz_rounded,
+                      const Icon(Icons.swap_horiz_rounded,
                           color: TraumColors.cyanBlue, size: 16),
-                      SizedBox(width: 6),
+                      const SizedBox(width: 6),
                       Text(
-                        'Umbuchung',
-                        style: TextStyle(
+                        l10n.budgetTransferLabel,
+                        style: const TextStyle(
                             color: TraumColors.cyanBlue,
                             fontFamily: 'DMSans',
                             fontSize: 13),
@@ -519,13 +528,13 @@ class _TransactionDetailScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _DetailRow(
-                    label: 'Beschreibung',
+                    label: l10n.fieldDescription,
                     value: tx.description,
                   ),
                   const Divider(
                       color: TraumColors.surfaceVariant, height: 20),
                   _DetailRow(
-                    label: 'Datum',
+                    label: l10n.dateLabel,
                     value:
                         '${tx.date.day.toString().padLeft(2, '0')}.${tx.date.month.toString().padLeft(2, '0')}.${tx.date.year}'
                         ' ${tx.date.hour.toString().padLeft(2, '0')}:${tx.date.minute.toString().padLeft(2, '0')}',
@@ -540,8 +549,8 @@ class _TransactionDetailScreenState
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('Notiz',
-                                style: TextStyle(
+                            Text(l10n.budgetNoteLabel,
+                                style: const TextStyle(
                                     color: TraumColors.onBackgroundMuted,
                                     fontFamily: 'DMSans',
                                     fontSize: 12)),
@@ -565,7 +574,7 @@ class _TransactionDetailScreenState
                                     child: Text(
                                       tx.note?.isNotEmpty == true
                                           ? tx.note!
-                                          : 'Tippe zum Bearbeiten...',
+                                          : l10n.budgetNoteEditHint,
                                       style: TextStyle(
                                         color: tx.note?.isNotEmpty == true
                                             ? TraumColors.onBackground
@@ -605,10 +614,10 @@ class _TransactionDetailScreenState
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Text('Foto nicht verfügbar',
-                            style: TextStyle(
+                      errorBuilder: (_, _, _) => Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text(l10n.budgetPhotoUnavailable,
+                            style: const TextStyle(
                                 color: TraumColors.onBackgroundMuted,
                                 fontFamily: 'DMSans')),
                       ),
@@ -624,8 +633,8 @@ class _TransactionDetailScreenState
               onPressed: _edit,
               icon: const Icon(Icons.edit_rounded,
                   color: TraumColors.amberGold),
-              label: const Text('Bearbeiten',
-                  style: TextStyle(
+              label: Text(l10n.edit,
+                  style: const TextStyle(
                       color: TraumColors.amberGold, fontFamily: 'DMSans')),
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: TraumColors.amberGold),
@@ -643,8 +652,8 @@ class _TransactionDetailScreenState
                 onPressed: _showSplitDialog,
                 icon: const Icon(Icons.call_split_rounded,
                     color: TraumColors.amberGold),
-                label: const Text('Betrag aufteilen',
-                    style: TextStyle(
+                label: Text(l10n.budgetSplitTransaction,
+                    style: const TextStyle(
                         color: TraumColors.amberGold,
                         fontFamily: 'DMSans')),
                 style: OutlinedButton.styleFrom(
@@ -665,8 +674,8 @@ class _TransactionDetailScreenState
                 onPressed: _saveAsTemplateDialog,
                 icon: const Icon(Icons.bookmark_add_outlined,
                     color: TraumColors.amberGold),
-                label: const Text('Als Vorlage speichern',
-                    style: TextStyle(
+                label: Text(l10n.budgetSaveAsTemplate,
+                    style: const TextStyle(
                         color: TraumColors.amberGold, fontFamily: 'DMSans')),
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: TraumColors.amberGold),
@@ -683,8 +692,8 @@ class _TransactionDetailScreenState
               onPressed: _delete,
               icon: const Icon(Icons.delete_rounded,
                   color: TraumColors.roseRed),
-              label: const Text('Löschen',
-                  style: TextStyle(
+              label: Text(l10n.delete,
+                  style: const TextStyle(
                       color: TraumColors.roseRed,
                       fontFamily: 'DMSans')),
               style: OutlinedButton.styleFrom(

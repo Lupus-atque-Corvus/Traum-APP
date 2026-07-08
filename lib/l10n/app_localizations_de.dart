@@ -2645,6 +2645,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get budgetAvailableBalance => 'Verfügbares Guthaben';
 
   @override
+  String get budgetMoreLink => 'Mehr ›';
+
+  @override
   String budgetForecastText(String amount) {
     return 'Bei aktuellem Tempo hast du am Monatsende ~$amount übrig.';
   }
@@ -2670,7 +2673,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String budgetSplitRemaining(String amount) {
-    return 'Verbleibend: $amount €';
+    return 'Verbleibend: $amount';
   }
 
   @override
@@ -2801,6 +2804,232 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get budgetBalanceHidden => 'Guthaben ausgeblendet';
+
+  @override
+  String get budgetTemplateNameHint => 'Vorlagenname';
+
+  @override
+  String get budgetTemplateSaved => 'Als Vorlage gespeichert';
+
+  @override
+  String get budgetDeleteTransactionConfirm => 'Transaktion löschen?';
+
+  @override
+  String budgetSplitOriginalAmount(String amount) {
+    return 'Originalbetrag: $amount';
+  }
+
+  @override
+  String get budgetSplitAddPart => 'Weiteren Teil hinzufügen';
+
+  @override
+  String get budgetSplitConfirm => 'Aufteilen';
+
+  @override
+  String get budgetTransactionSplitDone => 'Transaktion aufgeteilt';
+
+  @override
+  String get budgetTransactionNotFound => 'Transaktion nicht gefunden';
+
+  @override
+  String get budgetTransferLabel => 'Umbuchung';
+
+  @override
+  String get budgetNoteLabel => 'Notiz';
+
+  @override
+  String get budgetNoteEditHint => 'Tippe zum Bearbeiten...';
+
+  @override
+  String get budgetPhotoUnavailable => 'Foto nicht verfügbar';
+
+  @override
+  String get budgetCamera => 'Kamera';
+
+  @override
+  String get budgetGallery => 'Galerie';
+
+  @override
+  String get budgetTransferAccountsRequired =>
+      'Von- und Nach-Konto wählen (verschieden)';
+
+  @override
+  String get budgetInvalidAmount => 'Bitte einen gültigen Betrag eingeben';
+
+  @override
+  String get budgetDefaultDescriptionExpense => 'Ausgabe';
+
+  @override
+  String get budgetDefaultDescriptionIncome => 'Einnahme';
+
+  @override
+  String get budgetAmountLabel => 'Betrag';
+
+  @override
+  String get budgetNoAccount => 'Kein Konto';
+
+  @override
+  String get budgetFromAccount => 'Von';
+
+  @override
+  String get budgetToAccount => 'Nach';
+
+  @override
+  String get budgetDayBeforeYesterday => 'Vorgestern';
+
+  @override
+  String get budgetOtherDate => 'Anderes ▼';
+
+  @override
+  String get budgetDescriptionHint => 'Beschreibung...';
+
+  @override
+  String get budgetReceiptAttachedHint => 'Kassenbon angehängt';
+
+  @override
+  String get budgetNoteOptionalHint => 'Notiz (optional)...';
+
+  @override
+  String get budgetTemplateNameFieldHint => 'Vorlagen-Name...';
+
+  @override
+  String get budgetMonthlyRecurring => 'Monatlich wiederkehrend';
+
+  @override
+  String get budgetRecurringDayLabel => 'Am Tag des Monats:';
+
+  @override
+  String get budgetNewCategoryTile => 'Neu';
+
+  @override
+  String get budgetTypeExpense => 'Ausgabe';
+
+  @override
+  String get budgetTypeIncome => 'Einnahme';
+
+  @override
+  String get budgetTypeTransfer => 'Umbuchen';
+
+  @override
+  String get budgetCategoriesScreenTitle => 'Budget-Kategorien';
+
+  @override
+  String get budgetNoCategoriesHint =>
+      'Noch keine Kategorien.\nTippe auf + um eine anzulegen.';
+
+  @override
+  String get budgetDeleteCategoryConfirm => 'Kategorie löschen?';
+
+  @override
+  String budgetDeleteCategoryContent(String name) {
+    return '„$name\" wird entfernt. Bestehende Transaktionen bleiben erhalten und erscheinen als „Sonstiges\".';
+  }
+
+  @override
+  String budgetCategoryLimitLabel(String amount) {
+    return 'Limit: $amount / Mo.';
+  }
+
+  @override
+  String get budgetNewCategoryButton => '+ Neue Kategorie';
+
+  @override
+  String get budgetEditCategoryTitle => 'Kategorie bearbeiten';
+
+  @override
+  String get budgetCreateCategoryTitle => 'Kategorie anlegen';
+
+  @override
+  String get budgetCategoryNameLabel => 'Name *';
+
+  @override
+  String get budgetCategoryNameHint => 'z.B. Lebensmittel';
+
+  @override
+  String get budgetMonthlyLimitLabel => 'Monatslimit (optional)';
+
+  @override
+  String get budgetTypeLabel => 'Typ:';
+
+  @override
+  String get budgetAvailableThisMonth => 'Verfügbar diesen Monat';
+
+  @override
+  String get budgetHideAmountAction => 'Verbergen';
+
+  @override
+  String get budgetShowAmountAction => 'Anzeigen';
+
+  @override
+  String get budgetSavingsRate => 'Sparquote';
+
+  @override
+  String budgetDayOfMonth(int day, int daysInMonth) {
+    return 'Tag $day von $daysInMonth';
+  }
+
+  @override
+  String budgetDayOfMonthForecast(int day, int daysInMonth) {
+    return 'Tag $day von $daysInMonth · Prognose ';
+  }
+
+  @override
+  String budgetForecastRemaining(String amount) {
+    return '~$amount übrig';
+  }
+
+  @override
+  String get budgetTotalBalanceAllAccounts => 'Gesamtsaldo · alle Konten';
+
+  @override
+  String get budgetRecurringLabel => 'Wiederkehrend';
+
+  @override
+  String get budgetSeeAll => 'Alle ›';
+
+  @override
+  String get budgetNoTransactionsYet => 'Noch keine Transaktionen';
+
+  @override
+  String get budgetNoTransactionsHint => 'Tippe auf + Neu um eine einzutragen';
+
+  @override
+  String get budgetAddAccountButton => '+ Konto hinzufügen';
+
+  @override
+  String get budgetEditAccountTitle => 'Konto bearbeiten';
+
+  @override
+  String get budgetDeleteAccountConfirm => 'Konto löschen?';
+
+  @override
+  String budgetDeleteAccountContent(String name) {
+    return '„$name\" wird entfernt. Bereits erfasste Transaktionen bleiben erhalten.';
+  }
+
+  @override
+  String get budgetAccountNameHint => 'z.B. Girokonto';
+
+  @override
+  String get budgetInstitutionLabel => 'Bank / Institut';
+
+  @override
+  String get budgetInstitutionHint => 'z.B. Sparkasse';
+
+  @override
+  String get budgetBalanceLabel => 'Kontostand *';
+
+  @override
+  String get budgetLastFourLabel => 'Letzte 4 Stellen';
+
+  @override
+  String get budgetReturnRateLabel => 'Rendite %';
+
+  @override
+  String get budgetMarkAsPrimary => 'Als Hauptkonto markieren';
+
+  @override
+  String get budgetDeleteAccountButton => 'Konto löschen';
 
   @override
   String get diaryTitle => 'Tagebuch';

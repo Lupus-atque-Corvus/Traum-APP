@@ -1094,6 +1094,7 @@
   "settingsFeedbackSubtitle": "Bug · Feature · Improvement",
   "budgetTitle": "Finance",
   "budgetAvailableBalance": "Available balance",
+  "budgetMoreLink": "More ›",
   "budgetForecastText": "At this rate you'll have ~{amount} left at month end.",
   "@budgetForecastText": {
     "placeholders": {
@@ -1187,6 +1188,113 @@
   "budgetRecentTransactions": "Recent transactions",
   "budgetCategoryListTitle": "Expenses by category",
   "budgetBalanceHidden": "Balance hidden",
+  "budgetTemplateNameHint": "Template name",
+  "budgetTemplateSaved": "Saved as template",
+  "budgetDeleteTransactionConfirm": "Delete transaction?",
+  "budgetSplitOriginalAmount": "Original amount: {amount}",
+  "@budgetSplitOriginalAmount": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "budgetSplitAddPart": "Add another part",
+  "budgetSplitConfirm": "Split",
+  "budgetTransactionSplitDone": "Transaction split",
+  "budgetTransactionNotFound": "Transaction not found",
+  "budgetTransferLabel": "Transfer",
+  "budgetNoteLabel": "Note",
+  "budgetNoteEditHint": "Tap to edit...",
+  "budgetPhotoUnavailable": "Photo unavailable",
+  "budgetCamera": "Camera",
+  "budgetGallery": "Gallery",
+  "budgetTransferAccountsRequired": "Select from and to accounts (must differ)",
+  "budgetInvalidAmount": "Please enter a valid amount",
+  "budgetDefaultDescriptionExpense": "Expense",
+  "budgetDefaultDescriptionIncome": "Income",
+  "budgetAmountLabel": "Amount",
+  "budgetNoAccount": "No account",
+  "budgetFromAccount": "From",
+  "budgetToAccount": "To",
+  "budgetDayBeforeYesterday": "Day before yesterday",
+  "budgetOtherDate": "Other ▼",
+  "budgetDescriptionHint": "Description...",
+  "budgetReceiptAttachedHint": "Receipt attached",
+  "budgetNoteOptionalHint": "Note (optional)...",
+  "budgetTemplateNameFieldHint": "Template name...",
+  "budgetMonthlyRecurring": "Monthly recurring",
+  "budgetRecurringDayLabel": "On day of the month:",
+  "budgetNewCategoryTile": "New",
+  "budgetTypeExpense": "Expense",
+  "budgetTypeIncome": "Income",
+  "budgetTypeTransfer": "Transfer",
+  "budgetCategoriesScreenTitle": "Budget categories",
+  "budgetNoCategoriesHint": "No categories yet.\nTap + to create one.",
+  "budgetDeleteCategoryConfirm": "Delete category?",
+  "budgetDeleteCategoryContent": "\"{name}\" will be removed. Existing transactions remain and appear as \"Other\".",
+  "@budgetDeleteCategoryContent": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "budgetCategoryLimitLabel": "Limit: {amount} / mo.",
+  "@budgetCategoryLimitLabel": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "budgetNewCategoryButton": "+ New category",
+  "budgetEditCategoryTitle": "Edit category",
+  "budgetCreateCategoryTitle": "Create category",
+  "budgetCategoryNameLabel": "Name *",
+  "budgetCategoryNameHint": "e.g. Groceries",
+  "budgetMonthlyLimitLabel": "Monthly limit (optional)",
+  "budgetTypeLabel": "Type:",
+  "budgetAvailableThisMonth": "Available this month",
+  "budgetHideAmountAction": "Hide",
+  "budgetShowAmountAction": "Show",
+  "budgetSavingsRate": "Savings rate",
+  "budgetDayOfMonth": "Day {day} of {daysInMonth}",
+  "@budgetDayOfMonth": {
+    "placeholders": {
+      "day": {"type": "int"},
+      "daysInMonth": {"type": "int"}
+    }
+  },
+  "budgetDayOfMonthForecast": "Day {day} of {daysInMonth} · forecast ",
+  "@budgetDayOfMonthForecast": {
+    "placeholders": {
+      "day": {"type": "int"},
+      "daysInMonth": {"type": "int"}
+    }
+  },
+  "budgetForecastRemaining": "~{amount} left",
+  "@budgetForecastRemaining": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "budgetTotalBalanceAllAccounts": "Total balance · all accounts",
+  "budgetRecurringLabel": "Recurring",
+  "budgetSeeAll": "All ›",
+  "budgetNoTransactionsYet": "No transactions yet",
+  "budgetNoTransactionsHint": "Tap + New to add one",
+  "budgetAddAccountButton": "+ Add account",
+  "budgetEditAccountTitle": "Edit account",
+  "budgetDeleteAccountConfirm": "Delete account?",
+  "budgetDeleteAccountContent": "\"{name}\" will be removed. Existing transactions remain.",
+  "@budgetDeleteAccountContent": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "budgetAccountNameHint": "e.g. Checking account",
+  "budgetInstitutionLabel": "Bank / Institution",
+  "budgetInstitutionHint": "e.g. Sparkasse",
+  "budgetBalanceLabel": "Balance *",
+  "budgetLastFourLabel": "Last 4 digits",
+  "budgetReturnRateLabel": "Return %",
+  "budgetMarkAsPrimary": "Mark as primary account",
+  "budgetDeleteAccountButton": "Delete account",
 
   "diaryTitle": "Diary",
   "diarySubtitle": "Your visual life.",

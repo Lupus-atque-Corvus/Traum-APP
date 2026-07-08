@@ -8,6 +8,7 @@ import '../../../core/providers/preferences_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/radius.dart';
 import '../../../data/database/traum_database.dart';
+import '../../../l10n/app_localizations.dart';
 import '../budget_helpers.dart';
 import '../budget_providers.dart';
 import '../budget_scale.dart';
@@ -18,6 +19,7 @@ class AccountsCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final accountsAsync = ref.watch(accountsStreamProvider);
     final derived = ref.watch(accountDerivedBalancesProvider).value ?? const {};
     final currency = ref.watch(currencySymbolProvider);
@@ -27,9 +29,9 @@ class AccountsCard extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
-            const Text(
-              'Konten',
-              style: TextStyle(
+            Text(
+              l10n.budgetAccounts,
+              style: const TextStyle(
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w600,
                 color: TraumColors.onBackground,
@@ -39,9 +41,9 @@ class AccountsCard extends ConsumerWidget {
             const Spacer(),
             GestureDetector(
               onTap: () => context.push(Routes.transactionList),
-              child: const Text(
-                'Mehr ›',
-                style: TextStyle(
+              child: Text(
+                l10n.budgetMoreLink,
+                style: const TextStyle(
                   fontFamily: 'DMSans',
                   color: TraumColors.amberGold,
                   fontSize: 11,

@@ -5114,6 +5114,12 @@ abstract class AppLocalizations {
   /// **'Verfügbares Guthaben'**
   String get budgetAvailableBalance;
 
+  /// No description provided for @budgetMoreLink.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehr ›'**
+  String get budgetMoreLink;
+
   /// No description provided for @budgetForecastText.
   ///
   /// In de, this message translates to:
@@ -5159,7 +5165,7 @@ abstract class AppLocalizations {
   /// No description provided for @budgetSplitRemaining.
   ///
   /// In de, this message translates to:
-  /// **'Verbleibend: {amount} €'**
+  /// **'Verbleibend: {amount}'**
   String budgetSplitRemaining(String amount);
 
   /// No description provided for @budgetStatusGood.
@@ -5395,6 +5401,426 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Guthaben ausgeblendet'**
   String get budgetBalanceHidden;
+
+  /// No description provided for @budgetTemplateNameHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlagenname'**
+  String get budgetTemplateNameHint;
+
+  /// No description provided for @budgetTemplateSaved.
+  ///
+  /// In de, this message translates to:
+  /// **'Als Vorlage gespeichert'**
+  String get budgetTemplateSaved;
+
+  /// No description provided for @budgetDeleteTransactionConfirm.
+  ///
+  /// In de, this message translates to:
+  /// **'Transaktion löschen?'**
+  String get budgetDeleteTransactionConfirm;
+
+  /// No description provided for @budgetSplitOriginalAmount.
+  ///
+  /// In de, this message translates to:
+  /// **'Originalbetrag: {amount}'**
+  String budgetSplitOriginalAmount(String amount);
+
+  /// No description provided for @budgetSplitAddPart.
+  ///
+  /// In de, this message translates to:
+  /// **'Weiteren Teil hinzufügen'**
+  String get budgetSplitAddPart;
+
+  /// No description provided for @budgetSplitConfirm.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufteilen'**
+  String get budgetSplitConfirm;
+
+  /// No description provided for @budgetTransactionSplitDone.
+  ///
+  /// In de, this message translates to:
+  /// **'Transaktion aufgeteilt'**
+  String get budgetTransactionSplitDone;
+
+  /// No description provided for @budgetTransactionNotFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Transaktion nicht gefunden'**
+  String get budgetTransactionNotFound;
+
+  /// No description provided for @budgetTransferLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Umbuchung'**
+  String get budgetTransferLabel;
+
+  /// No description provided for @budgetNoteLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz'**
+  String get budgetNoteLabel;
+
+  /// No description provided for @budgetNoteEditHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Tippe zum Bearbeiten...'**
+  String get budgetNoteEditHint;
+
+  /// No description provided for @budgetPhotoUnavailable.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto nicht verfügbar'**
+  String get budgetPhotoUnavailable;
+
+  /// No description provided for @budgetCamera.
+  ///
+  /// In de, this message translates to:
+  /// **'Kamera'**
+  String get budgetCamera;
+
+  /// No description provided for @budgetGallery.
+  ///
+  /// In de, this message translates to:
+  /// **'Galerie'**
+  String get budgetGallery;
+
+  /// No description provided for @budgetTransferAccountsRequired.
+  ///
+  /// In de, this message translates to:
+  /// **'Von- und Nach-Konto wählen (verschieden)'**
+  String get budgetTransferAccountsRequired;
+
+  /// No description provided for @budgetInvalidAmount.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte einen gültigen Betrag eingeben'**
+  String get budgetInvalidAmount;
+
+  /// No description provided for @budgetDefaultDescriptionExpense.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausgabe'**
+  String get budgetDefaultDescriptionExpense;
+
+  /// No description provided for @budgetDefaultDescriptionIncome.
+  ///
+  /// In de, this message translates to:
+  /// **'Einnahme'**
+  String get budgetDefaultDescriptionIncome;
+
+  /// No description provided for @budgetAmountLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Betrag'**
+  String get budgetAmountLabel;
+
+  /// No description provided for @budgetNoAccount.
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Konto'**
+  String get budgetNoAccount;
+
+  /// No description provided for @budgetFromAccount.
+  ///
+  /// In de, this message translates to:
+  /// **'Von'**
+  String get budgetFromAccount;
+
+  /// No description provided for @budgetToAccount.
+  ///
+  /// In de, this message translates to:
+  /// **'Nach'**
+  String get budgetToAccount;
+
+  /// No description provided for @budgetDayBeforeYesterday.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorgestern'**
+  String get budgetDayBeforeYesterday;
+
+  /// No description provided for @budgetOtherDate.
+  ///
+  /// In de, this message translates to:
+  /// **'Anderes ▼'**
+  String get budgetOtherDate;
+
+  /// No description provided for @budgetDescriptionHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Beschreibung...'**
+  String get budgetDescriptionHint;
+
+  /// No description provided for @budgetReceiptAttachedHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Kassenbon angehängt'**
+  String get budgetReceiptAttachedHint;
+
+  /// No description provided for @budgetNoteOptionalHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz (optional)...'**
+  String get budgetNoteOptionalHint;
+
+  /// No description provided for @budgetTemplateNameFieldHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlagen-Name...'**
+  String get budgetTemplateNameFieldHint;
+
+  /// No description provided for @budgetMonthlyRecurring.
+  ///
+  /// In de, this message translates to:
+  /// **'Monatlich wiederkehrend'**
+  String get budgetMonthlyRecurring;
+
+  /// No description provided for @budgetRecurringDayLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Am Tag des Monats:'**
+  String get budgetRecurringDayLabel;
+
+  /// No description provided for @budgetNewCategoryTile.
+  ///
+  /// In de, this message translates to:
+  /// **'Neu'**
+  String get budgetNewCategoryTile;
+
+  /// No description provided for @budgetTypeExpense.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausgabe'**
+  String get budgetTypeExpense;
+
+  /// No description provided for @budgetTypeIncome.
+  ///
+  /// In de, this message translates to:
+  /// **'Einnahme'**
+  String get budgetTypeIncome;
+
+  /// No description provided for @budgetTypeTransfer.
+  ///
+  /// In de, this message translates to:
+  /// **'Umbuchen'**
+  String get budgetTypeTransfer;
+
+  /// No description provided for @budgetCategoriesScreenTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Budget-Kategorien'**
+  String get budgetCategoriesScreenTitle;
+
+  /// No description provided for @budgetNoCategoriesHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Kategorien.\nTippe auf + um eine anzulegen.'**
+  String get budgetNoCategoriesHint;
+
+  /// No description provided for @budgetDeleteCategoryConfirm.
+  ///
+  /// In de, this message translates to:
+  /// **'Kategorie löschen?'**
+  String get budgetDeleteCategoryConfirm;
+
+  /// No description provided for @budgetDeleteCategoryContent.
+  ///
+  /// In de, this message translates to:
+  /// **'„{name}\" wird entfernt. Bestehende Transaktionen bleiben erhalten und erscheinen als „Sonstiges\".'**
+  String budgetDeleteCategoryContent(String name);
+
+  /// No description provided for @budgetCategoryLimitLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Limit: {amount} / Mo.'**
+  String budgetCategoryLimitLabel(String amount);
+
+  /// No description provided for @budgetNewCategoryButton.
+  ///
+  /// In de, this message translates to:
+  /// **'+ Neue Kategorie'**
+  String get budgetNewCategoryButton;
+
+  /// No description provided for @budgetEditCategoryTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Kategorie bearbeiten'**
+  String get budgetEditCategoryTitle;
+
+  /// No description provided for @budgetCreateCategoryTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Kategorie anlegen'**
+  String get budgetCreateCategoryTitle;
+
+  /// No description provided for @budgetCategoryNameLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Name *'**
+  String get budgetCategoryNameLabel;
+
+  /// No description provided for @budgetCategoryNameHint.
+  ///
+  /// In de, this message translates to:
+  /// **'z.B. Lebensmittel'**
+  String get budgetCategoryNameHint;
+
+  /// No description provided for @budgetMonthlyLimitLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Monatslimit (optional)'**
+  String get budgetMonthlyLimitLabel;
+
+  /// No description provided for @budgetTypeLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Typ:'**
+  String get budgetTypeLabel;
+
+  /// No description provided for @budgetAvailableThisMonth.
+  ///
+  /// In de, this message translates to:
+  /// **'Verfügbar diesen Monat'**
+  String get budgetAvailableThisMonth;
+
+  /// No description provided for @budgetHideAmountAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Verbergen'**
+  String get budgetHideAmountAction;
+
+  /// No description provided for @budgetShowAmountAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Anzeigen'**
+  String get budgetShowAmountAction;
+
+  /// No description provided for @budgetSavingsRate.
+  ///
+  /// In de, this message translates to:
+  /// **'Sparquote'**
+  String get budgetSavingsRate;
+
+  /// No description provided for @budgetDayOfMonth.
+  ///
+  /// In de, this message translates to:
+  /// **'Tag {day} von {daysInMonth}'**
+  String budgetDayOfMonth(int day, int daysInMonth);
+
+  /// No description provided for @budgetDayOfMonthForecast.
+  ///
+  /// In de, this message translates to:
+  /// **'Tag {day} von {daysInMonth} · Prognose '**
+  String budgetDayOfMonthForecast(int day, int daysInMonth);
+
+  /// No description provided for @budgetForecastRemaining.
+  ///
+  /// In de, this message translates to:
+  /// **'~{amount} übrig'**
+  String budgetForecastRemaining(String amount);
+
+  /// No description provided for @budgetTotalBalanceAllAccounts.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesamtsaldo · alle Konten'**
+  String get budgetTotalBalanceAllAccounts;
+
+  /// No description provided for @budgetRecurringLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Wiederkehrend'**
+  String get budgetRecurringLabel;
+
+  /// No description provided for @budgetSeeAll.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle ›'**
+  String get budgetSeeAll;
+
+  /// No description provided for @budgetNoTransactionsYet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Transaktionen'**
+  String get budgetNoTransactionsYet;
+
+  /// No description provided for @budgetNoTransactionsHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Tippe auf + Neu um eine einzutragen'**
+  String get budgetNoTransactionsHint;
+
+  /// No description provided for @budgetAddAccountButton.
+  ///
+  /// In de, this message translates to:
+  /// **'+ Konto hinzufügen'**
+  String get budgetAddAccountButton;
+
+  /// No description provided for @budgetEditAccountTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Konto bearbeiten'**
+  String get budgetEditAccountTitle;
+
+  /// No description provided for @budgetDeleteAccountConfirm.
+  ///
+  /// In de, this message translates to:
+  /// **'Konto löschen?'**
+  String get budgetDeleteAccountConfirm;
+
+  /// No description provided for @budgetDeleteAccountContent.
+  ///
+  /// In de, this message translates to:
+  /// **'„{name}\" wird entfernt. Bereits erfasste Transaktionen bleiben erhalten.'**
+  String budgetDeleteAccountContent(String name);
+
+  /// No description provided for @budgetAccountNameHint.
+  ///
+  /// In de, this message translates to:
+  /// **'z.B. Girokonto'**
+  String get budgetAccountNameHint;
+
+  /// No description provided for @budgetInstitutionLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Bank / Institut'**
+  String get budgetInstitutionLabel;
+
+  /// No description provided for @budgetInstitutionHint.
+  ///
+  /// In de, this message translates to:
+  /// **'z.B. Sparkasse'**
+  String get budgetInstitutionHint;
+
+  /// No description provided for @budgetBalanceLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Kontostand *'**
+  String get budgetBalanceLabel;
+
+  /// No description provided for @budgetLastFourLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte 4 Stellen'**
+  String get budgetLastFourLabel;
+
+  /// No description provided for @budgetReturnRateLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Rendite %'**
+  String get budgetReturnRateLabel;
+
+  /// No description provided for @budgetMarkAsPrimary.
+  ///
+  /// In de, this message translates to:
+  /// **'Als Hauptkonto markieren'**
+  String get budgetMarkAsPrimary;
+
+  /// No description provided for @budgetDeleteAccountButton.
+  ///
+  /// In de, this message translates to:
+  /// **'Konto löschen'**
+  String get budgetDeleteAccountButton;
 
   /// No description provided for @diaryTitle.
   ///

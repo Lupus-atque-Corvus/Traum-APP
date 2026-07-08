@@ -5,6 +5,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 import 'budget_category_colors.dart';
 import 'budget_category_icons.dart';
 import 'budget_scale.dart';
@@ -25,6 +26,7 @@ class BudgetCategoriesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final catsAsync = ref.watch(allBudgetCategoriesStreamProvider);
     final currency = ref.watch(currencySymbolProvider);
 
@@ -48,12 +50,12 @@ class BudgetCategoriesScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             BudgetSubHeader(
-              title: 'Budget-Kategorien',
+              title: l10n.budgetCategoriesScreenTitle,
               actions: [plusButton],
             ),
             Expanded(
               child: catsAsync.when(
-                data: (cats) => _buildBody(context, ref, cats, currency),
+                data: (cats) => _buildBody(context, ref, cats, currency, l10n),
                 loading: () => const Center(
                   child: CircularProgressIndicator(color: TraumColors.amberGold),
                 ),
@@ -71,18 +73,19 @@ class BudgetCategoriesScreen extends ConsumerWidget {
     WidgetRef ref,
     List<BudgetCategory> cats,
     String currency,
+    AppLocalizations l10n,
   ) {
     if (cats.isEmpty) {
       return Column(
         children: [
-          const Expanded(
+          Expanded(
             child: Center(
               child: Padding(
-                padding: EdgeInsets.all(32),
+                padding: const EdgeInsets.all(32),
                 child: Text(
-                  'Noch keine Kategorien.\nTippe auf + um eine anzulegen.',
+                  l10n.budgetNoCategoriesHint,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'DMSans',
                     color: TraumColors.onBackgroundMuted,
                     fontSize: 14,
@@ -141,14 +144,15 @@ class BudgetCategoriesScreen extends ConsumerWidget {
   }
 
   Future<bool> _confirmDelete(BuildContext context, String name) async {
+    final l10n = AppLocalizations.of(context)!;
     final result = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(
-          'Kategorie löschen?',
-          style: TextStyle(
+        title: Text(
+          l10n.budgetDeleteCategoryConfirm,
+          style: const TextStyle(
             fontFamily: 'DMSans',
             color: TraumColors.onBackground,
             fontWeight: FontWeight.w700,
@@ -156,7 +160,7 @@ class BudgetCategoriesScreen extends ConsumerWidget {
           ),
         ),
         content: Text(
-          '„$name" wird entfernt. Bestehende Transaktionen bleiben erhalten und erscheinen als „Sonstiges".',
+          l10n.budgetDeleteCategoryContent(name),
           style: const TextStyle(
             fontFamily: 'DMSans',
             color: TraumColors.onBackgroundMuted,
@@ -166,9 +170,9 @@ class BudgetCategoriesScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text(
-              'Abbrechen',
-              style: TextStyle(
+            child: Text(
+              l10n.cancel,
+              style: const TextStyle(
                 fontFamily: 'DMSans',
                 color: TraumColors.onBackgroundMuted,
               ),
@@ -176,9 +180,9 @@ class BudgetCategoriesScreen extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text(
-              'Löschen',
-              style: TextStyle(
+            child: Text(
+              l10n.delete,
+              style: const TextStyle(
                 fontFamily: 'DMSans',
                 color: TraumColors.roseRed,
                 fontWeight: FontWeight.w600,
@@ -209,6 +213,7 @@ class _CategoryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final catColor =
         cat.color != null ? Color(cat.color!) : TraumColors.amberGold;
 
@@ -274,7 +279,9 @@ class _CategoryRow extends StatelessWidget {
                             borderRadius: BorderRadius.circular(bs(4)),
                           ),
                           child: Text(
-                            cat.isExpense ? 'Ausgabe' : 'Einnahme',
+                            cat.isExpense
+                                ? l10n.budgetTypeExpense
+                                : l10n.budgetTypeIncome,
                             style: TextStyle(
                               fontFamily: 'DMSans',
                               fontSize: 9,
@@ -287,7 +294,8 @@ class _CategoryRow extends StatelessWidget {
                         if (cat.monthlyLimit != null) ...[
                           SizedBox(width: bs(5)),
                           Text(
-                            'Limit: ${cat.monthlyLimit!.toStringAsFixed(0)} $currency / Mo.',
+                            l10n.budgetCategoryLimitLabel(
+                                '${cat.monthlyLimit!.toStringAsFixed(0)} $currency'),
                             style: const TextStyle(
                               fontFamily: 'DMSans',
                               fontSize: 9,
@@ -334,10 +342,10 @@ class _NewCategoryButton extends StatelessWidget {
             color: TraumColors.amberGold.withValues(alpha: 0.2),
           ),
         ),
-        child: const Center(
+        child: Center(
           child: Text(
-            '+ Neue Kategorie',
-            style: TextStyle(
+            AppLocalizations.of(context)!.budgetNewCategoryButton,
+            style: const TextStyle(
               fontFamily: 'DMSans',
               fontSize: 12,
               fontWeight: FontWeight.w600,
@@ -429,6 +437,7 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final bottom = MediaQuery.of(context).viewInsets.bottom;
     return Container(
       margin: EdgeInsets.only(bottom: bottom),
@@ -443,7 +452,9 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              _isEditing ? 'Kategorie bearbeiten' : 'Kategorie anlegen',
+              _isEditing
+                  ? l10n.budgetEditCategoryTitle
+                  : l10n.budgetCreateCategoryTitle,
               style: const TextStyle(
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700,
@@ -452,25 +463,26 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
               ),
             ),
             const SizedBox(height: 16),
-            _field(_nameCtrl, 'Name *', 'z.B. Lebensmittel'),
+            _field(_nameCtrl, l10n.budgetCategoryNameLabel,
+                l10n.budgetCategoryNameHint),
             const SizedBox(height: 8),
-            _field(_limitCtrl, 'Monatslimit (optional)', '0',
+            _field(_limitCtrl, l10n.budgetMonthlyLimitLabel, '0',
                 type: TextInputType.number),
             const SizedBox(height: 12),
             Row(children: [
-              const Text(
-                'Typ:',
-                style: TextStyle(
+              Text(
+                l10n.budgetTypeLabel,
+                style: const TextStyle(
                   fontFamily: 'DMSans',
                   color: TraumColors.onBackground,
                   fontSize: 14,
                 ),
               ),
               const SizedBox(width: 12),
-              _chip('Ausgabe', _isExpense,
+              _chip(l10n.budgetTypeExpense, _isExpense,
                   () => setState(() => _isExpense = true)),
               const SizedBox(width: 8),
-              _chip('Einnahme', !_isExpense,
+              _chip(l10n.budgetTypeIncome, !_isExpense,
                   () => setState(() => _isExpense = false)),
             ]),
             const SizedBox(height: 12),
@@ -521,9 +533,9 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
                           color: Colors.white,
                         ),
                       )
-                    : const Text(
-                        'Speichern',
-                        style: TextStyle(
+                    : Text(
+                        l10n.save,
+                        style: const TextStyle(
                           fontFamily: 'DMSans',
                           fontWeight: FontWeight.w600,
                         ),

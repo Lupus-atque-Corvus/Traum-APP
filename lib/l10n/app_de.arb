@@ -1116,6 +1116,7 @@
   "settingsFeedbackSubtitle": "Bug · Feature · Verbesserung",
   "budgetTitle": "Finanzen",
   "budgetAvailableBalance": "Verfügbares Guthaben",
+  "budgetMoreLink": "Mehr ›",
   "budgetForecastText": "Bei aktuellem Tempo hast du am Monatsende ~{amount} übrig.",
   "@budgetForecastText": {
     "placeholders": {
@@ -1128,7 +1129,7 @@
   "budgetSaveAsTemplate": "Als Vorlage speichern",
   "budgetSplitTransaction": "Betrag aufteilen",
   "budgetSplitTitle": "Transaktion aufteilen",
-  "budgetSplitRemaining": "Verbleibend: {amount} €",
+  "budgetSplitRemaining": "Verbleibend: {amount}",
   "@budgetSplitRemaining": {
     "placeholders": {
       "amount": {"type": "String"}
@@ -1209,6 +1210,113 @@
   "budgetRecentTransactions": "Letzte Transaktionen",
   "budgetCategoryListTitle": "Ausgaben nach Kategorien",
   "budgetBalanceHidden": "Guthaben ausgeblendet",
+  "budgetTemplateNameHint": "Vorlagenname",
+  "budgetTemplateSaved": "Als Vorlage gespeichert",
+  "budgetDeleteTransactionConfirm": "Transaktion löschen?",
+  "budgetSplitOriginalAmount": "Originalbetrag: {amount}",
+  "@budgetSplitOriginalAmount": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "budgetSplitAddPart": "Weiteren Teil hinzufügen",
+  "budgetSplitConfirm": "Aufteilen",
+  "budgetTransactionSplitDone": "Transaktion aufgeteilt",
+  "budgetTransactionNotFound": "Transaktion nicht gefunden",
+  "budgetTransferLabel": "Umbuchung",
+  "budgetNoteLabel": "Notiz",
+  "budgetNoteEditHint": "Tippe zum Bearbeiten...",
+  "budgetPhotoUnavailable": "Foto nicht verfügbar",
+  "budgetCamera": "Kamera",
+  "budgetGallery": "Galerie",
+  "budgetTransferAccountsRequired": "Von- und Nach-Konto wählen (verschieden)",
+  "budgetInvalidAmount": "Bitte einen gültigen Betrag eingeben",
+  "budgetDefaultDescriptionExpense": "Ausgabe",
+  "budgetDefaultDescriptionIncome": "Einnahme",
+  "budgetAmountLabel": "Betrag",
+  "budgetNoAccount": "Kein Konto",
+  "budgetFromAccount": "Von",
+  "budgetToAccount": "Nach",
+  "budgetDayBeforeYesterday": "Vorgestern",
+  "budgetOtherDate": "Anderes ▼",
+  "budgetDescriptionHint": "Beschreibung...",
+  "budgetReceiptAttachedHint": "Kassenbon angehängt",
+  "budgetNoteOptionalHint": "Notiz (optional)...",
+  "budgetTemplateNameFieldHint": "Vorlagen-Name...",
+  "budgetMonthlyRecurring": "Monatlich wiederkehrend",
+  "budgetRecurringDayLabel": "Am Tag des Monats:",
+  "budgetNewCategoryTile": "Neu",
+  "budgetTypeExpense": "Ausgabe",
+  "budgetTypeIncome": "Einnahme",
+  "budgetTypeTransfer": "Umbuchen",
+  "budgetCategoriesScreenTitle": "Budget-Kategorien",
+  "budgetNoCategoriesHint": "Noch keine Kategorien.\nTippe auf + um eine anzulegen.",
+  "budgetDeleteCategoryConfirm": "Kategorie löschen?",
+  "budgetDeleteCategoryContent": "„{name}\" wird entfernt. Bestehende Transaktionen bleiben erhalten und erscheinen als „Sonstiges\".",
+  "@budgetDeleteCategoryContent": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "budgetCategoryLimitLabel": "Limit: {amount} / Mo.",
+  "@budgetCategoryLimitLabel": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "budgetNewCategoryButton": "+ Neue Kategorie",
+  "budgetEditCategoryTitle": "Kategorie bearbeiten",
+  "budgetCreateCategoryTitle": "Kategorie anlegen",
+  "budgetCategoryNameLabel": "Name *",
+  "budgetCategoryNameHint": "z.B. Lebensmittel",
+  "budgetMonthlyLimitLabel": "Monatslimit (optional)",
+  "budgetTypeLabel": "Typ:",
+  "budgetAvailableThisMonth": "Verfügbar diesen Monat",
+  "budgetHideAmountAction": "Verbergen",
+  "budgetShowAmountAction": "Anzeigen",
+  "budgetSavingsRate": "Sparquote",
+  "budgetDayOfMonth": "Tag {day} von {daysInMonth}",
+  "@budgetDayOfMonth": {
+    "placeholders": {
+      "day": {"type": "int"},
+      "daysInMonth": {"type": "int"}
+    }
+  },
+  "budgetDayOfMonthForecast": "Tag {day} von {daysInMonth} · Prognose ",
+  "@budgetDayOfMonthForecast": {
+    "placeholders": {
+      "day": {"type": "int"},
+      "daysInMonth": {"type": "int"}
+    }
+  },
+  "budgetForecastRemaining": "~{amount} übrig",
+  "@budgetForecastRemaining": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "budgetTotalBalanceAllAccounts": "Gesamtsaldo · alle Konten",
+  "budgetRecurringLabel": "Wiederkehrend",
+  "budgetSeeAll": "Alle ›",
+  "budgetNoTransactionsYet": "Noch keine Transaktionen",
+  "budgetNoTransactionsHint": "Tippe auf + Neu um eine einzutragen",
+  "budgetAddAccountButton": "+ Konto hinzufügen",
+  "budgetEditAccountTitle": "Konto bearbeiten",
+  "budgetDeleteAccountConfirm": "Konto löschen?",
+  "budgetDeleteAccountContent": "„{name}\" wird entfernt. Bereits erfasste Transaktionen bleiben erhalten.",
+  "@budgetDeleteAccountContent": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "budgetAccountNameHint": "z.B. Girokonto",
+  "budgetInstitutionLabel": "Bank / Institut",
+  "budgetInstitutionHint": "z.B. Sparkasse",
+  "budgetBalanceLabel": "Kontostand *",
+  "budgetLastFourLabel": "Letzte 4 Stellen",
+  "budgetReturnRateLabel": "Rendite %",
+  "budgetMarkAsPrimary": "Als Hauptkonto markieren",
+  "budgetDeleteAccountButton": "Konto löschen",
 
   "diaryTitle": "Tagebuch",
   "diarySubtitle": "Dein visuelles Leben.",

@@ -141,6 +141,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
   }
 
   void _showReceiptSourceDialog() {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       backgroundColor: TraumColors.surface,
@@ -156,9 +157,9 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
             ListTile(
               leading: const Icon(Icons.camera_alt_rounded,
                   color: TraumColors.amberGold),
-              title: const Text(
-                'Kamera',
-                style: TextStyle(
+              title: Text(
+                l10n.budgetCamera,
+                style: const TextStyle(
                   color: TraumColors.onBackground,
                   fontFamily: 'DMSans',
                 ),
@@ -171,9 +172,9 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
             ListTile(
               leading: const Icon(Icons.photo_library_rounded,
                   color: TraumColors.amberGold),
-              title: const Text(
-                'Galerie',
-                style: TextStyle(
+              title: Text(
+                l10n.budgetGallery,
+                style: const TextStyle(
                   color: TraumColors.onBackground,
                   fontFamily: 'DMSans',
                 ),
@@ -190,10 +191,11 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
   }
 
   Future<void> _save() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_type == 'transfer') {
       if (_accountId == null || _toAccountId == null || _accountId == _toAccountId) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Von- und Nach-Konto wählen (verschieden)')));
+          SnackBar(content: Text(l10n.budgetTransferAccountsRequired)));
         return;
       }
     }
@@ -201,8 +203,8 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
     final amount = _parsedAmount;
     if (amount == null || amount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Bitte einen gültigen Betrag eingeben'),
+        SnackBar(
+          content: Text(l10n.budgetInvalidAmount),
         ),
       );
       return;
@@ -223,10 +225,10 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
           ? _descCtrl.text.trim()
           : (_categoryName ??
               (_type == 'expense'
-                  ? 'Ausgabe'
+                  ? l10n.budgetDefaultDescriptionExpense
                   : _type == 'income'
-                      ? 'Einnahme'
-                      : 'Umbuchung'));
+                      ? l10n.budgetDefaultDescriptionIncome
+                      : l10n.budgetTransferLabel));
       final note =
           _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim();
 
@@ -301,6 +303,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final categoriesAsync = ref.watch(allBudgetCategoriesStreamProvider);
     final currency = ref.watch(currencySymbolProvider);
     final today = DateTime.now();
@@ -355,7 +358,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                 child: Row(
                   children: [
                     Text(
-                      _isEditing ? 'Bearbeiten' : 'Hinzufügen',
+                      _isEditing ? l10n.edit : l10n.add,
                       style: const TextStyle(
                         fontFamily: 'DMSans',
                         fontSize: 15,
@@ -398,15 +401,20 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                       _SegmentedTypeToggle(
                         selected: _type,
                         onChanged: (v) => setState(() => _type = v),
+                        labels: (
+                          expense: l10n.budgetTypeExpense,
+                          income: l10n.budgetTypeIncome,
+                          transfer: l10n.budgetTypeTransfer,
+                        ),
                       ),
                       SizedBox(height: bs(16)),
 
                       // Step 5: Amount display — "Betrag" label + 34/w700 amount
                       Column(
                         children: [
-                          const Text(
-                            'Betrag',
-                            style: TextStyle(
+                          Text(
+                            l10n.budgetAmountLabel,
+                            style: const TextStyle(
                               fontFamily: 'DMSans',
                               fontSize: 8,
                               color: TraumColors.onBackgroundMuted,
@@ -441,9 +449,9 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                 const CircularProgressIndicator(
                                     color: TraumColors.amberGold),
                                 SizedBox(height: bs(8)),
-                                const Text(
-                                  'Kassenzettel wird analysiert...',
-                                  style: TextStyle(
+                                Text(
+                                  l10n.budgetScanningReceipt,
+                                  style: const TextStyle(
                                     color: TraumColors.onBackgroundMuted,
                                     fontFamily: 'DMSans',
                                   ),
@@ -569,9 +577,9 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                               size: bs(18),
                                             ),
                                             SizedBox(height: bs(2)),
-                                            const Text(
-                                              'Neu',
-                                              style: TextStyle(
+                                            Text(
+                                              l10n.budgetNewCategoryTile,
+                                              style: const TextStyle(
                                                 color: TraumColors.amberGold,
                                                 fontFamily: 'DMSans',
                                                 fontSize: 8,
@@ -608,7 +616,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                             scrollDirection: Axis.horizontal,
                             child: Row(children: [
                               _AccountChip(
-                                label: 'Kein Konto',
+                                label: l10n.budgetNoAccount,
                                 selected: selected == null,
                                 onTap: () => setState(() => _accountId = null),
                               ),
@@ -651,8 +659,8 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                 ],
                               );
                           return Column(children: [
-                            picker('Von', _accountId, (v) => setState(() => _accountId = v)),
-                            picker('Nach', _toAccountId, (v) => setState(() => _toAccountId = v)),
+                            picker(l10n.budgetFromAccount, _accountId, (v) => setState(() => _accountId = v)),
+                            picker(l10n.budgetToAccount, _toAccountId, (v) => setState(() => _toAccountId = v)),
                           ]);
                         }),
 
@@ -661,7 +669,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                         children: [
                           Expanded(
                             child: _DateChip(
-                              label: 'Heute',
+                              label: l10n.today,
                               isSelected: isToday,
                               onTap: () => _setDateChip(today),
                             ),
@@ -669,7 +677,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                           SizedBox(width: bs(6)),
                           Expanded(
                             child: _DateChip(
-                              label: 'Gestern',
+                              label: l10n.yesterday,
                               isSelected: isYesterday,
                               onTap: () => _setDateChip(yesterday),
                             ),
@@ -677,7 +685,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                           SizedBox(width: bs(6)),
                           Expanded(
                             child: _DateChip(
-                              label: 'Vorgestern',
+                              label: l10n.budgetDayBeforeYesterday,
                               isSelected: isDayBefore,
                               onTap: () => _setDateChip(dayBefore),
                             ),
@@ -687,7 +695,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                             child: _DateChip(
                               label: (!isToday && !isYesterday && !isDayBefore)
                                   ? '${_date.day}.${_date.month}.${_date.year}'
-                                  : 'Anderes ▼',
+                                  : l10n.budgetOtherDate,
                               isSelected: !isToday && !isYesterday && !isDayBefore,
                               onTap: () {
                                 showModalBottomSheet(
@@ -736,9 +744,9 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                   fontFamily: 'DMSans',
                                   fontSize: 11,
                                 ),
-                                decoration: const InputDecoration(
-                                  hintText: 'Beschreibung...',
-                                  hintStyle: TextStyle(
+                                decoration: InputDecoration(
+                                  hintText: l10n.budgetDescriptionHint,
+                                  hintStyle: const TextStyle(
                                     color: TraumColors.onBackgroundSubtle,
                                     fontFamily: 'DMSans',
                                     fontSize: 11,
@@ -782,8 +790,8 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                 ),
                                 decoration: InputDecoration(
                                   hintText: _receiptImagePath != null
-                                      ? 'Kassenbon angehängt'
-                                      : 'Notiz (optional)...',
+                                      ? l10n.budgetReceiptAttachedHint
+                                      : l10n.budgetNoteOptionalHint,
                                   hintStyle: const TextStyle(
                                     color: TraumColors.onBackgroundSubtle,
                                     fontFamily: 'DMSans',
@@ -822,7 +830,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                       if (!_isEditing) ...[
                         _ToggleRow(
                           icon: Icons.bookmark_add_rounded,
-                          label: 'Als Vorlage speichern',
+                          label: l10n.budgetSaveAsTemplate,
                           value: _saveAsTemplate,
                           onChanged: (v) => setState(() => _saveAsTemplate = v),
                         ),
@@ -844,7 +852,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                 fontSize: 13,
                               ),
                               decoration: InputDecoration(
-                                hintText: 'Vorlagen-Name...',
+                                hintText: l10n.budgetTemplateNameFieldHint,
                                 hintStyle: const TextStyle(
                                   color: TraumColors.onBackgroundSubtle,
                                   fontFamily: 'DMSans',
@@ -867,15 +875,15 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                         SizedBox(height: bs(6)),
                         _ToggleRow(
                           icon: Icons.repeat_rounded,
-                          label: 'Monatlich wiederkehrend',
+                          label: l10n.budgetMonthlyRecurring,
                           value: _recurring,
                           onChanged: (v) => setState(() => _recurring = v),
                         ),
                         if (_recurring) ...[
                           SizedBox(height: bs(6)),
                           Row(children: [
-                            const Text('Am Tag des Monats:',
-                                style: TextStyle(
+                            Text(l10n.budgetRecurringDayLabel,
+                                style: const TextStyle(
                                     fontFamily: 'DMSans',
                                     color: TraumColors.onBackgroundMuted,
                                     fontSize: 13)),
@@ -947,10 +955,12 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
 class _SegmentedTypeToggle extends StatelessWidget {
   final String selected;
   final ValueChanged<String> onChanged;
+  final ({String expense, String income, String transfer}) labels;
 
   const _SegmentedTypeToggle({
     required this.selected,
     required this.onChanged,
+    required this.labels,
   });
 
   @override
@@ -964,21 +974,21 @@ class _SegmentedTypeToggle extends StatelessWidget {
       child: Row(
         children: [
           _Segment(
-            label: 'Ausgabe',
+            label: labels.expense,
             isSelected: selected == 'expense',
             activeColor: TraumColors.roseRed,
             activeTextColor: TraumColors.onBackground,
             onTap: () => onChanged('expense'),
           ),
           _Segment(
-            label: 'Einnahme',
+            label: labels.income,
             isSelected: selected == 'income',
             activeColor: TraumColors.mintGreen,
             activeTextColor: TraumColors.background,
             onTap: () => onChanged('income'),
           ),
           _Segment(
-            label: 'Umbuchen',
+            label: labels.transfer,
             isSelected: selected == 'transfer',
             activeColor: TraumColors.indigoBlue,
             activeTextColor: TraumColors.onBackground,

@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/navigation/routes.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 import 'budget_category_colors.dart';
 import 'budget_category_icons.dart';
 import 'budget_providers.dart';
@@ -84,6 +85,7 @@ class _BudgetHeaderCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final month = ref.watch(selectedBudgetMonthProvider);
     final summary =
         ref.watch(budgetSummaryProvider((month.year, month.month)));
@@ -106,7 +108,7 @@ class _BudgetHeaderCard extends ConsumerWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Verfügbar diesen Monat',
+              Text(l10n.budgetAvailableThisMonth,
                   style: _style(
                       11, FontWeight.w400, TraumColors.onBackgroundMuted)),
               const Spacer(),
@@ -130,7 +132,10 @@ class _BudgetHeaderCard extends ConsumerWidget {
                       size: bs(11),
                     ),
                     SizedBox(width: bs(4)),
-                    Text(visible ? 'Verbergen' : 'Anzeigen',
+                    Text(
+                        visible
+                            ? l10n.budgetHideAmountAction
+                            : l10n.budgetShowAmountAction,
                         style: _style(10, FontWeight.w600,
                             TraumColors.onBackgroundMuted)),
                   ]),
@@ -159,7 +164,7 @@ class _BudgetHeaderCard extends ConsumerWidget {
           ),
           SizedBox(height: bs(3)),
           summary.when(
-            data: (s) => _prognoseRow(s, month, currency),
+            data: (s) => _prognoseRow(s, month, currency, l10n),
             loading: () => const SizedBox.shrink(),
             error: (_, _) => const SizedBox.shrink(),
           ),
@@ -169,21 +174,21 @@ class _BudgetHeaderCard extends ConsumerWidget {
             data: (s) => Row(children: [
               _MiniStat(
                 dotColor: TraumColors.mintGreen,
-                label: 'Einnahmen',
+                label: l10n.budgetIncome,
                 value: '${_fmt(s.income)} $currency',
                 valueColor: TraumColors.mintGreen,
               ),
               SizedBox(width: bs(5)),
               _MiniStat(
                 dotColor: TraumColors.roseRed,
-                label: 'Ausgaben',
+                label: l10n.budgetExpenses,
                 value: '${_fmt(s.expenses)} $currency',
                 valueColor: TraumColors.roseRed,
               ),
               SizedBox(width: bs(5)),
               _MiniStat(
                 dotColor: TraumColors.amberGold,
-                label: 'Sparquote',
+                label: l10n.budgetSavingsRate,
                 value: s.income > 0
                     ? '${((s.income - s.expenses) / s.income * 100).toStringAsFixed(0)} %'
                     : '0 %',
@@ -201,23 +206,25 @@ class _BudgetHeaderCard extends ConsumerWidget {
     );
   }
 
-  Widget _prognoseRow(BudgetSummary s, DateTime month, String currency) {
+  Widget _prognoseRow(
+      BudgetSummary s, DateTime month, String currency, AppLocalizations l10n) {
     final now = DateTime.now();
     if (now.month != month.month || now.year != month.year) {
       return const SizedBox.shrink();
     }
     final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
     if (now.day < 5) {
-      return Text('Tag ${now.day} von $daysInMonth',
+      return Text(l10n.budgetDayOfMonth(now.day, daysInMonth),
           style: _style(10, FontWeight.w400, TraumColors.onBackgroundMuted));
     }
     final daily = s.expenses / now.day;
     final forecast = s.balance - daily * (daysInMonth - now.day);
     return Row(children: [
-      Text('Tag ${now.day} von $daysInMonth · Prognose ',
+      Text(l10n.budgetDayOfMonthForecast(now.day, daysInMonth),
           style: _style(10, FontWeight.w400, TraumColors.onBackgroundMuted)),
       HiddenAmount(
-        child: Text('~${_fmt(forecast)} $currency übrig',
+        child: Text(
+            l10n.budgetForecastRemaining('${_fmt(forecast)} $currency'),
             style: _style(10, FontWeight.w600, TraumColors.textBright)),
       ),
     ]);
@@ -261,7 +268,7 @@ class _BudgetHeaderDelegate extends SliverPersistentHeaderDelegate {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            'Budget',
+            AppLocalizations.of(context)!.budget,
             style: _style(20, FontWeight.w700), // ← 20px wie im HTML
           ),
           const Spacer(),
@@ -320,6 +327,7 @@ class _GesamtsaldoFooter extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final balance = ref.watch(totalAccountBalanceProvider);
     final change = ref.watch(monthlyBalanceChangeProvider);
     final month = ref.watch(selectedBudgetMonthProvider);
@@ -341,7 +349,7 @@ class _GesamtsaldoFooter extends ConsumerWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Gesamtsaldo · alle Konten',
+              Text(l10n.budgetTotalBalanceAllAccounts,
                   style: _style(
                       9, FontWeight.w400, TraumColors.onBackgroundMuted)),
               SizedBox(height: bs(1)),
@@ -447,33 +455,34 @@ class _QuickActionChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.fromLTRB(bs(16), 0, bs(16), bs(8)),
       child: Row(children: [
         _QuickChip(
-          label: 'Sparziele',
+          label: l10n.budgetSavingGoals,
           icon: Icons.layers_rounded,
           color: TraumColors.amberGold,
           onTap: () => context.push(Routes.savings),
         ),
         SizedBox(width: bs(6)),
         _QuickChip(
-          label: 'Transaktionen',
+          label: l10n.budgetTransactions,
           icon: Icons.receipt_long_rounded,
           color: TraumColors.cyanBlue,
           onTap: () => context.push(Routes.transactionList),
         ),
         SizedBox(width: bs(6)),
         _QuickChip(
-          label: 'Wiederkehrend',
+          label: l10n.budgetRecurringLabel,
           icon: Icons.repeat_rounded,
           color: TraumColors.indigoBlue,
           onTap: () => context.push(Routes.recurring),
         ),
         SizedBox(width: bs(6)),
         _QuickChip(
-          label: 'Schulden',
+          label: l10n.budgetDebts,
           icon: Icons.shield_rounded,
           color: TraumColors.roseRed,
           onTap: () => context.push(Routes.debts),
@@ -615,6 +624,7 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final txs = ref.watch(recentTransactionItemsProvider(5));
     final currency = ref.watch(currencySymbolProvider);
 
@@ -623,12 +633,12 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(children: [
-              Text('Letzte Transaktionen',
+              Text(l10n.budgetRecentTransactions,
                   style: _style(13, FontWeight.w600)),
               const Spacer(),
               GestureDetector(
                 onTap: () => context.go('/budget/transactions'),
-                child: Text('Alle ›',
+                child: Text(l10n.budgetSeeAll,
                     style: _style(
                         11, FontWeight.w500, TraumColors.amberGold)),
               ),
@@ -645,11 +655,11 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                             color: TraumColors.onBackgroundSubtle,
                             size: bs(32)),
                         SizedBox(height: bs(8)),
-                        Text('Noch keine Transaktionen',
+                        Text(l10n.budgetNoTransactionsYet,
                             style: _style(13, FontWeight.w400,
                                 TraumColors.onBackgroundMuted)),
                         SizedBox(height: bs(4)),
-                        Text('Tippe auf + Neu um eine einzutragen',
+                        Text(l10n.budgetNoTransactionsHint,
                             style: _style(12, FontWeight.w400,
                                 TraumColors.onBackgroundSubtle)),
                       ]),
@@ -671,7 +681,7 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                     final prefix = isIncome ? '+' : (isTransfer ? '' : '−');
                     final catColor = _catColor(tx.tx.categoryId);
 
-                    final timeLabel = _dateLabel(tx.date);
+                    final timeLabel = _dateLabel(tx.date, l10n);
                     return Column(children: [
                       ListTile(
                         contentPadding: EdgeInsets.zero,
@@ -737,12 +747,12 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
     return categoryColor(categoryId % kBudgetCategoryColors.length);
   }
 
-  String _dateLabel(DateTime date) {
+  String _dateLabel(DateTime date, AppLocalizations l10n) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final d = DateTime(date.year, date.month, date.day);
-    if (d == today) return 'Heute';
-    if (d == today.subtract(const Duration(days: 1))) return 'Gestern';
+    if (d == today) return l10n.today;
+    if (d == today.subtract(const Duration(days: 1))) return l10n.yesterday;
     const m = [
       'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
       'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'
