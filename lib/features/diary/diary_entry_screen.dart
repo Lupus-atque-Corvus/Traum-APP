@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 import 'diary_provider.dart';
 
 class DiaryEntryScreen extends ConsumerWidget {
@@ -28,6 +29,7 @@ class _DiaryEntryBody extends ConsumerWidget {
     return FutureBuilder(
       future: dao.getEntryForDate(date),
       builder: (context, snapshot) {
+        final l10n = AppLocalizations.of(context)!;
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             backgroundColor: TraumColors.background,
@@ -47,9 +49,9 @@ class _DiaryEntryBody extends ConsumerWidget {
               leading: const BackButton(color: Colors.white),
               elevation: 0,
             ),
-            body: const Center(
-              child: Text('Eintrag nicht gefunden',
-                  style: TextStyle(
+            body: Center(
+              child: Text(l10n.diaryEntryNotFound,
+                  style: const TextStyle(
                       fontFamily: 'DMSans',
                       color: TraumColors.onBackgroundMuted)),
             ),
@@ -75,7 +77,7 @@ class _DiaryEntryBody extends ConsumerWidget {
                     await SharePlus.instance.share(
                       ShareParams(
                         files: [XFile(entry.mediaPath)],
-                        text: 'Tagebucheintrag ${entry.date}',
+                        text: l10n.diaryShareText(entry.date),
                       ),
                     );
                   } else if (value == 'delete') {
@@ -83,26 +85,26 @@ class _DiaryEntryBody extends ConsumerWidget {
                       context: context,
                       builder: (_) => AlertDialog(
                         backgroundColor: TraumColors.surface,
-                        title: const Text('Eintrag löschen?',
-                            style: TextStyle(
+                        title: Text(l10n.diaryDeleteTitle,
+                            style: const TextStyle(
                                 fontFamily: 'DMSans',
                                 color: TraumColors.onBackground)),
-                        content: const Text(
-                            'Der Eintrag und die Mediendatei werden dauerhaft gelöscht.',
-                            style: TextStyle(
+                        content: Text(
+                            l10n.diaryDeleteMessage,
+                            style: const TextStyle(
                                 fontFamily: 'DMSans',
                                 color: TraumColors.onBackgroundMuted)),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context, false),
-                            child: const Text('Abbrechen',
-                                style: TextStyle(
+                            child: Text(l10n.cancel,
+                                style: const TextStyle(
                                     color: TraumColors.onBackgroundMuted)),
                           ),
                           TextButton(
                             onPressed: () => Navigator.pop(context, true),
-                            child: const Text('Löschen',
-                                style: TextStyle(color: TraumColors.roseRed)),
+                            child: Text(l10n.delete,
+                                style: const TextStyle(color: TraumColors.roseRed)),
                           ),
                         ],
                       ),
@@ -121,17 +123,17 @@ class _DiaryEntryBody extends ConsumerWidget {
                   }
                 },
                 itemBuilder: (_) => [
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: 'share',
-                    child: Text('Teilen',
-                        style: TextStyle(
+                    child: Text(l10n.diaryShareLabel,
+                        style: const TextStyle(
                             fontFamily: 'DMSans',
                             color: TraumColors.onBackground)),
                   ),
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: 'delete',
-                    child: Text('Löschen',
-                        style: TextStyle(
+                    child: Text(l10n.delete,
+                        style: const TextStyle(
                             fontFamily: 'DMSans',
                             color: TraumColors.roseRed)),
                   ),
@@ -164,7 +166,7 @@ class _DiaryEntryBody extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(_formatDate(entry.date),
+                    Text(_formatDate(entry.date, l10n),
                         style: const TextStyle(
                             fontFamily: 'DMSans',
                             fontWeight: FontWeight.w700,
@@ -188,13 +190,15 @@ class _DiaryEntryBody extends ConsumerWidget {
     );
   }
 
-  String _formatDate(String dateStr) {
+  String _formatDate(String dateStr, AppLocalizations l10n) {
     final d = DateTime.tryParse(dateStr);
     if (d == null) return dateStr;
-    const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
-    const months = [
-      'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
-      'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'
+    final weekdays = l10n.weekdaysShort.split(',');
+    final months = [
+      l10n.monthJan, l10n.monthFeb, l10n.monthMar,
+      l10n.monthApr, l10n.monthMay, l10n.monthJun,
+      l10n.monthJul, l10n.monthAug, l10n.monthSep,
+      l10n.monthOct, l10n.monthNov, l10n.monthDec,
     ];
     return '${weekdays[d.weekday - 1]}, ${d.day}. ${months[d.month - 1]} ${d.year}';
   }

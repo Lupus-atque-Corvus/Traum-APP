@@ -1665,5 +1665,30 @@
   "updateNow": "Jetzt aktualisieren",
   "updatePreparing": "Wird vorbereitet…",
   "updateDownloadFailed": "Download fehlgeschlagen",
-  "updateInstallPermissionMissing": "Berechtigung fehlt. Aktiviere \"Unbekannte Apps\" in den Einstellungen und versuche es erneut."
+  "updateInstallPermissionMissing": "Berechtigung fehlt. Aktiviere \"Unbekannte Apps\" in den Einstellungen und versuche es erneut.",
+  "diaryStreakDays": "Streak: {days} Tage",
+  "@diaryStreakDays": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "diaryCaptureMomentHint": "Halte diesen Moment fest.",
+  "diaryPhotoLabel": "Foto",
+  "diaryVideoLabel": "Video",
+  "weekdaysFull": "Montag,Dienstag,Mittwoch,Donnerstag,Freitag,Samstag,Sonntag",
+  "diaryEntryNotFound": "Eintrag nicht gefunden",
+  "diaryShareLabel": "Teilen",
+  "diaryShareText": "Tagebucheintrag {date}",
+  "@diaryShareText": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "diaryHeatmapStats": "{count} Einträge · {percent}% Tage",
+  "@diaryHeatmapStats": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "percent": {"type": "String"}
+    }
+  }
 }

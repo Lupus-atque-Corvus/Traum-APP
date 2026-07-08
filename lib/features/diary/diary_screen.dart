@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 import 'diary_camera_service.dart';
 import 'diary_capture_sheet.dart';
 import 'diary_provider.dart';
@@ -16,6 +17,7 @@ class DiaryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final todayAsync = ref.watch(todaysDiaryEntryProvider);
     final streakAsync = ref.watch(diaryStreakProvider);
     final totalAsync = ref.watch(totalDiaryEntriesProvider);
@@ -40,15 +42,15 @@ class DiaryScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Tagebuch',
-                          style: TextStyle(
+                      Text(l10n.diaryTitle,
+                          style: const TextStyle(
                               fontFamily: 'DMSans',
                               fontWeight: FontWeight.w700,
                               color: TraumColors.onBackground,
                               fontSize: 24)),
                       Row(children: [
                         totalAsync.when(
-                          data: (t) => Text('$t Einträge',
+                          data: (t) => Text(l10n.diaryTotalEntries(t),
                               style: const TextStyle(
                                   fontFamily: 'DMSans',
                                   color: TraumColors.onBackgroundMuted,
@@ -61,7 +63,7 @@ class DiaryScreen extends ConsumerWidget {
                                 color: TraumColors.onBackgroundSubtle,
                                 fontSize: 13)),
                         streakAsync.when(
-                          data: (s) => Text('Streak: $s Tage',
+                          data: (s) => Text(l10n.diaryStreakDays(s),
                               style: const TextStyle(
                                   fontFamily: 'DMSans',
                                   color: TraumColors.lavender,
@@ -107,11 +109,11 @@ class DiaryScreen extends ConsumerWidget {
           const SliverToBoxAdapter(child: DiaryYearHeatmap()),
 
           // ── Letzte Einträge ───────────────────────────────────────────────
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.fromLTRB(20, 16, 16, 8),
-              child: Text('Letzte Einträge',
-                  style: TextStyle(
+              padding: const EdgeInsets.fromLTRB(20, 16, 16, 8),
+              child: Text(l10n.diaryRecentEntries,
+                  style: const TextStyle(
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w600,
                       color: TraumColors.onBackground,
@@ -172,6 +174,7 @@ class _TodayEmptyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       padding: const EdgeInsets.all(20),
@@ -185,14 +188,14 @@ class _TodayEmptyCard extends StatelessWidget {
             size: 64,
             color: TraumColors.lavender.withValues(alpha: 0.4)),
         const SizedBox(height: 8),
-        Text(_todayLabel(),
+        Text(_todayLabel(l10n),
             style: const TextStyle(
                 fontFamily: 'DMSans',
                 color: TraumColors.onBackgroundMuted,
                 fontSize: 14)),
         const SizedBox(height: 4),
-        const Text('Halte diesen Moment fest.',
-            style: TextStyle(
+        Text(l10n.diaryCaptureMomentHint,
+            style: const TextStyle(
                 fontFamily: 'DMSans',
                 color: TraumColors.onBackgroundSubtle,
                 fontSize: 13)),
@@ -208,8 +211,8 @@ class _TodayEmptyCard extends StatelessWidget {
                 }
               },
               icon: const Icon(Icons.photo_camera_outlined, size: 18),
-              label: const Text('Foto',
-                  style: TextStyle(
+              label: Text(l10n.diaryPhotoLabel,
+                  style: const TextStyle(
                       fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: TraumColors.lavender,
@@ -231,8 +234,8 @@ class _TodayEmptyCard extends StatelessWidget {
                 }
               },
               icon: const Icon(Icons.videocam_outlined, size: 18),
-              label: const Text('Video',
-                  style: TextStyle(
+              label: Text(l10n.diaryVideoLabel,
+                  style: const TextStyle(
                       fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: TraumColors.indigoBlue,
@@ -248,15 +251,14 @@ class _TodayEmptyCard extends StatelessWidget {
     );
   }
 
-  String _todayLabel() {
+  String _todayLabel(AppLocalizations l10n) {
     final d = DateTime.now();
-    const weekdays = [
-      'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag',
-      'Freitag', 'Samstag', 'Sonntag'
-    ];
-    const months = [
-      'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
-      'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'
+    final weekdays = l10n.weekdaysFull.split(',');
+    final months = [
+      l10n.monthJan, l10n.monthFeb, l10n.monthMar,
+      l10n.monthApr, l10n.monthMay, l10n.monthJun,
+      l10n.monthJul, l10n.monthAug, l10n.monthSep,
+      l10n.monthOct, l10n.monthNov, l10n.monthDec,
     ];
     return '${weekdays[d.weekday - 1]}, ${d.day}. ${months[d.month - 1]} ${d.year}';
   }
@@ -270,6 +272,7 @@ class _TodayFilledCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final thumbPath =
         entry.mediaType == 'video' ? entry.thumbnailPath : entry.mediaPath;
     final hasThumb = thumbPath != null && File(thumbPath).existsSync();
@@ -311,7 +314,7 @@ class _TodayFilledCard extends StatelessWidget {
                               color: TraumColors.onBackground,
                               fontSize: 14)),
                     const SizedBox(height: 4),
-                    Text(_formatDate(entry.date),
+                    Text(_formatDate(entry.date, l10n),
                         style: const TextStyle(
                             fontFamily: 'DMSans',
                             color: TraumColors.onBackgroundMuted,
@@ -328,12 +331,16 @@ class _TodayFilledCard extends StatelessWidget {
     );
   }
 
-  String _formatDate(String dateStr) {
+  String _formatDate(String dateStr, AppLocalizations l10n) {
     final d = DateTime.tryParse(dateStr);
     if (d == null) return dateStr;
-    const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
-    const months = ['Jan','Feb','Mär','Apr','Mai','Jun',
-        'Jul','Aug','Sep','Okt','Nov','Dez'];
+    final weekdays = l10n.weekdaysShort.split(',');
+    final months = [
+      l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
+      l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
+      l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
+      l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
+    ];
     return '${weekdays[d.weekday - 1]}, ${d.day}. ${months[d.month - 1]} ${d.year}';
   }
 }

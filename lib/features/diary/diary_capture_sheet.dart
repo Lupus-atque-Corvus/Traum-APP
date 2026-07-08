@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 import 'diary_camera_service.dart';
 import 'diary_provider.dart';
 
@@ -83,6 +84,7 @@ class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final bottom = MediaQuery.of(context).viewInsets.bottom;
     final isPhoto = _mediaType == 'photo';
 
@@ -136,7 +138,7 @@ class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
                   color: TraumColors.onBackground,
                   fontSize: 14),
               decoration: InputDecoration(
-                hintText: 'Schreib etwas zu diesem Moment... (optional)',
+                hintText: l10n.diaryNoteHint,
                 hintStyle: const TextStyle(
                     fontFamily: 'DMSans',
                     color: TraumColors.onBackgroundSubtle,
@@ -167,8 +169,8 @@ class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
                         width: 20,
                         child: CircularProgressIndicator(
                             strokeWidth: 2, color: Colors.white))
-                    : const Text('Speichern',
-                        style: TextStyle(
+                    : Text(l10n.save,
+                        style: const TextStyle(
                             fontFamily: 'DMSans',
                             fontWeight: FontWeight.w700,
                             fontSize: 16)),
@@ -177,8 +179,8 @@ class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
             const SizedBox(height: 8),
             TextButton(
               onPressed: _retake,
-              child: const Text('Neu aufnehmen',
-                  style: TextStyle(
+              child: Text(l10n.diaryRetake,
+                  style: const TextStyle(
                       fontFamily: 'DMSans',
                       color: TraumColors.onBackgroundMuted)),
             ),

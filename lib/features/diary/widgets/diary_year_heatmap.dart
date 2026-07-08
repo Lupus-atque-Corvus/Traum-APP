@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/colors.dart';
+import '../../../l10n/app_localizations.dart';
 import '../diary_provider.dart';
 
 class DiaryYearHeatmap extends ConsumerWidget {
@@ -8,6 +9,7 @@ class DiaryYearHeatmap extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final datesAsync = ref.watch(datesWithDiaryEntriesProvider);
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -34,15 +36,15 @@ class DiaryYearHeatmap extends ConsumerWidget {
                       color: TraumColors.onBackground,
                       fontSize: 16)),
               const Spacer(),
-              Text('$withEntries Einträge · $pct% Tage',
+              Text(l10n.diaryHeatmapStats(withEntries, pct),
                   style: const TextStyle(
                       fontFamily: 'DMSans',
                       fontSize: 12,
                       color: TraumColors.onBackgroundMuted)),
             ]);
           },
-          loading: () => const Text('Jahresübersicht',
-              style: TextStyle(
+          loading: () => Text(l10n.diaryYearOverview,
+              style: const TextStyle(
                   fontFamily: 'DMSans',
                   fontWeight: FontWeight.w600,
                   color: TraumColors.onBackground,

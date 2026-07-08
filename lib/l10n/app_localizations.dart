@@ -7663,6 +7663,60 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Berechtigung fehlt. Aktiviere \"Unbekannte Apps\" in den Einstellungen und versuche es erneut.'**
   String get updateInstallPermissionMissing;
+
+  /// No description provided for @diaryStreakDays.
+  ///
+  /// In de, this message translates to:
+  /// **'Streak: {days} Tage'**
+  String diaryStreakDays(int days);
+
+  /// No description provided for @diaryCaptureMomentHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Halte diesen Moment fest.'**
+  String get diaryCaptureMomentHint;
+
+  /// No description provided for @diaryPhotoLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto'**
+  String get diaryPhotoLabel;
+
+  /// No description provided for @diaryVideoLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Video'**
+  String get diaryVideoLabel;
+
+  /// No description provided for @weekdaysFull.
+  ///
+  /// In de, this message translates to:
+  /// **'Montag,Dienstag,Mittwoch,Donnerstag,Freitag,Samstag,Sonntag'**
+  String get weekdaysFull;
+
+  /// No description provided for @diaryEntryNotFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag nicht gefunden'**
+  String get diaryEntryNotFound;
+
+  /// No description provided for @diaryShareLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Teilen'**
+  String get diaryShareLabel;
+
+  /// No description provided for @diaryShareText.
+  ///
+  /// In de, this message translates to:
+  /// **'Tagebucheintrag {date}'**
+  String diaryShareText(String date);
+
+  /// No description provided for @diaryHeatmapStats.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} Einträge · {percent}% Tage'**
+  String diaryHeatmapStats(int count, String percent);
 }
 
 class _AppLocalizationsDelegate

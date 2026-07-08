@@ -3985,4 +3985,38 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get updateInstallPermissionMissing =>
       'Permission missing. Enable \"Install unknown apps\" in settings and try again.';
+
+  @override
+  String diaryStreakDays(int days) {
+    return 'Streak: $days days';
+  }
+
+  @override
+  String get diaryCaptureMomentHint => 'Capture this moment.';
+
+  @override
+  String get diaryPhotoLabel => 'Photo';
+
+  @override
+  String get diaryVideoLabel => 'Video';
+
+  @override
+  String get weekdaysFull =>
+      'Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday';
+
+  @override
+  String get diaryEntryNotFound => 'Entry not found';
+
+  @override
+  String get diaryShareLabel => 'Share';
+
+  @override
+  String diaryShareText(String date) {
+    return 'Diary entry $date';
+  }
+
+  @override
+  String diaryHeatmapStats(int count, String percent) {
+    return '$count entries · $percent% of days';
+  }
 }

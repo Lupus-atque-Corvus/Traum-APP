@@ -1643,5 +1643,30 @@
   "updateNow": "Update now",
   "updatePreparing": "Preparing…",
   "updateDownloadFailed": "Download failed",
-  "updateInstallPermissionMissing": "Permission missing. Enable \"Install unknown apps\" in settings and try again."
+  "updateInstallPermissionMissing": "Permission missing. Enable \"Install unknown apps\" in settings and try again.",
+  "diaryStreakDays": "Streak: {days} days",
+  "@diaryStreakDays": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "diaryCaptureMomentHint": "Capture this moment.",
+  "diaryPhotoLabel": "Photo",
+  "diaryVideoLabel": "Video",
+  "weekdaysFull": "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+  "diaryEntryNotFound": "Entry not found",
+  "diaryShareLabel": "Share",
+  "diaryShareText": "Diary entry {date}",
+  "@diaryShareText": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "diaryHeatmapStats": "{count} entries · {percent}% of days",
+  "@diaryHeatmapStats": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "percent": {"type": "String"}
+    }
+  }
 }
