@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/colors.dart';
@@ -30,7 +31,7 @@ class ShoppingListView extends ConsumerWidget {
           child: CircularProgressIndicator(
               color: TraumColors.mintGreen, strokeWidth: 2)),
       error: (e, _) => Center(
-          child: Text('Fehler: $e',
+          child: Text(AppLocalizations.of(context)!.errorWithDetail(e.toString()),
               style: const TextStyle(color: TraumColors.roseRed))),
       data: (items) {
         final open = items.where((i) => !i.checked).toList();
@@ -56,10 +57,10 @@ class ShoppingListView extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               if (items.isEmpty)
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(top: 48),
                   child: Center(
-                    child: Text('Einkaufsliste ist leer',
+                    child: Text(AppLocalizations.of(context)!.shoppingListEmpty,
                         style: TextStyle(
                             fontFamily: 'DMSans',
                             color: TraumColors.onBackgroundMuted)),
@@ -84,7 +85,7 @@ class ShoppingListView extends ConsumerWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('ERLEDIGT',
+                      Text(AppLocalizations.of(context)!.doneUpper,
                           style: TextStyle(
                               color: TraumColors.onBackgroundMuted,
                               fontFamily: 'DMSans',
@@ -95,7 +96,7 @@ class ShoppingListView extends ConsumerWidget {
                         onTap: () => ref
                             .read(nutritionDaoProvider)
                             .deleteCheckedShoppingItems(),
-                        child: const Text('Erledigte löschen',
+                        child: Text(AppLocalizations.of(context)!.deleteCompleted,
                             style: TextStyle(
                                 color: TraumColors.roseRed,
                                 fontFamily: 'DMSans',
@@ -194,7 +195,7 @@ class _HeroSummary extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('VORAUSSICHTLICH',
+          Text(AppLocalizations.of(context)!.estimatedUpper,
               style: TextStyle(
                   color: Color(0xB30D0D1A),
                   fontFamily: 'DMSans',

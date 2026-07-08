@@ -280,6 +280,83 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knownInteractions => 'Known interactions';
 
   @override
+  String get productNotFound => 'Product not found';
+
+  @override
+  String get searchFoodHint => 'Search food...';
+
+  @override
+  String get noProductsFound => 'No products found';
+
+  @override
+  String get waterUpper => 'WATER';
+
+  @override
+  String get weeklyTrend => 'Weekly trend';
+
+  @override
+  String get createCustomProduct => 'Create custom product';
+
+  @override
+  String get saveFailed => 'Failed to save';
+
+  @override
+  String get urgent => 'Urgent';
+
+  @override
+  String get bookedAsExpense => 'Booked as expense in Finances ✓';
+
+  @override
+  String get bookingFailed => 'Booking failed';
+
+  @override
+  String get totalPaidUpper => 'TOTAL PAID';
+
+  @override
+  String get shoppingListEmpty => 'Shopping list empty';
+
+  @override
+  String get doneUpper => 'DONE';
+
+  @override
+  String get deleteCompleted => 'Delete completed';
+
+  @override
+  String get estimatedUpper => 'ESTIMATED';
+
+  @override
+  String get inStore => 'In store 🛒';
+
+  @override
+  String inCartStatus(int inCart, int total) {
+    return 'IN CART · REAL · $inCart/$total';
+  }
+
+  @override
+  String get listEmpty => 'List is empty';
+
+  @override
+  String get saveTemplate => 'Save template';
+
+  @override
+  String get templateNameHint => 'e.g. Weekly shopping';
+
+  @override
+  String get templates => 'Templates';
+
+  @override
+  String get noTemplatesSaved => 'No templates saved yet.';
+
+  @override
+  String get nothingLogged => 'Nothing logged yet';
+
+  @override
+  String get microNutrientsSupplements => 'Micronutrients & supplements';
+
+  @override
+  String get supplementsToday => 'SUPPLEMENTS TODAY';
+
+  @override
   String get skip => 'Skip';
 
   @override
@@ -1414,9 +1491,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get waterGoal2000 => 'Goal: 2000 ml';
 
   @override
-  String get nothingLogged => 'Nothing logged yet';
-
-  @override
   String get shoppingListTooltip => 'Shopping list';
 
   @override
@@ -1439,9 +1513,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteCompletedTooltip => 'Delete completed';
-
-  @override
-  String get shoppingListEmpty => 'Shopping list empty';
 
   @override
   String get tapToAddProduct => 'Tap to add a product';

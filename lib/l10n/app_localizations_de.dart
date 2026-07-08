@@ -281,6 +281,83 @@ class AppLocalizationsDe extends AppLocalizations {
   String get knownInteractions => 'Bekannte Interaktionen';
 
   @override
+  String get productNotFound => 'Produkt nicht gefunden';
+
+  @override
+  String get searchFoodHint => 'Lebensmittel suchen...';
+
+  @override
+  String get noProductsFound => 'Keine Produkte gefunden';
+
+  @override
+  String get waterUpper => 'WASSER';
+
+  @override
+  String get weeklyTrend => 'Wochenverlauf';
+
+  @override
+  String get createCustomProduct => 'Eigenes Produkt anlegen';
+
+  @override
+  String get saveFailed => 'Fehler beim Speichern';
+
+  @override
+  String get urgent => 'Dringend';
+
+  @override
+  String get bookedAsExpense => 'Als Ausgabe in Finanzen gebucht ✓';
+
+  @override
+  String get bookingFailed => 'Buchung fehlgeschlagen';
+
+  @override
+  String get totalPaidUpper => 'GESAMT BEZAHLT';
+
+  @override
+  String get shoppingListEmpty => 'Einkaufsliste leer';
+
+  @override
+  String get doneUpper => 'ERLEDIGT';
+
+  @override
+  String get deleteCompleted => 'Erledigte löschen';
+
+  @override
+  String get estimatedUpper => 'VORAUSSICHTLICH';
+
+  @override
+  String get inStore => 'Im Laden 🛒';
+
+  @override
+  String inCartStatus(int inCart, int total) {
+    return 'IM KORB · ECHT · $inCart/$total';
+  }
+
+  @override
+  String get listEmpty => 'Liste ist leer';
+
+  @override
+  String get saveTemplate => 'Vorlage speichern';
+
+  @override
+  String get templateNameHint => 'z.B. Wocheneinkauf';
+
+  @override
+  String get templates => 'Vorlagen';
+
+  @override
+  String get noTemplatesSaved => 'Noch keine Vorlagen gespeichert.';
+
+  @override
+  String get nothingLogged => 'Noch nichts eingetragen';
+
+  @override
+  String get microNutrientsSupplements => 'Mikronährstoffe & Supplements';
+
+  @override
+  String get supplementsToday => 'SUPPLEMENTS HEUTE';
+
+  @override
   String get skip => 'Überspringen';
 
   @override
@@ -1423,9 +1500,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get waterGoal2000 => 'Ziel: 2000 ml';
 
   @override
-  String get nothingLogged => 'Noch nichts eingetragen';
-
-  @override
   String get shoppingListTooltip => 'Einkaufsliste';
 
   @override
@@ -1448,9 +1522,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get deleteCompletedTooltip => 'Erledigte löschen';
-
-  @override
-  String get shoppingListEmpty => 'Einkaufsliste leer';
 
   @override
   String get tapToAddProduct => 'Tippe, um ein Produkt hinzuzufügen';

@@ -626,6 +626,156 @@ abstract class AppLocalizations {
   /// **'Bekannte Interaktionen'**
   String get knownInteractions;
 
+  /// No description provided for @productNotFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Produkt nicht gefunden'**
+  String get productNotFound;
+
+  /// No description provided for @searchFoodHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Lebensmittel suchen...'**
+  String get searchFoodHint;
+
+  /// No description provided for @noProductsFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Produkte gefunden'**
+  String get noProductsFound;
+
+  /// No description provided for @waterUpper.
+  ///
+  /// In de, this message translates to:
+  /// **'WASSER'**
+  String get waterUpper;
+
+  /// No description provided for @weeklyTrend.
+  ///
+  /// In de, this message translates to:
+  /// **'Wochenverlauf'**
+  String get weeklyTrend;
+
+  /// No description provided for @createCustomProduct.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigenes Produkt anlegen'**
+  String get createCustomProduct;
+
+  /// No description provided for @saveFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Fehler beim Speichern'**
+  String get saveFailed;
+
+  /// No description provided for @urgent.
+  ///
+  /// In de, this message translates to:
+  /// **'Dringend'**
+  String get urgent;
+
+  /// No description provided for @bookedAsExpense.
+  ///
+  /// In de, this message translates to:
+  /// **'Als Ausgabe in Finanzen gebucht ✓'**
+  String get bookedAsExpense;
+
+  /// No description provided for @bookingFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Buchung fehlgeschlagen'**
+  String get bookingFailed;
+
+  /// No description provided for @totalPaidUpper.
+  ///
+  /// In de, this message translates to:
+  /// **'GESAMT BEZAHLT'**
+  String get totalPaidUpper;
+
+  /// No description provided for @shoppingListEmpty.
+  ///
+  /// In de, this message translates to:
+  /// **'Einkaufsliste leer'**
+  String get shoppingListEmpty;
+
+  /// No description provided for @doneUpper.
+  ///
+  /// In de, this message translates to:
+  /// **'ERLEDIGT'**
+  String get doneUpper;
+
+  /// No description provided for @deleteCompleted.
+  ///
+  /// In de, this message translates to:
+  /// **'Erledigte löschen'**
+  String get deleteCompleted;
+
+  /// No description provided for @estimatedUpper.
+  ///
+  /// In de, this message translates to:
+  /// **'VORAUSSICHTLICH'**
+  String get estimatedUpper;
+
+  /// No description provided for @inStore.
+  ///
+  /// In de, this message translates to:
+  /// **'Im Laden 🛒'**
+  String get inStore;
+
+  /// No description provided for @inCartStatus.
+  ///
+  /// In de, this message translates to:
+  /// **'IM KORB · ECHT · {inCart}/{total}'**
+  String inCartStatus(int inCart, int total);
+
+  /// No description provided for @listEmpty.
+  ///
+  /// In de, this message translates to:
+  /// **'Liste ist leer'**
+  String get listEmpty;
+
+  /// No description provided for @saveTemplate.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlage speichern'**
+  String get saveTemplate;
+
+  /// No description provided for @templateNameHint.
+  ///
+  /// In de, this message translates to:
+  /// **'z.B. Wocheneinkauf'**
+  String get templateNameHint;
+
+  /// No description provided for @templates.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlagen'**
+  String get templates;
+
+  /// No description provided for @noTemplatesSaved.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Vorlagen gespeichert.'**
+  String get noTemplatesSaved;
+
+  /// No description provided for @nothingLogged.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch nichts eingetragen'**
+  String get nothingLogged;
+
+  /// No description provided for @microNutrientsSupplements.
+  ///
+  /// In de, this message translates to:
+  /// **'Mikronährstoffe & Supplements'**
+  String get microNutrientsSupplements;
+
+  /// No description provided for @supplementsToday.
+  ///
+  /// In de, this message translates to:
+  /// **'SUPPLEMENTS HEUTE'**
+  String get supplementsToday;
+
   /// No description provided for @skip.
   ///
   /// In de, this message translates to:
@@ -2798,12 +2948,6 @@ abstract class AppLocalizations {
   /// **'Ziel: 2000 ml'**
   String get waterGoal2000;
 
-  /// No description provided for @nothingLogged.
-  ///
-  /// In de, this message translates to:
-  /// **'Noch nichts eingetragen'**
-  String get nothingLogged;
-
   /// No description provided for @shoppingListTooltip.
   ///
   /// In de, this message translates to:
@@ -2851,12 +2995,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Erledigte löschen'**
   String get deleteCompletedTooltip;
-
-  /// No description provided for @shoppingListEmpty.
-  ///
-  /// In de, this message translates to:
-  /// **'Einkaufsliste leer'**
-  String get shoppingListEmpty;
 
   /// No description provided for @tapToAddProduct.
   ///

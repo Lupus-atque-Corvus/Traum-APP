@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/components/components.dart';
 import '../../../core/providers/database_provider.dart';
@@ -57,7 +58,7 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Name erforderlich')));
+          SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
       return;
     }
     setState(() => _saving = true);
@@ -80,7 +81,7 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Fehler beim Speichern')));
+            SnackBar(content: Text(AppLocalizations.of(context)!.saveFailed)));
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -125,7 +126,7 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
                     borderRadius: BorderRadius.circular(2))),
           ),
           const SizedBox(height: 16),
-          const Text('Produkt hinzufügen',
+          Text(AppLocalizations.of(context)!.addProduct,
               style: TextStyle(
                   color: TraumColors.onBackground,
                   fontFamily: 'DMSans',
@@ -188,7 +189,7 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
             value: _isUrgent,
             onChanged: (v) => setState(() => _isUrgent = v),
             activeThumbColor: TraumColors.roseRed,
-            title: const Text('Dringend',
+            title: Text(AppLocalizations.of(context)!.urgent,
                 style: TextStyle(
                     color: TraumColors.onBackground,
                     fontFamily: 'DMSans',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/colors.dart';
@@ -12,10 +13,10 @@ class ShoppingTemplatesSheet extends ConsumerWidget {
 
   Future<void> _saveCurrent(BuildContext context, WidgetRef ref) async {
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final items = await ref.read(nutritionDaoProvider).watchAllShoppingItems().first;
     if (items.isEmpty) {
-      messenger.showSnackBar(
-          const SnackBar(content: Text('Liste ist leer')));
+      messenger.showSnackBar(SnackBar(content: Text(l10n.listEmpty)));
       return;
     }
     final ctrl = TextEditingController();
@@ -24,21 +25,21 @@ class ShoppingTemplatesSheet extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surfaceElevated,
-        title: const Text('Vorlage speichern',
+        title: Text(AppLocalizations.of(context)!.saveTemplate,
             style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
         content: TextField(
           controller: ctrl,
           autofocus: true,
           style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
-          decoration: const InputDecoration(hintText: 'z.B. Wocheneinkauf'),
+          decoration: InputDecoration(hintText: AppLocalizations.of(context)!.templateNameHint),
         ),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Abbrechen')),
+              child: Text(AppLocalizations.of(context)!.cancel)),
           TextButton(
               onPressed: () => Navigator.pop(ctx, ctrl.text.trim()),
-              child: const Text('Speichern')),
+              child: Text(AppLocalizations.of(context)!.save)),
         ],
       ),
     );
@@ -80,7 +81,7 @@ class ShoppingTemplatesSheet extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(2))),
           ),
           const SizedBox(height: 16),
-          const Text('Vorlagen',
+          Text(AppLocalizations.of(context)!.templates,
               style: TextStyle(
                   color: TraumColors.onBackground,
                   fontFamily: 'DMSans',
@@ -88,9 +89,9 @@ class ShoppingTemplatesSheet extends ConsumerWidget {
                   fontSize: 18)),
           const SizedBox(height: 12),
           if (templates.isEmpty)
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 12),
-              child: Text('Noch keine Vorlagen gespeichert.',
+              child: Text(AppLocalizations.of(context)!.noTemplatesSaved,
                   style: TextStyle(
                       color: TraumColors.onBackgroundMuted,
                       fontFamily: 'DMSans')),

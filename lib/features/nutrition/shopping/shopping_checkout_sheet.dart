@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/colors.dart';
@@ -105,14 +106,14 @@ class _ShoppingCheckoutSheetState extends ConsumerState<ShoppingCheckoutSheet> {
       if (!mounted) return;
       Navigator.of(context).pop(); // close checkout
       Navigator.of(context).pop(); // leave shopping mode
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Als Ausgabe in Finanzen gebucht ✓')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context)!.bookedAsExpense)));
     } catch (e, st) {
       debugPrint('finalizeShopping failed: $e\n$st');
       if (mounted) {
         setState(() => _saving = false);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Buchung fehlgeschlagen')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(AppLocalizations.of(context)!.bookingFailed)));
       }
     }
   }
@@ -169,7 +170,7 @@ class _ShoppingCheckoutSheetState extends ConsumerState<ShoppingCheckoutSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('GESAMT BEZAHLT',
+                  Text(AppLocalizations.of(context)!.totalPaidUpper,
                       style: TextStyle(
                           color: Color(0xB30D0D1A),
                           fontFamily: 'DMSans',

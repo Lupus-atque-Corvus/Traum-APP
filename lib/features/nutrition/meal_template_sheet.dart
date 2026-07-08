@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
@@ -101,7 +102,7 @@ class _MealTemplateSheetState
                     color: TraumColors.onBackground,
                     fontSize: 14),
                 decoration: InputDecoration(
-                  hintText: 'Lebensmittel suchen...',
+                  hintText: AppLocalizations.of(context)!.searchFoodHint,
                   hintStyle: const TextStyle(
                       fontFamily: 'DMSans',
                       color: TraumColors.onBackgroundSubtle,
@@ -129,8 +130,8 @@ class _MealTemplateSheetState
           child: productsAsync.when(
             data: (products) {
               if (products.isEmpty) {
-                return const Center(
-                  child: Text('Keine Produkte gefunden',
+                return Center(
+                  child: Text(AppLocalizations.of(context)!.noProductsFound,
                       style: TextStyle(
                           fontFamily: 'DMSans',
                           color: TraumColors.onBackgroundMuted)),

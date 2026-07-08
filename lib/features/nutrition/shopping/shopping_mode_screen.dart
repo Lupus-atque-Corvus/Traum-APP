@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/colors.dart';
@@ -28,7 +29,7 @@ class ShoppingModeScreen extends ConsumerWidget {
         backgroundColor: TraumColors.background,
         elevation: 0,
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
-        title: const Text('Im Laden 🛒',
+        title: Text(AppLocalizations.of(context)!.inStore,
             style: TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
@@ -37,7 +38,7 @@ class ShoppingModeScreen extends ConsumerWidget {
       body: itemsAsync.when(
         loading: () => const Center(
             child: CircularProgressIndicator(color: TraumColors.mintGreen)),
-        error: (e, _) => Center(child: Text('Fehler: $e')),
+        error: (e, _) => Center(child: Text(AppLocalizations.of(context)!.errorWithDetail(e.toString()))),
         data: (items) {
           final inCart = items.where((i) => i.checked).length;
           return Column(children: [
@@ -52,7 +53,7 @@ class ShoppingModeScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('IM KORB · ECHT · $inCart/${items.length}',
+                    Text(AppLocalizations.of(context)!.inCartStatus(inCart, items.length),
                         style: const TextStyle(
                             color: Color(0xB30D0D1A),
                             fontFamily: 'DMSans',

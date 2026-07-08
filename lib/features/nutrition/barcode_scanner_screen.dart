@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../core/providers/database_provider.dart';
@@ -127,7 +128,7 @@ class _BarcodeScannerScreenState
     if (product == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Produkt nicht gefunden'),
+          content: Text(AppLocalizations.of(context)!.productNotFound),
           backgroundColor: TraumColors.surface,
           action: SnackBarAction(
             label: 'Manuell',

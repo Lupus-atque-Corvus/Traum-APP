@@ -3,6 +3,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:traum/l10n/app_localizations.dart';
 import 'package:traum/core/providers/database_provider.dart';
 import 'package:traum/data/database/traum_database.dart';
 import 'package:traum/features/nutrition/shopping/add_shopping_item_sheet.dart';
@@ -17,6 +18,9 @@ void main() {
     await tester.pumpWidget(ProviderScope(
       overrides: [databaseProvider.overrideWithValue(db)],
       child: const MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('de'),
         home: Scaffold(body: AddShoppingItemSheet()),
       ),
     ));

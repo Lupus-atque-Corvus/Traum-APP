@@ -61,7 +61,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen>
                 padding:
                     const EdgeInsets.fromLTRB(20, 0, 16, 0),
                 child: Row(children: [
-                  const Text('Ernährung',
+                  Text(AppLocalizations.of(context)!.nutrition,
                       style: TextStyle(
                           fontFamily: 'DMSans',
                           fontWeight: FontWeight.w700,
@@ -251,7 +251,7 @@ class _TodayTab extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(children: [
-                  const Text('WASSER',
+                  Text(AppLocalizations.of(context)!.waterUpper,
                       style: TextStyle(
                           fontFamily: 'DMSans',
                           fontSize: 12,
@@ -374,7 +374,7 @@ class _WeekTab extends ConsumerWidget {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Wochenverlauf',
+                Text(AppLocalizations.of(context)!.weeklyTrend,
                     style: TextStyle(
                         fontFamily: 'DMSans',
                         fontWeight: FontWeight.w600,
@@ -550,7 +550,7 @@ class _ProductsTabState extends ConsumerState<_ProductsTab>
                   color: TraumColors.onBackground,
                   fontSize: 14),
               decoration: InputDecoration(
-                hintText: 'Lebensmittel suchen...',
+                hintText: AppLocalizations.of(context)!.searchFoodHint,
                 hintStyle: const TextStyle(
                     fontFamily: 'DMSans',
                     color: TraumColors.onBackgroundSubtle),
@@ -602,7 +602,7 @@ class _ProductsTabState extends ConsumerState<_ProductsTab>
                 (_) => ref.invalidate(productSearchProvider)),
             icon: const Icon(Icons.add,
                 color: TraumColors.mintGreen),
-            label: const Text('Eigenes Produkt anlegen',
+            label: Text(AppLocalizations.of(context)!.createCustomProduct,
                 style: TextStyle(
                     fontFamily: 'DMSans',
                     color: TraumColors.mintGreen)),
@@ -640,7 +640,7 @@ class _LocalProductsBrowse extends ConsumerWidget {
                 const Icon(Icons.search_off,
                     color: TraumColors.onBackgroundSubtle, size: 48),
                 const SizedBox(height: 12),
-                const Text('Keine Produkte gefunden',
+                Text(AppLocalizations.of(context)!.noProductsFound,
                     style: TextStyle(
                         fontFamily: 'DMSans',
                         color: TraumColors.onBackgroundMuted)),
@@ -712,7 +712,7 @@ class _MultiSourceResults extends ConsumerWidget {
                 const Icon(Icons.search_off,
                     color: TraumColors.onBackgroundSubtle, size: 48),
                 const SizedBox(height: 12),
-                const Text('Keine Produkte gefunden',
+                Text(AppLocalizations.of(context)!.noProductsFound,
                     style: TextStyle(
                         fontFamily: 'DMSans',
                         color: TraumColors.onBackgroundMuted)),

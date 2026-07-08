@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/colors.dart';
@@ -38,7 +39,7 @@ class _MicroNutrientPanelState extends ConsumerState<MicroNutrientPanel> {
                   size: 18,
                   color: TraumColors.mintGreen),
               const SizedBox(width: 4),
-              const Text('Mikronährstoffe & Supplements',
+              Text(AppLocalizations.of(context)!.microNutrientsSupplements,
                   style: TextStyle(
                       fontFamily: 'DMSans',
                       fontSize: 13,
@@ -99,7 +100,7 @@ class _SupplementsToday extends ConsumerWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('SUPPLEMENTS HEUTE',
+            Text(AppLocalizations.of(context)!.supplementsToday,
                 style: TextStyle(
                     fontFamily: 'DMSans',
                     fontSize: 11,
