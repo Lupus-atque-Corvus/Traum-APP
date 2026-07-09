@@ -1,8 +1,35 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.25+74** · schemaVersion **19**.
-> Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert (Stand v0.7.20).
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.26+75** · schemaVersion **22**.
+> Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
+
+---
+
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-09 — für frischen Worker nach PC-Neustart)
+
+**Wo wir sind:** Ein großer 10-Phasen-Verbesserungsplan ist KOMPLETT umgesetzt, reviewt und als
+Release **v0.7.26** veröffentlicht.
+- Plan: `../docs/superpowers/plans/2026-07-02-verbesserungen-gesamtplan.md`
+- Detail-Ledger (jeder Task, jeder Commit, alle User-Entscheidungen): `../.superpowers/sdd/progress.md` ← HIER zuerst lesen für Kontext.
+- Release: https://github.com/Lupus-atque-Corvus/Traum-APP/releases/tag/v0.7.26 (Debug-Build, mit echten Fonts).
+
+**Git-Stand:**
+- `master` = **a359242** (v0.7.26-Release-Stand, gepusht + Tag v0.7.26). schemaVersion 22. 398 Tests grün, analyze 0.
+- Branch **`chore/i18n-remaining`** = master + 7 Commits: der komplette i18n-Rest (alle 8 Module de+en lokalisiert, grün).
+  → User will i18n in einem SPÄTEREN Release. NICHT nach master mergen ohne Ansage.
+- Fonts: waren 12-Byte-Stubs, jetzt echte DMSans/NotoSansArabic-TTFs (Commit 7932886). Erledigt.
+
+**Was JETZT läuft:** Der User macht eine **manuelle Testrunde** anhand von
+`../Pruefleitfaden-v0.7.26.txt` (Haupt-Repo-Root) — eine Checkliste aller umgesetzten Features
++ bekannter Grenzen. Er hat schon einige Fehler/Probleme gesehen und wird die `[!]`-Punkte melden.
+→ Erwartete nächste Aufgabe: gemeldete Bugs gezielt fixen (auf master oder neuem Fix-Branch, mit Review + analyze 0 / test grün pro Fix).
+
+**Offene Aktionen (brauchen User):** signierter Store-Release (`android/key.properties.disabled`
+reaktivieren) · i18n-Branch mergen für v0.7.27 · Haupt-Repo `Traum` pushen (nur lokal gebumpt).
+
+**Workflow-Erinnerung:** Änderungen im Submodule `traum_app` committen; pro Änderung
+`flutter analyze` → 0 und `flutter test` → grün (aktuell 398). Bei ARB-Änderung `flutter gen-l10n`.
 
 ---
 
@@ -17,7 +44,7 @@
 
 ## Projekt-Fakten (aus dem Code verifiziert)
 - **Name / App-ID:** TRAUM · `de.traum.traum` (Android applicationId + iOS Bundle, beide Plattformen)
-- **Version:** 0.7.25+74 · Drift schemaVersion: 19
+- **Version:** 0.7.26+75 · Drift schemaVersion: 22 (v20 Kalender-Sync-Metadaten, v21 FoodProducts-Quellen, v22 WorkoutPlans.planType)
 - **Plattformen:** Android (minSdk 26) · iOS (Deployment Target 13.0)
 - **SDK:** Dart ^3.9.2
 - **Datenablage:** ausschließlich lokal — kein Backend, kein Server, keine Internet-Pflicht
