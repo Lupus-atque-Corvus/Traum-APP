@@ -12,16 +12,19 @@
 getestet und mehrere `[!]`-Bugs gemeldet (u.a. Budget-Tab komplett schwarz, NavBar kommt nach
 Untermenüs nicht zurück, Kalender-Wochentage englisch, Termin-Bearbeitung synct nicht,
 Trainings-Gewicht bei Routine-Start nicht gespeichert, Muskel-Heatmap-Widget leer, Performance).
-Alle in dieser Runde gemeldeten Bugs sind gefixt (8 Commits, je einer pro Bug/Bereich) und als
-**Release v0.7.27** veröffentlicht.
+Alle in dieser Runde gemeldeten Bugs sind gefixt (8 Commits, je einer pro Bug/Bereich), als
+**Release v0.7.27** veröffentlicht, und der komplette i18n-Rest (`chore/i18n-remaining`) ist
+danach auf Wunsch des Users nach master gemergt worden (auf master rebast, ein Merge-Konflikt in
+`budget_screen.dart` zwischen der lokalisierten Überschrift und dem Sliver-Header-Fix aufgelöst,
+398 Tests grün / analyze 0 nach dem Merge).
 - Detail-Ledger vorheriger Runde: `../.superpowers/sdd/progress.md`.
-- Release: https://github.com/Lupus-atque-Corvus/Traum-APP/releases/tag/v0.7.27 (Debug-Build).
+- Release: https://github.com/Lupus-atque-Corvus/Traum-APP/releases/tag/v0.7.27 (Debug-Build,
+  Stand VOR dem i18n-Merge — kein neuer Release-Tag für den i18n-Merge erstellt, nur gepusht).
 
 **Git-Stand:**
-- `master` = v0.7.27-Release-Stand, gepusht + Tag v0.7.27. schemaVersion 22. 398 Tests grün, analyze 0.
-- Branch **`chore/i18n-remaining`** = master + 7 Commits (Stand v0.7.26): der komplette i18n-Rest
-  (alle 8 Module de+en lokalisiert, grün). → User will i18n in einem SPÄTEREN Release. NICHT nach
-  master mergen ohne Ansage. Vor dem Mergen ggf. auf aktuellen master rebasen.
+- `master` = 133e0ab (v0.7.27-Bugfixes + kompletter i18n-Rest gemergt), gepusht. schemaVersion 22.
+  398 Tests grün, analyze 0.
+- Branch `chore/i18n-remaining` existiert nicht mehr (gemergt + gelöscht).
 - Fonts: echte DMSans/NotoSansArabic-TTFs (Commit 7932886). Erledigt.
 
 **Root-Cause-Highlight dieser Runde:** Budget-Tab-Absturz war eine ungültige `SliverGeometry`
@@ -30,12 +33,12 @@ unterschiedlichem min-/maxExtent — per Android-Emulator + Live-Logcat reproduz
 nicht nur vermutet. Ein `ErrorWidget.builder` in `main.dart` macht solche Render-Exceptions jetzt
 sichtbar statt eines stillen schwarzen Bereichs.
 
-**Offene Aktionen (brauchen User):** i18n-Branch mergen, wenn gewünscht · Haupt-Repo `Traum`
-(Submodule-Pointer) pushen, wenn gewünscht · Kalender-Edit-Sync (Phase 4 dieser Runde) braucht
-einen echten Gerätetest, um den zugrunde liegenden device_calendar-Fehler zu sehen (jetzt sichtbar
+**Offene Aktionen (brauchen User):** Kalender-Edit-Sync (Phase 4 dieser Runde) braucht einen
+echten Gerätetest, um den zugrunde liegenden device_calendar-Fehler zu sehen (jetzt sichtbar
 statt verschluckt) · Lebensmittelsuche: falls auf dem eigenen Gerät weiterhin defekt, genauer
 beschreiben (Tastatur? Cursor? Internet an?) — im Emulator-Test funktionierte das Suchfeld selbst
-einwandfrei.
+einwandfrei · Detail-Texte sind jetzt vollständig de+en lokalisiert, aber noch nicht in einem
+neuen APK-Release/Tag veröffentlicht — auf Wunsch nachholen.
 
 **Workflow-Erinnerung:** Änderungen im Submodule `traum_app` committen; pro Änderung
 `flutter analyze` → 0 und `flutter test` → grün (aktuell 398). Bei ARB-Änderung `flutter gen-l10n`.
