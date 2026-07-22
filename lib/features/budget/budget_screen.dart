@@ -238,11 +238,16 @@ String _monthYear(DateTime d) {
 class _BudgetHeaderDelegate extends SliverPersistentHeaderDelegate {
   const _BudgetHeaderDelegate();
 
+  // minExtent == maxExtent: ein fixer (nicht schrumpfender) pinned Header.
+  // Ein Header mit unterschiedlichem min/maxExtent bringt
+  // RenderSliverPersistentHeader in manchen Layout-Konstellationen in einen
+  // ungültigen Geometrie-Zustand (SliverGeometry: layoutExtent > paintExtent),
+  // der das gesamte CustomScrollView leer rendern lässt.
   @override
-  double get minExtent => 44;
+  double get minExtent => bs(60);
 
   @override
-  double get maxExtent => 60; // 16px Spielraum → Titel blendet sanft aus
+  double get maxExtent => bs(60);
 
   @override
   bool shouldRebuild(_BudgetHeaderDelegate old) => false;
@@ -250,22 +255,14 @@ class _BudgetHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    // Titel blendet über 16px Scroll vollständig aus
-    final titleOpacity =
-        (1.0 - shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
-
     return Padding( // ← Padding statt Container — KEIN Hintergrund!
       padding: EdgeInsets.fromLTRB(bs(16), bs(8), bs(16), bs(4)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Titel scrollt weg (opacity → 0)
-          Opacity(
-            opacity: titleOpacity,
-            child: Text(
-              'Budget',
-              style: _style(20, FontWeight.w700), // ← 20px wie im HTML
-            ),
+          Text(
+            'Budget',
+            style: _style(20, FontWeight.w700), // ← 20px wie im HTML
           ),
           const Spacer(),
           // Pille hat eigenen Hintergrund — schwebt transparent über Content

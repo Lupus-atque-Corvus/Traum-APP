@@ -20,6 +20,20 @@ import 'widget/widget_update_scheduler.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Surface rendering/layout exceptions (e.g. an invalid SliverGeometry) as a
+  // visible error banner instead of a silent blank/black area — otherwise
+  // such bugs are invisible during manual testing until logcat is checked.
+  ErrorWidget.builder = (FlutterErrorDetails details) => Container(
+        color: const Color(0xFF0D0D1A),
+        alignment: Alignment.center,
+        padding: const EdgeInsets.all(16),
+        child: Text(
+          'UI-Fehler: ${details.exceptionAsString()}',
+          style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+          textAlign: TextAlign.center,
+        ),
+      );
+
   final prefs = await SharedPreferences.getInstance();
   final db = TraumDatabase();
 
@@ -31,23 +45,6 @@ void main() async {
   // Register the periodic background widget refresh (internally guarded).
   await registerWidgetPeriodicRefresh();
 
-  // ExerciseSeeder must finish before ExerciseLibrarySeeder runs: the latter
-  // looks up existing exercises by name to avoid inserting duplicates, so it
-  // needs to see ExerciseSeeder's rows already committed. Both seeders write
-  // to the same `Exercises` table, so this pair runs sequentially while the
-  // remaining (unrelated-table) seeders still run concurrently.
-  await ExerciseSeeder.seedIfNeeded(db, prefs);
-  await ExerciseLibrarySeeder.seedIfNeeded(db, prefs);
-
-  await Future.wait([
-    SupplementSeeder.seedIfNeeded(db, prefs),
-    SubstanceDatabaseCopier.copyIfNeeded(db, prefs),
-    MapCollectionSeeder.seedIfNeeded(db, prefs),
-    GroceryPriceSeeder.seedIfNeeded(db, prefs),
-  ]);
-
-  await RecurringPoster.runIfNeeded(db);
-
   runApp(
     ProviderScope(
       overrides: [
@@ -57,4 +54,27 @@ void main() async {
       child: const TraumApp(),
     ),
   );
+
+  // Seeders run after the first frame instead of blocking startup: each one
+  // no-ops instantly via `seedIfNeeded` once its data already exists, so on
+  // every launch except the very first this was pure overhead before the
+  // first frame could even be drawn.
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    // ExerciseSeeder must finish before ExerciseLibrarySeeder runs: the latter
+    // looks up existing exercises by name to avoid inserting duplicates, so it
+    // needs to see ExerciseSeeder's rows already committed. Both seeders write
+    // to the same `Exercises` table, so this pair runs sequentially while the
+    // remaining (unrelated-table) seeders still run concurrently.
+    await ExerciseSeeder.seedIfNeeded(db, prefs);
+    await ExerciseLibrarySeeder.seedIfNeeded(db, prefs);
+
+    await Future.wait([
+      SupplementSeeder.seedIfNeeded(db, prefs),
+      SubstanceDatabaseCopier.copyIfNeeded(db, prefs),
+      MapCollectionSeeder.seedIfNeeded(db, prefs),
+      GroceryPriceSeeder.seedIfNeeded(db, prefs),
+    ]);
+
+    await RecurringPoster.runIfNeeded(db);
+  });
 }
