@@ -112,9 +112,26 @@ class _TraumAppState extends ConsumerState<TraumApp> {
     _goToLock(biometric);
   }
 
+  DateTime? _lastWidgetRefresh;
+
+  /// Refreshes homescreen widget data, but skips it if the last refresh was
+  /// very recent. `_onPause`/`_onResume` fire on EVERY lifecycle transition —
+  /// a single permission dialog (e.g. the calendar/health permission flow)
+  /// triggers several pause/resume cycles in quick succession, each of which
+  /// would otherwise re-run the full widget snapshot collection (HealthConnect
+  /// IPC calls + DB queries) back-to-back, visibly janking the UI mid-flow.
+  void _refreshWidgetsDebounced() {
+    final now = DateTime.now();
+    if (_lastWidgetRefresh != null &&
+        now.difference(_lastWidgetRefresh!) < const Duration(seconds: 3)) {
+      return;
+    }
+    _lastWidgetRefresh = now;
+    refreshWidgetsFromRead(ref.read); // fire-and-forget
+  }
+
   void _onPause() {
-    // Fire-and-forget: refresh homescreen widget data on every pause.
-    refreshWidgetsFromRead(ref.read);
+    _refreshWidgetsDebounced();
 
     final prefs = ref.read(preferencesRepositoryProvider);
     if (!prefs.onboardingComplete) return;
@@ -127,8 +144,7 @@ class _TraumAppState extends ConsumerState<TraumApp> {
   }
 
   void _onResume() {
-    // Fire-and-forget: refresh homescreen widget data on every resume.
-    refreshWidgetsFromRead(ref.read);
+    _refreshWidgetsDebounced();
 
     // Navigate if resumed from a widget tap (singleTop re-delivery).
     _checkWidgetDeepLink();
