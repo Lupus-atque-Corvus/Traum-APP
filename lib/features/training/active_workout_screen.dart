@@ -125,8 +125,6 @@ class ActiveWorkoutScreen extends ConsumerStatefulWidget {
 
 class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
   late DateTime _startedAt;
-  late Timer _timer;
-  Duration _elapsed = Duration.zero;
   int? _sessionId;
   final _blocks = <_ExerciseBlock>[];
   bool _finishing = false;
@@ -143,9 +141,6 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
     super.initState();
     _startedAt = DateTime.now();
     WakelockPlus.enable();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() => _elapsed = DateTime.now().difference(_startedAt));
-    });
     _createSession();
     final dayId = widget.dayId;
     if (dayId != null) {
@@ -179,13 +174,28 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
       final exercise = exerciseById[de.exerciseId];
       if (exercise == null) continue; // exercise deleted since — skip it
       final setCount = de.defaultSets > 0 ? de.defaultSets : 1;
+      final sets = List.generate(
+        setCount,
+        (i) => _SetRow(setNumber: i + 1, reps: de.defaultReps),
+      );
+      // A routine has no per-set default weight to prefill from, so every
+      // generated row starts with an empty weight field. Without this, only
+      // the first set the user fills in gets saved with a weight — sets 2..N
+      // stay null. Mirror the manual "+ Satz"-flow's carry-over behavior: as
+      // soon as the user types a weight into the first set, copy it into any
+      // other set of this exercise that's still empty.
+      if (sets.length > 1) {
+        sets.first.weightCtrl.addListener(() {
+          final typed = sets.first.weightCtrl.text;
+          for (final s in sets.skip(1)) {
+            if (s.weightCtrl.text.isEmpty) s.weightCtrl.text = typed;
+          }
+        });
+      }
       newBlocks.add(_ExerciseBlock(
         exercise: exercise,
         restSeconds: de.defaultRestSeconds,
-        sets: List.generate(
-          setCount,
-          (i) => _SetRow(setNumber: i + 1, reps: de.defaultReps),
-        ),
+        sets: sets,
       ));
     }
     if (!mounted || newBlocks.isEmpty) return;
@@ -197,7 +207,6 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
 
   @override
   void dispose() {
-    _timer.cancel();
     WakelockPlus.disable();
     for (final b in _blocks) {
       b.dispose();
@@ -205,13 +214,6 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
     _mainScrollCtrl.dispose();
     _sidebarScrollCtrl.dispose();
     super.dispose();
-  }
-
-  String get _elapsedStr {
-    final h = _elapsed.inHours;
-    final m = _elapsed.inMinutes % 60;
-    final s = _elapsed.inSeconds % 60;
-    return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
 
   String get _estimatedStr {
@@ -263,8 +265,8 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: Row(
               children: [
-                Text(
-                  _elapsedStr,
+                _ElapsedTimeDisplay(
+                  startedAt: _startedAt,
                   style: const TextStyle(
                     color: TraumColors.coralOrange,
                     fontFamily: 'DMSans',
@@ -507,7 +509,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
       id: Value(_sessionId!),
       startedAt: Value(_startedAt),
       completedAt: Value(now),
-      durationSeconds: Value(_elapsed.inSeconds),
+      durationSeconds: Value(now.difference(_startedAt).inSeconds),
     ));
     int globalSetNum = 1;
     for (final block in _blocks) {
@@ -526,6 +528,52 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
     }
     if (mounted) context.go('/training/session/$_sessionId');
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Elapsed-time ticker — isolated so the 1s Timer.periodic only rebuilds this
+// small Text instead of the whole ActiveWorkoutScreen (exercise lists etc.)
+// every second.
+// ─────────────────────────────────────────────────────────────────────────────
+class _ElapsedTimeDisplay extends StatefulWidget {
+  final DateTime startedAt;
+  final TextStyle style;
+  const _ElapsedTimeDisplay({required this.startedAt, required this.style});
+
+  @override
+  State<_ElapsedTimeDisplay> createState() => _ElapsedTimeDisplayState();
+}
+
+class _ElapsedTimeDisplayState extends State<_ElapsedTimeDisplay> {
+  late Timer _timer;
+  Duration _elapsed = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _elapsed = DateTime.now().difference(widget.startedAt);
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) {
+        setState(() => _elapsed = DateTime.now().difference(widget.startedAt));
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  String get _elapsedStr {
+    final h = _elapsed.inHours;
+    final m = _elapsed.inMinutes % 60;
+    final s = _elapsed.inSeconds % 60;
+    return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
+
+  @override
+  Widget build(BuildContext context) => Text(_elapsedStr, style: widget.style);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
