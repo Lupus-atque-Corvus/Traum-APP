@@ -424,9 +424,16 @@ class _ProductsTab extends ConsumerStatefulWidget {
       _ProductsTabState();
 }
 
-class _ProductsTabState extends ConsumerState<_ProductsTab> {
+class _ProductsTabState extends ConsumerState<_ProductsTab>
+    with AutomaticKeepAliveClientMixin {
   final _searchCtrl = TextEditingController();
   Timer? _debounce;
+
+  // TabBarView disposes off-screen tabs by default — ohne KeepAlive würde ein
+  // Tab-Wechsel weg von "Produkte" und zurück die Sucheingabe/den Controller
+  // zerstören.
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -526,6 +533,7 @@ class _ProductsTabState extends ConsumerState<_ProductsTab> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final l10n = AppLocalizations.of(context)!;
     final query = ref.watch(productSearchQueryProvider);
     final searchActive = query.trim().isNotEmpty;
