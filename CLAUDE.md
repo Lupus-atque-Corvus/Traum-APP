@@ -1,37 +1,51 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.27+76** · schemaVersion **22**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.28+77** · schemaVersion **22**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-22 — nach Pruefleitfaden-Testrunde)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-22 — nach zwei Pruefleitfaden-Testrunden)
 
-**Wo wir sind:** Der User hat v0.7.26 anhand von `../Pruefleitfaden-v0.7.26.txt` manuell
-getestet und mehrere `[!]`-Bugs gemeldet (u.a. Budget-Tab komplett schwarz, NavBar kommt nach
-Untermenüs nicht zurück, Kalender-Wochentage englisch, Termin-Bearbeitung synct nicht,
-Trainings-Gewicht bei Routine-Start nicht gespeichert, Muskel-Heatmap-Widget leer, Performance).
-Alle in dieser Runde gemeldeten Bugs sind gefixt (8 Commits, je einer pro Bug/Bereich), als
-**Release v0.7.27** veröffentlicht, und der komplette i18n-Rest (`chore/i18n-remaining`) ist
-danach auf Wunsch des Users nach master gemergt worden (auf master rebast, ein Merge-Konflikt in
-`budget_screen.dart` zwischen der lokalisierten Überschrift und dem Sliver-Header-Fix aufgelöst,
-398 Tests grün / analyze 0 nach dem Merge).
-- Detail-Ledger vorheriger Runde: `../.superpowers/sdd/progress.md`.
-- Release: https://github.com/Lupus-atque-Corvus/Traum-APP/releases/tag/v0.7.27 (Debug-Build,
-  Stand VOR dem i18n-Merge — kein neuer Release-Tag für den i18n-Merge erstellt, nur gepusht).
+**Wo wir sind:** v0.7.27 wurde nach der ersten Testrunde released, der User hat es getestet und
+gemeldet, dass Budget IMMER NOCH schwarz war (jetzt sogar ohne FAB), die Lebensmittelsuche
+weiterhin nichts fand (auch bei Frühstück/Mittag/etc.), und die App ruckeliger als vorher wirkte.
+Diese zweite Runde wurde systematisch per Android-Emulator + Live-`adb logcat` untersucht
+(nicht nur Code-Review) und ist als **Release v0.7.28** veröffentlicht:
 
-**Git-Stand:**
-- `master` = 133e0ab (v0.7.27-Bugfixes + kompletter i18n-Rest gemergt), gepusht. schemaVersion 22.
-  398 Tests grün, analyze 0.
-- Branch `chore/i18n-remaining` existiert nicht mehr (gemergt + gelöscht).
-- Fonts: echte DMSans/NotoSansArabic-TTFs (Commit 7932886). Erledigt.
+1. **Budget schwarz — endgültig behoben:** Der v0.7.27-Fix (minExtent==maxExtent am
+   `SliverPersistentHeader`) reichte NICHT — Live-Repro zeigte exakt dieselbe
+   `SliverGeometry`-Exception weiterhin (paintExtent blieb bei 53.5, unabhängig vom
+   konfigurierten Extent). Der Header lebt jetzt komplett außerhalb des `CustomScrollView`
+   (`_BudgetHeader` als normale `Column`-Zeile statt Sliver) — **live über mehrfache
+   Navigation verifiziert, rendert stabil.**
+2. **Lebensmittelsuche (Frühstück/Mittag/Abend/Snack):** `MealTemplateSheet` nutzte
+   `productSearchProvider` (rein lokale SQLite-Suche, nie Online) statt der
+   Multi-Source-Suche wie der Produkte-Tab — bei leerer lokaler DB IMMER "nichts gefunden".
+   Jetzt auf dieselbe Multi-Source-Suche umgestellt. **Nicht mit echtem Internet
+   verifizierbar** (Emulator-Sandbox hat keine Netzwerkverbindung) — braucht Bestätigung
+   auf echtem Gerät.
+3. **Performance:** Per Live-Logcat einen konkreten, realen 3.6-Sekunden-Frame-Hänger
+   nachgewiesen, ausgelöst durch mehrfache Pause/Resume-Zyklen während eines
+   Berechtigungsdialogs, die jeweils den kompletten Widget-Daten-Refresh (mehrere
+   HealthConnect-IPC-Calls + DB-Queries) neu auslösten. Jetzt auf min. 3s entprellt.
+   **Ob das ALLE Ruckel-Beschwerden abdeckt, ist nicht 100% sicher** — nur diese eine,
+   konkret nachgewiesene Ursache wurde gefixt.
 
-**Root-Cause-Highlight dieser Runde:** Budget-Tab-Absturz war eine ungültige `SliverGeometry`
-(layoutExtent > paintExtent) durch einen schrumpfenden `pinned`-`SliverPersistentHeader` mit
-unterschiedlichem min-/maxExtent — per Android-Emulator + Live-Logcat reproduziert und bestätigt,
-nicht nur vermutet. Ein `ErrorWidget.builder` in `main.dart` macht solche Render-Exceptions jetzt
-sichtbar statt eines stillen schwarzen Bereichs.
+Nutzer wurde vor dem Release explizit auf den Verifikationsstatus hingewiesen (Budget: sicher,
+Suche/Performance: wahrscheinlich, aber Bestätigung auf echtem Gerät steht aus).
+
+- Release: https://github.com/Lupus-atque-Corvus/Traum-APP/releases/tag/v0.7.28 (Debug-Build).
+- Vorheriger Release: https://github.com/Lupus-atque-Corvus/Traum-APP/releases/tag/v0.7.27
+
+**Git-Stand:** `master` = v0.7.28-Stand, gepusht + Tag v0.7.28. schemaVersion 22.
+398 Tests grün, analyze 0. Kein offener Branch.
+
+**Falls der User nach diesem Release weiterhin Suche/Ruckel-Probleme meldet:** NICHT erneut
+raten — auf einem echten Gerät per `adb logcat` (Frame-Skips, HealthConnect/Netzwerk-Fehler)
+oder mit dem User gemeinsam live mitschneiden (funktioniert gut: User navigiert, Claude sammelt
+`adb logcat` parallel und sucht nach `Skipped`/`Davey`/`app_time_stats`-Ausreißern).
 
 **Offene Aktionen (brauchen User):** Kalender-Edit-Sync (Phase 4 dieser Runde) braucht einen
 echten Gerätetest, um den zugrunde liegenden device_calendar-Fehler zu sehen (jetzt sichtbar
