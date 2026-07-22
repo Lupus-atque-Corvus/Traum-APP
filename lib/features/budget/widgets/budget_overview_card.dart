@@ -1,3 +1,5 @@
+import 'dart:math' show max;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -306,8 +308,13 @@ class _BudgetCategoryRow extends StatelessWidget {
                       // Soll-Tempo-Marker (breiter, mit Glow)
                       if (kShowBudgetPacing)
                         Positioned(
+                          // width kann während eines Layout-Übergangs
+                          // transient 0 sein (z.B. animierte NavBar-Padding-
+                          // Änderung beim Rein-/Rausnavigieren) — ohne max()
+                          // würde clamp(0.0, negativ) einen ArgumentError
+                          // werfen und den ganzen Sliver-Baum leer rendern.
                           left: (width * pacingRatio - bs(1.5))
-                              .clamp(0.0, width - bs(3)),
+                              .clamp(0.0, max(0.0, width - bs(3))),
                           top: -3,
                           bottom: -3,
                           child: Container(

@@ -27,25 +27,32 @@ class BudgetScreen extends ConsumerWidget {
     return BudgetTextScale(
       child: Scaffold(
       backgroundColor: TraumColors.background,
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(
-            child: SizedBox(height: MediaQuery.of(context).padding.top + 8),
-          ),
-          const SliverPersistentHeader(
-            pinned: true,
-            delegate: _BudgetHeaderDelegate(),
-          ),
-          const SliverToBoxAdapter(child: _BudgetHeaderCard()),
-          const SliverToBoxAdapter(child: _QuickActionChips()),
-          const SliverToBoxAdapter(child: _KontenCard()),
-          const SliverToBoxAdapter(child: _BudgetUebersichtCard()),
-          const SliverToBoxAdapter(child: _VerlaufCard()),
-          const SliverToBoxAdapter(child: _LetzteTransaktionenCard()),
-          SliverPadding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).padding.bottom + 90,
+      // Der Monats-Pillen-Header lebt bewusst AUSSERHALB des CustomScrollView
+      // (nicht als SliverPersistentHeader) — ein pinned Sliver-Header geriet
+      // während Navigations-Übergängen wiederholt in einen ungültigen
+      // Geometrie-Zustand (SliverGeometry: layoutExtent > paintExtent), der
+      // die gesamte Scrollview leer rendern ließ. Ein normaler, nicht in die
+      // Sliver-Geometrie eingebundener Header ist davon nicht betroffen.
+      body: Column(
+        children: [
+          SizedBox(height: MediaQuery.of(context).padding.top + 8),
+          const _BudgetHeader(),
+          Expanded(
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                const SliverToBoxAdapter(child: _BudgetHeaderCard()),
+                const SliverToBoxAdapter(child: _QuickActionChips()),
+                const SliverToBoxAdapter(child: _KontenCard()),
+                const SliverToBoxAdapter(child: _BudgetUebersichtCard()),
+                const SliverToBoxAdapter(child: _VerlaufCard()),
+                const SliverToBoxAdapter(child: _LetzteTransaktionenCard()),
+                SliverPadding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).padding.bottom + 90,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -240,28 +247,13 @@ String _monthYear(DateTime d) {
   return '${m[d.month - 1]} ${d.year}';
 }
 
-// ─── Sticky Monats-Pille ──────────────────────────────────────────────────────
+// ─── Monats-Pillen-Header (fix, KEIN Sliver — siehe Kommentar in build()) ─────
 
-class _BudgetHeaderDelegate extends SliverPersistentHeaderDelegate {
-  const _BudgetHeaderDelegate();
-
-  // minExtent == maxExtent: ein fixer (nicht schrumpfender) pinned Header.
-  // Ein Header mit unterschiedlichem min/maxExtent bringt
-  // RenderSliverPersistentHeader in manchen Layout-Konstellationen in einen
-  // ungültigen Geometrie-Zustand (SliverGeometry: layoutExtent > paintExtent),
-  // der das gesamte CustomScrollView leer rendern lässt.
-  @override
-  double get minExtent => bs(60);
+class _BudgetHeader extends StatelessWidget {
+  const _BudgetHeader();
 
   @override
-  double get maxExtent => bs(60);
-
-  @override
-  bool shouldRebuild(_BudgetHeaderDelegate old) => false;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(BuildContext context) {
     return Padding( // ← Padding statt Container — KEIN Hintergrund!
       padding: EdgeInsets.fromLTRB(bs(16), bs(8), bs(16), bs(4)),
       child: Row(
