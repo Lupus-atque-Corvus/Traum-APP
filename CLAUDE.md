@@ -1,12 +1,29 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.28+77** · schemaVersion **22**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.29+78** · schemaVersion **22**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-22 — nach zwei Pruefleitfaden-Testrunden)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-23 — v0.7.29, Lebensmittelsuche-Root-Cause extern verifiziert)
+
+**Nach v0.7.28:** User meldete, die Lebensmittelsuche funktioniere weiterhin nicht (z.B. "reis",
+"ei", "hähnchen" finden nichts). Root Cause diesmal NICHT nur aus Code-Review, sondern durch
+direkte `curl`-Anfragen gegen die echte OpenFoodFacts-API verifiziert: der öffentliche
+`cgi/search.pl`-Suchendpunkt liefert nicht zuverlässig 200/JSON — identische Wiederholungsanfragen
+bekamen abwechselnd gültige Daten und eine Bot-/Rate-Limit-HTML-Fehlerseite (503, "temporarily
+unavailable") zurück. Feldnamen/Parsing wurden gegen eine echte Antwort geprüft und sind korrekt.
+Fix: bis zu 2 Versuche pro Quelle + vollständigerer User-Agent (`open_food_facts_source.dart`).
+Das ist eine Resilienz-Verbesserung gegen eine bekannt unzuverlässige kostenlose Drittanbieter-API,
+kein klassischer Code-Bug — **kann die Erfolgsrate nicht auf 100% garantieren**, falls OFF weiterhin
+blockt, hilft nur eine App-eigene API-Registrierung oder ein Quellenwechsel.
+
+- Release: https://github.com/Lupus-atque-Corvus/Traum-APP/releases/tag/v0.7.29 (Debug-Build).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-07-22 — nach zwei Pruefleitfaden-Testrunden)
 
 **Wo wir sind:** v0.7.27 wurde nach der ersten Testrunde released, der User hat es getestet und
 gemeldet, dass Budget IMMER NOCH schwarz war (jetzt sogar ohne FAB), die Lebensmittelsuche
