@@ -1,5 +1,6 @@
 import 'package:device_calendar/device_calendar.dart';
 import 'package:drift/drift.dart' show Value;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:timezone/timezone.dart' as tz;
 import '../../data/database/traum_database.dart';
@@ -210,11 +211,14 @@ class CalendarSyncService {
   /// [Appointment.externalEventId], [_pushToDevice] updates that exact
   /// device event (app-origin wins a conflict); otherwise it behaves like
   /// [syncNewAppointment] and creates one.
-  Future<void> syncUpdatedAppointment(int appointmentId) async {
+  ///
+  /// Returns `false` if the push failed (caller can surface this to the
+  /// user), `true` on success or when there was nothing to do.
+  Future<bool> syncUpdatedAppointment(int appointmentId) async {
     final ids = _prefs.selectedCalendarIds;
-    if (ids.isEmpty) return;
+    if (ids.isEmpty) return true;
     final apt = await _dao.getAppointmentById(appointmentId);
-    if (apt == null) return;
+    if (apt == null) return true;
     try {
       final targetCalendarId = apt.sourceCalendarId ?? ids.first;
       final resultId = await _pushToDevice(apt, targetCalendarId);
@@ -226,7 +230,11 @@ class CalendarSyncService {
           lastSyncedAt: DateTime.now(),
         );
       }
-    } catch (_) {}
+      return true;
+    } catch (e, st) {
+      debugPrint('[CalendarSyncService] syncUpdatedAppointment failed: $e\n$st');
+      return false;
+    }
   }
 
   Future<void> deleteAppointmentWithSync(int appointmentId) async {

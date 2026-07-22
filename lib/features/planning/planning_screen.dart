@@ -177,6 +177,7 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
                 events.putIfAbsent(day, () => []).add(a);
               }
               return TableCalendar<Appointment>(
+                locale: Localizations.localeOf(context).toString(),
                 firstDay: DateTime(2000),
                 lastDay: DateTime(2100),
                 focusedDay: _focusedDay,
@@ -306,9 +307,20 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
           ref.read(calendarSyncServiceProvider).syncNewAppointment(id);
         },
         onEdit: (c) async {
+          final messenger = ScaffoldMessenger.of(context);
+          final l10n = AppLocalizations.of(context)!;
           await ref.read(planningDaoProvider).updateAppointment(c);
-          // Push the update to the device calendar without waiting
-          ref.read(calendarSyncServiceProvider).syncUpdatedAppointment(c.id.value);
+          final success = await ref
+              .read(calendarSyncServiceProvider)
+              .syncUpdatedAppointment(c.id.value);
+          if (!success && mounted) {
+            messenger.showSnackBar(
+              SnackBar(
+                content: Text(l10n.syncDone(0, 1)),
+                duration: const Duration(seconds: 4),
+              ),
+            );
+          }
         },
       ),
     );
