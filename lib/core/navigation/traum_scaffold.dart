@@ -69,7 +69,8 @@ Future<bool> _showExitDialog(BuildContext context) async {
 
 class TraumScaffold extends ConsumerStatefulWidget {
   final Widget child;
-  const TraumScaffold({super.key, required this.child});
+  final String location;
+  const TraumScaffold({super.key, required this.child, required this.location});
 
   @override
   ConsumerState<TraumScaffold> createState() => _TraumScaffoldState();
@@ -129,7 +130,7 @@ class _TraumScaffoldState extends ConsumerState<TraumScaffold> {
   }
 
   String _currentRoute(BuildContext context) {
-    final loc = GoRouterState.of(context).matchedLocation;
+    final loc = widget.location;
     for (final route in Routes.moduleRoutes.entries) {
       if (loc.startsWith(route.value) && route.value != Routes.home) {
         return route.key;
@@ -186,8 +187,7 @@ class _TraumScaffoldState extends ConsumerState<TraumScaffold> {
     final isPeriodEnabled = ref.watch(isPeriodTrackingEnabledProvider);
     final safeBottom = MediaQuery.of(context).padding.bottom;
     final currentModule = _currentRoute(context);
-    final location = GoRouterState.of(context).matchedLocation;
-    final navVisible = !keyboardOpen && Routes.isModuleRoot(location);
+    final navVisible = !keyboardOpen && Routes.isModuleRoot(widget.location);
 
     final filteredSlots = navSlots
         .where((m) => m != 'period' || isPeriodEnabled)

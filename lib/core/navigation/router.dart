@@ -94,7 +94,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const TrainingWizardScreen(),
       ),
       ShellRoute(
-        builder: (context, state, child) => TraumScaffold(child: child),
+        builder: (context, state, child) => TraumScaffold(
+          location: state.matchedLocation,
+          child: child,
+        ),
         routes: [
           GoRoute(path: Routes.home, builder: (_, _) => const HomeScreen()),
           GoRoute(
