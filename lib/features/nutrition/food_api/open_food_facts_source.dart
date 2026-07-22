@@ -6,33 +6,47 @@ import 'food_source.dart';
 const _offSearchUrl = 'https://world.openfoodfacts.org/cgi/search.pl';
 
 /// OpenFoodFacts-Textsuche. Keyless (öffentliche API).
+///
+/// Der öffentliche `cgi/search.pl`-Endpunkt liefert nachweislich (extern
+/// gegengeprüft) nicht immer 200/JSON zurück — vereinzelte Anfragen werden
+/// von OFFs Bot-/Rate-Limit-Schutz stattdessen mit einer HTML-Fehlerseite
+/// (Status 503, "temporarily unavailable") beantwortet, obwohl dieselbe
+/// Anfrage kurz davor/danach normal funktioniert. Ein einzelner Fehlversuch
+/// pro Suche würde sich für den Nutzer wie "Suche funktioniert nicht" anfühlen
+/// — ein kurzer Retry behebt die meisten dieser transienten Fälle.
 class OpenFoodFactsSource implements FoodSource {
   @override
   String get id => 'off';
 
   @override
   Future<List<FoodSearchResult>> search(String query) async {
-    try {
-      final uri = Uri.parse(_offSearchUrl).replace(queryParameters: {
-        'search_terms': query,
-        'search_simple': '1',
-        'action': 'process',
-        'json': '1',
-        'page_size': '20',
-        'fields':
-            'product_name,brands,code,image_thumb_url,nutriments',
-      });
-      final response = await http
-          .get(uri, headers: {'User-Agent': 'TRAUM-App/1.0'})
-          .timeout(const Duration(seconds: 8));
+    for (var attempt = 0; attempt < 2; attempt++) {
+      if (attempt > 0) {
+        await Future.delayed(const Duration(milliseconds: 600));
+      }
+      try {
+        final uri = Uri.parse(_offSearchUrl).replace(queryParameters: {
+          'search_terms': query,
+          'search_simple': '1',
+          'action': 'process',
+          'json': '1',
+          'page_size': '20',
+          'fields':
+              'product_name,brands,code,image_thumb_url,nutriments',
+        });
+        final response = await http.get(uri, headers: {
+          'User-Agent':
+              'Mozilla/5.0 (Linux; Android) TRAUM-App/1.0 (+https://github.com/Lupus-atque-Corvus/Traum-APP)',
+        }).timeout(const Duration(seconds: 8));
 
-      if (response.statusCode != 200) return [];
-      final json = jsonDecode(response.body) as Map<String, dynamic>;
-      return parseOffSearch(json);
-    } catch (e) {
-      debugPrint('OpenFoodFactsSource search error: $e');
-      return [];
+        if (response.statusCode != 200) continue;
+        final json = jsonDecode(response.body) as Map<String, dynamic>;
+        return parseOffSearch(json);
+      } catch (e) {
+        debugPrint('OpenFoodFactsSource search error (attempt $attempt): $e');
+      }
     }
+    return [];
   }
 }
 
