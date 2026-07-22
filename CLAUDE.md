@@ -1,32 +1,41 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.26+75** · schemaVersion **22**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.27+76** · schemaVersion **22**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-09 — für frischen Worker nach PC-Neustart)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-22 — nach Pruefleitfaden-Testrunde)
 
-**Wo wir sind:** Ein großer 10-Phasen-Verbesserungsplan ist KOMPLETT umgesetzt, reviewt und als
-Release **v0.7.26** veröffentlicht.
-- Plan: `../docs/superpowers/plans/2026-07-02-verbesserungen-gesamtplan.md`
-- Detail-Ledger (jeder Task, jeder Commit, alle User-Entscheidungen): `../.superpowers/sdd/progress.md` ← HIER zuerst lesen für Kontext.
-- Release: https://github.com/Lupus-atque-Corvus/Traum-APP/releases/tag/v0.7.26 (Debug-Build, mit echten Fonts).
+**Wo wir sind:** Der User hat v0.7.26 anhand von `../Pruefleitfaden-v0.7.26.txt` manuell
+getestet und mehrere `[!]`-Bugs gemeldet (u.a. Budget-Tab komplett schwarz, NavBar kommt nach
+Untermenüs nicht zurück, Kalender-Wochentage englisch, Termin-Bearbeitung synct nicht,
+Trainings-Gewicht bei Routine-Start nicht gespeichert, Muskel-Heatmap-Widget leer, Performance).
+Alle in dieser Runde gemeldeten Bugs sind gefixt (8 Commits, je einer pro Bug/Bereich) und als
+**Release v0.7.27** veröffentlicht.
+- Detail-Ledger vorheriger Runde: `../.superpowers/sdd/progress.md`.
+- Release: https://github.com/Lupus-atque-Corvus/Traum-APP/releases/tag/v0.7.27 (Debug-Build).
 
 **Git-Stand:**
-- `master` = **a359242** (v0.7.26-Release-Stand, gepusht + Tag v0.7.26). schemaVersion 22. 398 Tests grün, analyze 0.
-- Branch **`chore/i18n-remaining`** = master + 7 Commits: der komplette i18n-Rest (alle 8 Module de+en lokalisiert, grün).
-  → User will i18n in einem SPÄTEREN Release. NICHT nach master mergen ohne Ansage.
-- Fonts: waren 12-Byte-Stubs, jetzt echte DMSans/NotoSansArabic-TTFs (Commit 7932886). Erledigt.
+- `master` = v0.7.27-Release-Stand, gepusht + Tag v0.7.27. schemaVersion 22. 398 Tests grün, analyze 0.
+- Branch **`chore/i18n-remaining`** = master + 7 Commits (Stand v0.7.26): der komplette i18n-Rest
+  (alle 8 Module de+en lokalisiert, grün). → User will i18n in einem SPÄTEREN Release. NICHT nach
+  master mergen ohne Ansage. Vor dem Mergen ggf. auf aktuellen master rebasen.
+- Fonts: echte DMSans/NotoSansArabic-TTFs (Commit 7932886). Erledigt.
 
-**Was JETZT läuft:** Der User macht eine **manuelle Testrunde** anhand von
-`../Pruefleitfaden-v0.7.26.txt` (Haupt-Repo-Root) — eine Checkliste aller umgesetzten Features
-+ bekannter Grenzen. Er hat schon einige Fehler/Probleme gesehen und wird die `[!]`-Punkte melden.
-→ Erwartete nächste Aufgabe: gemeldete Bugs gezielt fixen (auf master oder neuem Fix-Branch, mit Review + analyze 0 / test grün pro Fix).
+**Root-Cause-Highlight dieser Runde:** Budget-Tab-Absturz war eine ungültige `SliverGeometry`
+(layoutExtent > paintExtent) durch einen schrumpfenden `pinned`-`SliverPersistentHeader` mit
+unterschiedlichem min-/maxExtent — per Android-Emulator + Live-Logcat reproduziert und bestätigt,
+nicht nur vermutet. Ein `ErrorWidget.builder` in `main.dart` macht solche Render-Exceptions jetzt
+sichtbar statt eines stillen schwarzen Bereichs.
 
-**Offene Aktionen (brauchen User):** signierter Store-Release (`android/key.properties.disabled`
-reaktivieren) · i18n-Branch mergen für v0.7.27 · Haupt-Repo `Traum` pushen (nur lokal gebumpt).
+**Offene Aktionen (brauchen User):** i18n-Branch mergen, wenn gewünscht · Haupt-Repo `Traum`
+(Submodule-Pointer) pushen, wenn gewünscht · Kalender-Edit-Sync (Phase 4 dieser Runde) braucht
+einen echten Gerätetest, um den zugrunde liegenden device_calendar-Fehler zu sehen (jetzt sichtbar
+statt verschluckt) · Lebensmittelsuche: falls auf dem eigenen Gerät weiterhin defekt, genauer
+beschreiben (Tastatur? Cursor? Internet an?) — im Emulator-Test funktionierte das Suchfeld selbst
+einwandfrei.
 
 **Workflow-Erinnerung:** Änderungen im Submodule `traum_app` committen; pro Änderung
 `flutter analyze` → 0 und `flutter test` → grün (aktuell 398). Bei ARB-Änderung `flutter gen-l10n`.
@@ -176,6 +185,10 @@ periodRose: #FF8FAB · ovulationCyan: #00C9C8 · fertileCyan: #0093AB
 15. **`flutter analyze` → Ziel 0 Issues** vor jedem Commit (keine `withOpacity`, `child:` als letztes Property)
 16. **`flutter test`** muss grün bleiben (aktuell 200+ Tests unter test/features/…)
 17. **Versionierung:** Bis einschließlich Build **+79** bleibt die Version bei **0.7.x** (z.B. `0.7.13+62`, `0.7.20+79`). Erst ab Build **+80** auf **0.8.0** wechseln (`0.8.0+80`). Den `version:`-Eintrag in `pubspec.yaml` entsprechend pflegen — den Build-Zähler bei jedem Release um 1 erhöhen, den Minor-Sprung auf 0.8.0 nicht vor +80 machen.
+18. **Kein signierter Release — bewusste, dauerhafte Entscheidung:** `android/key.properties.disabled`
+    bleibt bis auf Weiteres deaktiviert. Alle Releases sind Debug-Builds (`flutter build apk --debug`),
+    damit es keine Komplikationen mit dem Signing-Setup gibt. NICHT von dir aus reaktivieren oder
+    einen Release-Build versuchen — nur auf explizite Ansage des Users.
 
 ## Bewährte Muster
 - Seeder: `seedIfNeeded(db, prefs)` → wenn schon vorhanden, `return`; sonst Assets laden und einfügen
