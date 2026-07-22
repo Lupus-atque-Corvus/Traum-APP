@@ -21,7 +21,7 @@ void main() {
       child: const MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('de'),home: ShoppingModeScreen()),
+        locale: Locale('de'),home: ShoppingModeScreen()),
     ));
     await tester.pumpAndSettle();
 
