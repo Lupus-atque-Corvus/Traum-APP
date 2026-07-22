@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:home_widget/home_widget.dart';
 
 import 'widget_keys.dart';
@@ -61,8 +63,13 @@ class WidgetDataService {
     // ... + Funktions-Provider (liegt im widget-Unterpaket).
     await HomeWidget.updateWidget(qualifiedAndroidName: androidFunctionWidget);
     // iOS: jeder Widget-kind muss einzeln neu geladen werden (kein Reload-All).
-    for (final kind in iosWidgetKinds) {
-      await HomeWidget.updateWidget(iOSName: kind);
+    // Nur auf iOS ausführen — auf Android ruft dieser Aufruf denselben nativen
+    // Handler ohne androidName/qualifiedAndroidName (also mit name: null) auf
+    // und wirft dort bei jedem Refresh eine ClassNotFoundException.
+    if (Platform.isIOS) {
+      for (final kind in iosWidgetKinds) {
+        await HomeWidget.updateWidget(iOSName: kind);
+      }
     }
   }
 }

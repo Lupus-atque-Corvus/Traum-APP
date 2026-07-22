@@ -12,6 +12,7 @@ import '../features/graffiti_map/graffiti_map_provider.dart'
     show mapMarkersDaoProvider, markerPhotosDaoProvider;
 import '../features/health/health_score_provider.dart';
 import '../features/nutrition/nutrition_providers.dart';
+import '../features/training/muscle_groups.dart' show canonicalMuscleGroup;
 import 'widget_snapshot.dart';
 
 /// Collects all data needed for the homescreen widget snapshot.
@@ -836,8 +837,22 @@ class WidgetDataCollector {
       mealsToday = entries.map((e) => e.mealType).toSet().length;
     } catch (_) {}
 
-    // ── muscleHeatmap (FALLBACK: keine Quelle; Heatmap ist visuelle Darstellung) ──
-    const int muscleHeatmap = 0; // FALLBACK: keine Quelle
+    // ── muscleHeatmap (REAL: Anzahl trainierter Muskelgruppen der letzten 7 Tage) ──
+    int muscleHeatmap = 0;
+    try {
+      final dao = read(trainingDaoProvider);
+      final recentSets = await dao.getRecentSets(const Duration(days: 7));
+      if (recentSets.isNotEmpty) {
+        final exercises = await dao.getAllExercisesOnce();
+        final exerciseById = {for (final e in exercises) e.id: e};
+        final groups = <String>{};
+        for (final s in recentSets) {
+          final ex = exerciseById[s.exerciseId];
+          if (ex != null) groups.add(canonicalMuscleGroup(ex.muscleGroup));
+        }
+        muscleHeatmap = groups.length;
+      }
+    } catch (_) {}
 
     // ── lastWorkout (REAL: _recentSessionsProvider → first session name) ──────
     // Same source as _LastWorkoutContent in training_widgets.dart
