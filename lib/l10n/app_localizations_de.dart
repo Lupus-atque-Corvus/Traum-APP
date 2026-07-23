@@ -201,18 +201,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noHistoryYet => 'Noch kein Verlauf';
 
   @override
-  String get noMatches => 'Keine Treffer';
-
-  @override
-  String get searchSupplementHint => 'Supplement suchen…';
-
-  @override
-  String get searchMedicationHint => 'Medikament suchen…';
-
-  @override
-  String get enterManually => 'Manuell eingeben';
-
-  @override
   String get calendarSyncTitle => 'Kalender-Sync';
 
   @override
@@ -1364,27 +1352,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get wrongPin => 'Falscher PIN';
 
   @override
-  String get formTablet => 'Tablette';
-
-  @override
-  String get formCapsule => 'Kapsel';
-
-  @override
-  String get formDrops => 'Tropfen';
-
-  @override
-  String get formInjection => 'Injektion';
-
-  @override
-  String get formOintment => 'Salbe';
-
-  @override
-  String get formSpray => 'Spray';
-
-  @override
-  String get formOther => 'Sonstiges';
-
-  @override
   String get inactive => 'Inaktiv';
 
   @override
@@ -1407,12 +1374,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dosage => 'Dosierung';
-
-  @override
-  String get formLabel => 'Form';
-
-  @override
-  String get addReminderTime => 'Erinnerungszeit hinzufügen';
 
   @override
   String get allMedications => 'Alle Medikamente';
@@ -1649,33 +1610,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get proteinGoalLabelOb => 'Proteinziel (g)';
 
   @override
-  String get supplementsTitleOb => 'Supplements';
-
-  @override
-  String get takeSupplementsRegularly => 'Nimmst du regelmäßig Supplements?';
-
-  @override
-  String get addSupplementButton => 'Supplement hinzufügen';
-
-  @override
-  String get noSupplementsAddedYet => 'Noch keine Supplements hinzugefügt';
-
-  @override
-  String get medicationTitleOb => 'Medikamente';
-
-  @override
-  String get medicalDisclaimerOb => 'TRAUM ersetzt keine ärztliche Beratung.';
-
-  @override
-  String get takeMedicationRegularly => 'Nimmst du regelmäßig Medikamente?';
-
-  @override
-  String get addMedicationButton => 'Medikament hinzufügen';
-
-  @override
-  String get noMedicationsAddedYet => 'Noch keine Medikamente hinzugefügt';
-
-  @override
   String get budgetTitleOb => 'Budget';
 
   @override
@@ -1821,49 +1755,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get category => 'Kategorie';
 
   @override
-  String get fieldAmount => 'Menge';
-
-  @override
   String get amountHint => 'z.B. 1000';
 
   @override
   String get fieldUnit => 'Einheit';
-
-  @override
-  String get categoryVitamins => 'Vitamine';
-
-  @override
-  String get categoryMinerals => 'Mineralien';
-
-  @override
-  String get categoryAminoAcids => 'Aminosäuren';
-
-  @override
-  String get categoryProtein => 'Protein';
-
-  @override
-  String get categoryOmega3 => 'Omega-3';
-
-  @override
-  String get categoryAdaptogens => 'Adaptogene';
-
-  @override
-  String get categoryPreWorkout => 'Pre-Workout';
-
-  @override
-  String get categoryGutHealth => 'Darmgesundheit';
-
-  @override
-  String get categoryCreatine => 'Creatin';
-
-  @override
-  String get unitCapsules => 'Kapseln';
-
-  @override
-  String get unitTablets => 'Tabletten';
-
-  @override
-  String get unitScoop => 'Messbecher';
 
   @override
   String get noSupplements => 'Keine Supplements';

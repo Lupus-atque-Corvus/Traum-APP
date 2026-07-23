@@ -1,12 +1,49 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.29+78** · schemaVersion **22**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.30+79** · schemaVersion **22**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-23 — v0.7.29, Lebensmittelsuche-Root-Cause extern verifiziert)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-23 — v0.7.30, Onboarding-Cleanup + Performance + Budget-Übertrag)
+
+**Drei unabhängige Änderungen in dieser Runde, alle mit `flutter analyze` → 0 und `flutter test` →
+398/398 grün verifiziert:**
+
+1. **Toter Onboarding-Code entfernt:** Im Onboarding-Interessen-Picker ließen sich „Supplements"
+   und „Medikamente" auswählen, inkl. eigener Formular-Seiten (`_SupplementsPage`/`_MedicationPage`
+   + Add-Sheets, ~1000 Zeilen). Beide Module haben aber schon lange keine eigene Tab-Route mehr —
+   `/supplements` und `/medication` leiten in `router.dart` längst auf `Substances` um, und
+   `Routes.moduleRoutes` kennt beide Keys gar nicht, d.h. als Bottom-Nav-Tab gewählt landete man
+   still auf Home. Entfernt: die Onboarding-Seiten/Provider/Add-Sheets, die beiden Interessen-Kacheln
+   (`interests_page.dart`), die dadurch toten Einträge in `home_seed.dart`, sowie 32 nur dort
+   verwendete ARB-Strings (de+en). Die Export/Backup-Funktion in den Settings, die „supplements"/
+   „medication" weiterhin legitim als Datenkategorien nutzt, wurde nicht angefasst.
+2. **App-Start beschleunigt:** In `main.dart` blockierten Notification-Service-Init
+   (Zeitzonendatenbank + Plugin-Init + Channels), Widget-Service-Init und WorkManager-Registrierung
+   bisher `runApp()`. Laufen jetzt — wie die Seeder — erst nach dem ersten Frame.
+   **`widget_data_collector.dart` (`collect()`) parallelisiert:** ~50 vormals sequenzielle
+   `await`s (DB-Queries + HealthConnect-Calls pro Homescreen-Widget-Refresh) laufen jetzt über
+   einen `_safe`/`_or`-Helper gleichzeitig statt nacheinander; zusätzlich 9 vorher doppelt
+   abgefragte Reads dedupliziert (u.a. `getAllWeightLogs`, `getSessionsAfter(365d)`,
+   `recentTrainingSetsProvider(7)`, `getAllHabits`, `getRecentHabitLogs`,
+   `categoryExpensesProvider`, `trendDataProvider(sixMonths)`, `todaysMealEntriesProvider`,
+   `getLatestPeriodEntry`+`getCalculationForEntry`). Jeder Read behält seinen eigenen
+   Fehler-Fallback — ein fehlschlagender Read kann weiterhin nicht den ganzen Refresh crashen.
+3. **Budget-Übertrag:** Die große „Verfügbar diesen Monat"-Zahl auf dem Budget-Screen startete
+   bisher am 1. jeden Monats wieder bei 0 (reine Monats-Bilanz). Neuer Provider
+   `budgetRolloverBalanceProvider` (kumulierte Einnahmen − Ausgaben über ALLE Monate bis
+   einschließlich des gewählten) treibt jetzt die Kopfzahl + Prognose in `_BudgetHeaderCard`.
+   Bewusst NICHT angefasst: `budgetSummaryProvider` selbst (weiterhin rein monatsbezogen) sowie
+   die Einnahmen/Ausgaben/Sparquote-Mini-Stats und das echte Homescreen-Widget — beide zeigen
+   unverändert reine Monatswerte, wie vom User explizit gefordert.
+
+- Release: https://github.com/Lupus-atque-Corvus/Traum-APP/releases/tag/v0.7.30 (Debug-Build).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-07-23 — v0.7.29, Lebensmittelsuche-Root-Cause extern verifiziert)
 
 **Nach v0.7.28:** User meldete, die Lebensmittelsuche funktioniere weiterhin nicht (z.B. "reis",
 "ei", "hähnchen" finden nichts). Root Cause diesmal NICHT nur aus Code-Review, sondern durch

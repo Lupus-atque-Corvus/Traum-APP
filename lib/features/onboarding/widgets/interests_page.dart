@@ -24,8 +24,6 @@ class InterestsPage extends StatelessWidget {
     ('training', Icons.fitness_center_rounded),
     ('health', Icons.favorite_rounded),
     ('nutrition', Icons.restaurant_rounded),
-    ('supplements', Icons.science_rounded),
-    ('medication', Icons.medication_rounded),
     ('substances', Icons.biotech_rounded),
     ('planning', Icons.checklist_rounded),
     ('abstinence', Icons.shield_rounded),

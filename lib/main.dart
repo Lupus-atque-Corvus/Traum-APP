@@ -37,14 +37,6 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   final db = TraumDatabase();
 
-  await Future.wait([
-    WidgetDataService.init(),
-    NotificationService.init(),
-  ]);
-
-  // Register the periodic background widget refresh (internally guarded).
-  await registerWidgetPeriodicRefresh();
-
   runApp(
     ProviderScope(
       overrides: [
@@ -55,11 +47,23 @@ void main() async {
     ),
   );
 
-  // Seeders run after the first frame instead of blocking startup: each one
-  // no-ops instantly via `seedIfNeeded` once its data already exists, so on
-  // every launch except the very first this was pure overhead before the
-  // first frame could even be drawn.
+  // Widget/notification init, WorkManager registration and seeders all run
+  // after the first frame instead of blocking startup. None of them are
+  // needed to draw the first frame, but each used to be awaited beforehand:
+  // tz database load + several plugin/platform-channel round trips (widget
+  // App Group, notification plugin + channels, WorkManager init) added real
+  // delay before anything appeared on screen. Seeders additionally no-op
+  // instantly via `seedIfNeeded` once their data already exists, so on every
+  // launch except the very first this was pure overhead before the first
+  // frame could even be drawn.
   WidgetsBinding.instance.addPostFrameCallback((_) async {
+    await Future.wait([
+      WidgetDataService.init(),
+      NotificationService.init(),
+    ]);
+    // Register the periodic background widget refresh (internally guarded).
+    await registerWidgetPeriodicRefresh();
+
     // ExerciseSeeder must finish before ExerciseLibrarySeeder runs: the latter
     // looks up existing exercises by name to avoid inserting duplicates, so it
     // needs to see ExerciseSeeder's rows already committed. Both seeders write

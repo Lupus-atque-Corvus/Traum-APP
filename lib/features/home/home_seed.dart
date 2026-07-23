@@ -6,8 +6,6 @@ const Map<String, List<HomeWidgetType>> _kModuleSignatureWidgets = {
   'health': [HomeWidgetType.healthSnapshot],
   'nutrition': [HomeWidgetType.caloriesRing, HomeWidgetType.water],
   'training': [HomeWidgetType.nextWorkout],
-  'supplements': [HomeWidgetType.supplementsToday],
-  'medication': [HomeWidgetType.medicationsToday],
   'substances': [HomeWidgetType.takenToday],
   'planning': [HomeWidgetType.openTodos, HomeWidgetType.habitsToday],
   'abstinence': [HomeWidgetType.currentStreak],

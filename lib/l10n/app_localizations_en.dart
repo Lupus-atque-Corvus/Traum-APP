@@ -201,18 +201,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noHistoryYet => 'No history yet';
 
   @override
-  String get noMatches => 'No matches';
-
-  @override
-  String get searchSupplementHint => 'Search supplement…';
-
-  @override
-  String get searchMedicationHint => 'Search medication…';
-
-  @override
-  String get enterManually => 'Enter manually';
-
-  @override
   String get calendarSyncTitle => 'Calendar sync';
 
   @override
@@ -1355,27 +1343,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get wrongPin => 'Wrong PIN';
 
   @override
-  String get formTablet => 'Tablet';
-
-  @override
-  String get formCapsule => 'Capsule';
-
-  @override
-  String get formDrops => 'Drops';
-
-  @override
-  String get formInjection => 'Injection';
-
-  @override
-  String get formOintment => 'Ointment';
-
-  @override
-  String get formSpray => 'Spray';
-
-  @override
-  String get formOther => 'Other';
-
-  @override
   String get inactive => 'Inactive';
 
   @override
@@ -1398,12 +1365,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dosage => 'Dosage';
-
-  @override
-  String get formLabel => 'Form';
-
-  @override
-  String get addReminderTime => 'Add reminder time';
 
   @override
   String get allMedications => 'All medications';
@@ -1640,34 +1601,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get proteinGoalLabelOb => 'Protein goal (g)';
 
   @override
-  String get supplementsTitleOb => 'Supplements';
-
-  @override
-  String get takeSupplementsRegularly => 'Do you take supplements regularly?';
-
-  @override
-  String get addSupplementButton => 'Add supplement';
-
-  @override
-  String get noSupplementsAddedYet => 'No supplements added yet';
-
-  @override
-  String get medicationTitleOb => 'Medication';
-
-  @override
-  String get medicalDisclaimerOb =>
-      'TRAUM is not a substitute for medical advice.';
-
-  @override
-  String get takeMedicationRegularly => 'Do you take medication regularly?';
-
-  @override
-  String get addMedicationButton => 'Add medication';
-
-  @override
-  String get noMedicationsAddedYet => 'No medications added yet';
-
-  @override
   String get budgetTitleOb => 'Budget';
 
   @override
@@ -1812,49 +1745,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get category => 'Category';
 
   @override
-  String get fieldAmount => 'Amount';
-
-  @override
   String get amountHint => 'e.g. 1000';
 
   @override
   String get fieldUnit => 'Unit';
-
-  @override
-  String get categoryVitamins => 'Vitamins';
-
-  @override
-  String get categoryMinerals => 'Minerals';
-
-  @override
-  String get categoryAminoAcids => 'Amino acids';
-
-  @override
-  String get categoryProtein => 'Protein';
-
-  @override
-  String get categoryOmega3 => 'Omega-3';
-
-  @override
-  String get categoryAdaptogens => 'Adaptogens';
-
-  @override
-  String get categoryPreWorkout => 'Pre-workout';
-
-  @override
-  String get categoryGutHealth => 'Gut health';
-
-  @override
-  String get categoryCreatine => 'Creatine';
-
-  @override
-  String get unitCapsules => 'Capsules';
-
-  @override
-  String get unitTablets => 'Tablets';
-
-  @override
-  String get unitScoop => 'Scoop';
 
   @override
   String get noSupplements => 'No supplements';

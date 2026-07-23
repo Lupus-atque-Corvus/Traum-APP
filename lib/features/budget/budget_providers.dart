@@ -106,6 +106,29 @@ final budgetSummaryProvider = StreamProvider.autoDispose
   });
 });
 
+/// "Verfügbar"-Übertrag: kumulierte Einnahmen − Ausgaben aus ALLEN Monaten bis
+/// einschließlich [ym] (nicht nur der gewählte Monat für sich). Damit läuft
+/// die große Zahl auf dem Budget-Header monatsübergreifend fort, statt am
+/// 1. jeden Monats wieder bei 0 zu starten. Bewusst getrennt von
+/// [budgetSummaryProvider] (dessen `balance` weiterhin rein monatsbezogen
+/// bleibt) — Home-Widgets/Homescreen-Widget zeigen unverändert die reinen
+/// Monatswerte.
+final budgetRolloverBalanceProvider = StreamProvider.autoDispose
+    .family<double, (int, int)>((ref, ym) {
+  final dao = ref.watch(budgetDaoProvider);
+  final end = DateTime(ym.$1, ym.$2 + 1, 1);
+  return dao.watchAllTransactions().map((txs) {
+    final upToMonth = txs.where((t) => t.date.isBefore(end));
+    final income = upToMonth
+        .where((t) => t.type == 'income')
+        .fold(0.0, (s, t) => s + t.amount);
+    final expenses = upToMonth
+        .where((t) => t.type == 'expense')
+        .fold(0.0, (s, t) => s + t.amount);
+    return income - expenses;
+  });
+});
+
 final categoryExpensesProvider = StreamProvider.autoDispose
     .family<List<CategoryExpense>, (int, int)>((ref, ym) {
   final dao = ref.watch(budgetDaoProvider);

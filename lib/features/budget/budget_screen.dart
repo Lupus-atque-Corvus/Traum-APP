@@ -96,6 +96,8 @@ class _BudgetHeaderCard extends ConsumerWidget {
     final month = ref.watch(selectedBudgetMonthProvider);
     final summary =
         ref.watch(budgetSummaryProvider((month.year, month.month)));
+    final rollover =
+        ref.watch(budgetRolloverBalanceProvider((month.year, month.month)));
     final visible = ref.watch(budgetBalanceVisibleProvider);
     final currency = ref.watch(currencySymbolProvider);
 
@@ -151,14 +153,14 @@ class _BudgetHeaderCard extends ConsumerWidget {
             ],
           ),
           SizedBox(height: bs(4)),
-          summary.when(
-            data: (s) => HiddenAmount(
+          rollover.when(
+            data: (balance) => HiddenAmount(
               child: Text(
-                '${s.balance < 0 ? '−' : ''}${_fmt(s.balance)} $currency',
+                '${balance < 0 ? '−' : ''}${_fmt(balance)} $currency',
                 style: _style(
                   34,
                   FontWeight.w700,
-                  s.balance >= 0
+                  balance >= 0
                       ? TraumColors.mintGreen
                       : TraumColors.roseRed,
                 ),
@@ -171,7 +173,11 @@ class _BudgetHeaderCard extends ConsumerWidget {
           ),
           SizedBox(height: bs(3)),
           summary.when(
-            data: (s) => _prognoseRow(s, month, currency, l10n),
+            data: (s) => rollover.when(
+              data: (balance) => _prognoseRow(s, balance, month, currency, l10n),
+              loading: () => const SizedBox.shrink(),
+              error: (_, _) => const SizedBox.shrink(),
+            ),
             loading: () => const SizedBox.shrink(),
             error: (_, _) => const SizedBox.shrink(),
           ),
@@ -213,8 +219,8 @@ class _BudgetHeaderCard extends ConsumerWidget {
     );
   }
 
-  Widget _prognoseRow(
-      BudgetSummary s, DateTime month, String currency, AppLocalizations l10n) {
+  Widget _prognoseRow(BudgetSummary s, double balance, DateTime month,
+      String currency, AppLocalizations l10n) {
     final now = DateTime.now();
     if (now.month != month.month || now.year != month.year) {
       return const SizedBox.shrink();
@@ -225,7 +231,7 @@ class _BudgetHeaderCard extends ConsumerWidget {
           style: _style(10, FontWeight.w400, TraumColors.onBackgroundMuted));
     }
     final daily = s.expenses / now.day;
-    final forecast = s.balance - daily * (daysInMonth - now.day);
+    final forecast = balance - daily * (daysInMonth - now.day);
     return Row(children: [
       Text(l10n.budgetDayOfMonthForecast(now.day, daysInMonth),
           style: _style(10, FontWeight.w400, TraumColors.onBackgroundMuted)),

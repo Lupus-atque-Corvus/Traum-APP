@@ -273,31 +273,209 @@ class WidgetDataCollector {
   /// - Foreground widget: pass `ref.read` (a [WidgetRef] or [Ref] tear-off)
   /// - Background isolate: pass `container.read` (a [ProviderContainer] tear-off)
   ///
-  /// Each metric is wrapped in its own try/catch so one failing read cannot
-  /// crash the entire collection; the corresponding [WidgetSnapshot.empty()]
-  /// default is used as fallback.
+  /// Every read is wrapped via [_safe] so one failing read cannot crash the
+  /// entire collection — the corresponding [WidgetSnapshot.empty()]/local
+  /// default is used as fallback, exactly as before.
+  ///
+  /// All independent reads are kicked off up front (as not-yet-awaited
+  /// futures) instead of one after another, so they execute concurrently on
+  /// the DB's background isolate / native platform channels rather than
+  /// paying for N sequential round trips. A handful of reads that used to be
+  /// issued twice for two derived metrics (e.g. `getAllWeightLogs` for both
+  /// `weightKg` and `weightHistory`) are now fetched once and shared between
+  /// their consumers below.
   static Future<WidgetSnapshot> collect(
     R Function<R>(ProviderListenable<R> provider) read,
   ) async {
     final empty = WidgetSnapshot.empty();
 
-    // ── steps (REAL: HealthService.stepsToday() via Health Connect/HealthKit) ─
-    int stepsToday = empty.steps;
-    try {
-      stepsToday = await HealthService.stepsToday();
-    } catch (_) {}
+    // ── Kick off every independent read concurrently ────────────────────────
+    final stepsTodayF = _safe(HealthService.stepsToday, empty.steps);
+    final heartRateF = _safe(HealthService.latestHeartRate, empty.heartRate);
+    final activeMinutesF = _safe(HealthService.activeMinutesToday, 0);
+    final caloriesBurnedF = _safe(HealthService.caloriesBurnedToday, 0);
+    final stepsWeekAvgF = _safe(HealthService.stepsWeekAvg, 0);
+    final stepsWeekF = _safe(HealthService.stepsWeek, null);
 
-    // ── stepsGoal (REAL: preferences_provider.dart – stepsGoalProvider) ───────
+    final sleepLogs2F =
+        _safe(() => read(healthDaoProvider).getRecentSleepLogs(2), null);
+    final sleepWeekLogsF =
+        _safe(() => read(healthDaoProvider).getRecentSleepLogs(7), null);
+    final moodLogF = _safe(() => read(healthDaoProvider).getLatestMood(), null);
+    final weightLogsF =
+        _safe(() => read(healthDaoProvider).getAllWeightLogs(), null);
+    final moodCalendarLogsF = _safe(() {
+      final now = DateTime.now();
+      return read(healthDaoProvider)
+          .getMoodLogsAfter(DateTime(now.year, now.month));
+    }, null);
+    final moodWeekLogsF = _safe(() {
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      return read(healthDaoProvider)
+          .getMoodLogsAfter(today.subtract(const Duration(days: 6)));
+    }, null);
+
+    final todaysTotalsF = _safe(() => read(todaysTotalsProvider.future), null);
+    final waterMlTodayF =
+        _safe(() => read(waterTodaySnapshotProvider.future), empty.waterMl);
+    final lastMealF = _safe(() => read(lastMealProvider.future), null);
+    final todaysMealEntriesF =
+        _safe(() => read(todaysMealEntriesProvider.future), null);
+    final supplementsTodayF =
+        _safe(() => read(supplementDaoProvider).getTakenCountToday(), 0);
+
+    final allTodosF =
+        _safe(() => read(planningDaoProvider).getAllTodos(), null);
+    final nextAppointmentF =
+        _safe(() => read(planningDaoProvider).getNextAppointment(), null);
+    final allHabitsF =
+        _safe(() => read(planningDaoProvider).getAllHabits(), null);
+    final habitLogsForDateF = _safe(
+        () => read(planningDaoProvider).getHabitLogsForDate(DateTime.now()),
+        null);
+    final recentHabitLogsF =
+        _safe(() => read(planningDaoProvider).getRecentHabitLogs(), null);
+
+    final activeMedsF =
+        _safe(() => read(medicationDaoProvider).getActiveMedications(), null);
+    final medsTakenTodayF =
+        _safe(() => read(medicationDaoProvider).getTakenCountToday(), 0);
+
+    final healthScoreF = _safe(() => read(healthScoreProvider.future), null);
+
+    final nextWorkoutF = _safe<String>(() async {
+      final plan = await read(activePlanProvider.future);
+      if (plan == null) return '';
+      final days = await read(trainingDaoProvider).getDaysForPlan(plan.id);
+      if (days.isEmpty) return '';
+      final today = DateTime.now().weekday;
+      final ordered = [...days]
+        ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+      final day = ordered.firstWhere((d) => d.dayOfWeek == today,
+          orElse: () => ordered.first);
+      return day.name;
+    }, '');
+    final recentSets7F =
+        _safe(() => read(recentTrainingSetsProvider(7).future), null);
+    final recentSets365F =
+        _safe(() => read(recentTrainingSetsProvider(365).future), null);
+    final sessionsAfter365F = _safe(
+        () => read(trainingDaoProvider).getSessionsAfter(
+            DateTime.now().subtract(const Duration(days: 365))),
+        null);
+    final muscleHeatmapF = _safe<int>(() async {
+      final dao = read(trainingDaoProvider);
+      final recentSets = await dao.getRecentSets(const Duration(days: 7));
+      if (recentSets.isEmpty) return 0;
+      final exercises = await dao.getAllExercisesOnce();
+      final exerciseById = {for (final e in exercises) e.id: e};
+      final groups = <String>{};
+      for (final s in recentSets) {
+        final ex = exerciseById[s.exerciseId];
+        if (ex != null) groups.add(canonicalMuscleGroup(ex.muscleGroup));
+      }
+      return groups.length;
+    }, 0);
+
+    final monthTxsF = _safe(() {
+      final now = DateTime.now();
+      return read(budgetDaoProvider)
+          .getTransactionsForMonth(now.year, now.month);
+    }, null);
+    final categoryExpensesF = _safe(() {
+      final now = DateTime.now();
+      return read(categoryExpensesProvider((now.year, now.month)).future);
+    }, null);
+    final accountsF = _safe(() => read(accountsDaoProvider).getAll(), null);
+    final recentTransactionsF = _safe(
+        () => read(budgetDaoProvider).getRecentTransactions(limit: 1), null);
+    final savingsGoalsF =
+        _safe(() => read(budgetDaoProvider).getAllSavingsGoals(), null);
+    final recurringF = _safe(
+        () => read(budgetDaoProvider).getRecurringTransactions(), null);
+    final trendBarsF = _safe(
+        () => read(trendDataProvider(TrendPeriod.sixMonths).future), null);
+    final budgetLimitRawF = _safe(() async {
+      return read(sharedPreferencesProvider).getDouble('monthly_budget') ?? 0.0;
+    }, 0.0);
+
+    final writeStreakF = _safe(() => read(diaryStreakProvider.future), 0);
+    final lastDiaryEntryF =
+        _safe(() => read(diaryDaoProvider).getLastEntry(), null);
+    final entriesThisMonthF = _safe(() {
+      final now = DateTime.now();
+      return read(diaryEntriesForMonthProvider((now.year, now.month)).future);
+    }, null);
+    final yearHeatmapF =
+        _safe(() => read(datesWithDiaryEntriesProvider.future), null);
+
+    final allTrackersF =
+        _safe(() => read(abstinenceDaoProvider).getAllTrackers(), null);
+
+    final lastIntakeF =
+        _safe(() => read(substanceDaoProvider).getLastIntake(), null);
+    final takenTodayF =
+        _safe(() => read(substanceDaoProvider).getIntakeCountToday(), 0);
+
+    final latestPeriodEntryF =
+        _safe(() => read(periodDaoProvider).getLatestPeriodEntry(), null);
+
+    final notesCountF =
+        _safe(() => read(notesDaoProvider).getActiveNotes(), null);
+    final lastNoteF =
+        _safe(() => read(notesDaoProvider).getRecentNotes(1), null);
+    final pinnedNoteF =
+        _safe(() => read(notesDaoProvider).getPinnedNotes(), null);
+
+    final placesCountF = _safe(() => read(mapMarkersDaoProvider).getAll(), null);
+    final lastPhotoF =
+        _safe(() => read(markerPhotosDaoProvider).getAll(), null);
+
+    // ── Sync reads (no I/O — cheap, order doesn't matter) ───────────────────
     int stepsGoal = empty.stepsGoal;
     try {
       stepsGoal = read(stepsGoalProvider);
     } catch (_) {}
+    int kcalGoal = empty.kcalGoal;
+    try {
+      kcalGoal = read(kcalGoalProvider);
+    } catch (_) {}
+    int waterGoalMl = empty.waterGoalMl;
+    try {
+      waterGoalMl = read(waterGoalMlProvider);
+    } catch (_) {}
+    int proteinGoal = empty.proteinGoal;
+    try {
+      proteinGoal = read(proteinGoalGProvider);
+    } catch (_) {}
+    Map<String, dynamic>? weatherCurrent;
+    try {
+      final prefs = read(sharedPreferencesProvider);
+      final cache = prefs.getString('weather_cache');
+      if (cache != null && cache.isNotEmpty) {
+        final data = jsonDecode(cache) as Map<String, dynamic>?;
+        weatherCurrent = data?['current'] as Map<String, dynamic>?;
+      }
+    } catch (_) {}
+    int appFavorites = 0;
+    try {
+      final favs = read(appLauncherFavoritesProvider);
+      appFavorites = favs.length;
+    } catch (_) {}
 
-    // ── sleepHours (REAL: healthDaoProvider.getRecentSleepLogs(2)) ────────────
-    // Same logic as _SleepContent / _HealthSnapshotContent in health_widgets.dart
+    // ── Await + derive (same logic/order as before, just sourced from the
+    // already-in-flight futures above instead of awaiting fresh each time) ──
+
+    final stepsToday = await stepsTodayF;
+    final heartRate = await heartRateF;
+    final activeMinutes = await activeMinutesF;
+    final caloriesBurned = await caloriesBurnedF;
+    final stepsWeekAvg = await stepsWeekAvgF;
+
     double sleepHours = empty.sleepHours;
     try {
-      final logs = await read(healthDaoProvider).getRecentSleepLogs(2);
+      final logs = _or(await sleepLogs2F);
       if (logs.isNotEmpty) {
         final latest =
             logs.reduce((a, b) => a.bedtime.isAfter(b.bedtime) ? a : b);
@@ -307,17 +485,9 @@ class WidgetDataCollector {
       }
     } catch (_) {}
 
-    // ── heartRate (REAL: HealthService.latestHeartRate() last 24h) ───────────
-    int heartRate = empty.heartRate;
-    try {
-      heartRate = await HealthService.latestHeartRate();
-    } catch (_) {}
-
-    // ── mood (REAL: healthDaoProvider.getLatestMood()) ────────────────────────
-    // Same logic as _MoodContent in health_widgets.dart
     int mood = empty.mood;
     try {
-      final moodLog = await read(healthDaoProvider).getLatestMood();
+      final moodLog = await moodLogF;
       if (moodLog != null) {
         final now = DateTime.now();
         final isToday = moodLog.logDate.year == now.year &&
@@ -329,145 +499,86 @@ class WidgetDataCollector {
       }
     } catch (_) {}
 
-    // ── todaysTotals (REAL: todaysTotalsProvider) — read once, reused for kcal/protein/carbs/fat ─
-    // Same source as _CaloriesRingContent / _RemainingCaloriesContent / _MacrosContent in nutrition_widgets.dart
-    MacroSummary? todaysTotals;
-    try {
-      todaysTotals = await read(todaysTotalsProvider.future);
-    } catch (_) {}
-
-    // ── kcalToday (REAL: todaysTotalsProvider → calories) ────────────────────
-    // Same source as _CaloriesRingContent / _RemainingCaloriesContent in nutrition_widgets.dart
+    final todaysTotals = await todaysTotalsF;
     final int kcalToday =
         todaysTotals != null ? todaysTotals.calories.round() : empty.kcal;
-
-    // ── kcalGoal (REAL: preferences_provider.dart – kcalGoalProvider) ─────────
-    int kcalGoal = empty.kcalGoal;
-    try {
-      kcalGoal = read(kcalGoalProvider);
-    } catch (_) {}
-
-    // ── waterMlToday (REAL: waterTodaySnapshotProvider) ───────────────────────
-    // Same source as _WaterContent in nutrition_widgets.dart
-    int waterMlToday = empty.waterMl;
-    try {
-      waterMlToday = await read(waterTodaySnapshotProvider.future);
-    } catch (_) {}
-
-    // ── waterGoalMl (REAL: preferences_provider.dart – waterGoalMlProvider) ───
-    int waterGoalMl = empty.waterGoalMl;
-    try {
-      waterGoalMl = read(waterGoalMlProvider);
-    } catch (_) {}
-
-    // ── proteinToday (REAL: todaysTotalsProvider → protein) ──────────────────
-    // Same source as _MacrosContent in nutrition_widgets.dart
     final int proteinToday =
         todaysTotals != null ? todaysTotals.protein.round() : empty.protein;
-
-    // ── proteinGoal (REAL: preferences_provider.dart – proteinGoalGProvider) ──
-    int proteinGoal = empty.proteinGoal;
-    try {
-      proteinGoal = read(proteinGoalGProvider);
-    } catch (_) {}
-
-    // ── allTodos (REAL: planningDaoProvider.getAllTodos()) — read once, reused for nextTodoTitle and openTodos ─
-    // Same source as _OpenTodosContent in planning_widgets.dart
-    final allTodos = await () async {
-      try {
-        return await read(planningDaoProvider).getAllTodos();
-      } catch (_) {
-        return <dynamic>[];
-      }
-    }();
-
-    // ── nextTodoTitle (REAL: planningDaoProvider.getAllTodos() → first open) ───
-    // Same source as _OpenTodosContent in planning_widgets.dart
-    String? nextTodoTitle;
-    {
-      final open = allTodos.where((t) => !t.done).toList();
-      if (open.isNotEmpty) {
-        nextTodoTitle = open.first.title;
-      }
-    }
-
-    // ── healthScore (REAL: healthScoreProvider → gesamtScore) ────────────────
-    // Same source as _HealthScoreContent in health_widgets.dart
-    int healthScore = 0;
-    try {
-      final result = await read(healthScoreProvider.future);
-      healthScore = result.gesamtScore;
-    } catch (_) {}
-
-    // ── weightKg (REAL: healthDaoProvider.getAllWeightLogs() → latest) ────────
-    // Same source as _WeightTrendContent in health_widgets.dart
-    double weightKg = 0.0;
-    try {
-      final logs = await read(healthDaoProvider).getAllWeightLogs();
-      if (logs.isNotEmpty) {
-        weightKg = logs.first.weightKg; // ordered desc by logDate
-      }
-    } catch (_) {}
-
-    // ── activeMinutes (REAL: HealthService.activeMinutesToday()) ─────────────
-    int activeMinutes = 0;
-    try {
-      activeMinutes = await HealthService.activeMinutesToday();
-    } catch (_) {}
-
-    // ── carbs (REAL: todaysTotalsProvider → carbs) ────────────────────────────
-    // Same source as _MacrosContent in nutrition_widgets.dart
     final int carbs = todaysTotals != null ? todaysTotals.carbs.round() : 0;
-
-    // ── fat (REAL: todaysTotalsProvider → fat) ────────────────────────────────
-    // Same source as _MacrosContent in nutrition_widgets.dart
     final int fat = todaysTotals != null ? todaysTotals.fat.round() : 0;
 
-    // ── lastMeal (REAL: lastMealProvider → name) ──────────────────────────────
-    // Same source as _LastMealContent in nutrition_widgets.dart
+    final waterMlToday = await waterMlTodayF;
+
+    final allTodos = _or(await allTodosF);
+    String? nextTodoTitle;
+    try {
+      final open = allTodos.where((t) => !t.done).toList();
+      if (open.isNotEmpty) nextTodoTitle = open.first.title;
+    } catch (_) {}
+    final int openTodos = allTodos.where((t) => !t.done).length;
+    final int overdueTodos = () {
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      return allTodos
+          .where((t) =>
+              !t.done && t.dueDate != null && t.dueDate!.isBefore(today))
+          .length;
+    }();
+
+    int healthScore = 0;
+    try {
+      final result = await healthScoreF;
+      if (result != null) healthScore = result.gesamtScore;
+    } catch (_) {}
+
+    final weightLogs = _or(await weightLogsF);
+    double weightKg = 0.0;
+    try {
+      if (weightLogs.isNotEmpty) {
+        weightKg = weightLogs.first.weightKg; // ordered desc by logDate
+      }
+    } catch (_) {}
+    String weightHistory = '';
+    try {
+      if (weightLogs.isNotEmpty) {
+        final last7 =
+            weightLogs.take(7).toList().reversed.map((l) => l.weightKg).toList();
+        weightHistory = WidgetSnapshot.encodeSeries(last7);
+      }
+    } catch (_) {}
+
     String lastMeal = '';
     try {
-      final meal = await read(lastMealProvider.future);
+      final meal = await lastMealF;
       if (meal != null) lastMeal = meal.name;
     } catch (_) {}
 
-    // ── nextWorkout (REAL: activePlanProvider + getDaysForPlan → day name) ────
-    // Same logic as _NextWorkoutContent in training_widgets.dart
-    String nextWorkout = '';
-    try {
-      final plan = await read(activePlanProvider.future);
-      if (plan != null) {
-        final days =
-            await read(trainingDaoProvider).getDaysForPlan(plan.id);
-        if (days.isNotEmpty) {
-          final today = DateTime.now().weekday;
-          final ordered = [...days]
-            ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
-          final day = ordered.firstWhere(
-            (d) => d.dayOfWeek == today,
-            orElse: () => ordered.first,
-          );
-          nextWorkout = day.name;
-        }
-      }
-    } catch (_) {}
+    final nextWorkout = await nextWorkoutF;
 
-    // ── weeklyVolume (REAL: recentTrainingSetsProvider(7) → working sets) ─────
-    // Same logic as _WeeklyVolumeContent in training_widgets.dart
+    final recentSets7 = _or(await recentSets7F);
     int weeklyVolume = 0;
     try {
-      final sets = await read(recentTrainingSetsProvider(7).future);
-      weeklyVolume = sets.where((s) => !s.isWarmup).length;
+      weeklyVolume = recentSets7.where((s) => !s.isWarmup).length;
+    } catch (_) {}
+    int weeklyWorkouts = 0;
+    try {
+      weeklyWorkouts = recentSets7.map((s) => s.sessionId).toSet().length;
     } catch (_) {}
 
-    // ── trainingStreak (REAL: trainingDaoProvider.getSessionsAfter(365d)) ─────
-    // Same logic as _TrainingStreakContent in training_widgets.dart
+    int personalRecords = 0;
+    try {
+      final sets = _or(await recentSets365F);
+      personalRecords = sets
+          .where((s) => (s.weightKg ?? 0) > 0)
+          .map((s) => s.exerciseId)
+          .toSet()
+          .length;
+    } catch (_) {}
+
+    final sessionsAfter365 = _or(await sessionsAfter365F);
     int trainingStreak = 0;
     try {
-      final cutoff = DateTime.now().subtract(const Duration(days: 365));
-      final sessions =
-          await read(trainingDaoProvider).getSessionsAfter(cutoff);
-      final sessionsSorted = [...sessions]
+      final sessionsSorted = [...sessionsAfter365]
         ..sort((a, b) => b.startedAt.compareTo(a.startedAt));
       final weekStarts = <DateTime>{};
       for (final s in sessionsSorted) {
@@ -484,186 +595,289 @@ class WidgetDataCollector {
       }
       trainingStreak = streak;
     } catch (_) {}
+    String lastWorkout = '';
+    try {
+      if (sessionsAfter365.isNotEmpty) {
+        final sorted = [...sessionsAfter365]
+          ..sort((a, b) => b.startedAt.compareTo(a.startedAt));
+        final notes = sorted.first.notes?.trim() ?? '';
+        lastWorkout = notes.isEmpty
+            ? sorted.first.startedAt.toIso8601String().substring(0, 10)
+            : notes;
+      }
+    } catch (_) {}
 
-    // ── openTodos (REAL: planningDaoProvider.getAllTodos() → open count) ──────
-    // Same logic as _OpenTodosContent in planning_widgets.dart (already read for nextTodoTitle)
-    final int openTodos = allTodos.where((t) => !t.done).length;
+    final muscleHeatmap = await muscleHeatmapF;
 
-    // ── nextAppointment (REAL: planningDaoProvider.getNextAppointment()) ──────
-    // Same source as _NextAppointmentCountdownContent in planning_widgets.dart
     String nextAppointment = '';
     try {
-      final appt = await read(planningDaoProvider).getNextAppointment();
+      final appt = await nextAppointmentF;
       if (appt != null) nextAppointment = appt.title;
     } catch (_) {}
 
-    // ── habitsDone / habitsTotal (REAL: planningDaoProvider) ──────────────────
-    // Same logic as _HabitsTodayContent in planning_widgets.dart
+    final allHabits = _or(await allHabitsF);
     int habitsDone = 0;
     int habitsTotal = 0;
     try {
-      final habits = await read(planningDaoProvider).getAllHabits();
-      final todayLogs =
-          await read(planningDaoProvider).getHabitLogsForDate(DateTime.now());
-      habitsTotal = habits.length;
+      final todayLogs = _or(await habitLogsForDateF);
+      habitsTotal = allHabits.length;
       final doneIds =
           todayLogs.where((l) => l.done).map((l) => l.habitId).toSet();
       habitsDone = doneIds.length;
     } catch (_) {}
 
-    // ── medsDone / medsTotal (REAL: medicationDaoProvider) ───────────────────
-    // medsTotal: active meds with at least one scheduled time.
-    // medsDone: getTakenCountToday() — taken-logs written by the "Heute" card.
-    int medsDone = 0;
+    final recentHabitLogs = _or(await recentHabitLogsF);
+    int bestHabitStreak = 0;
+    try {
+      for (final habit in allHabits) {
+        final habitLogs = recentHabitLogs
+            .where((l) => l.habitId == habit.id && l.done)
+            .map((l) => DateTime(l.logDate.year, l.logDate.month, l.logDate.day))
+            .toSet();
+        int streak = 0;
+        var cursor = DateTime(
+            DateTime.now().year, DateTime.now().month, DateTime.now().day);
+        while (habitLogs.contains(cursor)) {
+          streak++;
+          cursor = cursor.subtract(const Duration(days: 1));
+        }
+        if (streak > bestHabitStreak) bestHabitStreak = streak;
+      }
+    } catch (_) {}
+    String habitWeekSeries = '';
+    try {
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final perDay = <num>[];
+      for (var i = 6; i >= 0; i--) {
+        final day = today.subtract(Duration(days: i));
+        perDay.add(recentHabitLogs
+            .where((l) =>
+                l.done &&
+                l.logDate.year == day.year &&
+                l.logDate.month == day.month &&
+                l.logDate.day == day.day)
+            .length);
+      }
+      if (perDay.any((v) => v > 0)) {
+        habitWeekSeries = WidgetSnapshot.encodeSeries(perDay);
+      }
+    } catch (_) {}
+
     int medsTotal = 0;
     try {
-      final dao = read(medicationDaoProvider);
-      final meds = await dao.getActiveMedications();
+      final meds = _or(await activeMedsF);
       medsTotal = meds
           .where(
               (m) => m.timings.trim().isNotEmpty && m.timings.trim() != '[]')
           .length;
-      medsDone = await dao.getTakenCountToday();
+    } catch (_) {}
+    int medsDone = 0;
+    try {
+      medsDone = await medsTakenTodayF;
     } catch (_) {}
 
-    // ── balanceMonth / income / expense (REAL: budgetDaoProvider.getTransactionsForMonth) ──
-    // Same logic as _BalanceMonthContent / _IncomeExpenseContent in budget_widgets.dart
     double balanceMonth = 0.0;
     double incomeMonth = 0.0;
     double expenseMonth = 0.0;
     try {
-      final now = DateTime.now();
-      final txs = await read(budgetDaoProvider)
-          .getTransactionsForMonth(now.year, now.month);
-      incomeMonth = txs
-          .where((t) => t.type == 'income')
-          .fold(0.0, (s, t) => s + t.amount);
+      final txs = _or(await monthTxsF);
+      incomeMonth =
+          txs.where((t) => t.type == 'income').fold(0.0, (s, t) => s + t.amount);
       expenseMonth = txs
           .where((t) => t.type == 'expense')
           .fold(0.0, (s, t) => s + t.amount);
       balanceMonth = incomeMonth - expenseMonth;
     } catch (_) {}
-
-    // ── budgetSpent / budgetLimit (REAL: budgetDaoProvider + SharedPreferences) ─
-    // Same logic as _BudgetProgressContent in budget_widgets.dart
-    // budgetSpent reuses expenseMonth (same filter: type == 'expense', same month)
     final double budgetSpent = expenseMonth;
+
     double budgetLimit = 0.0;
     try {
-      budgetLimit =
-          read(sharedPreferencesProvider).getDouble('monthly_budget') ?? 0.0;
+      budgetLimit = await budgetLimitRawF;
     } catch (_) {}
 
-    // ── topCategory (REAL: budgetDaoProvider → category expenses sorted desc) ─
-    // Same logic as _TopCategoryContent in budget_widgets.dart
+    final categoryExpenses = _or(await categoryExpensesF);
     String topCategory = '';
     try {
-      final now = DateTime.now();
-      final cats =
-          await read(categoryExpensesProvider((now.year, now.month)).future);
-      if (cats.isNotEmpty) {
-        topCategory = cats.first.category.name;
+      if (categoryExpenses.isNotEmpty) {
+        topCategory = categoryExpenses.first.category.name;
+      }
+    } catch (_) {}
+    String categorySplit = '';
+    try {
+      if (categoryExpenses.isNotEmpty) {
+        categorySplit = WidgetSnapshot.encodeSeries(
+            categoryExpenses.take(5).map((c) => c.amount).toList());
       }
     } catch (_) {}
 
-    // ── writeStreak (REAL: diaryStreakProvider) ───────────────────────────────
-    // Same source as _WriteStreakContent in diary_widgets.dart
-    int writeStreak = 0;
+    String accountsOverview = '';
     try {
-      writeStreak = await read(diaryStreakProvider.future);
+      final accounts = _or(await accountsF);
+      if (accounts.isNotEmpty) {
+        final total = accounts.fold(0.0, (s, a) => s + a.balance);
+        accountsOverview = '${total.toStringAsFixed(2)} €';
+      }
     } catch (_) {}
 
-    // ── lastEntry (REAL: diaryDaoProvider.getLastEntry() → note) ─────────────
-    // Same source as _LastEntryContent in diary_widgets.dart
+    String recentTransaction = '';
+    try {
+      final txs = _or(await recentTransactionsF);
+      if (txs.isNotEmpty) {
+        recentTransaction = txs.first.description;
+      }
+    } catch (_) {}
+
+    String savingsGoal = '';
+    try {
+      final goals = _or(await savingsGoalsF);
+      if (goals.isNotEmpty) savingsGoal = goals.first.name;
+    } catch (_) {}
+
+    int recurringDue = 0;
+    try {
+      final recurring = _or(await recurringF);
+      recurringDue = recurring.length;
+    } catch (_) {}
+
+    final trendBars = _or(await trendBarsF);
+    String monthTrend = '';
+    try {
+      if (trendBars.length >= 2) {
+        final cur = trendBars.last.income - trendBars.last.expenses;
+        final prev = trendBars[trendBars.length - 2].income -
+            trendBars[trendBars.length - 2].expenses;
+        final delta = cur - prev;
+        final arrow = delta >= 0 ? '▲' : '▼';
+        monthTrend =
+            '$arrow ${delta >= 0 ? '+' : ''}${delta.toStringAsFixed(0)} €';
+      }
+    } catch (_) {}
+    String monthTrendSeries = '';
+    try {
+      if (trendBars.isNotEmpty) {
+        monthTrendSeries = WidgetSnapshot.encodeSeries(
+            trendBars.map((b) => (b.income - b.expenses).round()).toList());
+      }
+    } catch (_) {}
+
+    int writeStreak = 0;
+    try {
+      writeStreak = await writeStreakF;
+    } catch (_) {}
+
     String lastEntry = '';
     try {
-      final entry = await read(diaryDaoProvider).getLastEntry();
+      final entry = await lastDiaryEntryF;
       if (entry != null) lastEntry = entry.note.trim();
     } catch (_) {}
 
-    // ── entriesThisMonth (REAL: diaryEntriesForMonthProvider) ────────────────
-    // Same source as _EntriesThisMonthContent in diary_widgets.dart
     int entriesThisMonth = 0;
     try {
-      final now = DateTime.now();
-      final entries = await read(
-          diaryEntriesForMonthProvider((now.year, now.month)).future);
+      final entries = _or(await entriesThisMonthF);
       entriesThisMonth = entries.length;
     } catch (_) {}
 
-    // ── allTrackers (REAL: abstinenceDaoProvider.getAllTrackers()) — read once, reused for
-    //    abstinenceTitle, abstinenceDuration, longestStreak, allCounters ─────────────────
-    // Same source as _CurrentStreakContent / _LongestStreakContent / _AllCountersContent
-    // in misc_widgets.dart
-    final allTrackers = await () async {
-      try {
-        return await read(abstinenceDaoProvider).getAllTrackers();
-      } catch (_) {
-        return <dynamic>[];
-      }
-    }();
+    int yearHeatmap = 0;
+    try {
+      yearHeatmap = (await yearHeatmapF)?.length ?? 0;
+    } catch (_) {}
 
-    // ── abstinenceTitle / abstinenceDuration (REAL: allTrackers → active only) ─
-    // Same logic as _CurrentStreakContent in misc_widgets.dart
+    int moodCalendar = 0;
+    try {
+      final logs = _or(await moodCalendarLogsF);
+      if (logs.isNotEmpty) {
+        final avg = logs.fold(0, (s, l) => s + l.moodScore) / logs.length;
+        moodCalendar = avg.round();
+      }
+    } catch (_) {}
+
+    final allTrackers = _or(await allTrackersF);
+
     String abstinenceTitle = '';
     String abstinenceDuration = '';
-    {
+    try {
       final active = allTrackers.where((t) => t.isActive).toList();
       if (active.isNotEmpty) {
-        // Longest currently-running streak (same logic as _CurrentStreakContent)
-        final best = active.reduce(
-            (a, b) => _daysSince(a.startDate) >= _daysSince(b.startDate) ? a : b);
+        final best = active.reduce((a, b) =>
+            _daysSince(a.startDate) >= _daysSince(b.startDate) ? a : b);
         abstinenceTitle = best.name;
         final days = _daysSince(best.startDate);
         abstinenceDuration = '$days ${days == 1 ? 'Tag' : 'Tage'}';
       }
-    }
+    } catch (_) {}
 
-    // ── moneySaved (REAL: Σ costPerDay × Tage über aktive Tracker) ───────────
-    // Reuses allTrackers; costPerDay (v16) is null when the user left it blank.
     double moneySaved = 0.0;
-    for (final t in allTrackers) {
-      if (t.isActive == true && t.costPerDay != null) {
-        moneySaved += (t.costPerDay as double) * _daysSince(t.startDate);
+    try {
+      for (final t in allTrackers) {
+        if (t.isActive == true && t.costPerDay != null) {
+          moneySaved += (t.costPerDay as double) * _daysSince(t.startDate);
+        }
       }
-    }
+    } catch (_) {}
 
-    // ── lastIntake (REAL: substanceDaoProvider.getLastIntake() → name) ───────
+    int longestStreak = 0;
+    try {
+      if (allTrackers.isNotEmpty) {
+        for (final t in allTrackers) {
+          final days = _daysSince(t.startDate);
+          if (days > longestStreak) longestStreak = days;
+        }
+      }
+    } catch (_) {}
+
+    final int allCounters = allTrackers.length;
+
+    String counters = '';
+    try {
+      if (allTrackers.isNotEmpty) {
+        final labels = allTrackers
+            .take(5)
+            .map((t) => '${t.name} ${_daysSince(t.startDate)}')
+            .toList();
+        counters = WidgetSnapshot.encodeLabels(labels);
+      }
+    } catch (_) {}
+
     String lastIntake = '';
     try {
-      final last = await read(substanceDaoProvider).getLastIntake();
+      final last = await lastIntakeF;
       if (last != null) lastIntake = last.substanceName;
     } catch (_) {}
 
-    // ── takenToday (REAL: substanceDaoProvider.getIntakeCountToday()) ────────
     int takenToday = 0;
     try {
-      takenToday = await read(substanceDaoProvider).getIntakeCountToday();
+      takenToday = await takenTodayF;
     } catch (_) {}
 
-    // ── cycleDay (REAL: periodDaoProvider.getLatestPeriodEntry()) ────────────
-    // Same logic as _CycleDayContent in misc_widgets.dart
+    final latestPeriodEntry = await latestPeriodEntryF;
+
     int cycleDay = 0;
     try {
-      final latest = await read(periodDaoProvider).getLatestPeriodEntry();
-      if (latest != null) {
-        cycleDay = _daysSince(latest.startDate) + 1;
+      if (latestPeriodEntry != null) {
+        cycleDay = _daysSince(latestPeriodEntry.startDate) + 1;
       }
     } catch (_) {}
 
-    // ── periodPhase (REAL: abgeleitet aus PeriodEntry + CycleCalculation) ─────
-    // Gleiche Logik wie _CycleStatusCard in period_screen.dart:
-    // Menstruation (innerhalb Periode) → Ovulation → Fruchtbar → Luteal → Follikel.
+    // getCalculationForEntry depends on latestPeriodEntry's id, so it can
+    // only be fetched once that's known — still fetched once here and shared
+    // between periodPhase and nextPeriodDays instead of being queried twice.
+    dynamic periodCalc;
+    if (latestPeriodEntry != null) {
+      try {
+        periodCalc = await read(periodDaoProvider)
+            .getCalculationForEntry(latestPeriodEntry.id);
+      } catch (_) {}
+    }
+
     String periodPhase = '';
     try {
-      final dao = read(periodDaoProvider);
-      final latest = await dao.getLatestPeriodEntry();
-      if (latest != null) {
+      if (latestPeriodEntry != null) {
         final now = DateTime.now();
         final today = DateTime(now.year, now.month, now.day);
-        final start = DateTime(
-            latest.startDate.year, latest.startDate.month, latest.startDate.day);
-        final end = latest.endDate;
+        final start = DateTime(latestPeriodEntry.startDate.year,
+            latestPeriodEntry.startDate.month, latestPeriodEntry.startDate.day);
+        final end = latestPeriodEntry.endDate;
         final inPeriod = !today.isBefore(start) &&
             (end == null
                 ? today.difference(start).inDays < 7
@@ -671,7 +885,7 @@ class WidgetDataCollector {
         if (inPeriod) {
           periodPhase = 'Menstruation';
         } else {
-          final calc = await dao.getCalculationForEntry(latest.id);
+          final calc = periodCalc;
           final ov = calc?.ovulationDate;
           final fs = calc?.fertileStart;
           final fe = calc?.fertileEnd;
@@ -693,39 +907,31 @@ class WidgetDataCollector {
       }
     } catch (_) {}
 
-    // ── nextPeriodDays (REAL: periodDaoProvider.getCalculationForEntry()) ─────
-    // Same logic as _NextPeriodContent in misc_widgets.dart
     int nextPeriodDays = 0;
     try {
-      final dao = read(periodDaoProvider);
-      final latest = await dao.getLatestPeriodEntry();
-      if (latest != null) {
-        final calc = await dao.getCalculationForEntry(latest.id);
+      if (latestPeriodEntry != null) {
+        final calc = periodCalc;
         final predicted = calc?.nextPeriodPredicted;
         if (predicted != null) {
           final now = DateTime.now();
           final today = DateTime(now.year, now.month, now.day);
-          final target = DateTime(
-              predicted.year, predicted.month, predicted.day);
+          final target =
+              DateTime(predicted.year, predicted.month, predicted.day);
           final diff = target.difference(today).inDays;
           if (diff >= 0) nextPeriodDays = diff;
         }
       }
     } catch (_) {}
 
-    // ── notesCount (REAL: notesDaoProvider.getActiveNotes()) ─────────────────
-    // Same source as _NotesCountContent in misc_widgets.dart
     int notesCount = 0;
     try {
-      final notes = await read(notesDaoProvider).getActiveNotes();
+      final notes = _or(await notesCountF);
       notesCount = notes.length;
     } catch (_) {}
 
-    // ── lastNote (REAL: notesDaoProvider.getRecentNotes(1) → title) ──────────
-    // Same source as _LastNoteContent in misc_widgets.dart
     String lastNote = '';
     try {
-      final notes = await read(notesDaoProvider).getRecentNotes(1);
+      final notes = _or(await lastNoteF);
       if (notes.isNotEmpty) {
         lastNote = notes.first.title.trim().isEmpty
             ? notes.first.content.trim()
@@ -733,19 +939,25 @@ class WidgetDataCollector {
       }
     } catch (_) {}
 
-    // ── placesCount (REAL: mapMarkersDaoProvider.getAll()) ───────────────────
-    // Same source as _PlacesCountContent in misc_widgets.dart
+    String pinnedNote = '';
+    try {
+      final pins = _or(await pinnedNoteF);
+      if (pins.isNotEmpty) {
+        pinnedNote = pins.first.title.trim().isEmpty
+            ? pins.first.content.trim()
+            : pins.first.title.trim();
+      }
+    } catch (_) {}
+
     int placesCount = 0;
     try {
-      final markers = await read(mapMarkersDaoProvider).getAll();
+      final markers = _or(await placesCountF);
       placesCount = markers.length;
     } catch (_) {}
 
-    // ── lastPhoto (REAL: markerPhotosDaoProvider.getAll() → latest date) ─────
-    // Same source as _LastPhotoContent in misc_widgets.dart
     String lastPhoto = '';
     try {
-      final photos = await read(markerPhotosDaoProvider).getAll();
+      final photos = _or(await lastPhotoF);
       if (photos.isNotEmpty) {
         final d = photos.first.takenAt;
         lastPhoto =
@@ -753,26 +965,10 @@ class WidgetDataCollector {
       }
     } catch (_) {}
 
-    // ── Phase 3 new fields ───────────────────────────────────────────────────
-
-    // ── mapPreview (REAL: reuse placesCount — mapPreview shows marker count as surrogate) ──
     final int mapPreview = placesCount;
 
     // ── clockDate (FALLBACK: keine Quelle; live clock renders in widget, not snapshot) ────
     const String clockDate = ''; // FALLBACK: keine Quelle
-
-    // ── weatherCache (REAL: SharedPreferences weather_cache) — parsed once,
-    //    reused for weatherTemp + weatherForecast ───────────────────────────────
-    // Same source as _WeatherContent in general_widgets.dart
-    Map<String, dynamic>? weatherCurrent;
-    try {
-      final prefs = read(sharedPreferencesProvider);
-      final cache = prefs.getString('weather_cache');
-      if (cache != null && cache.isNotEmpty) {
-        final data = jsonDecode(cache) as Map<String, dynamic>?;
-        weatherCurrent = data?['current'] as Map<String, dynamic>?;
-      }
-    } catch (_) {}
 
     // ── weatherTemp (REAL: weather_cache → temperature_2m) ───────────────────
     String weatherTemp = '';
@@ -795,282 +991,51 @@ class WidgetDataCollector {
           if (c <= 82) return 'Schauer';
           return 'Gewitter';
         }
+
         weatherForecast = cond(code);
       }
     }
 
-    // ── appFavorites (REAL: appLauncherFavoritesProvider → count) ────────────
-    // Same source as _AppFavoritesContent in general_widgets.dart
-    int appFavorites = 0;
-    try {
-      final favs = read(appLauncherFavoritesProvider);
-      appFavorites = favs.length;
-    } catch (_) {}
-
     // ── quickActions (FALLBACK: keine Quelle; statische Liste, kein Snapshot-Wert) ──
     const String quickActions = ''; // FALLBACK: keine Quelle
 
-    // ── caloriesBurned (REAL: HealthService.caloriesBurnedToday()) ───────────
-    int caloriesBurned = 0;
-    try {
-      caloriesBurned = await HealthService.caloriesBurnedToday();
-    } catch (_) {}
-
-    // ── stepsWeekAvg (REAL: HealthService.stepsWeekAvg() last 7 days) ────────
-    int stepsWeekAvg = 0;
-    try {
-      stepsWeekAvg = await HealthService.stepsWeekAvg();
-    } catch (_) {}
-
-    // ── supplementsToday (REAL: supplementDaoProvider.getTakenCountToday()) ───
-    // Same source as supplementsTakenTodayProvider in nutrition_providers.dart
     int supplementsToday = 0;
     try {
-      supplementsToday = await read(supplementDaoProvider).getTakenCountToday();
+      supplementsToday = await supplementsTodayF;
     } catch (_) {}
 
-    // ── mealsToday (REAL: todaysMealEntriesProvider → distinct mealType count) ─
-    // Same source as todaysMealEntriesProvider in nutrition_providers.dart
+    final todaysMealEntries = _or(await todaysMealEntriesF);
     int mealsToday = 0;
     try {
-      final entries = await read(todaysMealEntriesProvider.future);
-      mealsToday = entries.map((e) => e.mealType).toSet().length;
+      mealsToday = todaysMealEntries.map((e) => e.mealType).toSet().length;
     } catch (_) {}
-
-    // ── muscleHeatmap (REAL: Anzahl trainierter Muskelgruppen der letzten 7 Tage) ──
-    int muscleHeatmap = 0;
+    String mealsTodayList = '';
     try {
-      final dao = read(trainingDaoProvider);
-      final recentSets = await dao.getRecentSets(const Duration(days: 7));
-      if (recentSets.isNotEmpty) {
-        final exercises = await dao.getAllExercisesOnce();
-        final exerciseById = {for (final e in exercises) e.id: e};
-        final groups = <String>{};
-        for (final s in recentSets) {
-          final ex = exerciseById[s.exerciseId];
-          if (ex != null) groups.add(canonicalMuscleGroup(ex.muscleGroup));
-        }
-        muscleHeatmap = groups.length;
+      final names = <String>[];
+      for (final e in todaysMealEntries) {
+        final n = e.mealType.trim();
+        if (n.isNotEmpty && !names.contains(n)) names.add(n);
+      }
+      if (names.isNotEmpty) {
+        mealsTodayList = WidgetSnapshot.encodeLabels(names.take(5).toList());
       }
     } catch (_) {}
 
-    // ── lastWorkout (REAL: _recentSessionsProvider → first session name) ──────
-    // Same source as _LastWorkoutContent in training_widgets.dart
-    String lastWorkout = '';
-    try {
-      final cutoff = DateTime.now().subtract(const Duration(days: 365));
-      final sessions =
-          await read(trainingDaoProvider).getSessionsAfter(cutoff);
-      if (sessions.isNotEmpty) {
-        final sorted = [...sessions]
-          ..sort((a, b) => b.startedAt.compareTo(a.startedAt));
-        final notes = sorted.first.notes?.trim() ?? '';
-        lastWorkout = notes.isEmpty
-            ? sorted.first.startedAt.toIso8601String().substring(0, 10)
-            : notes;
-      }
-    } catch (_) {}
-
-    // ── weeklyWorkouts (REAL: recentTrainingSetsProvider(7) → distinct session count) ──
-    // Same source as _WeeklyWorkoutsContent in training_widgets.dart
-    int weeklyWorkouts = 0;
-    try {
-      final sets = await read(recentTrainingSetsProvider(7).future);
-      final sessionIds = sets.map((s) => s.sessionId).toSet();
-      weeklyWorkouts = sessionIds.length;
-    } catch (_) {}
-
-    // ── personalRecords (REAL: recentTrainingSetsProvider(365) → distinct exercises with weight) ──
-    // Same source as _PersonalRecordsContent in training_widgets.dart (best weight per exercise).
-    // Scalar = number of exercises that have at least one weighted working set on record.
-    int personalRecords = 0;
-    try {
-      final sets = await read(recentTrainingSetsProvider(365).future);
-      personalRecords = sets
-          .where((s) => (s.weightKg ?? 0) > 0)
-          .map((s) => s.exerciseId)
-          .toSet()
-          .length;
-    } catch (_) {}
-
-    // ── restTimer (FALLBACK: keine Quelle; Rest-Timer ist transient, nicht gespeichert) ──
+    // ── restTimer (FALLBACK: transient, nie gespeichert) ─────────────────────
     const String restTimer = ''; // FALLBACK: keine Quelle
 
-    // ── overdueTodos (REAL: planningDaoProvider.getAllTodos() → overdue count) ──
-    // Same logic as _OverdueTodosContent in planning_widgets.dart (allTodos already read)
-    final int overdueTodos = () {
-      final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
-      return allTodos
-          .where((t) => !t.done &&
-              t.dueDate != null &&
-              t.dueDate!.isBefore(today))
-          .length;
-    }();
-
-    // ── bestHabitStreak (REAL: planningDaoProvider.getRecentHabitLogs() → max streak) ──
-    // Same logic as _BestHabitStreakContent in planning_widgets.dart
-    int bestHabitStreak = 0;
-    try {
-      final logs = await read(planningDaoProvider).getRecentHabitLogs();
-      final habits = await read(planningDaoProvider).getAllHabits();
-      for (final habit in habits) {
-        final habitLogs = logs
-            .where((l) => l.habitId == habit.id && l.done)
-            .map((l) => DateTime(l.logDate.year, l.logDate.month, l.logDate.day))
-            .toSet();
-        int streak = 0;
-        var cursor = DateTime(
-            DateTime.now().year, DateTime.now().month, DateTime.now().day);
-        while (habitLogs.contains(cursor)) {
-          streak++;
-          cursor = cursor.subtract(const Duration(days: 1));
-        }
-        if (streak > bestHabitStreak) bestHabitStreak = streak;
-      }
-    } catch (_) {}
-
-    // ── accountsOverview (REAL: accountsDaoProvider.getAll() → total balance) ─
-    // Same source as _AccountsOverviewContent in budget_widgets.dart
-    String accountsOverview = '';
-    try {
-      final accounts = await read(accountsDaoProvider).getAll();
-      if (accounts.isNotEmpty) {
-        final total = accounts.fold(0.0, (s, a) => s + a.balance);
-        accountsOverview = '${total.toStringAsFixed(2)} €';
-      }
-    } catch (_) {}
-
-    // ── recentTransaction (REAL: budgetDaoProvider.getRecentTransactions(limit:1)) ──
-    // Same source as _RecentTransactionsContent in budget_widgets.dart which uses
-    // recentTransactionItemsProvider(3) → dao.getRecentTransactions(limit:3).
-    // Cross-month source so it never returns blank at start of a new month.
-    // Format matches the tile's top row: description (= item.name) if non-empty,
-    // else category name — but category lookup requires a separate DAO call, so we
-    // store the raw description (same as item.name). This is the scalar the widget
-    // key holds; the tile renders it with amount in a second column.
-    String recentTransaction = '';
-    try {
-      final txs = await read(budgetDaoProvider).getRecentTransactions(limit: 1);
-      if (txs.isNotEmpty) {
-        final tx = txs.first;
-        recentTransaction = tx.description;
-      }
-    } catch (_) {}
-
-    // ── savingsGoal (REAL: budgetDaoProvider.getAllSavingsGoals() → first active) ──
-    // Same source as _SavingsGoalContent in budget_widgets.dart
-    String savingsGoal = '';
-    try {
-      final goals = await read(budgetDaoProvider).getAllSavingsGoals();
-      if (goals.isNotEmpty) savingsGoal = goals.first.name;
-    } catch (_) {}
-
-    // ── recurringDue (REAL: budgetDaoProvider.getRecurringTransactions() → count) ──
-    // Same source as _RecurringDueContent in budget_widgets.dart
-    int recurringDue = 0;
-    try {
-      final recurring =
-          await read(budgetDaoProvider).getRecurringTransactions();
-      recurringDue = recurring.length;
-    } catch (_) {}
-
-    // ── monthTrend (REAL: trendDataProvider(sixMonths) → delta last two months) ──
-    // Same source as _MonthTrendContent in budget_widgets.dart (net = income - expenses).
-    String monthTrend = '';
-    try {
-      final bars = await read(trendDataProvider(TrendPeriod.sixMonths).future);
-      if (bars.length >= 2) {
-        final cur = bars.last.income - bars.last.expenses;
-        final prev = bars[bars.length - 2].income - bars[bars.length - 2].expenses;
-        final delta = cur - prev;
-        final arrow = delta >= 0 ? '▲' : '▼';
-        monthTrend =
-            '$arrow ${delta >= 0 ? '+' : ''}${delta.toStringAsFixed(0)} €';
-      }
-    } catch (_) {}
-
-    // ── yearHeatmap (REAL: datesWithDiaryEntriesProvider → total distinct-date count) ──
-    // Same source as _YearHeatmapContent in diary_widgets.dart, which watches
-    // datesWithDiaryEntriesProvider and shows `dates.length` ("N Tage mit Eintrag").
-    // getDatesWithEntries() returns ALL diary dates (no year cap), matching the tile.
-    int yearHeatmap = 0;
-    try {
-      final dates = await read(datesWithDiaryEntriesProvider.future);
-      yearHeatmap = dates.length;
-    } catch (_) {}
-
-    // ── moodCalendar (REAL: healthDaoProvider.getMoodLogsAfter(monthStart) → avg mood) ──
-    // Same source as _MoodCalendarContent in diary_widgets.dart
-    int moodCalendar = 0;
-    try {
-      final now = DateTime.now();
-      final monthStart = DateTime(now.year, now.month);
-      final logs = await read(healthDaoProvider).getMoodLogsAfter(monthStart);
-      if (logs.isNotEmpty) {
-        final avg = logs.fold(0, (s, l) => s + l.moodScore) / logs.length;
-        moodCalendar = avg.round();
-      }
-    } catch (_) {}
-
-    // ── longestStreak (REAL: allTrackers → longest currently-running streak) ──────
-    // Same logic as _LongestStreakContent in misc_widgets.dart: picks the tracker
-    // with the highest _daysSince(startDate) among ALL trackers (active + inactive).
-    // Note: this is NOT a "max historical" value — it is the oldest startDate
-    // still recorded (i.e. longest currently-running streak, never reset).
-    int longestStreak = 0;
-    if (allTrackers.isNotEmpty) {
-      for (final t in allTrackers) {
-        final days = _daysSince(t.startDate);
-        if (days > longestStreak) longestStreak = days;
-      }
-    }
-
-    // ── allCounters (REAL: allTrackers → total count, unfiltered) ────────────────
-    // Same source as _AllCountersContent in misc_widgets.dart, which renders ALL
-    // trackers without an isActive filter (trackers list is unfiltered).
-    final int allCounters = allTrackers.length;
-
-    // ── pinnedNote (REAL: notesDaoProvider.getPinnedNotes() → first title) ────
-    // Same source as _PinnedNoteContent in misc_widgets.dart
-    String pinnedNote = '';
-    try {
-      final pins = await read(notesDaoProvider).getPinnedNotes();
-      if (pins.isNotEmpty) {
-        pinnedNote = pins.first.title.trim().isEmpty
-            ? pins.first.content.trim()
-            : pins.first.title.trim();
-      }
-    } catch (_) {}
-
-    // ── v2 series (REAL where a source exists, else FALLBACK '') ─────────────
-
-    // stepsWeek (REAL: HealthService.stepsWeek() — 7-day daily series)
     String stepsWeekSeries = '';
     try {
-      final week = await HealthService.stepsWeek();
+      final week = _or(await stepsWeekF);
       if (week.isNotEmpty) stepsWeekSeries = WidgetSnapshot.encodeSeries(week);
     } catch (_) {}
 
-    // weightHistory (REAL: getAllWeightLogs() → last 7, oldest→newest)
-    String weightHistory = '';
-    try {
-      final logs = await read(healthDaoProvider).getAllWeightLogs(); // desc by date
-      if (logs.isNotEmpty) {
-        final last7 =
-            logs.take(7).toList().reversed.map((l) => l.weightKg).toList();
-        weightHistory = WidgetSnapshot.encodeSeries(last7);
-      }
-    } catch (_) {}
-
-    // moodWeek (REAL: getMoodLogsAfter(7d) → latest score per day, 0 if none)
     String moodWeekSeries = '';
     try {
-      final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
-      final since = today.subtract(const Duration(days: 6));
-      final logs = await read(healthDaoProvider).getMoodLogsAfter(since);
+      final logs = _or(await moodWeekLogsF);
       if (logs.isNotEmpty) {
+        final now = DateTime.now();
+        final today = DateTime(now.year, now.month, now.day);
         final perDay = <num>[];
         for (var i = 6; i >= 0; i--) {
           final day = today.subtract(Duration(days: i));
@@ -1084,10 +1049,9 @@ class WidgetDataCollector {
       }
     } catch (_) {}
 
-    // sleepWeek (REAL: getRecentSleepLogs(7) → hours per day, 0 if none)
     String sleepWeekSeries = '';
     try {
-      final logs = await read(healthDaoProvider).getRecentSleepLogs(7);
+      final logs = _or(await sleepWeekLogsF);
       if (logs.isNotEmpty) {
         final now = DateTime.now();
         final today = DateTime(now.year, now.month, now.day);
@@ -1118,74 +1082,6 @@ class WidgetDataCollector {
             todaysTotals.fat.round(),
           ])
         : '';
-
-    // mealsTodayList (REAL: todaysMealEntriesProvider → distinct meal types)
-    String mealsTodayList = '';
-    try {
-      final entries = await read(todaysMealEntriesProvider.future);
-      final names = <String>[];
-      for (final e in entries) {
-        final n = e.mealType.trim();
-        if (n.isNotEmpty && !names.contains(n)) names.add(n);
-      }
-      if (names.isNotEmpty) {
-        mealsTodayList = WidgetSnapshot.encodeLabels(names.take(5).toList());
-      }
-    } catch (_) {}
-
-    // habitWeek (REAL: getRecentHabitLogs → done count per day, last 7)
-    String habitWeekSeries = '';
-    try {
-      final logs = await read(planningDaoProvider).getRecentHabitLogs();
-      final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
-      final perDay = <num>[];
-      for (var i = 6; i >= 0; i--) {
-        final day = today.subtract(Duration(days: i));
-        perDay.add(logs
-            .where((l) =>
-                l.done &&
-                l.logDate.year == day.year &&
-                l.logDate.month == day.month &&
-                l.logDate.day == day.day)
-            .length);
-      }
-      if (perDay.any((v) => v > 0)) {
-        habitWeekSeries = WidgetSnapshot.encodeSeries(perDay);
-      }
-    } catch (_) {}
-
-    // categorySplit (REAL: categoryExpensesProvider → top amounts)
-    String categorySplit = '';
-    try {
-      final now = DateTime.now();
-      final cats =
-          await read(categoryExpensesProvider((now.year, now.month)).future);
-      if (cats.isNotEmpty) {
-        categorySplit = WidgetSnapshot.encodeSeries(
-            cats.take(5).map((c) => c.amount).toList());
-      }
-    } catch (_) {}
-
-    // monthTrendSeries (REAL: trendDataProvider(sixMonths) → net per month)
-    String monthTrendSeries = '';
-    try {
-      final bars = await read(trendDataProvider(TrendPeriod.sixMonths).future);
-      if (bars.isNotEmpty) {
-        monthTrendSeries = WidgetSnapshot.encodeSeries(
-            bars.map((b) => (b.income - b.expenses).round()).toList());
-      }
-    } catch (_) {}
-
-    // counters (REAL: allTrackers → "name days" labels)
-    String counters = '';
-    if (allTrackers.isNotEmpty) {
-      final labels = allTrackers
-          .take(5)
-          .map((t) => '${t.name} ${_daysSince(t.startDate)}')
-          .toList();
-      counters = WidgetSnapshot.encodeLabels(labels);
-    }
 
     // quote (REAL: static rotating list, index by day of month)
     const quotes = <String>[
@@ -1297,6 +1193,21 @@ class WidgetDataCollector {
   // ---------------------------------------------------------------------------
   // Private helpers
   // ---------------------------------------------------------------------------
+
+  /// Runs [fn], returning [fallback] if it throws. Used to launch every read
+  /// as an independent future up front (concurrently) while preserving the
+  /// original "one failing read can never crash the whole collection" rule.
+  static Future<T> _safe<T>(Future<T> Function() fn, T fallback) async {
+    try {
+      return await fn();
+    } catch (_) {
+      return fallback;
+    }
+  }
+
+  /// Null → empty-list coalesce with the element type inferred from [xs],
+  /// so callers never need to name a concrete row type.
+  static List<T> _or<T>(List<T>? xs) => xs ?? const [];
 
   static DateTime _weekStart(DateTime d) {
     final day = DateTime(d.year, d.month, d.day);

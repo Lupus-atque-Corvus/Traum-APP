@@ -476,30 +476,6 @@ abstract class AppLocalizations {
   /// **'Noch kein Verlauf'**
   String get noHistoryYet;
 
-  /// No description provided for @noMatches.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Treffer'**
-  String get noMatches;
-
-  /// No description provided for @searchSupplementHint.
-  ///
-  /// In de, this message translates to:
-  /// **'Supplement suchen…'**
-  String get searchSupplementHint;
-
-  /// No description provided for @searchMedicationHint.
-  ///
-  /// In de, this message translates to:
-  /// **'Medikament suchen…'**
-  String get searchMedicationHint;
-
-  /// No description provided for @enterManually.
-  ///
-  /// In de, this message translates to:
-  /// **'Manuell eingeben'**
-  String get enterManually;
-
   /// No description provided for @calendarSyncTitle.
   ///
   /// In de, this message translates to:
@@ -2684,48 +2660,6 @@ abstract class AppLocalizations {
   /// **'Falscher PIN'**
   String get wrongPin;
 
-  /// No description provided for @formTablet.
-  ///
-  /// In de, this message translates to:
-  /// **'Tablette'**
-  String get formTablet;
-
-  /// No description provided for @formCapsule.
-  ///
-  /// In de, this message translates to:
-  /// **'Kapsel'**
-  String get formCapsule;
-
-  /// No description provided for @formDrops.
-  ///
-  /// In de, this message translates to:
-  /// **'Tropfen'**
-  String get formDrops;
-
-  /// No description provided for @formInjection.
-  ///
-  /// In de, this message translates to:
-  /// **'Injektion'**
-  String get formInjection;
-
-  /// No description provided for @formOintment.
-  ///
-  /// In de, this message translates to:
-  /// **'Salbe'**
-  String get formOintment;
-
-  /// No description provided for @formSpray.
-  ///
-  /// In de, this message translates to:
-  /// **'Spray'**
-  String get formSpray;
-
-  /// No description provided for @formOther.
-  ///
-  /// In de, this message translates to:
-  /// **'Sonstiges'**
-  String get formOther;
-
   /// No description provided for @inactive.
   ///
   /// In de, this message translates to:
@@ -2773,18 +2707,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Dosierung'**
   String get dosage;
-
-  /// No description provided for @formLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Form'**
-  String get formLabel;
-
-  /// No description provided for @addReminderTime.
-  ///
-  /// In de, this message translates to:
-  /// **'Erinnerungszeit hinzufügen'**
-  String get addReminderTime;
 
   /// No description provided for @allMedications.
   ///
@@ -3236,60 +3158,6 @@ abstract class AppLocalizations {
   /// **'Proteinziel (g)'**
   String get proteinGoalLabelOb;
 
-  /// No description provided for @supplementsTitleOb.
-  ///
-  /// In de, this message translates to:
-  /// **'Supplements'**
-  String get supplementsTitleOb;
-
-  /// No description provided for @takeSupplementsRegularly.
-  ///
-  /// In de, this message translates to:
-  /// **'Nimmst du regelmäßig Supplements?'**
-  String get takeSupplementsRegularly;
-
-  /// No description provided for @addSupplementButton.
-  ///
-  /// In de, this message translates to:
-  /// **'Supplement hinzufügen'**
-  String get addSupplementButton;
-
-  /// No description provided for @noSupplementsAddedYet.
-  ///
-  /// In de, this message translates to:
-  /// **'Noch keine Supplements hinzugefügt'**
-  String get noSupplementsAddedYet;
-
-  /// No description provided for @medicationTitleOb.
-  ///
-  /// In de, this message translates to:
-  /// **'Medikamente'**
-  String get medicationTitleOb;
-
-  /// No description provided for @medicalDisclaimerOb.
-  ///
-  /// In de, this message translates to:
-  /// **'TRAUM ersetzt keine ärztliche Beratung.'**
-  String get medicalDisclaimerOb;
-
-  /// No description provided for @takeMedicationRegularly.
-  ///
-  /// In de, this message translates to:
-  /// **'Nimmst du regelmäßig Medikamente?'**
-  String get takeMedicationRegularly;
-
-  /// No description provided for @addMedicationButton.
-  ///
-  /// In de, this message translates to:
-  /// **'Medikament hinzufügen'**
-  String get addMedicationButton;
-
-  /// No description provided for @noMedicationsAddedYet.
-  ///
-  /// In de, this message translates to:
-  /// **'Noch keine Medikamente hinzugefügt'**
-  String get noMedicationsAddedYet;
-
   /// No description provided for @budgetTitleOb.
   ///
   /// In de, this message translates to:
@@ -3560,12 +3428,6 @@ abstract class AppLocalizations {
   /// **'Kategorie'**
   String get category;
 
-  /// No description provided for @fieldAmount.
-  ///
-  /// In de, this message translates to:
-  /// **'Menge'**
-  String get fieldAmount;
-
   /// No description provided for @amountHint.
   ///
   /// In de, this message translates to:
@@ -3577,78 +3439,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Einheit'**
   String get fieldUnit;
-
-  /// No description provided for @categoryVitamins.
-  ///
-  /// In de, this message translates to:
-  /// **'Vitamine'**
-  String get categoryVitamins;
-
-  /// No description provided for @categoryMinerals.
-  ///
-  /// In de, this message translates to:
-  /// **'Mineralien'**
-  String get categoryMinerals;
-
-  /// No description provided for @categoryAminoAcids.
-  ///
-  /// In de, this message translates to:
-  /// **'Aminosäuren'**
-  String get categoryAminoAcids;
-
-  /// No description provided for @categoryProtein.
-  ///
-  /// In de, this message translates to:
-  /// **'Protein'**
-  String get categoryProtein;
-
-  /// No description provided for @categoryOmega3.
-  ///
-  /// In de, this message translates to:
-  /// **'Omega-3'**
-  String get categoryOmega3;
-
-  /// No description provided for @categoryAdaptogens.
-  ///
-  /// In de, this message translates to:
-  /// **'Adaptogene'**
-  String get categoryAdaptogens;
-
-  /// No description provided for @categoryPreWorkout.
-  ///
-  /// In de, this message translates to:
-  /// **'Pre-Workout'**
-  String get categoryPreWorkout;
-
-  /// No description provided for @categoryGutHealth.
-  ///
-  /// In de, this message translates to:
-  /// **'Darmgesundheit'**
-  String get categoryGutHealth;
-
-  /// No description provided for @categoryCreatine.
-  ///
-  /// In de, this message translates to:
-  /// **'Creatin'**
-  String get categoryCreatine;
-
-  /// No description provided for @unitCapsules.
-  ///
-  /// In de, this message translates to:
-  /// **'Kapseln'**
-  String get unitCapsules;
-
-  /// No description provided for @unitTablets.
-  ///
-  /// In de, this message translates to:
-  /// **'Tabletten'**
-  String get unitTablets;
-
-  /// No description provided for @unitScoop.
-  ///
-  /// In de, this message translates to:
-  /// **'Messbecher'**
-  String get unitScoop;
 
   /// No description provided for @noSupplements.
   ///
