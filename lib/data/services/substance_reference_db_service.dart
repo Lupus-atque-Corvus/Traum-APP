@@ -46,18 +46,21 @@ class SubstanceReferenceDbService {
     final whereSql = where.isEmpty ? '' : 'AND ${where.join(' AND ')}';
 
     if (_ftsAvailable) {
+      late final ResultSet ftsResult;
       try {
         final match = '${_escapeFts(trimmed)}*';
-        final result = db.select(
+        ftsResult = db.select(
           'SELECT s.* FROM substances_fts f '
           'JOIN substances s ON s.id = f.rowid '
           'WHERE substances_fts MATCH ? $whereSql '
           'ORDER BY rank LIMIT ?',
           [match, ...params, limit],
         );
-        return result.map((r) => SubstanceRecord.fromRow(r)).toList();
       } catch (_) {
         _ftsAvailable = false;
+      }
+      if (_ftsAvailable) {
+        return ftsResult.map((r) => SubstanceRecord.fromRow(r)).toList();
       }
     }
 
