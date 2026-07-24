@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
@@ -104,11 +105,19 @@ class _DisclaimerGateState extends ConsumerState<_DisclaimerGate> {
                     fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
             const SizedBox(height: 16),
             Expanded(
-              child: SingleChildScrollView(
-                child: Text(_body ?? '',
-                    style: const TextStyle(color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans', fontSize: 13, height: 1.6)),
-              ),
+              child: _body == null
+                  ? const Center(
+                      child: CircularProgressIndicator(color: TraumColors.coralOrange))
+                  : Markdown(
+                      data: _body!,
+                      styleSheet: MarkdownStyleSheet(
+                        p: const TextStyle(
+                            color: TraumColors.onBackgroundMuted,
+                            fontFamily: 'DMSans', fontSize: 13, height: 1.6),
+                        strong: const TextStyle(
+                            color: TraumColors.onBackground, fontWeight: FontWeight.w600),
+                      ),
+                    ),
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -126,6 +135,7 @@ class _DisclaimerGateState extends ConsumerState<_DisclaimerGate> {
                   await ref
                       .read(preferencesRepositoryProvider)
                       .setSubstancesDisclaimerAccepted(true);
+                  if (!context.mounted) return;
                   ref.invalidate(substancesDisclaimerAcceptedProvider);
                 },
                 child: Text(l10n.substancesDisclaimerAccept,

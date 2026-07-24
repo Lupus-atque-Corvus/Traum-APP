@@ -21,7 +21,12 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     await tester.pumpWidget(_wrap(prefs));
-    await tester.pumpAndSettle();
+    // Not pumpAndSettle(): the disclaimer body's Markdown widget appears to
+    // keep an internal animation (e.g. a Scrollbar fade) alive indefinitely
+    // in the test environment, timing pumpAndSettle out. A bounded pump is
+    // enough to let the async _loadBody() finish and the widget settle.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.byType(TabBarView), findsNothing);
     // Exact match for the title: the disclaimer body's markdown also starts
@@ -34,10 +39,16 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     await tester.pumpWidget(_wrap(prefs));
-    await tester.pumpAndSettle();
+    // Not pumpAndSettle(): the disclaimer body's Markdown widget appears to
+    // keep an internal animation (e.g. a Scrollbar fade) alive indefinitely
+    // in the test environment, timing pumpAndSettle out. A bounded pump is
+    // enough to let the async _loadBody() finish and the widget settle.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     await tester.tap(find.byKey(const Key('substances_disclaimer_accept')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.byType(TabBarView), findsOneWidget);
     expect(prefs.getBool('substances_disclaimer_accepted_v1'), isTrue);
@@ -48,7 +59,12 @@ void main() {
         {'substances_disclaimer_accepted_v1': true});
     final prefs = await SharedPreferences.getInstance();
     await tester.pumpWidget(_wrap(prefs));
-    await tester.pumpAndSettle();
+    // Not pumpAndSettle(): the disclaimer body's Markdown widget appears to
+    // keep an internal animation (e.g. a Scrollbar fade) alive indefinitely
+    // in the test environment, timing pumpAndSettle out. A bounded pump is
+    // enough to let the async _loadBody() finish and the widget settle.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.byType(TabBarView), findsOneWidget);
   });

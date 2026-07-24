@@ -1,5 +1,3 @@
-# Before you begin
-
 The information in this section is **reference material**, not medical advice. It does not
 replace consultation with a doctor or pharmacist.
 

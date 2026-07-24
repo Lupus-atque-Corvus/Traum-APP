@@ -1,5 +1,3 @@
-# Bevor es losgeht
-
 Die Informationen in diesem Bereich sind eine **Referenz**, kein medizinischer Rat. Sie ersetzen
 keine Beratung durch Arzt oder Apotheker.
 
