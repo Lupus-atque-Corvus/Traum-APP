@@ -602,6 +602,216 @@ abstract class AppLocalizations {
   /// **'Bekannte Interaktionen'**
   String get knownInteractions;
 
+  /// No description provided for @substancesTabMyMeds.
+  ///
+  /// In de, this message translates to:
+  /// **'Meine Mittel'**
+  String get substancesTabMyMeds;
+
+  /// No description provided for @substancesTabDatabase.
+  ///
+  /// In de, this message translates to:
+  /// **'Datenbank'**
+  String get substancesTabDatabase;
+
+  /// No description provided for @substancesDisclaimerTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Bevor es losgeht'**
+  String get substancesDisclaimerTitle;
+
+  /// No description provided for @substancesDisclaimerAccept.
+  ///
+  /// In de, this message translates to:
+  /// **'Verstanden'**
+  String get substancesDisclaimerAccept;
+
+  /// No description provided for @substanceFilterAll.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle'**
+  String get substanceFilterAll;
+
+  /// No description provided for @substanceFilterPflanzlich.
+  ///
+  /// In de, this message translates to:
+  /// **'Pflanzlich'**
+  String get substanceFilterPflanzlich;
+
+  /// No description provided for @substanceKlasseMed.
+  ///
+  /// In de, this message translates to:
+  /// **'MED'**
+  String get substanceKlasseMed;
+
+  /// No description provided for @substanceKlasseSupp.
+  ///
+  /// In de, this message translates to:
+  /// **'SUPP'**
+  String get substanceKlasseSupp;
+
+  /// No description provided for @substancePflanzlich.
+  ///
+  /// In de, this message translates to:
+  /// **'pflanzlich'**
+  String get substancePflanzlich;
+
+  /// No description provided for @substanceStatusVollstaendig.
+  ///
+  /// In de, this message translates to:
+  /// **'vollständig'**
+  String get substanceStatusVollstaendig;
+
+  /// No description provided for @substanceStatusTeilweise.
+  ///
+  /// In de, this message translates to:
+  /// **'teilweise'**
+  String get substanceStatusTeilweise;
+
+  /// No description provided for @substanceStatusNurChemie.
+  ///
+  /// In de, this message translates to:
+  /// **'nur Chemie'**
+  String get substanceStatusNurChemie;
+
+  /// No description provided for @substanceSectionEffekt.
+  ///
+  /// In de, this message translates to:
+  /// **'Effekt'**
+  String get substanceSectionEffekt;
+
+  /// No description provided for @substanceSectionWechselwirkungen.
+  ///
+  /// In de, this message translates to:
+  /// **'Wechselwirkungen'**
+  String get substanceSectionWechselwirkungen;
+
+  /// No description provided for @substanceSectionDosierung.
+  ///
+  /// In de, this message translates to:
+  /// **'Dosierung'**
+  String get substanceSectionDosierung;
+
+  /// No description provided for @substanceSectionChemie.
+  ///
+  /// In de, this message translates to:
+  /// **'Chemie'**
+  String get substanceSectionChemie;
+
+  /// No description provided for @substanceSectionTopNebenwirkungen.
+  ///
+  /// In de, this message translates to:
+  /// **'Häufigste Nebenwirkungen'**
+  String get substanceSectionTopNebenwirkungen;
+
+  /// No description provided for @substanceFieldBeschreibung.
+  ///
+  /// In de, this message translates to:
+  /// **'Beschreibung'**
+  String get substanceFieldBeschreibung;
+
+  /// No description provided for @substanceFieldEffekt.
+  ///
+  /// In de, this message translates to:
+  /// **'Effekt / Wofür'**
+  String get substanceFieldEffekt;
+
+  /// No description provided for @substanceFieldIndikation.
+  ///
+  /// In de, this message translates to:
+  /// **'Indikation'**
+  String get substanceFieldIndikation;
+
+  /// No description provided for @substanceFieldWarnungen.
+  ///
+  /// In de, this message translates to:
+  /// **'Warnungen'**
+  String get substanceFieldWarnungen;
+
+  /// No description provided for @substanceFieldKontraindikationen.
+  ///
+  /// In de, this message translates to:
+  /// **'Kontraindikationen'**
+  String get substanceFieldKontraindikationen;
+
+  /// No description provided for @substanceFieldSpeziellePopulationen.
+  ///
+  /// In de, this message translates to:
+  /// **'Spezielle Populationen'**
+  String get substanceFieldSpeziellePopulationen;
+
+  /// No description provided for @substanceDosisErwachsene.
+  ///
+  /// In de, this message translates to:
+  /// **'Erwachsene'**
+  String get substanceDosisErwachsene;
+
+  /// No description provided for @substanceDosisKinder.
+  ///
+  /// In de, this message translates to:
+  /// **'Kinder'**
+  String get substanceDosisKinder;
+
+  /// No description provided for @substanceDosisSenioren.
+  ///
+  /// In de, this message translates to:
+  /// **'Senioren'**
+  String get substanceDosisSenioren;
+
+  /// No description provided for @substanceDosisSchwangerschaft.
+  ///
+  /// In de, this message translates to:
+  /// **'Schwangerschaft/Stillzeit'**
+  String get substanceDosisSchwangerschaft;
+
+  /// No description provided for @substanceChemieSummenformel.
+  ///
+  /// In de, this message translates to:
+  /// **'Summenformel'**
+  String get substanceChemieSummenformel;
+
+  /// No description provided for @substanceChemieMolekulargewicht.
+  ///
+  /// In de, this message translates to:
+  /// **'Molekulargewicht'**
+  String get substanceChemieMolekulargewicht;
+
+  /// No description provided for @substanceKeineAngabe.
+  ///
+  /// In de, this message translates to:
+  /// **'keine Angabe'**
+  String get substanceKeineAngabe;
+
+  /// No description provided for @substanceWikipediaAttribution.
+  ///
+  /// In de, this message translates to:
+  /// **'Enthält Material aus Wikipedia/Wikidata, lizenziert unter CC BY-SA.'**
+  String get substanceWikipediaAttribution;
+
+  /// No description provided for @substanceAddToMyMeds.
+  ///
+  /// In de, this message translates to:
+  /// **'Zu meinen Mitteln hinzufügen'**
+  String get substanceAddToMyMeds;
+
+  /// No description provided for @substanceAddedToMyMeds.
+  ///
+  /// In de, this message translates to:
+  /// **'Zu Meine Mittel hinzugefügt'**
+  String get substanceAddedToMyMeds;
+
+  /// No description provided for @substanceAddedShow.
+  ///
+  /// In de, this message translates to:
+  /// **'Anzeigen'**
+  String get substanceAddedShow;
+
+  /// No description provided for @settingsSubstanceDbInfo.
+  ///
+  /// In de, this message translates to:
+  /// **'Substanzdatenbank'**
+  String get settingsSubstanceDbInfo;
+
   /// No description provided for @productNotFound.
   ///
   /// In de, this message translates to:
