@@ -1,15 +1,18 @@
+// lib/features/substances/database_tab.dart
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
-import '../../data/models/substance_info.dart';
+import '../../data/models/substance_record.dart';
+import '../../l10n/app_localizations.dart';
 import 'substance_detail_sheet.dart';
 
-// ─── State-Provider für aktiven Typ-Filter ───────────────────────────────────
-final _typeFilterProvider = StateProvider.autoDispose<String?>((ref) => null);
+final _typeFilterProvider = StateProvider.autoDispose<SubstanceKlasse?>((ref) => null);
+final _pflanzlichOnlyProvider = StateProvider.autoDispose<bool>((ref) => false);
 
 class DatabaseTab extends ConsumerStatefulWidget {
   const DatabaseTab({super.key});
@@ -21,40 +24,38 @@ class DatabaseTab extends ConsumerStatefulWidget {
 class _DatabaseTabState extends ConsumerState<DatabaseTab> {
   final _ctrl = TextEditingController();
   String _query = '';
+  Timer? _debounce;
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _ctrl.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final typeFilter = ref.watch(_typeFilterProvider);
+    final pflanzlichOnly = ref.watch(_pflanzlichOnlyProvider);
 
     return Scaffold(
       backgroundColor: TraumColors.background,
       body: Column(children: [
-        // Offline-Status-Banner
-        _OfflineStatusBanner(),
-        // Suchfeld
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
           child: TextField(
             controller: _ctrl,
-            style: const TextStyle(
-                color: TraumColors.onBackground, fontFamily: 'DMSans'),
+            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
             decoration: InputDecoration(
-              hintText: AppLocalizations.of(context)!.searchSubstanceHint,
-              hintStyle: const TextStyle(
-                  color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
-              prefixIcon: const Icon(Icons.search_rounded,
-                  color: TraumColors.onBackgroundSubtle),
+              hintText: l10n.searchSubstanceHint,
+              hintStyle: const TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
+              prefixIcon: const Icon(Icons.search_rounded, color: TraumColors.onBackgroundSubtle),
               suffixIcon: _query.isNotEmpty
                   ? IconButton(
-                      icon: const Icon(Icons.close_rounded,
-                          color: TraumColors.onBackgroundSubtle),
+                      icon: const Icon(Icons.close_rounded, color: TraumColors.onBackgroundSubtle),
                       onPressed: () {
+                        _debounce?.cancel();
                         _ctrl.clear();
                         setState(() => _query = '');
                       })
@@ -62,227 +63,231 @@ class _DatabaseTabState extends ConsumerState<DatabaseTab> {
               filled: true,
               fillColor: TraumColors.surface,
               border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(TraumRadius.card),
-                  borderSide: BorderSide.none),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  borderRadius: BorderRadius.circular(TraumRadius.card), borderSide: BorderSide.none),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
             onChanged: (v) {
-              Future.delayed(const Duration(milliseconds: 300), () {
-                if (mounted && _ctrl.text == v) {
-                  setState(() => _query = v.trim());
-                }
+              _debounce?.cancel();
+              _debounce = Timer(const Duration(milliseconds: 300), () {
+                if (mounted && _ctrl.text == v) setState(() => _query = v.trim());
               });
             },
           ),
         ),
-        // Typ-Filter-Chips
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-          child: Row(children: [
-            _TypeChip(
-              label: 'Alle',
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
+          child: Wrap(spacing: 8, runSpacing: 8, children: [
+            _FilterChip(
+              label: l10n.substanceFilterAll,
               active: typeFilter == null,
-              onTap: () =>
-                  ref.read(_typeFilterProvider.notifier).state = null,
+              onTap: () => ref.read(_typeFilterProvider.notifier).state = null,
             ),
-            const SizedBox(width: 8),
-            _TypeChip(
-              label: 'Medikamente',
-              active: typeFilter == 'medication',
+            _FilterChip(
+              label: l10n.substanceMedications,
+              active: typeFilter == SubstanceKlasse.medikament,
               color: TraumColors.roseRed,
               onTap: () => ref.read(_typeFilterProvider.notifier).state =
-                  typeFilter == 'medication' ? null : 'medication',
+                  typeFilter == SubstanceKlasse.medikament ? null : SubstanceKlasse.medikament,
             ),
-            const SizedBox(width: 8),
-            _TypeChip(
-              label: 'Supplements',
-              active: typeFilter == 'supplement',
+            _FilterChip(
+              label: l10n.substanceSupplements,
+              active: typeFilter == SubstanceKlasse.supplement,
               color: TraumColors.indigoBlue,
               onTap: () => ref.read(_typeFilterProvider.notifier).state =
-                  typeFilter == 'supplement' ? null : 'supplement',
+                  typeFilter == SubstanceKlasse.supplement ? null : SubstanceKlasse.supplement,
+            ),
+            _FilterChip(
+              label: '🌿 ${l10n.substanceFilterPflanzlich}',
+              active: pflanzlichOnly,
+              color: TraumColors.mintGreen,
+              onTap: () => ref.read(_pflanzlichOnlyProvider.notifier).state = !pflanzlichOnly,
             ),
           ]),
         ),
-        // Inhalt
         Expanded(
           child: _query.isEmpty
               ? _CategoryGrid(onCategoryTap: (cat) {
+                  _debounce?.cancel();
                   _ctrl.text = cat;
                   setState(() => _query = cat);
                 })
-              : _SearchResults(query: _query, typeFilter: typeFilter),
+              : _SearchResults(
+                  query: _query, typeFilter: typeFilter, pflanzlichOnly: pflanzlichOnly),
         ),
       ]),
     );
   }
 }
 
-// ─── Typ-Filter-Chip ─────────────────────────────────────────────────────────
-
-class _TypeChip extends StatelessWidget {
+class _FilterChip extends StatelessWidget {
   final String label;
   final bool active;
   final Color color;
   final VoidCallback onTap;
-
-  const _TypeChip({
-    required this.label,
-    required this.active,
-    this.color = TraumColors.lavender,
-    required this.onTap,
-  });
+  const _FilterChip(
+      {required this.label, required this.active, this.color = TraumColors.lavender, required this.onTap});
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-        decoration: BoxDecoration(
-          color: active ? color.withValues(alpha: 0.2) : TraumColors.surface,
-          borderRadius: BorderRadius.circular(TraumRadius.chip),
-          border: Border.all(
-            color: active ? color : TraumColors.surfaceVariant,
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+          decoration: BoxDecoration(
+            color: active ? color.withValues(alpha: 0.2) : TraumColors.surface,
+            borderRadius: BorderRadius.circular(TraumRadius.chip),
+            border: Border.all(color: active ? color : TraumColors.surfaceVariant),
           ),
+          child: Text(label,
+              style: TextStyle(
+                  color: active ? color : TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                  fontSize: 13,
+                  fontWeight: active ? FontWeight.w600 : FontWeight.normal)),
         ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: active ? color : TraumColors.onBackgroundMuted,
-            fontFamily: 'DMSans',
-            fontSize: 13,
-            fontWeight: active ? FontWeight.w600 : FontWeight.normal,
-          ),
-        ),
-      ),
-    );
+      );
+}
+
+/// Icon-Zuordnung für die ~12 realen ATC-Top-Kategorien aus der Referenz-DB.
+/// Unbekannte/neue Kategorien fallen auf ein generisches Icon zurück, statt
+/// einen Kategorienamen zu verstecken (siehe CLAUDE.md §6 der Datenbank).
+IconData _categoryIcon(String kategorie) {
+  switch (kategorie) {
+    case 'Nervensystem': return Icons.psychology_rounded;
+    case 'Herz-Kreislauf-System': return Icons.favorite_rounded;
+    case 'Antiinfektiva (systemisch)': return Icons.coronavirus_rounded;
+    case 'Atemwege': return Icons.air_rounded;
+    case 'Alimentäres System und Stoffwechsel': return Icons.restaurant_rounded;
+    case 'Muskel- und Skelettsystem': return Icons.fitness_center_rounded;
+    case 'Blut und blutbildende Organe': return Icons.bloodtype_rounded;
+    case 'Dermatika': return Icons.face_retouching_natural_rounded;
+    case 'Sinnesorgane': return Icons.visibility_rounded;
+    case 'Urogenitalsystem und Sexualhormone': return Icons.spa_rounded;
+    case 'Antineoplastische und immunmodulierende Mittel': return Icons.shield_rounded;
+    default: return Icons.category_rounded;
   }
 }
 
-// ─── Kategorie-Grid ──────────────────────────────────────────────────────────
-
-class _CategoryGrid extends StatelessWidget {
+class _CategoryGrid extends ConsumerWidget {
   final void Function(String) onCategoryTap;
   const _CategoryGrid({required this.onCategoryTap});
 
-  static const _cats = [
-    ('Vitamine', Icons.brightness_5_rounded, TraumColors.mintGreen),
-    ('Mineralien', Icons.grain_rounded, TraumColors.indigoBlue),
-    ('Omega-3', Icons.water_drop_rounded, TraumColors.cyanBlue),
-    ('Aminosäuren', Icons.science_rounded, TraumColors.indigoBlue),
-    ('Adaptogene', Icons.eco_rounded, TraumColors.mintGreen),
-    ('Antioxidantien', Icons.shield_rounded, TraumColors.amberGold),
-    ('Schmerzmittel', Icons.healing_rounded, TraumColors.roseRed),
-    ('Herz-Kreislauf', Icons.favorite_rounded, TraumColors.roseRed),
-    ('Antidepressiva', Icons.psychology_rounded, TraumColors.lavender),
-    ('Antibiotika', Icons.coronavirus_rounded, TraumColors.coralOrange),
-    ('Antidiabetika', Icons.bloodtype_rounded, TraumColors.coralOrange),
-    ('Darmgesundheit', Icons.spa_rounded, TraumColors.mintGreen),
-  ];
-
   @override
-  Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      padding: const EdgeInsets.all(16),
-      mainAxisSpacing: 10,
-      crossAxisSpacing: 10,
-      childAspectRatio: 2.6,
-      children: _cats
-          .map((c) => GestureDetector(
-                onTap: () => onCategoryTap(c.$1),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: TraumColors.surface,
-                    borderRadius:
-                        BorderRadius.circular(TraumRadius.card),
-                    border: Border.all(
-                        color: c.$3.withValues(alpha: 0.25)),
-                  ),
-                  child: Row(children: [
-                    const SizedBox(width: 14),
-                    Icon(c.$2, color: c.$3, size: 18),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(c.$1,
-                          style: const TextStyle(
-                              color: TraumColors.onBackground,
-                              fontFamily: 'DMSans',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13)),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final catsAsync = ref.watch(substanceCategoriesProvider);
+    return catsAsync.when(
+      data: (cats) => GridView.count(
+        crossAxisCount: 2,
+        padding: const EdgeInsets.all(16),
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        childAspectRatio: 2.6,
+        children: cats
+            .map((c) => GestureDetector(
+                  onTap: () => onCategoryTap(c),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: TraumColors.surface,
+                      borderRadius: BorderRadius.circular(TraumRadius.card),
+                      border: Border.all(color: TraumColors.lavender.withValues(alpha: 0.25)),
                     ),
-                  ]),
-                ),
-              ))
-          .toList(),
+                    child: Row(children: [
+                      const SizedBox(width: 14),
+                      Icon(_categoryIcon(c), color: TraumColors.lavender, size: 18),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(c,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                color: TraumColors.onBackground,
+                                fontFamily: 'DMSans',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13)),
+                      ),
+                    ]),
+                  ),
+                ))
+            .toList(),
+      ),
+      loading: () => const Center(child: CircularProgressIndicator(color: TraumColors.coralOrange)),
+      error: (_, _) => const SizedBox.shrink(),
     );
   }
 }
 
-// ─── Suchergebnisse ──────────────────────────────────────────────────────────
-
 class _SearchResults extends ConsumerWidget {
   final String query;
-  final String? typeFilter;
-  const _SearchResults({required this.query, this.typeFilter});
+  final SubstanceKlasse? typeFilter;
+  final bool pflanzlichOnly;
+  const _SearchResults({required this.query, this.typeFilter, required this.pflanzlichOnly});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final resultsAsync = ref.watch(substanceSearchProvider(query));
     return resultsAsync.when(
       data: (all) {
-        final results = typeFilter != null
-            ? all.where((s) => s.type == typeFilter).toList()
-            : all;
+        var results = typeFilter != null ? all.where((s) => s.klasse == typeFilter).toList() : all;
+        if (pflanzlichOnly) results = results.where((s) => s.pflanzlich).toList();
         if (results.isEmpty) {
           return Center(
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               Icon(Icons.search_off_rounded,
-                  size: 48,
-                  color:
-                      TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
+                  size: 48, color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
               const SizedBox(height: 12),
-              Text(AppLocalizations.of(context)!.noResultsForQuery(query),
+              Text(l10n.noResultsForQuery(query),
                   style: const TextStyle(
-                      color: TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontSize: 14)),
+                      color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 14)),
             ]),
           );
         }
         return ListView.builder(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           itemCount: results.length,
-          itemBuilder: (ctx, i) => _ResultCard(substance: results[i]),
+          itemBuilder: (ctx, i) => _ResultCard(record: results[i]),
         );
       },
-      loading: () => const Center(
-          child:
-              CircularProgressIndicator(color: TraumColors.coralOrange)),
+      loading: () => const Center(child: CircularProgressIndicator(color: TraumColors.coralOrange)),
       error: (e, _) => Center(
-          child: Text(AppLocalizations.of(context)!.errorWithDetail(e.toString()),
-              style: const TextStyle(
-                  color: TraumColors.roseRed, fontFamily: 'DMSans'))),
+          child: Text(l10n.errorWithDetail(e.toString()),
+              style: const TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans'))),
     );
   }
 }
 
-// ─── Ergebnis-Karte ───────────────────────────────────────────────────────────
+Color _statusColor(DatenStatus status) {
+  switch (status) {
+    case DatenStatus.vollstaendig: return TraumColors.mintGreen;
+    case DatenStatus.teilweise: return TraumColors.amberGold;
+    case DatenStatus.nurChemie: return TraumColors.onBackgroundSubtle;
+  }
+}
+
+String _statusLabel(AppLocalizations l10n, DatenStatus status) {
+  switch (status) {
+    case DatenStatus.vollstaendig: return l10n.substanceStatusVollstaendig;
+    case DatenStatus.teilweise: return l10n.substanceStatusTeilweise;
+    case DatenStatus.nurChemie: return l10n.substanceStatusNurChemie;
+  }
+}
 
 class _ResultCard extends ConsumerWidget {
-  final SubstanceInfo substance;
-  const _ResultCard({required this.substance});
+  final SubstanceRecord record;
+  const _ResultCard({required this.record});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isMed = substance.type == 'medication';
+    final l10n = AppLocalizations.of(context)!;
+    final lang = Localizations.localeOf(context).languageCode;
+    final isMed = record.klasse == SubstanceKlasse.medikament;
     final color = isMed ? TraumColors.roseRed : TraumColors.indigoBlue;
     final dimColor = isMed ? TraumColors.roseRedDim : TraumColors.indigoBlueDim;
+    final snippet = record.beschreibung(lang) ?? record.effekt(lang);
+    final statusColor = _statusColor(record.datenStatus);
 
     return GestureDetector(
-      onTap: () => showSubstanceDetailSheet(context, substance),
+      onTap: () => showSubstanceDetailSheet(context, ref, record),
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(12),
@@ -291,141 +296,70 @@ class _ResultCard extends ConsumerWidget {
           borderRadius: BorderRadius.circular(TraumRadius.card),
           border: Border.all(color: color.withValues(alpha: 0.2)),
         ),
-        child: Row(children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(color: dimColor, shape: BoxShape.circle),
-            child: Icon(
-              isMed ? Icons.medication_rounded : Icons.science_rounded,
-              color: color,
-              size: 20,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(color: dimColor, borderRadius: BorderRadius.circular(6)),
+              child: Text(isMed ? l10n.substanceKlasseMed : l10n.substanceKlasseSupp,
+                  style: TextStyle(
+                      color: color, fontFamily: 'DMSans', fontSize: 9, fontWeight: FontWeight.w700)),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-              Text(substance.name,
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(record.substance,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                      color: TraumColors.onBackground,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600)),
-              const SizedBox(height: 2),
-              Row(children: [
-                if (substance.category != null) ...[
-                  Expanded(
-                    child: Text(substance.category!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            color: TraumColors.onBackgroundMuted,
-                            fontFamily: 'DMSans',
-                            fontSize: 12)),
-                  ),
-                  const SizedBox(width: 6),
-                ],
-                if (substance.evidenceGrade != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 6, vertical: 1),
-                    decoration: BoxDecoration(
-                      color: TraumColors.mintGreenDim,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(AppLocalizations.of(context)!.evidenceGrade('${substance.evidenceGrade}'),
-                        style: const TextStyle(
-                            color: TraumColors.mintGreen,
-                            fontFamily: 'DMSans',
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600)),
-                  ),
-              ]),
-              if (substance.commonDosage != null) ...[
-                const SizedBox(height: 4),
-                Row(children: [
-                  const Icon(Icons.straighten_rounded,
-                      size: 12, color: TraumColors.onBackgroundSubtle),
-                  const SizedBox(width: 4),
-                  Expanded(
-                    child: Text(substance.commonDosage!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            color: TraumColors.onBackgroundSubtle,
-                            fontFamily: 'DMSans',
-                            fontSize: 11)),
-                  ),
-                ]),
-              ],
+                      color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(8)),
+              child: Text(_statusLabel(l10n, record.datenStatus),
+                  style: TextStyle(
+                      color: statusColor, fontFamily: 'DMSans', fontSize: 9, fontWeight: FontWeight.w600)),
+            ),
+          ]),
+          if (record.kategorie != null) ...[
+            const SizedBox(height: 4),
+            Text(record.kategorie!,
+                style: const TextStyle(
+                    color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12)),
+          ],
+          if (snippet != null) ...[
+            const SizedBox(height: 6),
+            Text(snippet,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                    color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans', fontSize: 12, height: 1.4)),
+          ],
+          if (record.pflanzlich || record.quellenTags.any((t) => t.startsWith('wikipedia'))) ...[
+            const SizedBox(height: 6),
+            Wrap(spacing: 6, children: [
+              if (record.pflanzlich) _SourceChip(label: '🌿 ${l10n.substancePflanzlich}'),
+              if (record.quellenTags.any((t) => t.startsWith('wikipedia')))
+                _SourceChip(label: '📖 Wikipedia'),
             ]),
-          ),
-          const Icon(Icons.chevron_right_rounded,
-              color: TraumColors.onBackgroundSubtle, size: 18),
+          ],
         ]),
       ),
     );
   }
 }
 
-// ─── Offline-Status-Banner ────────────────────────────────────────────────────
+class _SourceChip extends StatelessWidget {
+  final String label;
+  const _SourceChip({required this.label});
 
-class _OfflineStatusBanner extends ConsumerWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final countAsync = ref.watch(substanceDbCountProvider);
-    return countAsync.when(
-      data: (count) {
-        if (count > 0) {
-          return Container(
-            margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: TraumColors.mintGreen.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(TraumRadius.chip),
-              border: Border.all(
-                  color: TraumColors.mintGreen.withValues(alpha: 0.3)),
-            ),
-            child: Row(children: [
-              const Icon(Icons.offline_bolt_rounded,
-                  color: TraumColors.mintGreen, size: 16),
-              const SizedBox(width: 8),
-              Text('$count Einträge offline verfügbar',
-                  style: const TextStyle(
-                      color: TraumColors.mintGreen,
-                      fontFamily: 'DMSans',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500)),
-            ]),
-          );
-        }
-        return Container(
-          margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: TraumColors.surfaceVariant,
-            borderRadius: BorderRadius.circular(TraumRadius.chip),
-          ),
-          child: const Row(children: [
-            Icon(Icons.wifi_rounded,
-                color: TraumColors.onBackgroundSubtle, size: 16),
-            SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                'Wird beim nächsten Start initialisiert…',
-                style: TextStyle(
-                    color: TraumColors.onBackgroundSubtle,
-                    fontFamily: 'DMSans',
-                    fontSize: 12),
-              ),
-            ),
-          ]),
-        );
-      },
-      loading: () => const SizedBox.shrink(),
-      error: (_, _) => const SizedBox.shrink(),
-    );
-  }
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration:
+            BoxDecoration(color: TraumColors.surfaceVariant, borderRadius: BorderRadius.circular(6)),
+        child: Text(label,
+            style: const TextStyle(color: TraumColors.lavender, fontFamily: 'DMSans', fontSize: 9)),
+      );
 }
