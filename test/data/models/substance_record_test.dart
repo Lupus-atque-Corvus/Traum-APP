@@ -77,14 +77,20 @@ void main() {
     });
 
     test('bilingual getter falls back DE->EN when EN is null', () {
-      final r = SubstanceRecord.fromRow(_row({}));
-      expect(r.effekt('en'), 'Schmerzlinderung');
+      final r = SubstanceRecord.fromRow(_row({'effekt_en': null}));
+      expect(r.effekt('en'), 'Schmerzlinderung'); // EN is null, falls back to DE
     });
 
     test('bilingual getter returns null when both languages are empty', () {
       final r = SubstanceRecord.fromRow(_row({}));
       expect(r.indikation('de'), isNull);
       expect(r.indikation('en'), isNull);
+    });
+
+    test('bilingual getter returns the requested language when both are present', () {
+      final r = SubstanceRecord.fromRow(_row({})); // both effekt_de and effekt_en set in the base fixture
+      expect(r.effekt('en'), 'Pain relief');  // requesting EN returns EN, not DE
+      expect(r.effekt('de'), 'Schmerzlinderung'); // requesting DE returns DE
     });
 
     test('never fabricates a value — null stays null, not empty string', () {

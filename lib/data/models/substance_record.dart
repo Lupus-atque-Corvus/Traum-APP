@@ -5,8 +5,10 @@ enum SubstanceKlasse { medikament, supplement }
 enum DatenStatus { vollstaendig, teilweise, nurChemie }
 
 String? _resolveBilingual(String? de, String? en, String lang) {
-  if (de != null && de.trim().isNotEmpty) return de;
-  if (en != null && en.trim().isNotEmpty) return en;
+  final primary = lang == 'de' ? de : en;
+  final secondary = lang == 'de' ? en : de;
+  if (primary != null && primary.trim().isNotEmpty) return primary;
+  if (secondary != null && secondary.trim().isNotEmpty) return secondary;
   return null;
 }
 
