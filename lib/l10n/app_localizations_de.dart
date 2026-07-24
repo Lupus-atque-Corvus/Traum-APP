@@ -375,6 +375,50 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsSubstanceDbInfo => 'Substanzdatenbank';
 
   @override
+  String get substanceTypeMed => 'Medikament';
+
+  @override
+  String get substanceTypeSupp => 'Supplement';
+
+  @override
+  String get substanceLogIntake => 'Konsum erfassen';
+
+  @override
+  String get substanceDeactivate => 'Deaktivieren';
+
+  @override
+  String get substanceDelete => 'Löschen';
+
+  @override
+  String get substanceConfirmDeleteTitle => 'Wirklich löschen?';
+
+  @override
+  String substanceConfirmDeleteBody(String name) {
+    return '$name wird dauerhaft entfernt.';
+  }
+
+  @override
+  String get substanceSaving => 'Speichern…';
+
+  @override
+  String get substanceLogIntakeAction => 'Erfassen';
+
+  @override
+  String get substanceHintVitaminD3 => 'z.B. Vitamin D3';
+
+  @override
+  String get substanceHintIbuprofen => 'z.B. Ibuprofen 400mg';
+
+  @override
+  String get substanceHintDosageExample => 'z.B. 400 mg';
+
+  @override
+  String get substanceLabelSubstance => 'Substanz';
+
+  @override
+  String get substanceLabelDosis => 'Dosis';
+
+  @override
   String get productNotFound => 'Produkt nicht gefunden';
 
   @override

@@ -120,7 +120,7 @@ class MySubstancesTab extends ConsumerWidget {
             Expanded(
               child: _TypeButton(
                 icon: Icons.medication_rounded,
-                label: 'Medikament',
+                label: AppLocalizations.of(context)!.substanceTypeMed,
                 color: TraumColors.roseRed,
                 dimColor: TraumColors.roseRedDim,
                 onTap: () {
@@ -133,7 +133,7 @@ class MySubstancesTab extends ConsumerWidget {
             Expanded(
               child: _TypeButton(
                 icon: Icons.science_rounded,
-                label: 'Supplement',
+                label: AppLocalizations.of(context)!.substanceTypeSupp,
                 color: TraumColors.indigoBlue,
                 dimColor: TraumColors.indigoBlueDim,
                 onTap: () {
@@ -148,7 +148,7 @@ class MySubstancesTab extends ConsumerWidget {
             width: double.infinity,
             child: _TypeButton(
               icon: Icons.event_available_rounded,
-              label: 'Konsum erfassen',
+              label: AppLocalizations.of(context)!.substanceLogIntake,
               color: TraumColors.coralOrange,
               dimColor: TraumColors.coralDim,
               onTap: () {
@@ -423,8 +423,8 @@ class _SuppCard extends StatelessWidget {
           const SizedBox(height: 12),
           ListTile(
             leading: const Icon(Icons.pause_circle_outline_rounded, color: TraumColors.amberGold),
-            title: const Text('Deaktivieren',
-                style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+            title: Text(AppLocalizations.of(context)!.substanceDeactivate,
+                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
             onTap: () {
               Navigator.pop(context);
               onToggle?.call(!supp.isActive);
@@ -432,21 +432,22 @@ class _SuppCard extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
-            title: const Text('Löschen',
-                style: TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
+            title: Text(AppLocalizations.of(context)!.substanceDelete,
+                style: const TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
             onTap: () async {
+              final l10n = AppLocalizations.of(context)!;
               Navigator.pop(context);
               final confirmed = await showDialog<bool>(
                 context: context,
                 builder: (ctx) => AlertDialog(
                   backgroundColor: TraumColors.surfaceElevated,
-                  title: const Text('Wirklich löschen?',
-                      style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
-                  content: Text('${supp.name} wird dauerhaft entfernt.',
+                  title: Text(l10n.substanceConfirmDeleteTitle,
+                      style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+                  content: Text(l10n.substanceConfirmDeleteBody(supp.name),
                       style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
                   actions: [
-                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Abbrechen')),
-                    TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Löschen')),
+                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.cancel)),
+                    TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l10n.substanceDelete)),
                   ],
                 ),
               );
@@ -527,8 +528,8 @@ class _MedCard extends StatelessWidget {
           const SizedBox(height: 12),
           ListTile(
             leading: const Icon(Icons.pause_circle_outline_rounded, color: TraumColors.amberGold),
-            title: const Text('Deaktivieren',
-                style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+            title: Text(AppLocalizations.of(context)!.substanceDeactivate,
+                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
             onTap: () {
               Navigator.pop(context);
               onToggle?.call(!med.isActive);
@@ -536,21 +537,22 @@ class _MedCard extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
-            title: const Text('Löschen',
-                style: TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
+            title: Text(AppLocalizations.of(context)!.substanceDelete,
+                style: const TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
             onTap: () async {
+              final l10n = AppLocalizations.of(context)!;
               Navigator.pop(context);
               final confirmed = await showDialog<bool>(
                 context: context,
                 builder: (ctx) => AlertDialog(
                   backgroundColor: TraumColors.surfaceElevated,
-                  title: const Text('Wirklich löschen?',
-                      style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
-                  content: Text('${med.name} wird dauerhaft entfernt.',
+                  title: Text(l10n.substanceConfirmDeleteTitle,
+                      style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+                  content: Text(l10n.substanceConfirmDeleteBody(med.name),
                       style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
                   actions: [
-                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Abbrechen')),
-                    TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Löschen')),
+                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.cancel)),
+                    TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l10n.substanceDelete)),
                   ],
                 ),
               );
@@ -723,7 +725,7 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
               style: TextStyle(color: TraumColors.onBackground,
                   fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
           const SizedBox(height: 16),
-          _field('Name', _nameCtrl, hint: 'z.B. Vitamin D3'),
+          _field('Name', _nameCtrl, hint: AppLocalizations.of(context)!.substanceHintVitaminD3),
           if (_suggestions.isNotEmpty)
             Container(
               margin: const EdgeInsets.only(top: 4),
@@ -805,7 +807,9 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
           ),
           const SizedBox(height: 20),
           GradientButton(
-            label: _saving ? 'Speichern…' : 'Speichern',
+            label: _saving
+                ? AppLocalizations.of(context)!.substanceSaving
+                : AppLocalizations.of(context)!.save,
             onPressed: _saving ? null : _save,
           ),
           const SizedBox(height: 8),
@@ -922,7 +926,7 @@ class _AddMedSheetState extends State<_AddMedSheet> {
               style: TextStyle(color: TraumColors.onBackground,
                   fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
           const SizedBox(height: 16),
-          _field('Name', _nameCtrl, hint: 'z.B. Ibuprofen 400mg'),
+          _field('Name', _nameCtrl, hint: AppLocalizations.of(context)!.substanceHintIbuprofen),
           if (_suggestions.isNotEmpty)
             Container(
               margin: const EdgeInsets.only(top: 4),
@@ -946,7 +950,7 @@ class _AddMedSheetState extends State<_AddMedSheet> {
               ),
             ),
           const SizedBox(height: 12),
-          _field('Dosierung', _dosageCtrl, hint: 'z.B. 400 mg'),
+          _field('Dosierung', _dosageCtrl, hint: AppLocalizations.of(context)!.substanceHintDosageExample),
           const SizedBox(height: 12),
           Text(AppLocalizations.of(context)!.form, style: TextStyle(color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans', fontSize: 13)),
@@ -1010,7 +1014,9 @@ class _AddMedSheetState extends State<_AddMedSheet> {
           ])),
           const SizedBox(height: 20),
           GradientButton(
-            label: _saving ? 'Speichern…' : 'Speichern',
+            label: _saving
+                ? AppLocalizations.of(context)!.substanceSaving
+                : AppLocalizations.of(context)!.save,
             onPressed: _saving ? null : _save,
           ),
           const SizedBox(height: 8),
@@ -1154,7 +1160,7 @@ class _AddIntakeSheetState extends State<_AddIntakeSheet> {
             controller: _nameCtrl,
             style: const TextStyle(
                 color: TraumColors.onBackground, fontFamily: 'DMSans'),
-            decoration: _dec('Substanz'),
+            decoration: _dec(AppLocalizations.of(context)!.substanceLabelSubstance),
           ),
           const SizedBox(height: 12),
           Row(children: [
@@ -1163,7 +1169,7 @@ class _AddIntakeSheetState extends State<_AddIntakeSheet> {
                 controller: _dosageCtrl,
                 style: const TextStyle(
                     color: TraumColors.onBackground, fontFamily: 'DMSans'),
-                decoration: _dec('Dosis'),
+                decoration: _dec(AppLocalizations.of(context)!.substanceLabelDosis),
               ),
             ),
             const SizedBox(width: 12),
@@ -1172,7 +1178,7 @@ class _AddIntakeSheetState extends State<_AddIntakeSheet> {
                 controller: _unitCtrl,
                 style: const TextStyle(
                     color: TraumColors.onBackground, fontFamily: 'DMSans'),
-                decoration: _dec('Einheit'),
+                decoration: _dec(AppLocalizations.of(context)!.unitLabel),
               ),
             ),
           ]),
@@ -1193,7 +1199,9 @@ class _AddIntakeSheetState extends State<_AddIntakeSheet> {
           ),
           const SizedBox(height: 12),
           GradientButton(
-              label: _saving ? 'Speichern…' : 'Erfassen',
+              label: _saving
+                  ? AppLocalizations.of(context)!.substanceSaving
+                  : AppLocalizations.of(context)!.substanceLogIntakeAction,
               onPressed: _saving ? null : _save),
           const SizedBox(height: 8),
         ],

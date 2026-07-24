@@ -11,6 +11,7 @@ import 'package:traum/l10n/app_localizations.dart';
 Widget _wrap(TraumDatabase db) => ProviderScope(
       overrides: [databaseProvider.overrideWithValue(db)],
       child: MaterialApp(
+        locale: const Locale('de'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: const MySubstancesTab(),

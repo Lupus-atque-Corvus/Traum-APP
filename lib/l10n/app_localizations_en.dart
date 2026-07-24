@@ -374,6 +374,50 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSubstanceDbInfo => 'Substance database';
 
   @override
+  String get substanceTypeMed => 'Medication';
+
+  @override
+  String get substanceTypeSupp => 'Supplement';
+
+  @override
+  String get substanceLogIntake => 'Log intake';
+
+  @override
+  String get substanceDeactivate => 'Deactivate';
+
+  @override
+  String get substanceDelete => 'Delete';
+
+  @override
+  String get substanceConfirmDeleteTitle => 'Really delete?';
+
+  @override
+  String substanceConfirmDeleteBody(String name) {
+    return '$name will be permanently removed.';
+  }
+
+  @override
+  String get substanceSaving => 'Saving…';
+
+  @override
+  String get substanceLogIntakeAction => 'Log';
+
+  @override
+  String get substanceHintVitaminD3 => 'e.g. Vitamin D3';
+
+  @override
+  String get substanceHintIbuprofen => 'e.g. Ibuprofen 400mg';
+
+  @override
+  String get substanceHintDosageExample => 'e.g. 400 mg';
+
+  @override
+  String get substanceLabelSubstance => 'Substance';
+
+  @override
+  String get substanceLabelDosis => 'Dose';
+
+  @override
   String get productNotFound => 'Product not found';
 
   @override

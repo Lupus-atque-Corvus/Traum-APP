@@ -812,6 +812,90 @@ abstract class AppLocalizations {
   /// **'Substanzdatenbank'**
   String get settingsSubstanceDbInfo;
 
+  /// No description provided for @substanceTypeMed.
+  ///
+  /// In de, this message translates to:
+  /// **'Medikament'**
+  String get substanceTypeMed;
+
+  /// No description provided for @substanceTypeSupp.
+  ///
+  /// In de, this message translates to:
+  /// **'Supplement'**
+  String get substanceTypeSupp;
+
+  /// No description provided for @substanceLogIntake.
+  ///
+  /// In de, this message translates to:
+  /// **'Konsum erfassen'**
+  String get substanceLogIntake;
+
+  /// No description provided for @substanceDeactivate.
+  ///
+  /// In de, this message translates to:
+  /// **'Deaktivieren'**
+  String get substanceDeactivate;
+
+  /// No description provided for @substanceDelete.
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen'**
+  String get substanceDelete;
+
+  /// No description provided for @substanceConfirmDeleteTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wirklich löschen?'**
+  String get substanceConfirmDeleteTitle;
+
+  /// No description provided for @substanceConfirmDeleteBody.
+  ///
+  /// In de, this message translates to:
+  /// **'{name} wird dauerhaft entfernt.'**
+  String substanceConfirmDeleteBody(String name);
+
+  /// No description provided for @substanceSaving.
+  ///
+  /// In de, this message translates to:
+  /// **'Speichern…'**
+  String get substanceSaving;
+
+  /// No description provided for @substanceLogIntakeAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Erfassen'**
+  String get substanceLogIntakeAction;
+
+  /// No description provided for @substanceHintVitaminD3.
+  ///
+  /// In de, this message translates to:
+  /// **'z.B. Vitamin D3'**
+  String get substanceHintVitaminD3;
+
+  /// No description provided for @substanceHintIbuprofen.
+  ///
+  /// In de, this message translates to:
+  /// **'z.B. Ibuprofen 400mg'**
+  String get substanceHintIbuprofen;
+
+  /// No description provided for @substanceHintDosageExample.
+  ///
+  /// In de, this message translates to:
+  /// **'z.B. 400 mg'**
+  String get substanceHintDosageExample;
+
+  /// No description provided for @substanceLabelSubstance.
+  ///
+  /// In de, this message translates to:
+  /// **'Substanz'**
+  String get substanceLabelSubstance;
+
+  /// No description provided for @substanceLabelDosis.
+  ///
+  /// In de, this message translates to:
+  /// **'Dosis'**
+  String get substanceLabelDosis;
+
   /// No description provided for @productNotFound.
   ///
   /// In de, this message translates to:
