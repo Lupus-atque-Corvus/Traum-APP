@@ -65,6 +65,18 @@ class SettingsScreen extends ConsumerWidget {
           _SupportSection(),
           _AccountSection(),
           const SizedBox(height: 16),
+          ListTile(
+            leading: const Icon(Icons.medication_liquid_rounded,
+                color: TraumColors.onBackgroundMuted),
+            title: Text(l10n.settingsSubstanceDbInfo,
+                style: const TextStyle(
+                    color: TraumColors.onBackground, fontFamily: 'DMSans')),
+            subtitle: const Text('6.580 Einträge · Stand 24.07.2026',
+                style: TextStyle(
+                    color: TraumColors.onBackgroundSubtle,
+                    fontFamily: 'DMSans',
+                    fontSize: 12)),
+          ),
           _VersionTile(),
         ],
       ),
