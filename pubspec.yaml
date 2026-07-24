@@ -184,8 +184,7 @@ flutter:
     - assets/icons/progress/
     - assets/legal/
     - assets/lottie/
-    - assets/substances.json
-    - assets/substances.db
+    - assets/substances_reference.sqlite3
     - assets/data/
 
   fonts:
