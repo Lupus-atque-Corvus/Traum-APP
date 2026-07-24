@@ -15,7 +15,6 @@ import 'tables/budget_tables.dart';
 import 'tables/period_tables.dart';
 import 'tables/substance_tables.dart';
 import 'tables/diary_tables.dart';
-import 'tables/substance_database_table.dart';
 import 'tables/notes_tables.dart';
 import 'tables/graffiti_map_tables.dart';
 
@@ -33,7 +32,6 @@ import 'daos/substance_dao.dart';
 import 'daos/diary_dao.dart';
 import 'daos/food_products_dao.dart';
 import 'daos/meal_entries_dao.dart';
-import 'daos/substance_database_dao.dart';
 import 'daos/notes_dao.dart';
 import 'daos/map_collections_dao.dart';
 import 'daos/map_markers_dao.dart';
@@ -51,7 +49,6 @@ export 'tables/budget_tables.dart';
 export 'tables/period_tables.dart';
 export 'tables/substance_tables.dart';
 export 'tables/diary_tables.dart';
-export 'tables/substance_database_table.dart';
 export 'tables/notes_tables.dart';
 export 'tables/graffiti_map_tables.dart';
 
@@ -70,7 +67,6 @@ export 'daos/substance_dao.dart';
 export 'daos/diary_dao.dart';
 export 'daos/food_products_dao.dart';
 export 'daos/meal_entries_dao.dart';
-export 'daos/substance_database_dao.dart';
 export 'daos/notes_dao.dart';
 export 'daos/map_collections_dao.dart';
 export 'daos/map_markers_dao.dart';
@@ -138,8 +134,6 @@ part 'traum_database.g.dart';
     SubstanceIntakeLogs,
     // Diary (1)
     DiaryEntries,
-    // Substance offline database (1)
-    SubstanceDatabaseEntries,
     // Nutrition Extended (4)
     FoodProducts,
     MealEntries,
@@ -172,7 +166,6 @@ part 'traum_database.g.dart';
     DiaryDao,
     FoodProductsDao,
     MealEntriesDao,
-    SubstanceDatabaseDao,
     NotesDao,
     MapCollectionsDao,
     MapMarkersDao,
@@ -196,9 +189,6 @@ class TraumDatabase extends _$TraumDatabase {
   MealEntriesDao get mealEntriesDao => MealEntriesDao(this);
 
   @override
-  SubstanceDatabaseDao get substanceDatabaseDao => SubstanceDatabaseDao(this);
-
-  @override
   NotesDao get notesDao => NotesDao(this);
 
   @override
@@ -211,7 +201,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 22;
+  int get schemaVersion => 23;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -269,9 +259,10 @@ class TraumDatabase extends _$TraumDatabase {
         // Seed updatedAt from createdAt so existing rows have a meaningful timestamp
         await customStatement('UPDATE appointments SET updated_at = created_at');
       }
-      if (from < 10) {
-        await migrator.createTable(substanceDatabaseEntries);
-      }
+      // v10 created substance_database_entries here; that table (and the
+      // legacy offline Substanz-DB it backed) is fully retired as of v23
+      // (see `if (from < 23)` below), so there is nothing left to create
+      // for installs upgrading through this step.
       if (from < 11) {
         await migrator.createTable(notes);
         await migrator.createTable(noteFolders);
@@ -372,6 +363,12 @@ class TraumDatabase extends _$TraumDatabase {
       }
       if (from < 22) {
         await migrator.addColumn(workoutPlans, workoutPlans.planType);
+      }
+      if (from < 23) {
+        // Alte Substanz-Offline-DB (SubstanceDatabaseEntries) ist durch die
+        // neue Referenz-DB (assets/substances_reference.sqlite3, separate
+        // sqlite3-Verbindung außerhalb von Drift) vollständig ersetzt.
+        await migrator.deleteTable('substance_database_entries');
       }
     },
   );
