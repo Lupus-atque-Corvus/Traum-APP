@@ -11,7 +11,7 @@ import 'data/repositories/exercise_library_seeder.dart';
 import 'data/repositories/exercise_seeder.dart';
 import 'data/repositories/grocery_price_seeder.dart';
 import 'data/repositories/map_collection_seeder.dart';
-import 'data/repositories/substance_database_copier.dart';
+import 'data/repositories/substance_reference_db_copier.dart';
 import 'data/repositories/supplement_seeder.dart';
 import 'data/services/recurring_poster.dart';
 import 'widget/widget_data_service.dart';
@@ -74,7 +74,7 @@ void main() async {
 
     await Future.wait([
       SupplementSeeder.seedIfNeeded(db, prefs),
-      SubstanceDatabaseCopier.copyIfNeeded(db, prefs),
+      SubstanceReferenceDbCopier.copyIfNeeded(prefs),
       MapCollectionSeeder.seedIfNeeded(db, prefs),
       GroceryPriceSeeder.seedIfNeeded(db, prefs),
     ]);
