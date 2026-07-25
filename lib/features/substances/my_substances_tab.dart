@@ -244,8 +244,12 @@ void showAddMedSheetFor(
       initialName: initialName,
       initialDosage: initialDosage,
       onAdd: (companion) async {
+        // Uses ctx's own ProviderScope, not the caller's `ref` — the caller
+        // (substance_detail_sheet.dart) pops itself before opening this
+        // sheet, so its `ref` is unmounted by the time the user hits Save.
+        final container = ProviderScope.containerOf(ctx, listen: false);
         final l10n = AppLocalizations.of(ctx)!;
-        await ref.read(medicationDaoProvider).insertMedication(companion);
+        await container.read(medicationDaoProvider).insertMedication(companion);
         final timesJson = companion.timings.value;
         if (timesJson != '[]') {
           try {
@@ -286,13 +290,18 @@ void showAddSuppSheetFor(
     backgroundColor: TraumColors.surfaceElevated,
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
-    builder: (_) => _AddSuppSheet(
+    builder: (ctx) => _AddSuppSheet(
       initialName: initialName,
       initialCategory: initialCategory,
       initialAmount: initialAmount,
       initialUnit: initialUnit,
       onAdd: (c) async {
-        await ref.read(supplementDaoProvider).insertSupplement(c);
+        // Uses ctx's own ProviderScope, not the caller's `ref` — the caller
+        // (substance_detail_sheet.dart) pops itself before opening this
+        // sheet, so its `ref` is unmounted by the time the user hits Save.
+        await ProviderScope.containerOf(ctx, listen: false)
+            .read(supplementDaoProvider)
+            .insertSupplement(c);
         onAdded?.call();
       },
     ),
