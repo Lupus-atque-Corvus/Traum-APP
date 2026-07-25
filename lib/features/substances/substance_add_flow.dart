@@ -17,7 +17,10 @@ void openAddFlowForRecord(BuildContext context, WidgetRef ref, SubstanceRecord r
       ref,
       initialName: record.substance,
       initialDosage: record.dosierung.erwachsene(lang),
-      onAdded: () => _showAddedSnackbar(context),
+      // Uses the add sheet's own (still-mounted) context, not the outer
+      // `context` — the detail sheet that started this flow already popped
+      // itself before opening the add sheet, so `context` is stale here.
+      onAdded: (sheetCtx) => _showAddedSnackbar(sheetCtx),
     );
   } else {
     showAddSuppSheetFor(
@@ -25,7 +28,7 @@ void openAddFlowForRecord(BuildContext context, WidgetRef ref, SubstanceRecord r
       ref,
       initialName: record.substance,
       initialCategory: record.kategorie,
-      onAdded: () => _showAddedSnackbar(context),
+      onAdded: (sheetCtx) => _showAddedSnackbar(sheetCtx),
     );
   }
 }

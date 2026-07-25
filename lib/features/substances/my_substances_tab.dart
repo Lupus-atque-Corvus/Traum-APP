@@ -232,7 +232,7 @@ void showAddMedSheetFor(
   WidgetRef ref, {
   String? initialName,
   String? initialDosage,
-  VoidCallback? onAdded,
+  void Function(BuildContext)? onAdded,
 }) {
   showModalBottomSheet(
     context: context,
@@ -267,7 +267,9 @@ void showAddMedSheetFor(
             }
           } catch (_) {}
         }
-        onAdded?.call();
+        // Pass the sheet's own (still-mounted) ctx — the caller's context
+        // was already popped before this sheet opened.
+        if (ctx.mounted) onAdded?.call(ctx);
       },
     ),
   );
@@ -282,7 +284,7 @@ void showAddSuppSheetFor(
   String? initialCategory,
   String? initialAmount,
   String? initialUnit,
-  VoidCallback? onAdded,
+  void Function(BuildContext)? onAdded,
 }) {
   showModalBottomSheet(
     context: context,
@@ -302,7 +304,9 @@ void showAddSuppSheetFor(
         await ProviderScope.containerOf(ctx, listen: false)
             .read(supplementDaoProvider)
             .insertSupplement(c);
-        onAdded?.call();
+        // Pass the sheet's own (still-mounted) ctx — the caller's context
+        // was already popped before this sheet opened.
+        if (ctx.mounted) onAdded?.call(ctx);
       },
     ),
   );
