@@ -672,7 +672,8 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
       (widget.initialUnit != null && _units.contains(widget.initialUnit))
           ? widget.initialUnit!
           : 'mg';
-  String? _nutrientKey; // null = "keiner"
+  late String? _nutrientKey =
+      widget.initialName != null ? suggestNutrientKey(widget.initialName!) : null;
   bool _nutrientTouched = false; // true sobald der Nutzer manuell wählt
   bool _saving = false;
   List<SubstanceRecord> _suggestions = [];
