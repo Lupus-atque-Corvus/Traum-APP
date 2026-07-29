@@ -182,7 +182,10 @@ class _ExerciseTile extends ConsumerWidget {
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: Row(children: [
-            ExerciseIcon(muscleGroup: muscleGroup, size: 36),
+            ExerciseIcon(
+                muscleGroup: muscleGroup,
+                exerciseName: entry.exerciseName,
+                size: 36),
             const SizedBox(width: 10),
             Expanded(
               child: Text(entry.exerciseName,
@@ -272,7 +275,10 @@ class _ExercisePickerSheetState extends State<_ExercisePickerSheet> {
             itemBuilder: (_, i) {
               final ex = filtered[i];
               return ListTile(
-                leading: ExerciseIcon(muscleGroup: ex.muscleGroup, size: 40),
+                leading: ExerciseIcon(
+                    muscleGroup: ex.muscleGroup,
+                    exerciseName: ex.name,
+                    size: 40),
                 title: Text(ex.name,
                     style: const TextStyle(
                         color: TraumColors.onBackground,

@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../exercise_icon_slug.dart';
+import 'generated/exercise_icon_manifest.dart';
+
 class ExerciseIcon extends StatelessWidget {
   final String muscleGroup;
   final double size;
+
+  /// Exercise display name, if this icon represents one specific exercise
+  /// (as opposed to a bare muscle-group icon, e.g. the heatmap legend).
+  /// When set and a bespoke illustration exists for it, that is rendered
+  /// instead of the generic muscle-group icon.
+  final String? exerciseName;
 
   const ExerciseIcon({
     super.key,
     required this.muscleGroup,
     this.size = 44,
+    this.exerciseName,
   });
+
+  static const String _bespokeDir = 'assets/exercises/icons_exercise';
 
   static const Map<String, String> _assetMap = {
     'chest':     'assets/exercises/icons/chest.svg',
@@ -40,7 +52,15 @@ class ExerciseIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final asset = _assetMap[muscleGroup] ?? _assetMap['full_body']!;
+    String? bespokeAsset;
+    final name = exerciseName;
+    if (name != null) {
+      final slug = slugifyExerciseName(name);
+      if (kExerciseIconSlugs.contains(slug)) {
+        bespokeAsset = '$_bespokeDir/$slug.svg';
+      }
+    }
+    final asset = bespokeAsset ?? _assetMap[muscleGroup] ?? _assetMap['full_body']!;
     final color = muscleGroupColor(muscleGroup);
 
     return Container(

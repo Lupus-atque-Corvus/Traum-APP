@@ -177,6 +177,7 @@ flutter:
   assets:
     - assets/exercises/
     - assets/exercises/icons/
+    - assets/exercises/icons_exercise/
     - assets/supplements/
     - assets/svg/
     - assets/icons/progress/

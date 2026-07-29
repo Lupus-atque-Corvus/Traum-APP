@@ -397,7 +397,9 @@ class _SelectedThumb extends StatelessWidget {
             ),
             child: Center(
               child: ExerciseIcon(
-                  muscleGroup: canonicalMuscleGroup(exercise.muscleGroup), size: 40),
+                  muscleGroup: canonicalMuscleGroup(exercise.muscleGroup),
+                  exerciseName: exercise.name,
+                  size: 40),
             ),
           ),
           Positioned(
@@ -457,7 +459,9 @@ class _PickerTile extends StatelessWidget {
               ),
               child: Center(
                 child: ExerciseIcon(
-                    muscleGroup: canonicalMuscleGroup(exercise.muscleGroup), size: 38),
+                    muscleGroup: canonicalMuscleGroup(exercise.muscleGroup),
+                    exerciseName: exercise.name,
+                    size: 38),
               ),
             ),
             const SizedBox(width: 12),

@@ -197,7 +197,10 @@ class _ExerciseRow extends ConsumerWidget {
         return Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
           child: Row(children: [
-            ExerciseIcon(muscleGroup: canonicalMuscleGroup(exercise.muscleGroup), size: 36),
+            ExerciseIcon(
+                muscleGroup: canonicalMuscleGroup(exercise.muscleGroup),
+                exerciseName: exercise.name,
+                size: 36),
             const SizedBox(width: 12),
             Expanded(
               child: Text(exercise.name,

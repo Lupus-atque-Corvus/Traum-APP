@@ -168,7 +168,9 @@ class _ExerciseGroup extends StatelessWidget {
           ListTile(
             onTap: onExerciseTap,
             leading: ExerciseIcon(
-                muscleGroup: canonicalMuscleGroup(muscleGroup), size: 36),
+                muscleGroup: canonicalMuscleGroup(muscleGroup),
+                exerciseName: exerciseName,
+                size: 36),
             title: Text(exerciseName,
                 style: const TextStyle(
                     color: TraumColors.onBackground,

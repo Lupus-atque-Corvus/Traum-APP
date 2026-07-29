@@ -598,7 +598,10 @@ class _SidebarThumb extends StatelessWidget {
           border: active ? Border.all(color: TraumColors.coralOrange, width: 1.5) : null,
         ),
         child: Center(
-          child: ExerciseIcon(muscleGroup: _mgKey(exercise.muscleGroup), size: 36),
+          child: ExerciseIcon(
+              muscleGroup: _mgKey(exercise.muscleGroup),
+              exerciseName: exercise.name,
+              size: 36),
         ),
       ),
     );
@@ -843,7 +846,10 @@ class _ExerciseCardState extends State<_ExerciseCard> {
         children: [
           // ── Header: icon + name + link + menu ──────────────────────────
           Row(children: [
-            ExerciseIcon(muscleGroup: _mgKey(block.exercise.muscleGroup), size: 38),
+            ExerciseIcon(
+                muscleGroup: _mgKey(block.exercise.muscleGroup),
+                exerciseName: block.exercise.name,
+                size: 38),
             const SizedBox(width: 10),
             Expanded(
               child: Text(

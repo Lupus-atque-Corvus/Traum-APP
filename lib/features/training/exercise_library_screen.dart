@@ -437,7 +437,9 @@ class _ExerciseTile extends StatelessWidget {
               ),
               child: Center(
                 child: ExerciseIcon(
-                    muscleGroup: canonicalMuscleGroup(exercise.muscleGroup), size: 42),
+                    muscleGroup: canonicalMuscleGroup(exercise.muscleGroup),
+                    exerciseName: exercise.name,
+                    size: 42),
               ),
             ),
             const SizedBox(width: 14),
