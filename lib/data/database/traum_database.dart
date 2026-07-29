@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
@@ -201,7 +202,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 23;
+  int get schemaVersion => 24;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -369,6 +370,66 @@ class TraumDatabase extends _$TraumDatabase {
         // neue Referenz-DB (assets/substances_reference.sqlite3, separate
         // sqlite3-Verbindung außerhalb von Drift) vollständig ersetzt.
         await migrator.deleteTable('substance_database_entries');
+      }
+      if (from < 24) {
+        await migrator.addColumn(mapMarkers, mapMarkers.osmId);
+        await customStatement(
+          'CREATE UNIQUE INDEX IF NOT EXISTS idx_map_markers_osm_id '
+          'ON map_markers (osm_id) WHERE osm_id IS NOT NULL',
+        );
+
+        // Bestehende Türme-Collections (aus MapCollectionSeeder, fields: []
+        // zum Seed-Zeitpunkt) bekommen die 3 neuen Tower-Felder nachträglich
+        // in field_config gemerged — NICHT überschrieben, damit vom User über
+        // "Feld hinzufügen" selbst ergänzte Custom-Felder erhalten bleiben.
+        // Die Feld-JSONs sind hier bewusst als Literal dupliziert (nicht aus
+        // PredefinedFields importiert): Migrationen bleiben unabhängig von
+        // künftigen Änderungen an Feature-Code.
+        const newTowerFields = [
+          {
+            'key': 'towerType',
+            'label': 'Turmtyp',
+            'type': 'select',
+            'iconName': 'cell_tower',
+            'options': [
+              {'value': 'Funkmast', 'colorHex': '00D4D4'},
+              {'value': 'Sendemast', 'colorHex': '5B6CF9'},
+              {'value': 'Sonstige', 'colorHex': '8888AA'},
+            ],
+          },
+          {
+            'key': 'towerHeight',
+            'label': 'Höhe (m)',
+            'type': 'text',
+            'iconName': 'height',
+            'options': [],
+          },
+          {
+            'key': 'towerOperator',
+            'label': 'Betreiber',
+            'type': 'text',
+            'iconName': 'business',
+            'options': [],
+          },
+        ];
+        final rows = await customSelect(
+          "SELECT id, field_config FROM map_collections WHERE icon_name = 'tower'",
+        ).get();
+        for (final row in rows) {
+          final id = row.read<int>('id');
+          final cfg =
+              jsonDecode(row.read<String>('field_config')) as Map<String, dynamic>;
+          final fields = (cfg['fields'] as List).cast<Map<String, dynamic>>();
+          final existingKeys = fields.map((f) => f['key']).toSet();
+          for (final f in newTowerFields) {
+            if (!existingKeys.contains(f['key'])) fields.add(f);
+          }
+          cfg['fields'] = fields;
+          await customStatement(
+            'UPDATE map_collections SET field_config = ? WHERE id = ?',
+            [jsonEncode(cfg), id],
+          );
+        }
       }
     },
   );
