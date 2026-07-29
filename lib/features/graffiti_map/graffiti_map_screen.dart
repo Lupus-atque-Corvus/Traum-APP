@@ -25,6 +25,7 @@ import 'map_tile_config.dart';
 import 'map_visuals.dart';
 import 'megapixel_helper.dart';
 import 'photo_metadata_service.dart';
+import 'tower_import_sheet.dart';
 
 class GraffitiMapScreen extends ConsumerStatefulWidget {
   const GraffitiMapScreen({super.key});
@@ -587,6 +588,22 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     ref.invalidate(allHashtagsProvider);
   }
 
+  void _showTowerImportSheet(BuildContext context, int collectionId) {
+    final bounds = _mapController.camera.visibleBounds;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: TraumColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) => TowerImportSheet(
+        collectionId: collectionId,
+        viewportBounds: bounds,
+      ),
+    );
+  }
+
   void _showMapSwitcher(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -662,6 +679,17 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                           if (active == c.id)
                             const Icon(Icons.check_circle,
                                 color: TraumColors.cyanBlue),
+                          if (c.iconName == 'tower')
+                            IconButton(
+                              icon: const Icon(Icons.cloud_download_outlined,
+                                  color: TraumColors.onBackgroundMuted),
+                              tooltip:
+                                  AppLocalizations.of(context)!.mapImportTowersTooltip,
+                              onPressed: () {
+                                Navigator.pop(ctx);
+                                _showTowerImportSheet(context, c.id);
+                              },
+                            ),
                           IconButton(
                             icon: const Icon(Icons.edit_outlined,
                                 color: TraumColors.onBackgroundMuted),

@@ -34,6 +34,40 @@ void main() {
         luteal_phase_override INTEGER
       )
     ''');
+    // A real v22 install always has the Graffiti-Map tables too (they predate
+    // v22 by many versions, introduced at schemaVersion 12) — the v23->v24
+    // tower-import migration (if (from < 24)) alters map_markers and reads
+    // map_collections, so both must exist for the raw seed to behave like a
+    // real upgrade instead of failing on a fixture-only gap.
+    raw.execute('''
+      CREATE TABLE map_collections (
+        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        icon_name TEXT NOT NULL,
+        color_hex TEXT,
+        has_rating INTEGER NOT NULL DEFAULT 0,
+        multi_photo INTEGER NOT NULL DEFAULT 0,
+        field_config TEXT NOT NULL DEFAULT '{}',
+        sort_order INTEGER NOT NULL DEFAULT 0,
+        created_at INTEGER NOT NULL
+      )
+    ''');
+    raw.execute('''
+      CREATE TABLE map_markers (
+        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        collection_id INTEGER NOT NULL REFERENCES map_collections(id),
+        title TEXT NOT NULL DEFAULT '',
+        latitude REAL,
+        longitude REAL,
+        location_name TEXT,
+        note TEXT NOT NULL DEFAULT '',
+        hashtags TEXT NOT NULL DEFAULT '',
+        rating REAL,
+        custom_fields TEXT NOT NULL DEFAULT '{}',
+        is_hidden INTEGER NOT NULL DEFAULT 0,
+        created_at INTEGER NOT NULL
+      )
+    ''');
     raw.execute('PRAGMA user_version = 22');
 
     final db = TraumDatabase.forTesting(NativeDatabase.opened(raw));

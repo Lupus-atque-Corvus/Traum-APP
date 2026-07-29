@@ -3883,6 +3883,59 @@ class AppLocalizationsDe extends AppLocalizations {
   String get mapRating => 'Bewertung';
 
   @override
+  String get mapFieldTowerType => 'Turmtyp';
+
+  @override
+  String get mapFieldTowerHeight => 'Höhe (m)';
+
+  @override
+  String get mapFieldTowerOperator => 'Betreiber';
+
+  @override
+  String get mapImportTowersTooltip => 'Funkmasten importieren';
+
+  @override
+  String get mapImportTowersTitle => 'Funkmasten aus OpenStreetMap importieren';
+
+  @override
+  String get mapImportAreaViewport => 'Aktueller Kartenausschnitt';
+
+  @override
+  String get mapImportAreaRegion => 'Region/Land';
+
+  @override
+  String get mapImportRegionHint => 'z. B. \"Bayern\", \"Deutschland\"';
+
+  @override
+  String get mapImportStartButton => 'Import starten';
+
+  @override
+  String mapImportProgress(int imported, int skipped, int errors, int total) {
+    return '$imported importiert · $skipped übersprungen · $errors Fehler / $total';
+  }
+
+  @override
+  String get mapImportDone => 'Import abgeschlossen';
+
+  @override
+  String get mapImportCloseButton => 'Fertig';
+
+  @override
+  String get mapImportErrorNetwork =>
+      'Keine Verbindung zu OpenStreetMap möglich. Bitte später erneut versuchen.';
+
+  @override
+  String get mapImportErrorHttp =>
+      'Der OpenStreetMap-Dienst antwortete mit einem Fehler.';
+
+  @override
+  String get mapImportErrorRegionNotFound =>
+      'Region nicht gefunden. Bitte Namen prüfen (z. B. \"Bayern\").';
+
+  @override
+  String get mapImportErrorUnknown => 'Unbekannter Fehler beim Import.';
+
+  @override
   String get obInterestsTitle => 'Welche Bereiche interessieren dich?';
 
   @override

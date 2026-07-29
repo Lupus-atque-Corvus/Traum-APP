@@ -3869,6 +3869,59 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapRating => 'Rating';
 
   @override
+  String get mapFieldTowerType => 'Tower type';
+
+  @override
+  String get mapFieldTowerHeight => 'Height (m)';
+
+  @override
+  String get mapFieldTowerOperator => 'Operator';
+
+  @override
+  String get mapImportTowersTooltip => 'Import towers';
+
+  @override
+  String get mapImportTowersTitle => 'Import towers from OpenStreetMap';
+
+  @override
+  String get mapImportAreaViewport => 'Current map view';
+
+  @override
+  String get mapImportAreaRegion => 'Region/Country';
+
+  @override
+  String get mapImportRegionHint => 'e.g. \"Bavaria\", \"Germany\"';
+
+  @override
+  String get mapImportStartButton => 'Start import';
+
+  @override
+  String mapImportProgress(int imported, int skipped, int errors, int total) {
+    return '$imported imported · $skipped skipped · $errors errors / $total';
+  }
+
+  @override
+  String get mapImportDone => 'Import complete';
+
+  @override
+  String get mapImportCloseButton => 'Done';
+
+  @override
+  String get mapImportErrorNetwork =>
+      'Could not connect to OpenStreetMap. Please try again later.';
+
+  @override
+  String get mapImportErrorHttp =>
+      'The OpenStreetMap service returned an error.';
+
+  @override
+  String get mapImportErrorRegionNotFound =>
+      'Region not found. Please check the name (e.g. \"Bavaria\").';
+
+  @override
+  String get mapImportErrorUnknown => 'Unknown error during import.';
+
+  @override
   String get obInterestsTitle => 'Which areas interest you?';
 
   @override

@@ -43,7 +43,11 @@ class MapTemplates {
     colorHex: '00D4D4',
     hasRating: true,
     multiPhoto: true,
-    fields: [],
+    fields: [
+      PredefinedFields.towerType,
+      PredefinedFields.towerHeight,
+      PredefinedFields.towerOperator,
+    ],
   );
 
   static const lostPlaces = MapTemplate(

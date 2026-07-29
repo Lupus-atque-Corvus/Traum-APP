@@ -41,6 +41,9 @@ IconData mapFieldIcon(String? name) => switch (name) {
       'flag' => Icons.flag_outlined,
       'warning' => Icons.warning_amber_rounded,
       'visibility_off' => Icons.visibility_off_outlined,
+      'cell_tower' => Icons.cell_tower_outlined,
+      'height' => Icons.height,
+      'business' => Icons.business_outlined,
       _ => Icons.label_outline,
     };
 
