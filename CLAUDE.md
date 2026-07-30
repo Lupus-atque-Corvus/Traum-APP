@@ -1,12 +1,41 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.1+81** · schemaVersion **24**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.2+82** · schemaVersion **24**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-30 — v0.8.1, Türme-Kartensammlung + Übungs-Icons)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-30 — v0.8.2, Performance-Hotfix Türme-Karte)
+
+**Nutzer meldete direkt nach v0.8.1: Türme erscheinen nirgends auf der Karte, App insgesamt sehr
+ruckelig. Systematische Root-Cause-Analyse (kein Rätselraten) fand zwei konkrete Bugs, beide erst
+durch die 413.634 neuen Türme-Zeilen aufgedeckt (vorher bei ein paar hundert Graffiti-Markern
+unmerklich):**
+
+1. **App-weites Ruckeln:** `widget_data_collector.dart` lud bei **jedem** Homescreen-Widget-Refresh
+   `mapMarkersDao.getAll()` (alle Marker aller Collections, ungefiltert) nur um `.length` als
+   Platz-Zähler zu benutzen. Fix: echte `COUNT(*)`-Query (`countAll()`).
+2. **Türme erscheinen nicht:** `activeMarkersProvider`s `_withPhotos()` machte **eine sequenzielle
+   DB-Query pro Marker** (N+1) um Fotos anzuhängen — bei 413.634 Türmen also 413.634 Anfragen
+   nacheinander, bevor überhaupt etwas rendern konnte. Zusätzlich übergab die Karte die komplette,
+   ungefilterte Collection an `MarkerClusterLayerWidget` (kein Kartenausschnitt-Limit). Fix:
+   Foto-Batch-Query (`getByMarkerIds`, eine Query statt N) + neuer, kartenausschnittsbegrenzter
+   Provider (`markersInViewportProvider`, DAO-Query mit Lat/Lon-Bounding-Box + Obergrenze 2000,
+   lädt bei Pan/Zoom neu, 300ms entprellt). Initiale Kartenzentrierung nutzt jetzt eine billige
+   `LIMIT 1`-Query (`getMostRecentByCollection`) statt die komplette Collection zu laden.
+
+**Verifiziert gegen den echten ~413k-Zeilen-Datensatz** (nicht nur synthetische Testdaten,
+`test/data/database/daos/map_markers_dao_scale_test.dart`): COUNT, eine realistische
+stadtgroße Bounding-Box-Query und die Foto-Batch-Query laufen alle deutlich unter 2s.
+`activeMarkersProvider` selbst bleibt für Hashtag-Liste/Voll-Collection-Ansichten normal-großer
+Collections unverändert im Verhalten, profitiert aber vom selben N+1-Fix.
+
+`flutter analyze` → 1 vorbestehende unabhängige Warnung. `flutter test` → 461/461 grün.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-07-30 — v0.8.1, Türme-Kartensammlung + Übungs-Icons)
 
 **Zwei unabhängige, parallel entwickelte Features in dieser Runde zusammengeführt (Merge ohne
 Konflikte), `flutter analyze` → 1 vorbestehende unabhängige Warnung (fehlender `assets/lottie/`-
