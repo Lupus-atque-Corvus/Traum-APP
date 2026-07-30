@@ -202,7 +202,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 24;
+  int get schemaVersion => 25;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -458,6 +458,21 @@ class TraumDatabase extends _$TraumDatabase {
             [jsonEncode(cfg), id],
           );
         }
+      }
+      if (from < 25) {
+        // Analog zu osm_id (v24): idempotenter addColumn, damit ein
+        // abgebrochener vorheriger Migrationsversuch die App nicht dauerhaft
+        // startunfähig macht.
+        final hasExternalId = await customSelect(
+          "SELECT COUNT(*) AS c FROM pragma_table_info('map_markers') WHERE name = 'external_id'",
+        ).getSingle();
+        if (hasExternalId.read<int>('c') == 0) {
+          await migrator.addColumn(mapMarkers, mapMarkers.externalId);
+        }
+        await customStatement(
+          'CREATE UNIQUE INDEX IF NOT EXISTS idx_map_markers_external_id '
+          'ON map_markers (external_id) WHERE external_id IS NOT NULL',
+        );
       }
     },
   );

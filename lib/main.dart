@@ -10,6 +10,7 @@ import 'data/database/traum_database.dart';
 import 'data/repositories/exercise_library_seeder.dart';
 import 'data/repositories/exercise_seeder.dart';
 import 'data/repositories/grocery_price_seeder.dart';
+import 'data/repositories/lost_place_data_seeder.dart';
 import 'data/repositories/map_collection_seeder.dart';
 import 'data/repositories/substance_reference_db_copier.dart';
 import 'data/repositories/supplement_seeder.dart';
@@ -79,9 +80,13 @@ void main() async {
       MapCollectionSeeder.seedIfNeeded(db, prefs),
       GroceryPriceSeeder.seedIfNeeded(db, prefs),
     ]);
-    // Braucht die Türme-Collection aus MapCollectionSeeder — läuft daher erst
-    // danach, nicht im selben Future.wait.
-    await TowerDataSeeder.seedIfNeeded(db, prefs);
+    // Brauchen ihre jeweilige Collection aus MapCollectionSeeder — laufen
+    // daher erst danach, nicht im selben Future.wait. Unabhängige Tabellen-
+    // Bereiche (unterschiedliche Collections), daher parallel zueinander.
+    await Future.wait([
+      TowerDataSeeder.seedIfNeeded(db, prefs),
+      LostPlaceDataSeeder.seedIfNeeded(db, prefs),
+    ]);
 
     await RecurringPoster.runIfNeeded(db);
   });

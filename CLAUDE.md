@@ -1,12 +1,57 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.2+82** · schemaVersion **24**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.3+83** · schemaVersion **25**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-30 — v0.8.2, Performance-Hotfix Türme-Karte)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-31 — v0.8.3, Lost-Places-Kartensammlung)
+
+**User schickte eine "LostPlace.Club"-APK und mehrere Urbex-Webseiten/-Links mit der Frage, ob
+sich daraus Daten für die (bereits vorhandene, aber leere) "Lost Places"-Kartensammlung ziehen
+lassen — analog zur Türme-Kartensammlung. Direkte Netz-Recherche (nicht nur Code-Review) an jeder
+genannten Quelle, mit einem klaren Ausschlusskriterium: keine Quelle nutzen, die exakte
+Koordinaten absichtlich hinter Login/Paywall/Community-Gate versteckt (Schutz vor Vandalismus/
+Plünderung ist eine reale, ernstzunehmende Norm der Urbex-Community, kein bloßes Scraping-
+Hindernis).**
+
+1. **Geprüfte Quellen — nur 2 von ~15 sauber nutzbar:**
+   - `lostfoundations.org`: offene, unauthentifizierte JSON-API (`/api/places`, Pagination über
+     `skip`, NICHT `offset`/`page` — beide werden vom Server ignoriert), keine ToS-Einschränkung,
+     72.306 brauchbare Orte (`status == "APPROVED"`, Rauscheinträge ohne Titel/Beschreibung
+     rausgefiltert).
+   - 2 vom User geteilte, öffentlich freigegebene **Google-My-Maps-Karten** ("LP V1"/"LP V2",
+     handkuratiert): offizieller KML-Export (`google.com/maps/d/kml?mid=…&forcekml=1`, kein
+     Scraping), 10.733 brauchbare Placemarks mit Titel/Beschreibung/Wikipedia-Referenzen.
+   - **Alle anderen genannten Quellen ausgeschlossen** (lostplace-map.com, lostplace.club/
+     app-api-2 — Backend der APK, gibt bei anonymem Zugriff nur `id`+`updated_at` mit `hide:1`
+     zurück —, urbex-maps.com, urbexology.com, urbexvault.com, mapurbex.com, urbexobsession.com,
+     zuniz.com, die-verlassenen-orte.de): entweder Login-/Paywall-Gate für exakte Koordinaten,
+     explizites AGB-Verbot von Scraping/Weitergabe, oder (bei die-verlassenen-orte.de) gar kein
+     Koordinaten-Datensatz vorhanden. Ein Gumroad-Link (bezahlte Kanada-Karte) wurde nicht
+     angetastet; ein archivierter alter Google-My-Maps-Link ist tot (404). Details siehe
+     `docs/superpowers/plans/…` (Plan-Datei dieser Runde, falls noch vorhanden) bzw. Git-Historie.
+2. **Sammel-Skript** `tools/build_lost_places_dataset.py` (läuft einmalig lokal, nicht Teil der
+   App) sammelt beide Quellen und schreibt `assets/data/lost_places.json` (82.666 Orte, 36 MB,
+   dedupliziert über einen quellenpräfixierten `externalId`, z.B. `lostfoundations:<id>` /
+   `gmymaps:<mid>:<hash>`).
+3. **Schema v24→25:** neue generische `MapMarkers.externalId`-Spalte (nullable Text, partial
+   unique index) — bewusst nicht `osmId` wiederverwendet/umbenannt, damit die 413k bestehenden
+   Türme-Zeilen unangetastet bleiben; `externalId` ist als generischer Dedupe-Mechanismus für
+   künftige weitere Fremd-Datensätze gedacht (Präfix-Konvention `"<quelle>:<id>"`).
+4. **`lost_place_data_seeder.dart`** (1:1-Muster von `tower_data_seeder.dart`): befüllt beim
+   ersten Start Titel/Notiz (Beschreibung + Quellenlink)/Koordinaten — bewusst **keine** der
+   bestehenden Lost-Places-Felder (Zustand/Zugänglichkeit/Status/Gefahr) vorausgefüllt, die bleiben
+   dem eigenen Besuch vorbehalten.
+5. Neue Tests: `test/data/database/lost_place_migration_v25_test.dart`,
+   `test/data/repositories/lost_place_data_seeder_test.dart` (inkl. Lauf gegen den echten
+   82k-Zeilen-Datensatz). `flutter analyze` → 1 vorbestehende unabhängige Warnung (fehlender
+   `assets/lottie/`-Ordner). `flutter test` → 467/467 grün.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-07-30 — v0.8.2, Performance-Hotfix Türme-Karte)
 
 **Nutzer meldete direkt nach v0.8.1: Türme erscheinen nirgends auf der Karte, App insgesamt sehr
 ruckelig. Systematische Root-Cause-Analyse (kein Rätselraten) fand zwei konkrete Bugs, beide erst

@@ -31,6 +31,9 @@ class MapMarkers extends Table {
   DateTimeColumn get createdAt => dateTime()();
   // OSM-Node-ID ("node/<id>") für per Overpass importierte Marker — Dedupe-Schlüssel.
   TextColumn get osmId => text().nullable()();
+  // Generischer Dedupe-Schlüssel für Marker aus gebündelten Fremd-Datensätzen,
+  // Format "<quelle>:<id>" (z.B. "lostfoundations:<id>", "gmymaps:<mid>:<hash>").
+  TextColumn get externalId => text().nullable()();
 }
 
 /// Fotos zu einem Marker (1 bei Graffiti, mehrere bei Türmen/Lost Places)

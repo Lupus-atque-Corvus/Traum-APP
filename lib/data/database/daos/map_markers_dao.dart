@@ -58,6 +58,17 @@ class MapMarkersDao extends DatabaseAccessor<TraumDatabase>
     return row != null;
   }
 
+  /// Analog zu [hasAnyWithOsmId] — Sekundär-Guard für den einmaligen
+  /// Lost-Places-Daten-Seed.
+  Future<bool> hasAnyWithExternalId(int collectionId) async {
+    final row = await (select(mapMarkers)
+          ..where((t) =>
+              t.collectionId.equals(collectionId) & t.externalId.isNotNull())
+          ..limit(1))
+        .getSingleOrNull();
+    return row != null;
+  }
+
   /// Gesamtzahl aller Marker über alle Collections — reine COUNT-Query statt
   /// `getAll().length`, damit z.B. der Homescreen-Widget-Refresh nicht bei
   /// jedem Zyklus hunderttausende Zeilen (Türme-Import) komplett laden muss.

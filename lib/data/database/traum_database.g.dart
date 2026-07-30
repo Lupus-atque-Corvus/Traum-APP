@@ -26901,6 +26901,17 @@ class $MapMarkersTable extends MapMarkers
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _externalIdMeta = const VerificationMeta(
+    'externalId',
+  );
+  @override
+  late final GeneratedColumn<String> externalId = GeneratedColumn<String>(
+    'external_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -26916,6 +26927,7 @@ class $MapMarkersTable extends MapMarkers
     isHidden,
     createdAt,
     osmId,
+    externalId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -27017,6 +27029,12 @@ class $MapMarkersTable extends MapMarkers
         osmId.isAcceptableOrUnknown(data['osm_id']!, _osmIdMeta),
       );
     }
+    if (data.containsKey('external_id')) {
+      context.handle(
+        _externalIdMeta,
+        externalId.isAcceptableOrUnknown(data['external_id']!, _externalIdMeta),
+      );
+    }
     return context;
   }
 
@@ -27078,6 +27096,10 @@ class $MapMarkersTable extends MapMarkers
         DriftSqlType.string,
         data['${effectivePrefix}osm_id'],
       ),
+      externalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}external_id'],
+      ),
     );
   }
 
@@ -27101,6 +27123,7 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
   final bool isHidden;
   final DateTime createdAt;
   final String? osmId;
+  final String? externalId;
   const MapMarker({
     required this.id,
     required this.collectionId,
@@ -27115,6 +27138,7 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
     required this.isHidden,
     required this.createdAt,
     this.osmId,
+    this.externalId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -27141,6 +27165,9 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || osmId != null) {
       map['osm_id'] = Variable<String>(osmId);
+    }
+    if (!nullToAbsent || externalId != null) {
+      map['external_id'] = Variable<String>(externalId);
     }
     return map;
   }
@@ -27170,6 +27197,9 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
       osmId: osmId == null && nullToAbsent
           ? const Value.absent()
           : Value(osmId),
+      externalId: externalId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(externalId),
     );
   }
 
@@ -27192,6 +27222,7 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
       isHidden: serializer.fromJson<bool>(json['isHidden']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       osmId: serializer.fromJson<String?>(json['osmId']),
+      externalId: serializer.fromJson<String?>(json['externalId']),
     );
   }
   @override
@@ -27211,6 +27242,7 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
       'isHidden': serializer.toJson<bool>(isHidden),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'osmId': serializer.toJson<String?>(osmId),
+      'externalId': serializer.toJson<String?>(externalId),
     };
   }
 
@@ -27228,6 +27260,7 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
     bool? isHidden,
     DateTime? createdAt,
     Value<String?> osmId = const Value.absent(),
+    Value<String?> externalId = const Value.absent(),
   }) => MapMarker(
     id: id ?? this.id,
     collectionId: collectionId ?? this.collectionId,
@@ -27242,6 +27275,7 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
     isHidden: isHidden ?? this.isHidden,
     createdAt: createdAt ?? this.createdAt,
     osmId: osmId.present ? osmId.value : this.osmId,
+    externalId: externalId.present ? externalId.value : this.externalId,
   );
   MapMarker copyWithCompanion(MapMarkersCompanion data) {
     return MapMarker(
@@ -27264,6 +27298,9 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
       isHidden: data.isHidden.present ? data.isHidden.value : this.isHidden,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       osmId: data.osmId.present ? data.osmId.value : this.osmId,
+      externalId: data.externalId.present
+          ? data.externalId.value
+          : this.externalId,
     );
   }
 
@@ -27282,7 +27319,8 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
           ..write('customFields: $customFields, ')
           ..write('isHidden: $isHidden, ')
           ..write('createdAt: $createdAt, ')
-          ..write('osmId: $osmId')
+          ..write('osmId: $osmId, ')
+          ..write('externalId: $externalId')
           ..write(')'))
         .toString();
   }
@@ -27302,6 +27340,7 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
     isHidden,
     createdAt,
     osmId,
+    externalId,
   );
   @override
   bool operator ==(Object other) =>
@@ -27319,7 +27358,8 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
           other.customFields == this.customFields &&
           other.isHidden == this.isHidden &&
           other.createdAt == this.createdAt &&
-          other.osmId == this.osmId);
+          other.osmId == this.osmId &&
+          other.externalId == this.externalId);
 }
 
 class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
@@ -27336,6 +27376,7 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
   final Value<bool> isHidden;
   final Value<DateTime> createdAt;
   final Value<String?> osmId;
+  final Value<String?> externalId;
   const MapMarkersCompanion({
     this.id = const Value.absent(),
     this.collectionId = const Value.absent(),
@@ -27350,6 +27391,7 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
     this.isHidden = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.osmId = const Value.absent(),
+    this.externalId = const Value.absent(),
   });
   MapMarkersCompanion.insert({
     this.id = const Value.absent(),
@@ -27365,6 +27407,7 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
     this.isHidden = const Value.absent(),
     required DateTime createdAt,
     this.osmId = const Value.absent(),
+    this.externalId = const Value.absent(),
   }) : collectionId = Value(collectionId),
        createdAt = Value(createdAt);
   static Insertable<MapMarker> custom({
@@ -27381,6 +27424,7 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
     Expression<bool>? isHidden,
     Expression<DateTime>? createdAt,
     Expression<String>? osmId,
+    Expression<String>? externalId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -27396,6 +27440,7 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
       if (isHidden != null) 'is_hidden': isHidden,
       if (createdAt != null) 'created_at': createdAt,
       if (osmId != null) 'osm_id': osmId,
+      if (externalId != null) 'external_id': externalId,
     });
   }
 
@@ -27413,6 +27458,7 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
     Value<bool>? isHidden,
     Value<DateTime>? createdAt,
     Value<String?>? osmId,
+    Value<String?>? externalId,
   }) {
     return MapMarkersCompanion(
       id: id ?? this.id,
@@ -27428,6 +27474,7 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
       isHidden: isHidden ?? this.isHidden,
       createdAt: createdAt ?? this.createdAt,
       osmId: osmId ?? this.osmId,
+      externalId: externalId ?? this.externalId,
     );
   }
 
@@ -27473,6 +27520,9 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
     if (osmId.present) {
       map['osm_id'] = Variable<String>(osmId.value);
     }
+    if (externalId.present) {
+      map['external_id'] = Variable<String>(externalId.value);
+    }
     return map;
   }
 
@@ -27491,7 +27541,8 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
           ..write('customFields: $customFields, ')
           ..write('isHidden: $isHidden, ')
           ..write('createdAt: $createdAt, ')
-          ..write('osmId: $osmId')
+          ..write('osmId: $osmId, ')
+          ..write('externalId: $externalId')
           ..write(')'))
         .toString();
   }
@@ -44854,6 +44905,7 @@ typedef $$MapMarkersTableCreateCompanionBuilder =
       Value<bool> isHidden,
       required DateTime createdAt,
       Value<String?> osmId,
+      Value<String?> externalId,
     });
 typedef $$MapMarkersTableUpdateCompanionBuilder =
     MapMarkersCompanion Function({
@@ -44870,6 +44922,7 @@ typedef $$MapMarkersTableUpdateCompanionBuilder =
       Value<bool> isHidden,
       Value<DateTime> createdAt,
       Value<String?> osmId,
+      Value<String?> externalId,
     });
 
 final class $$MapMarkersTableReferences
@@ -44980,6 +45033,11 @@ class $$MapMarkersTableFilterComposer
 
   ColumnFilters<String> get osmId => $composableBuilder(
     column: $table.osmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get externalId => $composableBuilder(
+    column: $table.externalId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -45101,6 +45159,11 @@ class $$MapMarkersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get externalId => $composableBuilder(
+    column: $table.externalId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$MapCollectionsTableOrderingComposer get collectionId {
     final $$MapCollectionsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -45173,6 +45236,11 @@ class $$MapMarkersTableAnnotationComposer
 
   GeneratedColumn<String> get osmId =>
       $composableBuilder(column: $table.osmId, builder: (column) => column);
+
+  GeneratedColumn<String> get externalId => $composableBuilder(
+    column: $table.externalId,
+    builder: (column) => column,
+  );
 
   $$MapCollectionsTableAnnotationComposer get collectionId {
     final $$MapCollectionsTableAnnotationComposer composer = $composerBuilder(
@@ -45264,6 +45332,7 @@ class $$MapMarkersTableTableManager
                 Value<bool> isHidden = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<String?> osmId = const Value.absent(),
+                Value<String?> externalId = const Value.absent(),
               }) => MapMarkersCompanion(
                 id: id,
                 collectionId: collectionId,
@@ -45278,6 +45347,7 @@ class $$MapMarkersTableTableManager
                 isHidden: isHidden,
                 createdAt: createdAt,
                 osmId: osmId,
+                externalId: externalId,
               ),
           createCompanionCallback:
               ({
@@ -45294,6 +45364,7 @@ class $$MapMarkersTableTableManager
                 Value<bool> isHidden = const Value.absent(),
                 required DateTime createdAt,
                 Value<String?> osmId = const Value.absent(),
+                Value<String?> externalId = const Value.absent(),
               }) => MapMarkersCompanion.insert(
                 id: id,
                 collectionId: collectionId,
@@ -45308,6 +45379,7 @@ class $$MapMarkersTableTableManager
                 isHidden: isHidden,
                 createdAt: createdAt,
                 osmId: osmId,
+                externalId: externalId,
               ),
           withReferenceMapper: (p0) => p0
               .map(
