@@ -13,6 +13,7 @@ import 'data/repositories/grocery_price_seeder.dart';
 import 'data/repositories/map_collection_seeder.dart';
 import 'data/repositories/substance_reference_db_copier.dart';
 import 'data/repositories/supplement_seeder.dart';
+import 'data/repositories/tower_data_seeder.dart';
 import 'data/services/recurring_poster.dart';
 import 'widget/widget_data_service.dart';
 import 'widget/widget_update_scheduler.dart';
@@ -78,6 +79,9 @@ void main() async {
       MapCollectionSeeder.seedIfNeeded(db, prefs),
       GroceryPriceSeeder.seedIfNeeded(db, prefs),
     ]);
+    // Braucht die Türme-Collection aus MapCollectionSeeder — läuft daher erst
+    // danach, nicht im selben Future.wait.
+    await TowerDataSeeder.seedIfNeeded(db, prefs);
 
     await RecurringPoster.runIfNeeded(db);
   });

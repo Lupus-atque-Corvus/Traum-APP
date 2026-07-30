@@ -372,7 +372,19 @@ class TraumDatabase extends _$TraumDatabase {
         await migrator.deleteTable('substance_database_entries');
       }
       if (from < 24) {
-        await migrator.addColumn(mapMarkers, mapMarkers.osmId);
+        // Idempotent statt einmaligem ALTER TABLE: falls ein vorheriger
+        // Migrationsversuch nach dem Hinzufügen der Spalte aus einem anderen
+        // Grund abgebrochen ist (z.B. an einem inzwischen gefixten Bug weiter
+        // unten in diesem Block), würde ein erneutes addColumn beim nächsten
+        // App-Start mit "duplicate column name" abstürzen — und die App bliebe
+        // dauerhaft unstartbar. Spaltenexistenz vorher prüfen macht diesen
+        // Schritt sicher wiederholbar.
+        final hasOsmId = await customSelect(
+          "SELECT COUNT(*) AS c FROM pragma_table_info('map_markers') WHERE name = 'osm_id'",
+        ).getSingle();
+        if (hasOsmId.read<int>('c') == 0) {
+          await migrator.addColumn(mapMarkers, mapMarkers.osmId);
+        }
         await customStatement(
           'CREATE UNIQUE INDEX IF NOT EXISTS idx_map_markers_osm_id '
           'ON map_markers (osm_id) WHERE osm_id IS NOT NULL',
@@ -417,9 +429,25 @@ class TraumDatabase extends _$TraumDatabase {
         ).get();
         for (final row in rows) {
           final id = row.read<int>('id');
-          final cfg =
-              jsonDecode(row.read<String>('field_config')) as Map<String, dynamic>;
-          final fields = (cfg['fields'] as List).cast<Map<String, dynamic>>();
+          // Defensiv: reale Bestandsdaten können von der beim Schreiben dieser
+          // Migration angenommenen Form abweichen (fehlendes/kaputtes JSON,
+          // fehlender oder falsch typisierter 'fields'-Key, Nicht-Map-Einträge).
+          // Eine Migration darf hierbei niemals werfen — sonst startet die App
+          // für den betroffenen Nutzer nie wieder.
+          Map<String, dynamic> cfg;
+          try {
+            final decoded = jsonDecode(row.read<String>('field_config'));
+            cfg = decoded is Map<String, dynamic> ? decoded : <String, dynamic>{};
+          } catch (_) {
+            cfg = <String, dynamic>{};
+          }
+          final rawFields = cfg['fields'];
+          final fields = rawFields is List
+              ? rawFields
+                  .whereType<Map>()
+                  .map((m) => Map<String, dynamic>.from(m))
+                  .toList()
+              : <Map<String, dynamic>>[];
           final existingKeys = fields.map((f) => f['key']).toSet();
           for (final f in newTowerFields) {
             if (!existingKeys.contains(f['key'])) fields.add(f);

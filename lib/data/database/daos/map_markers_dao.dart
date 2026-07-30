@@ -40,32 +40,21 @@ class MapMarkersDao extends DatabaseAccessor<TraumDatabase>
   Future<void> deleteMarker(int id) =>
       (delete(mapMarkers)..where((t) => t.id.equals(id))).go();
 
-  /// OSM-IDs bereits importierter Marker einer Collection — primärer
-  /// Dedupe-Schlüssel für den Türme-Import.
-  Future<Set<String>> getOsmIds(int collectionId) async {
-    final rows = await (select(mapMarkers)
-          ..where((t) =>
-              t.collectionId.equals(collectionId) & t.osmId.isNotNull()))
-        .get();
-    return rows.map((r) => r.osmId!).toSet();
-  }
-
-  /// Koordinaten aller Marker mit Position einer Collection — Fallback-Dedupe
-  /// für Türme, die vor dem Import-Feature manuell angelegt wurden (ohne osmId).
-  Future<List<(double, double)>> getCoordinates(int collectionId) async {
-    final rows = await (select(mapMarkers)
-          ..where((t) =>
-              t.collectionId.equals(collectionId) &
-              t.latitude.isNotNull() &
-              t.longitude.isNotNull()))
-        .get();
-    return rows.map((r) => (r.latitude!, r.longitude!)).toList();
-  }
-
-  /// Fügt neue Marker gebündelt ein (z.B. ein Import-Chunk). Kein
-  /// Conflict-Handling — Dedupe passiert vorher in der aufrufenden Logik.
+  /// Fügt neue Marker gebündelt ein (z.B. beim einmaligen Türme-Daten-Seed).
   Future<int> bulkInsertNew(List<MapMarkersCompanion> rows) async {
     await batch((b) => b.insertAll(mapMarkers, rows));
     return rows.length;
+  }
+
+  /// Effiziente Prüfung (LIMIT 1), ob eine Collection bereits importierte
+  /// Marker hat — Sekundär-Guard für den einmaligen Türme-Daten-Seed, ohne
+  /// bei jedem App-Start alle (potenziell hunderttausende) Zeilen zu laden.
+  Future<bool> hasAnyWithOsmId(int collectionId) async {
+    final row = await (select(mapMarkers)
+          ..where((t) =>
+              t.collectionId.equals(collectionId) & t.osmId.isNotNull())
+          ..limit(1))
+        .getSingleOrNull();
+    return row != null;
   }
 }
