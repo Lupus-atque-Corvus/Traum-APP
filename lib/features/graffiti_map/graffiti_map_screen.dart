@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:drift/drift.dart' show Value;
@@ -40,6 +41,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
   String _query = '';
   double _rotation = 0;
   CacheStore? _tileStore;
+  Timer? _boundsDebounce;
 
   static const _fallbackCenter = LatLng(51.1657, 10.4515); // Deutschland
 
@@ -65,10 +67,34 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
 
   @override
   void dispose() {
+    _boundsDebounce?.cancel();
     _mapController.dispose();
     _searchController.dispose();
     _searchFocus.dispose();
     super.dispose();
+  }
+
+  /// Aktualisiert den Kartenausschnitt, der [markersInViewportProvider]
+  /// speist. Entprellt (Pan/Zoom feuert `onPositionChanged` sehr oft), damit
+  /// nicht bei jedem Zwischenbild eine neue DB-Query läuft.
+  void _updateViewportBounds(MapCamera camera, {bool immediate = false}) {
+    void apply() {
+      if (!mounted) return;
+      final b = camera.visibleBounds;
+      ref.read(mapViewportBoundsProvider.notifier).state = MapBounds(
+        minLat: b.south,
+        maxLat: b.north,
+        minLon: b.west,
+        maxLon: b.east,
+      );
+    }
+
+    _boundsDebounce?.cancel();
+    if (immediate) {
+      apply();
+    } else {
+      _boundsDebounce = Timer(const Duration(milliseconds: 300), apply);
+    }
   }
 
   @override
@@ -77,9 +103,10 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     final collectionInfo = ref.watch(activeCollectionInfoProvider);
     final hashtagFilter = ref.watch(activeHashtagFilterProvider);
     final markersAsync = _query.isEmpty
-        ? ref.watch(activeMarkersProvider)
+        ? ref.watch(markersInViewportProvider)
         : ref.watch(markerSearchProvider(_query));
     final hasRating = collectionInfo.value?.hasRating ?? false;
+    final mostRecentMarker = ref.watch(mostRecentMarkerProvider).value;
 
     final all = markersAsync.value ?? const [];
     final filtered = hashtagFilter == null
@@ -94,11 +121,8 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     final withCoords = filtered
         .where((d) => d.marker.latitude != null)
         .toList();
-    final initialCenter = withCoords.isNotEmpty
-        ? LatLng(
-            withCoords.first.marker.latitude!,
-            withCoords.first.marker.longitude!,
-          )
+    final initialCenter = mostRecentMarker?.latitude != null
+        ? LatLng(mostRecentMarker!.latitude!, mostRecentMarker.longitude!)
         : _fallbackCenter;
 
     return Scaffold(
@@ -109,7 +133,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
             mapController: _mapController,
             options: MapOptions(
               initialCenter: initialCenter,
-              initialZoom: withCoords.isNotEmpty ? 12 : 5,
+              initialZoom: mostRecentMarker?.latitude != null ? 12 : 5,
               minZoom: 3.0,
               maxZoom: 18,
               cameraConstraint: CameraConstraint.contain(bounds: _worldBounds),
@@ -127,7 +151,10 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                 if (camera.rotation != _rotation) {
                   setState(() => _rotation = camera.rotation);
                 }
+                _updateViewportBounds(camera);
               },
+              onMapReady: () =>
+                  _updateViewportBounds(_mapController.camera, immediate: true),
               onLongPress: (_, latlng) => _createPointAt(latlng),
             ),
             children: [
@@ -518,6 +545,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
           createdAt: DateTime.now(),
         ));
         ref.invalidate(activeMarkersProvider);
+        ref.invalidate(markersInViewportProvider);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -530,6 +558,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                     await File(result.photoPath).delete();
                   } catch (_) {}
                   ref.invalidate(activeMarkersProvider);
+                  ref.invalidate(markersInViewportProvider);
                 },
               ),
             ),
@@ -548,6 +577,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
           captureResult: result, collection: collection),
     );
     ref.invalidate(activeMarkersProvider);
+    ref.invalidate(markersInViewportProvider);
     ref.invalidate(allHashtagsProvider);
   }
 
@@ -584,6 +614,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
       ),
     );
     ref.invalidate(activeMarkersProvider);
+    ref.invalidate(markersInViewportProvider);
     ref.invalidate(allHashtagsProvider);
   }
 

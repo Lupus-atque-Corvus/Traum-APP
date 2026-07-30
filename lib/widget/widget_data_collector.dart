@@ -428,7 +428,10 @@ class WidgetDataCollector {
     final pinnedNoteF =
         _safe(() => read(notesDaoProvider).getPinnedNotes(), null);
 
-    final placesCountF = _safe(() => read(mapMarkersDaoProvider).getAll(), null);
+    // COUNT-Query statt getAll().length — die Türme-Collection allein hat
+    // hunderttausende Marker, das komplette Laden würde jeden
+    // Widget-Refresh-Zyklus spürbar verlangsamen.
+    final placesCountF = _safe(() => read(mapMarkersDaoProvider).countAll(), 0);
     final lastPhotoF =
         _safe(() => read(markerPhotosDaoProvider).getAll(), null);
 
@@ -951,8 +954,7 @@ class WidgetDataCollector {
 
     int placesCount = 0;
     try {
-      final markers = _or(await placesCountF);
-      placesCount = markers.length;
+      placesCount = await placesCountF;
     } catch (_) {}
 
     String lastPhoto = '';

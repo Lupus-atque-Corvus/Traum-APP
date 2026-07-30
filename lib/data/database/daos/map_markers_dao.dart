@@ -57,4 +57,45 @@ class MapMarkersDao extends DatabaseAccessor<TraumDatabase>
         .getSingleOrNull();
     return row != null;
   }
+
+  /// Gesamtzahl aller Marker über alle Collections — reine COUNT-Query statt
+  /// `getAll().length`, damit z.B. der Homescreen-Widget-Refresh nicht bei
+  /// jedem Zyklus hunderttausende Zeilen (Türme-Import) komplett laden muss.
+  Future<int> countAll() async {
+    final query = selectOnly(mapMarkers)
+      ..addColumns([mapMarkers.id.count()]);
+    final row = await query.getSingle();
+    return row.read(mapMarkers.id.count()) ?? 0;
+  }
+
+  /// Der zuletzt erstellte Marker einer Collection (oder `null`), z.B. für
+  /// die initiale Kartenzentrierung — deutlich billiger als
+  /// `getByCollection(id).first`, wenn die Collection sehr groß ist.
+  Future<MapMarker?> getMostRecentByCollection(int collectionId) =>
+      (select(mapMarkers)
+            ..where((t) => t.collectionId.equals(collectionId))
+            ..orderBy([(t) => OrderingTerm.desc(t.createdAt)])
+            ..limit(1))
+          .getSingleOrNull();
+
+  /// Marker einer Collection innerhalb eines Lat/Lon-Rechtecks (aktueller
+  /// Kartenausschnitt), mit Obergrenze — verhindert, dass sehr große
+  /// Collections (z.B. hunderttausende importierte Türme) komplett geladen
+  /// und an den Cluster-Layer übergeben werden.
+  Future<List<MapMarker>> getByCollectionInBounds(
+    int collectionId, {
+    required double minLat,
+    required double maxLat,
+    required double minLon,
+    required double maxLon,
+    int limit = 2000,
+  }) =>
+      (select(mapMarkers)
+            ..where((t) =>
+                t.collectionId.equals(collectionId) &
+                t.latitude.isBetweenValues(minLat, maxLat) &
+                t.longitude.isBetweenValues(minLon, maxLon))
+            ..orderBy([(t) => OrderingTerm.desc(t.createdAt)])
+            ..limit(limit))
+          .get();
 }

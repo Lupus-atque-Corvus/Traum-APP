@@ -43,15 +43,19 @@ final collectionByIdProvider =
     FutureProvider.family<MapCollection?, int>((ref, id) =>
         ref.watch(mapCollectionsDaoProvider).getById(id));
 
+/// Lädt Fotos für alle übergebenen Marker in einer einzigen Query (statt
+/// einer Query pro Marker) — bei sehr großen Collections (z.B. hundert-
+/// tausende importierte Türme) macht eine Query pro Marker die Kartenansicht
+/// praktisch unbenutzbar.
 Future<List<MarkerWithPhotos>> _withPhotos(
     Ref ref, List<MapMarker> markers) async {
   final photosDao = ref.watch(markerPhotosDaoProvider);
-  final result = <MarkerWithPhotos>[];
-  for (final m in markers) {
-    result.add(MarkerWithPhotos(
-        marker: m, photos: await photosDao.getByMarker(m.id)));
-  }
-  return result;
+  final photosByMarker =
+      await photosDao.getByMarkerIds(markers.map((m) => m.id).toList());
+  return markers
+      .map((m) => MarkerWithPhotos(
+          marker: m, photos: photosByMarker[m.id] ?? const []))
+      .toList();
 }
 
 final activeMarkersProvider =
@@ -59,6 +63,63 @@ final activeMarkersProvider =
   final id = ref.watch(activeCollectionProvider);
   final markers = await ref.watch(mapMarkersDaoProvider).getByCollection(id);
   return _withPhotos(ref, markers);
+});
+
+/// Lat/Lon-Rechteck des aktuell sichtbaren Kartenausschnitts.
+class MapBounds {
+  final double minLat;
+  final double maxLat;
+  final double minLon;
+  final double maxLon;
+  const MapBounds({
+    required this.minLat,
+    required this.maxLat,
+    required this.minLon,
+    required this.maxLon,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      other is MapBounds &&
+      minLat == other.minLat &&
+      maxLat == other.maxLat &&
+      minLon == other.minLon &&
+      maxLon == other.maxLon;
+
+  @override
+  int get hashCode => Object.hash(minLat, maxLat, minLon, maxLon);
+}
+
+/// Aktueller Kartenausschnitt — von der Karte bei Pan/Zoom aktualisiert
+/// (entprellt). `null` bis zum ersten Kamera-Update.
+final mapViewportBoundsProvider = StateProvider<MapBounds?>((ref) => null);
+
+/// Marker der aktiven Collection, begrenzt auf den aktuellen Kartenausschnitt
+/// (+ harte Obergrenze in der DAO-Query). Das ist die einzige Quelle, die an
+/// den Cluster-Layer der Karte übergeben werden darf — `activeMarkersProvider`
+/// lädt die komplette Collection unbegrenzt und ist bei sehr großen
+/// Collections (Türme: hunderttausende Marker) dafür ungeeignet.
+final markersInViewportProvider =
+    FutureProvider<List<MarkerWithPhotos>>((ref) async {
+  final id = ref.watch(activeCollectionProvider);
+  final bounds = ref.watch(mapViewportBoundsProvider);
+  if (bounds == null) return const [];
+  final markers = await ref.watch(mapMarkersDaoProvider).getByCollectionInBounds(
+        id,
+        minLat: bounds.minLat,
+        maxLat: bounds.maxLat,
+        minLon: bounds.minLon,
+        maxLon: bounds.maxLon,
+      );
+  return _withPhotos(ref, markers);
+});
+
+/// Zuletzt erstellter Marker der aktiven Collection — billige Alternative zu
+/// `activeMarkersProvider.first` für die initiale Kartenzentrierung, wenn die
+/// Collection sehr groß ist.
+final mostRecentMarkerProvider = FutureProvider<MapMarker?>((ref) {
+  final id = ref.watch(activeCollectionProvider);
+  return ref.watch(mapMarkersDaoProvider).getMostRecentByCollection(id);
 });
 
 final markerSearchProvider = FutureProvider.family<List<MarkerWithPhotos>,

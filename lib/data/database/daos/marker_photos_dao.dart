@@ -19,6 +19,23 @@ class MarkerPhotosDao extends DatabaseAccessor<TraumDatabase>
             ..orderBy([(t) => OrderingTerm.asc(t.takenAt)]))
           .get();
 
+  /// Fotos für mehrere Marker in einer einzigen Query statt einer Query pro
+  /// Marker — verhindert das N+1-Problem beim Zusammenstellen einer
+  /// Marker-Liste (z.B. für die Kartenansicht) mit vielen Markern.
+  Future<Map<int, List<MarkerPhoto>>> getByMarkerIds(
+      List<int> markerIds) async {
+    if (markerIds.isEmpty) return {};
+    final rows = await (select(markerPhotos)
+          ..where((t) => t.markerId.isIn(markerIds))
+          ..orderBy([(t) => OrderingTerm.asc(t.takenAt)]))
+        .get();
+    final byMarker = <int, List<MarkerPhoto>>{};
+    for (final row in rows) {
+      byMarker.putIfAbsent(row.markerId, () => []).add(row);
+    }
+    return byMarker;
+  }
+
   /// Alle Fotos einer Collection (über den zugehörigen Marker gejoint).
   Future<List<MarkerPhoto>> getByCollection(int collectionId) {
     final query = select(markerPhotos).join([
