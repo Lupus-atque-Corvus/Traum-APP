@@ -21402,581 +21402,6 @@ class DiaryEntriesCompanion extends UpdateCompanion<DiaryEntry> {
   }
 }
 
-class $SubstanceDatabaseEntriesTable extends SubstanceDatabaseEntries
-    with TableInfo<$SubstanceDatabaseEntriesTable, SubstanceDatabaseEntry> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $SubstanceDatabaseEntriesTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-    'id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-    'name',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _nameLowerMeta = const VerificationMeta(
-    'nameLower',
-  );
-  @override
-  late final GeneratedColumn<String> nameLower = GeneratedColumn<String>(
-    'name_lower',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _typeMeta = const VerificationMeta('type');
-  @override
-  late final GeneratedColumn<String> type = GeneratedColumn<String>(
-    'type',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _categoryMeta = const VerificationMeta(
-    'category',
-  );
-  @override
-  late final GeneratedColumn<String> category = GeneratedColumn<String>(
-    'category',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _mechanismMeta = const VerificationMeta(
-    'mechanism',
-  );
-  @override
-  late final GeneratedColumn<String> mechanism = GeneratedColumn<String>(
-    'mechanism',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _commonDosageMeta = const VerificationMeta(
-    'commonDosage',
-  );
-  @override
-  late final GeneratedColumn<String> commonDosage = GeneratedColumn<String>(
-    'common_dosage',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _adverseEventsJsonMeta = const VerificationMeta(
-    'adverseEventsJson',
-  );
-  @override
-  late final GeneratedColumn<String> adverseEventsJson =
-      GeneratedColumn<String>(
-        'adverse_events_json',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: false,
-        defaultValue: const Constant('[]'),
-      );
-  static const VerificationMeta _interactionsJsonMeta = const VerificationMeta(
-    'interactionsJson',
-  );
-  @override
-  late final GeneratedColumn<String> interactionsJson = GeneratedColumn<String>(
-    'interactions_json',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    defaultValue: const Constant('[]'),
-  );
-  @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    name,
-    nameLower,
-    type,
-    category,
-    mechanism,
-    commonDosage,
-    adverseEventsJson,
-    interactionsJson,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'substance_database_entries';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<SubstanceDatabaseEntry> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('name_lower')) {
-      context.handle(
-        _nameLowerMeta,
-        nameLower.isAcceptableOrUnknown(data['name_lower']!, _nameLowerMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_nameLowerMeta);
-    }
-    if (data.containsKey('type')) {
-      context.handle(
-        _typeMeta,
-        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_typeMeta);
-    }
-    if (data.containsKey('category')) {
-      context.handle(
-        _categoryMeta,
-        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
-      );
-    }
-    if (data.containsKey('mechanism')) {
-      context.handle(
-        _mechanismMeta,
-        mechanism.isAcceptableOrUnknown(data['mechanism']!, _mechanismMeta),
-      );
-    }
-    if (data.containsKey('common_dosage')) {
-      context.handle(
-        _commonDosageMeta,
-        commonDosage.isAcceptableOrUnknown(
-          data['common_dosage']!,
-          _commonDosageMeta,
-        ),
-      );
-    }
-    if (data.containsKey('adverse_events_json')) {
-      context.handle(
-        _adverseEventsJsonMeta,
-        adverseEventsJson.isAcceptableOrUnknown(
-          data['adverse_events_json']!,
-          _adverseEventsJsonMeta,
-        ),
-      );
-    }
-    if (data.containsKey('interactions_json')) {
-      context.handle(
-        _interactionsJsonMeta,
-        interactionsJson.isAcceptableOrUnknown(
-          data['interactions_json']!,
-          _interactionsJsonMeta,
-        ),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  SubstanceDatabaseEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return SubstanceDatabaseEntry(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name'],
-      )!,
-      nameLower: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name_lower'],
-      )!,
-      type: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}type'],
-      )!,
-      category: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}category'],
-      ),
-      mechanism: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}mechanism'],
-      ),
-      commonDosage: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}common_dosage'],
-      ),
-      adverseEventsJson: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}adverse_events_json'],
-      )!,
-      interactionsJson: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}interactions_json'],
-      )!,
-    );
-  }
-
-  @override
-  $SubstanceDatabaseEntriesTable createAlias(String alias) {
-    return $SubstanceDatabaseEntriesTable(attachedDatabase, alias);
-  }
-}
-
-class SubstanceDatabaseEntry extends DataClass
-    implements Insertable<SubstanceDatabaseEntry> {
-  final String id;
-  final String name;
-  final String nameLower;
-  final String type;
-  final String? category;
-  final String? mechanism;
-  final String? commonDosage;
-  final String adverseEventsJson;
-  final String interactionsJson;
-  const SubstanceDatabaseEntry({
-    required this.id,
-    required this.name,
-    required this.nameLower,
-    required this.type,
-    this.category,
-    this.mechanism,
-    this.commonDosage,
-    required this.adverseEventsJson,
-    required this.interactionsJson,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['name'] = Variable<String>(name);
-    map['name_lower'] = Variable<String>(nameLower);
-    map['type'] = Variable<String>(type);
-    if (!nullToAbsent || category != null) {
-      map['category'] = Variable<String>(category);
-    }
-    if (!nullToAbsent || mechanism != null) {
-      map['mechanism'] = Variable<String>(mechanism);
-    }
-    if (!nullToAbsent || commonDosage != null) {
-      map['common_dosage'] = Variable<String>(commonDosage);
-    }
-    map['adverse_events_json'] = Variable<String>(adverseEventsJson);
-    map['interactions_json'] = Variable<String>(interactionsJson);
-    return map;
-  }
-
-  SubstanceDatabaseEntriesCompanion toCompanion(bool nullToAbsent) {
-    return SubstanceDatabaseEntriesCompanion(
-      id: Value(id),
-      name: Value(name),
-      nameLower: Value(nameLower),
-      type: Value(type),
-      category: category == null && nullToAbsent
-          ? const Value.absent()
-          : Value(category),
-      mechanism: mechanism == null && nullToAbsent
-          ? const Value.absent()
-          : Value(mechanism),
-      commonDosage: commonDosage == null && nullToAbsent
-          ? const Value.absent()
-          : Value(commonDosage),
-      adverseEventsJson: Value(adverseEventsJson),
-      interactionsJson: Value(interactionsJson),
-    );
-  }
-
-  factory SubstanceDatabaseEntry.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return SubstanceDatabaseEntry(
-      id: serializer.fromJson<String>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      nameLower: serializer.fromJson<String>(json['nameLower']),
-      type: serializer.fromJson<String>(json['type']),
-      category: serializer.fromJson<String?>(json['category']),
-      mechanism: serializer.fromJson<String?>(json['mechanism']),
-      commonDosage: serializer.fromJson<String?>(json['commonDosage']),
-      adverseEventsJson: serializer.fromJson<String>(json['adverseEventsJson']),
-      interactionsJson: serializer.fromJson<String>(json['interactionsJson']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'name': serializer.toJson<String>(name),
-      'nameLower': serializer.toJson<String>(nameLower),
-      'type': serializer.toJson<String>(type),
-      'category': serializer.toJson<String?>(category),
-      'mechanism': serializer.toJson<String?>(mechanism),
-      'commonDosage': serializer.toJson<String?>(commonDosage),
-      'adverseEventsJson': serializer.toJson<String>(adverseEventsJson),
-      'interactionsJson': serializer.toJson<String>(interactionsJson),
-    };
-  }
-
-  SubstanceDatabaseEntry copyWith({
-    String? id,
-    String? name,
-    String? nameLower,
-    String? type,
-    Value<String?> category = const Value.absent(),
-    Value<String?> mechanism = const Value.absent(),
-    Value<String?> commonDosage = const Value.absent(),
-    String? adverseEventsJson,
-    String? interactionsJson,
-  }) => SubstanceDatabaseEntry(
-    id: id ?? this.id,
-    name: name ?? this.name,
-    nameLower: nameLower ?? this.nameLower,
-    type: type ?? this.type,
-    category: category.present ? category.value : this.category,
-    mechanism: mechanism.present ? mechanism.value : this.mechanism,
-    commonDosage: commonDosage.present ? commonDosage.value : this.commonDosage,
-    adverseEventsJson: adverseEventsJson ?? this.adverseEventsJson,
-    interactionsJson: interactionsJson ?? this.interactionsJson,
-  );
-  SubstanceDatabaseEntry copyWithCompanion(
-    SubstanceDatabaseEntriesCompanion data,
-  ) {
-    return SubstanceDatabaseEntry(
-      id: data.id.present ? data.id.value : this.id,
-      name: data.name.present ? data.name.value : this.name,
-      nameLower: data.nameLower.present ? data.nameLower.value : this.nameLower,
-      type: data.type.present ? data.type.value : this.type,
-      category: data.category.present ? data.category.value : this.category,
-      mechanism: data.mechanism.present ? data.mechanism.value : this.mechanism,
-      commonDosage: data.commonDosage.present
-          ? data.commonDosage.value
-          : this.commonDosage,
-      adverseEventsJson: data.adverseEventsJson.present
-          ? data.adverseEventsJson.value
-          : this.adverseEventsJson,
-      interactionsJson: data.interactionsJson.present
-          ? data.interactionsJson.value
-          : this.interactionsJson,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('SubstanceDatabaseEntry(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('nameLower: $nameLower, ')
-          ..write('type: $type, ')
-          ..write('category: $category, ')
-          ..write('mechanism: $mechanism, ')
-          ..write('commonDosage: $commonDosage, ')
-          ..write('adverseEventsJson: $adverseEventsJson, ')
-          ..write('interactionsJson: $interactionsJson')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    id,
-    name,
-    nameLower,
-    type,
-    category,
-    mechanism,
-    commonDosage,
-    adverseEventsJson,
-    interactionsJson,
-  );
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is SubstanceDatabaseEntry &&
-          other.id == this.id &&
-          other.name == this.name &&
-          other.nameLower == this.nameLower &&
-          other.type == this.type &&
-          other.category == this.category &&
-          other.mechanism == this.mechanism &&
-          other.commonDosage == this.commonDosage &&
-          other.adverseEventsJson == this.adverseEventsJson &&
-          other.interactionsJson == this.interactionsJson);
-}
-
-class SubstanceDatabaseEntriesCompanion
-    extends UpdateCompanion<SubstanceDatabaseEntry> {
-  final Value<String> id;
-  final Value<String> name;
-  final Value<String> nameLower;
-  final Value<String> type;
-  final Value<String?> category;
-  final Value<String?> mechanism;
-  final Value<String?> commonDosage;
-  final Value<String> adverseEventsJson;
-  final Value<String> interactionsJson;
-  final Value<int> rowid;
-  const SubstanceDatabaseEntriesCompanion({
-    this.id = const Value.absent(),
-    this.name = const Value.absent(),
-    this.nameLower = const Value.absent(),
-    this.type = const Value.absent(),
-    this.category = const Value.absent(),
-    this.mechanism = const Value.absent(),
-    this.commonDosage = const Value.absent(),
-    this.adverseEventsJson = const Value.absent(),
-    this.interactionsJson = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  SubstanceDatabaseEntriesCompanion.insert({
-    required String id,
-    required String name,
-    required String nameLower,
-    required String type,
-    this.category = const Value.absent(),
-    this.mechanism = const Value.absent(),
-    this.commonDosage = const Value.absent(),
-    this.adverseEventsJson = const Value.absent(),
-    this.interactionsJson = const Value.absent(),
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       name = Value(name),
-       nameLower = Value(nameLower),
-       type = Value(type);
-  static Insertable<SubstanceDatabaseEntry> custom({
-    Expression<String>? id,
-    Expression<String>? name,
-    Expression<String>? nameLower,
-    Expression<String>? type,
-    Expression<String>? category,
-    Expression<String>? mechanism,
-    Expression<String>? commonDosage,
-    Expression<String>? adverseEventsJson,
-    Expression<String>? interactionsJson,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (name != null) 'name': name,
-      if (nameLower != null) 'name_lower': nameLower,
-      if (type != null) 'type': type,
-      if (category != null) 'category': category,
-      if (mechanism != null) 'mechanism': mechanism,
-      if (commonDosage != null) 'common_dosage': commonDosage,
-      if (adverseEventsJson != null) 'adverse_events_json': adverseEventsJson,
-      if (interactionsJson != null) 'interactions_json': interactionsJson,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  SubstanceDatabaseEntriesCompanion copyWith({
-    Value<String>? id,
-    Value<String>? name,
-    Value<String>? nameLower,
-    Value<String>? type,
-    Value<String?>? category,
-    Value<String?>? mechanism,
-    Value<String?>? commonDosage,
-    Value<String>? adverseEventsJson,
-    Value<String>? interactionsJson,
-    Value<int>? rowid,
-  }) {
-    return SubstanceDatabaseEntriesCompanion(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      nameLower: nameLower ?? this.nameLower,
-      type: type ?? this.type,
-      category: category ?? this.category,
-      mechanism: mechanism ?? this.mechanism,
-      commonDosage: commonDosage ?? this.commonDosage,
-      adverseEventsJson: adverseEventsJson ?? this.adverseEventsJson,
-      interactionsJson: interactionsJson ?? this.interactionsJson,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (nameLower.present) {
-      map['name_lower'] = Variable<String>(nameLower.value);
-    }
-    if (type.present) {
-      map['type'] = Variable<String>(type.value);
-    }
-    if (category.present) {
-      map['category'] = Variable<String>(category.value);
-    }
-    if (mechanism.present) {
-      map['mechanism'] = Variable<String>(mechanism.value);
-    }
-    if (commonDosage.present) {
-      map['common_dosage'] = Variable<String>(commonDosage.value);
-    }
-    if (adverseEventsJson.present) {
-      map['adverse_events_json'] = Variable<String>(adverseEventsJson.value);
-    }
-    if (interactionsJson.present) {
-      map['interactions_json'] = Variable<String>(interactionsJson.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('SubstanceDatabaseEntriesCompanion(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('nameLower: $nameLower, ')
-          ..write('type: $type, ')
-          ..write('category: $category, ')
-          ..write('mechanism: $mechanism, ')
-          ..write('commonDosage: $commonDosage, ')
-          ..write('adverseEventsJson: $adverseEventsJson, ')
-          ..write('interactionsJson: $interactionsJson, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $FoodProductsTable extends FoodProducts
     with TableInfo<$FoodProductsTable, FoodProduct> {
   @override
@@ -27467,6 +26892,15 @@ class $MapMarkersTable extends MapMarkers
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _osmIdMeta = const VerificationMeta('osmId');
+  @override
+  late final GeneratedColumn<String> osmId = GeneratedColumn<String>(
+    'osm_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -27481,6 +26915,7 @@ class $MapMarkersTable extends MapMarkers
     customFields,
     isHidden,
     createdAt,
+    osmId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -27576,6 +27011,12 @@ class $MapMarkersTable extends MapMarkers
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
+    if (data.containsKey('osm_id')) {
+      context.handle(
+        _osmIdMeta,
+        osmId.isAcceptableOrUnknown(data['osm_id']!, _osmIdMeta),
+      );
+    }
     return context;
   }
 
@@ -27633,6 +27074,10 @@ class $MapMarkersTable extends MapMarkers
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      osmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}osm_id'],
+      ),
     );
   }
 
@@ -27655,6 +27100,7 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
   final String customFields;
   final bool isHidden;
   final DateTime createdAt;
+  final String? osmId;
   const MapMarker({
     required this.id,
     required this.collectionId,
@@ -27668,6 +27114,7 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
     required this.customFields,
     required this.isHidden,
     required this.createdAt,
+    this.osmId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -27692,6 +27139,9 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
     map['custom_fields'] = Variable<String>(customFields);
     map['is_hidden'] = Variable<bool>(isHidden);
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || osmId != null) {
+      map['osm_id'] = Variable<String>(osmId);
+    }
     return map;
   }
 
@@ -27717,6 +27167,9 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
       customFields: Value(customFields),
       isHidden: Value(isHidden),
       createdAt: Value(createdAt),
+      osmId: osmId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(osmId),
     );
   }
 
@@ -27738,6 +27191,7 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
       customFields: serializer.fromJson<String>(json['customFields']),
       isHidden: serializer.fromJson<bool>(json['isHidden']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      osmId: serializer.fromJson<String?>(json['osmId']),
     );
   }
   @override
@@ -27756,6 +27210,7 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
       'customFields': serializer.toJson<String>(customFields),
       'isHidden': serializer.toJson<bool>(isHidden),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'osmId': serializer.toJson<String?>(osmId),
     };
   }
 
@@ -27772,6 +27227,7 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
     String? customFields,
     bool? isHidden,
     DateTime? createdAt,
+    Value<String?> osmId = const Value.absent(),
   }) => MapMarker(
     id: id ?? this.id,
     collectionId: collectionId ?? this.collectionId,
@@ -27785,6 +27241,7 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
     customFields: customFields ?? this.customFields,
     isHidden: isHidden ?? this.isHidden,
     createdAt: createdAt ?? this.createdAt,
+    osmId: osmId.present ? osmId.value : this.osmId,
   );
   MapMarker copyWithCompanion(MapMarkersCompanion data) {
     return MapMarker(
@@ -27806,6 +27263,7 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
           : this.customFields,
       isHidden: data.isHidden.present ? data.isHidden.value : this.isHidden,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      osmId: data.osmId.present ? data.osmId.value : this.osmId,
     );
   }
 
@@ -27823,7 +27281,8 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
           ..write('rating: $rating, ')
           ..write('customFields: $customFields, ')
           ..write('isHidden: $isHidden, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('osmId: $osmId')
           ..write(')'))
         .toString();
   }
@@ -27842,6 +27301,7 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
     customFields,
     isHidden,
     createdAt,
+    osmId,
   );
   @override
   bool operator ==(Object other) =>
@@ -27858,7 +27318,8 @@ class MapMarker extends DataClass implements Insertable<MapMarker> {
           other.rating == this.rating &&
           other.customFields == this.customFields &&
           other.isHidden == this.isHidden &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.osmId == this.osmId);
 }
 
 class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
@@ -27874,6 +27335,7 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
   final Value<String> customFields;
   final Value<bool> isHidden;
   final Value<DateTime> createdAt;
+  final Value<String?> osmId;
   const MapMarkersCompanion({
     this.id = const Value.absent(),
     this.collectionId = const Value.absent(),
@@ -27887,6 +27349,7 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
     this.customFields = const Value.absent(),
     this.isHidden = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.osmId = const Value.absent(),
   });
   MapMarkersCompanion.insert({
     this.id = const Value.absent(),
@@ -27901,6 +27364,7 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
     this.customFields = const Value.absent(),
     this.isHidden = const Value.absent(),
     required DateTime createdAt,
+    this.osmId = const Value.absent(),
   }) : collectionId = Value(collectionId),
        createdAt = Value(createdAt);
   static Insertable<MapMarker> custom({
@@ -27916,6 +27380,7 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
     Expression<String>? customFields,
     Expression<bool>? isHidden,
     Expression<DateTime>? createdAt,
+    Expression<String>? osmId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -27930,6 +27395,7 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
       if (customFields != null) 'custom_fields': customFields,
       if (isHidden != null) 'is_hidden': isHidden,
       if (createdAt != null) 'created_at': createdAt,
+      if (osmId != null) 'osm_id': osmId,
     });
   }
 
@@ -27946,6 +27412,7 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
     Value<String>? customFields,
     Value<bool>? isHidden,
     Value<DateTime>? createdAt,
+    Value<String?>? osmId,
   }) {
     return MapMarkersCompanion(
       id: id ?? this.id,
@@ -27960,6 +27427,7 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
       customFields: customFields ?? this.customFields,
       isHidden: isHidden ?? this.isHidden,
       createdAt: createdAt ?? this.createdAt,
+      osmId: osmId ?? this.osmId,
     );
   }
 
@@ -28002,6 +27470,9 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (osmId.present) {
+      map['osm_id'] = Variable<String>(osmId.value);
+    }
     return map;
   }
 
@@ -28019,7 +27490,8 @@ class MapMarkersCompanion extends UpdateCompanion<MapMarker> {
           ..write('rating: $rating, ')
           ..write('customFields: $customFields, ')
           ..write('isHidden: $isHidden, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('osmId: $osmId')
           ..write(')'))
         .toString();
   }
@@ -28703,8 +28175,6 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   late final $SubstanceIntakeLogsTable substanceIntakeLogs =
       $SubstanceIntakeLogsTable(this);
   late final $DiaryEntriesTable diaryEntries = $DiaryEntriesTable(this);
-  late final $SubstanceDatabaseEntriesTable substanceDatabaseEntries =
-      $SubstanceDatabaseEntriesTable(this);
   late final $FoodProductsTable foodProducts = $FoodProductsTable(this);
   late final $MealEntriesTable mealEntries = $MealEntriesTable(this);
   late final $MealTemplateItemsTable mealTemplateItems =
@@ -28735,9 +28205,6 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
     this as TraumDatabase,
   );
   late final MealEntriesDao mealEntriesDao = MealEntriesDao(
-    this as TraumDatabase,
-  );
-  late final SubstanceDatabaseDao substanceDatabaseDao = SubstanceDatabaseDao(
     this as TraumDatabase,
   );
   late final NotesDao notesDao = NotesDao(this as TraumDatabase);
@@ -28798,7 +28265,6 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
     substanceCaches,
     substanceIntakeLogs,
     diaryEntries,
-    substanceDatabaseEntries,
     foodProducts,
     mealEntries,
     mealTemplateItems,
@@ -42548,307 +42014,6 @@ typedef $$DiaryEntriesTableProcessedTableManager =
       DiaryEntry,
       PrefetchHooks Function()
     >;
-typedef $$SubstanceDatabaseEntriesTableCreateCompanionBuilder =
-    SubstanceDatabaseEntriesCompanion Function({
-      required String id,
-      required String name,
-      required String nameLower,
-      required String type,
-      Value<String?> category,
-      Value<String?> mechanism,
-      Value<String?> commonDosage,
-      Value<String> adverseEventsJson,
-      Value<String> interactionsJson,
-      Value<int> rowid,
-    });
-typedef $$SubstanceDatabaseEntriesTableUpdateCompanionBuilder =
-    SubstanceDatabaseEntriesCompanion Function({
-      Value<String> id,
-      Value<String> name,
-      Value<String> nameLower,
-      Value<String> type,
-      Value<String?> category,
-      Value<String?> mechanism,
-      Value<String?> commonDosage,
-      Value<String> adverseEventsJson,
-      Value<String> interactionsJson,
-      Value<int> rowid,
-    });
-
-class $$SubstanceDatabaseEntriesTableFilterComposer
-    extends Composer<_$TraumDatabase, $SubstanceDatabaseEntriesTable> {
-  $$SubstanceDatabaseEntriesTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get nameLower => $composableBuilder(
-    column: $table.nameLower,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get type => $composableBuilder(
-    column: $table.type,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get category => $composableBuilder(
-    column: $table.category,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get mechanism => $composableBuilder(
-    column: $table.mechanism,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get commonDosage => $composableBuilder(
-    column: $table.commonDosage,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get adverseEventsJson => $composableBuilder(
-    column: $table.adverseEventsJson,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get interactionsJson => $composableBuilder(
-    column: $table.interactionsJson,
-    builder: (column) => ColumnFilters(column),
-  );
-}
-
-class $$SubstanceDatabaseEntriesTableOrderingComposer
-    extends Composer<_$TraumDatabase, $SubstanceDatabaseEntriesTable> {
-  $$SubstanceDatabaseEntriesTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get nameLower => $composableBuilder(
-    column: $table.nameLower,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get type => $composableBuilder(
-    column: $table.type,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get category => $composableBuilder(
-    column: $table.category,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get mechanism => $composableBuilder(
-    column: $table.mechanism,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get commonDosage => $composableBuilder(
-    column: $table.commonDosage,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get adverseEventsJson => $composableBuilder(
-    column: $table.adverseEventsJson,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get interactionsJson => $composableBuilder(
-    column: $table.interactionsJson,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$SubstanceDatabaseEntriesTableAnnotationComposer
-    extends Composer<_$TraumDatabase, $SubstanceDatabaseEntriesTable> {
-  $$SubstanceDatabaseEntriesTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get nameLower =>
-      $composableBuilder(column: $table.nameLower, builder: (column) => column);
-
-  GeneratedColumn<String> get type =>
-      $composableBuilder(column: $table.type, builder: (column) => column);
-
-  GeneratedColumn<String> get category =>
-      $composableBuilder(column: $table.category, builder: (column) => column);
-
-  GeneratedColumn<String> get mechanism =>
-      $composableBuilder(column: $table.mechanism, builder: (column) => column);
-
-  GeneratedColumn<String> get commonDosage => $composableBuilder(
-    column: $table.commonDosage,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get adverseEventsJson => $composableBuilder(
-    column: $table.adverseEventsJson,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get interactionsJson => $composableBuilder(
-    column: $table.interactionsJson,
-    builder: (column) => column,
-  );
-}
-
-class $$SubstanceDatabaseEntriesTableTableManager
-    extends
-        RootTableManager<
-          _$TraumDatabase,
-          $SubstanceDatabaseEntriesTable,
-          SubstanceDatabaseEntry,
-          $$SubstanceDatabaseEntriesTableFilterComposer,
-          $$SubstanceDatabaseEntriesTableOrderingComposer,
-          $$SubstanceDatabaseEntriesTableAnnotationComposer,
-          $$SubstanceDatabaseEntriesTableCreateCompanionBuilder,
-          $$SubstanceDatabaseEntriesTableUpdateCompanionBuilder,
-          (
-            SubstanceDatabaseEntry,
-            BaseReferences<
-              _$TraumDatabase,
-              $SubstanceDatabaseEntriesTable,
-              SubstanceDatabaseEntry
-            >,
-          ),
-          SubstanceDatabaseEntry,
-          PrefetchHooks Function()
-        > {
-  $$SubstanceDatabaseEntriesTableTableManager(
-    _$TraumDatabase db,
-    $SubstanceDatabaseEntriesTable table,
-  ) : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$SubstanceDatabaseEntriesTableFilterComposer(
-                $db: db,
-                $table: table,
-              ),
-          createOrderingComposer: () =>
-              $$SubstanceDatabaseEntriesTableOrderingComposer(
-                $db: db,
-                $table: table,
-              ),
-          createComputedFieldComposer: () =>
-              $$SubstanceDatabaseEntriesTableAnnotationComposer(
-                $db: db,
-                $table: table,
-              ),
-          updateCompanionCallback:
-              ({
-                Value<String> id = const Value.absent(),
-                Value<String> name = const Value.absent(),
-                Value<String> nameLower = const Value.absent(),
-                Value<String> type = const Value.absent(),
-                Value<String?> category = const Value.absent(),
-                Value<String?> mechanism = const Value.absent(),
-                Value<String?> commonDosage = const Value.absent(),
-                Value<String> adverseEventsJson = const Value.absent(),
-                Value<String> interactionsJson = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => SubstanceDatabaseEntriesCompanion(
-                id: id,
-                name: name,
-                nameLower: nameLower,
-                type: type,
-                category: category,
-                mechanism: mechanism,
-                commonDosage: commonDosage,
-                adverseEventsJson: adverseEventsJson,
-                interactionsJson: interactionsJson,
-                rowid: rowid,
-              ),
-          createCompanionCallback:
-              ({
-                required String id,
-                required String name,
-                required String nameLower,
-                required String type,
-                Value<String?> category = const Value.absent(),
-                Value<String?> mechanism = const Value.absent(),
-                Value<String?> commonDosage = const Value.absent(),
-                Value<String> adverseEventsJson = const Value.absent(),
-                Value<String> interactionsJson = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => SubstanceDatabaseEntriesCompanion.insert(
-                id: id,
-                name: name,
-                nameLower: nameLower,
-                type: type,
-                category: category,
-                mechanism: mechanism,
-                commonDosage: commonDosage,
-                adverseEventsJson: adverseEventsJson,
-                interactionsJson: interactionsJson,
-                rowid: rowid,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ),
-      );
-}
-
-typedef $$SubstanceDatabaseEntriesTableProcessedTableManager =
-    ProcessedTableManager<
-      _$TraumDatabase,
-      $SubstanceDatabaseEntriesTable,
-      SubstanceDatabaseEntry,
-      $$SubstanceDatabaseEntriesTableFilterComposer,
-      $$SubstanceDatabaseEntriesTableOrderingComposer,
-      $$SubstanceDatabaseEntriesTableAnnotationComposer,
-      $$SubstanceDatabaseEntriesTableCreateCompanionBuilder,
-      $$SubstanceDatabaseEntriesTableUpdateCompanionBuilder,
-      (
-        SubstanceDatabaseEntry,
-        BaseReferences<
-          _$TraumDatabase,
-          $SubstanceDatabaseEntriesTable,
-          SubstanceDatabaseEntry
-        >,
-      ),
-      SubstanceDatabaseEntry,
-      PrefetchHooks Function()
-    >;
 typedef $$FoodProductsTableCreateCompanionBuilder =
     FoodProductsCompanion Function({
       Value<int> id,
@@ -45688,6 +44853,7 @@ typedef $$MapMarkersTableCreateCompanionBuilder =
       Value<String> customFields,
       Value<bool> isHidden,
       required DateTime createdAt,
+      Value<String?> osmId,
     });
 typedef $$MapMarkersTableUpdateCompanionBuilder =
     MapMarkersCompanion Function({
@@ -45703,6 +44869,7 @@ typedef $$MapMarkersTableUpdateCompanionBuilder =
       Value<String> customFields,
       Value<bool> isHidden,
       Value<DateTime> createdAt,
+      Value<String?> osmId,
     });
 
 final class $$MapMarkersTableReferences
@@ -45808,6 +44975,11 @@ class $$MapMarkersTableFilterComposer
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get osmId => $composableBuilder(
+    column: $table.osmId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -45924,6 +45096,11 @@ class $$MapMarkersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get osmId => $composableBuilder(
+    column: $table.osmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$MapCollectionsTableOrderingComposer get collectionId {
     final $$MapCollectionsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -45993,6 +45170,9 @@ class $$MapMarkersTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get osmId =>
+      $composableBuilder(column: $table.osmId, builder: (column) => column);
 
   $$MapCollectionsTableAnnotationComposer get collectionId {
     final $$MapCollectionsTableAnnotationComposer composer = $composerBuilder(
@@ -46083,6 +45263,7 @@ class $$MapMarkersTableTableManager
                 Value<String> customFields = const Value.absent(),
                 Value<bool> isHidden = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> osmId = const Value.absent(),
               }) => MapMarkersCompanion(
                 id: id,
                 collectionId: collectionId,
@@ -46096,6 +45277,7 @@ class $$MapMarkersTableTableManager
                 customFields: customFields,
                 isHidden: isHidden,
                 createdAt: createdAt,
+                osmId: osmId,
               ),
           createCompanionCallback:
               ({
@@ -46111,6 +45293,7 @@ class $$MapMarkersTableTableManager
                 Value<String> customFields = const Value.absent(),
                 Value<bool> isHidden = const Value.absent(),
                 required DateTime createdAt,
+                Value<String?> osmId = const Value.absent(),
               }) => MapMarkersCompanion.insert(
                 id: id,
                 collectionId: collectionId,
@@ -46124,6 +45307,7 @@ class $$MapMarkersTableTableManager
                 customFields: customFields,
                 isHidden: isHidden,
                 createdAt: createdAt,
+                osmId: osmId,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -46722,11 +45906,6 @@ class $TraumDatabaseManager {
       $$SubstanceIntakeLogsTableTableManager(_db, _db.substanceIntakeLogs);
   $$DiaryEntriesTableTableManager get diaryEntries =>
       $$DiaryEntriesTableTableManager(_db, _db.diaryEntries);
-  $$SubstanceDatabaseEntriesTableTableManager get substanceDatabaseEntries =>
-      $$SubstanceDatabaseEntriesTableTableManager(
-        _db,
-        _db.substanceDatabaseEntries,
-      );
   $$FoodProductsTableTableManager get foodProducts =>
       $$FoodProductsTableTableManager(_db, _db.foodProducts);
   $$MealEntriesTableTableManager get mealEntries =>

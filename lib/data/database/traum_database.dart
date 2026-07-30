@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
@@ -15,7 +16,6 @@ import 'tables/budget_tables.dart';
 import 'tables/period_tables.dart';
 import 'tables/substance_tables.dart';
 import 'tables/diary_tables.dart';
-import 'tables/substance_database_table.dart';
 import 'tables/notes_tables.dart';
 import 'tables/graffiti_map_tables.dart';
 
@@ -33,7 +33,6 @@ import 'daos/substance_dao.dart';
 import 'daos/diary_dao.dart';
 import 'daos/food_products_dao.dart';
 import 'daos/meal_entries_dao.dart';
-import 'daos/substance_database_dao.dart';
 import 'daos/notes_dao.dart';
 import 'daos/map_collections_dao.dart';
 import 'daos/map_markers_dao.dart';
@@ -51,7 +50,6 @@ export 'tables/budget_tables.dart';
 export 'tables/period_tables.dart';
 export 'tables/substance_tables.dart';
 export 'tables/diary_tables.dart';
-export 'tables/substance_database_table.dart';
 export 'tables/notes_tables.dart';
 export 'tables/graffiti_map_tables.dart';
 
@@ -70,7 +68,6 @@ export 'daos/substance_dao.dart';
 export 'daos/diary_dao.dart';
 export 'daos/food_products_dao.dart';
 export 'daos/meal_entries_dao.dart';
-export 'daos/substance_database_dao.dart';
 export 'daos/notes_dao.dart';
 export 'daos/map_collections_dao.dart';
 export 'daos/map_markers_dao.dart';
@@ -138,8 +135,6 @@ part 'traum_database.g.dart';
     SubstanceIntakeLogs,
     // Diary (1)
     DiaryEntries,
-    // Substance offline database (1)
-    SubstanceDatabaseEntries,
     // Nutrition Extended (4)
     FoodProducts,
     MealEntries,
@@ -172,7 +167,6 @@ part 'traum_database.g.dart';
     DiaryDao,
     FoodProductsDao,
     MealEntriesDao,
-    SubstanceDatabaseDao,
     NotesDao,
     MapCollectionsDao,
     MapMarkersDao,
@@ -196,9 +190,6 @@ class TraumDatabase extends _$TraumDatabase {
   MealEntriesDao get mealEntriesDao => MealEntriesDao(this);
 
   @override
-  SubstanceDatabaseDao get substanceDatabaseDao => SubstanceDatabaseDao(this);
-
-  @override
   NotesDao get notesDao => NotesDao(this);
 
   @override
@@ -211,7 +202,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 22;
+  int get schemaVersion => 24;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -269,9 +260,10 @@ class TraumDatabase extends _$TraumDatabase {
         // Seed updatedAt from createdAt so existing rows have a meaningful timestamp
         await customStatement('UPDATE appointments SET updated_at = created_at');
       }
-      if (from < 10) {
-        await migrator.createTable(substanceDatabaseEntries);
-      }
+      // v10 created substance_database_entries here; that table (and the
+      // legacy offline Substanz-DB it backed) is fully retired as of v23
+      // (see `if (from < 23)` below), so there is nothing left to create
+      // for installs upgrading through this step.
       if (from < 11) {
         await migrator.createTable(notes);
         await migrator.createTable(noteFolders);
@@ -372,6 +364,100 @@ class TraumDatabase extends _$TraumDatabase {
       }
       if (from < 22) {
         await migrator.addColumn(workoutPlans, workoutPlans.planType);
+      }
+      if (from < 23) {
+        // Alte Substanz-Offline-DB (SubstanceDatabaseEntries) ist durch die
+        // neue Referenz-DB (assets/substances_reference.sqlite3, separate
+        // sqlite3-Verbindung außerhalb von Drift) vollständig ersetzt.
+        await migrator.deleteTable('substance_database_entries');
+      }
+      if (from < 24) {
+        // Idempotent statt einmaligem ALTER TABLE: falls ein vorheriger
+        // Migrationsversuch nach dem Hinzufügen der Spalte aus einem anderen
+        // Grund abgebrochen ist (z.B. an einem inzwischen gefixten Bug weiter
+        // unten in diesem Block), würde ein erneutes addColumn beim nächsten
+        // App-Start mit "duplicate column name" abstürzen — und die App bliebe
+        // dauerhaft unstartbar. Spaltenexistenz vorher prüfen macht diesen
+        // Schritt sicher wiederholbar.
+        final hasOsmId = await customSelect(
+          "SELECT COUNT(*) AS c FROM pragma_table_info('map_markers') WHERE name = 'osm_id'",
+        ).getSingle();
+        if (hasOsmId.read<int>('c') == 0) {
+          await migrator.addColumn(mapMarkers, mapMarkers.osmId);
+        }
+        await customStatement(
+          'CREATE UNIQUE INDEX IF NOT EXISTS idx_map_markers_osm_id '
+          'ON map_markers (osm_id) WHERE osm_id IS NOT NULL',
+        );
+
+        // Bestehende Türme-Collections (aus MapCollectionSeeder, fields: []
+        // zum Seed-Zeitpunkt) bekommen die 3 neuen Tower-Felder nachträglich
+        // in field_config gemerged — NICHT überschrieben, damit vom User über
+        // "Feld hinzufügen" selbst ergänzte Custom-Felder erhalten bleiben.
+        // Die Feld-JSONs sind hier bewusst als Literal dupliziert (nicht aus
+        // PredefinedFields importiert): Migrationen bleiben unabhängig von
+        // künftigen Änderungen an Feature-Code.
+        const newTowerFields = [
+          {
+            'key': 'towerType',
+            'label': 'Turmtyp',
+            'type': 'select',
+            'iconName': 'cell_tower',
+            'options': [
+              {'value': 'Funkmast', 'colorHex': '00D4D4'},
+              {'value': 'Sendemast', 'colorHex': '5B6CF9'},
+              {'value': 'Sonstige', 'colorHex': '8888AA'},
+            ],
+          },
+          {
+            'key': 'towerHeight',
+            'label': 'Höhe (m)',
+            'type': 'text',
+            'iconName': 'height',
+            'options': [],
+          },
+          {
+            'key': 'towerOperator',
+            'label': 'Betreiber',
+            'type': 'text',
+            'iconName': 'business',
+            'options': [],
+          },
+        ];
+        final rows = await customSelect(
+          "SELECT id, field_config FROM map_collections WHERE icon_name = 'tower'",
+        ).get();
+        for (final row in rows) {
+          final id = row.read<int>('id');
+          // Defensiv: reale Bestandsdaten können von der beim Schreiben dieser
+          // Migration angenommenen Form abweichen (fehlendes/kaputtes JSON,
+          // fehlender oder falsch typisierter 'fields'-Key, Nicht-Map-Einträge).
+          // Eine Migration darf hierbei niemals werfen — sonst startet die App
+          // für den betroffenen Nutzer nie wieder.
+          Map<String, dynamic> cfg;
+          try {
+            final decoded = jsonDecode(row.read<String>('field_config'));
+            cfg = decoded is Map<String, dynamic> ? decoded : <String, dynamic>{};
+          } catch (_) {
+            cfg = <String, dynamic>{};
+          }
+          final rawFields = cfg['fields'];
+          final fields = rawFields is List
+              ? rawFields
+                  .whereType<Map>()
+                  .map((m) => Map<String, dynamic>.from(m))
+                  .toList()
+              : <Map<String, dynamic>>[];
+          final existingKeys = fields.map((f) => f['key']).toSet();
+          for (final f in newTowerFields) {
+            if (!existingKeys.contains(f['key'])) fields.add(f);
+          }
+          cfg['fields'] = fields;
+          await customStatement(
+            'UPDATE map_collections SET field_config = ? WHERE id = ?',
+            [jsonEncode(cfg), id],
+          );
+        }
       }
     },
   );

@@ -268,6 +268,156 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knownInteractions => 'Known interactions';
 
   @override
+  String get substancesTabMyMeds => 'My Meds';
+
+  @override
+  String get substancesTabDatabase => 'Database';
+
+  @override
+  String get substancesDisclaimerTitle => 'Before you begin';
+
+  @override
+  String get substancesDisclaimerAccept => 'I understand';
+
+  @override
+  String get substanceFilterAll => 'All';
+
+  @override
+  String get substanceFilterPflanzlich => 'Herbal';
+
+  @override
+  String get substanceKlasseMed => 'MED';
+
+  @override
+  String get substanceKlasseSupp => 'SUPP';
+
+  @override
+  String get substancePflanzlich => 'herbal';
+
+  @override
+  String get substanceStatusVollstaendig => 'complete';
+
+  @override
+  String get substanceStatusTeilweise => 'partial';
+
+  @override
+  String get substanceStatusNurChemie => 'chemistry only';
+
+  @override
+  String get substanceSectionEffekt => 'Effect';
+
+  @override
+  String get substanceSectionWechselwirkungen => 'Interactions';
+
+  @override
+  String get substanceSectionDosierung => 'Dosage';
+
+  @override
+  String get substanceSectionChemie => 'Chemistry';
+
+  @override
+  String get substanceSectionTopNebenwirkungen => 'Most common side effects';
+
+  @override
+  String get substanceFieldBeschreibung => 'Description';
+
+  @override
+  String get substanceFieldEffekt => 'Effect / What it\'s for';
+
+  @override
+  String get substanceFieldIndikation => 'Indication';
+
+  @override
+  String get substanceFieldWarnungen => 'Warnings';
+
+  @override
+  String get substanceFieldKontraindikationen => 'Contraindications';
+
+  @override
+  String get substanceFieldSpeziellePopulationen => 'Special populations';
+
+  @override
+  String get substanceDosisErwachsene => 'Adults';
+
+  @override
+  String get substanceDosisKinder => 'Children';
+
+  @override
+  String get substanceDosisSenioren => 'Seniors';
+
+  @override
+  String get substanceDosisSchwangerschaft => 'Pregnancy/Nursing';
+
+  @override
+  String get substanceChemieSummenformel => 'Molecular formula';
+
+  @override
+  String get substanceChemieMolekulargewicht => 'Molecular weight';
+
+  @override
+  String get substanceKeineAngabe => 'not available';
+
+  @override
+  String get substanceWikipediaAttribution =>
+      'Contains material from Wikipedia/Wikidata, licensed under CC BY-SA.';
+
+  @override
+  String get substanceAddToMyMeds => 'Add to My Meds';
+
+  @override
+  String get substanceAddedToMyMeds => 'Added to My Meds';
+
+  @override
+  String get substanceAddedShow => 'Show';
+
+  @override
+  String get settingsSubstanceDbInfo => 'Substance database';
+
+  @override
+  String get substanceTypeMed => 'Medication';
+
+  @override
+  String get substanceTypeSupp => 'Supplement';
+
+  @override
+  String get substanceLogIntake => 'Log intake';
+
+  @override
+  String get substanceDeactivate => 'Deactivate';
+
+  @override
+  String get substanceDelete => 'Delete';
+
+  @override
+  String get substanceConfirmDeleteTitle => 'Really delete?';
+
+  @override
+  String substanceConfirmDeleteBody(String name) {
+    return '$name will be permanently removed.';
+  }
+
+  @override
+  String get substanceSaving => 'Saving…';
+
+  @override
+  String get substanceLogIntakeAction => 'Log';
+
+  @override
+  String get substanceHintVitaminD3 => 'e.g. Vitamin D3';
+
+  @override
+  String get substanceHintIbuprofen => 'e.g. Ibuprofen 400mg';
+
+  @override
+  String get substanceHintDosageExample => 'e.g. 400 mg';
+
+  @override
+  String get substanceLabelSubstance => 'Substance';
+
+  @override
+  String get substanceLabelDosis => 'Dose';
+
+  @override
   String get productNotFound => 'Product not found';
 
   @override

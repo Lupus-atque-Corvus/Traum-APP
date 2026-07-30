@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
-import '../../data/models/substance_info.dart';
+import '../../data/models/substance_record.dart';
 import '../../l10n/app_localizations.dart';
 import '../nutrition/micro_nutrients.dart';
 
@@ -19,7 +20,6 @@ class MySubstancesTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final suppsAsync = ref.watch(supplementsStreamProvider);
     final medsAsync = ref.watch(allMedicationsStreamProvider);
-    final alertsAsync = ref.watch(interactionAlertsProvider);
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final logsAsync = ref.watch(medicationLogsForDateProvider(today));
@@ -34,14 +34,6 @@ class MySubstancesTab extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          alertsAsync.when(
-            data: (alerts) => alerts.isEmpty
-                ? const SizedBox.shrink()
-                : _InteractionBanner(alerts: alerts),
-            loading: () => const SizedBox.shrink(),
-            error: (_, _) => const SizedBox.shrink(),
-          ),
-          const SizedBox(height: 8),
           medsAsync.when(
             data: (meds) => logsAsync.when(
               data: (logs) => _TodayStatusCard(meds: meds, logs: logs),
@@ -128,7 +120,7 @@ class MySubstancesTab extends ConsumerWidget {
             Expanded(
               child: _TypeButton(
                 icon: Icons.medication_rounded,
-                label: 'Medikament',
+                label: AppLocalizations.of(context)!.substanceTypeMed,
                 color: TraumColors.roseRed,
                 dimColor: TraumColors.roseRedDim,
                 onTap: () {
@@ -141,7 +133,7 @@ class MySubstancesTab extends ConsumerWidget {
             Expanded(
               child: _TypeButton(
                 icon: Icons.science_rounded,
-                label: 'Supplement',
+                label: AppLocalizations.of(context)!.substanceTypeSupp,
                 color: TraumColors.indigoBlue,
                 dimColor: TraumColors.indigoBlueDim,
                 onTap: () {
@@ -156,7 +148,7 @@ class MySubstancesTab extends ConsumerWidget {
             width: double.infinity,
             child: _TypeButton(
               icon: Icons.event_available_rounded,
-              label: 'Konsum erfassen',
+              label: AppLocalizations.of(context)!.substanceLogIntake,
               color: TraumColors.coralOrange,
               dimColor: TraumColors.coralDim,
               onTap: () {
@@ -231,91 +223,93 @@ class MySubstancesTab extends ConsumerWidget {
   }
 }
 
-class _InteractionBanner extends StatelessWidget {
-  final List<InteractionAlert> alerts;
-  const _InteractionBanner({required this.alerts});
+/// Öffnet den Medikament-Add-Sheet, vorbefüllt mit Name/Dosierung — für den
+/// Cross-Tab-Einstieg aus der Substanz-Datenbank (siehe `substance_add_flow.dart`).
+/// Top-level (nicht Member von [MySubstancesTab]), damit andere Dateien den
+/// Sheet öffnen können, ohne eine `MySubstancesTab`-Instanz zu benötigen.
+void showAddMedSheetFor(
+  BuildContext context,
+  WidgetRef ref, {
+  String? initialName,
+  String? initialDosage,
+  void Function(BuildContext)? onAdded,
+}) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: TraumColors.surfaceElevated,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
+    builder: (ctx) => _AddMedSheet(
+      initialName: initialName,
+      initialDosage: initialDosage,
+      onAdd: (companion) async {
+        // Uses ctx's own ProviderScope, not the caller's `ref` — the caller
+        // (substance_detail_sheet.dart) pops itself before opening this
+        // sheet, so its `ref` is unmounted by the time the user hits Save.
+        final container = ProviderScope.containerOf(ctx, listen: false);
+        final l10n = AppLocalizations.of(ctx)!;
+        await container.read(medicationDaoProvider).insertMedication(companion);
+        final timesJson = companion.timings.value;
+        if (timesJson != '[]') {
+          try {
+            final times = (jsonDecode(timesJson) as List).cast<String>();
+            for (int i = 0; i < times.length; i++) {
+              final parts = times[i].split(':');
+              await NotificationService.scheduleDailyAt(
+                id: 100 + i,
+                title: companion.name.value,
+                body: l10n.timeForMedication(companion.name.value),
+                hour: int.parse(parts[0]),
+                minute: int.parse(parts[1]),
+                channelId: 'medication',
+              );
+            }
+          } catch (_) {}
+        }
+        // Pass the sheet's own (still-mounted) ctx — the caller's context
+        // was already popped before this sheet opened.
+        if (ctx.mounted) onAdded?.call(ctx);
+      },
+    ),
+  );
+}
 
-  @override
-  Widget build(BuildContext context) {
-    final hasM = alerts.any((a) => a.severity == 'major');
-    final color = hasM ? TraumColors.roseRed : TraumColors.coralOrange;
-    return GestureDetector(
-      onTap: () => _showAlerts(context),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(TraumRadius.card),
-          border: Border.all(color: color.withValues(alpha: 0.4)),
-        ),
-        child: Row(children: [
-          Icon(Icons.warning_rounded, color: color, size: 20),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              '${alerts.length} Interaktion${alerts.length == 1 ? '' : 'en'} erkannt — Tippe für Details',
-              style: TextStyle(color: color, fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w600, fontSize: 13),
-            ),
-          ),
-          Icon(Icons.chevron_right_rounded, color: color, size: 18),
-        ]),
-      ),
-    );
-  }
-
-  void _showAlerts(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: TraumColors.surfaceElevated,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
-      builder: (_) => Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Center(child: Container(width: 40, height: 4,
-              decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle,
-                  borderRadius: BorderRadius.circular(2)))),
-          const SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.interactions,
-              style: TextStyle(color: TraumColors.onBackground,
-                  fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 16)),
-          const SizedBox(height: 16),
-          ...alerts.map((a) {
-            final color = a.severity == 'major' ? TraumColors.roseRed : TraumColors.coralOrange;
-            return Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(TraumRadius.chip),
-                border: Border.all(color: color.withValues(alpha: 0.3)),
-              ),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(children: [
-                  Icon(Icons.warning_rounded, size: 14, color: color),
-                  const SizedBox(width: 6),
-                  Text('${a.substanceAName} + ${a.substanceBName}',
-                      style: TextStyle(color: color, fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w700, fontSize: 13)),
-                  const Spacer(),
-                  Text(a.severity.toUpperCase(),
-                      style: TextStyle(color: color, fontFamily: 'DMSans',
-                          fontSize: 10, fontWeight: FontWeight.w700)),
-                ]),
-                const SizedBox(height: 4),
-                Text(a.description,
-                    style: const TextStyle(color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans', fontSize: 12, height: 1.4)),
-              ]),
-            );
-          }),
-          const SizedBox(height: 8),
-        ]),
-      ),
-    );
-  }
+/// Öffnet den Supplement-Add-Sheet, vorbefüllt mit Name/Kategorie — Pendant zu
+/// [showAddMedSheetFor] für Supplemente.
+void showAddSuppSheetFor(
+  BuildContext context,
+  WidgetRef ref, {
+  String? initialName,
+  String? initialCategory,
+  String? initialAmount,
+  String? initialUnit,
+  void Function(BuildContext)? onAdded,
+}) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: TraumColors.surfaceElevated,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
+    builder: (ctx) => _AddSuppSheet(
+      initialName: initialName,
+      initialCategory: initialCategory,
+      initialAmount: initialAmount,
+      initialUnit: initialUnit,
+      onAdd: (c) async {
+        // Uses ctx's own ProviderScope, not the caller's `ref` — the caller
+        // (substance_detail_sheet.dart) pops itself before opening this
+        // sheet, so its `ref` is unmounted by the time the user hits Save.
+        await ProviderScope.containerOf(ctx, listen: false)
+            .read(supplementDaoProvider)
+            .insertSupplement(c);
+        // Pass the sheet's own (still-mounted) ctx — the caller's context
+        // was already popped before this sheet opened.
+        if (ctx.mounted) onAdded?.call(ctx);
+      },
+    ),
+  );
 }
 
 class _TodayStatusCard extends ConsumerWidget {
@@ -398,11 +392,8 @@ class _SuppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: ValueKey('supp_${supp.id}'),
-      direction: DismissDirection.endToStart,
-      background: _deleteBg(),
-      onDismissed: (_) => onDelete(),
+    return GestureDetector(
+      onLongPress: () => _showContextMenu(context),
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
@@ -433,6 +424,54 @@ class _SuppCard extends StatelessWidget {
       ),
     );
   }
+
+  void _showContextMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: TraumColors.surfaceElevated,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
+      builder: (_) => SafeArea(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          const SizedBox(height: 12),
+          ListTile(
+            leading: const Icon(Icons.pause_circle_outline_rounded, color: TraumColors.amberGold),
+            title: Text(AppLocalizations.of(context)!.substanceDeactivate,
+                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+            onTap: () {
+              Navigator.pop(context);
+              onToggle?.call(!supp.isActive);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
+            title: Text(AppLocalizations.of(context)!.substanceDelete,
+                style: const TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
+            onTap: () async {
+              final l10n = AppLocalizations.of(context)!;
+              Navigator.pop(context);
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  backgroundColor: TraumColors.surfaceElevated,
+                  title: Text(l10n.substanceConfirmDeleteTitle,
+                      style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+                  content: Text(l10n.substanceConfirmDeleteBody(supp.name),
+                      style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.cancel)),
+                    TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l10n.substanceDelete)),
+                  ],
+                ),
+              );
+              if (confirmed == true) onDelete();
+            },
+          ),
+          const SizedBox(height: 8),
+        ]),
+      ),
+    );
+  }
 }
 
 class _MedCard extends StatelessWidget {
@@ -444,11 +483,8 @@ class _MedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final times = _parseTimes(med.timings);
-    return Dismissible(
-      key: ValueKey('med_${med.id}'),
-      direction: DismissDirection.endToStart,
-      background: _deleteBg(),
-      onDismissed: (_) => onDelete(),
+    return GestureDetector(
+      onLongPress: () => _showContextMenu(context),
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
@@ -475,20 +511,17 @@ class _MedCard extends StatelessWidget {
                   style: const TextStyle(color: TraumColors.onBackgroundSubtle,
                       fontFamily: 'DMSans', fontSize: 11)),
           ]),
-          trailing: GestureDetector(
-            onTap: onToggle == null ? null : () => onToggle!(!med.isActive),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: med.isActive ? TraumColors.mintGreenDim : TraumColors.surfaceVariant,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                med.isActive ? 'Aktiv' : 'Inaktiv',
-                style: TextStyle(
-                  color: med.isActive ? TraumColors.mintGreen : TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans', fontSize: 11, fontWeight: FontWeight.w600,
-                ),
+          trailing: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: med.isActive ? TraumColors.mintGreenDim : TraumColors.surfaceVariant,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              med.isActive ? 'Aktiv' : 'Inaktiv',
+              style: TextStyle(
+                color: med.isActive ? TraumColors.mintGreen : TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans', fontSize: 11, fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -497,20 +530,58 @@ class _MedCard extends StatelessWidget {
     );
   }
 
+  void _showContextMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: TraumColors.surfaceElevated,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
+      builder: (_) => SafeArea(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          const SizedBox(height: 12),
+          ListTile(
+            leading: const Icon(Icons.pause_circle_outline_rounded, color: TraumColors.amberGold),
+            title: Text(AppLocalizations.of(context)!.substanceDeactivate,
+                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+            onTap: () {
+              Navigator.pop(context);
+              onToggle?.call(!med.isActive);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
+            title: Text(AppLocalizations.of(context)!.substanceDelete,
+                style: const TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
+            onTap: () async {
+              final l10n = AppLocalizations.of(context)!;
+              Navigator.pop(context);
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  backgroundColor: TraumColors.surfaceElevated,
+                  title: Text(l10n.substanceConfirmDeleteTitle,
+                      style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+                  content: Text(l10n.substanceConfirmDeleteBody(med.name),
+                      style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.cancel)),
+                    TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l10n.substanceDelete)),
+                  ],
+                ),
+              );
+              if (confirmed == true) onDelete();
+            },
+          ),
+          const SizedBox(height: 8),
+        ]),
+      ),
+    );
+  }
+
   List<String> _parseTimes(String t) {
     try { return (jsonDecode(t) as List).cast<String>(); } catch (_) { return []; }
   }
 }
-
-Widget _deleteBg() => Container(
-      alignment: Alignment.centerRight,
-      padding: const EdgeInsets.only(right: 20),
-      decoration: BoxDecoration(
-        color: TraumColors.roseRed.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(TraumRadius.card),
-      ),
-      child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
-    );
 
 Widget _icon(IconData icon, Color bg, Color fg) => Container(
       width: 40, height: 40,
@@ -575,19 +646,38 @@ class _EmptyState extends StatelessWidget {
 
 class _AddSuppSheet extends StatefulWidget {
   final Future<void> Function(SupplementsCompanion) onAdd;
-  const _AddSuppSheet({required this.onAdd});
+  final String? initialName;
+  final String? initialCategory;
+  final String? initialAmount;
+  final String? initialUnit;
+  const _AddSuppSheet({
+    required this.onAdd,
+    this.initialName,
+    this.initialCategory,
+    this.initialAmount,
+    this.initialUnit,
+  });
   @override
   State<_AddSuppSheet> createState() => _AddSuppSheetState();
 }
 
 class _AddSuppSheetState extends State<_AddSuppSheet> {
-  final _nameCtrl = TextEditingController();
-  final _amountCtrl = TextEditingController();
-  String _category = 'Vitamine';
-  String _unit = 'mg';
-  String? _nutrientKey; // null = "keiner"
+  late final _nameCtrl = TextEditingController(text: widget.initialName ?? '');
+  late final _amountCtrl = TextEditingController(text: widget.initialAmount ?? '');
+  late String _category = (widget.initialCategory != null &&
+          _categories.contains(widget.initialCategory))
+      ? widget.initialCategory!
+      : 'Vitamine';
+  late String _unit =
+      (widget.initialUnit != null && _units.contains(widget.initialUnit))
+          ? widget.initialUnit!
+          : 'mg';
+  late String? _nutrientKey =
+      widget.initialName != null ? suggestNutrientKey(widget.initialName!) : null;
   bool _nutrientTouched = false; // true sobald der Nutzer manuell wählt
   bool _saving = false;
+  List<SubstanceRecord> _suggestions = [];
+  Timer? _debounce;
 
   static const _categories = [
     'Vitamine', 'Mineralien', 'Aminosäuren', 'Protein', 'Omega-3',
@@ -605,10 +695,30 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
         setState(() => _nutrientKey = suggested);
       }
     });
+    _nameCtrl.addListener(_onNameChanged);
+  }
+
+  void _onNameChanged() {
+    final q = _nameCtrl.text.trim();
+    _debounce?.cancel();
+    if (q.length < 3) {
+      if (_suggestions.isNotEmpty) setState(() => _suggestions = []);
+      return;
+    }
+    _debounce = Timer(const Duration(milliseconds: 300), () async {
+      if (!mounted || _nameCtrl.text.trim() != q) return;
+      final repo = await ProviderScope.containerOf(context, listen: false)
+          .read(substanceRepositoryProvider.future);
+      final results = await repo.search(q, klasseFilter: SubstanceKlasse.supplement);
+      if (mounted && _nameCtrl.text.trim() == q) {
+        setState(() => _suggestions = results.take(5).toList());
+      }
+    });
   }
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _nameCtrl.dispose();
     _amountCtrl.dispose();
     super.dispose();
@@ -629,7 +739,29 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
               style: TextStyle(color: TraumColors.onBackground,
                   fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
           const SizedBox(height: 16),
-          _field('Name', _nameCtrl, hint: 'z.B. Vitamin D3'),
+          _field('Name', _nameCtrl, hint: AppLocalizations.of(context)!.substanceHintVitaminD3),
+          if (_suggestions.isNotEmpty)
+            Container(
+              margin: const EdgeInsets.only(top: 4),
+              decoration: BoxDecoration(
+                color: TraumColors.surface,
+                borderRadius: BorderRadius.circular(TraumRadius.card),
+              ),
+              child: Column(
+                children: _suggestions.map((s) => ListTile(
+                      dense: true,
+                      title: Text(s.substance,
+                          style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+                      onTap: () {
+                        _nameCtrl.text = s.substance;
+                        if (s.kategorie != null && _categories.contains(s.kategorie)) {
+                          setState(() => _category = s.kategorie!);
+                        }
+                        setState(() => _suggestions = []);
+                      },
+                    )).toList(),
+              ),
+            ),
           const SizedBox(height: 12),
           Text(AppLocalizations.of(context)!.category, style: TextStyle(color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans', fontSize: 13)),
@@ -689,7 +821,9 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
           ),
           const SizedBox(height: 20),
           GradientButton(
-            label: _saving ? 'Speichern…' : 'Speichern',
+            label: _saving
+                ? AppLocalizations.of(context)!.substanceSaving
+                : AppLocalizations.of(context)!.save,
             onPressed: _saving ? null : _save,
           ),
           const SizedBox(height: 8),
@@ -741,22 +875,51 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
 
 class _AddMedSheet extends StatefulWidget {
   final Future<void> Function(MedicationsCompanion) onAdd;
-  const _AddMedSheet({required this.onAdd});
+  final String? initialName;
+  final String? initialDosage;
+  const _AddMedSheet({required this.onAdd, this.initialName, this.initialDosage});
   @override
   State<_AddMedSheet> createState() => _AddMedSheetState();
 }
 
 class _AddMedSheetState extends State<_AddMedSheet> {
-  final _nameCtrl = TextEditingController();
-  final _dosageCtrl = TextEditingController();
+  late final _nameCtrl = TextEditingController(text: widget.initialName ?? '');
+  late final _dosageCtrl = TextEditingController(text: widget.initialDosage ?? '');
   String _form = 'Tablette';
   final List<String> _times = ['08:00'];
   bool _saving = false;
+  List<SubstanceRecord> _suggestions = [];
+  Timer? _debounce;
 
   static const _forms = ['Tablette', 'Kapsel', 'Tropfen', 'Injektion', 'Salbe', 'Spray', 'Sonstige'];
 
   @override
+  void initState() {
+    super.initState();
+    _nameCtrl.addListener(_onNameChanged);
+  }
+
+  void _onNameChanged() {
+    final q = _nameCtrl.text.trim();
+    _debounce?.cancel();
+    if (q.length < 3) {
+      if (_suggestions.isNotEmpty) setState(() => _suggestions = []);
+      return;
+    }
+    _debounce = Timer(const Duration(milliseconds: 300), () async {
+      if (!mounted || _nameCtrl.text.trim() != q) return;
+      final repo = await ProviderScope.containerOf(context, listen: false)
+          .read(substanceRepositoryProvider.future);
+      final results = await repo.search(q, klasseFilter: SubstanceKlasse.medikament);
+      if (mounted && _nameCtrl.text.trim() == q) {
+        setState(() => _suggestions = results.take(5).toList());
+      }
+    });
+  }
+
+  @override
   void dispose() {
+    _debounce?.cancel();
     _nameCtrl.dispose();
     _dosageCtrl.dispose();
     super.dispose();
@@ -777,9 +940,31 @@ class _AddMedSheetState extends State<_AddMedSheet> {
               style: TextStyle(color: TraumColors.onBackground,
                   fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
           const SizedBox(height: 16),
-          _field('Name', _nameCtrl, hint: 'z.B. Ibuprofen 400mg'),
+          _field('Name', _nameCtrl, hint: AppLocalizations.of(context)!.substanceHintIbuprofen),
+          if (_suggestions.isNotEmpty)
+            Container(
+              margin: const EdgeInsets.only(top: 4),
+              decoration: BoxDecoration(
+                color: TraumColors.surface,
+                borderRadius: BorderRadius.circular(TraumRadius.card),
+              ),
+              child: Column(
+                children: _suggestions.map((s) => ListTile(
+                      dense: true,
+                      title: Text(s.substance,
+                          style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+                      onTap: () {
+                        _nameCtrl.text = s.substance;
+                        final lang = Localizations.localeOf(context).languageCode;
+                        final dosage = s.dosierung.erwachsene(lang);
+                        if (dosage != null) _dosageCtrl.text = dosage;
+                        setState(() => _suggestions = []);
+                      },
+                    )).toList(),
+              ),
+            ),
           const SizedBox(height: 12),
-          _field('Dosierung', _dosageCtrl, hint: 'z.B. 400 mg'),
+          _field('Dosierung', _dosageCtrl, hint: AppLocalizations.of(context)!.substanceHintDosageExample),
           const SizedBox(height: 12),
           Text(AppLocalizations.of(context)!.form, style: TextStyle(color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans', fontSize: 13)),
@@ -843,7 +1028,9 @@ class _AddMedSheetState extends State<_AddMedSheet> {
           ])),
           const SizedBox(height: 20),
           GradientButton(
-            label: _saving ? 'Speichern…' : 'Speichern',
+            label: _saving
+                ? AppLocalizations.of(context)!.substanceSaving
+                : AppLocalizations.of(context)!.save,
             onPressed: _saving ? null : _save,
           ),
           const SizedBox(height: 8),
@@ -987,7 +1174,7 @@ class _AddIntakeSheetState extends State<_AddIntakeSheet> {
             controller: _nameCtrl,
             style: const TextStyle(
                 color: TraumColors.onBackground, fontFamily: 'DMSans'),
-            decoration: _dec('Substanz'),
+            decoration: _dec(AppLocalizations.of(context)!.substanceLabelSubstance),
           ),
           const SizedBox(height: 12),
           Row(children: [
@@ -996,7 +1183,7 @@ class _AddIntakeSheetState extends State<_AddIntakeSheet> {
                 controller: _dosageCtrl,
                 style: const TextStyle(
                     color: TraumColors.onBackground, fontFamily: 'DMSans'),
-                decoration: _dec('Dosis'),
+                decoration: _dec(AppLocalizations.of(context)!.substanceLabelDosis),
               ),
             ),
             const SizedBox(width: 12),
@@ -1005,7 +1192,7 @@ class _AddIntakeSheetState extends State<_AddIntakeSheet> {
                 controller: _unitCtrl,
                 style: const TextStyle(
                     color: TraumColors.onBackground, fontFamily: 'DMSans'),
-                decoration: _dec('Einheit'),
+                decoration: _dec(AppLocalizations.of(context)!.unitLabel),
               ),
             ),
           ]),
@@ -1026,7 +1213,9 @@ class _AddIntakeSheetState extends State<_AddIntakeSheet> {
           ),
           const SizedBox(height: 12),
           GradientButton(
-              label: _saving ? 'Speichern…' : 'Erfassen',
+              label: _saving
+                  ? AppLocalizations.of(context)!.substanceSaving
+                  : AppLocalizations.of(context)!.substanceLogIntakeAction,
               onPressed: _saving ? null : _save),
           const SizedBox(height: 8),
         ],

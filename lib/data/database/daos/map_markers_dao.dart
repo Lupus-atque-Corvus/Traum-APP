@@ -39,4 +39,22 @@ class MapMarkersDao extends DatabaseAccessor<TraumDatabase>
 
   Future<void> deleteMarker(int id) =>
       (delete(mapMarkers)..where((t) => t.id.equals(id))).go();
+
+  /// Fügt neue Marker gebündelt ein (z.B. beim einmaligen Türme-Daten-Seed).
+  Future<int> bulkInsertNew(List<MapMarkersCompanion> rows) async {
+    await batch((b) => b.insertAll(mapMarkers, rows));
+    return rows.length;
+  }
+
+  /// Effiziente Prüfung (LIMIT 1), ob eine Collection bereits importierte
+  /// Marker hat — Sekundär-Guard für den einmaligen Türme-Daten-Seed, ohne
+  /// bei jedem App-Start alle (potenziell hunderttausende) Zeilen zu laden.
+  Future<bool> hasAnyWithOsmId(int collectionId) async {
+    final row = await (select(mapMarkers)
+          ..where((t) =>
+              t.collectionId.equals(collectionId) & t.osmId.isNotNull())
+          ..limit(1))
+        .getSingleOrNull();
+    return row != null;
+  }
 }

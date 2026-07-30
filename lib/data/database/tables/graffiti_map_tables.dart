@@ -29,6 +29,8 @@ class MapMarkers extends Table {
   // JSON: {"condition":"Verfallen","access":"Zaun","hidden":true}
   BoolColumn get isHidden => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime()();
+  // OSM-Node-ID ("node/<id>") für per Overpass importierte Marker — Dedupe-Schlüssel.
+  TextColumn get osmId => text().nullable()();
 }
 
 /// Fotos zu einem Marker (1 bei Graffiti, mehrere bei Türmen/Lost Places)

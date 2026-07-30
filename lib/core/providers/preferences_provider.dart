@@ -218,6 +218,10 @@ final onboardingCompleteProvider = Provider<bool>((ref) {
   return ref.watch(preferencesRepositoryProvider).onboardingComplete;
 });
 
+final substancesDisclaimerAcceptedProvider = Provider<bool>((ref) {
+  return ref.watch(preferencesRepositoryProvider).substancesDisclaimerAccepted;
+});
+
 final stepsGoalProvider = Provider<int>((ref) {
   return ref.watch(preferencesRepositoryProvider).stepsGoal;
 });

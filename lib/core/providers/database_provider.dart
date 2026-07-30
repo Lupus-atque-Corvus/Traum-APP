@@ -3,12 +3,13 @@ import '../../data/database/traum_database.dart';
 import '../../features/period_tracking/cycle_analyzer.dart';
 import '../../features/period_tracking/cycle_analysis.dart';
 import '../services/grocery_price_service.dart';
-import '../../data/models/substance_info.dart';
+import '../../data/models/substance_record.dart';
+import '../../data/repositories/substance_reference_db_copier.dart';
 import '../../data/repositories/substance_repository.dart';
-import '../../data/services/substance_api_service.dart';
+import '../../data/services/substance_reference_db_service.dart';
+import 'dart:io';
 import '../services/backup_service.dart';
 import '../services/calendar_sync_service.dart';
-import '../services/interaction_service.dart';
 import '../../data/services/nutrition_report_service.dart';
 import 'preferences_provider.dart';
 
@@ -385,50 +386,39 @@ final substanceDaoProvider = Provider<SubstanceDao>(
   (ref) => ref.watch(databaseProvider).substanceDao,
 );
 
-final substanceApiServiceProvider = Provider<SubstanceApiService>(
-  (_) => SubstanceApiService(),
-);
-
-final substanceDatabaseDaoProvider = Provider<SubstanceDatabaseDao>((ref) {
-  return ref.watch(databaseProvider).substanceDatabaseDao;
+/// Ob die einmalige Datei-Kopie der Referenz-DB abgeschlossen ist. Screens
+/// prüfen das vor dem Öffnen des Service, statt den Copy-Zustand zu raten.
+final substanceReferenceDbReadyProvider = FutureProvider<bool>((ref) async {
+  final path = await SubstanceReferenceDbCopier.targetPath();
+  return File(path).exists();
 });
 
-final substanceDbAvailableProvider = FutureProvider<bool>((ref) async {
-  final count = await ref.watch(substanceDbCountProvider.future);
-  return count > 0;
+final substanceReferenceDbServiceProvider =
+    FutureProvider<SubstanceReferenceDbService>((ref) async {
+  final path = await SubstanceReferenceDbCopier.targetPath();
+  final service = SubstanceReferenceDbService(path);
+  ref.onDispose(service.dispose);
+  return service;
 });
 
-final substanceDbCountProvider = FutureProvider<int>((ref) {
-  return ref.watch(substanceDatabaseDaoProvider).count();
+final substanceRepositoryProvider = FutureProvider<SubstanceRepository>((ref) async {
+  final service = await ref.watch(substanceReferenceDbServiceProvider.future);
+  return SubstanceRepository(service);
 });
 
-final substanceRepositoryProvider = Provider<SubstanceRepository>((ref) {
-  return SubstanceRepository(
-    ref.watch(substanceDaoProvider),
-    ref.watch(substanceDatabaseDaoProvider),
-    ref.watch(substanceApiServiceProvider),
-  );
+final substanceCategoriesProvider = FutureProvider<List<String>>((ref) async {
+  final repo = await ref.watch(substanceRepositoryProvider.future);
+  return repo.listCategories();
 });
 
+/// Family-Parameter ist bewusst nur der Such-String (primitiv, non-negotiable #7).
+/// Typ-/Kategorie-/Pflanzlich-Filter werden clientseitig in der UI kombiniert
+/// (siehe database_tab.dart, Task 13) statt Teil des Family-Keys zu sein.
 final substanceSearchProvider = FutureProvider.autoDispose
-    .family<List<SubstanceInfo>, String>(
-      (ref, q) => ref.watch(substanceRepositoryProvider).search(q),
-    );
-
-final interactionServiceProvider = Provider<InteractionService>(
-  (ref) => InteractionService(ref.watch(substanceRepositoryProvider)),
-);
-
-final interactionAlertsProvider =
-    FutureProvider.autoDispose<List<InteractionAlert>>((ref) async {
-      final supps = ref.watch(supplementsStreamProvider).value ?? [];
-      final meds = ref.watch(allMedicationsStreamProvider).value ?? [];
-      final activeNames = [
-        ...supps.where((s) => s.isActive).map((s) => s.name),
-        ...meds.where((m) => m.isActive).map((m) => m.name),
-      ];
-      return ref.read(interactionServiceProvider).checkSubstances(activeNames);
-    });
+    .family<List<SubstanceRecord>, String>((ref, query) async {
+  final repo = await ref.watch(substanceRepositoryProvider.future);
+  return repo.search(query);
+});
 
 // ─── Accounts ─────────────────────────────────────────────────────────────────
 final accountsStreamProvider = StreamProvider.autoDispose<List<Account>>(

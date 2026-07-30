@@ -1,12 +1,57 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.7.30+79** · schemaVersion **22**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.0+80** · schemaVersion **23**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-23 — v0.7.30, Onboarding-Cleanup + Performance + Budget-Übertrag)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-25 — v0.8.0, Mittel-Tab Komplettumbau)
+
+**Kompletter Neubau des "Mittel"-Tabs (Substances-Modul): neue 6.580-Substanzen-Referenz-DB
+(4.879 Medikamente, 1.701 Supplemente, 335 pflanzlich, DE/EN bilingual, FTS5-Volltextsuche),
+Redesign beider Sub-Tabs ("Meine Mittel" + "Datenbank"), medizinischer Disclaimer-Gate,
+Wikipedia/Wikidata-CC-BY-SA-Attribution. `flutter analyze` → 0, `flutter test` → 442/442 grün.**
+
+- Alte ~108-Eintrag-Offline-DB (`assets/substances.db`) und der API-Fallback
+  (openFDA/PubChem, `substance_api_service.dart`) sind komplett entfernt — die neue Referenz-DB
+  (`assets/substances_reference.sqlite3`, ~71 MB) wird beim ersten Start einmalig als ganze Datei
+  kopiert und danach als separate read-only sqlite3-Verbindung mit FTS5 abgefragt (nicht in
+  `traum.sqlite` dupliziert). `schemaVersion` 22→23 (Migration löscht die alte
+  `substance_database_entries`-Tabelle).
+- Der strukturierte Interaktions-Checker (Banner + `InteractionService`) ist ersatzlos entfernt —
+  die neue DB hat nur Freitext-Wechselwirkungen, die jetzt prominent in der Detailansicht jeder
+  Substanz stehen (klar als Freitext gekennzeichnet, kein automatischer Check).
+- **Der historische Cross-Tab-Add-Bug ist behoben:** "Zu meinen Mitteln hinzufügen" in der
+  Datenbank-Detailansicht war nie verdrahtet (`onAddPressed` immer `null`). Funktioniert jetzt
+  vollständig End-to-End (live auf Emulator verifiziert, inkl. DB-Check nach jedem Schritt).
+  Dabei wurden bei der manuellen Verifikation zwei echte Bugs gefunden und behoben, die die
+  automatisierten Tests nicht gefangen hatten: die Detailansicht ruft `Navigator.pop(context)`
+  auf, *bevor* sie den Add-Sheet mit demselben `context`/`ref` öffnet — beide waren dadurch beim
+  tatsächlichen Speichern (Sekunden später, nach Nutzereingabe) bereits unmounted. `ref.read(...)`
+  bzw. `AppLocalizations.of(context)` warfen dadurch unbehandelte Exceptions, die den Save-Button
+  für immer auf "Speichern…" hängen ließen, ohne dass je etwas persistiert wurde. Fix: Add-Sheets
+  lesen jetzt aus ihrem eigenen, noch gemounteten `ProviderScope`/`BuildContext` statt aus dem
+  des Aufrufers. Eine dritte, verwandte Regression (Cross-Tab-Supplement-Add setzte `nutrientKey`
+  nie, wodurch die Ernährungs-Tab-Integration für diesen Eingabeweg stillschweigend abriss) wurde
+  von der finalen Whole-Branch-Code-Review gefunden und ebenfalls gefixt.
+- Löschen in "Meine Mittel" läuft jetzt über Long-Press-Kontextmenü (Bearbeiten/Deaktivieren/
+  Löschen) statt Swipe-to-Delete.
+- **Bekannte, nicht in diesem Release behobene Kleinigkeiten** (siehe
+  `traum_app/.worktrees/mittel-tab-rebuild/.superpowers/sdd/progress.md`, falls der Worktree noch
+  existiert, sonst Git-Historie des Feature-Branches `feature/mittel-tab-rebuild`): der
+  "Anzeigen"-Button im "Hinzugefügt"-Snackbar wechselt noch nicht automatisch den Tab (derselbe
+  Stale-Context-Grund, aber niedrige Priorität — kosmetisch, der Nutzer kann einfach manuell auf
+  "Meine Mittel" tippen); die echte Datenbank hat 406 rohe Kategorie-Strings (u.a. ATC-Wirkmechanismus-
+  Namen wie "Kinase Inhibitor") statt der ~12 kuratierten Kategorien, die das visuelle Design
+  ursprünglich annahm — funktioniert korrekt, sieht aber nicht wie das Mockup aus; einzelne
+  Rohdaten-Felder enthalten noch interne Pipeline-Notizen bzw. Wikitext-Reste.
+
+- Release: https://github.com/Lupus-atque-Corvus/Traum-APP/releases/tag/v0.8.0 (Debug-Build).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-07-23 — v0.7.30, Onboarding-Cleanup + Performance + Budget-Übertrag)
 
 **Drei unabhängige Änderungen in dieser Runde, alle mit `flutter analyze` → 0 und `flutter test` →
 398/398 grün verifiziert:**
