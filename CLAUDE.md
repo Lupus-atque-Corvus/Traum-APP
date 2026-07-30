@@ -1,12 +1,41 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.0+80** · schemaVersion **23**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.1+81** · schemaVersion **24**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-25 — v0.8.0, Mittel-Tab Komplettumbau)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-30 — v0.8.1, Türme-Kartensammlung + Übungs-Icons)
+
+**Zwei unabhängige, parallel entwickelte Features in dieser Runde zusammengeführt (Merge ohne
+Konflikte), `flutter analyze` → 1 vorbestehende unabhängige Warnung (fehlender `assets/lottie/`-
+Ordner), `flutter test` → 449/449 grün:**
+
+1. **Türme-Kartensammlung (Graffiti Map):** Die "Türme"-Sammlung wird nicht mehr per manuellem
+   OSM/Overpass-Cloud-Import befüllt, sondern kommt als **gebündelter Offline-Datensatz**
+   (`assets/data/towers.tsv`, per Overpass für Europa + USA/Kanada gesammelt) und wird beim ersten
+   Start einmalig geseedet (`tower_data_seeder.dart`). Der manuelle Import-Button samt
+   `tower_import_controller.dart`/`tower_import_sheet.dart`/`overpass_tower_repository.dart` wurde
+   entfernt. `schemaVersion` 23→24 (neue `osmId`-Spalte auf `MapMarkers` für Dedupe/Re-Seed-Schutz).
+2. **839 Übungen bekommen individuelle Piktogramme:** Neue Pipeline
+   (`exercise_icons_workspace/scripts/` — außerhalb des Flutter-Projekts, siehe dortiges README)
+   schneidet KI-generierte 8×8-Icon-Raster, vektorisiert sie lokal (vtracer + eigene
+   Farb-Quantisierung/Nachbearbeitung, kein API-Call) und liefert handillustrations-artige
+   Zwei-Farben-SVGs (`#FFFFFF` Figur / `#FF6B3D` Muskel-Akzent). `ExerciseIcon` löst jetzt über
+   `exerciseName` + `slugifyExerciseName()` (`lib/features/training/exercise_icon_slug.dart`) ein
+   bespoke Icon aus `assets/exercises/icons_exercise/<slug>.svg` auf, bevor es auf das generische
+   Muskelgruppen-Icon zurückfällt; das Manifest (`lib/features/training/widgets/generated/
+   exercise_icon_manifest.dart`) wird per `dart run tool/generate_exercise_icon_manifest.dart`
+   generiert. **838 von 839 Übungen abgedeckt** (`Schulterkreisen` fehlt — nie in einen
+   Generierungs-Batch aufgenommen, kein Bug, fällt auf das generische Icon zurück). Fügt
+   ~20 MB SVGs zum Asset-Bundle hinzu — bewusst noch nicht optimiert (Dateigröße größer als bei
+   den ursprünglichen 2 handgefertigten Test-Icons), da Bildqualität Vorrang hatte; bei Bedarf
+   später über Pfad-Vereinfachung/Koordinaten-Rundung nachschärfen.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-07-25 — v0.8.0, Mittel-Tab Komplettumbau)
 
 **Kompletter Neubau des "Mittel"-Tabs (Substances-Modul): neue 6.580-Substanzen-Referenz-DB
 (4.879 Medikamente, 1.701 Supplemente, 335 pflanzlich, DE/EN bilingual, FTS5-Volltextsuche),
