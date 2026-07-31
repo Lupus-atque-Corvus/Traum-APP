@@ -13,6 +13,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../core/utils/image_decode.dart';
 import '../../data/database/traum_database.dart';
 import 'field_system/field_localization.dart';
 import 'field_system/map_field.dart';
@@ -649,11 +650,13 @@ class _PhotoGalleryState extends State<_PhotoGallery> {
                   controller: _controller,
                   itemCount: photos.length,
                   onPageChanged: (i) => setState(() => _page = i),
-                  itemBuilder: (_, i) => GestureDetector(
+                  itemBuilder: (ctx, i) => GestureDetector(
                     onTap: () => _openFullscreen(i),
                     child: Image.file(
                       File(photos[i].photoPath),
                       width: double.infinity,
+                      cacheWidth: decodePxFor(
+                          ctx, MediaQuery.sizeOf(ctx).width),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -748,6 +751,7 @@ class _PhotoGalleryState extends State<_PhotoGallery> {
                       File(photos[i].thumbnailPath ?? photos[i].photoPath),
                       width: 64,
                       height: 64,
+                      cacheWidth: decodePxFor(context, 64),
                       fit: BoxFit.cover,
                     ),
                   ),

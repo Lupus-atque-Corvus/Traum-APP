@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/colors.dart';
+import '../../core/utils/image_decode.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'diary_camera_service.dart';
@@ -295,6 +296,8 @@ class _TodayFilledCard extends StatelessWidget {
                 File(thumbPath),
                 width: double.infinity,
                 height: 220,
+                cacheWidth:
+                    decodePxFor(context, MediaQuery.sizeOf(context).width - 32),
                 fit: BoxFit.cover,
               ),
             ),

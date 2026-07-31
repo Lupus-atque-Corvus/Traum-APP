@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../core/utils/image_decode.dart';
 import '../../l10n/app_localizations.dart';
 import 'diary_provider.dart';
 
@@ -148,6 +149,8 @@ class _DiaryEntryBody extends ConsumerWidget {
                   ? Image.file(File(mediaPath),
                       width: double.infinity,
                       height: double.infinity,
+                      cacheWidth: decodePxFor(
+                          context, MediaQuery.sizeOf(context).width),
                       fit: BoxFit.cover)
                   : Container(
                       color: TraumColors.surfaceVariant,

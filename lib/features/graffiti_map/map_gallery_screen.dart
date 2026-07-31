@@ -4,6 +4,7 @@ import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/colors.dart';
+import '../../core/utils/image_decode.dart';
 import 'field_system/field_localization.dart';
 import 'graffiti_map_provider.dart';
 import 'map_widgets.dart';
@@ -45,6 +46,11 @@ class _MapGalleryScreenState extends ConsumerState<MapGalleryScreen> {
                 .map((t) => t.trim().toLowerCase());
             return tags.contains(hashtagFilter.toLowerCase());
           }).toList();
+
+    // Kachelbreite des 3-spaltigen Rasters (16 px Außenabstand je Seite,
+    // 8 px zwischen den Spalten) — Zielauflösung für die Bild-Dekodierung.
+    final gridTileWidth =
+        (MediaQuery.sizeOf(context).width - 32 - 16) / 3;
 
     return Scaffold(
       backgroundColor: TraumColors.background,
@@ -150,6 +156,7 @@ class _MapGalleryScreenState extends ConsumerState<MapGalleryScreen> {
                               if (photo != null)
                                 Image.file(
                                   File(photo.thumbnailPath ?? photo.photoPath),
+                                  cacheWidth: decodePxFor(context, gridTileWidth),
                                   fit: BoxFit.cover,
                                 )
                               else

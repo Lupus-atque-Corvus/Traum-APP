@@ -18,6 +18,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../core/utils/image_decode.dart';
 import '../../data/database/traum_database.dart';
 import 'dynamic_marker_sheet.dart';
 import 'field_system/field_localization.dart';
@@ -794,6 +795,7 @@ class _MapMarkerWidget extends StatelessWidget {
                     ),
                     width: 48,
                     height: 48,
+                    cacheWidth: decodePxFor(context, 48),
                     fit: BoxFit.cover,
                   )
                 : Container(

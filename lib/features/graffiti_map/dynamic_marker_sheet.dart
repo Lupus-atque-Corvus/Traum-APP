@@ -6,6 +6,7 @@ import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../core/utils/image_decode.dart';
 import '../../data/database/traum_database.dart';
 import 'field_system/field_localization.dart';
 import 'field_system/map_field.dart';
@@ -184,6 +185,8 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                         File(r.photoPath),
                         width: double.infinity,
                         height: 200,
+                        cacheWidth: decodePxFor(
+                            context, MediaQuery.sizeOf(context).width),
                         fit: BoxFit.cover,
                       ),
                       Positioned(

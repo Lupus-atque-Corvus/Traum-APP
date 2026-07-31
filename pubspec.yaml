@@ -2,7 +2,7 @@ name: traum
 description: "TRAUM — Dein persönliches Dashboard"
 publish_to: 'none'
 
-version: 0.8.4+84
+version: 0.8.5+85
 
 environment:
   sdk: ^3.9.2
@@ -158,7 +158,18 @@ dev_dependencies:
   drift_dev: ^2.20.0
   riverpod_generator: ^4.0.0
   flutter_launcher_icons: ^0.14.1
-  flutter_native_splash: ^2.4.1
+  # flutter_native_splash bewusst NICHT als Abhängigkeit eingetragen:
+  # Es bringt (anders als flutter_launcher_icons) nativen Android-Code mit
+  # ("native_build": true). Als dev_dependency landet es in
+  # GeneratedPluginRegistrant.java, wird beim Release-Build aber nicht in den
+  # Compile-Classpath aufgenommen -> "package net.jonhanson.flutter_native_splash
+  # does not exist", Release-Build bricht ab (Debug-Build lief durch).
+  # Die Splash-Ressourcen sind bereits generiert und eingecheckt
+  # (android/app/src/main/res/drawable*/launch_background.xml + values*/styles.xml),
+  # die Dart-API wird nirgends verwendet -> zur Laufzeit wird das Paket nicht gebraucht.
+  # Zum Neugenerieren des Splash: Paket temporär hinzufügen,
+  # `dart run flutter_native_splash:create` (nutzt den Konfigblock unten),
+  # danach wieder entfernen.
   path_provider_platform_interface: ^2.1.3
   plugin_platform_interface: ^2.1.8
 
@@ -184,7 +195,8 @@ flutter:
     - assets/svg/
     - assets/icons/progress/
     - assets/legal/
-    - assets/lottie/
+    # assets/lottie/ entfernt: Verzeichnis existiert nicht und wird nirgends
+    # referenziert -> erzeugte bei jedem `flutter analyze`/Build eine Warnung.
     - assets/substances_reference.sqlite3
     - assets/data/
 

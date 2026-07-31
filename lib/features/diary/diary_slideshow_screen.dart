@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
+import '../../core/utils/image_decode.dart';
 import 'diary_provider.dart';
 
 class DiarySlideShowScreen extends ConsumerStatefulWidget {
@@ -66,14 +67,17 @@ class _DiarySlideShowScreenState
               controller: _controller,
               onPageChanged: (i) => setState(() => _currentPage = i),
               itemCount: entries.length,
-              itemBuilder: (_, i) {
+              itemBuilder: (ctx, i) {
                 final entry = entries[i];
                 final mediaPath = entry.mediaPath;
                 final exists = File(mediaPath).existsSync();
 
                 return Stack(fit: StackFit.expand, children: [
                   exists
-                      ? Image.file(File(mediaPath), fit: BoxFit.cover)
+                      ? Image.file(File(mediaPath),
+                          cacheWidth:
+                              decodePxFor(ctx, MediaQuery.sizeOf(ctx).width),
+                          fit: BoxFit.cover)
                       : Container(color: TraumColors.surfaceVariant),
 
                   // Top gradient + date

@@ -1,12 +1,58 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.4+84** · schemaVersion **25**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.5+85** · schemaVersion **25**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-31 — v0.8.4, Graffiti-Map zweisprachig de/en)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-31 — v0.8.5, Performance: Release-Build + Bild-Dekodierung)
+
+**Nutzer meldete: App läuft trotz gutem Handy sehr ruckelig. Statt zu raten wurde der Code quer
+über alle Module analysiert; Gesamtplan liegt in
+`docs/superpowers/plans/2026-07-31-performance-optimierung.md` (Haupt-Repo). Diese Runde setzt
+die beiden größten Hebel um:**
+
+1. **Release-Builds funktionieren wieder — der eigentliche Durchbruch.**
+   Alle Releases seit v0.7.27 waren **Debug-Builds** (JIT statt AOT, alle Framework-`assert`s
+   aktiv, kein Tree-Shaking) — das ist die dominante Ruckel-Ursache, unabhängig von jedem
+   Code-Problem. Begründet war das in Non-Negotiable #18 mit „Komplikationen mit dem
+   Signing-Setup". **Das war eine Fehldiagnose:** Der Release-Build scheiterte in Wahrheit an
+   `flutter_native_splash`. Das Paket stand als `dev_dependency` in `pubspec.yaml`, bringt aber
+   (anders als `flutter_launcher_icons`) nativen Android-Code mit (`"native_build": true`) →
+   landet in `GeneratedPluginRegistrant.java`, fehlt aber im Release-Compile-Classpath →
+   `package net.jonhanson.flutter_native_splash does not exist`. Der Debug-Build lief durch,
+   deshalb fiel es nie auf.
+   Fix: dev_dependency entfernt (ausführlicher Kommentar steht in `pubspec.yaml`). Das Paket wird
+   zur Laufzeit nicht gebraucht — der Splash läuft über bereits eingecheckte Android-Ressourcen
+   (`res/drawable*/launch_background.xml`, `res/values*/styles.xml`), die Dart-API wird nirgends
+   verwendet. Zum Neugenerieren des Splash: Paket temporär hinzufügen, `:create` laufen lassen,
+   wieder entfernen.
+   Ergebnis: `flutter build apk --release` läuft durch, **176 MB statt 282 MB** (Debug).
+   Kein Keystore nötig (Gradle fällt ohne `key.properties` auf Debug-Signatur zurück).
+   Non-Negotiable #18 entsprechend umgeschrieben.
+2. **Fotos wurden in voller Kameraauflösung dekodiert.** 12 `Image.file`-Aufrufe, **kein
+   einziger** mit `cacheWidth`/`cacheHeight`. Ein 12-MP-Foto belegt dekodiert ~48 MB im
+   Bild-Cache — auch als 64-px-Thumbnail. Flutters Cache ist auf 100 MB begrenzt, ein Foto-Raster
+   verdrängt sich damit permanent selbst und dekodiert beim Scrollen dieselben Bilder immer wieder
+   neu. Neuer Helfer `lib/core/utils/image_decode.dart` (`decodePxFor(context, logischeGröße)`,
+   rechnet Anzeigegröße × Pixeldichte); in **10 von 12** Stellen eingesetzt (Kartenmarker,
+   Karten-Galerie-Raster, Marker-Detail-Galerie + Thumbnail-Leiste, Tagebuch-Liste/-Detail/
+   -Slideshow/-Aufnahme, Beleg-Foto im Budget). Die 2 Vollbild-Betrachter
+   (`marker_detail_screen.dart` Fullscreen, `transaction_detail_screen.dart` `_showFullscreenPhoto`)
+   bleiben bewusst unlimitiert.
+3. Nebenbei: nicht existierendes `assets/lottie/` aus `pubspec.yaml` entfernt (erzeugte bei jedem
+   Analyze/Build eine Warnung). `flutter analyze` → **0 Issues**. `flutter test` → 471/471 grün.
+
+**Noch offen aus dem Performance-Plan** (nach Wirkung sortiert): unbegrenzte Abfragen auf die
+496k Marker in Galerie/Hashtags/Suche/Auto-Gruppierung · 838 Übungs-SVGs à ~24 KB werden zur
+Laufzeit geparst (`vector_graphics_compiler` ist bereits als Abhängigkeit vorhanden) · 36-MB-JSON
+wird beim Erststart am Stück im UI-Isolate geparst · 35 nicht-lazy Listen · `jsonDecode` in
+`build()` (u.a. `marker_detail_screen.dart`).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-07-31 — v0.8.4, Graffiti-Map zweisprachig de/en)
 
 **User bat darum, die Graffiti-Map-Funktion (Feld-Labels, Dropdown-Optionen, Karten-/Vorlagennamen,
 Bedienelemente) vollständig zweisprachig (de/en) zu machen — bestehende Beschreibungstexte der
@@ -443,10 +489,18 @@ periodRose: #FF8FAB · ovulationCyan: #00C9C8 · fertileCyan: #0093AB
 15. **`flutter analyze` → Ziel 0 Issues** vor jedem Commit (keine `withOpacity`, `child:` als letztes Property)
 16. **`flutter test`** muss grün bleiben (aktuell 200+ Tests unter test/features/…)
 17. **Versionierung:** Bis einschließlich Build **+79** bleibt die Version bei **0.7.x** (z.B. `0.7.13+62`, `0.7.20+79`). Erst ab Build **+80** auf **0.8.0** wechseln (`0.8.0+80`). Den `version:`-Eintrag in `pubspec.yaml` entsprechend pflegen — den Build-Zähler bei jedem Release um 1 erhöhen, den Minor-Sprung auf 0.8.0 nicht vor +80 machen.
-18. **Kein signierter Release — bewusste, dauerhafte Entscheidung:** `android/key.properties.disabled`
-    bleibt bis auf Weiteres deaktiviert. Alle Releases sind Debug-Builds (`flutter build apk --debug`),
-    damit es keine Komplikationen mit dem Signing-Setup gibt. NICHT von dir aus reaktivieren oder
-    einen Release-Build versuchen — nur auf explizite Ansage des Users.
+18. **Releases sind ab v0.8.5 wieder Release-Builds** (`flutter build apk --release`).
+    Kein eigener Keystore nötig: `android/app/build.gradle.kts:57-70` fällt ohne
+    `key.properties` automatisch auf die Debug-Signatur zurück, `isMinifyEnabled` + ProGuard
+    sind konfiguriert.
+    **Historie/Warnung:** Bis v0.8.4 wurde ausschließlich Debug gebaut, begründet mit
+    „Komplikationen mit dem Signing-Setup". Das war eine Fehldiagnose — der Release-Build
+    scheiterte tatsächlich an `flutter_native_splash` (als `dev_dependency` eingetragen, bringt
+    aber nativen Android-Code mit → landet in `GeneratedPluginRegistrant.java`, fehlt im
+    Release-Compile-Classpath). Ursache behoben durch Entfernen der dev_dependency (siehe
+    Kommentar in `pubspec.yaml`). Debug-Builds laufen wegen JIT statt AOT um ein Vielfaches
+    langsamer — **niemals Performance im Debug-Modus beurteilen**, und Releases nicht ohne
+    zwingenden Grund wieder auf `--debug` umstellen.
 
 ## Bewährte Muster
 - Seeder: `seedIfNeeded(db, prefs)` → wenn schon vorhanden, `return`; sonst Assets laden und einfügen

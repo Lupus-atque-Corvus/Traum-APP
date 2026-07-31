@@ -7,6 +7,7 @@ import '../../core/components/components.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../core/utils/image_decode.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
@@ -613,6 +614,8 @@ class _TransactionDetailScreenState
                       File(tx.receiptImagePath!),
                       height: 200,
                       width: double.infinity,
+                      cacheWidth: decodePxFor(
+                          context, MediaQuery.sizeOf(context).width),
                       fit: BoxFit.cover,
                       errorBuilder: (_, _, _) => Padding(
                         padding: const EdgeInsets.all(16),

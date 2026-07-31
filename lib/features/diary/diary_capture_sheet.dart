@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../core/utils/image_decode.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'diary_camera_service.dart';
@@ -114,7 +115,11 @@ class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.file(File(_mediaPath),
-                    height: 200, width: double.infinity, fit: BoxFit.cover),
+                    height: 200,
+                    width: double.infinity,
+                    cacheWidth: decodePxFor(
+                        context, MediaQuery.sizeOf(context).width),
+                    fit: BoxFit.cover),
               )
             else
               Container(
