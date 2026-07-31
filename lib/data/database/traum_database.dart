@@ -202,7 +202,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 25;
+  int get schemaVersion => 26;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -474,8 +474,47 @@ class TraumDatabase extends _$TraumDatabase {
           'ON map_markers (external_id) WHERE external_id IS NOT NULL',
         );
       }
+      if (from < 26) {
+        await _createMapPerformanceIndexes();
+      }
     },
   );
+
+  /// Indizes für die Karten-Abfragepfade. Bis v25 existierten auf `map_markers`
+  /// NUR die beiden Unique-Indizes für die Import-Deduplizierung (`osm_id`,
+  /// `external_id`) — auf `collection_id` lag kein Index. Jede Abfrage nach
+  /// Sammlung war damit ein vollständiger Tabellenscan; bei 496.000 Zeilen
+  /// (413k Türme + 82k Lost Places) dauerte eine einzelne
+  /// Kartenausschnitt-Abfrage ~2,3 s — und die läuft bei jedem Verschieben und
+  /// Zoomen der Karte. Mit dem zusammengesetzten Index sind es ~0,06 s
+  /// (gemessen an echten Gerätedaten, gleiches Ergebnis).
+  ///
+  /// `marker_photos.marker_id` hatte ebenfalls keinen Index, obwohl die
+  /// Foto-Batch-Abfrage der Kartenansicht genau darauf filtert.
+  ///
+  /// Kosten: rund 14 MB zusätzliche Datenbankgröße, einmalig ~2,4 s beim
+  /// Anlegen. Idempotent (`IF NOT EXISTS`), läuft daher auch bei einem
+  /// abgebrochenen vorherigen Migrationsversuch gefahrlos erneut.
+  ///
+  /// Wird an zwei Stellen aufgerufen:
+  /// * hier in der v25→v26-Migration (Bestandsinstallationen), und
+  /// * bei Neuinstallationen **nach** den Seedern (`main.dart`) — dort läuft
+  ///   keine Migration, und ein vorher angelegter Index würde den einmaligen
+  ///   Import von ~496.000 Zeilen deutlich verlangsamen, weil er bei jeder
+  ///   einzelnen Zeile mitgepflegt werden müsste.
+  Future<void> createMapPerformanceIndexes() =>
+      _createMapPerformanceIndexes();
+
+  Future<void> _createMapPerformanceIndexes() async {
+    await customStatement(
+      'CREATE INDEX IF NOT EXISTS idx_map_markers_collection_pos '
+      'ON map_markers (collection_id, latitude, longitude)',
+    );
+    await customStatement(
+      'CREATE INDEX IF NOT EXISTS idx_marker_photos_marker '
+      'ON marker_photos (marker_id)',
+    );
+  }
 
   /// Ob die FTS5-Volltextsuche in dieser SQLite-Laufzeit verfügbar ist.
   /// Auf Android/iOS (gebündeltes sqlite3 mit fts5) immer true; manche

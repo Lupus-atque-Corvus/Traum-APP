@@ -126,9 +126,23 @@ final markerSearchProvider = FutureProvider.family<List<MarkerWithPhotos>,
     String>((ref, query) async {
   final id = ref.watch(activeCollectionProvider);
   final dao = ref.watch(mapMarkersDaoProvider);
+  // Beide Zweige begrenzt: bei leerer Suche würde sonst die komplette
+  // Collection geladen, bei kurzen Suchbegriffen zehntausende Treffer.
   final markers = query.isEmpty
-      ? await dao.getByCollection(id)
+      ? await dao.getRecentByCollection(id)
       : await dao.search(id, query);
+  return _withPhotos(ref, markers);
+});
+
+/// Marker für die Galerie-Ansicht — begrenzte, nach Datum absteigende Liste.
+/// Bewusst NICHT [activeMarkersProvider]: der lädt die komplette Collection
+/// (bei den importierten Karten hunderttausende Zeilen samt Foto-Abfrage),
+/// bevor überhaupt die erste Kachel erscheinen kann.
+final galleryMarkersProvider =
+    FutureProvider<List<MarkerWithPhotos>>((ref) async {
+  final id = ref.watch(activeCollectionProvider);
+  final markers =
+      await ref.watch(mapMarkersDaoProvider).getRecentByCollection(id);
   return _withPhotos(ref, markers);
 });
 
@@ -142,15 +156,16 @@ final markerByIdProvider =
 
 final allHashtagsProvider = FutureProvider<List<String>>((ref) async {
   final id = ref.watch(activeCollectionProvider);
-  final markers = await ref.watch(mapMarkersDaoProvider).getByCollection(id);
+  // Nur die Hashtag-Spalte nicht-leerer Zeilen laden statt aller Marker samt
+  // aller Spalten — bei den importierten Collections (413k Türme, 82k Lost
+  // Places, alle ohne Hashtags) ist das der Unterschied zwischen „lädt
+  // hunderttausende Zeilen" und „liefert praktisch sofort nichts zurück".
+  final raw =
+      await ref.watch(mapMarkersDaoProvider).hashtagStringsForCollection(id);
   final tags = <String>{};
-  for (final m in markers) {
-    if (m.hashtags.isNotEmpty) {
-      tags.addAll(m.hashtags
-          .split(',')
-          .map((t) => t.trim())
-          .where((t) => t.isNotEmpty));
-    }
+  for (final h in raw) {
+    tags.addAll(
+        h.split(',').map((t) => t.trim()).where((t) => t.isNotEmpty));
   }
   return tags.toList()..sort();
 });

@@ -1,12 +1,58 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.5+85** · schemaVersion **25**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.6+86** · schemaVersion **26**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-31 — v0.8.5, Performance: Release-Build + Bild-Dekodierung)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-31 — v0.8.6, Performance Phase 2: fehlende DB-Indizes)
+
+**Fortsetzung der Performance-Arbeit (Plan:
+`docs/superpowers/plans/2026-07-31-performance-optimierung.md` im Haupt-Repo).**
+
+**Der zentrale Fund: `map_markers` hatte keinen Index auf `collection_id`.** Die einzigen beiden
+Indizes waren die Unique-Indizes für die Import-Deduplizierung (`osm_id`, `external_id`). Jede
+Abfrage nach Sammlung war damit ein vollständiger Tabellenscan über 496.000 Zeilen — auch die
+Kartenausschnitt-Abfrage, die bei **jedem Verschieben und Zoomen** läuft. `marker_photos.marker_id`
+hatte ebenfalls keinen Index, obwohl die Foto-Batch-Abfrage der Kartenansicht genau darauf filtert.
+
+An der echten Geräte-Datenbank gemessen (identisches Ergebnis, 1355 Zeilen):
+`SCAN map_markers` **2,337 s** → `SEARCH … USING INDEX` **0,058 s** (≈40×).
+
+Das erklärt, warum die Karte trotz des Viewport-Providers aus v0.8.2 zäh blieb: der begrenzte,
+was *zurückkommt*, aber SQLite musste weiterhin jedes Mal die ganze Tabelle durchsuchen.
+
+- **schemaVersion 25→26:** `idx_map_markers_collection_pos` auf
+  `(collection_id, latitude, longitude)` + `idx_marker_photos_marker` auf `(marker_id)`.
+  Kosten: ~14 MB DB, einmalig ~2,4 s. Idempotent (`IF NOT EXISTS`).
+- **Neuinstallationen:** dort läuft keine Migration — `db.createMapPerformanceIndexes()` wird
+  in `main.dart` **nach** den Karten-Seedern aufgerufen. Bewusst danach: ein bestehender Index
+  müsste bei jeder der 496.000 Import-Zeilen mitgepflegt werden.
+- Weitere unbegrenzte Pfade behoben: `allHashtagsProvider` (neue DAO-Methode
+  `hashtagStringsForCollection` — lädt nur die Hashtag-Spalte nicht-leerer Zeilen statt aller
+  Marker), Galerie (neuer `galleryMarkersProvider` mit Limit statt `activeMarkersProvider`),
+  Auto-Gruppierung beim Fotografieren (Bounding-Box um die Foto-Koordinate statt komplette
+  Sammlung), `search()` (Limit 500), `create_collection_screen` (lädt Punkte nur noch bei
+  aktiver Auto-Gruppierung, plus Nachladen beim Einschalten).
+- **Achtung bei künftigen Migrationstests:** Die Fixtures in `tower_migration_v24_test.dart`,
+  `lost_place_migration_v25_test.dart` und `substances_v23_migration_test.dart` legten
+  `marker_photos` nie an, obwohl die Tabelle in echten Datenbanken seit v12 existiert. Die
+  v26-Migration fiel darüber. Fixtures wurden ergänzt (nicht die Migration aufgeweicht) —
+  neue Fixtures sollten das vollständige reale Tabellenset abbilden.
+- Neuer Test `test/data/database/map_index_migration_v26_test.dart` prüft u.a. per
+  `EXPLAIN QUERY PLAN`, dass der Index tatsächlich genutzt wird und kein `SCAN` mehr auftritt.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **474/474 grün**.
+
+**Noch offen aus dem Plan:** 838 Übungs-SVGs à ~24 KB werden zur Laufzeit geparst
+(`vector_graphics_compiler` ist bereits Abhängigkeit) · 36-MB-JSON wird beim Erststart am Stück
+im UI-Isolate geparst · 149 MB Assets / 72-MB-DB-Kopie · 35 nicht-lazy Listen · `jsonDecode` in
+`build()` (u.a. `marker_detail_screen.dart`).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-07-31 — v0.8.5, Performance: Release-Build + Bild-Dekodierung)
 
 **Nutzer meldete: App läuft trotz gutem Handy sehr ruckelig. Statt zu raten wurde der Code quer
 über alle Module analysiert; Gesamtplan liegt in

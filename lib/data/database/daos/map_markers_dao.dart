@@ -22,7 +22,11 @@ class MapMarkersDao extends DatabaseAccessor<TraumDatabase>
       (select(mapMarkers)..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
           .get();
 
-  Future<List<MapMarker>> search(int collectionId, String q) =>
+  /// Textsuche innerhalb einer Collection. Begrenzt, weil ein kurzer Suchbegriff
+  /// in den importierten Collections (413k Türme, 82k Lost Places) sonst
+  /// zehntausende Treffer liefert, die alle gerendert werden müssten.
+  Future<List<MapMarker>> search(int collectionId, String q,
+          {int limit = 500}) =>
       (select(mapMarkers)
             ..where((t) =>
                 t.collectionId.equals(collectionId) &
@@ -30,7 +34,19 @@ class MapMarkersDao extends DatabaseAccessor<TraumDatabase>
                     t.hashtags.like('%$q%') |
                     t.locationName.like('%$q%') |
                     t.title.like('%$q%')))
-            ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
+            ..orderBy([(t) => OrderingTerm.desc(t.createdAt)])
+            ..limit(limit))
+          .get();
+
+  /// Neueste Marker einer Collection mit Obergrenze — für Listen-/Galerie-
+  /// Ansichten, die sonst über `getByCollection` die komplette Collection
+  /// laden würden.
+  Future<List<MapMarker>> getRecentByCollection(int collectionId,
+          {int limit = 500}) =>
+      (select(mapMarkers)
+            ..where((t) => t.collectionId.equals(collectionId))
+            ..orderBy([(t) => OrderingTerm.desc(t.createdAt)])
+            ..limit(limit))
           .get();
 
   Future<int> insert(MapMarkersCompanion c) => into(mapMarkers).insert(c);
@@ -88,6 +104,24 @@ class MapMarkersDao extends DatabaseAccessor<TraumDatabase>
             ..orderBy([(t) => OrderingTerm.desc(t.createdAt)])
             ..limit(1))
           .getSingleOrNull();
+
+  /// Nur die nicht-leeren Hashtag-Strings einer Collection — nicht die
+  /// kompletten Marker-Zeilen. Die Hashtag-Leiste braucht ausschließlich diese
+  /// eine Spalte; importierte Datensätze (Türme/Lost Places) haben ohnehin nie
+  /// Hashtags, wodurch die Bedingung `hashtags != ''` bei genau den großen
+  /// Collections fast alles wegfiltert, statt hunderttausende Zeilen samt aller
+  /// Spalten in den Speicher zu laden.
+  Future<List<String>> hashtagStringsForCollection(int collectionId) async {
+    final query = selectOnly(mapMarkers)
+      ..addColumns([mapMarkers.hashtags])
+      ..where(mapMarkers.collectionId.equals(collectionId) &
+          mapMarkers.hashtags.equals('').not());
+    final rows = await query.get();
+    return rows
+        .map((r) => r.read(mapMarkers.hashtags))
+        .whereType<String>()
+        .toList();
+  }
 
   /// Marker einer Collection innerhalb eines Lat/Lon-Rechtecks (aktueller
   /// Kartenausschnitt), mit Obergrenze — verhindert, dass sehr große

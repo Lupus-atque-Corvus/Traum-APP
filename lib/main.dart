@@ -88,6 +88,13 @@ void main() async {
       LostPlaceDataSeeder.seedIfNeeded(db, prefs),
     ]);
 
+    // Erst NACH den Karten-Seedern: bei einer Neuinstallation läuft keine
+    // Migration, die Indizes müssen also hier angelegt werden — und zwar nach
+    // dem Import, weil ein bereits bestehender Index den einmaligen Import von
+    // ~496.000 Zeilen bei jeder Zeile mitgepflegt werden müsste. Idempotent
+    // (`IF NOT EXISTS`), bei jedem weiteren Start also ein billiger No-Op.
+    await db.createMapPerformanceIndexes();
+
     await RecurringPoster.runIfNeeded(db);
   });
 }

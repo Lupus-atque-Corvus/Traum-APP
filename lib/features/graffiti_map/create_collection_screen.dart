@@ -61,7 +61,13 @@ class _CreateCollectionScreenState
       } catch (_) {}
       _autoGroup = autoGroupFromConfig(c.fieldConfig);
     }
-    if (widget.collection != null) _loadPoints(widget.collection!.id);
+    // Nur laden, wenn die Auto-Gruppierung aktiv ist — nur dann wird die
+    // Vorschau „N Fotos → M Orte" überhaupt angezeigt. Ohne diese Bedingung
+    // lud allein das Öffnen des Bearbeiten-Screens alle Marker UND alle Fotos
+    // der Collection (bei den importierten Karten hunderttausende Zeilen).
+    if (widget.collection != null && _autoGroup) {
+      _loadPoints(widget.collection!.id);
+    }
   }
 
   @override
@@ -343,7 +349,14 @@ class _CreateCollectionScreenState
             contentPadding: EdgeInsets.zero,
             activeThumbColor: accent,
             value: _autoGroup,
-            onChanged: (v) => setState(() => _autoGroup = v),
+            onChanged: (v) {
+              setState(() => _autoGroup = v);
+              // Punkte werden erst bei Bedarf geladen (siehe initState) —
+              // beim Einschalten hier nachholen.
+              if (v && _points.isEmpty && widget.collection != null) {
+                _loadPoints(widget.collection!.id);
+              }
+            },
             title: Text(AppLocalizations.of(context)!.mapAutoGroupPhotos,
                 style: TextStyle(
                     fontFamily: 'DMSans', color: TraumColors.onBackground)),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
@@ -525,13 +526,31 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     // Auto-Gruppieren: Foto im Radius eines vorhandenen Punktes direkt anhängen.
     if (autoGroupFromConfig(collection.fieldConfig) &&
         result.latitude != null) {
-      final markers = await ref.read(mapMarkersDaoProvider).getByCollection(id);
+      final radiusM = groupRadiusFromConfig(collection.fieldConfig);
+      // Nur Marker im Umkreis laden statt der kompletten Collection: für die
+      // Nachbarschaftssuche zählt ohnehin nur der Gruppierungs-Radius (typisch
+      // 50 m). Bei den importierten Collections wären das sonst
+      // hunderttausende Zeilen für das Anhängen eines einzelnen Fotos.
+      // 1° Breite ≈ 111,32 km; bei der Länge kommt der Breitengrad-Faktor
+      // hinzu. Großzügig aufgerundet, die exakte Distanzprüfung macht
+      // anschließend `nearestMarkerWithin`.
+      final latDelta = radiusM / 111320.0;
+      final lonDelta = radiusM /
+          (111320.0 * math.max(0.01, math.cos(result.latitude! * math.pi / 180)));
+      final markers =
+          await ref.read(mapMarkersDaoProvider).getByCollectionInBounds(
+                id,
+                minLat: result.latitude! - latDelta,
+                maxLat: result.latitude! + latDelta,
+                minLon: result.longitude! - lonDelta,
+                maxLon: result.longitude! + lonDelta,
+              );
       final pts = markers
           .where((m) => m.latitude != null)
           .map((m) => (m.id, m.latitude!, m.longitude!))
           .toList();
-      final attachId = nearestMarkerWithin(pts, result.latitude!,
-          result.longitude!, groupRadiusFromConfig(collection.fieldConfig));
+      final attachId = nearestMarkerWithin(
+          pts, result.latitude!, result.longitude!, radiusM);
       if (attachId != null) {
         final db = ref.read(databaseProvider);
         final dims = await readImageDimensions(result.photoPath);

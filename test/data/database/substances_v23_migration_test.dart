@@ -68,6 +68,22 @@ void main() {
         created_at INTEGER NOT NULL
       )
     ''');
+    // Existiert in echten Datenbanken seit v12 — wird ab der v26-Migration
+    // gebraucht (Index auf marker_id).
+    raw.execute('''
+      CREATE TABLE marker_photos (
+        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        marker_id INTEGER NOT NULL REFERENCES map_markers(id),
+        photo_path TEXT NOT NULL,
+        thumbnail_path TEXT,
+        width_px INTEGER,
+        height_px INTEGER,
+        latitude REAL,
+        longitude REAL,
+        taken_at INTEGER NOT NULL,
+        created_at INTEGER NOT NULL
+      )
+    ''');
     raw.execute('PRAGMA user_version = 22');
 
     final db = TraumDatabase.forTesting(NativeDatabase.opened(raw));
