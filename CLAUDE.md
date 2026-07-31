@@ -1,12 +1,52 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.6+86** · schemaVersion **26**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.7+87** · schemaVersion **26**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-31 — v0.8.6, Performance Phase 2: fehlende DB-Indizes)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-01 — v0.8.7, Performance Phase 3: Übungs-Icons vorkompiliert)
+
+**Fortsetzung der Performance-Arbeit (Plan:
+`docs/superpowers/plans/2026-07-31-performance-optimierung.md` im Haupt-Repo).**
+
+Die 838 bespoke Übungs-Icons lagen als SVG vor (~24 KB im Schnitt, größtes 57 KB, zusammen
+20 MB) und wurden von `flutter_svg` **zur Laufzeit geparst** — beim Scrollen durch die
+Übungsbibliothek/-auswahl also pro sichtbarer Zeile ein kompletter XML- und Pfad-Parse.
+
+- **Vorkompiliert nach `.vec`** (Binärformat von `vector_graphics`, bereits geparst) mit dem
+  ohnehin vorhandenen `vector_graphics_compiler`:
+  ```
+  dart run vector_graphics_compiler \
+    --input-dir assets/exercises/icons_exercise \
+    --out-dir assets/exercises/icons_exercise_vec
+  ```
+  Ergebnis: **13 MB statt 20 MB**, und zur Laufzeit entfällt das Parsen komplett.
+- **Dateinamen:** Der Compiler hängt `.vec` an den vollständigen Quellnamen an →
+  `<slug>.svg.vec` (nicht `<slug>.vec`).
+- **Auslieferung:** `assets/exercises/icons_exercise/` (die .svg-Quellen) ist **nicht mehr** im
+  `assets:`-Block von `pubspec.yaml` — sonst lägen beide Formate im Bundle (33 MB). Die Quellen
+  bleiben im Repo, damit die .vec neu erzeugt werden können.
+- `ExerciseIcon` nutzt für bespoke Icons jetzt `VectorGraphic(loader: AssetBytesLoader(...))`,
+  für die 9 generischen Muskelgruppen-Icons weiterhin `SvgPicture` (winzig, kein Gewinn).
+  `vector_graphics` ist dafür als direkte Abhängigkeit ergänzt (war vorher nur transitiv).
+- **Testfalle beim Prüfen:** `SvgPicture` rendert intern selbst ein `VectorGraphic` — ein
+  `find.byType(VectorGraphic)` matcht deshalb in **beiden** Fällen. Aussagekräftig ist die
+  **Abwesenheit von `SvgPicture`**; genau so prüft der Test jetzt.
+- Neuer Test stellt sicher, dass zu **jedem** Slug im generierten Manifest auch eine kompilierte
+  `.vec` existiert — sonst fiele ein künftiger Icon-Batch erst zur Laufzeit als fehlendes Asset
+  auf. **Nach jedem neuen Icon-Batch also den Compiler erneut laufen lassen.**
+
+`flutter analyze` → **0 Issues**. `flutter test` → **477/477 grün**.
+
+**Noch offen aus dem Plan:** 36-MB-JSON wird beim Erststart am Stück im UI-Isolate geparst ·
+149 MB Assets inkl. 72-MB-DB, die beim ersten Start nochmal kopiert wird · 35 nicht-lazy Listen ·
+`jsonDecode` in `build()` (u.a. `marker_detail_screen.dart`).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-07-31 — v0.8.6, Performance Phase 2: fehlende DB-Indizes)
 
 **Fortsetzung der Performance-Arbeit (Plan:
 `docs/superpowers/plans/2026-07-31-performance-optimierung.md` im Haupt-Repo).**

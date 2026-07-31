@@ -2,7 +2,7 @@ name: traum
 description: "TRAUM — Dein persönliches Dashboard"
 publish_to: 'none'
 
-version: 0.8.6+86
+version: 0.8.7+87
 
 environment:
   sdk: ^3.9.2
@@ -97,6 +97,15 @@ dependencies:
 
   # SVG
   flutter_svg: ^2.0.10+1
+  # Vorkompilierte Vektorgrafiken (.vec) für die 838 Übungs-Icons: das
+  # Binärformat ist bereits geparst, zur Laufzeit entfallen XML- und
+  # Pfad-Parsing komplett. Neu erzeugen mit:
+  #   dart run vector_graphics_compiler \
+  #     --input-dir assets/exercises/icons_exercise \
+  #     --out-dir assets/exercises/icons_exercise_vec
+  # (Die .svg-Quellen bleiben im Repo, werden aber NICHT mehr mit
+  # ausgeliefert — siehe assets-Abschnitt unten.)
+  vector_graphics: ^1.2.2
 
   # Gerätinfos
   device_info_plus: ^11.0.0
@@ -190,7 +199,10 @@ flutter:
   assets:
     - assets/exercises/
     - assets/exercises/icons/
-    - assets/exercises/icons_exercise/
+    # assets/exercises/icons_exercise/ (die .svg-Quellen, 20 MB) wird bewusst
+    # NICHT ausgeliefert — nur die daraus vorkompilierten .vec-Dateien (13 MB).
+    # Die Quellen bleiben im Repo, um die .vec neu erzeugen zu können.
+    - assets/exercises/icons_exercise_vec/
     - assets/supplements/
     - assets/svg/
     - assets/icons/progress/

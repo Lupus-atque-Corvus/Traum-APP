@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:vector_graphics/vector_graphics.dart';
 
 import '../exercise_icon_slug.dart';
 import 'generated/exercise_icon_manifest.dart';
@@ -21,7 +22,12 @@ class ExerciseIcon extends StatelessWidget {
     this.exerciseName,
   });
 
-  static const String _bespokeDir = 'assets/exercises/icons_exercise';
+  /// Vorkompilierte Vektorgrafiken (.vec) der 838 bespoke Übungs-Icons.
+  /// Die .svg-Quellen liegen weiterhin unter `assets/exercises/icons_exercise/`
+  /// im Repo, werden aber nicht mit ausgeliefert: das Binärformat ist bereits
+  /// geparst, wodurch beim Scrollen durch die Übungsliste kein XML- und
+  /// Pfad-Parsing mehr pro Zeile anfällt (die SVGs sind im Schnitt ~24 KB groß).
+  static const String _bespokeDir = 'assets/exercises/icons_exercise_vec';
 
   static const Map<String, String> _assetMap = {
     'chest':     'assets/exercises/icons/chest.svg',
@@ -57,10 +63,11 @@ class ExerciseIcon extends StatelessWidget {
     if (name != null) {
       final slug = slugifyExerciseName(name);
       if (kExerciseIconSlugs.contains(slug)) {
-        bespokeAsset = '$_bespokeDir/$slug.svg';
+        // Der Compiler hängt `.vec` an den vollständigen Quellnamen an,
+        // daher `<slug>.svg.vec`.
+        bespokeAsset = '$_bespokeDir/$slug.svg.vec';
       }
     }
-    final asset = bespokeAsset ?? _assetMap[muscleGroup] ?? _assetMap['full_body']!;
     final color = muscleGroupColor(muscleGroup);
 
     return Container(
@@ -73,7 +80,12 @@ class ExerciseIcon extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.all(size * 0.12),
-        child: SvgPicture.asset(asset),
+        // Bespoke Übungs-Icons als vorkompilierte Vektorgrafik, die generischen
+        // Muskelgruppen-Icons (9 Stück, sehr klein) weiterhin als SVG.
+        child: bespokeAsset != null
+            ? VectorGraphic(loader: AssetBytesLoader(bespokeAsset))
+            : SvgPicture.asset(
+                _assetMap[muscleGroup] ?? _assetMap['full_body']!),
       ),
     );
   }
