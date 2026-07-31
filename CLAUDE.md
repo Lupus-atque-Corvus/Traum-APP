@@ -22,7 +22,11 @@ Die 838 bespoke Übungs-Icons lagen als SVG vor (~24 KB im Schnitt, größtes 57
     --input-dir assets/exercises/icons_exercise \
     --out-dir assets/exercises/icons_exercise_vec
   ```
-  Ergebnis: **13 MB statt 20 MB**, und zur Laufzeit entfällt das Parsen komplett.
+  Ergebnis: Das Parsen entfällt zur Laufzeit komplett — **das ist der eigentliche Gewinn.**
+  **Nicht** der Speicherplatz: unkomprimiert sind es zwar 13 MB statt 20 MB, im APK ist das
+  Ergebnis aber sogar minimal größer (177,2 statt 176,4 MB), weil SVG als XML sehr gut
+  komprimiert (~5×) und das Binärformat kaum. Verifiziert per `unzip -l`: 838 `.vec` im APK,
+  0 `.svg`.
 - **Dateinamen:** Der Compiler hängt `.vec` an den vollständigen Quellnamen an →
   `<slug>.svg.vec` (nicht `<slug>.vec`).
 - **Auslieferung:** `assets/exercises/icons_exercise/` (die .svg-Quellen) ist **nicht mehr** im
