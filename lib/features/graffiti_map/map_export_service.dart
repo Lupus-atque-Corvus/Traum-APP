@@ -6,7 +6,11 @@ import 'package:share_plus/share_plus.dart';
 import '../../data/database/traum_database.dart';
 
 class MapExportService {
-  static Future<void> exportGpx(TraumDatabase db, MapCollection c) async {
+  static Future<void> exportGpx(
+    TraumDatabase db,
+    MapCollection c, {
+    required String unnamedPointLabel,
+  }) async {
     final markers = await db.mapMarkersDao.getByCollection(c.id);
     final visible = markers.where((m) => !m.isHidden && m.latitude != null);
     final gpx = Gpx()
@@ -17,7 +21,7 @@ class MapExportService {
                 lon: m.longitude,
                 name: m.title.isNotEmpty
                     ? m.title
-                    : (m.locationName ?? 'Punkt'),
+                    : (m.locationName ?? unnamedPointLabel),
                 desc: m.note,
               ))
           .toList();

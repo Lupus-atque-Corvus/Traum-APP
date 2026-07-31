@@ -1,12 +1,51 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.3+83** · schemaVersion **25**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.4+84** · schemaVersion **25**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-31 — v0.8.3, Lost-Places-Kartensammlung)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-07-31 — v0.8.4, Graffiti-Map zweisprachig de/en)
+
+**User bat darum, die Graffiti-Map-Funktion (Feld-Labels, Dropdown-Optionen, Karten-/Vorlagennamen,
+Bedienelemente) vollständig zweisprachig (de/en) zu machen — bestehende Beschreibungstexte der
+importierten Lost-Places/Türme-Datensätze bleiben bewusst in ihrer Originalsprache (User-
+Entscheidung: Massen-Übersetzung von 82k+ Freitext-Einträgen ist etwas anderes als App-UI und
+wurde explizit zurückgestellt).**
+
+- **Fund vor der Umsetzung:** Ein Großteil der nötigen ARB-Strings (Feld-Labels wie
+  `mapFieldCondition`, Vorlagen-Namen wie `mapTemplateTowers`, diverse `graffitiMap*`-Screen-Texte)
+  existierte bereits vollständig übersetzt in `app_de.arb`/`app_en.arb` — war aber nie verdrahtet
+  (Screens nutzten stattdessen hartkodierte deutsche String-Literale). Nur ~30 wirklich neue Keys
+  waren nötig (die 3 Turm-Feld-Labels, alle 12 Dropdown-Options-Werte, eine Handvoll Screen-Strings).
+- **Architektur-Entscheidung — Anzeige-Resolver statt Datenmigration:** Feld-Labels/Options-Werte
+  sind seit jeher als rohe deutsche Strings in `map_collections.field_config` (pro Karte, seit
+  Erstellung eingefroren) UND in jedem Marker `customFields` (496k+ Bestandszeilen: 413k Türme +
+  82k Lost Places) gespeichert. Statt einer riskanten Massen-Migration dieser Bestandsdaten gibt es
+  jetzt `field_system/field_localization.dart` mit 4 reinen Anzeige-Resolvern
+  (`localizedFieldLabel`, `localizedOptionValue`, `localizedCollectionName`,
+  `localizedTemplateDisplayName`), die einen stabilen Schlüssel (Feld-`key`, roher Options-Wert,
+  bzw. Icon+Name-Paar) auf den passenden ARB-String der aktuellen Locale abbilden — unbekannte
+  (eigene, vom User angelegte) Felder/Optionen/Karten kommen unverändert durch. Speicherung bleibt
+  komplett unangetastet (kein Schema-Update, kein Datenmigrationsrisiko für die 496k Zeilen).
+  `localizedCollectionName` matched bewusst auf **Icon UND Namen exakt** (nicht nur Icon), damit
+  eine vom User umbenannte oder mit demselben Icon neu angelegte eigene Karte nie versehentlich
+  überschrieben wird.
+- Verdrahtet in: `dynamic_marker_sheet.dart`, `marker_detail_screen.dart`, `graffiti_map_screen.dart`,
+  `create_collection_screen.dart`, `map_gallery_screen.dart`, `settings_screen.dart` (Karten-Export-
+  Liste). `map_export_service.dart` bekam einen neuen `unnamedPointLabel`-Parameter (statischer
+  Service ohne `BuildContext` — Fallback-Text wird jetzt vom Aufrufer übergeben statt intern
+  hartkodiert). `map_tile_config.dart`s `mapModeLabel` (Standard/Satellit/Hybrid) bewusst NICHT
+  angefasst — verifiziert unbenutzter toter Code, keine Aufrufstelle im ganzen Repo.
+- Neue Tests: `test/features/graffiti_map/field_localization_test.dart` (alle 4 Resolver, je
+  de+en, inkl. Regressionstest dass ein umbenanntes/eigenes-Icon-wiederverwendendes User-Kollektion
+  nie fälschlich übersetzt wird). `flutter analyze` → 1 vorbestehende unabhängige Warnung.
+  `flutter test` → 471/471 grün.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-07-31 — v0.8.3, Lost-Places-Kartensammlung)
 
 **User schickte eine "LostPlace.Club"-APK und mehrere Urbex-Webseiten/-Links mit der Frage, ob
 sich daraus Daten für die (bereits vorhandene, aber leere) "Lost Places"-Kartensammlung ziehen

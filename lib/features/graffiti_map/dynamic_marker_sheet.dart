@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
+import 'field_system/field_localization.dart';
 import 'field_system/map_field.dart';
 import 'graffiti_map_provider.dart';
 import 'map_widgets.dart';
@@ -205,7 +206,7 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                       locName ??
                           (lat != null
                               ? '${lat.toStringAsFixed(4)}, ${lon!.toStringAsFixed(4)}'
-                              : 'Kein Standort'),
+                              : AppLocalizations.of(context)!.graffitiMapNoLocation),
                       style: const TextStyle(
                         fontFamily: 'DMSans',
                         color: TraumColors.onBackgroundMuted,
@@ -228,7 +229,7 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
               // Mehrfoto: neuer Eintrag oder zu bestehendem hinzufügen
               // (nur sinnvoll, wenn ein Foto angehängt wird)
               if (r != null && _multiPhoto && _existing.isNotEmpty) ...[
-                _label('Eintrag'),
+                _label(AppLocalizations.of(context)!.mapEntryLabel),
                 const SizedBox(height: 6),
                 DropdownButtonFormField<int?>(
                   initialValue: _attachToMarkerId,
@@ -246,7 +247,8 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                           child: Text(
                             m.title.isNotEmpty
                                 ? m.title
-                                : (m.locationName ?? 'Punkt #${m.id}'),
+                                : (m.locationName ??
+                                    '${AppLocalizations.of(context)!.mapUnnamedPoint} #${m.id}'),
                             overflow: TextOverflow.ellipsis,
                           ),
                         )),
@@ -258,20 +260,21 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
 
               // Name: bei multiPhoto-Neueintrag ODER bei fotolosem Punkt
               if (_attachToMarkerId == null && (_multiPhoto || r == null)) ...[
-                _label('Name'),
+                _label(AppLocalizations.of(context)!.mapTowerName),
                 const SizedBox(height: 6),
                 TextField(
                   controller: _titleController,
                   style: const TextStyle(
                       fontFamily: 'DMSans', color: TraumColors.onBackground),
-                  decoration: mapInputDecoration('Name…'),
+                  decoration: mapInputDecoration(
+                      AppLocalizations.of(context)!.mapNameFieldHint),
                 ),
                 const SizedBox(height: 14),
               ],
 
               // Sterne
               if (_hasRating && _attachToMarkerId == null) ...[
-                _label('Bewertung'),
+                _label(AppLocalizations.of(context)!.mapRating),
                 const SizedBox(height: 6),
                 StarRatingInput(
                   rating: _rating,
@@ -286,19 +289,20 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
 
               // Notiz
               if (_attachToMarkerId == null) ...[
-                _label('Notiz'),
+                _label(AppLocalizations.of(context)!.mapNoteLabel),
                 const SizedBox(height: 6),
                 TextField(
                   controller: _noteController,
                   maxLines: 3,
                   style: const TextStyle(
                       fontFamily: 'DMSans', color: TraumColors.onBackground),
-                  decoration: mapInputDecoration('Notiz hinzufügen…'),
+                  decoration: mapInputDecoration(
+                      AppLocalizations.of(context)!.graffitiMapNote),
                 ),
                 const SizedBox(height: 14),
 
                 // Hashtags
-                _label('Hashtags'),
+                _label(AppLocalizations.of(context)!.mapHashtagsLabel),
                 const SizedBox(height: 6),
                 if (_hashtags.isNotEmpty)
                   Wrap(
@@ -324,7 +328,8 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                   controller: _hashtagController,
                   style: const TextStyle(
                       fontFamily: 'DMSans', color: TraumColors.onBackground),
-                  decoration: mapInputDecoration('Hashtag eingeben'),
+                  decoration: mapInputDecoration(
+                      AppLocalizations.of(context)!.graffitiMapHashtag),
                   onSubmitted: _addHashtag,
                 ),
                 const SizedBox(height: 20),
@@ -349,9 +354,9 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                             child: CircularProgressIndicator(
                                 strokeWidth: 2, color: Colors.white),
                           )
-                        : const Text(
-                            'Speichern',
-                            style: TextStyle(
+                        : Text(
+                            AppLocalizations.of(context)!.graffitiMapSave,
+                            style: const TextStyle(
                               fontFamily: 'DMSans',
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
@@ -385,7 +390,7 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _label(field.label),
+          _label(localizedFieldLabel(context, field.key, field.label)),
           const SizedBox(height: 6),
           switch (field.type) {
             MapFieldType.select => Wrap(
@@ -411,7 +416,7 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                             width: 1.5),
                       ),
                       child: Text(
-                        opt.value,
+                        localizedOptionValue(context, opt.value),
                         style: TextStyle(
                           fontFamily: 'DMSans',
                           color: sel ? color : TraumColors.onBackgroundMuted,
@@ -433,7 +438,8 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                 onChanged: (v) => _values[field.key] = v,
                 style: const TextStyle(
                     fontFamily: 'DMSans', color: TraumColors.onBackground),
-                decoration: mapInputDecoration('Eingeben…'),
+                decoration: mapInputDecoration(
+                    AppLocalizations.of(context)!.mapEnterHint),
               ),
             MapFieldType.number => TextField(
                 keyboardType: TextInputType.number,

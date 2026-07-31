@@ -7328,6 +7328,222 @@ abstract class AppLocalizations {
   /// **'Kein Standort'**
   String get graffitiMapNoLocation;
 
+  /// No description provided for @mapFieldTowerType.
+  ///
+  /// In de, this message translates to:
+  /// **'Turmtyp'**
+  String get mapFieldTowerType;
+
+  /// No description provided for @mapFieldTowerHeight.
+  ///
+  /// In de, this message translates to:
+  /// **'Höhe (m)'**
+  String get mapFieldTowerHeight;
+
+  /// No description provided for @mapFieldTowerOperator.
+  ///
+  /// In de, this message translates to:
+  /// **'Betreiber'**
+  String get mapFieldTowerOperator;
+
+  /// No description provided for @mapOptionDecayed.
+  ///
+  /// In de, this message translates to:
+  /// **'Verfallen'**
+  String get mapOptionDecayed;
+
+  /// No description provided for @mapOptionPartiallyPreserved.
+  ///
+  /// In de, this message translates to:
+  /// **'Teilweise erhalten'**
+  String get mapOptionPartiallyPreserved;
+
+  /// No description provided for @mapOptionWellPreserved.
+  ///
+  /// In de, this message translates to:
+  /// **'Gut erhalten'**
+  String get mapOptionWellPreserved;
+
+  /// No description provided for @mapOptionFreelyAccessible.
+  ///
+  /// In de, this message translates to:
+  /// **'Frei zugänglich'**
+  String get mapOptionFreelyAccessible;
+
+  /// No description provided for @mapOptionFence.
+  ///
+  /// In de, this message translates to:
+  /// **'Zaun'**
+  String get mapOptionFence;
+
+  /// No description provided for @mapOptionLocked.
+  ///
+  /// In de, this message translates to:
+  /// **'Verschlossen'**
+  String get mapOptionLocked;
+
+  /// No description provided for @mapOptionDangerous.
+  ///
+  /// In de, this message translates to:
+  /// **'Gefährlich'**
+  String get mapOptionDangerous;
+
+  /// No description provided for @mapOptionPlanned.
+  ///
+  /// In de, this message translates to:
+  /// **'Geplant'**
+  String get mapOptionPlanned;
+
+  /// No description provided for @mapOptionVisited.
+  ///
+  /// In de, this message translates to:
+  /// **'Besucht'**
+  String get mapOptionVisited;
+
+  /// No description provided for @mapOptionRadioMast.
+  ///
+  /// In de, this message translates to:
+  /// **'Funkmast'**
+  String get mapOptionRadioMast;
+
+  /// No description provided for @mapOptionTransmissionMast.
+  ///
+  /// In de, this message translates to:
+  /// **'Sendemast'**
+  String get mapOptionTransmissionMast;
+
+  /// No description provided for @mapOptionOtherType.
+  ///
+  /// In de, this message translates to:
+  /// **'Sonstige'**
+  String get mapOptionOtherType;
+
+  /// No description provided for @mapEditCollectionTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Karte bearbeiten'**
+  String get mapEditCollectionTitle;
+
+  /// No description provided for @mapIconLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Icon'**
+  String get mapIconLabel;
+
+  /// No description provided for @mapColorLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Farbe'**
+  String get mapColorLabel;
+
+  /// No description provided for @mapGroupRadiusLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Gruppierungs-Radius'**
+  String get mapGroupRadiusLabel;
+
+  /// No description provided for @mapAutoGroupDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Fotos im Umkreis werden zu einem Ort zusammengefasst'**
+  String get mapAutoGroupDescription;
+
+  /// No description provided for @mapNameHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Kartenname…'**
+  String get mapNameHint;
+
+  /// No description provided for @mapLabelHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Bezeichnung'**
+  String get mapLabelHint;
+
+  /// No description provided for @mapOptionsCommaHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Optionen, mit Komma getrennt'**
+  String get mapOptionsCommaHint;
+
+  /// No description provided for @mapPhotoLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto'**
+  String get mapPhotoLabel;
+
+  /// No description provided for @mapImportLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Import'**
+  String get mapImportLabel;
+
+  /// No description provided for @mapUndoAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Rückgängig'**
+  String get mapUndoAction;
+
+  /// No description provided for @mapUnnamedPoint.
+  ///
+  /// In de, this message translates to:
+  /// **'Punkt'**
+  String get mapUnnamedPoint;
+
+  /// No description provided for @mapNameFieldHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Name…'**
+  String get mapNameFieldHint;
+
+  /// No description provided for @mapEnterHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Eingeben…'**
+  String get mapEnterHint;
+
+  /// No description provided for @mapNoEntriesYet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Einträge'**
+  String get mapNoEntriesYet;
+
+  /// No description provided for @mapModeStandard.
+  ///
+  /// In de, this message translates to:
+  /// **'Standard'**
+  String get mapModeStandard;
+
+  /// No description provided for @mapModeSatellite.
+  ///
+  /// In de, this message translates to:
+  /// **'Satellit'**
+  String get mapModeSatellite;
+
+  /// No description provided for @mapModeHybrid.
+  ///
+  /// In de, this message translates to:
+  /// **'Hybrid'**
+  String get mapModeHybrid;
+
+  /// No description provided for @mapEntryLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag'**
+  String get mapEntryLabel;
+
+  /// No description provided for @mapNoteLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz'**
+  String get mapNoteLabel;
+
+  /// No description provided for @mapHashtagsLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Hashtags'**
+  String get mapHashtagsLabel;
+
   /// No description provided for @mapCreateTitle.
   ///
   /// In de, this message translates to:

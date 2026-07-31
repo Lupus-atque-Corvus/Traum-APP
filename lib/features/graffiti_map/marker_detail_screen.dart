@@ -14,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
+import 'field_system/field_localization.dart';
 import 'field_system/map_field.dart';
 import 'graffiti_map_provider.dart';
 import 'map_visuals.dart';
@@ -423,7 +424,8 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                 if (_distanceMeters != null) ...[
                   const SizedBox(height: 6),
                   Text(
-                    '${_formatDistance(_distanceMeters!)} von dir',
+                    AppLocalizations.of(context)!
+                        .mapDistanceFromYou(_formatDistance(_distanceMeters!)),
                     style: const TextStyle(
                         fontFamily: 'DMSans',
                         color: TraumColors.onBackgroundMuted,
@@ -525,7 +527,7 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                     color: color.withValues(alpha: 0.18),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Text('$v',
+                  child: Text(localizedOptionValue(context, '$v'),
                       style: TextStyle(
                           fontFamily: 'DMSans',
                           color: color,
@@ -545,7 +547,7 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                   Icon(mapFieldIcon(f.iconName),
                       size: 16, color: TraumColors.cyanBlue),
                   const SizedBox(width: 8),
-                  Text(f.label,
+                  Text(localizedFieldLabel(context, f.key, f.label),
                       style: const TextStyle(
                           fontFamily: 'DMSans',
                           color: TraumColors.onBackground,
@@ -565,7 +567,7 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                 Icon(mapFieldIcon(f.iconName),
                     size: 16, color: TraumColors.onBackgroundMuted),
                 const SizedBox(width: 8),
-                Text('${f.label}: ',
+                Text('${localizedFieldLabel(context, f.key, f.label)}: ',
                     style: const TextStyle(
                         fontFamily: 'DMSans',
                         color: TraumColors.onBackgroundMuted,

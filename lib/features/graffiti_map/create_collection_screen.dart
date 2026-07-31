@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
+import 'field_system/field_localization.dart';
 import 'field_system/map_field.dart';
 import 'field_system/map_templates.dart';
 import 'field_system/predefined_fields.dart';
@@ -185,7 +186,10 @@ class _CreateCollectionScreenState
           icon: const Icon(Icons.arrow_back, color: TraumColors.onBackground),
           onPressed: () => context.pop(),
         ),
-        title: Text(_isEditing ? 'Karte bearbeiten' : 'Neue Karte erstellen',
+        title: Text(
+            _isEditing
+                ? AppLocalizations.of(context)!.mapEditCollectionTitle
+                : AppLocalizations.of(context)!.mapCreateTitle,
             style: const TextStyle(
                 fontFamily: 'DMSans',
                 color: TraumColors.onBackground,
@@ -195,7 +199,7 @@ class _CreateCollectionScreenState
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
         children: [
           if (!_isEditing) ...[
-            _sectionLabel('Vorlage wählen'),
+            _sectionLabel(AppLocalizations.of(context)!.mapTemplate),
             const SizedBox(height: 8),
             GridView.count(
               crossAxisCount: 2,
@@ -230,7 +234,7 @@ class _CreateCollectionScreenState
                         ),
                         const SizedBox(width: 10),
                         Expanded(
-                          child: Text(t.name,
+                          child: Text(localizedTemplateDisplayName(context, t),
                               style: const TextStyle(
                                   fontFamily: 'DMSans',
                                   color: TraumColors.onBackground,
@@ -246,17 +250,18 @@ class _CreateCollectionScreenState
             const SizedBox(height: 20),
           ],
 
-          _sectionLabel('Name'),
+          _sectionLabel(AppLocalizations.of(context)!.mapTowerName),
           const SizedBox(height: 8),
           TextField(
             controller: _nameController,
             style: const TextStyle(
                 fontFamily: 'DMSans', color: TraumColors.onBackground),
-            decoration: mapInputDecoration('Kartenname…'),
+            decoration: mapInputDecoration(
+                AppLocalizations.of(context)!.mapNameHint),
           ),
           const SizedBox(height: 20),
 
-          _sectionLabel('Icon'),
+          _sectionLabel(AppLocalizations.of(context)!.mapIconLabel),
           const SizedBox(height: 8),
           Wrap(
             spacing: 10,
@@ -285,7 +290,7 @@ class _CreateCollectionScreenState
           ),
           const SizedBox(height: 20),
 
-          _sectionLabel('Farbe'),
+          _sectionLabel(AppLocalizations.of(context)!.mapColorLabel),
           const SizedBox(height: 8),
           Wrap(
             spacing: 12,
@@ -314,7 +319,7 @@ class _CreateCollectionScreenState
           ),
           const SizedBox(height: 20),
 
-          _sectionLabel('Funktionen'),
+          _sectionLabel(AppLocalizations.of(context)!.mapFunctions),
           const SizedBox(height: 4),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
@@ -342,16 +347,16 @@ class _CreateCollectionScreenState
             title: Text(AppLocalizations.of(context)!.mapAutoGroupPhotos,
                 style: TextStyle(
                     fontFamily: 'DMSans', color: TraumColors.onBackground)),
-            subtitle: const Text(
-                'Fotos im Umkreis werden zu einem Ort zusammengefasst',
-                style: TextStyle(
+            subtitle: Text(
+                AppLocalizations.of(context)!.mapAutoGroupDescription,
+                style: const TextStyle(
                     fontFamily: 'DMSans',
                     color: TraumColors.onBackgroundMuted,
                     fontSize: 12)),
           ),
           if (_autoGroup) ...[
             const SizedBox(height: 8),
-            _sectionLabel('Gruppierungs-Radius'),
+            _sectionLabel(AppLocalizations.of(context)!.mapGroupRadiusLabel),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -397,7 +402,7 @@ class _CreateCollectionScreenState
           ],
           const SizedBox(height: 12),
 
-          _sectionLabel('Felder'),
+          _sectionLabel(AppLocalizations.of(context)!.mapFields),
           const SizedBox(height: 4),
           ...PredefinedFields.all.map((f) {
             final sel = _selectedFields.any((e) => e.key == f.key);
@@ -406,7 +411,7 @@ class _CreateCollectionScreenState
               activeColor: accent,
               value: sel,
               onChanged: (_) => _toggleField(f),
-              title: Text(f.label,
+              title: Text(localizedFieldLabel(context, f.key, f.label),
                   style: const TextStyle(
                       fontFamily: 'DMSans', color: TraumColors.onBackground)),
               secondary: Icon(mapFieldIcon(f.iconName),
@@ -451,7 +456,10 @@ class _CreateCollectionScreenState
               onPressed: _save,
               style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16)),
-              child: Text(_isEditing ? 'Speichern' : 'Karte erstellen',
+              child: Text(
+                  _isEditing
+                      ? AppLocalizations.of(context)!.save
+                      : AppLocalizations.of(context)!.mapCreateButton,
                   style: const TextStyle(
                       fontFamily: 'DMSans',
                       color: Colors.white,
@@ -531,7 +539,8 @@ class _CustomFieldDialogState extends State<_CustomFieldDialog> {
             controller: _labelController,
             style: const TextStyle(
                 fontFamily: 'DMSans', color: TraumColors.onBackground),
-            decoration: mapInputDecoration('Bezeichnung'),
+            decoration: mapInputDecoration(
+                AppLocalizations.of(context)!.mapLabelHint),
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<MapFieldType>(
@@ -559,8 +568,8 @@ class _CustomFieldDialogState extends State<_CustomFieldDialog> {
               controller: _optionsController,
               style: const TextStyle(
                   fontFamily: 'DMSans', color: TraumColors.onBackground),
-              decoration:
-                  mapInputDecoration('Optionen, mit Komma getrennt'),
+              decoration: mapInputDecoration(
+                  AppLocalizations.of(context)!.mapOptionsCommaHint),
             ),
           ],
         ],

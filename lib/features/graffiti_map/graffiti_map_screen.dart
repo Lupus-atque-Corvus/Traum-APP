@@ -20,6 +20,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
 import 'dynamic_marker_sheet.dart';
+import 'field_system/field_localization.dart';
 import 'graffiti_map_provider.dart';
 import 'map_config.dart';
 import 'map_tile_config.dart';
@@ -296,23 +297,23 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
               children: [
                 _actionButton(
                   icon: Icons.photo_camera_rounded,
-                  label: 'Foto',
+                  label: AppLocalizations.of(context)!.mapPhotoLabel,
                   primary: true,
                   onTap: () => _capturePhoto(ImageSource.camera),
                 ),
                 _actionButton(
                   icon: Icons.photo_library_outlined,
-                  label: 'Galerie',
+                  label: AppLocalizations.of(context)!.gallery,
                   onTap: () => context.go('/graffitimap/gallery'),
                 ),
                 _actionButton(
                   icon: Icons.add_photo_alternate_outlined,
-                  label: 'Import',
+                  label: AppLocalizations.of(context)!.mapImportLabel,
                   onTap: () => _capturePhoto(ImageSource.gallery),
                 ),
                 _actionButton(
                   icon: Icons.add_location_alt_outlined,
-                  label: 'Ort',
+                  label: AppLocalizations.of(context)!.location,
                   onTap: () => _createPointAt(_mapController.camera.center),
                 ),
               ],
@@ -551,7 +552,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
             SnackBar(
               content: Text(AppLocalizations.of(context)!.mapAddedToExisting),
               action: SnackBarAction(
-                label: 'Rückgängig',
+                label: AppLocalizations.of(context)!.mapUndoAction,
                 onPressed: () async {
                   await db.markerPhotosDao.deletePhoto(photoId);
                   try {
@@ -644,9 +645,9 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Karte wählen',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(ctx)!.graffitiMapChooseMap,
+                    style: const TextStyle(
                       fontFamily: 'DMSans',
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
@@ -670,7 +671,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                         ),
                       ),
                       title: Text(
-                        c.name,
+                        localizedCollectionName(ctx, c),
                         style: const TextStyle(
                           fontFamily: 'DMSans',
                           color: TraumColors.onBackground,
@@ -679,8 +680,8 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                       ),
                       subtitle: Text(
                         c.hasRating
-                            ? 'Mit Bewertung · mehrere Fotos'
-                            : 'Einzelfotos',
+                            ? AppLocalizations.of(ctx)!.graffitiMapWithRating
+                            : AppLocalizations.of(ctx)!.graffitiMapSinglePhotos,
                         style: const TextStyle(
                           fontFamily: 'DMSans',
                           color: TraumColors.onBackgroundMuted,
@@ -696,7 +697,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                           IconButton(
                             icon: const Icon(Icons.edit_outlined,
                                 color: TraumColors.onBackgroundMuted),
-                            tooltip: 'Karte bearbeiten',
+                            tooltip: AppLocalizations.of(ctx)!.mapEditCollectionTitle,
                             onPressed: () {
                               Navigator.pop(ctx);
                               context.go('/graffitimap/edit/${c.id}');
@@ -726,9 +727,9 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                         color: TraumColors.onBackgroundMuted,
                       ),
                     ),
-                    title: const Text(
-                      'Neue Karte erstellen',
-                      style: TextStyle(
+                    title: Text(
+                      AppLocalizations.of(ctx)!.graffitiMapNewMap,
+                      style: const TextStyle(
                         fontFamily: 'DMSans',
                         color: TraumColors.onBackgroundMuted,
                       ),

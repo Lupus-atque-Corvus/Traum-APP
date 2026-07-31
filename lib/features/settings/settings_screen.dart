@@ -11,6 +11,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../core/navigation/nav_customization_sheet.dart';
 import '../../core/providers/database_provider.dart';
 import '../../data/services/nutrition_report_service.dart';
+import '../graffiti_map/field_system/field_localization.dart';
 import '../graffiti_map/graffiti_map_provider.dart';
 import '../graffiti_map/map_export_service.dart';
 import '../graffiti_map/map_visuals.dart';
@@ -1929,7 +1930,7 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
                             color: mapCollectionColor(c),
                           ),
                           title: Text(
-                            c.name,
+                            localizedCollectionName(context, c),
                             style: const TextStyle(
                               color: TraumColors.onBackground,
                               fontFamily: 'DMSans',
@@ -1942,6 +1943,7 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
                                 onPressed: () => MapExportService.exportGpx(
                                   ref.read(databaseProvider),
                                   c,
+                                  unnamedPointLabel: l10n.mapUnnamedPoint,
                                 ),
                                 child: const Text(
                                   'GPX',

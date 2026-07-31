@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/colors.dart';
+import 'field_system/field_localization.dart';
 import 'graffiti_map_provider.dart';
 import 'map_widgets.dart';
 import 'megapixel_helper.dart';
@@ -54,7 +56,9 @@ class _MapGalleryScreenState extends ConsumerState<MapGalleryScreen> {
           onPressed: () => context.pop(),
         ),
         title: Text(
-          collection?.name ?? 'Übersicht',
+          collection != null
+              ? localizedCollectionName(context, collection)
+              : AppLocalizations.of(context)!.graffitiMapOverview,
           style: const TextStyle(
             fontFamily: 'DMSans',
             color: TraumColors.onBackground,
@@ -71,7 +75,9 @@ class _MapGalleryScreenState extends ConsumerState<MapGalleryScreen> {
               onChanged: (v) => setState(() => _query = v),
               style: const TextStyle(
                   fontFamily: 'DMSans', color: TraumColors.onBackground),
-              decoration: mapInputDecoration('Suchen…').copyWith(
+              decoration: mapInputDecoration(
+                      AppLocalizations.of(context)!.searchHint)
+                  .copyWith(
                 prefixIcon: const Icon(Icons.search,
                     color: TraumColors.onBackgroundMuted, size: 20),
               ),
@@ -113,10 +119,10 @@ class _MapGalleryScreenState extends ConsumerState<MapGalleryScreen> {
             ),
           Expanded(
             child: filtered.isEmpty
-                ? const Center(
+                ? Center(
                     child: Text(
-                      'Noch keine Einträge',
-                      style: TextStyle(
+                      AppLocalizations.of(context)!.mapNoEntriesYet,
+                      style: const TextStyle(
                           fontFamily: 'DMSans',
                           color: TraumColors.onBackgroundMuted),
                     ),

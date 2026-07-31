@@ -3801,6 +3801,115 @@ class AppLocalizationsEn extends AppLocalizations {
   String get graffitiMapNoLocation => 'No location';
 
   @override
+  String get mapFieldTowerType => 'Tower type';
+
+  @override
+  String get mapFieldTowerHeight => 'Height (m)';
+
+  @override
+  String get mapFieldTowerOperator => 'Operator';
+
+  @override
+  String get mapOptionDecayed => 'Decayed';
+
+  @override
+  String get mapOptionPartiallyPreserved => 'Partially preserved';
+
+  @override
+  String get mapOptionWellPreserved => 'Well preserved';
+
+  @override
+  String get mapOptionFreelyAccessible => 'Freely accessible';
+
+  @override
+  String get mapOptionFence => 'Fence';
+
+  @override
+  String get mapOptionLocked => 'Locked';
+
+  @override
+  String get mapOptionDangerous => 'Dangerous';
+
+  @override
+  String get mapOptionPlanned => 'Planned';
+
+  @override
+  String get mapOptionVisited => 'Visited';
+
+  @override
+  String get mapOptionRadioMast => 'Radio mast';
+
+  @override
+  String get mapOptionTransmissionMast => 'Transmission mast';
+
+  @override
+  String get mapOptionOtherType => 'Other';
+
+  @override
+  String get mapEditCollectionTitle => 'Edit map';
+
+  @override
+  String get mapIconLabel => 'Icon';
+
+  @override
+  String get mapColorLabel => 'Color';
+
+  @override
+  String get mapGroupRadiusLabel => 'Grouping radius';
+
+  @override
+  String get mapAutoGroupDescription =>
+      'Nearby photos are grouped into one location';
+
+  @override
+  String get mapNameHint => 'Map name…';
+
+  @override
+  String get mapLabelHint => 'Label';
+
+  @override
+  String get mapOptionsCommaHint => 'Options, comma-separated';
+
+  @override
+  String get mapPhotoLabel => 'Photo';
+
+  @override
+  String get mapImportLabel => 'Import';
+
+  @override
+  String get mapUndoAction => 'Undo';
+
+  @override
+  String get mapUnnamedPoint => 'Point';
+
+  @override
+  String get mapNameFieldHint => 'Name…';
+
+  @override
+  String get mapEnterHint => 'Enter…';
+
+  @override
+  String get mapNoEntriesYet => 'No entries yet';
+
+  @override
+  String get mapModeStandard => 'Standard';
+
+  @override
+  String get mapModeSatellite => 'Satellite';
+
+  @override
+  String get mapModeHybrid => 'Hybrid';
+
+  @override
+  String get mapEntryLabel => 'Entry';
+
+  @override
+  String get mapNoteLabel => 'Note';
+
+  @override
+  String get mapHashtagsLabel => 'Hashtags';
+
+  @override
   String get mapCreateTitle => 'Create new map';
 
   @override
