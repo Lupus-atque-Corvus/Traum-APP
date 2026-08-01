@@ -17,6 +17,7 @@ import 'budget_providers.dart';
 import 'budget_scale.dart';
 import 'receipt_scanner.dart';
 import 'widgets/numpad_widget.dart';
+import '../../core/components/inline_error.dart';
 
 class QuickEntryBottomSheet extends ConsumerStatefulWidget {
   final QuickTemplate? initialTemplate;
@@ -599,7 +600,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                             );
                           },
                           loading: () => const SizedBox.shrink(),
-                          error: (_, _) => const SizedBox.shrink(),
+                          error: (e, _) => InlineError(e),
                         ),
 
                       // Account picker (income/expense only)

@@ -239,7 +239,7 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
               );
             },
             loading: () => const SizedBox(height: 300, child: Center(child: CircularProgressIndicator(color: TraumColors.lavender))),
-            error: (_, _) => const SizedBox.shrink(),
+            error: (e, _) => InlineError(e),
           ),
           const Divider(color: TraumColors.surfaceVariant, height: 1),
           Expanded(
@@ -282,7 +282,7 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator(color: TraumColors.lavender)),
-              error: (_, _) => const SizedBox.shrink(),
+              error: (e, _) => InlineError(e),
             ),
           ),
         ],

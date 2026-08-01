@@ -1,9 +1,35 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class DiaryCameraService {
   static final _picker = ImagePicker();
+
+  /// Erzeugt ein Vorschaubild für ein Video und gibt dessen Pfad zurück
+  /// (`null`, wenn es nicht klappt — dann zeigt die Liste den Platzhalter,
+  /// der Eintrag selbst bleibt aber speicherbar).
+  ///
+  /// Die Breite ist bewusst klein gehalten: Das Bild wird nur als
+  /// Listen-/Rastervorschau angezeigt, nie in voller Größe.
+  static Future<String?> generateVideoThumbnail(String videoPath) async {
+    try {
+      final dir = await getApplicationSupportDirectory();
+      final thumbDir = Directory('${dir.path}/diary/thumbs');
+      await thumbDir.create(recursive: true);
+      return await VideoThumbnail.thumbnailFile(
+        video: videoPath,
+        thumbnailPath: thumbDir.path,
+        imageFormat: ImageFormat.JPEG,
+        maxWidth: 720,
+        quality: 75,
+      );
+    } catch (e, st) {
+      debugPrint('Video-Vorschaubild fehlgeschlagen: $e\n$st');
+      return null;
+    }
+  }
 
   static Future<String?> capturePhoto({
     required String dateStr,

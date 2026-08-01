@@ -26,6 +26,7 @@ import '../../core/services/launcher_service.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../l10n/app_localizations.dart';
+import '../../core/components/inline_error.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -1970,7 +1971,7 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
                   padding: EdgeInsets.all(8),
                   child: CircularProgressIndicator(color: TraumColors.cyanBlue),
                 ),
-                error: (_, _) => const SizedBox.shrink(),
+                error: (e, _) => InlineError(e),
               ),
           const SizedBox(height: 20),
           Text(

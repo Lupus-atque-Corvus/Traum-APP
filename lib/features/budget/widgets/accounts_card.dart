@@ -13,6 +13,7 @@ import '../budget_helpers.dart';
 import '../budget_providers.dart';
 import '../budget_scale.dart';
 import 'hidden_amount.dart';
+import '../../../core/components/inline_error.dart';
 
 class AccountsCard extends ConsumerWidget {
   const AccountsCard({super.key});
@@ -79,7 +80,7 @@ class AccountsCard extends ConsumerWidget {
               child: CircularProgressIndicator(
                   strokeWidth: bs(2), color: TraumColors.amberGold),
             ),
-            error: (_, _) => const SizedBox.shrink(),
+            error: (e, _) => InlineError(e),
           ),
           SizedBox(height: bs(8)),
           GestureDetector(

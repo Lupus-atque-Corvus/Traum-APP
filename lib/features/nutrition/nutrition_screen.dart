@@ -18,6 +18,7 @@ import 'widgets/meal_section.dart';
 import 'widgets/micro_nutrient_panel.dart';
 import 'shopping/shopping_list_view.dart';
 import 'widgets/weekly_bar_chart.dart';
+import '../../core/components/inline_error.dart';
 
 class NutritionScreen extends ConsumerStatefulWidget {
   const NutritionScreen({super.key});
@@ -209,7 +210,7 @@ class _TodayTab extends ConsumerWidget {
                     child: CircularProgressIndicator(
                         color: TraumColors.mintGreen,
                         strokeWidth: 2))),
-            error: (_, _) => const SizedBox.shrink(),
+            error: (e, _) => InlineError(e),
           ),
         ),
 
@@ -234,7 +235,7 @@ class _TodayTab extends ConsumerWidget {
                   child: CircularProgressIndicator(
                       color: TraumColors.mintGreen,
                       strokeWidth: 2))),
-          error: (_, _) => const SizedBox.shrink(),
+          error: (e, _) => InlineError(e),
         ),
 
         // Water section
@@ -271,7 +272,7 @@ class _TodayTab extends ConsumerWidget {
                               fontWeight: FontWeight.w500));
                     },
                     loading: () => const SizedBox.shrink(),
-                    error: (_, _) => const SizedBox.shrink(),
+                    error: (e, _) => InlineError(e),
                   ),
                 ]),
                 const SizedBox(height: 8),
@@ -294,7 +295,7 @@ class _TodayTab extends ConsumerWidget {
                     );
                   },
                   loading: () => const SizedBox.shrink(),
-                  error: (_, _) => const SizedBox.shrink(),
+                  error: (e, _) => InlineError(e),
                 ),
                 const SizedBox(height: 10),
                 Row(children: [
@@ -405,7 +406,7 @@ class _WeekTab extends ConsumerWidget {
                       child: CircularProgressIndicator(
                           color: TraumColors.mintGreen,
                           strokeWidth: 2)),
-                  error: (_, _) => const SizedBox.shrink(),
+                  error: (e, _) => InlineError(e),
                 ),
               ]),
         ),
@@ -677,7 +678,7 @@ class _LocalProductsBrowse extends ConsumerWidget {
       loading: () => const Center(
           child: CircularProgressIndicator(
               color: TraumColors.mintGreen, strokeWidth: 2)),
-      error: (_, _) => const SizedBox.shrink(),
+      error: (e, _) => InlineError(e),
     );
   }
 }

@@ -1,12 +1,65 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.8+88** · schemaVersion **26**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.9+89** · schemaVersion **26**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-01 — v0.8.8, Code-Audit: toter Code + Invalidierungs-Bug)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-01 — v0.8.9, Video-Vorschaubilder, sichtbare Fehler, APK-Größe)
+
+**Vier Themen in dieser Runde.**
+
+1. **Video-Vorschaubilder im Tagebuch — Funktionslücke geschlossen.** `diary_capture_sheet.dart`
+   setzte `thumbnailPath` beim Speichern **immer** auf `null`; Video-Einträge hatten deshalb nie
+   ein Vorschaubild (die Liste zeigte den Platzhalter). Neu:
+   `DiaryCameraService.generateVideoThumbnail()` (720 px JPEG nach
+   `<support>/diary/thumbs/`), aufgerufen beim Speichern, wenn `mediaType == 'video'`.
+   Schlägt es fehl → `null`, Eintrag bleibt speicherbar. `video_thumbnail` ist deshalb wieder
+   Abhängigkeit (in v0.8.8 als ungenutzt entfernt — diesmal tatsächlich verdrahtet).
+   **Offen:** Bereits vorhandene Video-Einträge bekommen **kein** Vorschaubild nachträglich —
+   ein Backfill wäre ein eigener kleiner Auftrag.
+2. **52 unsichtbare Fehlerzustände sichtbar gemacht.** In 25 Dateien stand
+   `error: (_, _) => const SizedBox.shrink()` — ein gescheiterter Provider war damit von „noch
+   keine Daten" nicht zu unterscheiden. Genau daran hing der „Budget-Screen ist schwarz"-Fehler,
+   dessen Diagnose zwei Release-Runden gekostet hat (v0.7.27/28). Neu:
+   `core/components/inline_error.dart` → `InlineError(e)`, ein 16-px-Symbol mit der Meldung im
+   Tooltip (langes Drücken) **und** im Log (per `adb logcat` auffindbar). Bewusst nur ein Symbol,
+   keine Textzeile: viele der Stellen sitzen in engen Zeilen/Kacheln.
+   **Weiterhin offen:** 85 leere `catch (_) {}` — die verschlucken Fehler nach wie vor.
+3. **Performance-Reste.**
+   - `transaction_list_screen.dart` baute über `ListView(children: …)` **alle Transaktionen aller
+     Monate** auf einmal — wächst mit jedem Nutzungsmonat. Jetzt `ListView.builder` über die
+     Monatsgruppen; innerhalb eines Monats bewusst weiterhin eine `Column`, damit die Optik
+     (eine abgerundete Karte je Monat) unverändert bleibt.
+   - Der 36-MB-Lost-Places-Datensatz wird beim Erststart jetzt via `compute()` in einem
+     Hintergrund-Isolate geparst und **dort schon** auf die Marker-Felder reduziert
+     (`lost_place_row.dart`, Top-Level-Funktion — `compute` kann keine Closures übertragen).
+     Vorher lagen 36-MB-String und der komplette JSON-Objektgraph gleichzeitig im UI-Isolate.
+   - **Bewusst gelassen:** `jsonDecode` in vier `build()`-Methoden (u.a.
+     `marker_detail_screen.dart`). Das sind Detailansichten mit wenigen Rebuilds; der nötige
+     Cache-Zustand wäre mehr Fehlerrisiko als Gewinn.
+4. **APK-Größe: der Brocken sind die nativen Bibliotheken, nicht die Assets.**
+   Messung am v0.8.8-APK (`unzip -v`, gepackte Größen): **133 von 177 MB** sind native Libs für
+   **drei** Architekturen — arm64-v8a 45,8 MB · armeabi-v7a 39,0 MB · x86_64 48,8 MB. Ein Gerät
+   nutzt genau eine davon.
+   **Korrektur einer früheren Annahme:** Die Assets sind unkritisch — im APK komprimiert nur
+   ~29 MB gesamt (`substances_reference.sqlite3` 71 MB → 16,5 MB, `lost_places.json` 34 MB →
+   5,5 MB, `towers.tsv` 22 MB → 6,6 MB). Die früher genannten „149 MB Assets" waren die
+   **unkomprimierte** Größe und damit irreführend.
+   → Releases werden jetzt mit `--split-per-abi` gebaut. **arm64-v8a ist die richtige Datei für
+   jedes moderne Handy**; x86_64 wird nur für Emulatoren gebraucht.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **481/481 grün**.
+
+**Noch offen:** 85 leere `catch (_) {}` · 105 veraltete Pakete (eigenes Vorhaben, Breaking
+Changes möglich; die Kotlin-Plugin-Warnung beim Build kommt daher) · `dart format` über die
+Codebasis (erzeugt ~1.200 geänderte Zeilen, gehört in einen eigenen Commit) · Backfill für
+Vorschaubilder bestehender Video-Einträge.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-01 — v0.8.8, Code-Audit: toter Code + Invalidierungs-Bug)
 
 **Systematischer Audit über alle Module (Plan:
 `docs/superpowers/plans/2026-08-01-code-audit-aufraeumen.md` im Haupt-Repo).**

@@ -9,6 +9,7 @@ import 'budget_helpers.dart';
 import 'budget_providers.dart';
 import 'budget_scale.dart';
 import 'widgets/budget_sub_header.dart';
+import '../../core/components/inline_error.dart';
 
 void _showEditSheet(
     BuildContext context, WidgetRef ref, Transaction d, String currency) {
@@ -115,7 +116,7 @@ class RecurringScreen extends ConsumerWidget {
                   child: CircularProgressIndicator(
                       color: TraumColors.amberGold),
                 ),
-                error: (_, _) => const SizedBox.shrink(),
+                error: (e, _) => InlineError(e),
               ),
             ),
           ],

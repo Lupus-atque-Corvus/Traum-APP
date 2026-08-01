@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
 import '../../core/utils/image_decode.dart';
 import 'diary_provider.dart';
+import '../../core/components/inline_error.dart';
 
 class DiarySlideShowScreen extends ConsumerStatefulWidget {
   const DiarySlideShowScreen({super.key});
@@ -182,7 +183,7 @@ class _DiarySlideShowScreenState
         loading: () => const Center(
           child: CircularProgressIndicator(color: TraumColors.lavender),
         ),
-        error: (_, _) => const SizedBox.shrink(),
+        error: (e, _) => InlineError(e),
       ),
     );
   }

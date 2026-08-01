@@ -11,6 +11,7 @@ import 'budget_category_icons.dart';
 import 'budget_scale.dart';
 import 'widgets/budget_sub_header.dart';
 import 'widgets/icon_picker_grid.dart';
+import '../../core/components/inline_error.dart';
 
 class BudgetCategoriesScreen extends ConsumerWidget {
   const BudgetCategoriesScreen({super.key});
@@ -59,7 +60,7 @@ class BudgetCategoriesScreen extends ConsumerWidget {
                 loading: () => const Center(
                   child: CircularProgressIndicator(color: TraumColors.amberGold),
                 ),
-                error: (_, _) => const SizedBox.shrink(),
+                error: (e, _) => InlineError(e),
               ),
             ),
           ],

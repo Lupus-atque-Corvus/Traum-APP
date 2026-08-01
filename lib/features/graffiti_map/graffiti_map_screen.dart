@@ -29,6 +29,7 @@ import 'map_tile_config.dart';
 import 'map_visuals.dart';
 import 'megapixel_helper.dart';
 import 'photo_metadata_service.dart';
+import '../../core/components/inline_error.dart';
 
 class GraffitiMapScreen extends ConsumerStatefulWidget {
   const GraffitiMapScreen({super.key});
@@ -761,7 +762,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
               padding: EdgeInsets.all(32),
               child: CircularProgressIndicator(color: TraumColors.cyanBlue),
             ),
-            error: (_, _) => const SizedBox.shrink(),
+            error: (e, _) => InlineError(e),
           );
         },
       ),

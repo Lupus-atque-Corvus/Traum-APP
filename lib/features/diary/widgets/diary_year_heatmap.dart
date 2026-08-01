@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../diary_provider.dart';
+import '../../../core/components/inline_error.dart';
 
 class DiaryYearHeatmap extends ConsumerWidget {
   const DiaryYearHeatmap({super.key});
@@ -49,7 +50,7 @@ class DiaryYearHeatmap extends ConsumerWidget {
                   fontWeight: FontWeight.w600,
                   color: TraumColors.onBackground,
                   fontSize: 16)),
-          error: (_, _) => const SizedBox.shrink(),
+          error: (e, _) => InlineError(e),
         ),
         const SizedBox(height: 12),
         datesAsync.when(
@@ -93,7 +94,7 @@ class DiaryYearHeatmap extends ConsumerWidget {
           loading: () => const Center(
               child: CircularProgressIndicator(
                   color: TraumColors.lavender, strokeWidth: 2)),
-          error: (_, _) => const SizedBox.shrink(),
+          error: (e, _) => InlineError(e),
         ),
       ]),
     );

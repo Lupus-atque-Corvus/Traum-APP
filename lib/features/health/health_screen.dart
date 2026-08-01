@@ -760,7 +760,7 @@ class _OverviewTab extends ConsumerWidget {
             );
           },
           loading: () => const ShimmerLoader(width: double.infinity, height: 120),
-          error: (_, _) => const SizedBox.shrink(),
+          error: (e, _) => InlineError(e),
         ),
         const SizedBox(height: 12),
         // Latest weight
@@ -785,7 +785,7 @@ class _OverviewTab extends ConsumerWidget {
             ]),
           ),
           loading: () => const ShimmerLoader(width: double.infinity, height: 80),
-          error: (_, _) => const SizedBox.shrink(),
+          error: (e, _) => InlineError(e),
         ),
         const SizedBox(height: 12),
         // Latest mood
@@ -811,7 +811,7 @@ class _OverviewTab extends ConsumerWidget {
             ]),
           ),
           loading: () => const ShimmerLoader(width: double.infinity, height: 80),
-          error: (_, _) => const SizedBox.shrink(),
+          error: (e, _) => InlineError(e),
         ),
       ],
     );

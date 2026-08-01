@@ -12,6 +12,7 @@ import 'diary_provider.dart';
 import 'widgets/diary_calendar_grid.dart';
 import 'widgets/diary_entry_card.dart';
 import 'widgets/diary_year_heatmap.dart';
+import '../../core/components/inline_error.dart';
 
 class DiaryScreen extends ConsumerWidget {
   const DiaryScreen({super.key});
@@ -57,7 +58,7 @@ class DiaryScreen extends ConsumerWidget {
                                   color: TraumColors.onBackgroundMuted,
                                   fontSize: 13)),
                           loading: () => const SizedBox.shrink(),
-                          error: (_, _) => const SizedBox.shrink(),
+                          error: (e, _) => InlineError(e),
                         ),
                         const Text(' · ',
                             style: TextStyle(
@@ -71,7 +72,7 @@ class DiaryScreen extends ConsumerWidget {
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500)),
                           loading: () => const SizedBox.shrink(),
-                          error: (_, _) => const SizedBox.shrink(),
+                          error: (e, _) => InlineError(e),
                         ),
                       ]),
                     ],
@@ -98,7 +99,7 @@ class DiaryScreen extends ConsumerWidget {
                     )
                   : _TodayFilledCard(entry: entry),
               loading: () => const SizedBox(height: 80),
-              error: (_, _) => const SizedBox.shrink(),
+              error: (e, _) => InlineError(e),
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 4)),
@@ -137,7 +138,7 @@ class DiaryScreen extends ConsumerWidget {
                 );
               },
               loading: () => const SizedBox.shrink(),
-              error: (_, _) => const SizedBox.shrink(),
+              error: (e, _) => InlineError(e),
             ),
           ),
 

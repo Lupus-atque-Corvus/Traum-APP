@@ -7,6 +7,7 @@ import '../../../data/database/traum_database.dart';
 import '../micro_nutrients.dart';
 import '../nutrition_providers.dart';
 import 'nutrient_bar_row.dart';
+import '../../../core/components/inline_error.dart';
 
 /// Aufklappbarer Bereich in der Makro-Karte: Mikronährstoff-Balken +
 /// "Supplements heute"-Abhakliste. Standard eingeklappt.
@@ -76,7 +77,7 @@ class _MicroNutrientPanelState extends ConsumerState<MicroNutrientPanel> {
             child: CircularProgressIndicator(
                 color: TraumColors.mintGreen, strokeWidth: 2)),
       ),
-      error: (_, _) => const SizedBox.shrink(),
+      error: (e, _) => InlineError(e),
     );
   }
 }
@@ -137,7 +138,7 @@ class _SupplementsToday extends ConsumerWidget {
         );
       },
       loading: () => const SizedBox.shrink(),
-      error: (_, _) => const SizedBox.shrink(),
+      error: (e, _) => InlineError(e),
     );
   }
 

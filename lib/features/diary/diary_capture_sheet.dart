@@ -50,13 +50,18 @@ class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
   Future<void> _save() async {
     setState(() => _saving = true);
     try {
+      // Video-Einträge brauchen ein eigenes Vorschaubild — die Liste kann ein
+      // Video nicht selbst darstellen und zeigte bisher gar nichts an.
+      final thumbnail = _mediaType == 'video'
+          ? await DiaryCameraService.generateVideoThumbnail(_mediaPath)
+          : null;
       await ref.read(diaryDaoProvider).upsertEntry(
             DiaryEntriesCompanion(
               date: Value(widget.date),
               mediaPath: Value(_mediaPath),
               mediaType: Value(_mediaType),
               note: Value(_noteCtrl.text.trim()),
-              thumbnailPath: const Value(null),
+              thumbnailPath: Value(thumbnail),
               createdAt: Value(DateTime.now()),
               updatedAt: Value(DateTime.now()),
             ),

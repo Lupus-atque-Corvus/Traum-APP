@@ -171,7 +171,7 @@ class _DayCard extends ConsumerWidget {
                 height: 32,
                 child: Center(child: CircularProgressIndicator(
                     strokeWidth: 2, color: TraumColors.coralOrange))),
-            error: (_, _) => const SizedBox.shrink(),
+            error: (e, _) => InlineError(e),
           ),
           const SizedBox(height: 6),
         ],
@@ -220,7 +220,7 @@ class _ExerciseRow extends ConsumerWidget {
         );
       },
       loading: () => const SizedBox.shrink(),
-      error: (_, _) => const SizedBox.shrink(),
+      error: (e, _) => InlineError(e),
     );
   }
 }

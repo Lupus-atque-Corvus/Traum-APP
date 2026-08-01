@@ -153,19 +153,29 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                       grouped.putIfAbsent(key, () => []).add(t);
                     }
 
-                    return ListView(
+                    // Monatsgruppen lazy rendern: Die Zahl der Monate wächst mit
+                    // jedem Nutzungsmonat unbegrenzt. Vorher wurden über
+                    // `ListView(children: …)` ALLE Transaktionen aller Monate
+                    // auf einmal gebaut und gelayoutet. Innerhalb eines Monats
+                    // bleibt es bewusst eine Column — das hält die Optik
+                    // (eine abgerundete Karte pro Monat) unverändert und ist
+                    // bei üblichen Monatsgrößen unproblematisch.
+                    final groups = grouped.entries.toList();
+                    final l10n = AppLocalizations.of(context)!;
+                    final monthNames = [
+                      l10n.monthJan, l10n.monthFeb, l10n.monthMar,
+                      l10n.monthApr, l10n.monthMay, l10n.monthJun,
+                      l10n.monthJul, l10n.monthAug, l10n.monthSep,
+                      l10n.monthOct, l10n.monthNov, l10n.monthDec,
+                    ];
+                    return ListView.builder(
                       padding: EdgeInsets.fromLTRB(bs(16), 0, bs(16), bs(80)),
-                      children: grouped.entries.map((entry) {
+                      itemCount: groups.length,
+                      itemBuilder: (context, groupIndex) {
+                        final entry = groups[groupIndex];
                         final parts = entry.key.split('-');
                         final year = int.parse(parts[0]);
                         final month = int.parse(parts[1]);
-                        final l10n = AppLocalizations.of(context)!;
-                        final monthNames = [
-                          l10n.monthJan, l10n.monthFeb, l10n.monthMar,
-                          l10n.monthApr, l10n.monthMay, l10n.monthJun,
-                          l10n.monthJul, l10n.monthAug, l10n.monthSep,
-                          l10n.monthOct, l10n.monthNov, l10n.monthDec,
-                        ];
                         final monthTotal = entry.value
                             .where((t) => t.type == 'expense')
                             .fold(0.0, (s, t) => s + t.amount);
@@ -233,7 +243,7 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                             ),
                           ],
                         );
-                      }).toList(),
+                      },
                     );
                   },
                   loading: () => const Center(

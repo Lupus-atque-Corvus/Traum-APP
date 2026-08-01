@@ -10,6 +10,7 @@ import '../../core/theme/radius.dart';
 import '../../data/models/substance_record.dart';
 import '../../l10n/app_localizations.dart';
 import 'substance_detail_sheet.dart';
+import '../../core/components/inline_error.dart';
 
 final _typeFilterProvider = StateProvider.autoDispose<SubstanceKlasse?>((ref) => null);
 final _pflanzlichOnlyProvider = StateProvider.autoDispose<bool>((ref) => false);
@@ -211,7 +212,7 @@ class _CategoryGrid extends ConsumerWidget {
             .toList(),
       ),
       loading: () => const Center(child: CircularProgressIndicator(color: TraumColors.coralOrange)),
-      error: (_, _) => const SizedBox.shrink(),
+      error: (e, _) => InlineError(e),
     );
   }
 }

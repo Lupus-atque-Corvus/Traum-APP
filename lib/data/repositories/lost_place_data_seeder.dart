@@ -1,9 +1,9 @@
-import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../database/traum_database.dart';
+import 'lost_place_row.dart';
 
 /// Spielt einen einmalig mitgelieferten Lost-Places-Datensatz (lostfoundations.org
 /// + 2 öffentlich geteilte Google-My-Maps-Karten, siehe
@@ -39,33 +39,23 @@ class LostPlaceDataSeeder {
       }
 
       final raw = await rootBundle.loadString('assets/data/lost_places.json');
-      final entries = jsonDecode(raw) as List<dynamic>;
+      // Parsen im Hintergrund-Isolate: Die Datei ist ~36 MB, der daraus
+      // entstehende JSON-Objektgraph (82.666 Maps) ist ein Vielfaches davon.
+      // Beides gleichzeitig im UI-Isolate war ein massiver Speicher-Peak beim
+      // allerersten Start. `compute` gibt nur die bereits reduzierten Zeilen
+      // zurück — der große Zwischenzustand entsteht und verschwindet drüben.
+      final rows = await compute(parseLostPlaceRows, raw);
 
       var buffer = <MapMarkersCompanion>[];
       final now = DateTime.now();
-      for (final entry in entries) {
-        final e = entry as Map<String, dynamic>;
-        final lat = (e['lat'] as num?)?.toDouble();
-        final lon = (e['lon'] as num?)?.toDouble();
-        if (lat == null || lon == null) continue;
-        final externalId = e['externalId'] as String?;
-        if (externalId == null || externalId.isEmpty) continue;
-        final title = (e['title'] as String?) ?? '';
-        final description = (e['description'] as String?) ?? '';
-        final sourceUrl = (e['sourceUrl'] as String?) ?? '';
-
-        final noteParts = <String>[
-          if (description.isNotEmpty) description,
-          if (sourceUrl.isNotEmpty) 'Quelle: $sourceUrl',
-        ];
-
+      for (final r in rows) {
         buffer.add(MapMarkersCompanion.insert(
           collectionId: lostPlaceCollection.id,
-          title: Value(title),
-          latitude: Value(lat),
-          longitude: Value(lon),
-          note: Value(noteParts.join('\n\n')),
-          externalId: Value(externalId),
+          title: Value(r.title),
+          latitude: Value(r.lat),
+          longitude: Value(r.lon),
+          note: Value(r.note),
+          externalId: Value(r.externalId),
           createdAt: now,
         ));
 

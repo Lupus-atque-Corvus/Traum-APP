@@ -18,6 +18,7 @@ import 'widgets/accounts_card.dart';
 import 'widgets/budget_overview_card.dart';
 import 'widgets/hidden_amount.dart';
 import 'widgets/trend_bar_chart.dart';
+import '../../core/components/inline_error.dart';
 
 class BudgetScreen extends ConsumerWidget {
   const BudgetScreen({super.key});
@@ -169,17 +170,17 @@ class _BudgetHeaderCard extends ConsumerWidget {
             loading: () => Text('— $currency',
                 style: _style(
                     34, FontWeight.w700, TraumColors.onBackgroundMuted)),
-            error: (_, _) => const SizedBox.shrink(),
+            error: (e, _) => InlineError(e),
           ),
           SizedBox(height: bs(3)),
           summary.when(
             data: (s) => rollover.when(
               data: (balance) => _prognoseRow(s, balance, month, currency, l10n),
               loading: () => const SizedBox.shrink(),
-              error: (_, _) => const SizedBox.shrink(),
+              error: (e, _) => InlineError(e),
             ),
             loading: () => const SizedBox.shrink(),
-            error: (_, _) => const SizedBox.shrink(),
+            error: (e, _) => InlineError(e),
           ),
           SizedBox(height: bs(10)),
           // Einnahmen / Ausgaben / Sparquote
@@ -209,7 +210,7 @@ class _BudgetHeaderCard extends ConsumerWidget {
               ),
             ]),
             loading: () => SizedBox(height: bs(48)),
-            error: (_, _) => const SizedBox.shrink(),
+            error: (e, _) => InlineError(e),
           ),
           SizedBox(height: bs(10)),
           // Gesamtsaldo-Footer
@@ -362,7 +363,7 @@ class _GesamtsaldoFooter extends ConsumerWidget {
                   loading: () => Text('— $currency',
                       style: _style(
                           15, FontWeight.w700, TraumColors.onBackgroundMuted)),
-                  error: (_, _) => const SizedBox.shrink(),
+                  error: (e, _) => InlineError(e),
                 ),
                 SizedBox(width: bs(6)),
                 change.when(
@@ -379,7 +380,7 @@ class _GesamtsaldoFooter extends ConsumerWidget {
                     );
                   },
                   loading: () => const SizedBox.shrink(),
-                  error: (_, _) => const SizedBox.shrink(),
+                  error: (e, _) => InlineError(e),
                 ),
               ]),
             ],
@@ -390,7 +391,7 @@ class _GesamtsaldoFooter extends ConsumerWidget {
             child: spots.when(
               data: (s) => _MiniSparkline(spots: s),
               loading: () => const SizedBox.shrink(),
-              error: (_, _) => const SizedBox.shrink(),
+              error: (e, _) => InlineError(e),
             ),
           ),
         ],
@@ -734,7 +735,7 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
                       color: TraumColors.amberGold),
                 ),
               ),
-              error: (_, _) => const SizedBox.shrink(),
+              error: (e, _) => InlineError(e),
             ),
           ]),
     );

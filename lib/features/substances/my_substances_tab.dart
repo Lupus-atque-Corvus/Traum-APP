@@ -38,10 +38,10 @@ class MySubstancesTab extends ConsumerWidget {
             data: (meds) => logsAsync.when(
               data: (logs) => _TodayStatusCard(meds: meds, logs: logs),
               loading: () => const ShimmerLoader(width: double.infinity, height: 80),
-              error: (_, _) => const SizedBox.shrink(),
+              error: (e, _) => InlineError(e),
             ),
             loading: () => const ShimmerLoader(width: double.infinity, height: 80),
-            error: (_, _) => const SizedBox.shrink(),
+            error: (e, _) => InlineError(e),
           ),
           const SizedBox(height: 16),
           suppsAsync.when(

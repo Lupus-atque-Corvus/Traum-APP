@@ -7,6 +7,7 @@ import '../../core/theme/radius.dart';
 import '../../data/models/substance_record.dart';
 import '../../l10n/app_localizations.dart';
 import 'substance_add_flow.dart';
+import '../../core/components/inline_error.dart';
 
 void showSubstanceDetailSheet(BuildContext context, WidgetRef ref, SubstanceRecord record) {
   showModalBottomSheet(
@@ -374,7 +375,7 @@ class _TopNebenwirkungenSection extends ConsumerWidget {
         },
       ),
       loading: () => const SizedBox.shrink(),
-      error: (_, _) => const SizedBox.shrink(),
+      error: (e, _) => InlineError(e),
     );
   }
 }

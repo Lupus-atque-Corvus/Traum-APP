@@ -11,6 +11,7 @@ import 'amount_entry_sheet.dart';
 import 'barcode_scanner_screen.dart';
 import 'food_api/food_source.dart';
 import 'nutrition_providers.dart';
+import '../../core/components/inline_error.dart';
 
 class MealTemplateSheet extends ConsumerStatefulWidget {
   final String mealType;
@@ -247,7 +248,7 @@ class _LocalBrowseList extends ConsumerWidget {
           child: CircularProgressIndicator(
               color: TraumColors.mintGreen,
               strokeWidth: 2)),
-      error: (_, _) => const SizedBox.shrink(),
+      error: (e, _) => InlineError(e),
     );
   }
 }

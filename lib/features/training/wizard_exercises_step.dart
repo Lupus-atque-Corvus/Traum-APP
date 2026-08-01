@@ -7,6 +7,7 @@ import '../../data/database/traum_database.dart';
 import '../../data/repositories/plan_templates.dart';
 import '../../l10n/app_localizations.dart';
 import 'widgets/exercise_icon.dart';
+import '../../core/components/inline_error.dart';
 
 class WizardExercisesStep extends ConsumerStatefulWidget {
   final PlanTemplate template;
@@ -209,7 +210,7 @@ class _ExerciseTile extends ConsumerWidget {
         );
       },
       loading: () => const SizedBox(height: 36),
-      error: (_, _) => const SizedBox.shrink(),
+      error: (e, _) => InlineError(e),
     );
   }
 }

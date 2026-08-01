@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
 import '../diary_provider.dart';
+import '../../../core/components/inline_error.dart';
 
 class DiaryCalendarGrid extends ConsumerStatefulWidget {
   const DiaryCalendarGrid({super.key});
@@ -160,7 +161,7 @@ class _DiaryCalendarGridState extends ConsumerState<DiaryCalendarGrid> {
               child: Center(
                   child: CircularProgressIndicator(
                       color: TraumColors.lavender))),
-          error: (_, _) => const SizedBox.shrink(),
+          error: (e, _) => InlineError(e),
         ),
       ]),
     );

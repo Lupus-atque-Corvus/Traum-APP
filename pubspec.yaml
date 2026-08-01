@@ -2,7 +2,7 @@ name: traum
 description: "TRAUM — Dein persönliches Dashboard"
 publish_to: 'none'
 
-version: 0.8.8+88
+version: 0.8.9+89
 
 environment:
   sdk: ^3.9.2
@@ -78,6 +78,11 @@ dependencies:
   # Bilder
   image_picker: ^1.1.2
   video_player: ^2.9.2
+  # Erzeugt das Vorschaubild für Video-Einträge im Tagebuch
+  # (DiaryCameraService.generateVideoThumbnail). War bis v0.8.8 zwar
+  # deklariert, aber nie verdrahtet — Video-Einträge hatten deshalb gar
+  # kein Vorschaubild.
+  video_thumbnail: ^0.5.3
 
   # Barcode-Scanner
   mobile_scanner: ^7.0.0

@@ -10,6 +10,7 @@ import 'budget_helpers.dart';
 import 'budget_providers.dart';
 import 'budget_scale.dart';
 import 'widgets/budget_sub_header.dart';
+import '../../core/components/inline_error.dart';
 
 class DebtsScreen extends ConsumerWidget {
   const DebtsScreen({super.key});
@@ -79,7 +80,7 @@ class DebtsScreen extends ConsumerWidget {
                 loading: () => const Center(
                   child: CircularProgressIndicator(color: TraumColors.roseRed),
                 ),
-                error: (_, _) => const SizedBox.shrink(),
+                error: (e, _) => InlineError(e),
               ),
             ),
           ],
