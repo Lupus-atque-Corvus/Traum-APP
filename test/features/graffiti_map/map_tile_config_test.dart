@@ -26,10 +26,4 @@ void main() {
     expect(urls[1], contains('World_Boundaries_and_Places'));
     expect(mapModeAttribution(MapViewMode.hybrid), contains('Esri'));
   });
-
-  test('mapModeLabel returns the short label per mode', () {
-    expect(mapModeLabel(MapViewMode.standard), 'Standard');
-    expect(mapModeLabel(MapViewMode.satellite), 'Satellit');
-    expect(mapModeLabel(MapViewMode.hybrid), 'Hybrid');
-  });
 }

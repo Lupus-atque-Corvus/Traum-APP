@@ -2,7 +2,7 @@ name: traum
 description: "TRAUM — Dein persönliches Dashboard"
 publish_to: 'none'
 
-version: 0.8.7+87
+version: 0.8.8+88
 
 environment:
   sdk: ^3.9.2
@@ -57,9 +57,6 @@ dependencies:
   # HTTP
   http: ^1.2.2
 
-  # Animationen
-  lottie: ^3.1.2
-
   # GPS
   geolocator: ^14.0.0
 
@@ -81,7 +78,6 @@ dependencies:
   # Bilder
   image_picker: ^1.1.2
   video_player: ^2.9.2
-  video_thumbnail: ^0.5.3
 
   # Barcode-Scanner
   mobile_scanner: ^7.0.0
@@ -204,7 +200,6 @@ flutter:
     # Die Quellen bleiben im Repo, um die .vec neu erzeugen zu können.
     - assets/exercises/icons_exercise_vec/
     - assets/supplements/
-    - assets/svg/
     - assets/icons/progress/
     - assets/legal/
     # assets/lottie/ entfernt: Verzeichnis existiert nicht und wird nirgends

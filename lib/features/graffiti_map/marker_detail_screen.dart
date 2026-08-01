@@ -98,7 +98,7 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
     await db.mapMarkersDao
         .updateMarker(marker.copyWith(rating: Value(r)));
     ref.invalidate(markerByIdProvider(marker.id));
-    ref.invalidate(activeMarkersProvider);
+    invalidateMarkerViews(ref);
   }
 
   Future<void> _addPhoto() async {
@@ -145,7 +145,7 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
       createdAt: DateTime.now(),
     ));
     ref.invalidate(markerByIdProvider(marker.id));
-    ref.invalidate(activeMarkersProvider);
+    invalidateMarkerViews(ref);
   }
 
   Future<void> _share() async {
@@ -198,8 +198,7 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
       } catch (_) {}
     }
     await db.mapMarkersDao.deleteMarker(marker.id);
-    ref.invalidate(activeMarkersProvider);
-    ref.invalidate(allHashtagsProvider);
+    invalidateMarkerViews(ref);
     if (mounted) context.pop();
   }
 

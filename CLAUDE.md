@@ -1,12 +1,56 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.7+87** · schemaVersion **26**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.8+88** · schemaVersion **26**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-01 — v0.8.7, Performance Phase 3: Übungs-Icons vorkompiliert)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-01 — v0.8.8, Code-Audit: toter Code + Invalidierungs-Bug)
+
+**Systematischer Audit über alle Module (Plan:
+`docs/superpowers/plans/2026-08-01-code-audit-aufraeumen.md` im Haupt-Repo).**
+
+1. **🔴 Bug behoben, der in v0.8.6 selbst verursacht wurde.** Beim Umstellen der Galerie auf
+   `galleryMarkersProvider` wurde `activeMarkersProvider` zum Waisen: **von niemandem mehr
+   beobachtet**, aber an neun Stellen weiterhin per `ref.invalidate()` angesprochen. Folge: nach
+   Marker löschen / Bewertung ändern / Foto hinzufügen / Standort verschieben aktualisierten sich
+   Karte und Galerie nicht mehr.
+   Fix: Waisen-Provider gelöscht, neue zentrale Funktion `invalidateMarkerViews(WidgetRef)` in
+   `graffiti_map_provider.dart` invalidiert **alle** abgeleiteten Provider (Viewport, Galerie,
+   Kartenzentrierung, Hashtags). Alle Aufrufer darauf umgestellt.
+   **Merke:** Wird ein Marker-Provider hinzugefügt, gehört er in diese eine Funktion — nicht in
+   verstreute Einzelaufrufe. Genau daran ist es beim letzten Mal gescheitert.
+2. **Ungenutzte Abhängigkeiten entfernt:** `lottie` und `video_thumbnail` — kein einziger Import
+   in `lib/`. Bei `video_thumbnail` steckt eine **unbemerkte Funktionslücke** dahinter: das
+   Tagebuch setzt `thumbnailPath` beim Anlegen immer hart auf `null`
+   (`diary_capture_sheet.dart`), Video-Einträge haben also überhaupt kein Vorschaubild. Wer das
+   nachrüsten will, braucht das Paket wieder.
+   **Nicht entfernt:** `flutter_math_fork` — kein direkter Import, wird aber von
+   `flutter_markdown_plus_latex` transitiv gebraucht.
+3. **283 tote ARB-Schlüssel entfernt** (von 1.406 auf 1.123, ~20 %) — Überbleibsel entfernter
+   Features. Vorgehen: Schlüssel gegen alle `.identifier`-Vorkommen in `lib/` **und** `test/`
+   abgeglichen, entfernt, dann `flutter analyze` als Netz (hätte jeden noch benutzten Schlüssel
+   sofort als Compile-Fehler gemeldet) → 0 Issues.
+4. **`assets/svg/`** aus `pubspec.yaml` entfernt: die Körperkarte rendert aus eingebetteten
+   Dart-Strings (`body_map_svg_data.dart`), die beiden Dateien wurden nie geladen.
+   **Gegengeprüft und NICHT angefasst:** `assets/icons/progress/`, `assets/supplements/`,
+   `assets/exercises/*.json` — die werden über zusammengesetzte Pfade (`'…/$key.svg'`) geladen
+   und sehen bei einer reinen Dateinamen-Suche fälschlich ungenutzt aus.
+5. **`mapModeLabel()`** in `map_tile_config.dart` gelöscht — hatte zwar einen Test, aber **keine
+   einzige Aufrufstelle in der App**; der Test prüfte reinen toten Code und ist mit entfallen
+   (daher 476 statt 477 Tests).
+
+**Bewusst nicht gemacht:** `dart format` über die Codebasis — probeweise ausgeführt und wieder
+verworfen, weil es **1.200 geänderte Zeilen in 5 Dateien** für eine 25-Zeilen-Änderung erzeugte
+(das Projekt ist nicht durchgehend formatiert). Gehört, wenn überhaupt, in einen eigenen Commit.
+Ebenso offen: 105 Pakete mit neueren Versionen.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **476/476 grün**.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-01 — v0.8.7, Performance Phase 3: Übungs-Icons vorkompiliert)
 
 **Fortsetzung der Performance-Arbeit (Plan:
 `docs/superpowers/plans/2026-07-31-performance-optimierung.md` im Haupt-Repo).**

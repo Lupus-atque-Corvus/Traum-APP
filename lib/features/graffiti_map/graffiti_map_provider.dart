@@ -58,12 +58,21 @@ Future<List<MarkerWithPhotos>> _withPhotos(
       .toList();
 }
 
-final activeMarkersProvider =
-    FutureProvider<List<MarkerWithPhotos>>((ref) async {
-  final id = ref.watch(activeCollectionProvider);
-  final markers = await ref.watch(mapMarkersDaoProvider).getByCollection(id);
-  return _withPhotos(ref, markers);
-});
+/// Invalidiert **alle** Provider, die von den Markern der aktiven Karte
+/// abgeleitet sind — Karte, Galerie, Hashtag-Leiste und Kartenzentrierung.
+///
+/// Bewusst eine einzige Stelle: vorher invalidierte jeder Aufrufer von Hand
+/// eine eigene Teilmenge. Als die Galerie in v0.8.6 auf
+/// [galleryMarkersProvider] umgestellt wurde, zeigten dadurch mehrere Stellen
+/// nach Löschen/Bearbeiten/Verschieben eines Markers veraltete Daten an, weil
+/// sie noch den inzwischen von niemandem beobachteten Vorgänger-Provider
+/// invalidierten.
+void invalidateMarkerViews(WidgetRef ref) {
+  ref.invalidate(markersInViewportProvider);
+  ref.invalidate(galleryMarkersProvider);
+  ref.invalidate(mostRecentMarkerProvider);
+  ref.invalidate(allHashtagsProvider);
+}
 
 /// Lat/Lon-Rechteck des aktuell sichtbaren Kartenausschnitts.
 class MapBounds {

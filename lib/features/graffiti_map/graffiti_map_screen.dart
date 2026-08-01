@@ -565,8 +565,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
           takenAt: result.takenAt,
           createdAt: DateTime.now(),
         ));
-        ref.invalidate(activeMarkersProvider);
-        ref.invalidate(markersInViewportProvider);
+        invalidateMarkerViews(ref);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -578,8 +577,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                   try {
                     await File(result.photoPath).delete();
                   } catch (_) {}
-                  ref.invalidate(activeMarkersProvider);
-                  ref.invalidate(markersInViewportProvider);
+                  invalidateMarkerViews(ref);
                 },
               ),
             ),
@@ -597,9 +595,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
       builder: (_) => DynamicMarkerSheet(
           captureResult: result, collection: collection),
     );
-    ref.invalidate(activeMarkersProvider);
-    ref.invalidate(markersInViewportProvider);
-    ref.invalidate(allHashtagsProvider);
+    invalidateMarkerViews(ref);
   }
 
   /// Erstellt einen Punkt ohne Foto am gegebenen Ort. Fotos können später
@@ -634,9 +630,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
         locationName: locationName,
       ),
     );
-    ref.invalidate(activeMarkersProvider);
-    ref.invalidate(markersInViewportProvider);
-    ref.invalidate(allHashtagsProvider);
+    invalidateMarkerViews(ref);
   }
 
   void _showMapSwitcher(BuildContext context) {

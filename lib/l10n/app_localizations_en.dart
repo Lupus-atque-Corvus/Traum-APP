@@ -9,9 +9,6 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'TRAUM';
-
-  @override
   String get home => 'Home';
 
   @override
@@ -212,11 +209,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String evidenceGrade(String grade) {
-    return 'Evidence $grade';
-  }
-
-  @override
   String get substanceMedications => 'Medications';
 
   @override
@@ -224,9 +216,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get whatToAdd => 'What would you like to add?';
-
-  @override
-  String get interactions => 'Interactions';
 
   @override
   String get noSubstancesYet => 'No substances yet';
@@ -257,15 +246,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pleaseEnterSubstance => 'Please enter a substance';
-
-  @override
-  String get effectMechanism => 'Effect / mechanism';
-
-  @override
-  String get commonSideEffects => 'Common side effects';
-
-  @override
-  String get knownInteractions => 'Known interactions';
 
   @override
   String get substancesTabMyMeds => 'My Meds';
@@ -561,9 +541,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yesterday => 'Yesterday';
 
   @override
-  String get thisWeek => 'This week';
-
-  @override
   String get thisMonth => 'This month';
 
   @override
@@ -591,23 +568,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seconds => 'Seconds';
 
   @override
-  String get noEntriesYet => 'No entries yet';
-
-  @override
   String get allDataOnDevice => 'All data stays on your device.';
 
   @override
-  String get medicalDisclaimer =>
-      'This app is not a substitute for medical advice.';
-
-  @override
   String get startWorkout => 'Start workout';
-
-  @override
-  String get workoutComplete => 'Workout complete';
-
-  @override
-  String get addEntry => 'Add entry';
 
   @override
   String get income => 'Income';
@@ -619,22 +583,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get balance => 'Balance';
 
   @override
-  String get monthly => 'Monthly';
-
-  @override
   String get daily => 'Daily';
 
   @override
   String get weekly => 'Weekly';
 
   @override
-  String get period_days_label => 'Days until next period';
-
-  @override
   String get ovulation => 'Ovulation';
-
-  @override
-  String get fertile_window => 'Fertile window';
 
   @override
   String get cycle_length => 'Cycle length';
@@ -643,25 +598,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get period_length => 'Period length';
 
   @override
-  String get next_period => 'Next period';
-
-  @override
-  String get no_period_data => 'No cycle data yet. Add your first period.';
-
-  @override
-  String get language_de => 'German';
-
-  @override
-  String get language_en => 'English';
-
-  @override
   String get metric => 'Metric';
 
   @override
   String get imperial => 'Imperial';
-
-  @override
-  String get dark_mode => 'Dark mode';
 
   @override
   String get biometric_lock => 'Biometric lock';
@@ -676,13 +616,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_all_data => 'Delete all data';
 
   @override
-  String get delete_confirm => 'Are you sure? This action cannot be undone.';
-
-  @override
   String get reset_onboarding => 'Repeat onboarding';
-
-  @override
-  String get report_bug => 'Report a bug';
 
   @override
   String get version => 'Version';
@@ -703,50 +637,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get open_source_licenses => 'Open source licenses';
 
   @override
-  String get onboarding_welcome_title => 'Welcome to TRAUM';
-
-  @override
-  String get onboarding_welcome_subtitle =>
-      'Your life. Your data. Your system.';
-
-  @override
   String get onboarding_privacy_title => 'Privacy & Consent';
 
   @override
-  String get onboarding_profile_title => 'Your Profile';
-
-  @override
   String get onboarding_body_title => 'Body & Fitness';
-
-  @override
-  String get onboarding_nutrition_title => 'Nutrition';
-
-  @override
-  String get onboarding_supplements_title => 'Supplements';
-
-  @override
-  String get onboarding_medication_title => 'Medication';
-
-  @override
-  String get onboarding_budget_title => 'Budget';
-
-  @override
-  String get onboarding_cycle_title => 'Your Cycle';
-
-  @override
-  String get onboarding_nav_title => 'Customize navigation';
-
-  @override
-  String get onboarding_weather_title => 'Weather location';
-
-  @override
-  String get onboarding_notifications_title => 'Notifications';
-
-  @override
-  String get onboarding_health_title => 'Connect fitness data';
-
-  @override
-  String get onboarding_done_title => 'All set!';
 
   @override
   String get lets_go => 'Let\'s go';
@@ -788,34 +682,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get healthScoreInsights => 'Insights & Recommendations';
 
   @override
-  String get healthScoreStrength => 'Strength';
-
-  @override
   String get healthScorePotential => 'Improvement potential';
 
   @override
-  String get healthScoreTrend => 'Trend';
-
-  @override
   String get healthScoreBalance => 'Overall balance';
-
-  @override
-  String get healthScoreFactorTraining => 'Training';
-
-  @override
-  String get healthScoreFactorNutrition => 'Nutrition';
-
-  @override
-  String get healthScoreFactorRegeneration => 'Recovery';
-
-  @override
-  String get healthScoreFactorSupplements => 'Supplements';
-
-  @override
-  String get healthScoreFactorMedication => 'Medication';
-
-  @override
-  String get healthScoreFactorMental => 'Stress & Mental';
 
   @override
   String get healthScoreBewertungOptimal => 'Optimal';
@@ -927,66 +797,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allMilestonesReached => 'All milestones reached';
 
   @override
-  String get addTransaction => 'Add transaction';
-
-  @override
-  String get expenseLabel => 'Expense';
-
-  @override
-  String get incomeLabel => 'Income';
-
-  @override
-  String amountWithCurrency(String currency) {
-    return 'Amount ($currency)';
-  }
-
-  @override
   String get fieldDescription => 'Description';
-
-  @override
-  String get transactionDescriptionHint => 'e.g. Grocery';
 
   @override
   String get dateLabel => 'Date';
 
   @override
-  String get categoryOptional => 'Category (optional)';
-
-  @override
-  String get noCategories => 'No categories';
-
-  @override
-  String get noCategory => 'No category';
-
-  @override
   String get fieldNoteOptional => 'Note (optional)';
-
-  @override
-  String get noteHint => 'Note...';
-
-  @override
-  String get pleaseEnterValidAmount => 'Please enter a valid amount';
-
-  @override
-  String get descriptionRequired => 'Description required';
 
   @override
   String get saving => 'Saving...';
 
   @override
-  String get latestTransactions => 'Latest transactions';
-
-  @override
   String get all => 'All';
 
   @override
-  String get balanceThisMonth => 'Balance this month';
-
-  @override
   String get categoryOther => 'Other';
-
-  @override
-  String get budgetsLabel => 'Budgets';
 
   @override
   String get monthJan => 'January';
@@ -1062,9 +888,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noTransactions => 'No transactions';
-
-  @override
-  String get tapPlusToAdd => 'Tap + to add';
 
   @override
   String get statistics => 'Statistics';
@@ -1338,43 +1161,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sleepQuality => 'Sleep quality';
 
   @override
-  String get weatherClear => 'Clear';
-
-  @override
-  String get weatherCloudy => 'Cloudy';
-
-  @override
-  String get weatherFoggy => 'Foggy';
-
-  @override
-  String get weatherRain => 'Rain';
-
-  @override
-  String get weatherSnow => 'Snow';
-
-  @override
-  String get weatherShowers => 'Showers';
-
-  @override
-  String get weatherThunderstorm => 'Thunderstorm';
-
-  @override
-  String get goalShort => 'Goal';
-
-  @override
-  String stepsProgress(int current, int goal) {
-    return '$current / $goal';
-  }
-
-  @override
-  String macroProgress(String val, int goal, String unit) {
-    return '$val / $goal $unit';
-  }
-
-  @override
-  String get dailyLimitReached => 'Daily limit reached';
-
-  @override
   String waterMin(int ml) {
     return 'Min $ml ml';
   }
@@ -1383,37 +1169,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get permissionNotifications => 'Notifications';
 
   @override
-  String waterTotal(int ml) {
-    return '$ml ml';
-  }
-
-  @override
-  String waterGoalAndMax(int goal, int max) {
-    return 'Goal: $goal ml · Max: $max ml';
-  }
-
-  @override
   String get permissionLocation => 'Location';
 
   @override
-  String waterButton(int ml) {
-    return '+$ml ml';
-  }
-
-  @override
   String get todos => 'Tasks';
-
-  @override
-  String get allLabel => 'All';
-
-  @override
-  String get noOpenTodos => 'No open tasks';
-
-  @override
-  String get medicationsTitle => 'Medications';
-
-  @override
-  String get noMedications => 'No medications';
 
   @override
   String get missingPermissions => 'Missing permissions';
@@ -1422,21 +1181,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get habits => 'Habits';
 
   @override
-  String get noHabitsTapToAdd => 'No habits – Tap to add';
-
-  @override
-  String get noTransactionsThisMonth => 'No transactions this month';
-
-  @override
   String permissionsContent(String items) {
     return '$items';
   }
-
-  @override
-  String get tapForCycleInfo => 'Tap for cycle info';
-
-  @override
-  String get healthLabel => 'Health';
 
   @override
   String get heartRate => 'Heart rate';
@@ -1493,40 +1240,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get wrongPin => 'Wrong PIN';
 
   @override
-  String get inactive => 'Inactive';
-
-  @override
   String get activeLabel => 'Active';
-
-  @override
-  String get noMedicationsYet => 'No medications yet';
-
-  @override
-  String get tapToAddMedication => 'Tap to add a medication';
 
   @override
   String get addMedication => 'Add medication';
 
   @override
-  String get medicationNameHint => 'e.g. Ibuprofen';
-
-  @override
-  String get dosageHint => 'e.g. 400mg';
-
-  @override
   String get dosage => 'Dosage';
-
-  @override
-  String get allMedications => 'All medications';
 
   @override
   String timeForMedication(String name) {
     return 'Time for $name';
-  }
-
-  @override
-  String remindersTimes(String times) {
-    return 'Reminders: $times';
   }
 
   @override
@@ -1542,94 +1266,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snack => 'Snack';
 
   @override
-  String get searchOrCreate => 'Search or create';
-
-  @override
-  String get noResultsLabel => 'No results found';
-
-  @override
-  String get createFood => 'Create food';
-
-  @override
-  String get amountG => 'Amount (g)';
-
-  @override
-  String get logEntry => 'Save entry';
-
-  @override
-  String get searchFood => 'Search food';
-
-  @override
-  String get plusNew => '+ New';
-
-  @override
   String get searchHint => 'Search...';
 
   @override
   String get mealType => 'Meal type';
 
   @override
-  String get foodHint => 'e.g. Oats';
-
-  @override
-  String get foodLabel => 'Food';
-
-  @override
   String get amountGrams => 'Amount (g)';
-
-  @override
-  String get caloriesKcal => 'Calories (kcal)';
 
   @override
   String get proteinG => 'Protein (g)';
 
   @override
-  String get carbsG => 'Carbs (g)';
-
-  @override
-  String get fatG => 'Fat (g)';
-
-  @override
-  String get logMeal => 'Log meal';
-
-  @override
-  String get quickSelect => 'Quick select';
-
-  @override
-  String get addWater => 'Add water';
-
-  @override
-  String get waterGoal2000 => 'Goal: 2000 ml';
-
-  @override
-  String get shoppingListTooltip => 'Shopping list';
-
-  @override
   String get completed => 'Completed';
-
-  @override
-  String get shoppingList => 'Shopping list';
 
   @override
   String get addProduct => 'Add product';
 
   @override
-  String get itemHint => 'Item...';
-
-  @override
   String get quantity => 'Quantity';
-
-  @override
-  String get unitHint => 'Unit';
-
-  @override
-  String get deleteCompletedTooltip => 'Delete completed';
-
-  @override
-  String get tapToAddProduct => 'Tap to add a product';
-
-  @override
-  String get servingSize => 'Serving size';
 
   @override
   String get kcalPer100g => 'kcal/100g';
@@ -1644,12 +1299,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fatPer100g => 'Fat (g/100g)';
 
   @override
-  String get createButton => 'Create';
-
-  @override
-  String get caloriesRequired => 'Calories required';
-
-  @override
   String get noResults => 'No results';
 
   @override
@@ -1657,9 +1306,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get weightKg => 'Weight (kg)';
-
-  @override
-  String get weightLbs => 'Weight (lbs)';
 
   @override
   String get welcomeToTraum => 'Welcome to TRAUM';
@@ -1769,20 +1415,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get periodLengthLabel => 'Period length (days)';
 
   @override
-  String get navTitleOb => 'Customize navigation';
-
-  @override
-  String get homeAlwaysLeft => 'Home is always on the left';
-
-  @override
-  String slotsSelected(int n) {
-    return '$n slots selected';
-  }
-
-  @override
-  String get adjustNavLater => 'Adjust later';
-
-  @override
   String get weatherTitleOb => 'Weather location';
 
   @override
@@ -1889,27 +1521,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addSupplement => 'Add supplement';
 
   @override
-  String get supplementNameHint => 'e.g. Vitamin D';
-
-  @override
   String get category => 'Category';
 
   @override
-  String get amountHint => 'e.g. 1000';
-
-  @override
   String get fieldUnit => 'Unit';
-
-  @override
-  String get noSupplements => 'No supplements';
-
-  @override
-  String get tapToAddSupplement => 'Tap to add a supplement';
-
-  @override
-  String avgCycleDaysShort(int n) {
-    return 'Ø $n d.';
-  }
 
   @override
   String avgCycleDays(int days) {
@@ -1982,30 +1597,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get symptomsToday => 'Symptoms today';
 
   @override
-  String get periodEntries => 'Period entries';
-
-  @override
-  String get tapToStartPeriod => 'Tap to start a period';
-
-  @override
-  String get follicularPhase => 'Follicular phase';
-
-  @override
-  String get ovulationPhase => 'Ovulation phase';
-
-  @override
-  String get fertileWindowPhase => 'Fertile window';
-
-  @override
-  String get nextPeriodLabel => 'Next period';
-
-  @override
-  String get ovulationLabel => 'Ovulation';
-
-  @override
-  String get fertileLabel => 'Fertile';
-
-  @override
   String pregnancyProbabilityToday(int pct) {
     return '$pct% pregnancy probability';
   }
@@ -2015,12 +1606,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get historyTooltip => 'History';
-
-  @override
-  String get noSymptomsToday => 'No symptoms today';
-
-  @override
-  String get selectOrEnterSymptom => 'Select or enter symptom';
 
   @override
   String get endPeriod => 'End period';
@@ -2071,9 +1656,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get symptomSleepIssues => 'Sleep issues';
 
   @override
-  String get addSymptom => 'Add symptom';
-
-  @override
   String get orCustomSymptom => 'or enter custom symptom';
 
   @override
@@ -2087,9 +1669,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get intensityStrong => 'Strong';
-
-  @override
-  String get saveSymptom => 'Save symptom';
 
   @override
   String get fertileLegend => 'Fertile';
@@ -2308,24 +1887,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportSelected => 'Export selected';
 
   @override
-  String get exportPreparing => 'Preparing...';
-
-  @override
   String get supportSection => 'Support';
-
-  @override
-  String get bugReportDarkModeYes => 'Yes';
-
-  @override
-  String bugReportDevice(String device) {
-    return 'Device: $device';
-  }
-
-  @override
-  String get bugReportSubject => '[TRAUM] Bug report';
-
-  @override
-  String get bugReportBody => 'Please describe the bug:';
 
   @override
   String get appSection => 'App';
@@ -2508,9 +2070,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nutritionReportEmpty => 'No nutrition data in this range';
 
   @override
-  String get importRunning => 'Importing…';
-
-  @override
   String importDone(int rows, int media) {
     return '$rows entries imported, $media media files restored';
   }
@@ -2563,25 +2122,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get muscleCardio => 'Cardio';
 
   @override
-  String get noWorkoutPlanned => 'No workout planned';
-
-  @override
-  String get weeklyProgress => 'Weekly progress';
-
-  @override
-  String get createRoutine => 'Create routine';
-
-  @override
-  String get muscleGroupsOverview => 'Muscle groups overview';
-
-  @override
-  String get noTrainingSessionsRecorded => 'No training sessions recorded';
-
-  @override
   String get myRoutines => 'My routines';
-
-  @override
-  String get noRoutinesCreated => 'No routines created';
 
   @override
   String trainingDayName(String letter) {
@@ -2705,9 +2246,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get instructionExecution => 'Execution instruction';
 
   @override
-  String get noExercisesInLibrary => 'No exercises in library';
-
-  @override
   String get noExercisesYet => 'No exercises yet';
 
   @override
@@ -2720,38 +2258,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recentSets => 'Recent sets';
 
   @override
-  String get trainExerciseToSeeProgress =>
-      'Train this exercise to see progress';
-
-  @override
-  String get noProgressData => 'No progress data';
-
-  @override
-  String get trainingVolumeLast7Days => 'Training volume (last 7 days)';
-
-  @override
-  String get volumeLast90Days => 'Volume (last 90 days)';
-
-  @override
-  String get maxWeight => 'Max. weight';
-
-  @override
-  String get maxReps => 'Max. reps';
-
-  @override
-  String get little => 'Little';
-
-  @override
   String get much => 'Much';
 
   @override
   String get restTimerLabel => 'Rest';
-
-  @override
-  String get addSet => 'Add set';
-
-  @override
-  String get noTraining => 'No training';
 
   @override
   String get notTrained => 'Not trained';
@@ -2764,9 +2274,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get finishing => 'Finishing...';
-
-  @override
-  String get noTrainingPlanned => 'No training planned';
 
   @override
   String get exercises => 'Exercises';
@@ -2846,15 +2353,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bookmarked => 'Bookmarked';
 
   @override
-  String get estimated1RM => 'Estimated 1RM (Epley)';
-
-  @override
-  String get heavilyTrained => 'Heavily trained';
-
-  @override
-  String get lightlyTrained => 'Lightly trained';
-
-  @override
   String get notTrainedHeatmap => 'Not trained';
 
   @override
@@ -2876,30 +2374,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get restTimerSkip => 'Skip';
 
   @override
-  String get bookmarkExercise => 'Bookmark exercise';
-
-  @override
-  String get warmupSet => 'Warmup set';
-
-  @override
   String get workoutStreak => 'Day streak';
 
   @override
   String get restDuration => 'Rest duration';
-
-  @override
-  String get muscleGroupVolume => 'Volume by muscle group';
-
-  @override
-  String get noMuscleDataThisWeek => 'No training volume this week';
-
-  @override
-  String lastPerformanceHint(String info) {
-    return 'Last: $info';
-  }
-
-  @override
-  String get noLastPerformance => 'No previous data';
 
   @override
   String get instructionsLabel => 'Instructions';
@@ -2914,66 +2392,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get detailsLabel => 'Details';
 
   @override
-  String get feedbackTitle => 'Send feedback';
-
-  @override
-  String get feedbackSubtitle => 'Your feedback helps improve TRAUM.';
-
-  @override
-  String get feedbackTypeBug => 'Bug';
-
-  @override
-  String get feedbackTypeFeature => 'Feature';
-
-  @override
-  String get feedbackTypeImprovement => 'Improvement';
-
-  @override
-  String get feedbackShortTitle => 'Short title';
-
-  @override
-  String get feedbackDescription => 'Description';
-
-  @override
-  String get feedbackSubmit => 'Open GitHub & submit';
-
-  @override
-  String get feedbackHint =>
-      'Opens GitHub in browser. A GitHub account is needed to submit.';
-
-  @override
-  String get feedbackSystemInfo =>
-      'System info will be attached automatically.';
-
-  @override
   String get settingsFeedback => 'Feedback & bug reports';
 
   @override
   String get settingsFeedbackSubtitle => 'Bug · Feature · Improvement';
 
   @override
-  String get budgetTitle => 'Finance';
-
-  @override
-  String get budgetAvailableBalance => 'Available balance';
-
-  @override
   String get budgetMoreLink => 'More ›';
 
   @override
-  String budgetForecastText(String amount) {
-    return 'At this rate you\'ll have ~$amount left at month end.';
-  }
-
-  @override
-  String get budgetScanReceipt => 'Scan receipt / photo';
-
-  @override
   String get budgetScanningReceipt => 'Analysing receipt...';
-
-  @override
-  String get budgetScanNoAmount =>
-      'Amount not detected — please enter manually';
 
   @override
   String get budgetSaveAsTemplate => 'Save as template';
@@ -2982,29 +2410,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get budgetSplitTransaction => 'Split amount';
 
   @override
-  String get budgetSplitTitle => 'Split transaction';
-
-  @override
   String budgetSplitRemaining(String amount) {
     return 'Remaining: $amount';
-  }
-
-  @override
-  String budgetStatusGood(String amount) {
-    return '$amount budget remaining';
-  }
-
-  @override
-  String get budgetStatusWarning => '80% of budget used';
-
-  @override
-  String budgetStatusOverbudget(String amount) {
-    return 'Budget exceeded by $amount';
-  }
-
-  @override
-  String budgetRecurringWarning(String name, String days) {
-    return '$name due in $days days';
   }
 
   @override
@@ -3017,19 +2424,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get budgetExpenses => 'Expenses';
 
   @override
-  String get budgetSaved => 'Saved';
-
-  @override
-  String get budgetForecast => 'Forecast';
-
-  @override
   String get budgetCategories => 'Categories';
 
   @override
   String get budgetTransactions => 'Transactions';
-
-  @override
-  String get budgetFixedCosts => 'Fixed costs';
 
   @override
   String get budgetSavingGoals => 'Savings goals';
@@ -3055,68 +2453,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get debtExistingAmount => 'Existing amount';
-
-  @override
-  String get budgetQuickTemplates => 'Quick templates';
-
-  @override
-  String get budgetAddExpense => 'Save expense';
-
-  @override
-  String get budgetAddIncome => 'Save income';
-
-  @override
-  String budgetScanSuccess(String amount, String date) {
-    return 'Detected: $amount on $date';
-  }
-
-  @override
-  String get budgetTotalBalance => 'Total balance';
-
-  @override
-  String get budgetVsLastMonth => 'vs. last month';
-
-  @override
   String get budgetAccounts => 'Accounts';
 
   @override
-  String get budgetAddAccount => 'Add account';
-
-  @override
-  String get budgetAccountChecking => 'Checking account';
-
-  @override
-  String get budgetAccountSavings => 'Savings account';
-
-  @override
-  String get budgetAccountCredit => 'Credit card';
-
-  @override
-  String get budgetAccountInvestment => 'Investment';
-
-  @override
-  String get budgetAccountPrimary => 'Primary';
-
-  @override
-  String get budgetAccountPending => 'Pending';
-
-  @override
-  String budgetAccountReturn(Object rate) {
-    return 'Return: $rate%';
-  }
-
-  @override
-  String get budgetOverviewTitle => 'Budget overview';
-
-  @override
   String get budgetRecentTransactions => 'Recent transactions';
-
-  @override
-  String get budgetCategoryListTitle => 'Expenses by category';
-
-  @override
-  String get budgetBalanceHidden => 'Balance hidden';
 
   @override
   String get budgetTemplateNameHint => 'Template name';
@@ -3307,85 +2647,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get budgetNoTransactionsHint => 'Tap + New to add one';
 
   @override
-  String get budgetAddAccountButton => '+ Add account';
-
-  @override
-  String get budgetEditAccountTitle => 'Edit account';
-
-  @override
-  String get budgetDeleteAccountConfirm => 'Delete account?';
-
-  @override
-  String budgetDeleteAccountContent(String name) {
-    return '\"$name\" will be removed. Existing transactions remain.';
-  }
-
-  @override
-  String get budgetAccountNameHint => 'e.g. Checking account';
-
-  @override
-  String get budgetInstitutionLabel => 'Bank / Institution';
-
-  @override
-  String get budgetInstitutionHint => 'e.g. Sparkasse';
-
-  @override
-  String get budgetBalanceLabel => 'Balance *';
-
-  @override
-  String get budgetLastFourLabel => 'Last 4 digits';
-
-  @override
-  String get budgetReturnRateLabel => 'Return %';
-
-  @override
-  String get budgetMarkAsPrimary => 'Mark as primary account';
-
-  @override
-  String get budgetDeleteAccountButton => 'Delete account';
-
-  @override
   String get diaryTitle => 'Diary';
-
-  @override
-  String get diarySubtitle => 'Your visual life.';
-
-  @override
-  String get diaryTodayEntry => 'Today\'s entry';
-
-  @override
-  String get diaryNoEntryToday => 'No entry yet today';
-
-  @override
-  String get diaryTakePhoto => 'Take photo';
-
-  @override
-  String get diaryTakeVideo => 'Record video';
-
-  @override
-  String get diaryChooseFromGallery => 'From gallery';
 
   @override
   String get diaryNoteHint => 'Write something about this moment... (optional)';
 
   @override
-  String get diarySave => 'Save';
-
-  @override
   String get diaryRetake => 'Retake';
-
-  @override
-  String diaryStreak(int count) {
-    return '$count days in a row';
-  }
 
   @override
   String diaryTotalEntries(int count) {
     return '$count entries';
   }
-
-  @override
-  String get diarySlideshow => 'Slideshow';
 
   @override
   String get diaryRecentEntries => 'Recent entries';
@@ -3401,100 +2674,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'The entry and media file will be permanently deleted.';
 
   @override
-  String get diaryDeleteConfirm => 'Delete';
-
-  @override
   String get diaryModuleLabel => 'Diary';
 
   @override
-  String get homeScreenDiaryCardEmpty => 'No entry yet today';
-
-  @override
-  String get homeScreenDiaryCardFilled => 'Today\'s entry';
-
-  @override
   String get nutritionTitle => 'Nutrition';
-
-  @override
-  String get nutritionToday => 'Today';
-
-  @override
-  String get nutritionWeek => 'Week';
-
-  @override
-  String get nutritionProducts => 'Products';
-
-  @override
-  String get nutritionShopping => 'Shopping';
-
-  @override
-  String get nutritionCalories => 'Calories';
-
-  @override
-  String get nutritionProtein => 'Protein';
-
-  @override
-  String get nutritionCarbs => 'Carbohydrates';
-
-  @override
-  String get nutritionFat => 'Fat';
-
-  @override
-  String get nutritionBreakfast => 'Breakfast';
-
-  @override
-  String get nutritionLunch => 'Lunch';
-
-  @override
-  String get nutritionDinner => 'Dinner';
-
-  @override
-  String get nutritionSnack => 'Snack';
-
-  @override
-  String get nutritionScanBarcode => 'Scan barcode';
-
-  @override
-  String get nutritionScanHint => 'Point camera at barcode';
-
-  @override
-  String get nutritionProductNotFound => 'Product not found';
-
-  @override
-  String get nutritionEnterAmount => 'Enter amount';
-
-  @override
-  String get nutritionPer100g => 'per 100g';
-
-  @override
-  String get nutritionAddToMeal => 'Add to meal';
-
-  @override
-  String get nutritionSaveAsTemplate => 'Save as template';
-
-  @override
-  String get nutritionTemplates => 'Templates';
-
-  @override
-  String get nutritionRecentProducts => 'Recently used';
-
-  @override
-  String get nutritionAddCustomProduct => 'Add custom product';
-
-  @override
-  String get nutritionShoppingListGenerate => 'Generate shopping list';
-
-  @override
-  String get nutritionShoppingListEmpty => 'Shopping list is empty';
-
-  @override
-  String get nutritionShoppingListDeleteDone => 'Delete completed';
-
-  @override
-  String get nutritionWeeklyPlan => 'Weekly plan';
-
-  @override
-  String get nutritionWeeklyChart => 'Weekly trend';
 
   @override
   String get myFoodsSection => 'My foods';
@@ -3516,9 +2699,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notes_title => 'Notes';
-
-  @override
-  String get notes_new_note => 'New note';
 
   @override
   String get notes_new_folder => 'New folder';
@@ -3610,9 +2790,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notes_unpin => 'Unpin';
 
   @override
-  String get notes_pinned => 'Pinned';
-
-  @override
   String get notes_no_notes => 'No notes yet';
 
   @override
@@ -3626,9 +2803,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notes_template_name => 'Template name';
-
-  @override
-  String get notes_new_template => 'New template';
 
   @override
   String get notes_no_tags => 'No tags';
@@ -3652,9 +2826,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notes_export_vault => 'Export vault';
 
   @override
-  String get notes_empty_trash => 'Empty trash';
-
-  @override
   String get notes_local_graph => 'Local graph';
 
   @override
@@ -3665,12 +2836,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notes_no_daily => 'No daily note for this day';
-
-  @override
-  String get notes_open_or_create => 'Open or create';
-
-  @override
-  String get notes_today => 'Today';
 
   @override
   String get notes_cancel => 'Cancel';
@@ -3685,9 +2850,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notes_no_results => 'No results';
 
   @override
-  String get notes_confirm_delete => 'Move note to trash?';
-
-  @override
   String get notes_confirm_delete_permanently =>
       'Delete note permanently? This cannot be undone.';
 
@@ -3695,25 +2857,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notes_no_trash => 'Trash is empty';
 
   @override
-  String get notes_preview => 'Preview';
-
-  @override
-  String get notes_properties => 'Properties';
-
-  @override
   String get notes_empty_note_hint => 'Write something in Markdown…';
-
-  @override
-  String get notes_export_done => 'Vault exported';
 
   @override
   String notes_import_done(int count) {
     return 'Vault imported: $count notes';
-  }
-
-  @override
-  String notes_link_count(int count) {
-    return '$count notes';
   }
 
   @override
@@ -3763,9 +2911,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setAsLauncherFailed => 'Couldn\'t open launcher settings';
 
   @override
-  String get graffitiMapTitle => 'Graffiti Map';
-
-  @override
   String get graffitiMapChooseMap => 'Choose map';
 
   @override
@@ -3776,14 +2921,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get graffitiMapWithRating => 'With rating · multiple photos';
-
-  @override
-  String get graffitiMapSearchHint => 'Search by #hashtag...';
-
-  @override
-  String graffitiMapMegapixels(String mp) {
-    return '$mp MP';
-  }
 
   @override
   String get graffitiMapNote => 'Add note...';
@@ -3892,15 +3029,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapNoEntriesYet => 'No entries yet';
 
   @override
-  String get mapModeStandard => 'Standard';
-
-  @override
-  String get mapModeSatellite => 'Satellite';
-
-  @override
-  String get mapModeHybrid => 'Hybrid';
-
-  @override
   String get mapEntryLabel => 'Entry';
 
   @override
@@ -3931,12 +3059,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapFunctions => 'Functions';
 
   @override
-  String get mapFunctionRating => 'Star rating';
-
-  @override
-  String get mapFunctionMultiPhoto => 'Multiple photos per point';
-
-  @override
   String get mapFields => 'Fields';
 
   @override
@@ -3961,15 +3083,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String mapDistanceFromYou(String distance) {
     return '$distance from you';
   }
-
-  @override
-  String get mapExportGpx => 'Export as GPX';
-
-  @override
-  String get mapExportJson => 'Export as JSON';
-
-  @override
-  String get mapAddToExisting => 'Add to existing';
 
   @override
   String get mapTowerName => 'Name';
@@ -4177,9 +3290,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get obBirthDatePick => 'Pick date';
 
   @override
-  String get cycleDayLabel => 'Cycle day';
-
-  @override
   String get phaseMenstrual => 'Menstruation';
 
   @override
@@ -4241,10 +3351,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bbtCurveTitle => 'Basal body temperature';
-
-  @override
-  String get bbtConfirmsOvulation =>
-      'Temperature shift confirms ovulation (symptothermal)';
 
   @override
   String get cycleAnalysisTitle => 'Cycle analysis';
@@ -4373,12 +3479,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get calendarAccessDeniedSyncOff =>
       'Calendar access denied — sync disabled';
-
-  @override
-  String get calendarFallbackName => 'Calendar';
-
-  @override
-  String get eventNoTitle => '(No title)';
 
   @override
   String get editAppointment => 'Edit appointment';

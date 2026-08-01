@@ -158,11 +158,11 @@ class _CreateCollectionScreenState
       ));
       ref.invalidate(collectionByIdProvider(existing.id));
       ref.invalidate(activeCollectionInfoProvider);
-      ref.invalidate(activeMarkersProvider);
+      invalidateMarkerViews(ref);
       if (_autoGroup) {
         await regroupCollection(
             ref.read(databaseProvider), existing.id, _groupRadius.toDouble());
-        ref.invalidate(activeMarkersProvider);
+        invalidateMarkerViews(ref);
       }
     } else {
       await dao.insert(MapCollectionsCompanion.insert(

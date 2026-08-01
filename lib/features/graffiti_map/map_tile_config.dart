@@ -26,10 +26,3 @@ String mapModeAttribution(MapViewMode mode) => switch (mode) {
       MapViewMode.hybrid =>
         'Esri, Maxar, Earthstar Geographics',
     };
-
-/// Short human label for the mode switcher.
-String mapModeLabel(MapViewMode mode) => switch (mode) {
-      MapViewMode.standard => 'Standard',
-      MapViewMode.satellite => 'Satellit',
-      MapViewMode.hybrid => 'Hybrid',
-    };

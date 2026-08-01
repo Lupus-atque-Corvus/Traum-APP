@@ -98,12 +98,6 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
-  /// No description provided for @appName.
-  ///
-  /// In de, this message translates to:
-  /// **'TRAUM'**
-  String get appName;
-
   /// No description provided for @home.
   ///
   /// In de, this message translates to:
@@ -494,12 +488,6 @@ abstract class AppLocalizations {
   /// **'Keine Ergebnisse für \"{query}\"'**
   String noResultsForQuery(String query);
 
-  /// No description provided for @evidenceGrade.
-  ///
-  /// In de, this message translates to:
-  /// **'Evidenz {grade}'**
-  String evidenceGrade(String grade);
-
   /// No description provided for @substanceMedications.
   ///
   /// In de, this message translates to:
@@ -517,12 +505,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Was möchtest du hinzufügen?'**
   String get whatToAdd;
-
-  /// No description provided for @interactions.
-  ///
-  /// In de, this message translates to:
-  /// **'Interaktionen'**
-  String get interactions;
 
   /// No description provided for @noSubstancesYet.
   ///
@@ -583,24 +565,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Bitte Substanz angeben'**
   String get pleaseEnterSubstance;
-
-  /// No description provided for @effectMechanism.
-  ///
-  /// In de, this message translates to:
-  /// **'Wirkung / Mechanismus'**
-  String get effectMechanism;
-
-  /// No description provided for @commonSideEffects.
-  ///
-  /// In de, this message translates to:
-  /// **'Häufige Nebenwirkungen'**
-  String get commonSideEffects;
-
-  /// No description provided for @knownInteractions.
-  ///
-  /// In de, this message translates to:
-  /// **'Bekannte Interaktionen'**
-  String get knownInteractions;
 
   /// No description provided for @substancesTabMyMeds.
   ///
@@ -1178,12 +1142,6 @@ abstract class AppLocalizations {
   /// **'Gestern'**
   String get yesterday;
 
-  /// No description provided for @thisWeek.
-  ///
-  /// In de, this message translates to:
-  /// **'Diese Woche'**
-  String get thisWeek;
-
   /// No description provided for @thisMonth.
   ///
   /// In de, this message translates to:
@@ -1238,41 +1196,17 @@ abstract class AppLocalizations {
   /// **'Sekunden'**
   String get seconds;
 
-  /// No description provided for @noEntriesYet.
-  ///
-  /// In de, this message translates to:
-  /// **'Noch keine Einträge'**
-  String get noEntriesYet;
-
   /// No description provided for @allDataOnDevice.
   ///
   /// In de, this message translates to:
   /// **'Alle Daten bleiben auf deinem Gerät.'**
   String get allDataOnDevice;
 
-  /// No description provided for @medicalDisclaimer.
-  ///
-  /// In de, this message translates to:
-  /// **'Diese App ersetzt keine ärztliche Beratung.'**
-  String get medicalDisclaimer;
-
   /// No description provided for @startWorkout.
   ///
   /// In de, this message translates to:
   /// **'Workout starten'**
   String get startWorkout;
-
-  /// No description provided for @workoutComplete.
-  ///
-  /// In de, this message translates to:
-  /// **'Workout abgeschlossen'**
-  String get workoutComplete;
-
-  /// No description provided for @addEntry.
-  ///
-  /// In de, this message translates to:
-  /// **'Eintrag hinzufügen'**
-  String get addEntry;
 
   /// No description provided for @income.
   ///
@@ -1292,12 +1226,6 @@ abstract class AppLocalizations {
   /// **'Saldo'**
   String get balance;
 
-  /// No description provided for @monthly.
-  ///
-  /// In de, this message translates to:
-  /// **'Monatlich'**
-  String get monthly;
-
   /// No description provided for @daily.
   ///
   /// In de, this message translates to:
@@ -1310,23 +1238,11 @@ abstract class AppLocalizations {
   /// **'Wöchentlich'**
   String get weekly;
 
-  /// No description provided for @period_days_label.
-  ///
-  /// In de, this message translates to:
-  /// **'Tage bis zur nächsten Periode'**
-  String get period_days_label;
-
   /// No description provided for @ovulation.
   ///
   /// In de, this message translates to:
   /// **'Eisprung'**
   String get ovulation;
-
-  /// No description provided for @fertile_window.
-  ///
-  /// In de, this message translates to:
-  /// **'Fruchtbares Fenster'**
-  String get fertile_window;
 
   /// No description provided for @cycle_length.
   ///
@@ -1340,30 +1256,6 @@ abstract class AppLocalizations {
   /// **'Periodenlänge'**
   String get period_length;
 
-  /// No description provided for @next_period.
-  ///
-  /// In de, this message translates to:
-  /// **'Nächste Periode'**
-  String get next_period;
-
-  /// No description provided for @no_period_data.
-  ///
-  /// In de, this message translates to:
-  /// **'Noch keine Zyklusdaten. Trage deine erste Periode ein.'**
-  String get no_period_data;
-
-  /// No description provided for @language_de.
-  ///
-  /// In de, this message translates to:
-  /// **'Deutsch'**
-  String get language_de;
-
-  /// No description provided for @language_en.
-  ///
-  /// In de, this message translates to:
-  /// **'Englisch'**
-  String get language_en;
-
   /// No description provided for @metric.
   ///
   /// In de, this message translates to:
@@ -1375,12 +1267,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Imperial'**
   String get imperial;
-
-  /// No description provided for @dark_mode.
-  ///
-  /// In de, this message translates to:
-  /// **'Dark Mode'**
-  String get dark_mode;
 
   /// No description provided for @biometric_lock.
   ///
@@ -1406,23 +1292,11 @@ abstract class AppLocalizations {
   /// **'Alle Daten löschen'**
   String get delete_all_data;
 
-  /// No description provided for @delete_confirm.
-  ///
-  /// In de, this message translates to:
-  /// **'Bist du sicher? Diese Aktion kann nicht rückgängig gemacht werden.'**
-  String get delete_confirm;
-
   /// No description provided for @reset_onboarding.
   ///
   /// In de, this message translates to:
   /// **'Onboarding wiederholen'**
   String get reset_onboarding;
-
-  /// No description provided for @report_bug.
-  ///
-  /// In de, this message translates to:
-  /// **'Fehler melden'**
-  String get report_bug;
 
   /// No description provided for @version.
   ///
@@ -1460,95 +1334,17 @@ abstract class AppLocalizations {
   /// **'Open-Source-Lizenzen'**
   String get open_source_licenses;
 
-  /// No description provided for @onboarding_welcome_title.
-  ///
-  /// In de, this message translates to:
-  /// **'Willkommen bei TRAUM'**
-  String get onboarding_welcome_title;
-
-  /// No description provided for @onboarding_welcome_subtitle.
-  ///
-  /// In de, this message translates to:
-  /// **'Dein Leben. Deine Daten. Dein System.'**
-  String get onboarding_welcome_subtitle;
-
   /// No description provided for @onboarding_privacy_title.
   ///
   /// In de, this message translates to:
   /// **'Datenschutz & Einwilligung'**
   String get onboarding_privacy_title;
 
-  /// No description provided for @onboarding_profile_title.
-  ///
-  /// In de, this message translates to:
-  /// **'Dein Profil'**
-  String get onboarding_profile_title;
-
   /// No description provided for @onboarding_body_title.
   ///
   /// In de, this message translates to:
   /// **'Körper & Fitness'**
   String get onboarding_body_title;
-
-  /// No description provided for @onboarding_nutrition_title.
-  ///
-  /// In de, this message translates to:
-  /// **'Ernährung'**
-  String get onboarding_nutrition_title;
-
-  /// No description provided for @onboarding_supplements_title.
-  ///
-  /// In de, this message translates to:
-  /// **'Supplements'**
-  String get onboarding_supplements_title;
-
-  /// No description provided for @onboarding_medication_title.
-  ///
-  /// In de, this message translates to:
-  /// **'Medikamente'**
-  String get onboarding_medication_title;
-
-  /// No description provided for @onboarding_budget_title.
-  ///
-  /// In de, this message translates to:
-  /// **'Budget'**
-  String get onboarding_budget_title;
-
-  /// No description provided for @onboarding_cycle_title.
-  ///
-  /// In de, this message translates to:
-  /// **'Dein Zyklus'**
-  String get onboarding_cycle_title;
-
-  /// No description provided for @onboarding_nav_title.
-  ///
-  /// In de, this message translates to:
-  /// **'Navigation anpassen'**
-  String get onboarding_nav_title;
-
-  /// No description provided for @onboarding_weather_title.
-  ///
-  /// In de, this message translates to:
-  /// **'Wetter-Standort'**
-  String get onboarding_weather_title;
-
-  /// No description provided for @onboarding_notifications_title.
-  ///
-  /// In de, this message translates to:
-  /// **'Benachrichtigungen'**
-  String get onboarding_notifications_title;
-
-  /// No description provided for @onboarding_health_title.
-  ///
-  /// In de, this message translates to:
-  /// **'Fitness-Daten verbinden'**
-  String get onboarding_health_title;
-
-  /// No description provided for @onboarding_done_title.
-  ///
-  /// In de, this message translates to:
-  /// **'Alles bereit!'**
-  String get onboarding_done_title;
 
   /// No description provided for @lets_go.
   ///
@@ -1628,65 +1424,17 @@ abstract class AppLocalizations {
   /// **'Insights & Empfehlungen'**
   String get healthScoreInsights;
 
-  /// No description provided for @healthScoreStrength.
-  ///
-  /// In de, this message translates to:
-  /// **'Stärke'**
-  String get healthScoreStrength;
-
   /// No description provided for @healthScorePotential.
   ///
   /// In de, this message translates to:
   /// **'Verbesserungspotenzial'**
   String get healthScorePotential;
 
-  /// No description provided for @healthScoreTrend.
-  ///
-  /// In de, this message translates to:
-  /// **'Trend'**
-  String get healthScoreTrend;
-
   /// No description provided for @healthScoreBalance.
   ///
   /// In de, this message translates to:
   /// **'Gesamtbalance'**
   String get healthScoreBalance;
-
-  /// No description provided for @healthScoreFactorTraining.
-  ///
-  /// In de, this message translates to:
-  /// **'Training'**
-  String get healthScoreFactorTraining;
-
-  /// No description provided for @healthScoreFactorNutrition.
-  ///
-  /// In de, this message translates to:
-  /// **'Ernährung'**
-  String get healthScoreFactorNutrition;
-
-  /// No description provided for @healthScoreFactorRegeneration.
-  ///
-  /// In de, this message translates to:
-  /// **'Regeneration'**
-  String get healthScoreFactorRegeneration;
-
-  /// No description provided for @healthScoreFactorSupplements.
-  ///
-  /// In de, this message translates to:
-  /// **'Supplemente'**
-  String get healthScoreFactorSupplements;
-
-  /// No description provided for @healthScoreFactorMedication.
-  ///
-  /// In de, this message translates to:
-  /// **'Medikamente'**
-  String get healthScoreFactorMedication;
-
-  /// No description provided for @healthScoreFactorMental.
-  ///
-  /// In de, this message translates to:
-  /// **'Stress & Mental'**
-  String get healthScoreFactorMental;
 
   /// No description provided for @healthScoreBewertungOptimal.
   ///
@@ -1898,41 +1646,11 @@ abstract class AppLocalizations {
   /// **'Alle Meilensteine erreicht'**
   String get allMilestonesReached;
 
-  /// No description provided for @addTransaction.
-  ///
-  /// In de, this message translates to:
-  /// **'Transaktion hinzufügen'**
-  String get addTransaction;
-
-  /// No description provided for @expenseLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Ausgabe'**
-  String get expenseLabel;
-
-  /// No description provided for @incomeLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Einnahme'**
-  String get incomeLabel;
-
-  /// No description provided for @amountWithCurrency.
-  ///
-  /// In de, this message translates to:
-  /// **'Betrag ({currency})'**
-  String amountWithCurrency(String currency);
-
   /// No description provided for @fieldDescription.
   ///
   /// In de, this message translates to:
   /// **'Beschreibung'**
   String get fieldDescription;
-
-  /// No description provided for @transactionDescriptionHint.
-  ///
-  /// In de, this message translates to:
-  /// **'z.B. Supermarkt'**
-  String get transactionDescriptionHint;
 
   /// No description provided for @dateLabel.
   ///
@@ -1940,47 +1658,11 @@ abstract class AppLocalizations {
   /// **'Datum'**
   String get dateLabel;
 
-  /// No description provided for @categoryOptional.
-  ///
-  /// In de, this message translates to:
-  /// **'Kategorie (optional)'**
-  String get categoryOptional;
-
-  /// No description provided for @noCategories.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Kategorien'**
-  String get noCategories;
-
-  /// No description provided for @noCategory.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Kategorie'**
-  String get noCategory;
-
   /// No description provided for @fieldNoteOptional.
   ///
   /// In de, this message translates to:
   /// **'Notiz (optional)'**
   String get fieldNoteOptional;
-
-  /// No description provided for @noteHint.
-  ///
-  /// In de, this message translates to:
-  /// **'Notiz...'**
-  String get noteHint;
-
-  /// No description provided for @pleaseEnterValidAmount.
-  ///
-  /// In de, this message translates to:
-  /// **'Bitte gib einen gültigen Betrag ein'**
-  String get pleaseEnterValidAmount;
-
-  /// No description provided for @descriptionRequired.
-  ///
-  /// In de, this message translates to:
-  /// **'Beschreibung erforderlich'**
-  String get descriptionRequired;
 
   /// No description provided for @saving.
   ///
@@ -1988,35 +1670,17 @@ abstract class AppLocalizations {
   /// **'Wird gespeichert...'**
   String get saving;
 
-  /// No description provided for @latestTransactions.
-  ///
-  /// In de, this message translates to:
-  /// **'Neueste Transaktionen'**
-  String get latestTransactions;
-
   /// No description provided for @all.
   ///
   /// In de, this message translates to:
   /// **'Alle'**
   String get all;
 
-  /// No description provided for @balanceThisMonth.
-  ///
-  /// In de, this message translates to:
-  /// **'Saldo diesen Monat'**
-  String get balanceThisMonth;
-
   /// No description provided for @categoryOther.
   ///
   /// In de, this message translates to:
   /// **'Sonstiges'**
   String get categoryOther;
-
-  /// No description provided for @budgetsLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Budgets'**
-  String get budgetsLabel;
 
   /// No description provided for @monthJan.
   ///
@@ -2167,12 +1831,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Keine Transaktionen'**
   String get noTransactions;
-
-  /// No description provided for @tapPlusToAdd.
-  ///
-  /// In de, this message translates to:
-  /// **'Tippe + um hinzuzufügen'**
-  String get tapPlusToAdd;
 
   /// No description provided for @statistics.
   ///
@@ -2678,72 +2336,6 @@ abstract class AppLocalizations {
   /// **'Schlafqualität'**
   String get sleepQuality;
 
-  /// No description provided for @weatherClear.
-  ///
-  /// In de, this message translates to:
-  /// **'Klar'**
-  String get weatherClear;
-
-  /// No description provided for @weatherCloudy.
-  ///
-  /// In de, this message translates to:
-  /// **'Bewölkt'**
-  String get weatherCloudy;
-
-  /// No description provided for @weatherFoggy.
-  ///
-  /// In de, this message translates to:
-  /// **'Neblig'**
-  String get weatherFoggy;
-
-  /// No description provided for @weatherRain.
-  ///
-  /// In de, this message translates to:
-  /// **'Regen'**
-  String get weatherRain;
-
-  /// No description provided for @weatherSnow.
-  ///
-  /// In de, this message translates to:
-  /// **'Schnee'**
-  String get weatherSnow;
-
-  /// No description provided for @weatherShowers.
-  ///
-  /// In de, this message translates to:
-  /// **'Schauer'**
-  String get weatherShowers;
-
-  /// No description provided for @weatherThunderstorm.
-  ///
-  /// In de, this message translates to:
-  /// **'Gewitter'**
-  String get weatherThunderstorm;
-
-  /// No description provided for @goalShort.
-  ///
-  /// In de, this message translates to:
-  /// **'Ziel'**
-  String get goalShort;
-
-  /// No description provided for @stepsProgress.
-  ///
-  /// In de, this message translates to:
-  /// **'{current} / {goal}'**
-  String stepsProgress(int current, int goal);
-
-  /// No description provided for @macroProgress.
-  ///
-  /// In de, this message translates to:
-  /// **'{val} / {goal} {unit}'**
-  String macroProgress(String val, int goal, String unit);
-
-  /// No description provided for @dailyLimitReached.
-  ///
-  /// In de, this message translates to:
-  /// **'Tageslimit erreicht'**
-  String get dailyLimitReached;
-
   /// No description provided for @waterMin.
   ///
   /// In de, this message translates to:
@@ -2756,59 +2348,17 @@ abstract class AppLocalizations {
   /// **'Benachrichtigungen'**
   String get permissionNotifications;
 
-  /// No description provided for @waterTotal.
-  ///
-  /// In de, this message translates to:
-  /// **'{ml} ml'**
-  String waterTotal(int ml);
-
-  /// No description provided for @waterGoalAndMax.
-  ///
-  /// In de, this message translates to:
-  /// **'Ziel: {goal} ml · Max: {max} ml'**
-  String waterGoalAndMax(int goal, int max);
-
   /// No description provided for @permissionLocation.
   ///
   /// In de, this message translates to:
   /// **'Standort'**
   String get permissionLocation;
 
-  /// No description provided for @waterButton.
-  ///
-  /// In de, this message translates to:
-  /// **'+{ml} ml'**
-  String waterButton(int ml);
-
   /// No description provided for @todos.
   ///
   /// In de, this message translates to:
   /// **'Aufgaben'**
   String get todos;
-
-  /// No description provided for @allLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Alle'**
-  String get allLabel;
-
-  /// No description provided for @noOpenTodos.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine offenen Aufgaben'**
-  String get noOpenTodos;
-
-  /// No description provided for @medicationsTitle.
-  ///
-  /// In de, this message translates to:
-  /// **'Medikamente'**
-  String get medicationsTitle;
-
-  /// No description provided for @noMedications.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Medikamente'**
-  String get noMedications;
 
   /// No description provided for @missingPermissions.
   ///
@@ -2822,35 +2372,11 @@ abstract class AppLocalizations {
   /// **'Gewohnheiten'**
   String get habits;
 
-  /// No description provided for @noHabitsTapToAdd.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Gewohnheiten – Tippe zum Hinzufügen'**
-  String get noHabitsTapToAdd;
-
-  /// No description provided for @noTransactionsThisMonth.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Transaktionen diesen Monat'**
-  String get noTransactionsThisMonth;
-
   /// No description provided for @permissionsContent.
   ///
   /// In de, this message translates to:
   /// **'{items}'**
   String permissionsContent(String items);
-
-  /// No description provided for @tapForCycleInfo.
-  ///
-  /// In de, this message translates to:
-  /// **'Tippe für Zyklusinfos'**
-  String get tapForCycleInfo;
-
-  /// No description provided for @healthLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Gesundheit'**
-  String get healthLabel;
 
   /// No description provided for @heartRate.
   ///
@@ -2954,29 +2480,11 @@ abstract class AppLocalizations {
   /// **'Falscher PIN'**
   String get wrongPin;
 
-  /// No description provided for @inactive.
-  ///
-  /// In de, this message translates to:
-  /// **'Inaktiv'**
-  String get inactive;
-
   /// No description provided for @activeLabel.
   ///
   /// In de, this message translates to:
   /// **'Aktiv'**
   String get activeLabel;
-
-  /// No description provided for @noMedicationsYet.
-  ///
-  /// In de, this message translates to:
-  /// **'Noch keine Medikamente'**
-  String get noMedicationsYet;
-
-  /// No description provided for @tapToAddMedication.
-  ///
-  /// In de, this message translates to:
-  /// **'Tippe, um ein Medikament hinzuzufügen'**
-  String get tapToAddMedication;
 
   /// No description provided for @addMedication.
   ///
@@ -2984,41 +2492,17 @@ abstract class AppLocalizations {
   /// **'Medikament hinzufügen'**
   String get addMedication;
 
-  /// No description provided for @medicationNameHint.
-  ///
-  /// In de, this message translates to:
-  /// **'z.B. Ibuprofen'**
-  String get medicationNameHint;
-
-  /// No description provided for @dosageHint.
-  ///
-  /// In de, this message translates to:
-  /// **'z.B. 400mg'**
-  String get dosageHint;
-
   /// No description provided for @dosage.
   ///
   /// In de, this message translates to:
   /// **'Dosierung'**
   String get dosage;
 
-  /// No description provided for @allMedications.
-  ///
-  /// In de, this message translates to:
-  /// **'Alle Medikamente'**
-  String get allMedications;
-
   /// No description provided for @timeForMedication.
   ///
   /// In de, this message translates to:
   /// **'Zeit für {name}'**
   String timeForMedication(String name);
-
-  /// No description provided for @remindersTimes.
-  ///
-  /// In de, this message translates to:
-  /// **'Erinnerungen: {times}'**
-  String remindersTimes(String times);
 
   /// No description provided for @breakfast.
   ///
@@ -3044,48 +2528,6 @@ abstract class AppLocalizations {
   /// **'Snack'**
   String get snack;
 
-  /// No description provided for @searchOrCreate.
-  ///
-  /// In de, this message translates to:
-  /// **'Suchen oder erstellen'**
-  String get searchOrCreate;
-
-  /// No description provided for @noResultsLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Ergebnisse gefunden'**
-  String get noResultsLabel;
-
-  /// No description provided for @createFood.
-  ///
-  /// In de, this message translates to:
-  /// **'Lebensmittel erstellen'**
-  String get createFood;
-
-  /// No description provided for @amountG.
-  ///
-  /// In de, this message translates to:
-  /// **'Menge (g)'**
-  String get amountG;
-
-  /// No description provided for @logEntry.
-  ///
-  /// In de, this message translates to:
-  /// **'Eintrag speichern'**
-  String get logEntry;
-
-  /// No description provided for @searchFood.
-  ///
-  /// In de, this message translates to:
-  /// **'Essen suchen'**
-  String get searchFood;
-
-  /// No description provided for @plusNew.
-  ///
-  /// In de, this message translates to:
-  /// **'+ Neu'**
-  String get plusNew;
-
   /// No description provided for @searchHint.
   ///
   /// In de, this message translates to:
@@ -3098,29 +2540,11 @@ abstract class AppLocalizations {
   /// **'Mahlzeit-Typ'**
   String get mealType;
 
-  /// No description provided for @foodHint.
-  ///
-  /// In de, this message translates to:
-  /// **'z.B. Haferflocken'**
-  String get foodHint;
-
-  /// No description provided for @foodLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Lebensmittel'**
-  String get foodLabel;
-
   /// No description provided for @amountGrams.
   ///
   /// In de, this message translates to:
   /// **'Menge (g)'**
   String get amountGrams;
-
-  /// No description provided for @caloriesKcal.
-  ///
-  /// In de, this message translates to:
-  /// **'Kalorien (kcal)'**
-  String get caloriesKcal;
 
   /// No description provided for @proteinG.
   ///
@@ -3128,59 +2552,11 @@ abstract class AppLocalizations {
   /// **'Protein (g)'**
   String get proteinG;
 
-  /// No description provided for @carbsG.
-  ///
-  /// In de, this message translates to:
-  /// **'Kohlenhydrate (g)'**
-  String get carbsG;
-
-  /// No description provided for @fatG.
-  ///
-  /// In de, this message translates to:
-  /// **'Fett (g)'**
-  String get fatG;
-
-  /// No description provided for @logMeal.
-  ///
-  /// In de, this message translates to:
-  /// **'Mahlzeit eintragen'**
-  String get logMeal;
-
-  /// No description provided for @quickSelect.
-  ///
-  /// In de, this message translates to:
-  /// **'Schnellauswahl'**
-  String get quickSelect;
-
-  /// No description provided for @addWater.
-  ///
-  /// In de, this message translates to:
-  /// **'Wasser hinzufügen'**
-  String get addWater;
-
-  /// No description provided for @waterGoal2000.
-  ///
-  /// In de, this message translates to:
-  /// **'Ziel: 2000 ml'**
-  String get waterGoal2000;
-
-  /// No description provided for @shoppingListTooltip.
-  ///
-  /// In de, this message translates to:
-  /// **'Einkaufsliste'**
-  String get shoppingListTooltip;
-
   /// No description provided for @completed.
   ///
   /// In de, this message translates to:
   /// **'Erledigt'**
   String get completed;
-
-  /// No description provided for @shoppingList.
-  ///
-  /// In de, this message translates to:
-  /// **'Einkaufsliste'**
-  String get shoppingList;
 
   /// No description provided for @addProduct.
   ///
@@ -3188,41 +2564,11 @@ abstract class AppLocalizations {
   /// **'Produkt hinzufügen'**
   String get addProduct;
 
-  /// No description provided for @itemHint.
-  ///
-  /// In de, this message translates to:
-  /// **'Eintrag...'**
-  String get itemHint;
-
   /// No description provided for @quantity.
   ///
   /// In de, this message translates to:
   /// **'Menge'**
   String get quantity;
-
-  /// No description provided for @unitHint.
-  ///
-  /// In de, this message translates to:
-  /// **'Einheit'**
-  String get unitHint;
-
-  /// No description provided for @deleteCompletedTooltip.
-  ///
-  /// In de, this message translates to:
-  /// **'Erledigte löschen'**
-  String get deleteCompletedTooltip;
-
-  /// No description provided for @tapToAddProduct.
-  ///
-  /// In de, this message translates to:
-  /// **'Tippe, um ein Produkt hinzuzufügen'**
-  String get tapToAddProduct;
-
-  /// No description provided for @servingSize.
-  ///
-  /// In de, this message translates to:
-  /// **'Portionsgröße'**
-  String get servingSize;
 
   /// No description provided for @kcalPer100g.
   ///
@@ -3248,18 +2594,6 @@ abstract class AppLocalizations {
   /// **'Fett (g/100g)'**
   String get fatPer100g;
 
-  /// No description provided for @createButton.
-  ///
-  /// In de, this message translates to:
-  /// **'Erstellen'**
-  String get createButton;
-
-  /// No description provided for @caloriesRequired.
-  ///
-  /// In de, this message translates to:
-  /// **'Kalorien erforderlich'**
-  String get caloriesRequired;
-
   /// No description provided for @noResults.
   ///
   /// In de, this message translates to:
@@ -3277,12 +2611,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Gewicht (kg)'**
   String get weightKg;
-
-  /// No description provided for @weightLbs.
-  ///
-  /// In de, this message translates to:
-  /// **'Gewicht (lbs)'**
-  String get weightLbs;
 
   /// No description provided for @welcomeToTraum.
   ///
@@ -3488,30 +2816,6 @@ abstract class AppLocalizations {
   /// **'Periodenlänge (Tage)'**
   String get periodLengthLabel;
 
-  /// No description provided for @navTitleOb.
-  ///
-  /// In de, this message translates to:
-  /// **'Navigation anpassen'**
-  String get navTitleOb;
-
-  /// No description provided for @homeAlwaysLeft.
-  ///
-  /// In de, this message translates to:
-  /// **'Home ist immer links'**
-  String get homeAlwaysLeft;
-
-  /// No description provided for @slotsSelected.
-  ///
-  /// In de, this message translates to:
-  /// **'{n} Slots ausgewählt'**
-  String slotsSelected(int n);
-
-  /// No description provided for @adjustNavLater.
-  ///
-  /// In de, this message translates to:
-  /// **'Später anpassen'**
-  String get adjustNavLater;
-
   /// No description provided for @weatherTitleOb.
   ///
   /// In de, this message translates to:
@@ -3710,47 +3014,17 @@ abstract class AppLocalizations {
   /// **'Supplement hinzufügen'**
   String get addSupplement;
 
-  /// No description provided for @supplementNameHint.
-  ///
-  /// In de, this message translates to:
-  /// **'z.B. Vitamin D'**
-  String get supplementNameHint;
-
   /// No description provided for @category.
   ///
   /// In de, this message translates to:
   /// **'Kategorie'**
   String get category;
 
-  /// No description provided for @amountHint.
-  ///
-  /// In de, this message translates to:
-  /// **'z.B. 1000'**
-  String get amountHint;
-
   /// No description provided for @fieldUnit.
   ///
   /// In de, this message translates to:
   /// **'Einheit'**
   String get fieldUnit;
-
-  /// No description provided for @noSupplements.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Supplements'**
-  String get noSupplements;
-
-  /// No description provided for @tapToAddSupplement.
-  ///
-  /// In de, this message translates to:
-  /// **'Tippe, um ein Supplement hinzuzufügen'**
-  String get tapToAddSupplement;
-
-  /// No description provided for @avgCycleDaysShort.
-  ///
-  /// In de, this message translates to:
-  /// **'Ø {n} T.'**
-  String avgCycleDaysShort(int n);
 
   /// No description provided for @avgCycleDays.
   ///
@@ -3884,54 +3158,6 @@ abstract class AppLocalizations {
   /// **'Symptome heute'**
   String get symptomsToday;
 
-  /// No description provided for @periodEntries.
-  ///
-  /// In de, this message translates to:
-  /// **'Periodeneinträge'**
-  String get periodEntries;
-
-  /// No description provided for @tapToStartPeriod.
-  ///
-  /// In de, this message translates to:
-  /// **'Tippe, um eine Periode zu starten'**
-  String get tapToStartPeriod;
-
-  /// No description provided for @follicularPhase.
-  ///
-  /// In de, this message translates to:
-  /// **'Follikelphase'**
-  String get follicularPhase;
-
-  /// No description provided for @ovulationPhase.
-  ///
-  /// In de, this message translates to:
-  /// **'Eisprungphase'**
-  String get ovulationPhase;
-
-  /// No description provided for @fertileWindowPhase.
-  ///
-  /// In de, this message translates to:
-  /// **'Fruchtbares Fenster'**
-  String get fertileWindowPhase;
-
-  /// No description provided for @nextPeriodLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Nächste Periode'**
-  String get nextPeriodLabel;
-
-  /// No description provided for @ovulationLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Eisprung'**
-  String get ovulationLabel;
-
-  /// No description provided for @fertileLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Fruchtbar'**
-  String get fertileLabel;
-
   /// No description provided for @pregnancyProbabilityToday.
   ///
   /// In de, this message translates to:
@@ -3949,18 +3175,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Verlauf'**
   String get historyTooltip;
-
-  /// No description provided for @noSymptomsToday.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Symptome heute'**
-  String get noSymptomsToday;
-
-  /// No description provided for @selectOrEnterSymptom.
-  ///
-  /// In de, this message translates to:
-  /// **'Symptom auswählen oder eingeben'**
-  String get selectOrEnterSymptom;
 
   /// No description provided for @endPeriod.
   ///
@@ -4058,12 +3272,6 @@ abstract class AppLocalizations {
   /// **'Schlafprobleme'**
   String get symptomSleepIssues;
 
-  /// No description provided for @addSymptom.
-  ///
-  /// In de, this message translates to:
-  /// **'Symptom hinzufügen'**
-  String get addSymptom;
-
   /// No description provided for @orCustomSymptom.
   ///
   /// In de, this message translates to:
@@ -4093,12 +3301,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Stark'**
   String get intensityStrong;
-
-  /// No description provided for @saveSymptom.
-  ///
-  /// In de, this message translates to:
-  /// **'Symptom speichern'**
-  String get saveSymptom;
 
   /// No description provided for @fertileLegend.
   ///
@@ -4508,41 +3710,11 @@ abstract class AppLocalizations {
   /// **'Ausgewählte exportieren'**
   String get exportSelected;
 
-  /// No description provided for @exportPreparing.
-  ///
-  /// In de, this message translates to:
-  /// **'Wird vorbereitet...'**
-  String get exportPreparing;
-
   /// No description provided for @supportSection.
   ///
   /// In de, this message translates to:
   /// **'Support'**
   String get supportSection;
-
-  /// No description provided for @bugReportDarkModeYes.
-  ///
-  /// In de, this message translates to:
-  /// **'Ja'**
-  String get bugReportDarkModeYes;
-
-  /// No description provided for @bugReportDevice.
-  ///
-  /// In de, this message translates to:
-  /// **'Gerät: {device}'**
-  String bugReportDevice(String device);
-
-  /// No description provided for @bugReportSubject.
-  ///
-  /// In de, this message translates to:
-  /// **'[TRAUM] Fehlerbericht'**
-  String get bugReportSubject;
-
-  /// No description provided for @bugReportBody.
-  ///
-  /// In de, this message translates to:
-  /// **'Bitte beschreibe den Fehler:'**
-  String get bugReportBody;
 
   /// No description provided for @appSection.
   ///
@@ -4886,12 +4058,6 @@ abstract class AppLocalizations {
   /// **'Keine Ernährungsdaten im Zeitraum'**
   String get nutritionReportEmpty;
 
-  /// No description provided for @importRunning.
-  ///
-  /// In de, this message translates to:
-  /// **'Import läuft…'**
-  String get importRunning;
-
   /// No description provided for @importDone.
   ///
   /// In de, this message translates to:
@@ -4988,47 +4154,11 @@ abstract class AppLocalizations {
   /// **'Cardio'**
   String get muscleCardio;
 
-  /// No description provided for @noWorkoutPlanned.
-  ///
-  /// In de, this message translates to:
-  /// **'Kein Workout geplant'**
-  String get noWorkoutPlanned;
-
-  /// No description provided for @weeklyProgress.
-  ///
-  /// In de, this message translates to:
-  /// **'Wochenfortschritt'**
-  String get weeklyProgress;
-
-  /// No description provided for @createRoutine.
-  ///
-  /// In de, this message translates to:
-  /// **'Routine erstellen'**
-  String get createRoutine;
-
-  /// No description provided for @muscleGroupsOverview.
-  ///
-  /// In de, this message translates to:
-  /// **'Muskelgruppen-Übersicht'**
-  String get muscleGroupsOverview;
-
-  /// No description provided for @noTrainingSessionsRecorded.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Trainingseinheiten aufgezeichnet'**
-  String get noTrainingSessionsRecorded;
-
   /// No description provided for @myRoutines.
   ///
   /// In de, this message translates to:
   /// **'Meine Routinen'**
   String get myRoutines;
-
-  /// No description provided for @noRoutinesCreated.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Routinen erstellt'**
-  String get noRoutinesCreated;
 
   /// No description provided for @trainingDayName.
   ///
@@ -5252,12 +4382,6 @@ abstract class AppLocalizations {
   /// **'Ausführungshinweis'**
   String get instructionExecution;
 
-  /// No description provided for @noExercisesInLibrary.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Übungen in der Bibliothek'**
-  String get noExercisesInLibrary;
-
   /// No description provided for @noExercisesYet.
   ///
   /// In de, this message translates to:
@@ -5282,48 +4406,6 @@ abstract class AppLocalizations {
   /// **'Letzte Sätze'**
   String get recentSets;
 
-  /// No description provided for @trainExerciseToSeeProgress.
-  ///
-  /// In de, this message translates to:
-  /// **'Trainiere diese Übung, um Fortschritt zu sehen'**
-  String get trainExerciseToSeeProgress;
-
-  /// No description provided for @noProgressData.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Fortschrittsdaten'**
-  String get noProgressData;
-
-  /// No description provided for @trainingVolumeLast7Days.
-  ///
-  /// In de, this message translates to:
-  /// **'Trainingsvolumen (letzte 7 Tage)'**
-  String get trainingVolumeLast7Days;
-
-  /// No description provided for @volumeLast90Days.
-  ///
-  /// In de, this message translates to:
-  /// **'Volumen (letzte 90 Tage)'**
-  String get volumeLast90Days;
-
-  /// No description provided for @maxWeight.
-  ///
-  /// In de, this message translates to:
-  /// **'Max. Gewicht'**
-  String get maxWeight;
-
-  /// No description provided for @maxReps.
-  ///
-  /// In de, this message translates to:
-  /// **'Max. Wdh.'**
-  String get maxReps;
-
-  /// No description provided for @little.
-  ///
-  /// In de, this message translates to:
-  /// **'Wenig'**
-  String get little;
-
   /// No description provided for @much.
   ///
   /// In de, this message translates to:
@@ -5335,18 +4417,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Pause'**
   String get restTimerLabel;
-
-  /// No description provided for @addSet.
-  ///
-  /// In de, this message translates to:
-  /// **'Satz hinzufügen'**
-  String get addSet;
-
-  /// No description provided for @noTraining.
-  ///
-  /// In de, this message translates to:
-  /// **'Kein Training'**
-  String get noTraining;
 
   /// No description provided for @notTrained.
   ///
@@ -5371,12 +4441,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Wird beendet...'**
   String get finishing;
-
-  /// No description provided for @noTrainingPlanned.
-  ///
-  /// In de, this message translates to:
-  /// **'Kein Training geplant'**
-  String get noTrainingPlanned;
 
   /// No description provided for @exercises.
   ///
@@ -5522,24 +4586,6 @@ abstract class AppLocalizations {
   /// **'Gespeichert'**
   String get bookmarked;
 
-  /// No description provided for @estimated1RM.
-  ///
-  /// In de, this message translates to:
-  /// **'Geschätzter 1RM (Epley)'**
-  String get estimated1RM;
-
-  /// No description provided for @heavilyTrained.
-  ///
-  /// In de, this message translates to:
-  /// **'Stark trainiert'**
-  String get heavilyTrained;
-
-  /// No description provided for @lightlyTrained.
-  ///
-  /// In de, this message translates to:
-  /// **'Leicht trainiert'**
-  String get lightlyTrained;
-
   /// No description provided for @notTrainedHeatmap.
   ///
   /// In de, this message translates to:
@@ -5582,18 +4628,6 @@ abstract class AppLocalizations {
   /// **'Überspringen'**
   String get restTimerSkip;
 
-  /// No description provided for @bookmarkExercise.
-  ///
-  /// In de, this message translates to:
-  /// **'Übung speichern'**
-  String get bookmarkExercise;
-
-  /// No description provided for @warmupSet.
-  ///
-  /// In de, this message translates to:
-  /// **'Aufwärm-Satz'**
-  String get warmupSet;
-
   /// No description provided for @workoutStreak.
   ///
   /// In de, this message translates to:
@@ -5605,30 +4639,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Pausenlänge'**
   String get restDuration;
-
-  /// No description provided for @muscleGroupVolume.
-  ///
-  /// In de, this message translates to:
-  /// **'Volumen pro Muskelgruppe'**
-  String get muscleGroupVolume;
-
-  /// No description provided for @noMuscleDataThisWeek.
-  ///
-  /// In de, this message translates to:
-  /// **'Kein Trainingsvolumen diese Woche'**
-  String get noMuscleDataThisWeek;
-
-  /// No description provided for @lastPerformanceHint.
-  ///
-  /// In de, this message translates to:
-  /// **'Zuletzt: {info}'**
-  String lastPerformanceHint(String info);
-
-  /// No description provided for @noLastPerformance.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine früheren Daten'**
-  String get noLastPerformance;
 
   /// No description provided for @instructionsLabel.
   ///
@@ -5654,66 +4664,6 @@ abstract class AppLocalizations {
   /// **'Details'**
   String get detailsLabel;
 
-  /// No description provided for @feedbackTitle.
-  ///
-  /// In de, this message translates to:
-  /// **'Feedback senden'**
-  String get feedbackTitle;
-
-  /// No description provided for @feedbackSubtitle.
-  ///
-  /// In de, this message translates to:
-  /// **'Dein Feedback hilft TRAUM besser zu machen.'**
-  String get feedbackSubtitle;
-
-  /// No description provided for @feedbackTypeBug.
-  ///
-  /// In de, this message translates to:
-  /// **'Bug'**
-  String get feedbackTypeBug;
-
-  /// No description provided for @feedbackTypeFeature.
-  ///
-  /// In de, this message translates to:
-  /// **'Feature'**
-  String get feedbackTypeFeature;
-
-  /// No description provided for @feedbackTypeImprovement.
-  ///
-  /// In de, this message translates to:
-  /// **'Verbesserung'**
-  String get feedbackTypeImprovement;
-
-  /// No description provided for @feedbackShortTitle.
-  ///
-  /// In de, this message translates to:
-  /// **'Kurztitel'**
-  String get feedbackShortTitle;
-
-  /// No description provided for @feedbackDescription.
-  ///
-  /// In de, this message translates to:
-  /// **'Beschreibung'**
-  String get feedbackDescription;
-
-  /// No description provided for @feedbackSubmit.
-  ///
-  /// In de, this message translates to:
-  /// **'GitHub öffnen & absenden'**
-  String get feedbackSubmit;
-
-  /// No description provided for @feedbackHint.
-  ///
-  /// In de, this message translates to:
-  /// **'Öffnet GitHub im Browser. Ein GitHub-Account ist zum Absenden nötig.'**
-  String get feedbackHint;
-
-  /// No description provided for @feedbackSystemInfo.
-  ///
-  /// In de, this message translates to:
-  /// **'Systemdaten werden automatisch angehängt.'**
-  String get feedbackSystemInfo;
-
   /// No description provided for @settingsFeedback.
   ///
   /// In de, this message translates to:
@@ -5726,47 +4676,17 @@ abstract class AppLocalizations {
   /// **'Bug · Feature · Verbesserung'**
   String get settingsFeedbackSubtitle;
 
-  /// No description provided for @budgetTitle.
-  ///
-  /// In de, this message translates to:
-  /// **'Finanzen'**
-  String get budgetTitle;
-
-  /// No description provided for @budgetAvailableBalance.
-  ///
-  /// In de, this message translates to:
-  /// **'Verfügbares Guthaben'**
-  String get budgetAvailableBalance;
-
   /// No description provided for @budgetMoreLink.
   ///
   /// In de, this message translates to:
   /// **'Mehr ›'**
   String get budgetMoreLink;
 
-  /// No description provided for @budgetForecastText.
-  ///
-  /// In de, this message translates to:
-  /// **'Bei aktuellem Tempo hast du am Monatsende ~{amount} übrig.'**
-  String budgetForecastText(String amount);
-
-  /// No description provided for @budgetScanReceipt.
-  ///
-  /// In de, this message translates to:
-  /// **'Kassenzettel scannen / Foto'**
-  String get budgetScanReceipt;
-
   /// No description provided for @budgetScanningReceipt.
   ///
   /// In de, this message translates to:
   /// **'Kassenzettel wird analysiert...'**
   String get budgetScanningReceipt;
-
-  /// No description provided for @budgetScanNoAmount.
-  ///
-  /// In de, this message translates to:
-  /// **'Betrag nicht erkannt — bitte manuell eingeben'**
-  String get budgetScanNoAmount;
 
   /// No description provided for @budgetSaveAsTemplate.
   ///
@@ -5780,41 +4700,11 @@ abstract class AppLocalizations {
   /// **'Betrag aufteilen'**
   String get budgetSplitTransaction;
 
-  /// No description provided for @budgetSplitTitle.
-  ///
-  /// In de, this message translates to:
-  /// **'Transaktion aufteilen'**
-  String get budgetSplitTitle;
-
   /// No description provided for @budgetSplitRemaining.
   ///
   /// In de, this message translates to:
   /// **'Verbleibend: {amount}'**
   String budgetSplitRemaining(String amount);
-
-  /// No description provided for @budgetStatusGood.
-  ///
-  /// In de, this message translates to:
-  /// **'Noch {amount} Budget übrig'**
-  String budgetStatusGood(String amount);
-
-  /// No description provided for @budgetStatusWarning.
-  ///
-  /// In de, this message translates to:
-  /// **'80% des Budgets verbraucht'**
-  String get budgetStatusWarning;
-
-  /// No description provided for @budgetStatusOverbudget.
-  ///
-  /// In de, this message translates to:
-  /// **'Budget um {amount} überschritten'**
-  String budgetStatusOverbudget(String amount);
-
-  /// No description provided for @budgetRecurringWarning.
-  ///
-  /// In de, this message translates to:
-  /// **'{name} fällig in {days} Tagen'**
-  String budgetRecurringWarning(String name, String days);
 
   /// No description provided for @budgetTrend.
   ///
@@ -5834,18 +4724,6 @@ abstract class AppLocalizations {
   /// **'Ausgaben'**
   String get budgetExpenses;
 
-  /// No description provided for @budgetSaved.
-  ///
-  /// In de, this message translates to:
-  /// **'Gespart'**
-  String get budgetSaved;
-
-  /// No description provided for @budgetForecast.
-  ///
-  /// In de, this message translates to:
-  /// **'Prognose'**
-  String get budgetForecast;
-
   /// No description provided for @budgetCategories.
   ///
   /// In de, this message translates to:
@@ -5857,12 +4735,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Transaktionen'**
   String get budgetTransactions;
-
-  /// No description provided for @budgetFixedCosts.
-  ///
-  /// In de, this message translates to:
-  /// **'Fixkosten'**
-  String get budgetFixedCosts;
 
   /// No description provided for @budgetSavingGoals.
   ///
@@ -5906,125 +4778,17 @@ abstract class AppLocalizations {
   /// **'Gesamt aus {count} Positionen'**
   String debtTotalFromItems(int count);
 
-  /// No description provided for @debtExistingAmount.
-  ///
-  /// In de, this message translates to:
-  /// **'Bestehender Betrag'**
-  String get debtExistingAmount;
-
-  /// No description provided for @budgetQuickTemplates.
-  ///
-  /// In de, this message translates to:
-  /// **'Schnellvorlagen'**
-  String get budgetQuickTemplates;
-
-  /// No description provided for @budgetAddExpense.
-  ///
-  /// In de, this message translates to:
-  /// **'Ausgabe speichern'**
-  String get budgetAddExpense;
-
-  /// No description provided for @budgetAddIncome.
-  ///
-  /// In de, this message translates to:
-  /// **'Einnahme speichern'**
-  String get budgetAddIncome;
-
-  /// No description provided for @budgetScanSuccess.
-  ///
-  /// In de, this message translates to:
-  /// **'Erkannt: {amount} € am {date}'**
-  String budgetScanSuccess(String amount, String date);
-
-  /// No description provided for @budgetTotalBalance.
-  ///
-  /// In de, this message translates to:
-  /// **'Gesamtsaldo'**
-  String get budgetTotalBalance;
-
-  /// No description provided for @budgetVsLastMonth.
-  ///
-  /// In de, this message translates to:
-  /// **'vs. letzter Monat'**
-  String get budgetVsLastMonth;
-
   /// No description provided for @budgetAccounts.
   ///
   /// In de, this message translates to:
   /// **'Konten'**
   String get budgetAccounts;
 
-  /// No description provided for @budgetAddAccount.
-  ///
-  /// In de, this message translates to:
-  /// **'Konto hinzufügen'**
-  String get budgetAddAccount;
-
-  /// No description provided for @budgetAccountChecking.
-  ///
-  /// In de, this message translates to:
-  /// **'Girokonto'**
-  String get budgetAccountChecking;
-
-  /// No description provided for @budgetAccountSavings.
-  ///
-  /// In de, this message translates to:
-  /// **'Sparkonto'**
-  String get budgetAccountSavings;
-
-  /// No description provided for @budgetAccountCredit.
-  ///
-  /// In de, this message translates to:
-  /// **'Kreditkarte'**
-  String get budgetAccountCredit;
-
-  /// No description provided for @budgetAccountInvestment.
-  ///
-  /// In de, this message translates to:
-  /// **'Investment'**
-  String get budgetAccountInvestment;
-
-  /// No description provided for @budgetAccountPrimary.
-  ///
-  /// In de, this message translates to:
-  /// **'Hauptkonto'**
-  String get budgetAccountPrimary;
-
-  /// No description provided for @budgetAccountPending.
-  ///
-  /// In de, this message translates to:
-  /// **'Ausstehend'**
-  String get budgetAccountPending;
-
-  /// No description provided for @budgetAccountReturn.
-  ///
-  /// In de, this message translates to:
-  /// **'Rendite: {rate}%'**
-  String budgetAccountReturn(Object rate);
-
-  /// No description provided for @budgetOverviewTitle.
-  ///
-  /// In de, this message translates to:
-  /// **'Budgetübersicht'**
-  String get budgetOverviewTitle;
-
   /// No description provided for @budgetRecentTransactions.
   ///
   /// In de, this message translates to:
   /// **'Letzte Transaktionen'**
   String get budgetRecentTransactions;
-
-  /// No description provided for @budgetCategoryListTitle.
-  ///
-  /// In de, this message translates to:
-  /// **'Ausgaben nach Kategorien'**
-  String get budgetCategoryListTitle;
-
-  /// No description provided for @budgetBalanceHidden.
-  ///
-  /// In de, this message translates to:
-  /// **'Guthaben ausgeblendet'**
-  String get budgetBalanceHidden;
 
   /// No description provided for @budgetTemplateNameHint.
   ///
@@ -6374,119 +5138,11 @@ abstract class AppLocalizations {
   /// **'Tippe auf + Neu um eine einzutragen'**
   String get budgetNoTransactionsHint;
 
-  /// No description provided for @budgetAddAccountButton.
-  ///
-  /// In de, this message translates to:
-  /// **'+ Konto hinzufügen'**
-  String get budgetAddAccountButton;
-
-  /// No description provided for @budgetEditAccountTitle.
-  ///
-  /// In de, this message translates to:
-  /// **'Konto bearbeiten'**
-  String get budgetEditAccountTitle;
-
-  /// No description provided for @budgetDeleteAccountConfirm.
-  ///
-  /// In de, this message translates to:
-  /// **'Konto löschen?'**
-  String get budgetDeleteAccountConfirm;
-
-  /// No description provided for @budgetDeleteAccountContent.
-  ///
-  /// In de, this message translates to:
-  /// **'„{name}\" wird entfernt. Bereits erfasste Transaktionen bleiben erhalten.'**
-  String budgetDeleteAccountContent(String name);
-
-  /// No description provided for @budgetAccountNameHint.
-  ///
-  /// In de, this message translates to:
-  /// **'z.B. Girokonto'**
-  String get budgetAccountNameHint;
-
-  /// No description provided for @budgetInstitutionLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Bank / Institut'**
-  String get budgetInstitutionLabel;
-
-  /// No description provided for @budgetInstitutionHint.
-  ///
-  /// In de, this message translates to:
-  /// **'z.B. Sparkasse'**
-  String get budgetInstitutionHint;
-
-  /// No description provided for @budgetBalanceLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Kontostand *'**
-  String get budgetBalanceLabel;
-
-  /// No description provided for @budgetLastFourLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Letzte 4 Stellen'**
-  String get budgetLastFourLabel;
-
-  /// No description provided for @budgetReturnRateLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Rendite %'**
-  String get budgetReturnRateLabel;
-
-  /// No description provided for @budgetMarkAsPrimary.
-  ///
-  /// In de, this message translates to:
-  /// **'Als Hauptkonto markieren'**
-  String get budgetMarkAsPrimary;
-
-  /// No description provided for @budgetDeleteAccountButton.
-  ///
-  /// In de, this message translates to:
-  /// **'Konto löschen'**
-  String get budgetDeleteAccountButton;
-
   /// No description provided for @diaryTitle.
   ///
   /// In de, this message translates to:
   /// **'Tagebuch'**
   String get diaryTitle;
-
-  /// No description provided for @diarySubtitle.
-  ///
-  /// In de, this message translates to:
-  /// **'Dein visuelles Leben.'**
-  String get diarySubtitle;
-
-  /// No description provided for @diaryTodayEntry.
-  ///
-  /// In de, this message translates to:
-  /// **'Heutiger Eintrag'**
-  String get diaryTodayEntry;
-
-  /// No description provided for @diaryNoEntryToday.
-  ///
-  /// In de, this message translates to:
-  /// **'Noch kein Eintrag heute'**
-  String get diaryNoEntryToday;
-
-  /// No description provided for @diaryTakePhoto.
-  ///
-  /// In de, this message translates to:
-  /// **'Foto aufnehmen'**
-  String get diaryTakePhoto;
-
-  /// No description provided for @diaryTakeVideo.
-  ///
-  /// In de, this message translates to:
-  /// **'Video aufnehmen'**
-  String get diaryTakeVideo;
-
-  /// No description provided for @diaryChooseFromGallery.
-  ///
-  /// In de, this message translates to:
-  /// **'Aus Galerie'**
-  String get diaryChooseFromGallery;
 
   /// No description provided for @diaryNoteHint.
   ///
@@ -6494,35 +5150,17 @@ abstract class AppLocalizations {
   /// **'Schreib etwas zu diesem Moment... (optional)'**
   String get diaryNoteHint;
 
-  /// No description provided for @diarySave.
-  ///
-  /// In de, this message translates to:
-  /// **'Speichern'**
-  String get diarySave;
-
   /// No description provided for @diaryRetake.
   ///
   /// In de, this message translates to:
   /// **'Neu aufnehmen'**
   String get diaryRetake;
 
-  /// No description provided for @diaryStreak.
-  ///
-  /// In de, this message translates to:
-  /// **'{count} Tage in Folge'**
-  String diaryStreak(int count);
-
   /// No description provided for @diaryTotalEntries.
   ///
   /// In de, this message translates to:
   /// **'{count} Einträge'**
   String diaryTotalEntries(int count);
-
-  /// No description provided for @diarySlideshow.
-  ///
-  /// In de, this message translates to:
-  /// **'Slideshow'**
-  String get diarySlideshow;
 
   /// No description provided for @diaryRecentEntries.
   ///
@@ -6548,197 +5186,17 @@ abstract class AppLocalizations {
   /// **'Der Eintrag und die Mediendatei werden dauerhaft gelöscht.'**
   String get diaryDeleteMessage;
 
-  /// No description provided for @diaryDeleteConfirm.
-  ///
-  /// In de, this message translates to:
-  /// **'Löschen'**
-  String get diaryDeleteConfirm;
-
   /// No description provided for @diaryModuleLabel.
   ///
   /// In de, this message translates to:
   /// **'Tagebuch'**
   String get diaryModuleLabel;
 
-  /// No description provided for @homeScreenDiaryCardEmpty.
-  ///
-  /// In de, this message translates to:
-  /// **'Noch kein Eintrag heute'**
-  String get homeScreenDiaryCardEmpty;
-
-  /// No description provided for @homeScreenDiaryCardFilled.
-  ///
-  /// In de, this message translates to:
-  /// **'Heutiger Eintrag'**
-  String get homeScreenDiaryCardFilled;
-
   /// No description provided for @nutritionTitle.
   ///
   /// In de, this message translates to:
   /// **'Ernährung'**
   String get nutritionTitle;
-
-  /// No description provided for @nutritionToday.
-  ///
-  /// In de, this message translates to:
-  /// **'Heute'**
-  String get nutritionToday;
-
-  /// No description provided for @nutritionWeek.
-  ///
-  /// In de, this message translates to:
-  /// **'Woche'**
-  String get nutritionWeek;
-
-  /// No description provided for @nutritionProducts.
-  ///
-  /// In de, this message translates to:
-  /// **'Produkte'**
-  String get nutritionProducts;
-
-  /// No description provided for @nutritionShopping.
-  ///
-  /// In de, this message translates to:
-  /// **'Einkauf'**
-  String get nutritionShopping;
-
-  /// No description provided for @nutritionCalories.
-  ///
-  /// In de, this message translates to:
-  /// **'Kalorien'**
-  String get nutritionCalories;
-
-  /// No description provided for @nutritionProtein.
-  ///
-  /// In de, this message translates to:
-  /// **'Protein'**
-  String get nutritionProtein;
-
-  /// No description provided for @nutritionCarbs.
-  ///
-  /// In de, this message translates to:
-  /// **'Kohlenhydrate'**
-  String get nutritionCarbs;
-
-  /// No description provided for @nutritionFat.
-  ///
-  /// In de, this message translates to:
-  /// **'Fett'**
-  String get nutritionFat;
-
-  /// No description provided for @nutritionBreakfast.
-  ///
-  /// In de, this message translates to:
-  /// **'Frühstück'**
-  String get nutritionBreakfast;
-
-  /// No description provided for @nutritionLunch.
-  ///
-  /// In de, this message translates to:
-  /// **'Mittag'**
-  String get nutritionLunch;
-
-  /// No description provided for @nutritionDinner.
-  ///
-  /// In de, this message translates to:
-  /// **'Abend'**
-  String get nutritionDinner;
-
-  /// No description provided for @nutritionSnack.
-  ///
-  /// In de, this message translates to:
-  /// **'Snack'**
-  String get nutritionSnack;
-
-  /// No description provided for @nutritionScanBarcode.
-  ///
-  /// In de, this message translates to:
-  /// **'Barcode scannen'**
-  String get nutritionScanBarcode;
-
-  /// No description provided for @nutritionScanHint.
-  ///
-  /// In de, this message translates to:
-  /// **'Halte die Kamera auf den Barcode'**
-  String get nutritionScanHint;
-
-  /// No description provided for @nutritionProductNotFound.
-  ///
-  /// In de, this message translates to:
-  /// **'Produkt nicht gefunden'**
-  String get nutritionProductNotFound;
-
-  /// No description provided for @nutritionEnterAmount.
-  ///
-  /// In de, this message translates to:
-  /// **'Menge eingeben'**
-  String get nutritionEnterAmount;
-
-  /// No description provided for @nutritionPer100g.
-  ///
-  /// In de, this message translates to:
-  /// **'pro 100g'**
-  String get nutritionPer100g;
-
-  /// No description provided for @nutritionAddToMeal.
-  ///
-  /// In de, this message translates to:
-  /// **'Zur Mahlzeit hinzufügen'**
-  String get nutritionAddToMeal;
-
-  /// No description provided for @nutritionSaveAsTemplate.
-  ///
-  /// In de, this message translates to:
-  /// **'Als Vorlage speichern'**
-  String get nutritionSaveAsTemplate;
-
-  /// No description provided for @nutritionTemplates.
-  ///
-  /// In de, this message translates to:
-  /// **'Vorlagen'**
-  String get nutritionTemplates;
-
-  /// No description provided for @nutritionRecentProducts.
-  ///
-  /// In de, this message translates to:
-  /// **'Zuletzt verwendet'**
-  String get nutritionRecentProducts;
-
-  /// No description provided for @nutritionAddCustomProduct.
-  ///
-  /// In de, this message translates to:
-  /// **'Eigenes Produkt anlegen'**
-  String get nutritionAddCustomProduct;
-
-  /// No description provided for @nutritionShoppingListGenerate.
-  ///
-  /// In de, this message translates to:
-  /// **'Einkaufsliste generieren'**
-  String get nutritionShoppingListGenerate;
-
-  /// No description provided for @nutritionShoppingListEmpty.
-  ///
-  /// In de, this message translates to:
-  /// **'Einkaufsliste ist leer'**
-  String get nutritionShoppingListEmpty;
-
-  /// No description provided for @nutritionShoppingListDeleteDone.
-  ///
-  /// In de, this message translates to:
-  /// **'Erledigte löschen'**
-  String get nutritionShoppingListDeleteDone;
-
-  /// No description provided for @nutritionWeeklyPlan.
-  ///
-  /// In de, this message translates to:
-  /// **'Wochenplan'**
-  String get nutritionWeeklyPlan;
-
-  /// No description provided for @nutritionWeeklyChart.
-  ///
-  /// In de, this message translates to:
-  /// **'Wochenverlauf'**
-  String get nutritionWeeklyChart;
 
   /// No description provided for @myFoodsSection.
   ///
@@ -6781,12 +5239,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Notizen'**
   String get notes_title;
-
-  /// No description provided for @notes_new_note.
-  ///
-  /// In de, this message translates to:
-  /// **'Neue Notiz'**
-  String get notes_new_note;
 
   /// No description provided for @notes_new_folder.
   ///
@@ -6962,12 +5414,6 @@ abstract class AppLocalizations {
   /// **'Lösen'**
   String get notes_unpin;
 
-  /// No description provided for @notes_pinned.
-  ///
-  /// In de, this message translates to:
-  /// **'Angeheftet'**
-  String get notes_pinned;
-
   /// No description provided for @notes_no_notes.
   ///
   /// In de, this message translates to:
@@ -6997,12 +5443,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Vorlagenname'**
   String get notes_template_name;
-
-  /// No description provided for @notes_new_template.
-  ///
-  /// In de, this message translates to:
-  /// **'Neue Vorlage'**
-  String get notes_new_template;
 
   /// No description provided for @notes_no_tags.
   ///
@@ -7046,12 +5486,6 @@ abstract class AppLocalizations {
   /// **'Vault exportieren'**
   String get notes_export_vault;
 
-  /// No description provided for @notes_empty_trash.
-  ///
-  /// In de, this message translates to:
-  /// **'Papierkorb leeren'**
-  String get notes_empty_trash;
-
   /// No description provided for @notes_local_graph.
   ///
   /// In de, this message translates to:
@@ -7075,18 +5509,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Keine Tagesnotiz für diesen Tag'**
   String get notes_no_daily;
-
-  /// No description provided for @notes_open_or_create.
-  ///
-  /// In de, this message translates to:
-  /// **'Öffnen oder anlegen'**
-  String get notes_open_or_create;
-
-  /// No description provided for @notes_today.
-  ///
-  /// In de, this message translates to:
-  /// **'Heute'**
-  String get notes_today;
 
   /// No description provided for @notes_cancel.
   ///
@@ -7112,12 +5534,6 @@ abstract class AppLocalizations {
   /// **'Keine Treffer'**
   String get notes_no_results;
 
-  /// No description provided for @notes_confirm_delete.
-  ///
-  /// In de, this message translates to:
-  /// **'Notiz in den Papierkorb verschieben?'**
-  String get notes_confirm_delete;
-
   /// No description provided for @notes_confirm_delete_permanently.
   ///
   /// In de, this message translates to:
@@ -7130,41 +5546,17 @@ abstract class AppLocalizations {
   /// **'Papierkorb ist leer'**
   String get notes_no_trash;
 
-  /// No description provided for @notes_preview.
-  ///
-  /// In de, this message translates to:
-  /// **'Vorschau'**
-  String get notes_preview;
-
-  /// No description provided for @notes_properties.
-  ///
-  /// In de, this message translates to:
-  /// **'Eigenschaften'**
-  String get notes_properties;
-
   /// No description provided for @notes_empty_note_hint.
   ///
   /// In de, this message translates to:
   /// **'Schreibe etwas in Markdown…'**
   String get notes_empty_note_hint;
 
-  /// No description provided for @notes_export_done.
-  ///
-  /// In de, this message translates to:
-  /// **'Vault exportiert'**
-  String get notes_export_done;
-
   /// No description provided for @notes_import_done.
   ///
   /// In de, this message translates to:
   /// **'Vault importiert: {count} Notizen'**
   String notes_import_done(int count);
-
-  /// No description provided for @notes_link_count.
-  ///
-  /// In de, this message translates to:
-  /// **'{count} Notizen'**
-  String notes_link_count(int count);
 
   /// No description provided for @experimentalSection.
   ///
@@ -7256,12 +5648,6 @@ abstract class AppLocalizations {
   /// **'Launcher-Einstellungen konnten nicht geöffnet werden'**
   String get setAsLauncherFailed;
 
-  /// No description provided for @graffitiMapTitle.
-  ///
-  /// In de, this message translates to:
-  /// **'Graffiti Map'**
-  String get graffitiMapTitle;
-
   /// No description provided for @graffitiMapChooseMap.
   ///
   /// In de, this message translates to:
@@ -7285,18 +5671,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Mit Bewertung · mehrere Fotos'**
   String get graffitiMapWithRating;
-
-  /// No description provided for @graffitiMapSearchHint.
-  ///
-  /// In de, this message translates to:
-  /// **'Nach #Hashtag suchen...'**
-  String get graffitiMapSearchHint;
-
-  /// No description provided for @graffitiMapMegapixels.
-  ///
-  /// In de, this message translates to:
-  /// **'{mp} MP'**
-  String graffitiMapMegapixels(String mp);
 
   /// No description provided for @graffitiMapNote.
   ///
@@ -7508,24 +5882,6 @@ abstract class AppLocalizations {
   /// **'Noch keine Einträge'**
   String get mapNoEntriesYet;
 
-  /// No description provided for @mapModeStandard.
-  ///
-  /// In de, this message translates to:
-  /// **'Standard'**
-  String get mapModeStandard;
-
-  /// No description provided for @mapModeSatellite.
-  ///
-  /// In de, this message translates to:
-  /// **'Satellit'**
-  String get mapModeSatellite;
-
-  /// No description provided for @mapModeHybrid.
-  ///
-  /// In de, this message translates to:
-  /// **'Hybrid'**
-  String get mapModeHybrid;
-
   /// No description provided for @mapEntryLabel.
   ///
   /// In de, this message translates to:
@@ -7586,18 +5942,6 @@ abstract class AppLocalizations {
   /// **'Funktionen'**
   String get mapFunctions;
 
-  /// No description provided for @mapFunctionRating.
-  ///
-  /// In de, this message translates to:
-  /// **'Sterne-Bewertung'**
-  String get mapFunctionRating;
-
-  /// No description provided for @mapFunctionMultiPhoto.
-  ///
-  /// In de, this message translates to:
-  /// **'Mehrere Fotos pro Punkt'**
-  String get mapFunctionMultiPhoto;
-
   /// No description provided for @mapFields.
   ///
   /// In de, this message translates to:
@@ -7645,24 +5989,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'{distance} von dir'**
   String mapDistanceFromYou(String distance);
-
-  /// No description provided for @mapExportGpx.
-  ///
-  /// In de, this message translates to:
-  /// **'Als GPX exportieren'**
-  String get mapExportGpx;
-
-  /// No description provided for @mapExportJson.
-  ///
-  /// In de, this message translates to:
-  /// **'Als JSON exportieren'**
-  String get mapExportJson;
-
-  /// No description provided for @mapAddToExisting.
-  ///
-  /// In de, this message translates to:
-  /// **'Zu bestehendem hinzufügen'**
-  String get mapAddToExisting;
 
   /// No description provided for @mapTowerName.
   ///
@@ -8060,12 +6386,6 @@ abstract class AppLocalizations {
   /// **'Datum wählen'**
   String get obBirthDatePick;
 
-  /// No description provided for @cycleDayLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Zyklustag'**
-  String get cycleDayLabel;
-
   /// No description provided for @phaseMenstrual.
   ///
   /// In de, this message translates to:
@@ -8179,12 +6499,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Basaltemperatur-Kurve'**
   String get bbtCurveTitle;
-
-  /// No description provided for @bbtConfirmsOvulation.
-  ///
-  /// In de, this message translates to:
-  /// **'Temperatur-Sprung bestätigt Eisprung (symptothermal)'**
-  String get bbtConfirmsOvulation;
 
   /// No description provided for @cycleAnalysisTitle.
   ///
@@ -8425,18 +6739,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Kalender-Zugriff verweigert — Sync deaktiviert'**
   String get calendarAccessDeniedSyncOff;
-
-  /// No description provided for @calendarFallbackName.
-  ///
-  /// In de, this message translates to:
-  /// **'Kalender'**
-  String get calendarFallbackName;
-
-  /// No description provided for @eventNoTitle.
-  ///
-  /// In de, this message translates to:
-  /// **'(Kein Titel)'**
-  String get eventNoTitle;
 
   /// No description provided for @editAppointment.
   ///

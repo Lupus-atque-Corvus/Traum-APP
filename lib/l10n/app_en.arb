@@ -1,6 +1,5 @@
 {
   "@@locale": "en",
-  "appName": "TRAUM",
   "home": "Home",
   "training": "Training",
   "health": "Health",
@@ -26,7 +25,11 @@
   "deleteQuestion": "Delete?",
   "errorWithDetail": "Error: {error}",
   "@errorWithDetail": {
-    "placeholders": { "error": { "type": "String" } }
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   },
   "fieldTypeText": "Text",
   "fieldTypeSelect": "Selection",
@@ -69,13 +72,16 @@
   "calendarSyncTitle": "Calendar sync",
   "searchSubstanceHint": "Search substance…",
   "noResultsForQuery": "No results for \"{query}\"",
-  "@noResultsForQuery": { "placeholders": { "query": { "type": "String" } } },
-  "evidenceGrade": "Evidence {grade}",
-  "@evidenceGrade": { "placeholders": { "grade": { "type": "String" } } },
+  "@noResultsForQuery": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
   "substanceMedications": "Medications",
   "substanceSupplements": "Supplements",
   "whatToAdd": "What would you like to add?",
-  "interactions": "Interactions",
   "noSubstancesYet": "No substances yet",
   "addSubstanceHint": "Tap + to add supplements or\nmedications.",
   "unitLabel": "Unit",
@@ -86,9 +92,6 @@
   "logConsumption": "Log consumption",
   "timePoint": "Time",
   "pleaseEnterSubstance": "Please enter a substance",
-  "effectMechanism": "Effect / mechanism",
-  "commonSideEffects": "Common side effects",
-  "knownInteractions": "Known interactions",
   "substancesTabMyMeds": "My Meds",
   "substancesTabDatabase": "Database",
   "substancesDisclaimerTitle": "Before you begin",
@@ -131,7 +134,13 @@
   "substanceDelete": "Delete",
   "substanceConfirmDeleteTitle": "Really delete?",
   "substanceConfirmDeleteBody": "{name} will be permanently removed.",
-  "@substanceConfirmDeleteBody": { "placeholders": { "name": { "type": "String" } } },
+  "@substanceConfirmDeleteBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "substanceSaving": "Saving…",
   "substanceLogIntakeAction": "Log",
   "substanceHintVitaminD3": "e.g. Vitamin D3",
@@ -150,19 +159,28 @@
   "bookedAsExpense": "Booked as expense in Finances ✓",
   "bookingFailed": "Booking failed",
   "totalPaidUpper": "TOTAL PAID",
-  "shoppingListEmpty": "Shopping list is empty",
+  "shoppingListEmpty": "Shopping list empty",
   "doneUpper": "DONE",
   "deleteCompleted": "Delete completed",
   "estimatedUpper": "ESTIMATED",
   "inStore": "In store 🛒",
   "inCartStatus": "IN CART · REAL · {inCart}/{total}",
-  "@inCartStatus": { "placeholders": { "inCart": {"type":"int"}, "total": {"type":"int"} } },
+  "@inCartStatus": {
+    "placeholders": {
+      "inCart": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "listEmpty": "List is empty",
   "saveTemplate": "Save template",
   "templateNameHint": "e.g. Weekly shopping",
   "templates": "Templates",
   "noTemplatesSaved": "No templates saved yet.",
-  "nothingLogged": "Nothing logged",
+  "nothingLogged": "Nothing logged yet",
   "microNutrientsSupplements": "Micronutrients & supplements",
   "supplementsToday": "SUPPLEMENTS TODAY",
   "skip": "Skip",
@@ -187,7 +205,6 @@
   "workout": "Workout",
   "today": "Today",
   "yesterday": "Yesterday",
-  "thisWeek": "This week",
   "thisMonth": "This month",
   "goal": "Goal",
   "minimum": "Minimum",
@@ -197,58 +214,31 @@
   "hours": "Hours",
   "minutes": "Minutes",
   "seconds": "Seconds",
-  "noEntriesYet": "No entries yet",
   "allDataOnDevice": "All data stays on your device.",
-  "medicalDisclaimer": "This app is not a substitute for medical advice.",
   "startWorkout": "Start workout",
-  "workoutComplete": "Workout complete",
-  "addEntry": "Add entry",
   "income": "Income",
   "expense": "Expense",
   "balance": "Balance",
-  "monthly": "Monthly",
   "daily": "Daily",
   "weekly": "Weekly",
-  "period_days_label": "Days until next period",
   "ovulation": "Ovulation",
-  "fertile_window": "Fertile window",
   "cycle_length": "Cycle length",
   "period_length": "Period length",
-  "next_period": "Next period",
-  "no_period_data": "No cycle data yet. Add your first period.",
-  "language_de": "German",
-  "language_en": "English",
   "metric": "Metric",
   "imperial": "Imperial",
-  "dark_mode": "Dark mode",
   "biometric_lock": "Biometric lock",
   "notifications": "Notifications",
   "export_data": "Export data",
   "delete_all_data": "Delete all data",
-  "delete_confirm": "Are you sure? This action cannot be undone.",
   "reset_onboarding": "Repeat onboarding",
-  "report_bug": "Report a bug",
   "version": "Version",
   "legal": "Legal",
   "privacy_policy": "Privacy policy",
   "terms_of_service": "Terms of service",
   "medical_disclaimer": "Medical disclaimer",
   "open_source_licenses": "Open source licenses",
-  "onboarding_welcome_title": "Welcome to TRAUM",
-  "onboarding_welcome_subtitle": "Your life. Your data. Your system.",
   "onboarding_privacy_title": "Privacy & Consent",
-  "onboarding_profile_title": "Your Profile",
   "onboarding_body_title": "Body & Fitness",
-  "onboarding_nutrition_title": "Nutrition",
-  "onboarding_supplements_title": "Supplements",
-  "onboarding_medication_title": "Medication",
-  "onboarding_budget_title": "Budget",
-  "onboarding_cycle_title": "Your Cycle",
-  "onboarding_nav_title": "Customize navigation",
-  "onboarding_weather_title": "Weather location",
-  "onboarding_notifications_title": "Notifications",
-  "onboarding_health_title": "Connect fitness data",
-  "onboarding_done_title": "All set!",
   "lets_go": "Let's go",
   "healthScoreTitle": "Your Health Score",
   "healthScoreDetail": "What influences your score?",
@@ -262,21 +252,12 @@
   "healthScoreDailySummary": "Daily Summary",
   "healthScoreFactorDetails": "Factor Details",
   "healthScoreInsights": "Insights & Recommendations",
-  "healthScoreStrength": "Strength",
   "healthScorePotential": "Improvement potential",
-  "healthScoreTrend": "Trend",
   "healthScoreBalance": "Overall balance",
-  "healthScoreFactorTraining": "Training",
-  "healthScoreFactorNutrition": "Nutrition",
-  "healthScoreFactorRegeneration": "Recovery",
-  "healthScoreFactorSupplements": "Supplements",
-  "healthScoreFactorMedication": "Medication",
-  "healthScoreFactorMental": "Stress & Mental",
   "healthScoreBewertungOptimal": "Optimal",
   "healthScoreBewertungGut": "Good",
   "healthScoreBewertungMittel": "Average",
   "healthScoreBewertungSchwach": "Poor",
-
   "allModulesInNav": "All modules in navigation",
   "adjustNav": "Customize navigation",
   "activeModules": "Active modules",
@@ -288,11 +269,12 @@
   "more": "More",
   "customize": "Customize",
   "exit": "Exit",
-
   "relapseAt": "Relapse: {name}",
   "@relapseAt": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "relapseDescription": "Are you sure you want to report a relapse?",
@@ -315,37 +297,21 @@
   "milestoneProgressCaption": "{percent}% until {milestone}",
   "@milestoneProgressCaption": {
     "placeholders": {
-      "percent": {"type": "int"},
-      "milestone": {"type": "String"}
+      "percent": {
+        "type": "int"
+      },
+      "milestone": {
+        "type": "String"
+      }
     }
   },
   "allMilestonesReached": "All milestones reached",
-
-  "addTransaction": "Add transaction",
-  "expenseLabel": "Expense",
-  "incomeLabel": "Income",
-  "amountWithCurrency": "Amount ({currency})",
-  "@amountWithCurrency": {
-    "placeholders": {
-      "currency": {"type": "String"}
-    }
-  },
   "fieldDescription": "Description",
-  "transactionDescriptionHint": "e.g. Grocery",
   "dateLabel": "Date",
-  "categoryOptional": "Category (optional)",
-  "noCategories": "No categories",
-  "noCategory": "No category",
   "fieldNoteOptional": "Note (optional)",
-  "noteHint": "Note...",
-  "pleaseEnterValidAmount": "Please enter a valid amount",
-  "descriptionRequired": "Description required",
   "saving": "Saving...",
-  "latestTransactions": "Latest transactions",
   "all": "All",
-  "balanceThisMonth": "Balance this month",
   "categoryOther": "Other",
-  "budgetsLabel": "Budgets",
   "monthJan": "January",
   "monthFeb": "February",
   "monthMar": "March",
@@ -371,7 +337,6 @@
   "monthShortNov": "Nov",
   "monthShortDec": "Dec",
   "noTransactions": "No transactions",
-  "tapPlusToAdd": "Tap + to add",
   "statistics": "Statistics",
   "savingsGoals": "Savings goals",
   "totalIncome": "Total income",
@@ -382,14 +347,20 @@
   "remainingAmount": "{remaining} {currency} remaining",
   "@remainingAmount": {
     "placeholders": {
-      "remaining": {"type": "String"},
-      "currency": {"type": "String"}
+      "remaining": {
+        "type": "String"
+      },
+      "currency": {
+        "type": "String"
+      }
     }
   },
   "targetDate": "Target date: {date}",
   "@targetDate": {
     "placeholders": {
-      "date": {"type": "String"}
+      "date": {
+        "type": "String"
+      }
     }
   },
   "deposit": "Deposit",
@@ -406,7 +377,6 @@
   "allTransactions": "All transactions",
   "noSavingsGoals": "No savings goals",
   "tapToCreateSavingsGoal": "Tap to create a savings goal",
-
   "motivationExcellent": "Excellent! Your body is in top shape.",
   "motivationGood": "Great! You're on a good track.",
   "motivationSolid": "Solid! Small adjustments will get you further.",
@@ -419,7 +389,6 @@
   "hintMedication": "Don't forget to take your medication.",
   "hintMentalStress": "Take time for relaxation and stress reduction.",
   "hintDefault": "Stay consistent and track your goals daily.",
-
   "score": "Score",
   "overview": "Overview",
   "sleepTab": "Sleep",
@@ -435,21 +404,31 @@
   "trendBetter": "+{diff} pts better",
   "@trendBetter": {
     "placeholders": {
-      "diff": {"type": "int"}
+      "diff": {
+        "type": "int"
+      }
     }
   },
   "trendWorse": "-{diff} pts worse",
   "@trendWorse": {
     "placeholders": {
-      "diff": {"type": "int"}
+      "diff": {
+        "type": "int"
+      }
     }
   },
   "balanceDiff": "{diff} pts gap between {best} and {worst}",
   "@balanceDiff": {
     "placeholders": {
-      "diff": {"type": "int"},
-      "best": {"type": "String"},
-      "worst": {"type": "String"}
+      "diff": {
+        "type": "int"
+      },
+      "best": {
+        "type": "String"
+      },
+      "worst": {
+        "type": "String"
+      }
     }
   },
   "analyze": "Analyze",
@@ -459,13 +438,17 @@
   "avgHours": "Ø {hours} h",
   "@avgHours": {
     "placeholders": {
-      "hours": {"type": "String"}
+      "hours": {
+        "type": "String"
+      }
     }
   },
   "entriesRecorded": "{n} entries",
   "@entriesRecorded": {
     "placeholders": {
-      "n": {"type": "int"}
+      "n": {
+        "type": "int"
+      }
     }
   },
   "currentWeight": "Current weight",
@@ -496,82 +479,32 @@
   "fallingAsleep": "Falling asleep",
   "wakingUp": "Waking up",
   "sleepQuality": "Sleep quality",
-
-  "weatherClear": "Clear",
-  "weatherCloudy": "Cloudy",
-  "weatherFoggy": "Foggy",
-  "weatherRain": "Rain",
-  "weatherSnow": "Snow",
-  "weatherShowers": "Showers",
-  "weatherThunderstorm": "Thunderstorm",
-  "goalShort": "Goal",
-  "stepsProgress": "{current} / {goal}",
-  "@stepsProgress": {
-    "placeholders": {
-      "current": {"type": "int"},
-      "goal": {"type": "int"}
-    }
-  },
-  "macroProgress": "{val} / {goal} {unit}",
-  "@macroProgress": {
-    "placeholders": {
-      "val": {"type": "String"},
-      "goal": {"type": "int"},
-      "unit": {"type": "String"}
-    }
-  },
-  "dailyLimitReached": "Daily limit reached",
   "waterMin": "Min {ml} ml",
   "@waterMin": {
     "placeholders": {
-      "ml": {"type": "int"}
+      "ml": {
+        "type": "int"
+      }
     }
   },
   "permissionNotifications": "Notifications",
-  "waterTotal": "{ml} ml",
-  "@waterTotal": {
-    "placeholders": {
-      "ml": {"type": "int"}
-    }
-  },
-  "waterGoalAndMax": "Goal: {goal} ml · Max: {max} ml",
-  "@waterGoalAndMax": {
-    "placeholders": {
-      "goal": {"type": "int"},
-      "max": {"type": "int"}
-    }
-  },
   "permissionLocation": "Location",
-  "waterButton": "+{ml} ml",
-  "@waterButton": {
-    "placeholders": {
-      "ml": {"type": "int"}
-    }
-  },
   "todos": "Tasks",
-  "allLabel": "All",
-  "noOpenTodos": "No open tasks",
-  "medicationsTitle": "Medications",
-  "noMedications": "No medications",
   "missingPermissions": "Missing permissions",
   "habits": "Habits",
-  "noHabitsTapToAdd": "No habits – Tap to add",
-  "noTransactionsThisMonth": "No transactions this month",
   "permissionsContent": "{items}",
   "@permissionsContent": {
     "placeholders": {
-      "items": {"type": "String"}
+      "items": {
+        "type": "String"
+      }
     }
   },
-  "tapForCycleInfo": "Tap for cycle info",
-  "healthLabel": "Health",
   "heartRate": "Heart rate",
   "mood": "Mood",
   "later": "Later",
   "openSettings": "Open settings",
-
   "documentCouldNotLoad": "Document could not be loaded",
-
   "appIsLocked": "App locked",
   "unlock": "Unlock",
   "usePin": "Use PIN",
@@ -583,83 +516,43 @@
   "biometricError": "Biometric error: {msg}",
   "@biometricError": {
     "placeholders": {
-      "msg": {"type": "String"}
+      "msg": {
+        "type": "String"
+      }
     }
   },
   "biometricNotAvailableUsePin": "Biometrics not available. Please use PIN.",
   "enterPin": "Enter PIN",
   "wrongPin": "Wrong PIN",
-
-  "inactive": "Inactive",
   "activeLabel": "Active",
-  "noMedicationsYet": "No medications yet",
-  "tapToAddMedication": "Tap to add a medication",
   "addMedication": "Add medication",
-  "medicationNameHint": "e.g. Ibuprofen",
-  "dosageHint": "e.g. 400mg",
   "dosage": "Dosage",
-  "reminderTimes": "Reminder times",
-  "allMedications": "All medications",
   "timeForMedication": "Time for {name}",
   "@timeForMedication": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
-  "remindersTimes": "Reminders: {times}",
-  "@remindersTimes": {
-    "placeholders": {
-      "times": {"type": "String"}
-    }
-  },
-
   "breakfast": "Breakfast",
   "lunch": "Lunch",
   "dinner": "Dinner",
   "snack": "Snack",
-  "searchOrCreate": "Search or create",
-  "noResultsLabel": "No results found",
-  "createFood": "Create food",
-  "amountG": "Amount (g)",
-  "logEntry": "Save entry",
-  "searchFood": "Search food",
-  "plusNew": "+ New",
   "searchHint": "Search...",
   "mealType": "Meal type",
-  "foodHint": "e.g. Oats",
-  "foodLabel": "Food",
   "amountGrams": "Amount (g)",
-  "caloriesKcal": "Calories (kcal)",
   "proteinG": "Protein (g)",
-  "carbsG": "Carbs (g)",
-  "fatG": "Fat (g)",
-  "logMeal": "Log meal",
-  "quickSelect": "Quick select",
-  "addWater": "Add water",
-  "waterGoal2000": "Goal: 2000 ml",
-  "nothingLogged": "Nothing logged yet",
-  "shoppingListTooltip": "Shopping list",
   "completed": "Completed",
-  "shoppingList": "Shopping list",
   "addProduct": "Add product",
-  "itemHint": "Item...",
   "quantity": "Quantity",
-  "unitHint": "Unit",
-  "deleteCompletedTooltip": "Delete completed",
-  "shoppingListEmpty": "Shopping list empty",
-  "tapToAddProduct": "Tap to add a product",
-  "servingSize": "Serving size",
   "kcalPer100g": "kcal/100g",
   "proteinPer100g": "Protein (g/100g)",
   "carbsPer100g": "Carbs (g/100g)",
   "fatPer100g": "Fat (g/100g)",
-  "createButton": "Create",
-  "caloriesRequired": "Calories required",
   "noResults": "No results",
   "search": "Search",
   "weightKg": "Weight (kg)",
-  "weightLbs": "Weight (lbs)",
-
   "welcomeToTraum": "Welcome to TRAUM",
   "startNow": "Start now",
   "yourLifeYourData": "Your life. Your data.",
@@ -685,16 +578,24 @@
   "stepsLabelText": "{steps} steps",
   "@stepsLabelText": {
     "placeholders": {
-      "steps": {"type": "int"}
+      "steps": {
+        "type": "int"
+      }
     }
   },
   "yourWaterGoal": "Your water goal",
   "waterGoalSummary": "Goal: {goal} ml (Min: {min} ml, Max: {max} ml)",
   "@waterGoalSummary": {
     "placeholders": {
-      "goal": {"type": "int"},
-      "min": {"type": "int"},
-      "max": {"type": "int"}
+      "goal": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
     }
   },
   "nutritionTitleOb": "Nutrition goals",
@@ -706,15 +607,6 @@
   "cycleTitleOb": "Your Cycle",
   "cycleLengthLabel": "Cycle length (days)",
   "periodLengthLabel": "Period length (days)",
-  "navTitleOb": "Customize navigation",
-  "homeAlwaysLeft": "Home is always on the left",
-  "slotsSelected": "{n} slots selected",
-  "@slotsSelected": {
-    "placeholders": {
-      "n": {"type": "int"}
-    }
-  },
-  "adjustNavLater": "Adjust later",
   "weatherTitleOb": "Weather location",
   "weatherDescription": "TRAUM shows you the current weather on the home screen.",
   "requestingLocation": "Requesting location...",
@@ -731,14 +623,20 @@
   "welcomeName": "Welcome, {name}!",
   "@welcomeName": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "summaryGoals": "Goals: {kcal} kcal · {water} ml water",
   "@summaryGoals": {
     "placeholders": {
-      "kcal": {"type": "int"},
-      "water": {"type": "int"}
+      "kcal": {
+        "type": "int"
+      },
+      "water": {
+        "type": "int"
+      }
     }
   },
   "faceIdActivate": "Activate Face ID",
@@ -759,29 +657,22 @@
   "enterPinAgainConfirm": "Enter PIN again",
   "backToSelection": "Back to selection",
   "addSupplement": "Add supplement",
-  "supplementNameHint": "e.g. Vitamin D",
   "category": "Category",
-  "amountHint": "e.g. 1000",
   "fieldUnit": "Unit",
-  "noSupplements": "No supplements",
-  "tapToAddSupplement": "Tap to add a supplement",
-
-  "avgCycleDaysShort": "Ø {n} d.",
-  "@avgCycleDaysShort": {
-    "placeholders": {
-      "n": {"type": "int"}
-    }
-  },
   "avgCycleDays": "Ø {days} d.",
   "@avgCycleDays": {
     "placeholders": {
-      "days": {"type": "int"}
+      "days": {
+        "type": "int"
+      }
     }
   },
   "avgDurationDays": "Ø {days} d.",
   "@avgDurationDays": {
     "placeholders": {
-      "days": {"type": "int"}
+      "days": {
+        "type": "int"
+      }
     }
   },
   "entriesLabel": "Entries",
@@ -804,24 +695,16 @@
   "noSpecialEvent": "No special event",
   "periodCalendar": "Cycle calendar",
   "symptomsToday": "Symptoms today",
-  "periodEntries": "Period entries",
-  "tapToStartPeriod": "Tap to start a period",
-  "follicularPhase": "Follicular phase",
-  "ovulationPhase": "Ovulation phase",
-  "fertileWindowPhase": "Fertile window",
-  "nextPeriodLabel": "Next period",
-  "ovulationLabel": "Ovulation",
-  "fertileLabel": "Fertile",
   "pregnancyProbabilityToday": "{pct}% pregnancy probability",
   "@pregnancyProbabilityToday": {
     "placeholders": {
-      "pct": {"type": "int"}
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "calendarTooltip": "Calendar",
   "historyTooltip": "History",
-  "noSymptomsToday": "No symptoms today",
-  "selectOrEnterSymptom": "Select or enter symptom",
   "endPeriod": "End period",
   "startPeriod": "Start period",
   "flowIntensity": "Intensity",
@@ -838,21 +721,20 @@
   "symptomTiredness": "Fatigue",
   "symptomAcne": "Acne",
   "symptomSleepIssues": "Sleep issues",
-  "addSymptom": "Add symptom",
   "orCustomSymptom": "or enter custom symptom",
   "intensityLabel": "Intensity",
   "intensityLight": "Light",
   "intensityMedium": "Medium",
   "intensityStrong": "Strong",
-  "saveSymptom": "Save symptom",
   "fertileLegend": "Fertile",
   "ovulationLegend": "Ovulation",
   "periodLegend": "Period",
-
   "noAppointmentsOnDate": "No appointments on {date}",
   "@noAppointmentsOnDate": {
     "placeholders": {
-      "date": {"type": "String"}
+      "date": {
+        "type": "String"
+      }
     }
   },
   "addAppointment": "Add appointment",
@@ -869,7 +751,9 @@
   "dueDateLabel": "Due: {date}",
   "@dueDateLabel": {
     "placeholders": {
-      "date": {"type": "String"}
+      "date": {
+        "type": "String"
+      }
     }
   },
   "addTask": "Add task",
@@ -898,10 +782,11 @@
   "habitStreakDays": "{count}-day streak",
   "@habitStreakDays": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "bmi": "BMI",
   "weightGoalLabel": "Target weight",
   "loseAction": "lose",
@@ -909,14 +794,20 @@
   "weightDiff": "{diff} kg to {action}",
   "@weightDiff": {
     "placeholders": {
-      "diff": {"type": "String"},
-      "action": {"type": "String"}
+      "diff": {
+        "type": "String"
+      },
+      "action": {
+        "type": "String"
+      }
     }
   },
   "sleepDays": "Last {days} days",
   "@sleepDays": {
     "placeholders": {
-      "days": {"type": "int"}
+      "days": {
+        "type": "int"
+      }
     }
   },
   "avgSleepDuration": "Ø sleep duration",
@@ -934,7 +825,9 @@
   "moodLast": "Last value: {score}/5",
   "@moodLast": {
     "placeholders": {
-      "score": {"type": "int"}
+      "score": {
+        "type": "int"
+      }
     }
   },
   "bmiUnderweight": "Underweight",
@@ -945,19 +838,8 @@
   "myDashboard": "My dashboard",
   "body": "Body",
   "height": "Height",
-
   "exportSelected": "Export selected",
-  "exportPreparing": "Preparing...",
   "supportSection": "Support",
-  "bugReportDarkModeYes": "Yes",
-  "bugReportDevice": "Device: {device}",
-  "@bugReportDevice": {
-    "placeholders": {
-      "device": {"type": "String"}
-    }
-  },
-  "bugReportSubject": "[TRAUM] Bug report",
-  "bugReportBody": "Please describe the bug:",
   "appSection": "App",
   "repeatOnboardingSubtitle": "Repeat the onboarding process",
   "navigationSection": "Navigation",
@@ -976,7 +858,9 @@
   "notifDailyAt": "Daily at {time}",
   "@notifDailyAt": {
     "placeholders": {
-      "time": {"type": "String"}
+      "time": {
+        "type": "String"
+      }
     }
   },
   "goals": "Goals",
@@ -991,7 +875,9 @@
   "waterGoalAutomatic": "Automatic ({ml} ml)",
   "@waterGoalAutomatic": {
     "placeholders": {
-      "ml": {"type": "int"}
+      "ml": {
+        "type": "int"
+      }
     }
   },
   "currency": "Currency",
@@ -1025,11 +911,9 @@
   "nutritionReportRange30": "Last 30 days",
   "nutritionReportRangeCustom": "Choose a date range",
   "nutritionReportEmpty": "No nutrition data in this range",
-  "importRunning": "Importing…",
   "importDone": "{rows} entries imported, {media} media files restored",
   "importFailed": "Import failed: {error}",
   "chooseLanguage": "Choose language",
-
   "exercise": "Exercise",
   "muscleBrust": "Chest",
   "muscleRuecken": "Back",
@@ -1043,17 +927,13 @@
   "muscleGanzkoerper": "Full body",
   "muscleForearms": "Forearms",
   "muscleCardio": "Cardio",
-  "noWorkoutPlanned": "No workout planned",
-  "weeklyProgress": "Weekly progress",
-  "createRoutine": "Create routine",
-  "muscleGroupsOverview": "Muscle groups overview",
-  "noTrainingSessionsRecorded": "No training sessions recorded",
   "myRoutines": "My routines",
-  "noRoutinesCreated": "No routines created",
   "trainingDayName": "Day {letter}",
   "@trainingDayName": {
     "placeholders": {
-      "letter": {"type": "String"}
+      "letter": {
+        "type": "String"
+      }
     }
   },
   "trainingDayA": "Day A",
@@ -1085,19 +965,25 @@
   "setLabel": "Set {n}",
   "@setLabel": {
     "placeholders": {
-      "n": {"type": "int"}
+      "n": {
+        "type": "int"
+      }
     }
   },
   "repsCount": "{n} reps",
   "@repsCount": {
     "placeholders": {
-      "n": {"type": "int"}
+      "n": {
+        "type": "int"
+      }
     }
   },
   "setCount": "{n} sets",
   "@setCount": {
     "placeholders": {
-      "n": {"type": "int"}
+      "n": {
+        "type": "int"
+      }
     }
   },
   "addExercise": "Add exercise",
@@ -1107,41 +993,33 @@
   "equipmentHint": "e.g. Dumbbell",
   "instructionsOptional": "Instructions (optional)",
   "instructionExecution": "Execution instruction",
-  "noExercisesInLibrary": "No exercises in library",
   "noExercisesYet": "No exercises yet",
   "muscleGroup": "Muscle group",
   "muscleHeatmapTitle": "Muscle heatmap",
   "recentSets": "Recent sets",
-  "trainExerciseToSeeProgress": "Train this exercise to see progress",
-  "noProgressData": "No progress data",
-  "trainingVolumeLast7Days": "Training volume (last 7 days)",
-  "volumeLast90Days": "Volume (last 90 days)",
-  "maxWeight": "Max. weight",
-  "maxReps": "Max. reps",
-  "little": "Little",
   "much": "Much",
   "restTimerLabel": "Rest",
-  "addSet": "Add set",
-  "noTraining": "No training",
   "notTrained": "Not trained",
   "progress": "Progress",
   "reps": "Reps",
   "finishing": "Finishing...",
-  "noTrainingPlanned": "No training planned",
   "exercises": "Exercises",
   "volumeKg": "Volume (kg)",
   "createExercise": "Create exercise",
   "medium": "Medium",
   "noExercises": "No exercises yet",
-
   "wizardSkip": "Skip",
   "wizardNext": "Next",
   "wizardFinish": "Done",
   "wizardStepOf": "Step {current} of {total}",
   "@wizardStepOf": {
     "placeholders": {
-      "current": {"type": "int"},
-      "total": {"type": "int"}
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "templateSelectTitle": "Choose template",
@@ -1156,18 +1034,16 @@
   "completedThisWeek": "Completed",
   "plannedThisWeek": "Planned",
   "weeklyVolume": "Volume",
-
   "exercisesToday": "{count} exercises · today",
   "@exercisesToday": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "sessionNamesLabel": "Session names",
   "bookmarked": "Bookmarked",
-  "estimated1RM": "Estimated 1RM (Epley)",
-  "heavilyTrained": "Heavily trained",
-  "lightlyTrained": "Lightly trained",
   "notTrainedHeatmap": "Not trained",
   "heatmapDays7": "7 days",
   "heatmapDays14": "14 days",
@@ -1175,86 +1051,31 @@
   "heatmapExercisesIn": "Exercises in period",
   "restTimer": "Rest",
   "restTimerSkip": "Skip",
-  "bookmarkExercise": "Bookmark exercise",
-
-  "warmupSet": "Warmup set",
   "workoutStreak": "Day streak",
   "restDuration": "Rest duration",
-  "muscleGroupVolume": "Volume by muscle group",
-  "noMuscleDataThisWeek": "No training volume this week",
-  "lastPerformanceHint": "Last: {info}",
-  "@lastPerformanceHint": {
-    "placeholders": {
-      "info": {"type": "String"}
-    }
-  },
-  "noLastPerformance": "No previous data",
   "instructionsLabel": "Instructions",
   "equipmentLabel": "Equipment",
   "difficultyLabel": "Difficulty",
   "detailsLabel": "Details",
-
-  "feedbackTitle": "Send feedback",
-  "feedbackSubtitle": "Your feedback helps improve TRAUM.",
-  "feedbackTypeBug": "Bug",
-  "feedbackTypeFeature": "Feature",
-  "feedbackTypeImprovement": "Improvement",
-  "feedbackShortTitle": "Short title",
-  "feedbackDescription": "Description",
-  "feedbackSubmit": "Open GitHub & submit",
-  "feedbackHint": "Opens GitHub in browser. A GitHub account is needed to submit.",
-  "feedbackSystemInfo": "System info will be attached automatically.",
   "settingsFeedback": "Feedback & bug reports",
   "settingsFeedbackSubtitle": "Bug · Feature · Improvement",
-  "budgetTitle": "Finance",
-  "budgetAvailableBalance": "Available balance",
   "budgetMoreLink": "More ›",
-  "budgetForecastText": "At this rate you'll have ~{amount} left at month end.",
-  "@budgetForecastText": {
-    "placeholders": {
-      "amount": {"type": "String"}
-    }
-  },
-  "budgetScanReceipt": "Scan receipt / photo",
   "budgetScanningReceipt": "Analysing receipt...",
-  "budgetScanNoAmount": "Amount not detected — please enter manually",
   "budgetSaveAsTemplate": "Save as template",
   "budgetSplitTransaction": "Split amount",
-  "budgetSplitTitle": "Split transaction",
   "budgetSplitRemaining": "Remaining: {amount}",
   "@budgetSplitRemaining": {
     "placeholders": {
-      "amount": {"type": "String"}
-    }
-  },
-  "budgetStatusGood": "{amount} budget remaining",
-  "@budgetStatusGood": {
-    "placeholders": {
-      "amount": {"type": "String"}
-    }
-  },
-  "budgetStatusWarning": "80% of budget used",
-  "budgetStatusOverbudget": "Budget exceeded by {amount}",
-  "@budgetStatusOverbudget": {
-    "placeholders": {
-      "amount": {"type": "String"}
-    }
-  },
-  "budgetRecurringWarning": "{name} due in {days} days",
-  "@budgetRecurringWarning": {
-    "placeholders": {
-      "name": {"type": "String"},
-      "days": {"type": "String"}
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "budgetTrend": "Trend",
   "budgetIncome": "Income",
   "budgetExpenses": "Expenses",
-  "budgetSaved": "Saved",
-  "budgetForecast": "Forecast",
   "budgetCategories": "Categories",
   "budgetTransactions": "Transactions",
-  "budgetFixedCosts": "Fixed costs",
   "budgetSavingGoals": "Savings goals",
   "budgetDebts": "Debts",
   "addDebtItem": "Add item",
@@ -1267,48 +1088,23 @@
   "@debtItemPrice": {},
   "debtTotalFromItems": "Total from {count} items",
   "@debtTotalFromItems": {
-    "placeholders": { "count": { "type": "int" } }
-  },
-  "debtExistingAmount": "Existing amount",
-  "@debtExistingAmount": {},
-  "budgetQuickTemplates": "Quick templates",
-  "budgetAddExpense": "Save expense",
-  "budgetAddIncome": "Save income",
-  "budgetScanSuccess": "Detected: {amount} on {date}",
-  "@budgetScanSuccess": {
     "placeholders": {
-      "amount": {"type": "String"},
-      "date": {"type": "String"}
+      "count": {
+        "type": "int"
+      }
     }
   },
-
-  "budgetTotalBalance": "Total balance",
-  "budgetVsLastMonth": "vs. last month",
   "budgetAccounts": "Accounts",
-  "budgetAddAccount": "Add account",
-  "budgetAccountChecking": "Checking account",
-  "budgetAccountSavings": "Savings account",
-  "budgetAccountCredit": "Credit card",
-  "budgetAccountInvestment": "Investment",
-  "budgetAccountPrimary": "Primary",
-  "budgetAccountPending": "Pending",
-  "budgetAccountReturn": "Return: {rate}%",
-  "@budgetAccountReturn": {
-    "placeholders": {
-      "rate": {}
-    }
-  },
-  "budgetOverviewTitle": "Budget overview",
   "budgetRecentTransactions": "Recent transactions",
-  "budgetCategoryListTitle": "Expenses by category",
-  "budgetBalanceHidden": "Balance hidden",
   "budgetTemplateNameHint": "Template name",
   "budgetTemplateSaved": "Saved as template",
   "budgetDeleteTransactionConfirm": "Delete transaction?",
   "budgetSplitOriginalAmount": "Original amount: {amount}",
   "@budgetSplitOriginalAmount": {
     "placeholders": {
-      "amount": {"type": "String"}
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "budgetSplitAddPart": "Add another part",
@@ -1347,13 +1143,17 @@
   "budgetDeleteCategoryContent": "\"{name}\" will be removed. Existing transactions remain and appear as \"Other\".",
   "@budgetDeleteCategoryContent": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "budgetCategoryLimitLabel": "Limit: {amount} / mo.",
   "@budgetCategoryLimitLabel": {
     "placeholders": {
-      "amount": {"type": "String"}
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "budgetNewCategoryButton": "+ New category",
@@ -1370,21 +1170,31 @@
   "budgetDayOfMonth": "Day {day} of {daysInMonth}",
   "@budgetDayOfMonth": {
     "placeholders": {
-      "day": {"type": "int"},
-      "daysInMonth": {"type": "int"}
+      "day": {
+        "type": "int"
+      },
+      "daysInMonth": {
+        "type": "int"
+      }
     }
   },
   "budgetDayOfMonthForecast": "Day {day} of {daysInMonth} · forecast ",
   "@budgetDayOfMonthForecast": {
     "placeholders": {
-      "day": {"type": "int"},
-      "daysInMonth": {"type": "int"}
+      "day": {
+        "type": "int"
+      },
+      "daysInMonth": {
+        "type": "int"
+      }
     }
   },
   "budgetForecastRemaining": "~{amount} left",
   "@budgetForecastRemaining": {
     "placeholders": {
-      "amount": {"type": "String"}
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "budgetTotalBalanceAllAccounts": "Total balance · all accounts",
@@ -1392,76 +1202,23 @@
   "budgetSeeAll": "All ›",
   "budgetNoTransactionsYet": "No transactions yet",
   "budgetNoTransactionsHint": "Tap + New to add one",
-  "budgetAddAccountButton": "+ Add account",
-  "budgetEditAccountTitle": "Edit account",
-  "budgetDeleteAccountConfirm": "Delete account?",
-  "budgetDeleteAccountContent": "\"{name}\" will be removed. Existing transactions remain.",
-  "@budgetDeleteAccountContent": {
+  "diaryTitle": "Diary",
+  "diaryNoteHint": "Write something about this moment... (optional)",
+  "diaryRetake": "Retake",
+  "diaryTotalEntries": "{count} entries",
+  "@diaryTotalEntries": {
     "placeholders": {
-      "name": {"type": "String"}
+      "count": {
+        "type": "int"
+      }
     }
   },
-  "budgetAccountNameHint": "e.g. Checking account",
-  "budgetInstitutionLabel": "Bank / Institution",
-  "budgetInstitutionHint": "e.g. Sparkasse",
-  "budgetBalanceLabel": "Balance *",
-  "budgetLastFourLabel": "Last 4 digits",
-  "budgetReturnRateLabel": "Return %",
-  "budgetMarkAsPrimary": "Mark as primary account",
-  "budgetDeleteAccountButton": "Delete account",
-
-  "diaryTitle": "Diary",
-  "diarySubtitle": "Your visual life.",
-  "diaryTodayEntry": "Today's entry",
-  "diaryNoEntryToday": "No entry yet today",
-  "diaryTakePhoto": "Take photo",
-  "diaryTakeVideo": "Record video",
-  "diaryChooseFromGallery": "From gallery",
-  "diaryNoteHint": "Write something about this moment... (optional)",
-  "diarySave": "Save",
-  "diaryRetake": "Retake",
-  "diaryStreak": "{count} days in a row",
-  "@diaryStreak": { "placeholders": { "count": { "type": "int" } } },
-  "diaryTotalEntries": "{count} entries",
-  "@diaryTotalEntries": { "placeholders": { "count": { "type": "int" } } },
-  "diarySlideshow": "Slideshow",
   "diaryRecentEntries": "Recent entries",
   "diaryYearOverview": "Year overview",
   "diaryDeleteTitle": "Delete entry?",
   "diaryDeleteMessage": "The entry and media file will be permanently deleted.",
-  "diaryDeleteConfirm": "Delete",
   "diaryModuleLabel": "Diary",
-  "homeScreenDiaryCardEmpty": "No entry yet today",
-  "homeScreenDiaryCardFilled": "Today's entry",
-
   "nutritionTitle": "Nutrition",
-  "nutritionToday": "Today",
-  "nutritionWeek": "Week",
-  "nutritionProducts": "Products",
-  "nutritionShopping": "Shopping",
-  "nutritionCalories": "Calories",
-  "nutritionProtein": "Protein",
-  "nutritionCarbs": "Carbohydrates",
-  "nutritionFat": "Fat",
-  "nutritionBreakfast": "Breakfast",
-  "nutritionLunch": "Lunch",
-  "nutritionDinner": "Dinner",
-  "nutritionSnack": "Snack",
-  "nutritionScanBarcode": "Scan barcode",
-  "nutritionScanHint": "Point camera at barcode",
-  "nutritionProductNotFound": "Product not found",
-  "nutritionEnterAmount": "Enter amount",
-  "nutritionPer100g": "per 100g",
-  "nutritionAddToMeal": "Add to meal",
-  "nutritionSaveAsTemplate": "Save as template",
-  "nutritionTemplates": "Templates",
-  "nutritionRecentProducts": "Recently used",
-  "nutritionAddCustomProduct": "Add custom product",
-  "nutritionShoppingListGenerate": "Generate shopping list",
-  "nutritionShoppingListEmpty": "Shopping list is empty",
-  "nutritionShoppingListDeleteDone": "Delete completed",
-  "nutritionWeeklyPlan": "Weekly plan",
-  "nutritionWeeklyChart": "Weekly trend",
   "myFoodsSection": "My foods",
   "searchOnlineSection": "Found online",
   "sourceMerged": "Combined",
@@ -1469,7 +1226,6 @@
   "usdaApiKeyLabel": "USDA API key",
   "usdaApiKeyHint": "Empty = DEMO_KEY (limited rate)",
   "notes_title": "Notes",
-  "notes_new_note": "New note",
   "notes_new_folder": "New folder",
   "notes_recent": "Recently edited",
   "notes_bookmarks": "Bookmarks",
@@ -1497,18 +1253,20 @@
   "notes_export_md": "Export as .md",
   "notes_create_note_named": "Create \"{title}\"",
   "@notes_create_note_named": {
-    "placeholders": { "title": {"type": "String"} }
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   },
   "notes_rename": "Rename",
   "notes_pin": "Pin",
   "notes_unpin": "Unpin",
-  "notes_pinned": "Pinned",
   "notes_no_notes": "No notes yet",
   "notes_root": "Root",
   "notes_folder_name": "Folder name",
   "notes_note_title": "Title",
   "notes_template_name": "Template name",
-  "notes_new_template": "New template",
   "notes_no_tags": "No tags",
   "notes_no_templates": "No templates",
   "notes_search_hint": "Search notes…",
@@ -1516,31 +1274,24 @@
   "notes_untitled": "Untitled",
   "notes_import_vault": "Import vault",
   "notes_export_vault": "Export vault",
-  "notes_empty_trash": "Empty trash",
   "notes_local_graph": "Local graph",
   "notes_full_graph": "Full graph",
   "notes_neighbor_depth": "Neighbor depth",
   "notes_no_daily": "No daily note for this day",
-  "notes_open_or_create": "Open or create",
-  "notes_today": "Today",
   "notes_cancel": "Cancel",
   "notes_save": "Save",
   "notes_create": "Create",
   "notes_no_results": "No results",
-  "notes_confirm_delete": "Move note to trash?",
   "notes_confirm_delete_permanently": "Delete note permanently? This cannot be undone.",
   "notes_no_trash": "Trash is empty",
-  "notes_preview": "Preview",
-  "notes_properties": "Properties",
   "notes_empty_note_hint": "Write something in Markdown…",
-  "notes_export_done": "Vault exported",
   "notes_import_done": "Vault imported: {count} notes",
   "@notes_import_done": {
-    "placeholders": { "count": {"type": "int"} }
-  },
-  "notes_link_count": "{count} notes",
-  "@notes_link_count": {
-    "placeholders": { "count": {"type": "int"} }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "experimentalSection": "Experimental",
   "appLauncher": "App Launcher",
@@ -1557,19 +1308,10 @@
   "setAsLauncherActive": "TRAUM is your default home app",
   "setAsLauncherInactive": "Tap to set TRAUM as your home screen",
   "setAsLauncherFailed": "Couldn't open launcher settings",
-
-  "graffitiMapTitle": "Graffiti Map",
   "graffitiMapChooseMap": "Choose map",
   "graffitiMapNewMap": "Create new map",
   "graffitiMapSinglePhotos": "Single photos",
   "graffitiMapWithRating": "With rating · multiple photos",
-  "graffitiMapSearchHint": "Search by #hashtag...",
-  "graffitiMapMegapixels": "{mp} MP",
-  "@graffitiMapMegapixels": {
-    "placeholders": {
-      "mp": {"type": "String"}
-    }
-  },
   "graffitiMapNote": "Add note...",
   "graffitiMapHashtag": "Enter hashtag",
   "graffitiMapSave": "Save",
@@ -1605,9 +1347,6 @@
   "mapNameFieldHint": "Name…",
   "mapEnterHint": "Enter…",
   "mapNoEntriesYet": "No entries yet",
-  "mapModeStandard": "Standard",
-  "mapModeSatellite": "Satellite",
-  "mapModeHybrid": "Hybrid",
   "mapEntryLabel": "Entry",
   "mapNoteLabel": "Note",
   "mapHashtagsLabel": "Hashtags",
@@ -1618,34 +1357,33 @@
   "mapTemplateLostPlaces": "Lost Places",
   "mapTemplateCustom": "Custom map",
   "mapFunctions": "Functions",
-  "mapFunctionRating": "Star rating",
-  "mapFunctionMultiPhoto": "Multiple photos per point",
   "mapFields": "Fields",
   "mapFieldCondition": "Condition",
   "mapFieldAccess": "Accessibility",
   "mapFieldVisited": "Visit status",
   "mapFieldDanger": "Danger warning",
   "mapFieldHidden": "Private marker",
-  "mapAddCustomField": "Add custom field",
   "mapCreateButton": "Create map",
   "mapDistanceFromYou": "{distance} from you",
   "@mapDistanceFromYou": {
     "placeholders": {
-      "distance": {"type": "String"}
+      "distance": {
+        "type": "String"
+      }
     }
   },
-  "mapStartNavigation": "Start navigation",
-  "mapExportGpx": "Export as GPX",
-  "mapExportJson": "Export as JSON",
-  "mapNewEntry": "New entry",
-  "mapAddToExisting": "Add to existing",
   "mapTowerName": "Name",
   "mapRating": "Rating",
-  "mapAddPhoto": "Add photo",
   "obInterestsTitle": "Which areas interest you?",
   "obInterestsSubtitle": "Pick what you want to use. You can change everything later.",
   "obInterestsSelected": "{count} selected",
-  "@obInterestsSelected": { "placeholders": { "count": { "type": "int" } } },
+  "@obInterestsSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "obTabsTitle": "Your 4 tabs",
   "obTabsSubtitle": "These modules appear in the bottom bar. Home is always on the left.",
   "obTabsHint": "You can change the bar anytime in settings.",
@@ -1707,8 +1445,6 @@
   "obUnderstood": "Got it",
   "obBirthDate": "Date of birth",
   "obBirthDatePick": "Pick date",
-
-  "cycleDayLabel": "Cycle day",
   "phaseMenstrual": "Menstruation",
   "phaseFollicular": "Follicular phase",
   "phaseFertile": "Fertile window",
@@ -1719,9 +1455,20 @@
   "logTempShort": "Temp",
   "logMore": "More",
   "nextPeriodIn": "Period in {days} days",
-  "@nextPeriodIn": { "placeholders": { "days": { "type": "int" } } },
+  "@nextPeriodIn": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "predictedRange": "Likely {start}–{end}",
-  "@predictedRange": { "placeholders": { "start": {}, "end": {} } },
+  "@predictedRange": {
+    "placeholders": {
+      "start": {},
+      "end": {}
+    }
+  },
   "fertileWindowLabel": "Fertile window",
   "ovulationEstimatedLabel": "Ovulation (estimated)",
   "ovulationConfirmedLabel": "Ovulation (confirmed)",
@@ -1729,18 +1476,35 @@
   "nothingLoggedToday": "Nothing logged yet",
   "cycleLengthsTitle": "Cycle lengths",
   "cycleLengthsSubtitle": "Avg {avg} d · normal 21–35",
-  "@cycleLengthsSubtitle": { "placeholders": { "avg": { "type": "int" } } },
+  "@cycleLengthsSubtitle": {
+    "placeholders": {
+      "avg": {
+        "type": "int"
+      }
+    }
+  },
   "bbtCurveTitle": "Basal body temperature",
-  "bbtConfirmsOvulation": "Temperature shift confirms ovulation (symptothermal)",
   "cycleAnalysisTitle": "Cycle analysis",
   "regularityRegular": "Regular",
   "regularitySlightly": "Slightly irregular",
   "regularityIrregular": "Irregular",
   "regularityUnknown": "Not enough data",
   "variabilityDays": "Variation ±{days} days",
-  "@variabilityDays": { "placeholders": { "days": { "type": "int" } } },
+  "@variabilityDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "gynAgeYears": "Gyn. age: {years} y since menarche",
-  "@gynAgeYears": { "placeholders": { "years": { "type": "int" } } },
+  "@gynAgeYears": {
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
   "symptomPatternsTitle": "Patterns across cycles",
   "healthFlagConsistentlyLong": "Several cycles longer than 35 days.",
   "healthFlagConsistentlyShort": "Several cycles shorter than 21 days.",
@@ -1774,20 +1538,24 @@
   "moduleProgress": "Progress",
   "moduleGraffitiMap": "Graffiti Map",
   "calendarAccessDeniedSyncOff": "Calendar access denied — sync disabled",
-  "calendarFallbackName": "Calendar",
-  "eventNoTitle": "(No title)",
   "editAppointment": "Edit appointment",
   "syncDone": "{synced} synced, {errors} errors",
   "@syncDone": {
     "placeholders": {
-      "synced": {"type": "int"},
-      "errors": {"type": "int"}
+      "synced": {
+        "type": "int"
+      },
+      "errors": {
+        "type": "int"
+      }
     }
   },
   "updateAvailableTitle": "Update available — v{version}",
   "@updateAvailableTitle": {
     "placeholders": {
-      "version": {"type": "String"}
+      "version": {
+        "type": "String"
+      }
     }
   },
   "updateNow": "Update now",
@@ -1797,7 +1565,9 @@
   "diaryStreakDays": "Streak: {days} days",
   "@diaryStreakDays": {
     "placeholders": {
-      "days": {"type": "int"}
+      "days": {
+        "type": "int"
+      }
     }
   },
   "diaryCaptureMomentHint": "Capture this moment.",
@@ -1809,14 +1579,20 @@
   "diaryShareText": "Diary entry {date}",
   "@diaryShareText": {
     "placeholders": {
-      "date": {"type": "String"}
+      "date": {
+        "type": "String"
+      }
     }
   },
   "diaryHeatmapStats": "{count} entries · {percent}% of days",
   "@diaryHeatmapStats": {
     "placeholders": {
-      "count": {"type": "int"},
-      "percent": {"type": "String"}
+      "count": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "String"
+      }
     }
   }
 }

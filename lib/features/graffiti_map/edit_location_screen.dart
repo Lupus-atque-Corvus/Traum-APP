@@ -66,7 +66,7 @@ class _EditLocationScreenState extends ConsumerState<EditLocationScreen> {
       ));
     }
     ref.invalidate(markerByIdProvider(widget.markerId));
-    ref.invalidate(activeMarkersProvider);
+    invalidateMarkerViews(ref);
     if (mounted) context.pop();
   }
 
