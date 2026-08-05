@@ -2,7 +2,7 @@ name: traum
 description: "TRAUM — Dein persönliches Dashboard"
 publish_to: 'none'
 
-version: 0.8.11+91
+version: 0.8.12+92
 
 environment:
   sdk: ^3.9.2
@@ -215,6 +215,7 @@ flutter:
     # referenziert -> erzeugte bei jedem `flutter analyze`/Build eine Warnung.
     - assets/substances_reference.sqlite3
     - assets/data/
+    - assets/reference_templates/
 
   fonts:
     - family: DMSans

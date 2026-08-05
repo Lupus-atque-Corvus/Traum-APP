@@ -51,6 +51,7 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
   late bool _isVideoMode;
   bool _isRecording = false;
   late ReferenceOverlayMode _refMode;
+  double _refOpacity = 0.35;
   Timer? _autoStopTimer;
 
   bool get _hasGhost =>
@@ -253,7 +254,10 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
       const _GridOverlay(),
 
       // Geist-Foto oder eine der festen Umriss-Vorlagen.
-      ReferenceOverlayLayer(mode: _refMode, ghostImagePath: widget.ghostImagePath),
+      ReferenceOverlayLayer(
+          mode: _refMode,
+          ghostImagePath: widget.ghostImagePath,
+          opacity: _refOpacity),
 
       if (_refMode != ReferenceOverlayMode.off)
         Positioned(
@@ -319,6 +323,56 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
           ),
         ),
       ),
+
+      // Deckkraft-Regler für die Referenz.
+      if (_refMode != ReferenceOverlayMode.off)
+        Positioned(
+          top: 92,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: Container(
+              width: 210,
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              decoration: BoxDecoration(
+                color: Colors.black38,
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: Row(children: [
+                const Icon(Icons.opacity, color: Colors.white70, size: 14),
+                Expanded(
+                  child: SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      trackHeight: 2,
+                      thumbShape:
+                          const RoundSliderThumbShape(enabledThumbRadius: 6),
+                      overlayShape:
+                          const RoundSliderOverlayShape(overlayRadius: 12),
+                      activeTrackColor: TraumColors.lavender,
+                      inactiveTrackColor: Colors.white24,
+                      thumbColor: Colors.white,
+                    ),
+                    child: Slider(
+                      value: _refOpacity,
+                      min: 0.1,
+                      max: 0.9,
+                      onChanged: (v) => setState(() => _refOpacity = v),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 30,
+                  child: Text('${(_refOpacity * 100).round()}%',
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(
+                          fontFamily: 'DMSans',
+                          color: Colors.white70,
+                          fontSize: 10)),
+                ),
+              ]),
+            ),
+          ),
+        ),
 
       // Unterer Rand: Modus-Umschalter + Auslöser.
       Positioned(

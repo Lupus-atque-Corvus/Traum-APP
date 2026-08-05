@@ -1,12 +1,36 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.11+91** · schemaVersion **27**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.12+92** · schemaVersion **27**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-05 — v0.8.11, Diary-Umschalter-Button + feste Referenz-Vorlagen)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-05 — v0.8.12, echte SVG-Referenzvorlagen + Deckkraft-Regler)
+
+**Zwei Nachbesserungen aus dem Feedback zu v0.8.11:**
+
+1. **Die vier festen Referenz-Vorlagen (Ganzkörper, Gesicht, zwei Gesichter, Essen) waren bis
+   v0.8.11 freihändig nachgezeichnete `CustomPainter`-Linienzeichnungen — der Nutzer fand sie zu
+   kantig und nicht nah genug am Original. Er hat die vier Original-Vorlagen als potrace-artig
+   vektorisierte SVGs geschickt (via Bildkonvertierungsdienst). Neu: `assets/reference_templates/`
+   (`body_full.svg`, `face_single.svg`, `faces_two.svg`, `food.svg`) — unverändert übernommen
+   (nur die Zuordnung Datei→Vorlage wurde anhand der Pfad-Bounding-Boxen verifiziert, z. B. beim
+   Essen: zwei schmale hohe Formen = Gabel/Messer, zwei zentrierte runde Formen = Teller-Ringe).
+   `reference_templates.dart` rendert sie jetzt über `SvgPicture.asset` mit weißem
+   `ColorFilter` (`BlendMode.srcIn`) statt eigener Pfad-Berechnung — die vier
+   `CustomPainter`-Klassen sind komplett entfallen.
+2. **Deckkraft war fest auf 35 % verdrahtet** (bewusste Entscheidung vor der ersten
+   Umsetzung) — nach dem ersten Test doch als Regler gewünscht. `OverlayCameraScreen` hat jetzt
+   einen `Slider` (10–90 %, Default weiterhin 35 %) unterhalb der Vorlagen-Leiste, wenn eine
+   Referenz aktiv ist; `ReferenceOverlayLayer` nimmt `opacity` als Parameter statt es intern
+   festzulegen.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **494/494 grün** (unverändert).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-05 — v0.8.11, Diary-Umschalter-Button + feste Referenz-Vorlagen)
 
 **Nutzer-Feedback nach dem ersten Gerätetest von v0.8.10, zwei Punkte:**
 
