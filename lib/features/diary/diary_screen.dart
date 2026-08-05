@@ -45,6 +45,11 @@ class DiaryScreen extends ConsumerWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 8, 16, 0),
               child: Row(children: [
+                GestureDetector(
+                  onTap: () => _showDiarySwitcher(context, ref),
+                  child: _DiarySwitchAvatar(diaryAsync: activeDiaryAsync),
+                ),
+                const SizedBox(width: 12),
                 Expanded(
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
@@ -334,6 +339,52 @@ class _DiaryRow extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Icon-Button vor dem Tagebuch-Namen im Header — soll auf den ersten Blick
+/// erkennbar machen, dass hier mehrere Tagebücher stecken und man tippen
+/// kann, um zu wechseln (statt nur der unauffällige Titel-Text selbst).
+class _DiarySwitchAvatar extends StatelessWidget {
+  final AsyncValue<Diary?> diaryAsync;
+  const _DiarySwitchAvatar({required this.diaryAsync});
+
+  @override
+  Widget build(BuildContext context) {
+    final diary = diaryAsync.value;
+    final accent = diary != null ? diaryColor(diary) : TraumColors.lavender;
+    return SizedBox(
+      width: 44,
+      height: 44,
+      child: Stack(clipBehavior: Clip.none, children: [
+        Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: accent.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: accent.withValues(alpha: 0.4)),
+          ),
+          child: Icon(diary != null ? diaryIcon(diary.iconName) : Icons.menu_book_outlined,
+              color: accent, size: 21),
+        ),
+        Positioned(
+          right: -3,
+          bottom: -3,
+          child: Container(
+            width: 18,
+            height: 18,
+            decoration: BoxDecoration(
+              color: TraumColors.surfaceElevated,
+              shape: BoxShape.circle,
+              border: Border.all(color: TraumColors.background, width: 2),
+            ),
+            child: const Icon(Icons.swap_horiz,
+                color: TraumColors.onBackgroundMuted, size: 11),
+          ),
+        ),
+      ]),
     );
   }
 }

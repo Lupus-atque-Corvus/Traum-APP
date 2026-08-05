@@ -2729,13 +2729,28 @@ class AppLocalizationsDe extends AppLocalizations {
       'Das letzte Tagebuch kann nicht gelöscht werden.';
 
   @override
-  String get cameraOverlayReferenceOn => 'Referenz an';
-
-  @override
-  String get cameraOverlayReferenceOff => 'Referenz aus';
-
-  @override
   String get cameraOverlayAlignHint => 'Am letzten Foto ausrichten';
+
+  @override
+  String get cameraOverlayRefOff => 'Kein Overlay';
+
+  @override
+  String get cameraOverlayRefLastPhoto => 'Letztes Foto';
+
+  @override
+  String get cameraOverlayRefBodyFull => 'Ganzkörper';
+
+  @override
+  String get cameraOverlayRefFaceSingle => 'Gesicht';
+
+  @override
+  String get cameraOverlayRefFacesTwo => 'Zwei Gesichter';
+
+  @override
+  String get cameraOverlayRefFood => 'Essen';
+
+  @override
+  String get cameraOverlayRefGenericHint => 'An der Vorlage ausrichten';
 
   @override
   String get cameraOverlayPermissionDeniedTitle => 'Kamera-Zugriff benötigt';

@@ -5270,23 +5270,53 @@ abstract class AppLocalizations {
   /// **'Das letzte Tagebuch kann nicht gelöscht werden.'**
   String get diaryCannotDeleteLast;
 
-  /// No description provided for @cameraOverlayReferenceOn.
-  ///
-  /// In de, this message translates to:
-  /// **'Referenz an'**
-  String get cameraOverlayReferenceOn;
-
-  /// No description provided for @cameraOverlayReferenceOff.
-  ///
-  /// In de, this message translates to:
-  /// **'Referenz aus'**
-  String get cameraOverlayReferenceOff;
-
   /// No description provided for @cameraOverlayAlignHint.
   ///
   /// In de, this message translates to:
   /// **'Am letzten Foto ausrichten'**
   String get cameraOverlayAlignHint;
+
+  /// No description provided for @cameraOverlayRefOff.
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Overlay'**
+  String get cameraOverlayRefOff;
+
+  /// No description provided for @cameraOverlayRefLastPhoto.
+  ///
+  /// In de, this message translates to:
+  /// **'Letztes Foto'**
+  String get cameraOverlayRefLastPhoto;
+
+  /// No description provided for @cameraOverlayRefBodyFull.
+  ///
+  /// In de, this message translates to:
+  /// **'Ganzkörper'**
+  String get cameraOverlayRefBodyFull;
+
+  /// No description provided for @cameraOverlayRefFaceSingle.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesicht'**
+  String get cameraOverlayRefFaceSingle;
+
+  /// No description provided for @cameraOverlayRefFacesTwo.
+  ///
+  /// In de, this message translates to:
+  /// **'Zwei Gesichter'**
+  String get cameraOverlayRefFacesTwo;
+
+  /// No description provided for @cameraOverlayRefFood.
+  ///
+  /// In de, this message translates to:
+  /// **'Essen'**
+  String get cameraOverlayRefFood;
+
+  /// No description provided for @cameraOverlayRefGenericHint.
+  ///
+  /// In de, this message translates to:
+  /// **'An der Vorlage ausrichten'**
+  String get cameraOverlayRefGenericHint;
 
   /// No description provided for @cameraOverlayPermissionDeniedTitle.
   ///

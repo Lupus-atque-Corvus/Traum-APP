@@ -1,12 +1,40 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.10+90** · schemaVersion **27**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.11+91** · schemaVersion **27**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-05 — v0.8.10, Mehrfach-Tagebücher + Kamera-Referenz-Overlay)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-05 — v0.8.11, Diary-Umschalter-Button + feste Referenz-Vorlagen)
+
+**Nutzer-Feedback nach dem ersten Gerätetest von v0.8.10, zwei Punkte:**
+
+1. **Tagebuch-Umschalter war nicht auffindbar genug.** Nur der Titel-Text selbst war tippbar,
+   ohne jeden visuellen Hinweis darauf. Neu: `_DiarySwitchAvatar` in `diary_screen.dart` — ein
+   44×44-Icon-Button **vor** dem Namen (Tagebuch-Icon in Akzentfarbe + kleines Swap-Symbol als
+   Badge unten rechts), macht auf den ersten Blick klar, dass hier eine wechselbare Identität
+   sitzt. Öffnet denselben Umschalter wie der Titel-Tap.
+2. **Referenz-Overlay hatte nur den Geist des letzten Fotos — die ursprünglich gezeigten festen
+   Vorlagen (Ganzkörper, Gesicht, zwei Gesichter, Essen) fehlten.** Bei der Brainstorming-Frage
+   vor der Umsetzung hatte sich der Nutzer zunächst nur für "Geist-Overlay" entschieden; nach dem
+   ersten Test wollte er zusätzlich die festen Vorlagen aus den Referenzbildern. Neu:
+   `lib/core/camera/reference_templates.dart` — `ReferenceOverlayMode`-Enum
+   (`off, lastPhoto, bodyFull, faceSingle, facesTwo, food`), die vier festen Vorlagen sind reine
+   `CustomPainter`-Linienzeichnungen (keine Rasterbilder/Emojis — bleiben in jeder Auflösung
+   scharf): Ganzkörper-Silhouette (per Punktliste + Achsenspiegelung), Gesichts-Umriss
+   (Haaransatz + Ohren), zwei Gesichter nebeneinander (das zweite mit Dutt zur Unterscheidung),
+   Teller mit Gabel/Messer. `OverlayCameraScreen` zeigt jetzt eine horizontale Icon-Leiste mit
+   allen verfügbaren Optionen direkt sichtbar (nicht hinter einem Menü versteckt) statt des
+   vorherigen einzelnen "Referenz an/aus"-Chips; "Letztes Foto" erscheint darin nur, wenn es
+   tatsächlich ein vorheriges Foto in diesem Tagebuch gibt.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **494/494 grün** (unverändert — reine
+UI-Ergänzung, keine neue Testinfrastruktur nötig).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-05 — v0.8.10, Mehrfach-Tagebücher + Kamera-Referenz-Overlay)
 
 **Zwei Features auf Nutzerwunsch: mehrere parallele Tagebücher statt einem einzigen, und eine
 eigene Kamera-Aufnahme mit Referenz-Overlay für konsistente Foto-/Video-Ausrichtung über die

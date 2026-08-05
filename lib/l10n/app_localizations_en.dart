@@ -2717,13 +2717,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diaryCannotDeleteLast => 'The last diary can\'t be deleted.';
 
   @override
-  String get cameraOverlayReferenceOn => 'Reference on';
-
-  @override
-  String get cameraOverlayReferenceOff => 'Reference off';
-
-  @override
   String get cameraOverlayAlignHint => 'Align with the last photo';
+
+  @override
+  String get cameraOverlayRefOff => 'No overlay';
+
+  @override
+  String get cameraOverlayRefLastPhoto => 'Last photo';
+
+  @override
+  String get cameraOverlayRefBodyFull => 'Full body';
+
+  @override
+  String get cameraOverlayRefFaceSingle => 'Face';
+
+  @override
+  String get cameraOverlayRefFacesTwo => 'Two faces';
+
+  @override
+  String get cameraOverlayRefFood => 'Food';
+
+  @override
+  String get cameraOverlayRefGenericHint => 'Align with the guide';
 
   @override
   String get cameraOverlayPermissionDeniedTitle => 'Camera access needed';

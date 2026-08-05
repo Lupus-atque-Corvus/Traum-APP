@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../theme/colors.dart';
 import '../../l10n/app_localizations.dart';
+import 'reference_templates.dart';
 
 /// Ergebnis einer Aufnahme über [OverlayCameraScreen].
 class CameraCaptureResult {
@@ -49,13 +50,18 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
   _CamStatus _status = _CamStatus.checking;
   late bool _isVideoMode;
   bool _isRecording = false;
-  bool _referenceOn = true;
+  late ReferenceOverlayMode _refMode;
   Timer? _autoStopTimer;
+
+  bool get _hasGhost =>
+      widget.ghostImagePath != null && File(widget.ghostImagePath!).existsSync();
 
   @override
   void initState() {
     super.initState();
     _isVideoMode = widget.initialVideoMode;
+    _refMode =
+        _hasGhost ? ReferenceOverlayMode.lastPhoto : ReferenceOverlayMode.off;
     WidgetsBinding.instance.addObserver(this);
     _setup();
   }
@@ -231,8 +237,14 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
         child: CircularProgressIndicator(color: TraumColors.lavender),
       );
     }
-    final hasGhost = widget.ghostImagePath != null &&
-        File(widget.ghostImagePath!).existsSync();
+    final availableModes = [
+      ReferenceOverlayMode.off,
+      if (_hasGhost) ReferenceOverlayMode.lastPhoto,
+      ReferenceOverlayMode.bodyFull,
+      ReferenceOverlayMode.faceSingle,
+      ReferenceOverlayMode.facesTwo,
+      ReferenceOverlayMode.food,
+    ];
 
     return Stack(fit: StackFit.expand, children: [
       Center(child: CameraPreview(controller)),
@@ -240,23 +252,19 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
       // Drittel-Raster als Ausrichtungshilfe.
       const _GridOverlay(),
 
-      // Geist-Overlay des letzten Fotos (fest 35% Deckkraft).
-      if (hasGhost && _referenceOn)
-        Positioned.fill(
-          child: Opacity(
-            opacity: 0.35,
-            child: Image.file(File(widget.ghostImagePath!),
-                fit: BoxFit.cover),
-          ),
-        ),
+      // Geist-Foto oder eine der festen Umriss-Vorlagen.
+      ReferenceOverlayLayer(mode: _refMode, ghostImagePath: widget.ghostImagePath),
 
-      if (hasGhost)
+      if (_refMode != ReferenceOverlayMode.off)
         Positioned(
           top: 8,
           left: 0,
           right: 0,
           child: Center(
-            child: Text(l10n.cameraOverlayAlignHint,
+            child: Text(
+                _refMode == ReferenceOverlayMode.lastPhoto
+                    ? l10n.cameraOverlayAlignHint
+                    : l10n.cameraOverlayRefGenericHint,
                 style: TextStyle(
                     fontFamily: 'DMSans',
                     fontSize: 11,
@@ -264,7 +272,7 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
           ),
         ),
 
-      // Oberer Rand: Schließen, Referenz-Umschalter, Kamera wechseln.
+      // Oberer Rand: Schließen, Kamera wechseln.
       Positioned(
         top: 0,
         left: 0,
@@ -278,48 +286,36 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
                 icon: Icons.close,
                 onTap: () => Navigator.pop(context),
               ),
-              if (hasGhost)
-                GestureDetector(
-                  onTap: () => setState(() => _referenceOn = !_referenceOn),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 7),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Container(
-                        width: 6,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _referenceOn
-                              ? TraumColors.mintGreen
-                              : TraumColors.onBackgroundSubtle,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        _referenceOn
-                            ? l10n.cameraOverlayReferenceOn
-                            : l10n.cameraOverlayReferenceOff,
-                        style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white),
-                      ),
-                    ]),
-                  ),
-                )
-              else
-                const SizedBox(width: 32),
               _RoundIconButton(
                 icon: Icons.cameraswitch_outlined,
                 onTap: _cameras.length > 1 ? _flipCamera : null,
               ),
             ],
+          ),
+        ),
+      ),
+
+      // Vorlagen-Auswahl: alle Optionen als Icon-Leiste direkt sichtbar,
+      // statt hinter einem Menü versteckt.
+      Positioned(
+        top: 52,
+        left: 0,
+        right: 0,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            children: availableModes
+                .map((m) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: _TemplateChip(
+                        mode: m,
+                        label: _refModeLabel(m, l10n),
+                        selected: _refMode == m,
+                        onTap: () => setState(() => _refMode = m),
+                      ),
+                    ))
+                .toList(),
           ),
         ),
       ),
@@ -374,6 +370,53 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
         ]),
       ),
     ]);
+  }
+}
+
+String _refModeLabel(ReferenceOverlayMode m, AppLocalizations l10n) => switch (m) {
+      ReferenceOverlayMode.off => l10n.cameraOverlayRefOff,
+      ReferenceOverlayMode.lastPhoto => l10n.cameraOverlayRefLastPhoto,
+      ReferenceOverlayMode.bodyFull => l10n.cameraOverlayRefBodyFull,
+      ReferenceOverlayMode.faceSingle => l10n.cameraOverlayRefFaceSingle,
+      ReferenceOverlayMode.facesTwo => l10n.cameraOverlayRefFacesTwo,
+      ReferenceOverlayMode.food => l10n.cameraOverlayRefFood,
+    };
+
+class _TemplateChip extends StatelessWidget {
+  final ReferenceOverlayMode mode;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _TemplateChip({
+    required this.mode,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: label,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 34,
+          height: 34,
+          decoration: BoxDecoration(
+            color: selected
+                ? TraumColors.lavender.withValues(alpha: 0.9)
+                : Colors.black38,
+            shape: BoxShape.circle,
+            border: Border.all(
+                color: selected ? Colors.white : Colors.white24, width: 1),
+          ),
+          child: Icon(referenceOverlayModeIcon(mode),
+              color: Colors.white, size: 17),
+        ),
+      ),
+    );
   }
 }
 
