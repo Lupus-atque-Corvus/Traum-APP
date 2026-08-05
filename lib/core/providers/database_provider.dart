@@ -430,6 +430,10 @@ final diaryDaoProvider = Provider<DiaryDao>((ref) {
   return ref.watch(databaseProvider).diaryDao;
 });
 
+final diariesDaoProvider = Provider<DiariesDao>((ref) {
+  return ref.watch(databaseProvider).diariesDao;
+});
+
 final foodProductsDaoProvider = Provider<FoodProductsDao>((ref) {
   return ref.watch(databaseProvider).foodProductsDao;
 });

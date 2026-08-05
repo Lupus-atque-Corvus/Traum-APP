@@ -1,12 +1,68 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.9+89** · schemaVersion **26**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.10+90** · schemaVersion **27**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-01 — v0.8.9, Video-Vorschaubilder, sichtbare Fehler, APK-Größe)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-05 — v0.8.10, Mehrfach-Tagebücher + Kamera-Referenz-Overlay)
+
+**Zwei Features auf Nutzerwunsch: mehrere parallele Tagebücher statt einem einzigen, und eine
+eigene Kamera-Aufnahme mit Referenz-Overlay für konsistente Foto-/Video-Ausrichtung über die
+Zeit.**
+
+1. **Mehrfach-Tagebücher.** Neue `Diaries`-Tabelle (`id, name, iconName, colorHex, sortOrder,
+   createdAt`), `DiaryEntries` bekommt eine `diaryId`-Fremdschlüsselspalte (nullable angelegt —
+   SQLite erlaubt `ALTER TABLE ADD COLUMN NOT NULL` nur mit statischem Default, ungeeignet für
+   eine FK-ID; die App setzt beim Anlegen eines Eintrags immer einen Wert).
+   **schemaVersion 26→27:** legt `diaries` an, fügt ein Default-Tagebuch "Mein Tagebuch" ein und
+   befüllt `diary_id` bei allen Bestandseinträgen zurück (`_migrateToMultipleDiaries` in
+   `traum_database.dart`). Neuinstallationen laufen nicht durch die Migration — dafür sorgt
+   `DiarySeeder.seedIfNeeded` (in `main.dart`, neben den anderen Seedern) für dasselbe
+   Default-Tagebuch.
+   Neuer `DiariesDao` + `DiaryRepository` (kapselt jetzt auch `DiaryDao` — das Feature griff
+   bisher direkt auf den DAO zu, eine Abweichung von Non-Negotiable #5, die dabei mit behoben
+   wurde). Alle `DiaryDao`-Methoden sind jetzt `diaryId`-scoped. `activeDiaryProvider` ist
+   **persistiert** (`PreferencesRepository.activeDiaryId`, Default 1) — anders als das
+   In-Memory-Vorbild `activeCollectionProvider` der Graffiti-Map, das Vorbild für den
+   Umschalter-Aufbau war.
+   UI: Titel im Tagebuch-Header ist jetzt antippbar und öffnet ein Umschalter-Sheet
+   (Icon/Farbe/Name/Eintragszahl je Tagebuch, Häkchen beim aktiven, "+ Neues Tagebuch"), plus
+   `diary_edit_sheet.dart` zum Anlegen/Bearbeiten (Name, Icon- und Farbraster nach dem Vorbild
+   von `create_collection_screen.dart`) und Löschen (gesperrt beim letzten verbleibenden
+   Tagebuch, räumt vor dem DB-Löschen auch die Medien-Dateien auf der Festplatte auf).
+2. **Kamera-Referenz-Overlay.** Aufnahmen liefen bisher komplett über `image_picker`, das nur
+   die native Kamera-App öffnet — darüber lässt sich kein Flutter-Overlay legen. Neu:
+   `lib/core/camera/overlay_camera_screen.dart` mit einer eigenen Live-Vorschau
+   (`camera`-Package, neue Abhängigkeit), bewusst feature-unabhängig gehalten (kein Import aus
+   `features/`), damit sie später auch außerhalb des Tagebuchs nutzbar ist (z. B.
+   Fortschrittsfotos).
+   Zeigt beim Aufnehmen das letzte Foto/Video-Vorschaubild **desselben Tagebuchs** halbtransparent
+   (fest 35 % Deckkraft) über der Live-Vorschau, dazu ein Drittel-Raster und ein
+   Referenz-an/aus-Chip zum kurzen Ausblenden. `DiaryCameraService.capturePhoto`/`captureVideo`
+   öffnen bei `ImageSource.camera` jetzt diesen Screen statt `image_picker`; die Galerie-Auswahl
+   bleibt unverändert über `image_picker` (dort gibt es keine Live-Vorschau, über die sich ein
+   Overlay legen ließe). Video-Aufnahme braucht `RECORD_AUDIO`
+   (Android)/`NSMicrophoneUsageDescription` (iOS) — neu ergänzt, `CAMERA`/
+   `NSCameraUsageDescription` existierten bereits. Berechtigungsabfrage nach dem etablierten
+   Muster aus `onboarding_screen.dart` (Status prüfen, bei `isPermanentlyDenied` →
+   `openAppSettings()`, sonst `request()`).
+   **Nicht auf echtem Gerät getestet** — Kamera-Hardware/-Verhalten im Android-Emulator ist
+   unzuverlässig bis nicht vorhanden. Noch zu prüfen: Berechtigungsdialog (erstmalig + dauerhaft
+   verweigert → Einstellungen), Aufnahme (Foto/Video, max. 60 s), Lifecycle (App in
+   Hintergrund/Vordergrund während offener Kamera), Kamera wechseln.
+3. Migrationstest-Fixtures (`tower_migration_v24_test.dart`, `lost_place_migration_v25_test.dart`,
+   `map_index_migration_v26_test.dart`, `substances_v23_migration_test.dart`) fehlte
+   `diary_entries` — dieselbe Fallgrube wie bei `marker_photos` in einer früheren Runde (siehe
+   Hinweis unten bei v0.8.2). Fixtures ergänzt, nicht die Migration aufgeweicht.
+
+13 neue Tests (Migration v27, `DiariesDao`, `DiaryDao`-Scoping, `DiarySeeder`).
+`flutter analyze` → **0 Issues**. `flutter test` → **494/494 grün**.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-01 — v0.8.9, Video-Vorschaubilder, sichtbare Fehler, APK-Größe)
 
 **Vier Themen in dieser Runde.**
 

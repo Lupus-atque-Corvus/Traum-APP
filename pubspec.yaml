@@ -2,7 +2,7 @@ name: traum
 description: "TRAUM — Dein persönliches Dashboard"
 publish_to: 'none'
 
-version: 0.8.9+89
+version: 0.8.10+90
 
 environment:
   sdk: ^3.9.2
@@ -83,6 +83,10 @@ dependencies:
   # deklariert, aber nie verdrahtet — Video-Einträge hatten deshalb gar
   # kein Vorschaubild.
   video_thumbnail: ^0.5.3
+  # Eigene Live-Kamera-Vorschau (core/camera/OverlayCameraScreen) für das
+  # Geist-Overlay-Referenzfoto beim Tagebuch-Aufnehmen — image_picker öffnet
+  # nur die native Kamera-App, über die sich kein Flutter-Overlay legen lässt.
+  camera: ^0.11.0
 
   # Barcode-Scanner
   mobile_scanner: ^7.0.0

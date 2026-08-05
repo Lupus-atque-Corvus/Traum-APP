@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
-import '../../core/providers/database_provider.dart';
+import '../../core/providers/repository_providers.dart';
 import '../../core/theme/colors.dart';
 import '../../core/utils/image_decode.dart';
 import '../../l10n/app_localizations.dart';
@@ -25,10 +25,11 @@ class _DiaryEntryBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dao = ref.watch(diaryDaoProvider);
+    final repo = ref.watch(diaryRepositoryProvider);
+    final diaryId = ref.watch(activeDiaryProvider);
 
     return FutureBuilder(
-      future: dao.getEntryForDate(date),
+      future: repo.getEntryForDate(diaryId, date),
       builder: (context, snapshot) {
         final l10n = AppLocalizations.of(context)!;
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -115,7 +116,9 @@ class _DiaryEntryBody extends ConsumerWidget {
                         final f = File(entry.mediaPath);
                         if (await f.exists()) await f.delete();
                       } catch (_) {}
-                      await ref.read(diaryDaoProvider).deleteEntry(entry.id);
+                      await ref
+                          .read(diaryRepositoryProvider)
+                          .deleteEntry(entry.id);
                       ref.invalidate(todaysDiaryEntryProvider);
                       ref.invalidate(datesWithDiaryEntriesProvider);
                       ref.invalidate(diaryEntriesForMonthProvider);

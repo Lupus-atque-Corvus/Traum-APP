@@ -3,7 +3,7 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../core/providers/database_provider.dart';
+import '../../core/providers/repository_providers.dart';
 import '../../core/theme/colors.dart';
 import '../../core/utils/image_decode.dart';
 import '../../data/database/traum_database.dart';
@@ -12,12 +12,14 @@ import 'diary_camera_service.dart';
 import 'diary_provider.dart';
 
 class DiaryCaptureSheet extends ConsumerStatefulWidget {
+  final int diaryId;
   final String mediaPath;
   final String mediaType;
   final String date;
 
   const DiaryCaptureSheet({
     super.key,
+    required this.diaryId,
     required this.mediaPath,
     required this.mediaType,
     required this.date,
@@ -55,8 +57,9 @@ class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
       final thumbnail = _mediaType == 'video'
           ? await DiaryCameraService.generateVideoThumbnail(_mediaPath)
           : null;
-      await ref.read(diaryDaoProvider).upsertEntry(
+      await ref.read(diaryRepositoryProvider).upsertEntry(
             DiaryEntriesCompanion(
+              diaryId: Value(widget.diaryId),
               date: Value(widget.date),
               mediaPath: Value(_mediaPath),
               mediaType: Value(_mediaType),
@@ -78,11 +81,28 @@ class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
   }
 
   Future<void> _retake() async {
+    final lastEntry = await ref
+        .read(diaryRepositoryProvider)
+        .getLastEntry(widget.diaryId);
+    final ghostImagePath = lastEntry == null
+        ? null
+        : (lastEntry.mediaType == 'video'
+            ? lastEntry.thumbnailPath
+            : lastEntry.mediaPath);
+    if (!mounted) return;
     final newPath = _mediaType == 'photo'
         ? await DiaryCameraService.capturePhoto(
-            dateStr: widget.date, source: ImageSource.camera)
+            context: context,
+            diaryId: widget.diaryId,
+            dateStr: widget.date,
+            ghostImagePath: ghostImagePath,
+            source: ImageSource.camera)
         : await DiaryCameraService.captureVideo(
-            dateStr: widget.date, source: ImageSource.camera);
+            context: context,
+            diaryId: widget.diaryId,
+            dateStr: widget.date,
+            ghostImagePath: ghostImagePath,
+            source: ImageSource.camera);
     if (newPath != null && mounted) {
       setState(() => _mediaPath = newPath);
     }

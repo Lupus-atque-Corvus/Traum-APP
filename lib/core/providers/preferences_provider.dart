@@ -284,6 +284,20 @@ class KcalGoalNotifier extends Notifier<int> {
 final kcalGoalNotifierProvider =
     NotifierProvider<KcalGoalNotifier, int>(KcalGoalNotifier.new);
 
+/// Zuletzt gewähltes Tagebuch — bleibt über App-Neustarts erhalten (anders
+/// als der In-Memory-`activeCollectionProvider` der Graffiti-Map).
+class ActiveDiaryNotifier extends Notifier<int> {
+  @override
+  int build() => ref.watch(preferencesRepositoryProvider).activeDiaryId;
+  Future<void> set(int v) async {
+    await ref.read(preferencesRepositoryProvider).setActiveDiaryId(v);
+    state = v;
+  }
+}
+
+final activeDiaryProvider =
+    NotifierProvider<ActiveDiaryNotifier, int>(ActiveDiaryNotifier.new);
+
 class ProteinGoalNotifier extends Notifier<int> {
   @override
   int build() => ref.watch(preferencesRepositoryProvider).proteinGoalG;

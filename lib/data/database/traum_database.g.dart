@@ -20842,6 +20842,402 @@ class SubstanceIntakeLogsCompanion extends UpdateCompanion<SubstanceIntakeLog> {
   }
 }
 
+class $DiariesTable extends Diaries with TableInfo<$DiariesTable, Diary> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DiariesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _iconNameMeta = const VerificationMeta(
+    'iconName',
+  );
+  @override
+  late final GeneratedColumn<String> iconName = GeneratedColumn<String>(
+    'icon_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _colorHexMeta = const VerificationMeta(
+    'colorHex',
+  );
+  @override
+  late final GeneratedColumn<String> colorHex = GeneratedColumn<String>(
+    'color_hex',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    iconName,
+    colorHex,
+    sortOrder,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'diaries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Diary> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('icon_name')) {
+      context.handle(
+        _iconNameMeta,
+        iconName.isAcceptableOrUnknown(data['icon_name']!, _iconNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_iconNameMeta);
+    }
+    if (data.containsKey('color_hex')) {
+      context.handle(
+        _colorHexMeta,
+        colorHex.isAcceptableOrUnknown(data['color_hex']!, _colorHexMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Diary map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Diary(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      iconName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}icon_name'],
+      )!,
+      colorHex: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}color_hex'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $DiariesTable createAlias(String alias) {
+    return $DiariesTable(attachedDatabase, alias);
+  }
+}
+
+class Diary extends DataClass implements Insertable<Diary> {
+  final int id;
+  final String name;
+  final String iconName;
+  final String? colorHex;
+  final int sortOrder;
+  final DateTime createdAt;
+  const Diary({
+    required this.id,
+    required this.name,
+    required this.iconName,
+    this.colorHex,
+    required this.sortOrder,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['icon_name'] = Variable<String>(iconName);
+    if (!nullToAbsent || colorHex != null) {
+      map['color_hex'] = Variable<String>(colorHex);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  DiariesCompanion toCompanion(bool nullToAbsent) {
+    return DiariesCompanion(
+      id: Value(id),
+      name: Value(name),
+      iconName: Value(iconName),
+      colorHex: colorHex == null && nullToAbsent
+          ? const Value.absent()
+          : Value(colorHex),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory Diary.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Diary(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      iconName: serializer.fromJson<String>(json['iconName']),
+      colorHex: serializer.fromJson<String?>(json['colorHex']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'iconName': serializer.toJson<String>(iconName),
+      'colorHex': serializer.toJson<String?>(colorHex),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  Diary copyWith({
+    int? id,
+    String? name,
+    String? iconName,
+    Value<String?> colorHex = const Value.absent(),
+    int? sortOrder,
+    DateTime? createdAt,
+  }) => Diary(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    iconName: iconName ?? this.iconName,
+    colorHex: colorHex.present ? colorHex.value : this.colorHex,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  Diary copyWithCompanion(DiariesCompanion data) {
+    return Diary(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      iconName: data.iconName.present ? data.iconName.value : this.iconName,
+      colorHex: data.colorHex.present ? data.colorHex.value : this.colorHex,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Diary(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('iconName: $iconName, ')
+          ..write('colorHex: $colorHex, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, iconName, colorHex, sortOrder, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Diary &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.iconName == this.iconName &&
+          other.colorHex == this.colorHex &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt);
+}
+
+class DiariesCompanion extends UpdateCompanion<Diary> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> iconName;
+  final Value<String?> colorHex;
+  final Value<int> sortOrder;
+  final Value<DateTime> createdAt;
+  const DiariesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.iconName = const Value.absent(),
+    this.colorHex = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  DiariesCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required String iconName,
+    this.colorHex = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    required DateTime createdAt,
+  }) : name = Value(name),
+       iconName = Value(iconName),
+       createdAt = Value(createdAt);
+  static Insertable<Diary> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? iconName,
+    Expression<String>? colorHex,
+    Expression<int>? sortOrder,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (iconName != null) 'icon_name': iconName,
+      if (colorHex != null) 'color_hex': colorHex,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  DiariesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<String>? iconName,
+    Value<String?>? colorHex,
+    Value<int>? sortOrder,
+    Value<DateTime>? createdAt,
+  }) {
+    return DiariesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      iconName: iconName ?? this.iconName,
+      colorHex: colorHex ?? this.colorHex,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (iconName.present) {
+      map['icon_name'] = Variable<String>(iconName.value);
+    }
+    if (colorHex.present) {
+      map['color_hex'] = Variable<String>(colorHex.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DiariesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('iconName: $iconName, ')
+          ..write('colorHex: $colorHex, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $DiaryEntriesTable extends DiaryEntries
     with TableInfo<$DiaryEntriesTable, DiaryEntry> {
   @override
@@ -20859,6 +21255,20 @@ class $DiaryEntriesTable extends DiaryEntries
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _diaryIdMeta = const VerificationMeta(
+    'diaryId',
+  );
+  @override
+  late final GeneratedColumn<int> diaryId = GeneratedColumn<int>(
+    'diary_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES diaries (id)',
     ),
   );
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
@@ -20949,6 +21359,7 @@ class $DiaryEntriesTable extends DiaryEntries
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    diaryId,
     date,
     mediaPath,
     mediaType,
@@ -20972,6 +21383,12 @@ class $DiaryEntriesTable extends DiaryEntries
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('diary_id')) {
+      context.handle(
+        _diaryIdMeta,
+        diaryId.isAcceptableOrUnknown(data['diary_id']!, _diaryIdMeta),
+      );
     }
     if (data.containsKey('date')) {
       context.handle(
@@ -21050,6 +21467,10 @@ class $DiaryEntriesTable extends DiaryEntries
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
+      diaryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}diary_id'],
+      ),
       date: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}date'],
@@ -21093,6 +21514,7 @@ class $DiaryEntriesTable extends DiaryEntries
 
 class DiaryEntry extends DataClass implements Insertable<DiaryEntry> {
   final int id;
+  final int? diaryId;
   final String date;
   final String mediaPath;
   final String mediaType;
@@ -21103,6 +21525,7 @@ class DiaryEntry extends DataClass implements Insertable<DiaryEntry> {
   final DateTime updatedAt;
   const DiaryEntry({
     required this.id,
+    this.diaryId,
     required this.date,
     required this.mediaPath,
     required this.mediaType,
@@ -21116,6 +21539,9 @@ class DiaryEntry extends DataClass implements Insertable<DiaryEntry> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    if (!nullToAbsent || diaryId != null) {
+      map['diary_id'] = Variable<int>(diaryId);
+    }
     map['date'] = Variable<String>(date);
     map['media_path'] = Variable<String>(mediaPath);
     map['media_type'] = Variable<String>(mediaType);
@@ -21134,6 +21560,9 @@ class DiaryEntry extends DataClass implements Insertable<DiaryEntry> {
   DiaryEntriesCompanion toCompanion(bool nullToAbsent) {
     return DiaryEntriesCompanion(
       id: Value(id),
+      diaryId: diaryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(diaryId),
       date: Value(date),
       mediaPath: Value(mediaPath),
       mediaType: Value(mediaType),
@@ -21156,6 +21585,7 @@ class DiaryEntry extends DataClass implements Insertable<DiaryEntry> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DiaryEntry(
       id: serializer.fromJson<int>(json['id']),
+      diaryId: serializer.fromJson<int?>(json['diaryId']),
       date: serializer.fromJson<String>(json['date']),
       mediaPath: serializer.fromJson<String>(json['mediaPath']),
       mediaType: serializer.fromJson<String>(json['mediaType']),
@@ -21171,6 +21601,7 @@ class DiaryEntry extends DataClass implements Insertable<DiaryEntry> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'diaryId': serializer.toJson<int?>(diaryId),
       'date': serializer.toJson<String>(date),
       'mediaPath': serializer.toJson<String>(mediaPath),
       'mediaType': serializer.toJson<String>(mediaType),
@@ -21184,6 +21615,7 @@ class DiaryEntry extends DataClass implements Insertable<DiaryEntry> {
 
   DiaryEntry copyWith({
     int? id,
+    Value<int?> diaryId = const Value.absent(),
     String? date,
     String? mediaPath,
     String? mediaType,
@@ -21194,6 +21626,7 @@ class DiaryEntry extends DataClass implements Insertable<DiaryEntry> {
     DateTime? updatedAt,
   }) => DiaryEntry(
     id: id ?? this.id,
+    diaryId: diaryId.present ? diaryId.value : this.diaryId,
     date: date ?? this.date,
     mediaPath: mediaPath ?? this.mediaPath,
     mediaType: mediaType ?? this.mediaType,
@@ -21210,6 +21643,7 @@ class DiaryEntry extends DataClass implements Insertable<DiaryEntry> {
   DiaryEntry copyWithCompanion(DiaryEntriesCompanion data) {
     return DiaryEntry(
       id: data.id.present ? data.id.value : this.id,
+      diaryId: data.diaryId.present ? data.diaryId.value : this.diaryId,
       date: data.date.present ? data.date.value : this.date,
       mediaPath: data.mediaPath.present ? data.mediaPath.value : this.mediaPath,
       mediaType: data.mediaType.present ? data.mediaType.value : this.mediaType,
@@ -21229,6 +21663,7 @@ class DiaryEntry extends DataClass implements Insertable<DiaryEntry> {
   String toString() {
     return (StringBuffer('DiaryEntry(')
           ..write('id: $id, ')
+          ..write('diaryId: $diaryId, ')
           ..write('date: $date, ')
           ..write('mediaPath: $mediaPath, ')
           ..write('mediaType: $mediaType, ')
@@ -21244,6 +21679,7 @@ class DiaryEntry extends DataClass implements Insertable<DiaryEntry> {
   @override
   int get hashCode => Object.hash(
     id,
+    diaryId,
     date,
     mediaPath,
     mediaType,
@@ -21258,6 +21694,7 @@ class DiaryEntry extends DataClass implements Insertable<DiaryEntry> {
       identical(this, other) ||
       (other is DiaryEntry &&
           other.id == this.id &&
+          other.diaryId == this.diaryId &&
           other.date == this.date &&
           other.mediaPath == this.mediaPath &&
           other.mediaType == this.mediaType &&
@@ -21270,6 +21707,7 @@ class DiaryEntry extends DataClass implements Insertable<DiaryEntry> {
 
 class DiaryEntriesCompanion extends UpdateCompanion<DiaryEntry> {
   final Value<int> id;
+  final Value<int?> diaryId;
   final Value<String> date;
   final Value<String> mediaPath;
   final Value<String> mediaType;
@@ -21280,6 +21718,7 @@ class DiaryEntriesCompanion extends UpdateCompanion<DiaryEntry> {
   final Value<DateTime> updatedAt;
   const DiaryEntriesCompanion({
     this.id = const Value.absent(),
+    this.diaryId = const Value.absent(),
     this.date = const Value.absent(),
     this.mediaPath = const Value.absent(),
     this.mediaType = const Value.absent(),
@@ -21291,6 +21730,7 @@ class DiaryEntriesCompanion extends UpdateCompanion<DiaryEntry> {
   });
   DiaryEntriesCompanion.insert({
     this.id = const Value.absent(),
+    this.diaryId = const Value.absent(),
     required String date,
     required String mediaPath,
     required String mediaType,
@@ -21306,6 +21746,7 @@ class DiaryEntriesCompanion extends UpdateCompanion<DiaryEntry> {
        updatedAt = Value(updatedAt);
   static Insertable<DiaryEntry> custom({
     Expression<int>? id,
+    Expression<int>? diaryId,
     Expression<String>? date,
     Expression<String>? mediaPath,
     Expression<String>? mediaType,
@@ -21317,6 +21758,7 @@ class DiaryEntriesCompanion extends UpdateCompanion<DiaryEntry> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (diaryId != null) 'diary_id': diaryId,
       if (date != null) 'date': date,
       if (mediaPath != null) 'media_path': mediaPath,
       if (mediaType != null) 'media_type': mediaType,
@@ -21330,6 +21772,7 @@ class DiaryEntriesCompanion extends UpdateCompanion<DiaryEntry> {
 
   DiaryEntriesCompanion copyWith({
     Value<int>? id,
+    Value<int?>? diaryId,
     Value<String>? date,
     Value<String>? mediaPath,
     Value<String>? mediaType,
@@ -21341,6 +21784,7 @@ class DiaryEntriesCompanion extends UpdateCompanion<DiaryEntry> {
   }) {
     return DiaryEntriesCompanion(
       id: id ?? this.id,
+      diaryId: diaryId ?? this.diaryId,
       date: date ?? this.date,
       mediaPath: mediaPath ?? this.mediaPath,
       mediaType: mediaType ?? this.mediaType,
@@ -21357,6 +21801,9 @@ class DiaryEntriesCompanion extends UpdateCompanion<DiaryEntry> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (diaryId.present) {
+      map['diary_id'] = Variable<int>(diaryId.value);
     }
     if (date.present) {
       map['date'] = Variable<String>(date.value);
@@ -21389,6 +21836,7 @@ class DiaryEntriesCompanion extends UpdateCompanion<DiaryEntry> {
   String toString() {
     return (StringBuffer('DiaryEntriesCompanion(')
           ..write('id: $id, ')
+          ..write('diaryId: $diaryId, ')
           ..write('date: $date, ')
           ..write('mediaPath: $mediaPath, ')
           ..write('mediaType: $mediaType, ')
@@ -28225,6 +28673,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   );
   late final $SubstanceIntakeLogsTable substanceIntakeLogs =
       $SubstanceIntakeLogsTable(this);
+  late final $DiariesTable diaries = $DiariesTable(this);
   late final $DiaryEntriesTable diaryEntries = $DiaryEntriesTable(this);
   late final $FoodProductsTable foodProducts = $FoodProductsTable(this);
   late final $MealEntriesTable mealEntries = $MealEntriesTable(this);
@@ -28252,6 +28701,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
   late final PeriodDao periodDao = PeriodDao(this as TraumDatabase);
   late final SubstanceDao substanceDao = SubstanceDao(this as TraumDatabase);
   late final DiaryDao diaryDao = DiaryDao(this as TraumDatabase);
+  late final DiariesDao diariesDao = DiariesDao(this as TraumDatabase);
   late final FoodProductsDao foodProductsDao = FoodProductsDao(
     this as TraumDatabase,
   );
@@ -28315,6 +28765,7 @@ abstract class _$TraumDatabase extends GeneratedDatabase {
     cycleProfile,
     substanceCaches,
     substanceIntakeLogs,
+    diaries,
     diaryEntries,
     foodProducts,
     mealEntries,
@@ -41791,9 +42242,319 @@ typedef $$SubstanceIntakeLogsTableProcessedTableManager =
       SubstanceIntakeLog,
       PrefetchHooks Function()
     >;
+typedef $$DiariesTableCreateCompanionBuilder =
+    DiariesCompanion Function({
+      Value<int> id,
+      required String name,
+      required String iconName,
+      Value<String?> colorHex,
+      Value<int> sortOrder,
+      required DateTime createdAt,
+    });
+typedef $$DiariesTableUpdateCompanionBuilder =
+    DiariesCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<String> iconName,
+      Value<String?> colorHex,
+      Value<int> sortOrder,
+      Value<DateTime> createdAt,
+    });
+
+final class $$DiariesTableReferences
+    extends BaseReferences<_$TraumDatabase, $DiariesTable, Diary> {
+  $$DiariesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$DiaryEntriesTable, List<DiaryEntry>>
+  _diaryEntriesRefsTable(_$TraumDatabase db) => MultiTypedResultKey.fromTable(
+    db.diaryEntries,
+    aliasName: $_aliasNameGenerator(db.diaries.id, db.diaryEntries.diaryId),
+  );
+
+  $$DiaryEntriesTableProcessedTableManager get diaryEntriesRefs {
+    final manager = $$DiaryEntriesTableTableManager(
+      $_db,
+      $_db.diaryEntries,
+    ).filter((f) => f.diaryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_diaryEntriesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$DiariesTableFilterComposer
+    extends Composer<_$TraumDatabase, $DiariesTable> {
+  $$DiariesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get iconName => $composableBuilder(
+    column: $table.iconName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get colorHex => $composableBuilder(
+    column: $table.colorHex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> diaryEntriesRefs(
+    Expression<bool> Function($$DiaryEntriesTableFilterComposer f) f,
+  ) {
+    final $$DiaryEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.diaryEntries,
+      getReferencedColumn: (t) => t.diaryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DiaryEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.diaryEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$DiariesTableOrderingComposer
+    extends Composer<_$TraumDatabase, $DiariesTable> {
+  $$DiariesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get iconName => $composableBuilder(
+    column: $table.iconName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get colorHex => $composableBuilder(
+    column: $table.colorHex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DiariesTableAnnotationComposer
+    extends Composer<_$TraumDatabase, $DiariesTable> {
+  $$DiariesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get iconName =>
+      $composableBuilder(column: $table.iconName, builder: (column) => column);
+
+  GeneratedColumn<String> get colorHex =>
+      $composableBuilder(column: $table.colorHex, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  Expression<T> diaryEntriesRefs<T extends Object>(
+    Expression<T> Function($$DiaryEntriesTableAnnotationComposer a) f,
+  ) {
+    final $$DiaryEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.diaryEntries,
+      getReferencedColumn: (t) => t.diaryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DiaryEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.diaryEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$DiariesTableTableManager
+    extends
+        RootTableManager<
+          _$TraumDatabase,
+          $DiariesTable,
+          Diary,
+          $$DiariesTableFilterComposer,
+          $$DiariesTableOrderingComposer,
+          $$DiariesTableAnnotationComposer,
+          $$DiariesTableCreateCompanionBuilder,
+          $$DiariesTableUpdateCompanionBuilder,
+          (Diary, $$DiariesTableReferences),
+          Diary,
+          PrefetchHooks Function({bool diaryEntriesRefs})
+        > {
+  $$DiariesTableTableManager(_$TraumDatabase db, $DiariesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DiariesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DiariesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DiariesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> iconName = const Value.absent(),
+                Value<String?> colorHex = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => DiariesCompanion(
+                id: id,
+                name: name,
+                iconName: iconName,
+                colorHex: colorHex,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                required String iconName,
+                Value<String?> colorHex = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                required DateTime createdAt,
+              }) => DiariesCompanion.insert(
+                id: id,
+                name: name,
+                iconName: iconName,
+                colorHex: colorHex,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$DiariesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({diaryEntriesRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (diaryEntriesRefs) db.diaryEntries],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (diaryEntriesRefs)
+                    await $_getPrefetchedData<Diary, $DiariesTable, DiaryEntry>(
+                      currentTable: table,
+                      referencedTable: $$DiariesTableReferences
+                          ._diaryEntriesRefsTable(db),
+                      managerFromTypedResult: (p0) => $$DiariesTableReferences(
+                        db,
+                        table,
+                        p0,
+                      ).diaryEntriesRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.diaryId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$DiariesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$TraumDatabase,
+      $DiariesTable,
+      Diary,
+      $$DiariesTableFilterComposer,
+      $$DiariesTableOrderingComposer,
+      $$DiariesTableAnnotationComposer,
+      $$DiariesTableCreateCompanionBuilder,
+      $$DiariesTableUpdateCompanionBuilder,
+      (Diary, $$DiariesTableReferences),
+      Diary,
+      PrefetchHooks Function({bool diaryEntriesRefs})
+    >;
 typedef $$DiaryEntriesTableCreateCompanionBuilder =
     DiaryEntriesCompanion Function({
       Value<int> id,
+      Value<int?> diaryId,
       required String date,
       required String mediaPath,
       required String mediaType,
@@ -41806,6 +42567,7 @@ typedef $$DiaryEntriesTableCreateCompanionBuilder =
 typedef $$DiaryEntriesTableUpdateCompanionBuilder =
     DiaryEntriesCompanion Function({
       Value<int> id,
+      Value<int?> diaryId,
       Value<String> date,
       Value<String> mediaPath,
       Value<String> mediaType,
@@ -41815,6 +42577,30 @@ typedef $$DiaryEntriesTableUpdateCompanionBuilder =
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
     });
+
+final class $$DiaryEntriesTableReferences
+    extends BaseReferences<_$TraumDatabase, $DiaryEntriesTable, DiaryEntry> {
+  $$DiaryEntriesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $DiariesTable _diaryIdTable(_$TraumDatabase db) =>
+      db.diaries.createAlias(
+        $_aliasNameGenerator(db.diaryEntries.diaryId, db.diaries.id),
+      );
+
+  $$DiariesTableProcessedTableManager? get diaryId {
+    final $_column = $_itemColumn<int>('diary_id');
+    if ($_column == null) return null;
+    final manager = $$DiariesTableTableManager(
+      $_db,
+      $_db.diaries,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_diaryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
 
 class $$DiaryEntriesTableFilterComposer
     extends Composer<_$TraumDatabase, $DiaryEntriesTable> {
@@ -41869,6 +42655,29 @@ class $$DiaryEntriesTableFilterComposer
     column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
   );
+
+  $$DiariesTableFilterComposer get diaryId {
+    final $$DiariesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.diaryId,
+      referencedTable: $db.diaries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DiariesTableFilterComposer(
+            $db: $db,
+            $table: $db.diaries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$DiaryEntriesTableOrderingComposer
@@ -41924,6 +42733,29 @@ class $$DiaryEntriesTableOrderingComposer
     column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  $$DiariesTableOrderingComposer get diaryId {
+    final $$DiariesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.diaryId,
+      referencedTable: $db.diaries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DiariesTableOrderingComposer(
+            $db: $db,
+            $table: $db.diaries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$DiaryEntriesTableAnnotationComposer
@@ -41965,6 +42797,29 @@ class $$DiaryEntriesTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$DiariesTableAnnotationComposer get diaryId {
+    final $$DiariesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.diaryId,
+      referencedTable: $db.diaries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DiariesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.diaries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$DiaryEntriesTableTableManager
@@ -41978,12 +42833,9 @@ class $$DiaryEntriesTableTableManager
           $$DiaryEntriesTableAnnotationComposer,
           $$DiaryEntriesTableCreateCompanionBuilder,
           $$DiaryEntriesTableUpdateCompanionBuilder,
-          (
-            DiaryEntry,
-            BaseReferences<_$TraumDatabase, $DiaryEntriesTable, DiaryEntry>,
-          ),
+          (DiaryEntry, $$DiaryEntriesTableReferences),
           DiaryEntry,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool diaryId})
         > {
   $$DiaryEntriesTableTableManager(_$TraumDatabase db, $DiaryEntriesTable table)
     : super(
@@ -41999,6 +42851,7 @@ class $$DiaryEntriesTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<int?> diaryId = const Value.absent(),
                 Value<String> date = const Value.absent(),
                 Value<String> mediaPath = const Value.absent(),
                 Value<String> mediaType = const Value.absent(),
@@ -42009,6 +42862,7 @@ class $$DiaryEntriesTableTableManager
                 Value<DateTime> updatedAt = const Value.absent(),
               }) => DiaryEntriesCompanion(
                 id: id,
+                diaryId: diaryId,
                 date: date,
                 mediaPath: mediaPath,
                 mediaType: mediaType,
@@ -42021,6 +42875,7 @@ class $$DiaryEntriesTableTableManager
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<int?> diaryId = const Value.absent(),
                 required String date,
                 required String mediaPath,
                 required String mediaType,
@@ -42031,6 +42886,7 @@ class $$DiaryEntriesTableTableManager
                 required DateTime updatedAt,
               }) => DiaryEntriesCompanion.insert(
                 id: id,
+                diaryId: diaryId,
                 date: date,
                 mediaPath: mediaPath,
                 mediaType: mediaType,
@@ -42041,9 +42897,54 @@ class $$DiaryEntriesTableTableManager
                 updatedAt: updatedAt,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$DiaryEntriesTableReferences(db, table, e),
+                ),
+              )
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({diaryId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (diaryId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.diaryId,
+                                referencedTable: $$DiaryEntriesTableReferences
+                                    ._diaryIdTable(db),
+                                referencedColumn: $$DiaryEntriesTableReferences
+                                    ._diaryIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
         ),
       );
 }
@@ -42058,12 +42959,9 @@ typedef $$DiaryEntriesTableProcessedTableManager =
       $$DiaryEntriesTableAnnotationComposer,
       $$DiaryEntriesTableCreateCompanionBuilder,
       $$DiaryEntriesTableUpdateCompanionBuilder,
-      (
-        DiaryEntry,
-        BaseReferences<_$TraumDatabase, $DiaryEntriesTable, DiaryEntry>,
-      ),
+      (DiaryEntry, $$DiaryEntriesTableReferences),
       DiaryEntry,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool diaryId})
     >;
 typedef $$FoodProductsTableCreateCompanionBuilder =
     FoodProductsCompanion Function({
@@ -45976,6 +46874,8 @@ class $TraumDatabaseManager {
       $$SubstanceCachesTableTableManager(_db, _db.substanceCaches);
   $$SubstanceIntakeLogsTableTableManager get substanceIntakeLogs =>
       $$SubstanceIntakeLogsTableTableManager(_db, _db.substanceIntakeLogs);
+  $$DiariesTableTableManager get diaries =>
+      $$DiariesTableTableManager(_db, _db.diaries);
   $$DiaryEntriesTableTableManager get diaryEntries =>
       $$DiaryEntriesTableTableManager(_db, _db.diaryEntries);
   $$FoodProductsTableTableManager get foodProducts =>

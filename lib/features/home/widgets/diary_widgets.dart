@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/navigation/routes.dart';
 import '../../../core/providers/database_provider.dart';
+import '../../../core/providers/repository_providers.dart';
 import '../../../core/theme/colors.dart';
 import '../../../data/database/traum_database.dart' show DiaryEntry, MoodLog;
 import '../../diary/diary_provider.dart';
@@ -12,10 +13,12 @@ import '../home_widget_registry.dart';
 
 // ─── One-shot providers (no .watch() streams) ────────────────────────────────
 
-/// The most recent diary entry (by createdAt), or null when none exist.
+/// The most recent diary entry (by createdAt) of the active diary, or null
+/// when none exist.
 final _lastDiaryEntryProvider =
     FutureProvider.autoDispose<DiaryEntry?>((ref) {
-  return ref.watch(diaryDaoProvider).getLastEntry();
+  final diaryId = ref.watch(activeDiaryProvider);
+  return ref.watch(diaryRepositoryProvider).getLastEntry(diaryId);
 });
 
 /// Mood logs since the start of the current month, for the mood calendar.

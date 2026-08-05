@@ -8,7 +8,9 @@ import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'diary_camera_service.dart';
 import 'diary_capture_sheet.dart';
+import 'diary_edit_sheet.dart';
 import 'diary_provider.dart';
+import 'diary_visuals.dart';
 import 'widgets/diary_calendar_grid.dart';
 import 'widgets/diary_entry_card.dart';
 import 'widgets/diary_year_heatmap.dart';
@@ -20,10 +22,13 @@ class DiaryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final diaryId = ref.watch(activeDiaryProvider);
+    final activeDiaryAsync = ref.watch(activeDiaryInfoProvider);
     final todayAsync = ref.watch(todaysDiaryEntryProvider);
     final streakAsync = ref.watch(diaryStreakProvider);
     final totalAsync = ref.watch(totalDiaryEntriesProvider);
     final recentAsync = ref.watch(recentDiaryEntriesProvider(30));
+    final ghostImagePath = ref.watch(diaryGhostImageProvider).value;
     final todayStr = DiaryCameraService.formatDate(DateTime.now());
 
     return Scaffold(
@@ -41,10 +46,16 @@ class DiaryScreen extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(20, 8, 16, 0),
               child: Row(children: [
                 Expanded(
-                  child: Column(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => _showDiarySwitcher(context, ref),
+                    child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(l10n.diaryTitle,
+                      Text(
+                          activeDiaryAsync.maybeWhen(
+                              data: (d) => d?.name ?? l10n.diaryTitle,
+                              orElse: () => l10n.diaryTitle),
                           style: const TextStyle(
                               fontFamily: 'DMSans',
                               fontWeight: FontWeight.w700,
@@ -76,6 +87,7 @@ class DiaryScreen extends ConsumerWidget {
                         ),
                       ]),
                     ],
+                    ),
                   ),
                 ),
                 IconButton(
@@ -93,9 +105,11 @@ class DiaryScreen extends ConsumerWidget {
             child: todayAsync.when(
               data: (entry) => entry == null
                   ? _TodayEmptyCard(
+                      diaryId: diaryId,
                       todayStr: todayStr,
-                      onCapture: (path, type) =>
-                          _openCaptureSheet(context, path, type, todayStr),
+                      ghostImagePath: ghostImagePath,
+                      onCapture: (path, type) => _openCaptureSheet(
+                          context, diaryId, path, type, todayStr),
                     )
                   : _TodayFilledCard(entry: entry),
               loading: () => const SizedBox(height: 80),
@@ -151,16 +165,174 @@ class DiaryScreen extends ConsumerWidget {
     );
   }
 
-  void _openCaptureSheet(
-      BuildContext context, String path, String type, String dateStr) {
+  void _openCaptureSheet(BuildContext context, int diaryId, String path,
+      String type, String dateStr) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => DiaryCaptureSheet(
+        diaryId: diaryId,
         mediaPath: path,
         mediaType: type,
         date: dateStr,
+      ),
+    );
+  }
+
+  void _showDiarySwitcher(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: TraumColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) => Consumer(
+        builder: (ctx, ref, _) {
+          final l10n = AppLocalizations.of(ctx)!;
+          final diariesAsync = ref.watch(diariesProvider);
+          final active = ref.watch(activeDiaryProvider);
+          return diariesAsync.when(
+            data: (list) => SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 12),
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: TraumColors.onBackgroundSubtle,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.diarySwitcherTitle,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: TraumColors.onBackground,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ...list.map((d) => _DiaryRow(
+                        diary: d,
+                        isActive: active == d.id,
+                        onTap: () {
+                          ref.read(activeDiaryProvider.notifier).set(d.id);
+                          Navigator.pop(ctx);
+                        },
+                        onEdit: () {
+                          Navigator.pop(ctx);
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (_) => DiaryEditSheet(diary: d),
+                          );
+                        },
+                      )),
+                  ListTile(
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (_) => const DiaryEditSheet(),
+                      );
+                    },
+                    leading: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: TraumColors.surfaceVariant,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(Icons.add,
+                          color: TraumColors.onBackgroundMuted),
+                    ),
+                    title: Text(l10n.diaryNewDiary,
+                        style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            color: TraumColors.lavender,
+                            fontWeight: FontWeight.w600)),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              ),
+            ),
+            loading: () => const Padding(
+              padding: EdgeInsets.all(32),
+              child: Center(
+                  child: CircularProgressIndicator(
+                      color: TraumColors.lavender)),
+            ),
+            error: (e, _) => Padding(
+                padding: const EdgeInsets.all(24), child: InlineError(e)),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _DiaryRow extends ConsumerWidget {
+  final Diary diary;
+  final bool isActive;
+  final VoidCallback onTap;
+  final VoidCallback onEdit;
+
+  const _DiaryRow({
+    required this.diary,
+    required this.isActive,
+    required this.onTap,
+    required this.onEdit,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final countAsync = ref.watch(diaryEntryCountProvider(diary.id));
+    final accent = diaryColor(diary);
+    return ListTile(
+      onTap: onTap,
+      leading: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: accent.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(diaryIcon(diary.iconName), color: accent, size: 22),
+      ),
+      title: Text(diary.name,
+          style: const TextStyle(
+              fontFamily: 'DMSans',
+              color: TraumColors.onBackground,
+              fontWeight: FontWeight.w600)),
+      subtitle: countAsync.when(
+        data: (c) => Text(l10n.diaryTotalEntries(c),
+            style: const TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackgroundMuted,
+                fontSize: 12)),
+        loading: () => const SizedBox.shrink(),
+        error: (_, _) => const SizedBox.shrink(),
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isActive)
+            const Icon(Icons.check_circle, color: TraumColors.mintGreen),
+          IconButton(
+            icon: const Icon(Icons.edit_outlined,
+                color: TraumColors.onBackgroundMuted),
+            onPressed: onEdit,
+          ),
+        ],
       ),
     );
   }
@@ -169,10 +341,16 @@ class DiaryScreen extends ConsumerWidget {
 // ── Heute leer ───────────────────────────────────────────────────────────────
 
 class _TodayEmptyCard extends StatelessWidget {
+  final int diaryId;
   final String todayStr;
+  final String? ghostImagePath;
   final void Function(String path, String type) onCapture;
 
-  const _TodayEmptyCard({required this.todayStr, required this.onCapture});
+  const _TodayEmptyCard(
+      {required this.diaryId,
+      required this.todayStr,
+      required this.ghostImagePath,
+      required this.onCapture});
 
   @override
   Widget build(BuildContext context) {
@@ -207,7 +385,10 @@ class _TodayEmptyCard extends StatelessWidget {
             child: ElevatedButton.icon(
               onPressed: () async {
                 final path = await DiaryCameraService.capturePhoto(
-                    dateStr: todayStr);
+                    context: context,
+                    diaryId: diaryId,
+                    dateStr: todayStr,
+                    ghostImagePath: ghostImagePath);
                 if (path != null && context.mounted) {
                   onCapture(path, 'photo');
                 }
@@ -230,7 +411,10 @@ class _TodayEmptyCard extends StatelessWidget {
             child: ElevatedButton.icon(
               onPressed: () async {
                 final path = await DiaryCameraService.captureVideo(
-                    dateStr: todayStr);
+                    context: context,
+                    diaryId: diaryId,
+                    dateStr: todayStr,
+                    ghostImagePath: ghostImagePath);
                 if (path != null && context.mounted) {
                   onCapture(path, 'video');
                 }

@@ -1,37 +1,74 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/providers/database_provider.dart';
+import '../../core/providers/preferences_provider.dart';
+import '../../core/providers/repository_providers.dart';
 import '../../data/database/traum_database.dart';
 
+export '../../core/providers/preferences_provider.dart' show activeDiaryProvider;
+
+final diariesProvider = FutureProvider.autoDispose<List<Diary>>(
+    (ref) => ref.watch(diaryRepositoryProvider).getAllDiaries());
+
+final activeDiaryInfoProvider = FutureProvider.autoDispose<Diary?>((ref) {
+  final id = ref.watch(activeDiaryProvider);
+  return ref.watch(diaryRepositoryProvider).getDiaryById(id);
+});
+
+final diaryEntryCountProvider =
+    FutureProvider.autoDispose.family<int, int>((ref, diaryId) =>
+        ref.watch(diaryRepositoryProvider).diaryEntryCount(diaryId));
+
+/// Pfad des letzten Fotos/Video-Vorschaubilds im aktiven Tagebuch — als
+/// Geist-Overlay-Referenz für die nächste Aufnahme (`null`, wenn das
+/// Tagebuch noch leer ist).
+final diaryGhostImageProvider = FutureProvider.autoDispose<String?>((ref) async {
+  final diaryId = ref.watch(activeDiaryProvider);
+  final entry = await ref.watch(diaryRepositoryProvider).getLastEntry(diaryId);
+  if (entry == null) return null;
+  return entry.mediaType == 'video' ? entry.thumbnailPath : entry.mediaPath;
+});
+
 final diaryEntriesForMonthProvider = FutureProvider.autoDispose
-    .family<List<DiaryEntry>, (int, int)>((ref, ym) =>
-        ref.watch(diaryDaoProvider).getEntriesForMonth(ym.$1, ym.$2));
+    .family<List<DiaryEntry>, (int, int)>((ref, ym) {
+  final diaryId = ref.watch(activeDiaryProvider);
+  return ref
+      .watch(diaryRepositoryProvider)
+      .getEntriesForMonth(diaryId, ym.$1, ym.$2);
+});
 
 final todaysDiaryEntryProvider =
     FutureProvider.autoDispose<DiaryEntry?>((ref) {
+  final diaryId = ref.watch(activeDiaryProvider);
   final today = DateTime.now();
   final dateStr =
       '${today.year.toString().padLeft(4, '0')}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
-  return ref.watch(diaryDaoProvider).getEntryForDate(dateStr);
+  return ref.watch(diaryRepositoryProvider).getEntryForDate(diaryId, dateStr);
 });
 
 final datesWithDiaryEntriesProvider =
     FutureProvider.autoDispose<Set<String>>((ref) async {
-  final dates = await ref.watch(diaryDaoProvider).getDatesWithEntries();
+  final diaryId = ref.watch(activeDiaryProvider);
+  final dates =
+      await ref.watch(diaryRepositoryProvider).getDatesWithEntries(diaryId);
   return dates.toSet();
 });
 
 final diaryStreakProvider = FutureProvider.autoDispose<int>((ref) async {
-  final dates = await ref.watch(diaryDaoProvider).getDatesLastYear();
+  final diaryId = ref.watch(activeDiaryProvider);
+  final dates =
+      await ref.watch(diaryRepositoryProvider).getDatesLastYear(diaryId);
   return _calculateStreak(dates);
 });
 
-final totalDiaryEntriesProvider =
-    FutureProvider.autoDispose<int>((ref) =>
-        ref.watch(diaryDaoProvider).getTotalCount());
+final totalDiaryEntriesProvider = FutureProvider.autoDispose<int>((ref) {
+  final diaryId = ref.watch(activeDiaryProvider);
+  return ref.watch(diaryRepositoryProvider).getTotalCount(diaryId);
+});
 
-final recentDiaryEntriesProvider =
-    FutureProvider.autoDispose.family<List<DiaryEntry>, int>((ref, days) =>
-        ref.watch(diaryDaoProvider).getRecentEntries(days));
+final recentDiaryEntriesProvider = FutureProvider.autoDispose
+    .family<List<DiaryEntry>, int>((ref, days) {
+  final diaryId = ref.watch(activeDiaryProvider);
+  return ref.watch(diaryRepositoryProvider).getRecentEntries(diaryId, days);
+});
 
 int _calculateStreak(List<String> sortedDates) {
   if (sortedDates.isEmpty) return 0;

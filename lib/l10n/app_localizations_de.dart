@@ -2688,6 +2688,78 @@ class AppLocalizationsDe extends AppLocalizations {
   String get diaryModuleLabel => 'Tagebuch';
 
   @override
+  String get diarySwitcherTitle => 'Tagebuch wählen';
+
+  @override
+  String get diaryNewDiary => 'Neues Tagebuch';
+
+  @override
+  String get diaryEditCreateTitle => 'Neues Tagebuch';
+
+  @override
+  String get diaryEditEditTitle => 'Tagebuch bearbeiten';
+
+  @override
+  String get diaryNameLabel => 'Name';
+
+  @override
+  String get diaryNameHint => 'z. B. „Reise Portugal“';
+
+  @override
+  String get diaryIconLabel => 'Icon';
+
+  @override
+  String get diaryColorLabel => 'Farbe';
+
+  @override
+  String get diaryEnterName => 'Bitte einen Namen eingeben';
+
+  @override
+  String get diaryDeleteDiaryButton => 'Tagebuch löschen';
+
+  @override
+  String get diaryDeleteDiaryTitle => 'Tagebuch löschen?';
+
+  @override
+  String get diaryDeleteDiaryMessage =>
+      'Das Tagebuch und alle seine Einträge werden dauerhaft gelöscht.';
+
+  @override
+  String get diaryCannotDeleteLast =>
+      'Das letzte Tagebuch kann nicht gelöscht werden.';
+
+  @override
+  String get cameraOverlayReferenceOn => 'Referenz an';
+
+  @override
+  String get cameraOverlayReferenceOff => 'Referenz aus';
+
+  @override
+  String get cameraOverlayAlignHint => 'Am letzten Foto ausrichten';
+
+  @override
+  String get cameraOverlayPermissionDeniedTitle => 'Kamera-Zugriff benötigt';
+
+  @override
+  String get cameraOverlayPermissionDeniedMessage =>
+      'Bitte erlaube den Kamera- und Mikrofon-Zugriff, um Fotos und Videos aufzunehmen.';
+
+  @override
+  String get cameraOverlayOpenSettings => 'Einstellungen öffnen';
+
+  @override
+  String get cameraOverlayGrantAccess => 'Zugriff erlauben';
+
+  @override
+  String get cameraOverlayModePhoto => 'Foto';
+
+  @override
+  String get cameraOverlayModeVideo => 'Video';
+
+  @override
+  String get cameraOverlayNoCameraFound => 'Keine Kamera gefunden';
+
+  @override
   String get nutritionTitle => 'Ernährung';
 
   @override

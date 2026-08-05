@@ -7,6 +7,7 @@ import 'core/notifications/notification_service.dart';
 import 'core/providers/database_provider.dart';
 import 'core/providers/preferences_provider.dart';
 import 'data/database/traum_database.dart';
+import 'data/repositories/diary_seeder.dart';
 import 'data/repositories/exercise_library_seeder.dart';
 import 'data/repositories/exercise_seeder.dart';
 import 'data/repositories/grocery_price_seeder.dart';
@@ -79,6 +80,7 @@ void main() async {
       SubstanceReferenceDbCopier.copyIfNeeded(prefs),
       MapCollectionSeeder.seedIfNeeded(db, prefs),
       GroceryPriceSeeder.seedIfNeeded(db, prefs),
+      DiarySeeder.seedIfNeeded(db, prefs),
     ]);
     // Brauchen ihre jeweilige Collection aus MapCollectionSeeder — laufen
     // daher erst danach, nicht im selben Future.wait. Unabhängige Tabellen-

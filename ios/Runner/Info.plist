@@ -54,9 +54,11 @@
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>TRAUM uses your location to show current weather and temperature data.</string>
 
-	<!-- Kamera & Fotos (Graffiti Map) -->
+	<!-- Kamera & Fotos (Graffiti Map, Tagebuch) -->
 	<key>NSCameraUsageDescription</key>
-	<string>TRAUM nutzt die Kamera für Geo-Fotos.</string>
+	<string>TRAUM nutzt die Kamera für Geo-Fotos und Tagebuch-Einträge.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>TRAUM nutzt das Mikrofon für Videos im Tagebuch.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>TRAUM greift auf deine Fotos zu.</string>
 

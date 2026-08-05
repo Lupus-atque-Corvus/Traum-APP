@@ -88,6 +88,10 @@ class PreferencesRepository {
   int get kcalGoal => _prefs.getInt('kcal_goal') ?? 2000;
   Future<void> setKcalGoal(int v) => _prefs.setInt('kcal_goal', v);
 
+  // 1 = das beim ersten Start geseedete Default-Tagebuch ("Mein Tagebuch").
+  int get activeDiaryId => _prefs.getInt('active_diary_id') ?? 1;
+  Future<void> setActiveDiaryId(int v) => _prefs.setInt('active_diary_id', v);
+
   int get workoutGoalPerWeek => _prefs.getInt('workout_goal_per_week') ?? 3;
   Future<void> setWorkoutGoalPerWeek(int v) => _prefs.setInt('workout_goal_per_week', v);
 

@@ -59,6 +59,21 @@ void _seedV25Schema(sqlite3.Database raw) {
       created_at INTEGER NOT NULL
     )
   ''');
+  // Existiert in echten Datenbanken seit v7 — muss vorhanden sein, damit die
+  // v27-Migration (Mehrfach-Tagebücher) ihre `ADD COLUMN diary_id` findet.
+  raw.execute('''
+    CREATE TABLE diary_entries (
+      id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+      date TEXT NOT NULL,
+      media_path TEXT NOT NULL,
+      media_type TEXT NOT NULL,
+      note TEXT NOT NULL DEFAULT '',
+      thumbnail_path TEXT,
+      duration_seconds INTEGER,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL
+    )
+  ''');
 }
 
 Future<List<String>> _indexNames(TraumDatabase db, String table) async {

@@ -10,6 +10,7 @@ import '../../data/repositories/abstinence_repository.dart';
 import '../../data/repositories/budget_repository.dart';
 import '../../data/repositories/period_repository.dart';
 import '../../data/repositories/notes_repository.dart';
+import '../../data/repositories/diary_repository.dart';
 import 'database_provider.dart';
 
 final planningRepositoryProvider = Provider<PlanningRepository>((ref) {
@@ -54,4 +55,9 @@ final weatherRepositoryProvider = Provider<WeatherRepository>((ref) {
 
 final notesRepositoryProvider = Provider<NotesRepository>((ref) {
   return NotesRepository(ref.watch(notesDaoProvider));
+});
+
+final diaryRepositoryProvider = Provider<DiaryRepository>((ref) {
+  return DiaryRepository(
+      ref.watch(diaryDaoProvider), ref.watch(diariesDaoProvider));
 });

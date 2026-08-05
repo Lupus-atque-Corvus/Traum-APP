@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/misc.dart';
 
 import '../core/providers/database_provider.dart';
 import '../core/providers/preferences_provider.dart';
+import '../core/providers/repository_providers.dart';
 import '../data/services/health_service.dart';
 import '../features/budget/budget_providers.dart';
 import '../features/diary/diary_provider.dart';
@@ -401,8 +402,10 @@ class WidgetDataCollector {
     }, 0.0);
 
     final writeStreakF = _safe(() => read(diaryStreakProvider.future), 0);
-    final lastDiaryEntryF =
-        _safe(() => read(diaryDaoProvider).getLastEntry(), null);
+    final lastDiaryEntryF = _safe(
+        () => read(diaryRepositoryProvider)
+            .getLastEntry(read(activeDiaryProvider)),
+        null);
     final entriesThisMonthF = _safe(() {
       final now = DateTime.now();
       return read(diaryEntriesForMonthProvider((now.year, now.month)).future);

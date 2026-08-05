@@ -31,6 +31,7 @@ import 'daos/accounts_dao.dart';
 import 'daos/period_dao.dart';
 import 'daos/substance_dao.dart';
 import 'daos/diary_dao.dart';
+import 'daos/diaries_dao.dart';
 import 'daos/food_products_dao.dart';
 import 'daos/meal_entries_dao.dart';
 import 'daos/notes_dao.dart';
@@ -66,6 +67,7 @@ export 'daos/accounts_dao.dart';
 export 'daos/period_dao.dart';
 export 'daos/substance_dao.dart';
 export 'daos/diary_dao.dart';
+export 'daos/diaries_dao.dart';
 export 'daos/food_products_dao.dart';
 export 'daos/meal_entries_dao.dart';
 export 'daos/notes_dao.dart';
@@ -133,7 +135,8 @@ part 'traum_database.g.dart';
     SubstanceCaches,
     // Substance intake log (1)
     SubstanceIntakeLogs,
-    // Diary (1)
+    // Diary (2)
+    Diaries,
     DiaryEntries,
     // Nutrition Extended (4)
     FoodProducts,
@@ -165,6 +168,7 @@ part 'traum_database.g.dart';
     PeriodDao,
     SubstanceDao,
     DiaryDao,
+    DiariesDao,
     FoodProductsDao,
     MealEntriesDao,
     NotesDao,
@@ -185,6 +189,9 @@ class TraumDatabase extends _$TraumDatabase {
   DiaryDao get diaryDao => DiaryDao(this);
 
   @override
+  DiariesDao get diariesDao => DiariesDao(this);
+
+  @override
   FoodProductsDao get foodProductsDao => FoodProductsDao(this);
   @override
   MealEntriesDao get mealEntriesDao => MealEntriesDao(this);
@@ -202,7 +209,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 26;
+  int get schemaVersion => 27;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -477,8 +484,38 @@ class TraumDatabase extends _$TraumDatabase {
       if (from < 26) {
         await _createMapPerformanceIndexes();
       }
+      if (from < 27) {
+        await _migrateToMultipleDiaries(migrator);
+      }
     },
   );
+
+  /// Führt von einem einzelnen impliziten Tagebuch zu mehreren benannten
+  /// Tagebüchern: legt die neue `diaries`-Tabelle an, erstellt ein
+  /// Default-Tagebuch für den kompletten Bestand und befüllt `diary_id` bei
+  /// allen vorhandenen `diary_entries` zurück. Idempotent (guard über
+  /// pragma_table_info), damit ein abgebrochener vorheriger Versuch die App
+  /// nicht dauerhaft startunfähig macht.
+  Future<void> _migrateToMultipleDiaries(Migrator migrator) async {
+    await migrator.createTable(diaries);
+    final defaultDiaryId = await into(diaries).insert(
+      DiariesCompanion.insert(
+        name: 'Mein Tagebuch',
+        iconName: 'book',
+        createdAt: DateTime.now(),
+      ),
+    );
+    final hasDiaryId = await customSelect(
+      "SELECT COUNT(*) AS c FROM pragma_table_info('diary_entries') WHERE name = 'diary_id'",
+    ).getSingle();
+    if (hasDiaryId.read<int>('c') == 0) {
+      await migrator.addColumn(diaryEntries, diaryEntries.diaryId);
+    }
+    await customStatement(
+      'UPDATE diary_entries SET diary_id = ? WHERE diary_id IS NULL',
+      [defaultDiaryId],
+    );
+  }
 
   /// Indizes für die Karten-Abfragepfade. Bis v25 existierten auf `map_markers`
   /// NUR die beiden Unique-Indizes für die Import-Deduplizierung (`osm_id`,

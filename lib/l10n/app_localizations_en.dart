@@ -2677,6 +2677,77 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diaryModuleLabel => 'Diary';
 
   @override
+  String get diarySwitcherTitle => 'Choose diary';
+
+  @override
+  String get diaryNewDiary => 'New diary';
+
+  @override
+  String get diaryEditCreateTitle => 'New diary';
+
+  @override
+  String get diaryEditEditTitle => 'Edit diary';
+
+  @override
+  String get diaryNameLabel => 'Name';
+
+  @override
+  String get diaryNameHint => 'e.g. \"Portugal trip\"';
+
+  @override
+  String get diaryIconLabel => 'Icon';
+
+  @override
+  String get diaryColorLabel => 'Color';
+
+  @override
+  String get diaryEnterName => 'Please enter a name';
+
+  @override
+  String get diaryDeleteDiaryButton => 'Delete diary';
+
+  @override
+  String get diaryDeleteDiaryTitle => 'Delete diary?';
+
+  @override
+  String get diaryDeleteDiaryMessage =>
+      'The diary and all its entries will be permanently deleted.';
+
+  @override
+  String get diaryCannotDeleteLast => 'The last diary can\'t be deleted.';
+
+  @override
+  String get cameraOverlayReferenceOn => 'Reference on';
+
+  @override
+  String get cameraOverlayReferenceOff => 'Reference off';
+
+  @override
+  String get cameraOverlayAlignHint => 'Align with the last photo';
+
+  @override
+  String get cameraOverlayPermissionDeniedTitle => 'Camera access needed';
+
+  @override
+  String get cameraOverlayPermissionDeniedMessage =>
+      'Please allow camera and microphone access to take photos and videos.';
+
+  @override
+  String get cameraOverlayOpenSettings => 'Open settings';
+
+  @override
+  String get cameraOverlayGrantAccess => 'Grant access';
+
+  @override
+  String get cameraOverlayModePhoto => 'Photo';
+
+  @override
+  String get cameraOverlayModeVideo => 'Video';
+
+  @override
+  String get cameraOverlayNoCameraFound => 'No camera found';
+
+  @override
   String get nutritionTitle => 'Nutrition';
 
   @override

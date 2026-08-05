@@ -5192,6 +5192,144 @@ abstract class AppLocalizations {
   /// **'Tagebuch'**
   String get diaryModuleLabel;
 
+  /// No description provided for @diarySwitcherTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Tagebuch wählen'**
+  String get diarySwitcherTitle;
+
+  /// No description provided for @diaryNewDiary.
+  ///
+  /// In de, this message translates to:
+  /// **'Neues Tagebuch'**
+  String get diaryNewDiary;
+
+  /// No description provided for @diaryEditCreateTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Neues Tagebuch'**
+  String get diaryEditCreateTitle;
+
+  /// No description provided for @diaryEditEditTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Tagebuch bearbeiten'**
+  String get diaryEditEditTitle;
+
+  /// No description provided for @diaryNameLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Name'**
+  String get diaryNameLabel;
+
+  /// No description provided for @diaryNameHint.
+  ///
+  /// In de, this message translates to:
+  /// **'z. B. „Reise Portugal“'**
+  String get diaryNameHint;
+
+  /// No description provided for @diaryIconLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Icon'**
+  String get diaryIconLabel;
+
+  /// No description provided for @diaryColorLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Farbe'**
+  String get diaryColorLabel;
+
+  /// No description provided for @diaryEnterName.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte einen Namen eingeben'**
+  String get diaryEnterName;
+
+  /// No description provided for @diaryDeleteDiaryButton.
+  ///
+  /// In de, this message translates to:
+  /// **'Tagebuch löschen'**
+  String get diaryDeleteDiaryButton;
+
+  /// No description provided for @diaryDeleteDiaryTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Tagebuch löschen?'**
+  String get diaryDeleteDiaryTitle;
+
+  /// No description provided for @diaryDeleteDiaryMessage.
+  ///
+  /// In de, this message translates to:
+  /// **'Das Tagebuch und alle seine Einträge werden dauerhaft gelöscht.'**
+  String get diaryDeleteDiaryMessage;
+
+  /// No description provided for @diaryCannotDeleteLast.
+  ///
+  /// In de, this message translates to:
+  /// **'Das letzte Tagebuch kann nicht gelöscht werden.'**
+  String get diaryCannotDeleteLast;
+
+  /// No description provided for @cameraOverlayReferenceOn.
+  ///
+  /// In de, this message translates to:
+  /// **'Referenz an'**
+  String get cameraOverlayReferenceOn;
+
+  /// No description provided for @cameraOverlayReferenceOff.
+  ///
+  /// In de, this message translates to:
+  /// **'Referenz aus'**
+  String get cameraOverlayReferenceOff;
+
+  /// No description provided for @cameraOverlayAlignHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Am letzten Foto ausrichten'**
+  String get cameraOverlayAlignHint;
+
+  /// No description provided for @cameraOverlayPermissionDeniedTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Kamera-Zugriff benötigt'**
+  String get cameraOverlayPermissionDeniedTitle;
+
+  /// No description provided for @cameraOverlayPermissionDeniedMessage.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte erlaube den Kamera- und Mikrofon-Zugriff, um Fotos und Videos aufzunehmen.'**
+  String get cameraOverlayPermissionDeniedMessage;
+
+  /// No description provided for @cameraOverlayOpenSettings.
+  ///
+  /// In de, this message translates to:
+  /// **'Einstellungen öffnen'**
+  String get cameraOverlayOpenSettings;
+
+  /// No description provided for @cameraOverlayGrantAccess.
+  ///
+  /// In de, this message translates to:
+  /// **'Zugriff erlauben'**
+  String get cameraOverlayGrantAccess;
+
+  /// No description provided for @cameraOverlayModePhoto.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto'**
+  String get cameraOverlayModePhoto;
+
+  /// No description provided for @cameraOverlayModeVideo.
+  ///
+  /// In de, this message translates to:
+  /// **'Video'**
+  String get cameraOverlayModeVideo;
+
+  /// No description provided for @cameraOverlayNoCameraFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Kamera gefunden'**
+  String get cameraOverlayNoCameraFound;
+
   /// No description provided for @nutritionTitle.
   ///
   /// In de, this message translates to:
