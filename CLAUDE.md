@@ -1,12 +1,40 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.8.12+92** · schemaVersion **27**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.9.3+93** · schemaVersion **27**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-05 — v0.8.12, echte SVG-Referenzvorlagen + Deckkraft-Regler)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-05 — v0.9.3, SVG-Rahmen-Fix + Versionierungsregel)
+
+**Fund: die vier in v0.8.12 eingebauten SVG-Referenzvorlagen zeigten nur den Umriss, keine
+gefüllte Fläche — sichtbar z.B. an der Ganzkörper-Vorlage, die als reine Kontur statt als
+Silhouette erschien.**
+
+Ursache: Die vom Bildkonvertierungsdienst gelieferten SVGs enthalten (typisch für
+potrace-artige Tools) ein ganzflächiges Rahmen-Rechteck als **erste Teilkontur** innerhalb
+desselben `<path>`-Elements wie die eigentliche Silhouette, verbunden über `z m…` (Closepath +
+neuer relativer Moveto). Mit `fill-rule="nonzero"` ergibt das: der Rahmen wird gefüllt, die
+eigentliche Silhouette bleibt als **Loch** ausgespart — exakt umgekehrt zu dem, was gebraucht
+wird. Fix: das Rahmen-Teilstück aus dem ersten `<path>` jeder Datei entfernt (Bounding-Box-Skript
+zur Verifikation: `analyze.js`, Node), den direkt folgenden relativen `m…`-Befehl in einen
+absoluten `M…` umgerechnet, alle weiteren `<path>`-Elemente unverändert gelassen (die hatten den
+Rahmen nie). Betrifft `assets/reference_templates/*.svg` — jetzt füllt die Kontur selbst die
+Fläche, kein Rahmen mehr im Bild.
+
+**Neue Versionierungsregel (Non-Negotiable #17 aktualisiert):** Patch-Ziffer läuft nur 0–9, danach
+Minor-Sprung (`0.9.9` → `0.10.0`, nicht `0.9.10`) — der Build-Zähler läuft unabhängig davon
+einfach weiter. Rückwirkend angewendet auf die zuvor als `0.8.10`/`0.8.11`/`0.8.12` bezeichneten
+Zwischenstände ergibt das lückenlos `0.9.0`/`0.9.1`/`0.9.2` — dieser Fund-Release ist entsprechend
+**v0.9.3**.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **494/494 grün** (unverändert — reine
+Asset-Korrektur ohne Code-Logikänderung).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-05 — v0.8.12, echte SVG-Referenzvorlagen + Deckkraft-Regler)
 
 **Zwei Nachbesserungen aus dem Feedback zu v0.8.11:**
 
@@ -783,7 +811,13 @@ periodRose: #FF8FAB · ovulationCyan: #00C9C8 · fertileCyan: #0093AB
 14. **Widget-Deep-Links validieren** gegen `widgetCatalog` (keine beliebigen Routen zulassen)
 15. **`flutter analyze` → Ziel 0 Issues** vor jedem Commit (keine `withOpacity`, `child:` als letztes Property)
 16. **`flutter test`** muss grün bleiben (aktuell 200+ Tests unter test/features/…)
-17. **Versionierung:** Bis einschließlich Build **+79** bleibt die Version bei **0.7.x** (z.B. `0.7.13+62`, `0.7.20+79`). Erst ab Build **+80** auf **0.8.0** wechseln (`0.8.0+80`). Den `version:`-Eintrag in `pubspec.yaml` entsprechend pflegen — den Build-Zähler bei jedem Release um 1 erhöhen, den Minor-Sprung auf 0.8.0 nicht vor +80 machen.
+17. **Versionierung:** `major.minor.patch+build`. Die `patch`-Ziffer läuft nur **0–9** — beim
+    nächsten Release nach `x.y.9` kommt **`x.(y+1).0`**, nicht `x.y.10` (z.B. `0.9.9` → `0.10.0`,
+    nicht `0.9.10`). Der `build`-Zähler (`+N`) zählt bei jedem Release unabhängig davon einfach
+    um 1 weiter, unabhängig vom Patch-Rollover. `major` wechselt nur nach expliziter
+    Nutzer-Ansage. Den `version:`-Eintrag in `pubspec.yaml` entsprechend pflegen.
+    (Historisch: Bis Build +79 lag die Version bei 0.7.x, ab +80 bei 0.8.0 — diese Regel hier
+    gilt ab v0.9.3+93 verbindlich für alle künftigen Releases.)
 18. **Releases sind ab v0.8.5 wieder Release-Builds** (`flutter build apk --release`).
     Kein eigener Keystore nötig: `android/app/build.gradle.kts:57-70` fällt ohne
     `key.properties` automatisch auf die Debug-Signatur zurück, `isMinifyEnabled` + ProGuard
