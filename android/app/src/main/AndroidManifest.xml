@@ -54,7 +54,14 @@
     <application
         android:label="traum"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:fullBackupContent="false">
+        <!-- Sensible Gesundheits-/Substanz-/Finanzdaten liegen ausschließlich in
+             traum.sqlite. Ohne diese beiden Attribute würde Androids
+             automatisches Cloud-Backup (und `adb backup`) die Datenbank
+             unverschlüsselt mitsichern — unabhängig vom eigenen, bewusst
+             genutzten In-App-Backup (Einstellungen -> Daten exportieren). -->
         <activity
             android:name=".MainActivity"
             android:exported="true"

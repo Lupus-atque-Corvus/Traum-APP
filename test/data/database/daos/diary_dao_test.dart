@@ -84,4 +84,23 @@ void main() {
     expect(await db.diaryDao.getAllEntries(diaryA), hasLength(2));
     expect(await db.diaryDao.getAllEntries(diaryB), hasLength(1));
   });
+
+  test(
+      'upsertEntry twice for the same diary+date updates the existing row '
+      'instead of creating a duplicate', () async {
+    await addEntry(diaryA, '2026-04-01', note: 'erster Versuch');
+    // Simulates a double-tap on the capture buttons: a second capture flow
+    // for the same day lands here before the first one is visible on screen.
+    await addEntry(diaryA, '2026-04-01', note: 'zweiter Versuch');
+
+    expect(await db.diaryDao.getTotalCount(diaryA), 1);
+    final entry = await db.diaryDao.getEntryForDate(diaryA, '2026-04-01');
+    expect(entry!.note, 'zweiter Versuch');
+
+    // Same date is still independent per diary — no cross-diary clobbering.
+    await addEntry(diaryB, '2026-04-01', note: 'von B');
+    expect(await db.diaryDao.getTotalCount(diaryB), 1);
+    expect((await db.diaryDao.getEntryForDate(diaryA, '2026-04-01'))!.note,
+        'zweiter Versuch');
+  });
 }

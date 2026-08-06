@@ -27,4 +27,13 @@ class DiaryEntries extends Table {
   IntColumn get durationSeconds => integer().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
+
+  // Ermöglicht ein echtes `ON CONFLICT`-Upsert in DiaryDao.upsertEntry —
+  // ohne diese Deklaration legt `createAll()` (Neuinstallationen, Tests) die
+  // Tabelle ohne den Constraint an, den die v27→v28-Migration Bestands-
+  // installationen nachträgt.
+  @override
+  List<Set<Column>> get uniqueKeys => [
+        {diaryId, date}
+      ];
 }

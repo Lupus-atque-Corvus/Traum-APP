@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../core/components/inline_error.dart';
 import '../../core/providers/repository_providers.dart';
 import '../../core/theme/colors.dart';
 import '../../core/utils/image_decode.dart';
@@ -37,6 +38,24 @@ class _DiaryEntryBody extends ConsumerWidget {
             backgroundColor: TraumColors.background,
             body: Center(
               child: CircularProgressIndicator(color: TraumColors.lavender),
+            ),
+          );
+        }
+
+        if (snapshot.hasError) {
+          // Von "kein Eintrag vorhanden" unterscheidbar halten — sonst sieht
+          // ein echter Ladefehler (z. B. eine unerwartete DB-Exception) genau
+          // wie ein leerer Tag aus, obwohl in Wahrheit Daten existieren
+          // könnten.
+          return Scaffold(
+            backgroundColor: TraumColors.background,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              leading: const BackButton(color: Colors.white),
+              elevation: 0,
+            ),
+            body: Center(
+              child: InlineError(snapshot.error, context: 'diary_entry:$date'),
             ),
           );
         }

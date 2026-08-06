@@ -64,6 +64,8 @@ class BackupService {
   static const Map<String, List<String>> _mediaColumns = {
     'diary_entries': ['media_path', 'thumbnail_path'],
     'marker_photos': ['photo_path', 'thumbnail_path'],
+    'photo_logs': ['image_path'],
+    'transactions': ['receipt_image_path'],
   };
 
   Map<String, TableInfo> get _tablesByName => {

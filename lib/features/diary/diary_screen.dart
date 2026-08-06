@@ -391,7 +391,7 @@ class _DiarySwitchAvatar extends StatelessWidget {
 
 // ── Heute leer ───────────────────────────────────────────────────────────────
 
-class _TodayEmptyCard extends StatelessWidget {
+class _TodayEmptyCard extends StatefulWidget {
   final int diaryId;
   final String todayStr;
   final String? ghostImagePath;
@@ -402,6 +402,40 @@ class _TodayEmptyCard extends StatelessWidget {
       required this.todayStr,
       required this.ghostImagePath,
       required this.onCapture});
+
+  @override
+  State<_TodayEmptyCard> createState() => _TodayEmptyCardState();
+}
+
+class _TodayEmptyCardState extends State<_TodayEmptyCard> {
+  // Verhindert, dass ein Doppel-Tap auf "Foto"/"Video" zwei parallele
+  // Kamera-Flows startet, die beide unabhängig speichern und so zwei Zeilen
+  // für denselben Tag anlegen könnten.
+  bool _busy = false;
+
+  Future<void> _capture(
+      {required bool video}) async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      final path = video
+          ? await DiaryCameraService.captureVideo(
+              context: context,
+              diaryId: widget.diaryId,
+              dateStr: widget.todayStr,
+              ghostImagePath: widget.ghostImagePath)
+          : await DiaryCameraService.capturePhoto(
+              context: context,
+              diaryId: widget.diaryId,
+              dateStr: widget.todayStr,
+              ghostImagePath: widget.ghostImagePath);
+      if (path != null && mounted) {
+        widget.onCapture(path, video ? 'video' : 'photo');
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -434,16 +468,7 @@ class _TodayEmptyCard extends StatelessWidget {
         Row(children: [
           Expanded(
             child: ElevatedButton.icon(
-              onPressed: () async {
-                final path = await DiaryCameraService.capturePhoto(
-                    context: context,
-                    diaryId: diaryId,
-                    dateStr: todayStr,
-                    ghostImagePath: ghostImagePath);
-                if (path != null && context.mounted) {
-                  onCapture(path, 'photo');
-                }
-              },
+              onPressed: _busy ? null : () => _capture(video: false),
               icon: const Icon(Icons.photo_camera_outlined, size: 18),
               label: Text(l10n.diaryPhotoLabel,
                   style: const TextStyle(
@@ -460,16 +485,7 @@ class _TodayEmptyCard extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: ElevatedButton.icon(
-              onPressed: () async {
-                final path = await DiaryCameraService.captureVideo(
-                    context: context,
-                    diaryId: diaryId,
-                    dateStr: todayStr,
-                    ghostImagePath: ghostImagePath);
-                if (path != null && context.mounted) {
-                  onCapture(path, 'video');
-                }
-              },
+              onPressed: _busy ? null : () => _capture(video: true),
               icon: const Icon(Icons.videocam_outlined, size: 18),
               label: Text(l10n.diaryVideoLabel,
                   style: const TextStyle(

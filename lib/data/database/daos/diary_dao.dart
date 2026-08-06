@@ -38,8 +38,20 @@ class DiaryDao extends DatabaseAccessor<TraumDatabase> with _$DiaryDaoMixin {
   Future<List<DiaryEntry>> getAllEntries(int diaryId) =>
       (select(diaryEntries)..where((t) => t.diaryId.equals(diaryId))).get();
 
-  Future<void> upsertEntry(DiaryEntriesCompanion entry) =>
-      into(diaryEntries).insertOnConflictUpdate(entry);
+  /// Echtes Upsert über den fachlichen Schlüssel (Tagebuch, Datum) — nicht
+  /// über die Primärschlüssel-`id`, die der Aufrufer beim Anlegen eines neuen
+  /// Eintrags nie kennt. Setzt einen Unique-Index auf
+  /// `(diary_id, date)` voraus (Migration v28); ohne ihn würde SQLite den
+  /// `ON CONFLICT`-Zielkonflikt nicht auflösen können und stattdessen jedes
+  /// Mal eine neue Zeile einfügen.
+  Future<void> upsertEntry(DiaryEntriesCompanion entry) => into(diaryEntries)
+      .insert(
+        entry,
+        onConflict: DoUpdate(
+          (_) => entry,
+          target: [diaryEntries.diaryId, diaryEntries.date],
+        ),
+      );
 
   Future<void> deleteEntry(int id) =>
       (delete(diaryEntries)..where((t) => t.id.equals(id))).go();
@@ -63,6 +75,21 @@ class DiaryDao extends DatabaseAccessor<TraumDatabase> with _$DiaryDaoMixin {
         ..where(diaryEntries.diaryId.equals(diaryId)))
       .map((r) => r.read(diaryEntries.id.count())!)
       .getSingle();
+
+  /// Video-Einträge über ALLE Tagebücher hinweg, denen noch ein
+  /// Vorschaubild fehlt — genutzt vom einmaligen Backfill für Einträge, die
+  /// vor v0.8.9 angelegt wurden (damals wurde `thumbnailPath` beim Speichern
+  /// hart auf `null` gesetzt).
+  Future<List<DiaryEntry>> getVideoEntriesMissingThumbnail() =>
+      (select(diaryEntries)
+            ..where((t) =>
+                t.mediaType.equals('video') & t.thumbnailPath.isNull()))
+          .get();
+
+  Future<void> updateThumbnail(int id, String thumbnailPath) =>
+      (update(diaryEntries)..where((t) => t.id.equals(id))).write(
+        DiaryEntriesCompanion(thumbnailPath: Value(thumbnailPath)),
+      );
 
   Future<List<String>> getDatesLastYear(int diaryId) {
     final yearAgo = DateTime.now().subtract(const Duration(days: 365));

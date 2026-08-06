@@ -1,12 +1,65 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.9.3+93** · schemaVersion **27**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.9.4+94** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-05 — v0.9.3, SVG-Rahmen-Fix + Versionierungsregel)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-06 — v0.9.4, Datensicherheit: Diary-Duplikate + Migrationskette)
+
+**Erste Phase eines mehrteiligen Nacharbeitungs-Plans aus einem umfassenden Tiefenaudit (5 Analyse-Runden via graphify/claude-mem über die gesamte App: Architektur, alle 19 Module, Übersetzung, Performance, Sicherheit, Speicherlecks, Tests, Crash-Reporting, Backup, Barrierefreiheit, Berechtigungen, Release-Konfiguration, DB-Migrationen, Provider-Korrektheit, Suche). Plan liegt in `C:\Users\Lupus\.claude\plans\schaue-dir-mithilfe-von-agile-wozniak.md`, priorisiert in 9 Phasen. Diese Runde: Phase 1 — Datensicherheit.**
+
+1. **Tagebuch-Duplikat-Bug (kritisch) behoben.** `upsertEntry` war kein echtes Upsert — kein
+   Unique-Index, `id` wurde nie mitgegeben, daher legte Drift bei jedem Speichern eine neue Zeile
+   an. Ein Doppel-Tap auf „Foto"/„Video" (kein Debounce) konnte zwei Einträge für denselben Tag
+   erzeugen. Fix: `uniqueKeys => [{diaryId, date}]` direkt auf `DiaryEntries` (wirkt für
+   Neuinstallationen/Tests über `createAll()`), `DiaryDao.upsertEntry` nutzt jetzt ein echtes
+   `insert(..., onConflict: DoUpdate(..., target: [diaryId, date]))`. `_TodayEmptyCard` in
+   `diary_screen.dart` ist jetzt ein `StatefulWidget` mit `_busy`-Guard gegen den Doppel-Tap.
+   `diary_entry_screen.dart` behandelt `snapshot.hasError` jetzt getrennt von „kein Eintrag".
+2. **🔴 Echter, bisher unbekannter Absturz-Bug in der Migrationskette gefunden — nicht nur ein
+   Testartefakt.** Beim Schreiben eines Migrationstests, der den kompletten Pfad von Schema v1
+   bis zur aktuellen Version in einem Rutsch durchspielt (`test/data/database/
+   legacy_v1_migration_test.dart` — bislang startete kein Migrationstest vor v22), schlug die
+   Migration bei `workout_day_exercises.notes` mit „duplicate column name" fehl.
+   **Ursache, grundsätzlich:** `migrator.createTable(x)` legt eine Tabelle immer nach der
+   HEUTIGEN, vollständigen Dart-Schema-Definition an — nicht nach dem historischen Stand zum
+   Zeitpunkt des jeweiligen `if (from < N)`-Schritts. Bei normalen, inkrementellen Updates (ein
+   Release nach dem anderen) fällt das nie auf, weil die zum Build-Zeitpunkt „heutige" Definition
+   jeweils der historisch richtigen entspricht. Ein Gerät, das aber viele Versionen auf einmal
+   überspringt (z.B. eine seit v0.2.x nie aktualisierte Installation), trifft auf ein frühes
+   `createTable`, das Spalten schon enthält, die ein *späterer* Schritt per `addColumn`
+   nachträgt — Absturz, App bliebe **dauerhaft startunfähig**.
+   Fix: neuer Helfer `_addColumnIfMissing(migrator, table, column, columnName)` (prüft
+   `pragma_table_info` vorher, exakt das Muster, das für `osm_id`/`external_id` schon galt) an
+   allen ~14 betroffenen `addColumn`-Stellen von v3 bis v22. Migrationstest deckt jetzt den
+   kompletten Pfad v1→v28 ab, inkl. Datenerhalt (Bestandszeilen überleben mit korrekten
+   Spalten-Defaults) und Endzustand-Prüfung (Diaries-Tabelle, neue Indizes, alte Substanz-DB
+   gedroppt).
+3. **`android:allowBackup="false"`** gesetzt (+ `fullBackupContent="false"`) — ohne das hätte
+   Androids automatisches Cloud-Backup die komplette `traum.sqlite` (Tagebuch-, Zyklus-,
+   Substanz-, Finanzdaten) unverschlüsselt mitgesichert, unabhängig vom eigenen In-App-Backup.
+4. **Backup-Medienliste erweitert:** `photo_logs.image_path` (Gesundheits-Verlaufsfotos) und
+   `transactions.receipt_image_path` (Belegfotos) waren in `BackupService._mediaColumns` nicht
+   gelistet — die Dateien selbst wurden beim Export nicht mitgebündelt, nur die (dann ins Leere
+   zeigenden) Pfade. Neuer Test bestätigt den Round-Trip beider Felder.
+5. **Video-Thumbnail-Backfill:** neuer, einmaliger `DiaryThumbnailBackfill.runIfNeeded()`
+   (App-Start, analog zu den bestehenden Seedern) trägt Vorschaubilder für Video-Einträge nach,
+   die vor v0.8.9 angelegt wurden und bislang dauerhaft den Platzhalter zeigten.
+6. **Performance-Index ergänzt:** `idx_diary_entries_diary_created` auf
+   `(diary_id, created_at)` — bislang Tabellenscan bei `getRecentEntries`/`getLastEntry`/
+   `getDatesLastYear`.
+
+**schemaVersion 27→28.** `flutter analyze` → **0 Issues**. `flutter test` → **497/497 grün**
+(494 vorher + 3 neu: Migrationstest v1→v28, Upsert-Dedup-Test, Backup-Medientest).
+
+**Nächste Phase laut Plan:** Sicherheit & Erinnerungen (PIN-Lockout, Medikamenten-Notification-
+Kollision, Benachrichtigungs-Berechtigungsprüfung, tote Todo/Wasser/Zyklus-Erinnerungen).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-05 — v0.9.3, SVG-Rahmen-Fix + Versionierungsregel)
 
 **Fund: die vier in v0.8.12 eingebauten SVG-Referenzvorlagen zeigten nur den Umriss, keine
 gefüllte Fläche — sichtbar z.B. an der Ganzkörper-Vorlage, die als reine Kontur statt als

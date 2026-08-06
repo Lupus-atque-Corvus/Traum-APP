@@ -209,7 +209,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 27;
+  int get schemaVersion => 28;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -226,17 +226,28 @@ class TraumDatabase extends _$TraumDatabase {
         await migrator.createTable(workoutDayExercises);
       }
       if (from < 3) {
-        await migrator.addColumn(exercises, exercises.primaryMuscles);
-        await migrator.addColumn(exercises, exercises.secondaryMuscles);
-        await migrator.addColumn(exercises, exercises.difficulty);
-        await migrator.addColumn(exercises, exercises.mechanic);
-        await migrator.addColumn(exercises, exercises.force);
-        await migrator.addColumn(exercises, exercises.imageUrl);
-        await migrator.addColumn(exercises, exercises.isBookmarked);
-        await migrator.addColumn(workoutDayExercises, workoutDayExercises.notes);
-        await migrator.addColumn(workoutDayExercises, workoutDayExercises.defaultRestSeconds);
-        await migrator.addColumn(workoutDayExercises, workoutDayExercises.progressionType);
-        await migrator.addColumn(workoutDayExercises, workoutDayExercises.supersetGroup);
+        await _addColumnIfMissing(
+            migrator, exercises, exercises.primaryMuscles, 'primary_muscles');
+        await _addColumnIfMissing(migrator, exercises,
+            exercises.secondaryMuscles, 'secondary_muscles');
+        await _addColumnIfMissing(
+            migrator, exercises, exercises.difficulty, 'difficulty');
+        await _addColumnIfMissing(
+            migrator, exercises, exercises.mechanic, 'mechanic');
+        await _addColumnIfMissing(
+            migrator, exercises, exercises.force, 'force');
+        await _addColumnIfMissing(
+            migrator, exercises, exercises.imageUrl, 'image_url');
+        await _addColumnIfMissing(
+            migrator, exercises, exercises.isBookmarked, 'is_bookmarked');
+        await _addColumnIfMissing(migrator, workoutDayExercises,
+            workoutDayExercises.notes, 'notes');
+        await _addColumnIfMissing(migrator, workoutDayExercises,
+            workoutDayExercises.defaultRestSeconds, 'default_rest_seconds');
+        await _addColumnIfMissing(migrator, workoutDayExercises,
+            workoutDayExercises.progressionType, 'progression_type');
+        await _addColumnIfMissing(migrator, workoutDayExercises,
+            workoutDayExercises.supersetGroup, 'superset_group');
       }
       if (from < 4) {
         await migrator.createTable(substanceCaches);
@@ -262,8 +273,10 @@ class TraumDatabase extends _$TraumDatabase {
         await migrator.createTable(weeklyMealPlan);
       }
       if (from < 9) {
-        await migrator.addColumn(appointments, appointments.externalEventId);
-        await migrator.addColumn(appointments, appointments.updatedAt);
+        await _addColumnIfMissing(migrator, appointments,
+            appointments.externalEventId, 'external_event_id');
+        await _addColumnIfMissing(
+            migrator, appointments, appointments.updatedAt, 'updated_at');
         // Seed updatedAt from createdAt so existing rows have a meaningful timestamp
         await customStatement('UPDATE appointments SET updated_at = created_at');
       }
@@ -293,8 +306,10 @@ class TraumDatabase extends _$TraumDatabase {
         await migrator.createTable(markerPhotos);
       }
       if (from < 13) {
-        await migrator.addColumn(markerPhotos, markerPhotos.latitude);
-        await migrator.addColumn(markerPhotos, markerPhotos.longitude);
+        await _addColumnIfMissing(
+            migrator, markerPhotos, markerPhotos.latitude, 'latitude');
+        await _addColumnIfMissing(
+            migrator, markerPhotos, markerPhotos.longitude, 'longitude');
         await customStatement(
           'UPDATE marker_photos SET '
           'latitude = (SELECT latitude FROM map_markers WHERE map_markers.id = marker_photos.marker_id), '
@@ -302,17 +317,20 @@ class TraumDatabase extends _$TraumDatabase {
         );
       }
       if (from < 14) {
-        await migrator.addColumn(foodProducts, foodProducts.microsJson);
-        await migrator.addColumn(mealEntries, mealEntries.microsJson);
-        await migrator.addColumn(supplements, supplements.nutrientKey);
+        await _addColumnIfMissing(
+            migrator, foodProducts, foodProducts.microsJson, 'micros_json');
+        await _addColumnIfMissing(
+            migrator, mealEntries, mealEntries.microsJson, 'micros_json');
+        await _addColumnIfMissing(
+            migrator, supplements, supplements.nutrientKey, 'nutrient_key');
       }
       if (from < 15) {
-        await migrator.addColumn(
-            shoppingListItems, shoppingListItems.priceEstimated);
-        await migrator.addColumn(
-            shoppingListItems, shoppingListItems.priceActual);
-        await migrator.addColumn(
-            shoppingListItems, shoppingListItems.isUrgent);
+        await _addColumnIfMissing(migrator, shoppingListItems,
+            shoppingListItems.priceEstimated, 'price_estimated');
+        await _addColumnIfMissing(migrator, shoppingListItems,
+            shoppingListItems.priceActual, 'price_actual');
+        await _addColumnIfMissing(migrator, shoppingListItems,
+            shoppingListItems.isUrgent, 'is_urgent');
         await migrator.createTable(groceryPrices);
         await migrator.createTable(shoppingTemplates);
         await migrator.createTable(shoppingTemplateItems);
@@ -321,8 +339,8 @@ class TraumDatabase extends _$TraumDatabase {
             'ON grocery_prices (name_normalized)');
       }
       if (from < 16) {
-        await migrator.addColumn(
-            abstinenceTrackers, abstinenceTrackers.costPerDay);
+        await _addColumnIfMissing(migrator, abstinenceTrackers,
+            abstinenceTrackers.costPerDay, 'cost_per_day');
         await migrator.createTable(substanceIntakeLogs);
       }
       if (from < 17) {
@@ -334,13 +352,17 @@ class TraumDatabase extends _$TraumDatabase {
         );
       }
       if (from < 18) {
-        await migrator.addColumn(transactions, transactions.accountId);
-        await migrator.addColumn(transactions, transactions.toAccountId);
-        await migrator.addColumn(transactions, transactions.lastPostedMonth);
+        await _addColumnIfMissing(
+            migrator, transactions, transactions.accountId, 'account_id');
+        await _addColumnIfMissing(migrator, transactions,
+            transactions.toAccountId, 'to_account_id');
+        await _addColumnIfMissing(migrator, transactions,
+            transactions.lastPostedMonth, 'last_posted_month');
       }
       if (from < 19) {
         await migrator.createTable(debtItems);
-        await migrator.addColumn(debts, debts.paidAmount);
+        await _addColumnIfMissing(
+            migrator, debts, debts.paidAmount, 'paid_amount');
         // Bisher getilgten Anteil als paidAmount übernehmen.
         await customStatement(
             'UPDATE debts SET paid_amount = original_amount - remaining_amount');
@@ -351,17 +373,22 @@ class TraumDatabase extends _$TraumDatabase {
             "FROM debts WHERE original_amount > 0");
       }
       if (from < 20) {
-        await migrator.addColumn(appointments, appointments.sourceCalendarId);
-        await migrator.addColumn(appointments, appointments.isAppOrigin);
-        await migrator.addColumn(appointments, appointments.lastSyncedAt);
+        await _addColumnIfMissing(migrator, appointments,
+            appointments.sourceCalendarId, 'source_calendar_id');
+        await _addColumnIfMissing(
+            migrator, appointments, appointments.isAppOrigin, 'is_app_origin');
+        await _addColumnIfMissing(
+            migrator, appointments, appointments.lastSyncedAt, 'last_synced_at');
         // Bestand: alles mit externalEventId, das je gepullt wurde, ist nicht unterscheidbar —
         // konservativ: vorhandene externe Verknüpfungen als Geräte-Ursprung markieren.
         await customStatement(
             'UPDATE appointments SET is_app_origin = 0 WHERE external_event_id IS NOT NULL');
       }
       if (from < 21) {
-        await migrator.addColumn(foodProducts, foodProducts.sourceApi);
-        await migrator.addColumn(foodProducts, foodProducts.sourceId);
+        await _addColumnIfMissing(
+            migrator, foodProducts, foodProducts.sourceApi, 'source_api');
+        await _addColumnIfMissing(
+            migrator, foodProducts, foodProducts.sourceId, 'source_id');
         // Bestand: Herkunft rückwirkend ableiten — Barcode-Produkte stammen aus OFF,
         // manuell angelegte Produkte sind 'custom'.
         await customStatement(
@@ -370,7 +397,8 @@ class TraumDatabase extends _$TraumDatabase {
             "UPDATE food_products SET source_api = 'custom' WHERE is_custom = 1");
       }
       if (from < 22) {
-        await migrator.addColumn(workoutPlans, workoutPlans.planType);
+        await _addColumnIfMissing(
+            migrator, workoutPlans, workoutPlans.planType, 'plan_type');
       }
       if (from < 23) {
         // Alte Substanz-Offline-DB (SubstanceDatabaseEntries) ist durch die
@@ -487,8 +515,75 @@ class TraumDatabase extends _$TraumDatabase {
       if (from < 27) {
         await _migrateToMultipleDiaries(migrator);
       }
+      if (from < 28) {
+        await _fixDiaryEntryDuplicates();
+      }
     },
   );
+
+  /// Fügt [column] zu [table] hinzu, außer sie existiert schon.
+  ///
+  /// Notwendig, weil `migrator.createTable(...)` eine Tabelle immer nach der
+  /// heutigen, vollständigen Dart-Schema-Definition anlegt — nicht nach dem
+  /// historischen Stand zum Zeitpunkt des jeweiligen Migrationsschritts. Ein
+  /// Gerät, das viele Versionen auf einmal überspringt (z.B. eine seit
+  /// v0.2.x nie aktualisierte Installation), kann dadurch auf ein frühes
+  /// `createTable` treffen, das eine Spalte schon enthält, die ein späterer
+  /// Schritt per `addColumn` nachträgt — ohne diese Absicherung schlägt das
+  /// mit "duplicate column name" fehl und die App bliebe dauerhaft
+  /// startunfähig. Empirisch verifiziert über einen echten Migrationstest ab
+  /// Schema v1 (`test/data/database/legacy_v1_migration_test.dart`), der
+  /// genau daran zuerst gescheitert ist (bei `workout_day_exercises.notes`).
+  /// Folgt demselben Muster, das bereits für `osm_id`/`external_id` etabliert
+  /// war (siehe v24/v25 oben) — hier nur als wiederverwendbarer Helfer statt
+  /// dupliziertem Inline-Check an über zehn Stellen.
+  Future<void> _addColumnIfMissing(
+    Migrator migrator,
+    TableInfo table,
+    GeneratedColumn column,
+    String columnName,
+  ) async {
+    final exists = await customSelect(
+      "SELECT COUNT(*) AS c FROM pragma_table_info('${table.actualTableName}') "
+      "WHERE name = '$columnName'",
+    ).getSingle();
+    if (exists.read<int>('c') == 0) {
+      await migrator.addColumn(table, column);
+    }
+  }
+
+  /// Behebt einen Bug, bei dem `upsertEntry` kein echtes Upsert war (kein
+  /// Unique-Index, `id` wurde nie mitgegeben) — ein Doppel-Tap auf
+  /// "Foto"/"Video" konnte zwei Zeilen für denselben Tag im selben Tagebuch
+  /// anlegen. Räumt zuerst eventuell bereits entstandene Duplikate auf (behält
+  /// je Gruppe die zuletzt angelegte Zeile), dann Unique-Index, damit ein
+  /// echtes `ON CONFLICT`-Upsert möglich wird. Zusätzlich ein Index auf
+  /// `(diary_id, created_at)` für die nach `createdAt` sortierten Abfragen
+  /// (`getRecentEntries`, `getLastEntry`, `getDatesLastYear`) — bislang ein
+  /// voller Tabellenscan pro Aufruf. Idempotent (`IF NOT EXISTS` bzw.
+  /// wirkungslos bei bereits dedupliziertem Bestand).
+  /// Wird an zwei Stellen aufgerufen: hier in der v27→v28-Migration
+  /// (Bestandsinstallationen) und bei Neuinstallationen **nach** dem
+  /// Diary-Seeder (`main.dart`) — dort läuft keine Migration.
+  Future<void> ensureDiaryEntryIndexes() => _fixDiaryEntryDuplicates();
+
+  Future<void> _fixDiaryEntryDuplicates() async {
+    await customStatement(
+      'DELETE FROM diary_entries '
+      'WHERE diary_id IS NOT NULL AND id NOT IN ('
+      '  SELECT MAX(id) FROM diary_entries '
+      '  WHERE diary_id IS NOT NULL GROUP BY diary_id, date'
+      ')',
+    );
+    await customStatement(
+      'CREATE UNIQUE INDEX IF NOT EXISTS idx_diary_entries_diary_date '
+      'ON diary_entries (diary_id, date) WHERE diary_id IS NOT NULL',
+    );
+    await customStatement(
+      'CREATE INDEX IF NOT EXISTS idx_diary_entries_diary_created '
+      'ON diary_entries (diary_id, created_at)',
+    );
+  }
 
   /// Führt von einem einzelnen impliziten Tagebuch zu mehreren benannten
   /// Tagebüchern: legt die neue `diaries`-Tabelle an, erstellt ein

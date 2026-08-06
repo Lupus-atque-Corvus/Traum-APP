@@ -17,6 +17,7 @@ import 'data/repositories/substance_reference_db_copier.dart';
 import 'data/repositories/supplement_seeder.dart';
 import 'data/repositories/tower_data_seeder.dart';
 import 'data/services/recurring_poster.dart';
+import 'features/diary/diary_thumbnail_backfill.dart';
 import 'widget/widget_data_service.dart';
 import 'widget/widget_update_scheduler.dart';
 
@@ -96,6 +97,8 @@ void main() async {
     // ~496.000 Zeilen bei jeder Zeile mitgepflegt werden müsste. Idempotent
     // (`IF NOT EXISTS`), bei jedem weiteren Start also ein billiger No-Op.
     await db.createMapPerformanceIndexes();
+    await db.ensureDiaryEntryIndexes();
+    await DiaryThumbnailBackfill.runIfNeeded(db, prefs);
 
     await RecurringPoster.runIfNeeded(db);
   });

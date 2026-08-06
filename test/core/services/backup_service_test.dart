@@ -1,10 +1,34 @@
+import 'dart:io';
+
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:traum/core/services/backup_service.dart';
 import 'package:traum/data/database/traum_database.dart';
 
+class _FakePathProviderPlatform extends PathProviderPlatform
+    with MockPlatformInterfaceMixin {
+  _FakePathProviderPlatform(this.dir);
+  final Directory dir;
+
+  @override
+  Future<String?> getApplicationDocumentsPath() async => dir.path;
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  late Directory tempDir;
+  setUp(() async {
+    tempDir = await Directory.systemTemp.createTemp('backup_media_test');
+    PathProviderPlatform.instance = _FakePathProviderPlatform(tempDir);
+  });
+  tearDown(() async {
+    if (await tempDir.exists()) await tempDir.delete(recursive: true);
+  });
 
   test('export → import round-trips table rows into a fresh database', () async {
     final source = TraumDatabase.forTesting(NativeDatabase.memory());
@@ -114,5 +138,50 @@ void main() {
     expect(result.success, isFalse);
     expect(bogus.zipBytes, isNotEmpty);
     await db.close();
+  });
+
+  test('bundles and restores health photo-log and budget receipt images',
+      () async {
+    final photo = File(p.join(tempDir.path, 'progress.jpg'))
+      ..writeAsBytesSync([1, 2, 3, 4]);
+    final receipt = File(p.join(tempDir.path, 'receipt.jpg'))
+      ..writeAsBytesSync([5, 6, 7, 8]);
+
+    final source = TraumDatabase.forTesting(NativeDatabase.memory());
+    await source.healthDao.insertPhotoLog(
+      PhotoLogsCompanion.insert(
+        logDate: DateTime(2026, 1, 1),
+        imagePath: photo.path,
+      ),
+    );
+    await source.budgetDao.insertTransaction(
+      TransactionsCompanion.insert(
+        amount: 12.5,
+        description: 'Kaffee',
+        date: DateTime(2026, 1, 1),
+        receiptImagePath: Value(receipt.path),
+      ),
+    );
+
+    final built = await BackupService(source).buildBackupZip();
+    expect(built.mediaCount, 2);
+    await source.close();
+
+    final target = TraumDatabase.forTesting(NativeDatabase.memory());
+    final result = await BackupService(target).restoreFromBytes(
+      built.zipBytes,
+    );
+    expect(result.success, isTrue, reason: result.error);
+    expect(result.mediaCount, 2);
+
+    final restoredPhoto = (await target.healthDao.watchAllPhotoLogs().first)
+        .single;
+    expect(File(restoredPhoto.imagePath).existsSync(), isTrue);
+    expect(File(restoredPhoto.imagePath).path, isNot(photo.path));
+
+    final restoredTx = (await target.budgetDao.watchAllTransactions().first)
+        .single;
+    expect(File(restoredTx.receiptImagePath!).existsSync(), isTrue);
+    await target.close();
   });
 }
