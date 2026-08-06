@@ -1,12 +1,40 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.9.7+97** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.9.8+98** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-06 — v0.9.7, Hotfix #3: Backup dauerte mehrere Minuten)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-06 — v0.9.8, Hotfix #4: "Wird gepackt…" dauerte weiter Minuten)
+
+**Direktes Nutzer-Feedback zu v0.9.7: Das Sammeln der Daten war jetzt schnell (Marker-Filter
+wirkt), aber die Phase "Wird gepackt…" hing weiterhin ein bis zwei Minuten.**
+
+**Root Cause:** `ZipEncoder().encode(archive)` komprimiert standardmäßig JEDEN Eintrag per
+DEFLATE — auch Fotos (JPEG) und Videos (MP4), die bereits komprimierte Formate sind. DEFLATE auf
+bereits komprimierten Binärdaten bringt praktisch keine Größenersparnis, kostet aber echte
+CPU-Zeit — bei einer größeren Tagebuch-/Foto-Bibliothek war genau das jetzt der letzte
+verbleibende Engpass, nachdem v0.9.7 die eigentliche Datenmenge (JSON + Zeilenzahl) bereits
+drastisch reduziert hatte.
+
+**Fix:** `ArchiveFile.compress = false` für alle Medien-Einträge in `_encodeBackupArchive`
+(`backup_service.dart`) — Fotos/Videos werden im ZIP nur noch gespeichert (STORE), nicht mehr
+komprimiert. Nur der JSON-Metadaten-Eintrag (Text, komprimiert gut) bleibt wie gehabt per DEFLATE
+komprimiert. Entpacken funktioniert transparent für beide Modi (verifiziert: Medien-Rückgabe-Test
+mit echten Foto-Bytes lief unverändert grün).
+
+`flutter analyze` → **0 Issues**. `flutter test` → **498/498 grün** (unverändert — reine
+Kompressions-Verhaltensänderung, keine neue Testinfrastruktur nötig, bestehender Medien-Roundtrip-
+Test deckt es ab).
+
+**Lehre, wieder für spätere Phasen:** Bei binären, bereits komprimierten Medien in Archiven immer
+`compress = false` setzen — DEFLATE auf JPEG/MP4/PNG/ZIP-artigen Formaten ist reine
+CPU-Verschwendung, unabhängig vom konkreten Feature.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-06 — v0.9.7, Hotfix #3: Backup dauerte mehrere Minuten)
 
 **Direktes Nutzer-Feedback zu v0.9.6: Backup lief jetzt zuverlässig durch, dauerte aber mehrere
 Minuten — Wunsch nach echtem Fortschrittsbalken statt Spinner UND spürbar schnellerer Erstellung.**

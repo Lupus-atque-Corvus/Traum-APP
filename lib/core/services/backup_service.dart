@@ -44,7 +44,12 @@ Uint8List _encodeBackupArchive(Map<String, dynamic> payload) {
   final jsonBytes = utf8.encode(const JsonEncoder().convert(backup));
   final archive = Archive();
   media.forEach((name, bytes) {
-    archive.addFile(ArchiveFile(name, bytes.length, bytes));
+    // Photos/videos are already-compressed formats (JPEG/MP4/…) — DEFLATE-
+    // compressing them again buys essentially no size reduction but costs
+    // real CPU time, and media is normally the majority of a backup's
+    // bytes. Storing them uncompressed is what made "Wird gepackt…" take
+    // minutes for a library with many/large diary photos or videos.
+    archive.addFile(ArchiveFile(name, bytes.length, bytes)..compress = false);
   });
   archive.addFile(
       ArchiveFile(BackupService._jsonEntryName, jsonBytes.length, jsonBytes));
