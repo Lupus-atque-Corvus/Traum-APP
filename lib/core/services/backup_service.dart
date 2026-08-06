@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:drift/drift.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart' show compute;
+import 'package:flutter/foundation.dart' show compute, debugPrint;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -38,10 +38,23 @@ Uint8List _encodeZipArchive(Map<String, Uint8List> entries) {
 /// (this app's bulk-imported map markers), that JSON encoding is itself the
 /// dominant cost, not the ZIP step — so it has to move too, not just ZIP.
 Uint8List _encodeBackupArchive(Map<String, dynamic> payload) {
+  // Lightweight diagnostic timing, kept intentionally (not just for this
+  // round of fixes): this is the one place in the app most likely to need
+  // `adb logcat`-based diagnosis again as data grows, and there's no crash-
+  // reporting infrastructure to fall back on otherwise. `debugPrint` costs
+  // next to nothing beyond the call itself.
+  final sw = Stopwatch()..start();
   final backup = payload['backup'] as Map<String, dynamic>;
   final media = (payload['media'] as Map).cast<String, Uint8List>();
+  final mediaBytesTotal = media.values.fold<int>(0, (s, b) => s + b.length);
+  debugPrint('[backup] isolate entry: ${media.length} media files, '
+      '${(mediaBytesTotal / 1e6).toStringAsFixed(1)} MB total '
+      '(+${sw.elapsedMilliseconds}ms)');
 
   final jsonBytes = utf8.encode(const JsonEncoder().convert(backup));
+  debugPrint('[backup] json encoded: ${(jsonBytes.length / 1e6).toStringAsFixed(1)} MB '
+      '(+${sw.elapsedMilliseconds}ms)');
+
   final archive = Archive();
   media.forEach((name, bytes) {
     // Photos/videos are already-compressed formats (JPEG/MP4/…) — DEFLATE-
@@ -51,10 +64,22 @@ Uint8List _encodeBackupArchive(Map<String, dynamic> payload) {
     // minutes for a library with many/large diary photos or videos.
     archive.addFile(ArchiveFile(name, bytes.length, bytes)..compress = false);
   });
+  // Also STORE the JSON metadata rather than DEFLATE-compressing it. The
+  // `archive` package's DEFLATE is a pure-Dart implementation (no native
+  // zlib) — even at its fastest level it only manages a couple of MB/s,
+  // so a large-ish JSON payload (tens of MB, easily reached with a few
+  // years of tracked data) alone can dominate "Wird gepackt…" for a whole
+  // extra 10+ seconds. Media already made this STORE-only for the same
+  // reason above; a personal backup values speed and reliability over the
+  // few-MB size difference DEFLATE would have bought here.
   archive.addFile(
-      ArchiveFile(BackupService._jsonEntryName, jsonBytes.length, jsonBytes));
+      ArchiveFile(BackupService._jsonEntryName, jsonBytes.length, jsonBytes)
+        ..compress = false);
+  debugPrint('[backup] archive assembled: ${archive.files.length} entries '
+      '(+${sw.elapsedMilliseconds}ms)');
 
   final zipBytes = ZipEncoder().encode(archive);
+  debugPrint('[backup] zip encoded (+${sw.elapsedMilliseconds}ms total)');
   if (zipBytes == null) {
     throw StateError('ZIP encoding failed');
   }
@@ -233,6 +258,7 @@ class BackupService {
     void Function(int done, int total)? onMediaProgress,
     void Function()? onEncodingStart,
   }) async {
+    final buildSw = Stopwatch()..start();
     final allTables = _db.allTables.toList();
     final tables = <String, List<Map<String, dynamic>>>{};
     var rowCount = 0;
@@ -246,6 +272,8 @@ class BackupService {
       rowCount += rows.length;
       onTableProgress?.call(i + 1, allTables.length);
     }
+    debugPrint('[backup] tables read: $rowCount rows across ${allTables.length} '
+        'tables (+${buildSw.elapsedMilliseconds}ms)');
 
     // Collect media files referenced by the known path columns. Reading
     // stays here (async I/O, doesn't block the UI isolate) — only the
@@ -279,6 +307,10 @@ class BackupService {
       }
       onMediaProgress?.call(i + 1, candidatePaths.length);
     }
+    final mediaBytesTotal = entries.values.fold<int>(0, (s, b) => s + b.length);
+    debugPrint('[backup] media read: ${entries.length}/${candidatePaths.length} '
+        'files, ${(mediaBytesTotal / 1e6).toStringAsFixed(1)} MB '
+        '(+${buildSw.elapsedMilliseconds}ms total)');
 
     final backup = <String, dynamic>{
       'formatVersion': backupFormatVersion,
@@ -291,10 +323,15 @@ class BackupService {
     };
 
     onEncodingStart?.call();
+    debugPrint('[backup] calling compute() with ${tables.length} tables, '
+        '$rowCount rows, ${entries.length} media entries');
+    final callerSw = Stopwatch()..start();
     final zipBytes = await compute(
       _encodeBackupArchive,
       {'backup': backup, 'media': entries},
     );
+    debugPrint('[backup] compute() returned after '
+        '${callerSw.elapsedMilliseconds}ms (caller-side)');
 
     return (
       zipBytes: zipBytes,

@@ -1,12 +1,64 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.9.8+98** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.9.9+99** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-06 — v0.9.8, Hotfix #4: "Wird gepackt…" dauerte weiter Minuten)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-07 — v0.9.9, Hotfix #5: JSON-Metadaten waren trotz v0.9.8 weiter komprimiert + Root-Cause-Grenze via Emulator gefunden)
+
+**Direktes Nutzer-Feedback zu v0.9.8: "Wird gepackt…" hing weiterhin, obwohl die Datenmenge laut
+eigener Einschätzung klein war (wenige Videos, insgesamt < 500 MB). Diesmal nicht weiter aus dem
+Code geraten, sondern auf explizite Anweisung des Nutzers ein Android-Emulator gestartet und mit
+echten ~363 MB Test-Videos live per `adb logcat` gemessen.**
+
+**Root Cause #1 (echter Bug, gefunden):** `_encodeBackupArchive` setzte `compress = false` in
+v0.9.8 nur auf den Medien-`ArchiveFile`s — der JSON-Metadaten-Eintrag (bei diesem Testfall
+28,3 MB) blieb weiterhin per DEFLATE komprimiert. `archive`s DEFLATE ist eine reine
+Dart-Implementierung ohne native zlib-Anbindung — auch bei einem mittelgroßen JSON-Blob allein
+schon mehrere Sekunden zusätzlich. Fix: `..compress = false` jetzt auch auf dem JSON-Eintrag.
+
+**Root Cause #2 (strukturelle Grenze, kein Bug):** Nach dem Fix blieb die Emulator-Messung bei
+~15,6 s für 363 MB Payload (`[backup] zip encoded (+15624ms total)`). Quellcode-Prüfung von
+`archive` (`zip_encoder.dart`, `crc32.dart`) bestätigt: **CRC32 wird für jeden ZIP-Eintrag immer
+berechnet, unabhängig von `compress`** — das ist Pflicht im ZIP-Format, nicht optional, und läuft
+ebenfalls als reine, tabellenbasierte Dart-Implementierung (kein natives Hardware-CRC32). Das ist
+der verbleibende, durch dieses Feature nicht weiter wegoptimierbare Kostenfaktor — proportional
+zur tatsächlichen Mediengröße.
+
+**Versuch einer echten Release/AOT-Vergleichsmessung auf dem Emulator scheiterte an einer
+Sicherheitsgrenze, nicht an einem Fehler:** `run-as` (nötig, um Testdaten in den App-Ordner zu
+injizieren) funktioniert nur bei debuggable Builds, ein echter `--release`-Build lehnt das korrekt
+mit "package not debuggable" ab; `adb root` schlägt auf diesem (nicht gerooteten) AVD-Image mit
+"cannot run as root in production builds" fehl. Damit lässt sich auf diesem Emulator-Setup keine
+faire Release-Zeitmessung erzwingen. Die 15,6 s sind eine **Debug/JIT-Messung** — laut
+Non-Negotiable #18 läuft Debug „um ein Vielfaches langsamer" als Release/AOT; der reale Wert auf
+einem echten Gerät im Release-Modus (wie es Nutzer tatsächlich installieren) sollte spürbar
+niedriger liegen, konnte aber in dieser Runde nicht mehr selbst gemessen werden.
+
+**Diagnose-Logging bewusst NICHT wieder entfernt:** die `debugPrint('[backup] …')`-Zeilen in
+`_encodeBackupArchive`/`buildBackupZip` waren ursprünglich als temporär gedacht, bleiben jetzt
+aber dauerhaft im Code — es gibt keine Crash-Reporting-Infrastruktur (siehe Phase 9, noch offen),
+und genau diese Stelle wird mit wachsender Datenmenge am ehesten wieder diagnosebedürftig.
+`debugPrint` kostet praktisch nichts.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **498/498 grün** (unverändert — reine
+Kompressions-Verhaltensänderung + Logging-Ergänzung, vom bestehenden Medien-Roundtrip-Test
+weiterhin abgedeckt).
+
+**Für dich zu prüfen und zurückzumelden, damit Phase 1 endgültig abgeschlossen werden kann:**
+Nach dem Update ein Backup mit deinen echten Fotos/Videos exportieren und die tatsächliche Dauer
+der "Wird gepackt…"-Phase auf deinem echten Gerät (Release-Build, kein Emulator) zurückmelden.
+Falls es jetzt spürbar schneller ist (Sekunden statt Minuten) gilt Phase 1 als abgeschlossen und
+Phase 2 (Sicherheit & Erinnerungen: PIN-Lockout, Medikamenten-Notification-Kollision,
+Benachrichtigungs-Berechtigungsprüfung, tote Todo/Wasser/Zyklus-Erinnerungen) startet als
+nächstes. Falls es weiterhin spürbar hängt: bitte möglichst genau angeben, wie viele Fotos/Videos
+und wie groß in etwa (Systemeinstellungen → Apps → Traum → Speicher zeigt die App-Datengröße).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-06 — v0.9.8, Hotfix #4: "Wird gepackt…" dauerte weiter Minuten)
 
 **Direktes Nutzer-Feedback zu v0.9.7: Das Sammeln der Daten war jetzt schnell (Marker-Filter
 wirkt), aber die Phase "Wird gepackt…" hing weiterhin ein bis zwei Minuten.**
