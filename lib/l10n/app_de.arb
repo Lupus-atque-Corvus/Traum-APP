@@ -908,6 +908,9 @@
   "backupProgressBody": "Das kann bei vielen Fotos/Videos einen Moment dauern. Danach wählst du im nächsten Dialog, wohin die Sicherung gespeichert wird (z. B. Dateien-App, Google Drive, E-Mail).",
   "importProgressTitle": "Backup wird eingelesen…",
   "importProgressBody": "Das kann bei einer großen Datei einen Moment dauern.",
+  "backupProgressPhaseTables": "Daten werden gelesen…",
+  "backupProgressPhaseMedia": "Fotos/Videos werden gelesen…",
+  "backupProgressPhaseEncoding": "Wird gepackt…",
   "backupCreated": "Backup erstellt: {rows} Einträge, {media} Medien",
   "@backupCreated": {
     "placeholders": {

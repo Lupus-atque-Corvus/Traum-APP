@@ -1,6 +1,7 @@
 import 'dart:async' show unawaited;
 import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -1278,13 +1279,32 @@ class _ExperimentalBadge extends StatelessWidget {
 
 // ─── Security ────────────────────────────────────────────────────────────────
 
+/// A step within a running backup/export/import operation — [total] `== 0`
+/// means "unknown length, show an indeterminate bar" (e.g. the final
+/// JSON+ZIP encoding, which is one atomic isolate call and can't be broken
+/// into steps).
+class _BackupProgress {
+  final String phase;
+  final int current;
+  final int total;
+  const _BackupProgress(this.phase, [this.current = 0, this.total = 0]);
+}
+
 /// Blocking progress dialog for backup export/import — replaces a bare
 /// SnackBar, which gave no feedback while the operation ran and looked
 /// exactly like a frozen app for large exports/imports. Free function (not
 /// an instance method) since both `_SecuritySectionState` (import) and
 /// `_ExportSheetState` (export) need it.
+///
+/// Horizontal [LinearProgressIndicator] rather than a spinner — with
+/// [progress] supplied, it reflects real row/file counts as they're
+/// processed instead of just spinning indefinitely.
 void _showBackupProgressDialog(
-    BuildContext context, String title, String body) {
+  BuildContext context,
+  String title,
+  String body, {
+  ValueListenable<_BackupProgress>? progress,
+}) {
   showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -1293,26 +1313,64 @@ void _showBackupProgressDialog(
       title: Text(title,
           style: const TextStyle(
               fontFamily: 'DMSans', color: TraumColors.onBackground)),
-      content: Row(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(
-            width: 24,
-            height: 24,
-            child: CircularProgressIndicator(
-                strokeWidth: 2.5, color: TraumColors.cyanBlue),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Text(body,
-                style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackgroundMuted,
-                    fontSize: 13)),
-          ),
+          Text(body,
+              style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundMuted,
+                  fontSize: 13)),
+          const SizedBox(height: 18),
+          if (progress != null)
+            ValueListenableBuilder<_BackupProgress>(
+              valueListenable: progress,
+              builder: (_, p, _) => _BackupProgressBar(
+                value: p.total > 0 ? p.current / p.total : null,
+                label: p.total > 0
+                    ? '${p.phase} (${p.current}/${p.total})'
+                    : p.phase,
+              ),
+            )
+          else
+            const _BackupProgressBar(value: null, label: null),
         ],
       ),
     ),
   );
+}
+
+class _BackupProgressBar extends StatelessWidget {
+  final double? value;
+  final String? label;
+  const _BackupProgressBar({required this.value, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: value,
+            minHeight: 6,
+            backgroundColor: TraumColors.surfaceVariant,
+            color: TraumColors.cyanBlue,
+          ),
+        ),
+        if (label != null) ...[
+          const SizedBox(height: 6),
+          Text(label!,
+              style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundSubtle,
+                  fontSize: 11)),
+        ],
+      ],
+    );
+  }
 }
 
 void _hideBackupProgressDialog(BuildContext context) {
@@ -1710,13 +1768,23 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
     final service = ref.read(backupServiceProvider);
     Navigator.pop(context);
     if (!context.mounted) return;
+    final progress =
+        ValueNotifier(_BackupProgress(l10n.backupProgressPhaseTables));
     _showBackupProgressDialog(
-        context, l10n.backupProgressTitle, l10n.backupProgressBody);
+        context, l10n.backupProgressTitle, l10n.backupProgressBody,
+        progress: progress);
     try {
       // Only the build step (bounded, isolate-backed) sits under the
       // progress dialog. The share sheet that follows is native OS UI whose
       // completion we can't reliably await — see BackupService.shareFile.
-      final built = await service.buildBackupFile();
+      final built = await service.buildBackupFile(
+        onTableProgress: (done, total) => progress.value =
+            _BackupProgress(l10n.backupProgressPhaseTables, done, total),
+        onMediaProgress: (done, total) => progress.value =
+            _BackupProgress(l10n.backupProgressPhaseMedia, done, total),
+        onEncodingStart: () => progress.value =
+            _BackupProgress(l10n.backupProgressPhaseEncoding),
+      );
       if (!context.mounted) return;
       _hideBackupProgressDialog(context);
       unawaited(service.shareFile(built.file, subject: 'TRAUM Backup'));

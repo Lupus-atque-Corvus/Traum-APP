@@ -4040,6 +4040,24 @@ abstract class AppLocalizations {
   /// **'Das kann bei einer großen Datei einen Moment dauern.'**
   String get importProgressBody;
 
+  /// No description provided for @backupProgressPhaseTables.
+  ///
+  /// In de, this message translates to:
+  /// **'Daten werden gelesen…'**
+  String get backupProgressPhaseTables;
+
+  /// No description provided for @backupProgressPhaseMedia.
+  ///
+  /// In de, this message translates to:
+  /// **'Fotos/Videos werden gelesen…'**
+  String get backupProgressPhaseMedia;
+
+  /// No description provided for @backupProgressPhaseEncoding.
+  ///
+  /// In de, this message translates to:
+  /// **'Wird gepackt…'**
+  String get backupProgressPhaseEncoding;
+
   /// No description provided for @backupCreated.
   ///
   /// In de, this message translates to:

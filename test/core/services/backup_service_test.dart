@@ -184,4 +184,81 @@ void main() {
     expect(File(restoredTx.receiptImagePath!).existsSync(), isTrue);
     await target.close();
   });
+
+  test(
+      'buildBackupZip keeps custom and user-touched markers, '
+      'drops untouched bulk-imported ones', () async {
+    final db = TraumDatabase.forTesting(NativeDatabase.memory());
+    final collectionId = await db.mapCollectionsDao.insert(
+      MapCollectionsCompanion.insert(
+        name: 'Türme',
+        iconName: 'tower',
+        createdAt: DateTime.now(),
+      ),
+    );
+
+    // Untouched bulk import — must be excluded (re-seedable from the
+    // bundled dataset).
+    await db.mapMarkersDao.insert(
+      MapMarkersCompanion.insert(
+        collectionId: collectionId,
+        osmId: const Value('node/1'),
+        createdAt: DateTime.now(),
+      ),
+    );
+    // Bulk import the user has rated — must be kept.
+    final ratedId = await db.mapMarkersDao.insert(
+      MapMarkersCompanion.insert(
+        collectionId: collectionId,
+        osmId: const Value('node/2'),
+        rating: const Value(4.5),
+        createdAt: DateTime.now(),
+      ),
+    );
+    // Bulk import the user has photographed — must be kept.
+    final photographedId = await db.mapMarkersDao.insert(
+      MapMarkersCompanion.insert(
+        collectionId: collectionId,
+        osmId: const Value('node/3'),
+        createdAt: DateTime.now(),
+      ),
+    );
+    await db.markerPhotosDao.insert(
+      MarkerPhotosCompanion.insert(
+        markerId: photographedId,
+        photoPath: '/tmp/does-not-need-to-exist.jpg',
+        takenAt: DateTime.now(),
+        createdAt: DateTime.now(),
+      ),
+    );
+    // Purely custom marker (no osmId/externalId) — must always be kept.
+    final customId = await db.mapMarkersDao.insert(
+      MapMarkersCompanion.insert(
+        collectionId: collectionId,
+        title: const Value('Eigener Fund'),
+        createdAt: DateTime.now(),
+      ),
+    );
+
+    final built = await db.customSelect(
+      'SELECT COUNT(*) AS c FROM map_markers',
+    ).getSingle();
+    expect(built.read<int>('c'), 4); // sanity: all 4 rows actually exist
+
+    final backup = BackupService(db);
+    final result = await backup.buildBackupZip();
+    await db.close();
+
+    final target = TraumDatabase.forTesting(NativeDatabase.memory());
+    await BackupService(target).restoreFromBytes(result.zipBytes);
+    final restoredIds = (await target.customSelect(
+      'SELECT id FROM map_markers',
+    ).get())
+        .map((r) => r.read<int>('id'))
+        .toSet();
+    await target.close();
+
+    expect(restoredIds, {ratedId, photographedId, customId});
+    expect(restoredIds.contains(1), isFalse); // the untouched bulk row
+  });
 }

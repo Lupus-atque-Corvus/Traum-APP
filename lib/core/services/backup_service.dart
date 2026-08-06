@@ -30,6 +30,32 @@ Uint8List _encodeZipArchive(Map<String, Uint8List> entries) {
   return Uint8List.fromList(zipBytes);
 }
 
+/// Encodes the backup JSON *and* the ZIP archive in one isolate call.
+///
+/// Previously only the ZIP step ran via [compute] — the JSON encoding of
+/// `backup` (`const JsonEncoder().convert(...)`) still happened synchronously
+/// on the UI isolate first. For a database with hundreds of thousands of rows
+/// (this app's bulk-imported map markers), that JSON encoding is itself the
+/// dominant cost, not the ZIP step — so it has to move too, not just ZIP.
+Uint8List _encodeBackupArchive(Map<String, dynamic> payload) {
+  final backup = payload['backup'] as Map<String, dynamic>;
+  final media = (payload['media'] as Map).cast<String, Uint8List>();
+
+  final jsonBytes = utf8.encode(const JsonEncoder().convert(backup));
+  final archive = Archive();
+  media.forEach((name, bytes) {
+    archive.addFile(ArchiveFile(name, bytes.length, bytes));
+  });
+  archive.addFile(
+      ArchiveFile(BackupService._jsonEntryName, jsonBytes.length, jsonBytes));
+
+  final zipBytes = ZipEncoder().encode(archive);
+  if (zipBytes == null) {
+    throw StateError('ZIP encoding failed');
+  }
+  return Uint8List.fromList(zipBytes);
+}
+
 /// Result of an export operation.
 class ExportResult {
   final bool success;
@@ -121,8 +147,16 @@ class BackupService {
   /// progress indicator around just this (bounded, isolate-backed) step; see
   /// [shareFile] for why the share step itself must stay outside of it.
   Future<({File file, int tableCount, int rowCount, int mediaCount})>
-      buildBackupFile() async {
-    final built = await buildBackupZip();
+      buildBackupFile({
+    void Function(int done, int total)? onTableProgress,
+    void Function(int done, int total)? onMediaProgress,
+    void Function()? onEncodingStart,
+  }) async {
+    final built = await buildBackupZip(
+      onTableProgress: onTableProgress,
+      onMediaProgress: onMediaProgress,
+      onEncodingStart: onEncodingStart,
+    );
     final dir = await getTemporaryDirectory();
     final stamp = DateTime.now()
         .toIso8601String()
@@ -158,25 +192,62 @@ class BackupService {
         ),
       );
 
-  /// Serializes every table plus referenced media into ZIP bytes. Separated from
-  /// [exportBackup] so it can be exercised without platform plugins.
+  /// Per-table `WHERE` filter, applied instead of a full `SELECT *` for
+  /// tables where that would be wasteful.
+  ///
+  /// `map_markers` is the one case: bulk-imported reference data (Türme +
+  /// Lost Places, ~496k rows from `towers.tsv`/`lost_places.json`) makes up
+  /// the overwhelming majority of the database and is fully re-seedable on a
+  /// fresh install (`TowerDataSeeder`/`LostPlaceDataSeeder`) — backing it up
+  /// every time made a full export take minutes. This excludes exactly the
+  /// *untouched* bulk rows (`osm_id`/`external_id` set, i.e. bulk-imported,
+  /// and none of note/hashtags/rating/hidden/photos ever set by the user) —
+  /// anything the user has actually edited, rated, hidden, or photographed
+  /// is kept regardless of its origin, alongside every purely custom marker.
+  static const Map<String, String> _tableWhereClauses = {
+    'map_markers': "(osm_id IS NULL AND external_id IS NULL) "
+        "OR note != '' "
+        "OR hashtags != '' "
+        "OR rating IS NOT NULL "
+        "OR is_hidden = 1 "
+        "OR id IN (SELECT DISTINCT marker_id FROM marker_photos)",
+  };
+
+  /// Serializes every table plus referenced media into ZIP bytes. Separated
+  /// from [exportBackup] so it can be exercised without platform plugins.
+  ///
+  /// [onTableProgress]/[onMediaProgress] report real progress (not a fake
+  /// spinner) for the two phases that dominate wall-clock time for a large
+  /// database: reading/serializing rows table-by-table, then reading media
+  /// files one-by-one. The final JSON+ZIP encoding is one atomic
+  /// isolate call and can't be broken into steps the same way; callers
+  /// should show an indeterminate state for that last phase.
   Future<({Uint8List zipBytes, int tableCount, int rowCount, int mediaCount})>
-      buildBackupZip() async {
+      buildBackupZip({
+    void Function(int done, int total)? onTableProgress,
+    void Function(int done, int total)? onMediaProgress,
+    void Function()? onEncodingStart,
+  }) async {
+    final allTables = _db.allTables.toList();
     final tables = <String, List<Map<String, dynamic>>>{};
     var rowCount = 0;
-    for (final table in _db.allTables) {
-      final name = table.actualTableName;
-      final rows = await _db.customSelect('SELECT * FROM "$name"').get();
+    for (var i = 0; i < allTables.length; i++) {
+      final name = allTables[i].actualTableName;
+      final where = _tableWhereClauses[name];
+      final sql =
+          where == null ? 'SELECT * FROM "$name"' : 'SELECT * FROM "$name" WHERE $where';
+      final rows = await _db.customSelect(sql).get();
       tables[name] = rows.map((r) => _jsonSafeRow(r.data)).toList();
       rowCount += rows.length;
+      onTableProgress?.call(i + 1, allTables.length);
     }
 
     // Collect media files referenced by the known path columns. Reading
     // stays here (async I/O, doesn't block the UI isolate) — only the
-    // synchronous ZIP encoding below moves to a background isolate.
-    final entries = <String, Uint8List>{};
-    final mediaManifest = <String, String>{}; // originalPath -> archive entry
-    var mediaIndex = 0;
+    // synchronous JSON+ZIP encoding below moves to a background isolate.
+    // First pass: gather candidate paths (dedup'd) so the total is known
+    // upfront for onMediaProgress; second pass: actually read the bytes.
+    final candidatePaths = <String>[];
     for (final entry in _mediaColumns.entries) {
       final rows = tables[entry.key];
       if (rows == null) continue;
@@ -184,14 +255,24 @@ class BackupService {
         for (final col in entry.value) {
           final value = row[col];
           if (value is! String || value.isEmpty) continue;
-          if (mediaManifest.containsKey(value)) continue;
-          final file = File(value);
-          if (!file.existsSync()) continue;
-          final entryName = '$_mediaPrefix${mediaIndex++}_${p.basename(value)}';
-          mediaManifest[value] = entryName;
-          entries[entryName] = Uint8List.fromList(await file.readAsBytes());
+          if (candidatePaths.contains(value)) continue;
+          candidatePaths.add(value);
         }
       }
+    }
+
+    final entries = <String, Uint8List>{};
+    final mediaManifest = <String, String>{}; // originalPath -> archive entry
+    var mediaIndex = 0;
+    for (var i = 0; i < candidatePaths.length; i++) {
+      final value = candidatePaths[i];
+      final file = File(value);
+      if (file.existsSync()) {
+        final entryName = '$_mediaPrefix${mediaIndex++}_${p.basename(value)}';
+        mediaManifest[value] = entryName;
+        entries[entryName] = Uint8List.fromList(await file.readAsBytes());
+      }
+      onMediaProgress?.call(i + 1, candidatePaths.length);
     }
 
     final backup = <String, dynamic>{
@@ -203,10 +284,12 @@ class BackupService {
           .map((e) => {'original': e.key, 'entry': e.value})
           .toList(),
     };
-    entries[_jsonEntryName] =
-        Uint8List.fromList(utf8.encode(const JsonEncoder().convert(backup)));
 
-    final zipBytes = await compute(_encodeZipArchive, entries);
+    onEncodingStart?.call();
+    final zipBytes = await compute(
+      _encodeBackupArchive,
+      {'backup': backup, 'media': entries},
+    );
 
     return (
       zipBytes: zipBytes,

@@ -2058,6 +2058,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importProgressBody => 'This can take a moment for a large file.';
 
   @override
+  String get backupProgressPhaseTables => 'Reading data…';
+
+  @override
+  String get backupProgressPhaseMedia => 'Reading photos/videos…';
+
+  @override
+  String get backupProgressPhaseEncoding => 'Packing…';
+
+  @override
   String backupCreated(int rows, int media) {
     return 'Backup created: $rows entries, $media media files';
   }

@@ -2070,6 +2070,15 @@ class AppLocalizationsDe extends AppLocalizations {
       'Das kann bei einer großen Datei einen Moment dauern.';
 
   @override
+  String get backupProgressPhaseTables => 'Daten werden gelesen…';
+
+  @override
+  String get backupProgressPhaseMedia => 'Fotos/Videos werden gelesen…';
+
+  @override
+  String get backupProgressPhaseEncoding => 'Wird gepackt…';
+
+  @override
   String backupCreated(int rows, int media) {
     return 'Backup erstellt: $rows Einträge, $media Medien';
   }

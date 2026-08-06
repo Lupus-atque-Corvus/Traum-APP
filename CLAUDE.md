@@ -1,12 +1,57 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.9.6+96** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.9.7+97** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-06 — v0.9.6, Hotfix #2: Ladedialog blieb nach dem Speichern offen)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-06 — v0.9.7, Hotfix #3: Backup dauerte mehrere Minuten)
+
+**Direktes Nutzer-Feedback zu v0.9.6: Backup lief jetzt zuverlässig durch, dauerte aber mehrere
+Minuten — Wunsch nach echtem Fortschrittsbalken statt Spinner UND spürbar schnellerer Erstellung.**
+
+**Root Cause der Langsamkeit, zwei Anteile:**
+1. **Übersehener Rest-Bug aus v0.9.5/v0.9.6:** Nur die ZIP-Kompression lief bereits im
+   Hintergrund-Isolate — die JSON-Kodierung des kompletten `tables`-Objekts
+   (`const JsonEncoder().convert(backup)`) lief weiterhin synchron auf dem Haupt-Isolate, *bevor*
+   `compute()` überhaupt aufgerufen wurde. Bei einer Datenbank mit hunderttausenden Zeilen ist
+   genau das der dominante Kostenfaktor, nicht die ZIP-Stufe.
+2. **Der eigentliche Umfang:** Die ~496.000 bulk-importierten Türme-/Lost-Places-Marker (aus
+   `towers.tsv`/`lost_places.json`) machen die überwältigende Mehrheit der Datenbank aus und
+   wurden bei *jedem* Backup vollständig mitgesichert — obwohl sie bei einer Neuinstallation
+   ohnehin automatisch neu geseedet werden.
+
+**Fix:**
+1. Neue kombinierte Isolate-Funktion `_encodeBackupArchive` in `backup_service.dart` macht JSON-
+   Kodierung UND ZIP-Kompression in einem `compute()`-Aufruf — nichts Synchrones bleibt mehr auf
+   dem Haupt-Isolate.
+2. **Gefilterte `map_markers`-Abfrage** (`_tableWhereClauses`): unveränderte Bulk-Marker (kein
+   `osm_id`/`external_id` UND leere Notiz UND leere Hashtags UND keine Bewertung UND nicht
+   ausgeblendet UND kein Foto) werden vom Voll-Backup ausgeschlossen. **Alles vom Nutzer
+   Bearbeitete bleibt erhalten** — Nutzer hat vor der Umsetzung bestätigt, dass er einzelne Marker
+   fotografiert/bearbeitet hat, daher bewusst nicht pauschal ausgeschlossen, sondern anhand
+   `note`/`hashtags`/`rating`/`is_hidden`/vorhandener `marker_photos`-Zeile gefiltert. Neuer Test
+   (`buildBackupZip keeps custom and user-touched markers, drops untouched bulk-imported ones`)
+   verifiziert genau diese vier Fälle (unverändert / bewertet / fotografiert / rein eigener
+   Marker).
+3. **Echter horizontaler Fortschrittsbalken** (`_BackupProgressBar`, `LinearProgressIndicator`)
+   ersetzt den rotierenden Spinner — mit echten Phasen: "Daten werden gelesen (X/Y Tabellen)",
+   "Fotos/Videos werden gelesen (X/Y)", "Wird gepackt…" (letzteres zwangsläufig unbestimmt, da ein
+   einzelner atomarer Isolate-Aufruf). `buildBackupZip`/`buildBackupFile` haben dafür
+   `onTableProgress`/`onMediaProgress`/`onEncodingStart`-Callbacks bekommen.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **498/498 grün** (497 vorher + 1 neuer
+Marker-Filter-Test).
+
+**Für spätere Phasen wichtig:** Dasselbe Muster (bulk-importierte, re-seedbare Referenzdaten nicht
+blind in jedes Voll-Backup packen) könnte künftig auch für die Substanzen-Referenz-DB relevant
+werden, falls die je Teil des generischen Backups würde — aktuell ist sie eine separate,
+schreibgeschützte sqlite3-Datei außerhalb von Drift und dadurch ohnehin nicht betroffen.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-06 — v0.9.6, Hotfix #2: Ladedialog blieb nach dem Speichern offen)
 
 **Direktes Nutzer-Feedback zu v0.9.5: Backup-Export fror nicht mehr ein, aber nach dem Speichern
 der Datei schloss sich der Ladedialog nicht mehr.**
