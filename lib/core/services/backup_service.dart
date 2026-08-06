@@ -96,24 +96,15 @@ class BackupService {
 
   /// Builds the full backup ZIP and opens the share sheet so the user can store
   /// it wherever they like.
+  ///
+  /// Convenience wrapper around [buildBackupFile] + [shareFile] for callers
+  /// that don't need to control the two steps separately. UI callers that
+  /// show a progress indicator should use the two methods directly instead —
+  /// see the doc comment on [shareFile] for why.
   Future<ExportResult> exportBackup() async {
     try {
-      final built = await buildBackupZip();
-      final dir = await getTemporaryDirectory();
-      final stamp = DateTime.now()
-          .toIso8601String()
-          .substring(0, 19)
-          .replaceAll(':', '-');
-      final outFile = File(p.join(dir.path, 'traum_backup_$stamp.zip'));
-      await outFile.writeAsBytes(built.zipBytes);
-
-      await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(outFile.path, mimeType: 'application/zip')],
-          subject: 'TRAUM Backup',
-        ),
-      );
-
+      final built = await buildBackupFile();
+      await shareFile(built.file, subject: 'TRAUM Backup');
       return ExportResult(
         success: true,
         tableCount: built.tableCount,
@@ -124,6 +115,48 @@ class BackupService {
       return ExportResult(error: e.toString());
     }
   }
+
+  /// Builds the full backup ZIP and writes it to a temp file — without
+  /// sharing it yet. Split out from [exportBackup] so a caller can show a
+  /// progress indicator around just this (bounded, isolate-backed) step; see
+  /// [shareFile] for why the share step itself must stay outside of it.
+  Future<({File file, int tableCount, int rowCount, int mediaCount})>
+      buildBackupFile() async {
+    final built = await buildBackupZip();
+    final dir = await getTemporaryDirectory();
+    final stamp = DateTime.now()
+        .toIso8601String()
+        .substring(0, 19)
+        .replaceAll(':', '-');
+    final outFile = File(p.join(dir.path, 'traum_backup_$stamp.zip'));
+    await outFile.writeAsBytes(built.zipBytes);
+    return (
+      file: outFile,
+      tableCount: built.tableCount,
+      rowCount: built.rowCount,
+      mediaCount: built.mediaCount,
+    );
+  }
+
+  /// Opens the OS share sheet for [file]. Deliberately NOT awaited by UI
+  /// callers around a progress dialog: on Android, the completion callback
+  /// for `Intent.createChooser` results is unreliable across versions and
+  /// share targets — some "Save to…" targets never signal completion back to
+  /// the app, so a dialog awaiting this Future can hang indefinitely even
+  /// after the user has successfully saved the file. The share sheet itself
+  /// is native OS UI and gives its own feedback; our app doesn't need to
+  /// (and reliably can't) know when it's done.
+  Future<void> shareFile(
+    File file, {
+    required String subject,
+    String mimeType = 'application/zip',
+  }) =>
+      SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(file.path, mimeType: mimeType)],
+          subject: subject,
+        ),
+      );
 
   /// Serializes every table plus referenced media into ZIP bytes. Separated from
   /// [exportBackup] so it can be exercised without platform plugins.
@@ -236,50 +269,72 @@ class BackupService {
 
   /// Exports the tables of the selected [modules] as a single JSON file (which
   /// can be re-imported) or, for `csv`, a ZIP of one CSV file per table.
+  ///
+  /// Convenience wrapper around [buildModulesFile] + [shareFile] — see the
+  /// doc comment on [shareFile] for why UI callers showing a progress
+  /// indicator should use the two methods directly instead.
   Future<ExportResult> exportModules(
     List<String> modules, {
     required String format,
   }) async {
     try {
-      final tables = await _dumpModuleTables(modules);
-      if (tables.isEmpty) {
+      final built = await buildModulesFile(modules, format: format);
+      if (built == null) {
         return const ExportResult(error: 'No modules selected');
       }
-      final rowCount =
-          tables.values.fold<int>(0, (sum, rows) => sum + rows.length);
-
-      final dir = await getTemporaryDirectory();
-      final stamp = DateTime.now()
-          .toIso8601String()
-          .substring(0, 19)
-          .replaceAll(':', '-');
-
-      final XFile shared;
-      if (format == 'csv') {
-        final csvEntries = <String, Uint8List>{
-          for (final entry in tables.entries)
-            '${entry.key}.csv': Uint8List.fromList(utf8.encode(_toCsv(entry.value))),
-        };
-        final zipBytes = await compute(_encodeZipArchive, csvEntries);
-        final file = File(p.join(dir.path, 'traum_export_$stamp.zip'));
-        await file.writeAsBytes(zipBytes);
-        shared = XFile(file.path, mimeType: 'application/zip');
-      } else {
-        final file = File(p.join(dir.path, 'traum_export_$stamp.json'));
-        await file.writeAsBytes(_encodeModulesJson(modules, tables));
-        shared = XFile(file.path, mimeType: 'application/json');
-      }
-
-      await SharePlus.instance
-          .share(ShareParams(files: [shared], subject: 'TRAUM Export'));
+      await shareFile(built.file,
+          subject: 'TRAUM Export', mimeType: built.mimeType);
       return ExportResult(
         success: true,
-        tableCount: tables.length,
-        rowCount: rowCount,
+        tableCount: built.tableCount,
+        rowCount: built.rowCount,
       );
     } catch (e) {
       return ExportResult(error: e.toString());
     }
+  }
+
+  /// Builds the selective export file (JSON or CSV-ZIP) without sharing it
+  /// yet. Returns `null` if no known module tables were selected.
+  Future<({File file, String mimeType, int tableCount, int rowCount})?>
+      buildModulesFile(
+    List<String> modules, {
+    required String format,
+  }) async {
+    final tables = await _dumpModuleTables(modules);
+    if (tables.isEmpty) return null;
+    final rowCount =
+        tables.values.fold<int>(0, (sum, rows) => sum + rows.length);
+
+    final dir = await getTemporaryDirectory();
+    final stamp = DateTime.now()
+        .toIso8601String()
+        .substring(0, 19)
+        .replaceAll(':', '-');
+
+    final File file;
+    final String mimeType;
+    if (format == 'csv') {
+      final csvEntries = <String, Uint8List>{
+        for (final entry in tables.entries)
+          '${entry.key}.csv': Uint8List.fromList(utf8.encode(_toCsv(entry.value))),
+      };
+      final zipBytes = await compute(_encodeZipArchive, csvEntries);
+      file = File(p.join(dir.path, 'traum_export_$stamp.zip'));
+      await file.writeAsBytes(zipBytes);
+      mimeType = 'application/zip';
+    } else {
+      file = File(p.join(dir.path, 'traum_export_$stamp.json'));
+      await file.writeAsBytes(_encodeModulesJson(modules, tables));
+      mimeType = 'application/json';
+    }
+
+    return (
+      file: file,
+      mimeType: mimeType,
+      tableCount: tables.length,
+      rowCount: rowCount,
+    );
   }
 
   /// Builds the importable JSON bytes for the selected [modules]. Separated so

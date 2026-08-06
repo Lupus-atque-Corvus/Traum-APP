@@ -1,3 +1,4 @@
+import 'dart:async' show unawaited;
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
@@ -1711,20 +1712,26 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
     if (!context.mounted) return;
     _showBackupProgressDialog(
         context, l10n.backupProgressTitle, l10n.backupProgressBody);
-    final result = await service.exportBackup();
-    if (!context.mounted) return;
-    _hideBackupProgressDialog(context);
-    if (result.success) {
+    try {
+      // Only the build step (bounded, isolate-backed) sits under the
+      // progress dialog. The share sheet that follows is native OS UI whose
+      // completion we can't reliably await — see BackupService.shareFile.
+      final built = await service.buildBackupFile();
+      if (!context.mounted) return;
+      _hideBackupProgressDialog(context);
+      unawaited(service.shareFile(built.file, subject: 'TRAUM Backup'));
       messenger.showSnackBar(
         SnackBar(
-          content: Text(l10n.backupCreated(result.rowCount, result.mediaCount)),
+          content: Text(l10n.backupCreated(built.rowCount, built.mediaCount)),
           backgroundColor: TraumColors.success,
         ),
       );
-    } else {
+    } catch (e) {
+      if (!context.mounted) return;
+      _hideBackupProgressDialog(context);
       messenger.showSnackBar(
         SnackBar(
-          content: Text(l10n.backupFailed(result.error ?? '')),
+          content: Text(l10n.backupFailed(e.toString())),
           backgroundColor: TraumColors.roseRed,
         ),
       );
@@ -1744,20 +1751,33 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
     if (!context.mounted) return;
     _showBackupProgressDialog(
         context, l10n.backupProgressTitle, l10n.backupProgressBody);
-    final result = await service.exportModules(selected, format: format);
-    if (!context.mounted) return;
-    _hideBackupProgressDialog(context);
-    if (result.success) {
+    try {
+      final built = await service.buildModulesFile(selected, format: format);
+      if (!context.mounted) return;
+      _hideBackupProgressDialog(context);
+      if (built == null) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(l10n.backupFailed('No modules selected')),
+            backgroundColor: TraumColors.roseRed,
+          ),
+        );
+        return;
+      }
+      unawaited(service.shareFile(built.file,
+          subject: 'TRAUM Export', mimeType: built.mimeType));
       messenger.showSnackBar(
         SnackBar(
-          content: Text(l10n.backupCreated(result.rowCount, result.mediaCount)),
+          content: Text(l10n.backupCreated(built.rowCount, 0)),
           backgroundColor: TraumColors.success,
         ),
       );
-    } else {
+    } catch (e) {
+      if (!context.mounted) return;
+      _hideBackupProgressDialog(context);
       messenger.showSnackBar(
         SnackBar(
-          content: Text(l10n.backupFailed(result.error ?? '')),
+          content: Text(l10n.backupFailed(e.toString())),
           backgroundColor: TraumColors.roseRed,
         ),
       );

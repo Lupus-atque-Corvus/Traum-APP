@@ -1,12 +1,39 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.9.5+95** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.9.6+96** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-06 — v0.9.5, Hotfix: Backup fror App ein)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-06 — v0.9.6, Hotfix #2: Ladedialog blieb nach dem Speichern offen)
+
+**Direktes Nutzer-Feedback zu v0.9.5: Backup-Export fror nicht mehr ein, aber nach dem Speichern
+der Datei schloss sich der Ladedialog nicht mehr.**
+
+**Root Cause:** Der Ladedialog wartete in v0.9.5 weiterhin auf das `await` von
+`SharePlus.instance.share(...)` — und genau dieser Completion-Callback ist auf Android über
+`Intent.createChooser`-Ergebnisse unzuverlässig: manche „Speichern unter…"-Ziele (Dateien-App,
+Drive, etc.) melden ihr Fertigsein nie zuverlässig an die aufrufende App zurück, selbst wenn der
+Nutzer die Datei erfolgreich gespeichert hat. Der Ladedialog hing dadurch auf `await` fest.
+
+**Fix:** Baustein „ZIP bauen" (isoliert, begrenzt, bereits über `compute()` entkoppelt) und
+Baustein „Teilen-Sheet öffnen" (natives OS-UI, Abschluss nicht zuverlässig beobachtbar) in
+`backup_service.dart` sauber getrennt: `buildBackupFile()`/`buildModulesFile()` bauen nur noch die
+Datei, `shareFile()` öffnet das Teilen-Sheet **unawaited** und getrennt vom Ladedialog. Der
+Ladedialog schließt jetzt direkt, nachdem die Sicherung fertig auf der Platte liegt — unabhängig
+davon, was der Nutzer im nachfolgenden Teilen-Dialog tut. `exportBackup()`/`exportModules()`
+bleiben als dünne Wrapper für Aufrufer, die die zwei Schritte nicht getrennt steuern müssen.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **497/497 grün**.
+
+**Lehre für die verbleibenden Phasen:** Bei jedem Feature, das einen OS-Share-/Save-Dialog
+anstößt, den Abschluss dieses Dialogs NICHT als Signal für „App-Arbeit fertig" verwenden — nur den
+eigenen, deterministischen Teil (Datei bauen) an Ladeanzeigen koppeln.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-06 — v0.9.5, Hotfix: Backup fror App ein)
 
 **Direktes Nutzer-Feedback zu v0.9.4: Backup-Export ließ die App manchmal einfrieren/abstürzen,
 manchmal war unklar, ob und wohin die Sicherung gespeichert wurde.**
