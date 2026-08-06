@@ -2056,6 +2056,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get backupRunning => 'Backup wird erstellt…';
 
   @override
+  String get backupProgressTitle => 'Backup wird erstellt…';
+
+  @override
+  String get backupProgressBody =>
+      'Das kann bei vielen Fotos/Videos einen Moment dauern. Danach wählst du im nächsten Dialog, wohin die Sicherung gespeichert wird (z. B. Dateien-App, Google Drive, E-Mail).';
+
+  @override
+  String get importProgressTitle => 'Backup wird eingelesen…';
+
+  @override
+  String get importProgressBody =>
+      'Das kann bei einer großen Datei einen Moment dauern.';
+
+  @override
   String backupCreated(int rows, int media) {
     return 'Backup erstellt: $rows Einträge, $media Medien';
   }

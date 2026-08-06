@@ -2045,6 +2045,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backupRunning => 'Creating backup…';
 
   @override
+  String get backupProgressTitle => 'Creating backup…';
+
+  @override
+  String get backupProgressBody =>
+      'This can take a moment with many photos/videos. Afterwards you\'ll choose where to save it (e.g. Files app, Google Drive, email).';
+
+  @override
+  String get importProgressTitle => 'Reading backup…';
+
+  @override
+  String get importProgressBody => 'This can take a moment for a large file.';
+
+  @override
   String backupCreated(int rows, int media) {
     return 'Backup created: $rows entries, $media media files';
   }

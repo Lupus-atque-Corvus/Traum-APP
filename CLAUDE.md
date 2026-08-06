@@ -1,12 +1,44 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.9.4+94** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.9.5+95** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-06 — v0.9.4, Datensicherheit: Diary-Duplikate + Migrationskette)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-06 — v0.9.5, Hotfix: Backup fror App ein)
+
+**Direktes Nutzer-Feedback zu v0.9.4: Backup-Export ließ die App manchmal einfrieren/abstürzen,
+manchmal war unklar, ob und wohin die Sicherung gespeichert wurde.**
+
+**Root Cause:** `ZipEncoder().encode(...)` (Export) und `ZipDecoder().decodeBytes(...)` (Import)
+sind synchrone, CPU-gebundene Aufrufe — liefen bislang direkt auf dem UI-Isolate. Bei vielen/
+großen Fotos blockierte das die App für die gesamte Dauer der Kodierung: kein Rendering, keine
+Touch-Events — sah aus wie ein Absturz, war bei Android teils sogar einer (ANR-Kill bei zu langer
+Nicht-Reaktion).
+
+**Fix:**
+1. Die eigentliche ZIP-Kodierung/-Dekodierung läuft jetzt über `compute()` in einem
+   Hintergrund-Isolate (`_encodeZipArchive`/`_decodeZipArchive`, top-level Funktionen in
+   `backup_service.dart`) — an allen drei Stellen: Voll-Backup, CSV-Selektiv-Export, Import.
+   DB-/Datei-Lesevorgänge (bereits async) bleiben auf dem Haupt-Isolate, nur die synchrone
+   Kodierung wandert rüber.
+2. Blockierender Fortschritts-Dialog (`_showBackupProgressDialog`/`_hideBackupProgressDialog`,
+   freistehende Funktionen in `settings_screen.dart`, genutzt von `_SecuritySectionState` UND
+   `_ExportSheetState`) ersetzt die bisherige kurze SnackBar — mit Hinweistext, dass danach der
+   native Teilen-Dialog kommt, um den Speicherort zu wählen (der existierte schon immer, kam aber
+   nie sichtbar an, weil die App vorher eingefroren war).
+3. `importBackup()` in `backup_service.dart` in `pickBackupFile()` (Datei-Auswahl) +
+   `restoreFromBytes()` (der eigentlich langsame Teil) aufgeteilt, damit der Ladedialog nur um den
+   tatsächlich langsamen Teil läuft, nicht um die native Datei-Auswahl-UI.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **497/497 grün** (unverändert — die
+Backup-Roundtrip-Tests aus v0.9.4 laufen weiterhin korrekt über die neuen `compute()`-Pfade,
+zusätzlicher gezielter Isolate-Test wäre Overkill für reines Threading-Verhalten).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-06 — v0.9.4, Datensicherheit: Diary-Duplikate + Migrationskette)
 
 **Erste Phase eines mehrteiligen Nacharbeitungs-Plans aus einem umfassenden Tiefenaudit (5 Analyse-Runden via graphify/claude-mem über die gesamte App: Architektur, alle 19 Module, Übersetzung, Performance, Sicherheit, Speicherlecks, Tests, Crash-Reporting, Backup, Barrierefreiheit, Berechtigungen, Release-Konfiguration, DB-Migrationen, Provider-Korrektheit, Suche). Plan liegt in `C:\Users\Lupus\.claude\plans\schaue-dir-mithilfe-von-agile-wozniak.md`, priorisiert in 9 Phasen. Diese Runde: Phase 1 — Datensicherheit.**
 

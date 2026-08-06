@@ -4016,6 +4016,30 @@ abstract class AppLocalizations {
   /// **'Backup wird erstellt…'**
   String get backupRunning;
 
+  /// No description provided for @backupProgressTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Backup wird erstellt…'**
+  String get backupProgressTitle;
+
+  /// No description provided for @backupProgressBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Das kann bei vielen Fotos/Videos einen Moment dauern. Danach wählst du im nächsten Dialog, wohin die Sicherung gespeichert wird (z. B. Dateien-App, Google Drive, E-Mail).'**
+  String get backupProgressBody;
+
+  /// No description provided for @importProgressTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Backup wird eingelesen…'**
+  String get importProgressTitle;
+
+  /// No description provided for @importProgressBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Das kann bei einer großen Datei einen Moment dauern.'**
+  String get importProgressBody;
+
   /// No description provided for @backupCreated.
   ///
   /// In de, this message translates to:

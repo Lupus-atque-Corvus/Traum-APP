@@ -4,11 +4,31 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:drift/drift.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show compute;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../data/database/traum_database.dart';
+
+/// Builds the ZIP archive from already-collected entry bytes. Top-level (not
+/// a method) so it can run via [compute] in a background isolate — encoding
+/// is synchronous, CPU-bound work that otherwise blocks the UI isolate for
+/// the whole duration of a large export (many/large diary photos or videos),
+/// which looks and feels exactly like a frozen or crashed app.
+Archive _decodeZipArchive(Uint8List bytes) => ZipDecoder().decodeBytes(bytes);
+
+Uint8List _encodeZipArchive(Map<String, Uint8List> entries) {
+  final archive = Archive();
+  entries.forEach((name, bytes) {
+    archive.addFile(ArchiveFile(name, bytes.length, bytes));
+  });
+  final zipBytes = ZipEncoder().encode(archive);
+  if (zipBytes == null) {
+    throw StateError('ZIP encoding failed');
+  }
+  return Uint8List.fromList(zipBytes);
+}
 
 /// Result of an export operation.
 class ExportResult {
@@ -118,8 +138,10 @@ class BackupService {
       rowCount += rows.length;
     }
 
-    // Collect media files referenced by the known path columns.
-    final archive = Archive();
+    // Collect media files referenced by the known path columns. Reading
+    // stays here (async I/O, doesn't block the UI isolate) — only the
+    // synchronous ZIP encoding below moves to a background isolate.
+    final entries = <String, Uint8List>{};
     final mediaManifest = <String, String>{}; // originalPath -> archive entry
     var mediaIndex = 0;
     for (final entry in _mediaColumns.entries) {
@@ -134,8 +156,7 @@ class BackupService {
           if (!file.existsSync()) continue;
           final entryName = '$_mediaPrefix${mediaIndex++}_${p.basename(value)}';
           mediaManifest[value] = entryName;
-          final bytes = await file.readAsBytes();
-          archive.addFile(ArchiveFile(entryName, bytes.length, bytes));
+          entries[entryName] = Uint8List.fromList(await file.readAsBytes());
         }
       }
     }
@@ -149,16 +170,13 @@ class BackupService {
           .map((e) => {'original': e.key, 'entry': e.value})
           .toList(),
     };
-    final jsonBytes = utf8.encode(const JsonEncoder().convert(backup));
-    archive.addFile(ArchiveFile(_jsonEntryName, jsonBytes.length, jsonBytes));
+    entries[_jsonEntryName] =
+        Uint8List.fromList(utf8.encode(const JsonEncoder().convert(backup)));
 
-    final zipBytes = ZipEncoder().encode(archive);
-    if (zipBytes == null) {
-      throw StateError('ZIP encoding failed');
-    }
+    final zipBytes = await compute(_encodeZipArchive, entries);
 
     return (
-      zipBytes: Uint8List.fromList(zipBytes),
+      zipBytes: zipBytes,
       tableCount: tables.length,
       rowCount: rowCount,
       mediaCount: mediaManifest.length,
@@ -238,15 +256,11 @@ class BackupService {
 
       final XFile shared;
       if (format == 'csv') {
-        final archive = Archive();
-        tables.forEach((name, rows) {
-          final csvBytes = utf8.encode(_toCsv(rows));
-          archive.addFile(ArchiveFile('$name.csv', csvBytes.length, csvBytes));
-        });
-        final zipBytes = ZipEncoder().encode(archive);
-        if (zipBytes == null) {
-          return const ExportResult(error: 'ZIP encoding failed');
-        }
+        final csvEntries = <String, Uint8List>{
+          for (final entry in tables.entries)
+            '${entry.key}.csv': Uint8List.fromList(utf8.encode(_toCsv(entry.value))),
+        };
+        final zipBytes = await compute(_encodeZipArchive, csvEntries);
         final file = File(p.join(dir.path, 'traum_export_$stamp.zip'));
         await file.writeAsBytes(zipBytes);
         shared = XFile(file.path, mimeType: 'application/zip');
@@ -332,21 +346,30 @@ class BackupService {
 
   /// Lets the user pick a backup ZIP and merges it into the database.
   Future<ImportResult> importBackup() async {
+    final bytes = await pickBackupFile();
+    if (bytes == null) {
+      return const ImportResult(cancelled: true);
+    }
+    return restoreFromBytes(bytes);
+  }
+
+  /// Opens the file picker only, without restoring anything yet. Split out
+  /// from [importBackup] so callers can show a progress indicator around
+  /// just the (potentially slow) [restoreFromBytes] step, not the native
+  /// file-picker UI. Returns `null` if the user cancelled or the file
+  /// couldn't be read.
+  Future<List<int>?> pickBackupFile() async {
     final picked = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['zip', 'json'],
       withData: true,
     );
     if (picked == null || picked.files.isEmpty) {
-      return const ImportResult(cancelled: true);
+      return null;
     }
     final file = picked.files.single;
-    final bytes = file.bytes ??
+    return file.bytes ??
         (file.path != null ? await File(file.path!).readAsBytes() : null);
-    if (bytes == null) {
-      return const ImportResult(error: 'Could not read selected file');
-    }
-    return restoreFromBytes(bytes);
   }
 
   /// Restores a backup from raw ZIP bytes. Public so it can be unit-tested.
@@ -358,8 +381,11 @@ class BackupService {
       Archive? archive;
       Map<String, dynamic> backup;
       if (isZip) {
-        archive = ZipDecoder().decodeBytes(bytes);
-        final jsonFile = archive.findFile(_jsonEntryName);
+        // Same reasoning as the export side: decoding a large archive is
+        // synchronous, CPU-bound work — off the UI isolate so a big import
+        // doesn't look like a frozen app either.
+        archive = await compute(_decodeZipArchive, Uint8List.fromList(bytes));
+        final jsonFile = archive!.findFile(_jsonEntryName);
         if (jsonFile == null) {
           return const ImportResult(error: 'No backup.json in archive');
         }

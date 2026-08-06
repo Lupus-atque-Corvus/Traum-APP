@@ -1277,6 +1277,47 @@ class _ExperimentalBadge extends StatelessWidget {
 
 // ─── Security ────────────────────────────────────────────────────────────────
 
+/// Blocking progress dialog for backup export/import — replaces a bare
+/// SnackBar, which gave no feedback while the operation ran and looked
+/// exactly like a frozen app for large exports/imports. Free function (not
+/// an instance method) since both `_SecuritySectionState` (import) and
+/// `_ExportSheetState` (export) need it.
+void _showBackupProgressDialog(
+    BuildContext context, String title, String body) {
+  showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => AlertDialog(
+      backgroundColor: TraumColors.surface,
+      title: Text(title,
+          style: const TextStyle(
+              fontFamily: 'DMSans', color: TraumColors.onBackground)),
+      content: Row(
+        children: [
+          const SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(
+                strokeWidth: 2.5, color: TraumColors.cyanBlue),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(body,
+                style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackgroundMuted,
+                    fontSize: 13)),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+void _hideBackupProgressDialog(BuildContext context) {
+  if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
+}
+
 class _SecuritySection extends ConsumerStatefulWidget {
   @override
   ConsumerState<_SecuritySection> createState() => _SecuritySectionState();
@@ -1524,8 +1565,14 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
     final messenger = ScaffoldMessenger.of(context);
     final service = ref.read(backupServiceProvider);
 
-    final result = await service.importBackup();
-    if (result.cancelled) return;
+    final picked = await service.pickBackupFile();
+    if (picked == null) return;
+    if (!context.mounted) return;
+    _showBackupProgressDialog(
+        context, l10n.importProgressTitle, l10n.importProgressBody);
+    final result = await service.restoreFromBytes(picked);
+    if (!context.mounted) return;
+    _hideBackupProgressDialog(context);
     messenger.hideCurrentSnackBar();
     if (result.success) {
       messenger.showSnackBar(
@@ -1661,9 +1708,12 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
     final messenger = ScaffoldMessenger.of(context);
     final service = ref.read(backupServiceProvider);
     Navigator.pop(context);
-    messenger.showSnackBar(SnackBar(content: Text(l10n.backupRunning)));
+    if (!context.mounted) return;
+    _showBackupProgressDialog(
+        context, l10n.backupProgressTitle, l10n.backupProgressBody);
     final result = await service.exportBackup();
-    messenger.hideCurrentSnackBar();
+    if (!context.mounted) return;
+    _hideBackupProgressDialog(context);
     if (result.success) {
       messenger.showSnackBar(
         SnackBar(
@@ -1691,9 +1741,12 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
         .toList();
     final format = _format;
     Navigator.pop(context);
-    messenger.showSnackBar(SnackBar(content: Text(l10n.backupRunning)));
+    if (!context.mounted) return;
+    _showBackupProgressDialog(
+        context, l10n.backupProgressTitle, l10n.backupProgressBody);
     final result = await service.exportModules(selected, format: format);
-    messenger.hideCurrentSnackBar();
+    if (!context.mounted) return;
+    _hideBackupProgressDialog(context);
     if (result.success) {
       messenger.showSnackBar(
         SnackBar(

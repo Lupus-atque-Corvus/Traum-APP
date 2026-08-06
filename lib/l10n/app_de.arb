@@ -904,6 +904,10 @@
   "exportSelection": "Auswahl exportieren",
   "importData": "Daten importieren",
   "backupRunning": "Backup wird erstellt…",
+  "backupProgressTitle": "Backup wird erstellt…",
+  "backupProgressBody": "Das kann bei vielen Fotos/Videos einen Moment dauern. Danach wählst du im nächsten Dialog, wohin die Sicherung gespeichert wird (z. B. Dateien-App, Google Drive, E-Mail).",
+  "importProgressTitle": "Backup wird eingelesen…",
+  "importProgressBody": "Das kann bei einer großen Datei einen Moment dauern.",
   "backupCreated": "Backup erstellt: {rows} Einträge, {media} Medien",
   "@backupCreated": {
     "placeholders": {
