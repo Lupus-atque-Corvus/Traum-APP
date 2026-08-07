@@ -1929,7 +1929,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get notificationsSection => 'Benachrichtigungen';
 
   @override
-  String get notifMedication => 'Medikamente';
+  String get notifMedicationHint =>
+      'Medikamenten-Erinnerungen stellst du direkt bei jedem Medikament unter „Meine Mittel“ ein — nicht hier zentral.';
 
   @override
   String get notifSupplements => 'Supplements';

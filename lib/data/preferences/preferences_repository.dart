@@ -154,10 +154,10 @@ class PreferencesRepository {
       _prefs.setDouble('monthly_budget', v);
 
   // Notifications
-  bool get notifMedication => _prefs.getBool('notif_medication') ?? true;
-  Future<void> setNotifMedication(bool v) =>
-      _prefs.setBool('notif_medication', v);
-
+  //
+  // No `notifMedication`/`notifMedicationTime` here on purpose — medications
+  // are reminded per-medication (each carries its own intake times), not via
+  // a single shared toggle+time like the categories below.
   bool get notifSupplement => _prefs.getBool('notif_supplement') ?? true;
   Future<void> setNotifSupplement(bool v) =>
       _prefs.setBool('notif_supplement', v);
@@ -181,11 +181,6 @@ class PreferencesRepository {
   Future<void> setNotifBudget(bool v) => _prefs.setBool('notif_budget', v);
 
   // Notification times
-  String get notifMedicationTime =>
-      _prefs.getString('notif_medication_time') ?? '08:00';
-  Future<void> setNotifMedicationTime(String v) =>
-      _prefs.setString('notif_medication_time', v);
-
   String get notifSupplementTime =>
       _prefs.getString('notif_supplement_time') ?? '09:00';
   Future<void> setNotifSupplementTime(String v) =>

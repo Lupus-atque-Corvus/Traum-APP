@@ -70,7 +70,8 @@ class NotificationService {
   /// Fixed notification ids for the single, settings-driven daily reminders.
   /// Per-medication reminders (multiple times, multiple medications) use
   /// [medicationReminderId] instead and must not collide with these.
-  static const int _medicationGenericId = 1;
+  /// (Id 1 is intentionally retired, not reused — it was the old blanket
+  /// "Medikamente" reminder, replaced entirely by per-medication reminders.)
   static const int _workoutId = 2;
   static const int _habitId = 3;
   static const int _supplementId = 4;
@@ -257,29 +258,19 @@ class NotificationService {
   /// reschedule the same way they were originally added, and previously
   /// they didn't: [cancelAll] below wiped them and nothing put them back).
   ///
-  /// [prefs] keys: `notif_medication`(+`_time`), `notif_supplement`(+`_time`),
-  /// `notif_workout`(+`_time`), `notif_habit`(+`_time`), `notif_todo`(+`_time`),
-  /// `notif_water`(+`_interval`, minutes), `notif_period`(+`_days`,
-  /// `_next_date` as `DateTime?` — the predicted next period start, or null
-  /// if unknown/period tracking disabled).
+  /// [prefs] keys: `notif_supplement`(+`_time`), `notif_workout`(+`_time`),
+  /// `notif_habit`(+`_time`), `notif_todo`(+`_time`), `notif_water`
+  /// (+`_interval`, minutes), `notif_period`(+`_days`, `_next_date` as
+  /// `DateTime?` — the predicted next period start, or null if unknown/
+  /// period tracking disabled). No `notif_medication` key — medications are
+  /// always rebuilt below from their own per-medication intake times,
+  /// regardless of any settings toggle.
   static Future<void> rescheduleAll(
     Map<String, dynamic> prefs, {
     required TraumDatabase db,
   }) async {
     await cancelAll();
 
-    if (prefs['notif_medication'] == true) {
-      final time = (prefs['notif_medication_time'] as String?) ?? '08:00';
-      final parts = time.split(':');
-      await scheduleDailyAt(
-        id: _medicationGenericId,
-        title: 'Medikamente',
-        body: 'Zeit für deine Medikamente',
-        hour: int.parse(parts[0]),
-        minute: int.parse(parts[1]),
-        channelId: 'medication',
-      );
-    }
     if (prefs['notif_supplement'] == true) {
       final time = (prefs['notif_supplement_time'] as String?) ?? '09:00';
       final parts = time.split(':');

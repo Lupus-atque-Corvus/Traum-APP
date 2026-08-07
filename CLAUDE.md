@@ -1,12 +1,74 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.10.0+100** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.1+101** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-07 — v0.10.0, Phase 2: Sicherheit & Erinnerungen)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-07 — v1.0.1, Nachbesserung zu Phase 2: Medikamenten-Erinnerungen)
+
+**Versionshinweis vorab:** Dieser Release heißt `v1.0.1`, nicht `v0.10.1` — der Nutzer hat direkt
+in dieser Runde auf einen Fehler in der eigenen Anwendung von Non-Negotiable #17 hingewiesen: die
+Regel "jede Ziffer läuft nur 0–9" gilt für **minor genauso wie für patch**, nicht nur für patch.
+Nach `0.9.9` hätte `1.0.0` kommen müssen, nicht `0.10.0`. Der bereits veröffentlichte
+`v0.10.0`-Tag/-Release bleibt unverändert (kein Force-Rewrite eines publizierten Tags), zählt aber
+gedanklich als `1.0.0` — Details dazu direkt bei Regel #17 weiter unten.
+
+**Direktes Nutzer-Feedback zu v0.10.0, zwei Punkte in einer Nachricht:**
+> „die Erinnerung für jedes Medikament einzelnt einstellbar nicht für alle in den Einstellungen
+> und es kommt keine benachrichtigung generell kommt keine benachrichtigung der rest geht“
+
+**Punkt 1 — Design-Korrektur, nicht nur Bugfix.** Analyse des Codes zeigte: Es gab bereits *zwei
+parallele* Medikamenten-Erinnerungssysteme. (a) Jedes Medikament bekommt beim Anlegen eigene,
+individuell konfigurierte Einnahmezeiten — das lief bereits unabhängig von jedem Einstellungen-
+Schalter. (b) Zusätzlich existierte in Einstellungen → Benachrichtigungen ein generischer
+„Medikamente"-Schalter mit EINER gemeinsamen Uhrzeit (`notif_medication`/`notif_medication_time`,
+Notification-ID 1) — eine komplett separate, pauschale Erinnerung ohne jeden Bezug zu den echten
+Medikamenten. Genau dieser zweite, verwirrende Schalter ist das, was der Nutzer zu Recht als
+unpassend empfand: „für alle in den Einstellungen" statt „für jedes Medikament einzeln".
+**Fix:** Der generische Schalter (b) wurde vollständig entfernt — `PreferencesRepository.
+notifMedication`/`notifMedicationTime`, der zugehörige `notifMedicationProvider`, der
+`id=1`-Block in `NotificationService.rescheduleAll()`, die ARB-Keys `notifMedication`. Statt der
+toten Kachel zeigt der Benachrichtigungen-Bereich jetzt einen Hinweistext
+(`notifMedicationHint`): „Medikamenten-Erinnerungen stellst du direkt bei jedem Medikament unter
+‚Meine Mittel' ein — nicht hier zentral." Die persistente Berechtigungswarnung berücksichtigt
+jetzt `allMedicationsStreamProvider` (aktive Medikamente mit konfigurierten Zeiten), damit sie
+auch für reine Medikamenten-Nutzer ohne sonstige aktivierte Erinnerungskategorie greift.
+
+**Punkt 2 — echter, struktureller Bug gefunden (nicht nur vermutet, aber ohne Live-Gerät nicht zu
+100 % verifizierbar).** `rescheduleAllNotifications()` (der zentrale Neuaufbau-Mechanismus aus
+Phase 2) wurde bislang **ausschließlich durch explizite Nutzerinteraktion** ausgelöst — ein
+Einstellungen-Toggle, oder Medikament hinzufügen/löschen/(de)aktivieren. Es gab **keinen Aufruf
+beim App-Start.** Für jeden, der seine Erinnerungen unter einer älteren App-Version eingerichtet
+hatte (inkl. der kollidierenden `id: 100+i`-Schemas aus vor v0.10.0) und seitdem keinen
+Benachrichtigungs-Schalter mehr angefasst hat, wurden die Erinnerungen nie auf den aktuellen,
+korrekten Stand migriert — sie blieben, was auch immer beim letzten manuellen Touch geplant wurde
+(oder gar nichts, falls nie manuell angefasst).
+**Fix:** `main.dart` baut jetzt einen expliziten `ProviderContainer` (über
+`UncontrolledProviderScope` statt `ProviderScope`, damit `main()` selbst Zugriff auf ihn behält)
+und ruft `rescheduleAllNotifications(container)` bei **jedem Kaltstart** im bestehenden
+`addPostFrameCallback` auf, direkt nach `NotificationService.init()`. Damit synchronisiert sich
+der Erinnerungs-Zustand garantiert bei jedem App-Start neu aus DB/Preferences, unabhängig davon,
+ob der Nutzer je einen Schalter berührt.
+**Ehrlich eingeordnet:** Dies ist die plausibelste, am besten zur Fehlerbeschreibung passende
+Ursache — aber ohne Zugriff auf das reale Gerät (kein USB-Debugging in dieser Runde) nicht per
+`adb logcat` verifizierbar. Falls das Problem nach v1.0.1 fortbesteht, braucht es einen Live-Test
+wie bei der Backup-Performance-Diagnose in Phase 1.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **514/514 grün** (unverändert — reine
+Verhaltensänderung an bereits getesteten Pfaden, kein neuer Testbedarf für die reine
+Schalter-Entfernung; der Startup-Reschedule ist dieselbe Funktion, die `pin_service_test.dart`/
+`notification_service_test.dart` bereits über `medicationReminderId`/`hasPermission` abdecken).
+
+**Für dich zu prüfen:** Am saubersten testbar über ein **neu angelegtes** Medikament mit
+Erinnerungszeit (garantiert über den neuen Pfad geplant) — kommt die Erinnerung zur eingestellten
+Zeit? Falls ja, ist der Startup-Reschedule vermutlich die tatsächliche Ursache gewesen. Falls
+weiterhin nichts kommt: bitte melden, dann brauchen wir einen Live-Test mit deinem Handy per USB.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-07 — v0.10.0, Phase 2: Sicherheit & Erinnerungen)
 
 **Zweite Phase des Nacharbeitungs-Plans aus dem Tiefenaudit
 (`C:\Users\Lupus\.claude\plans\schaue-dir-mithilfe-von-agile-wozniak.md`). Phase 1
@@ -1133,13 +1195,21 @@ periodRose: #FF8FAB · ovulationCyan: #00C9C8 · fertileCyan: #0093AB
 14. **Widget-Deep-Links validieren** gegen `widgetCatalog` (keine beliebigen Routen zulassen)
 15. **`flutter analyze` → Ziel 0 Issues** vor jedem Commit (keine `withOpacity`, `child:` als letztes Property)
 16. **`flutter test`** muss grün bleiben (aktuell 200+ Tests unter test/features/…)
-17. **Versionierung:** `major.minor.patch+build`. Die `patch`-Ziffer läuft nur **0–9** — beim
-    nächsten Release nach `x.y.9` kommt **`x.(y+1).0`**, nicht `x.y.10` (z.B. `0.9.9` → `0.10.0`,
-    nicht `0.9.10`). Der `build`-Zähler (`+N`) zählt bei jedem Release unabhängig davon einfach
-    um 1 weiter, unabhängig vom Patch-Rollover. `major` wechselt nur nach expliziter
-    Nutzer-Ansage. Den `version:`-Eintrag in `pubspec.yaml` entsprechend pflegen.
-    (Historisch: Bis Build +79 lag die Version bei 0.7.x, ab +80 bei 0.8.0 — diese Regel hier
-    gilt ab v0.9.3+93 verbindlich für alle künftigen Releases.)
+17. **Versionierung:** `major.minor.patch+build`. **Jede Ziffer läuft nur 0–9** — wie ein
+    Kilometerzähler, nicht nur die `patch`-Ziffer. Nach `x.y.9` kommt `x.(y+1).0`; wenn dabei
+    auch `minor` bereits bei 9 stand, kommt `(x+1).0.0` (z.B. `0.9.9` → `1.0.0`, **nicht**
+    `0.10.0` — `0.10` liest sich wie „Punkt-eins-null" und ist genau die Verwechslungsgefahr,
+    die diese Regel vermeiden soll). Der `build`-Zähler (`+N`) zählt bei jedem Release
+    unabhängig davon einfach um 1 weiter. Den `version:`-Eintrag in `pubspec.yaml` entsprechend
+    pflegen.
+    (Historisch: Bis Build +79 lag die Version bei 0.7.x, ab +80 bei 0.8.0. Ab v0.9.3+93 galt
+    die erste Fassung dieser Regel — patch 0–9 → minor+1 —, wurde aber am 2026-08-07 falsch auf
+    den Minor/Major-Übergang angewendet: der auf v0.9.9 folgende Release wurde fälschlich
+    `v0.10.0` statt `v1.0.0` getaggt und veröffentlicht. Dieser bereits publizierte Tag/Release
+    bleibt unverändert stehen (kein Force-Rewrite eines veröffentlichten Tags) — gedanklich zählt
+    er aber als `1.0.0`. Ab dem direkt darauffolgenden Release gilt die oben stehende, korrigierte
+    Fassung der Regel verbindlich: `v1.0.1+101` ist der erste Release unter der korrigierten
+    Zählung.)
 18. **Releases sind ab v0.8.5 wieder Release-Builds** (`flutter build apk --release`).
     Kein eigener Keystore nötig: `android/app/build.gradle.kts:57-70` fällt ohne
     `key.properties` automatisch auf die Debug-Signatur zurück, `isMinifyEnabled` + ProGuard

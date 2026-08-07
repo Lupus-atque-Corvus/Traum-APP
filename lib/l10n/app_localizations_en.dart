@@ -1919,7 +1919,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsSection => 'Notifications';
 
   @override
-  String get notifMedication => 'Medication';
+  String get notifMedicationHint =>
+      'Set medication reminders directly on each medication under \"My substances\" — not centrally here.';
 
   @override
   String get notifSupplements => 'Supplements';

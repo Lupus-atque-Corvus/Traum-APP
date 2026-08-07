@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
+import 'core/notifications/notification_scheduler.dart';
 import 'core/notifications/notification_service.dart';
 import 'core/providers/database_provider.dart';
 import 'core/providers/preferences_provider.dart';
@@ -41,12 +42,21 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   final db = TraumDatabase();
 
+  // A plain ProviderContainer (attached via UncontrolledProviderScope rather
+  // than ProviderScope's own internal one) so main() can reach providers
+  // directly below — needed to rebuild scheduled notifications once at
+  // startup, the same way rescheduleAllNotifications() is called after a
+  // Settings toggle or medication change.
+  final container = ProviderContainer(
+    overrides: [
+      sharedPreferencesProvider.overrideWithValue(prefs),
+      databaseProvider.overrideWithValue(db),
+    ],
+  );
+
   runApp(
-    ProviderScope(
-      overrides: [
-        sharedPreferencesProvider.overrideWithValue(prefs),
-        databaseProvider.overrideWithValue(db),
-      ],
+    UncontrolledProviderScope(
+      container: container,
       child: const TraumApp(),
     ),
   );
@@ -65,6 +75,14 @@ void main() async {
       WidgetDataService.init(),
       NotificationService.init(),
     ]);
+    // Rebuild every scheduled notification from current DB/prefs state on
+    // every cold start — not just when a Settings toggle or medication is
+    // touched. Without this, reminders configured in a previous app version
+    // (or before notification permission was granted) never got a chance to
+    // re-sync onto the current, correct scheduling logic; they just stayed
+    // whatever they were (or weren't) until the user happened to touch a
+    // notification setting again, which for most users is never.
+    await rescheduleAllNotifications(container);
     // Register the periodic background widget refresh (internally guarded).
     await registerWidgetPeriodicRefresh();
 

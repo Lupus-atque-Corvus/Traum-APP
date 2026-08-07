@@ -3770,11 +3770,11 @@ abstract class AppLocalizations {
   /// **'Benachrichtigungen'**
   String get notificationsSection;
 
-  /// No description provided for @notifMedication.
+  /// No description provided for @notifMedicationHint.
   ///
   /// In de, this message translates to:
-  /// **'Medikamente'**
-  String get notifMedication;
+  /// **'Medikamenten-Erinnerungen stellst du direkt bei jedem Medikament unter „Meine Mittel“ ein — nicht hier zentral.'**
+  String get notifMedicationHint;
 
   /// No description provided for @notifSupplements.
   ///

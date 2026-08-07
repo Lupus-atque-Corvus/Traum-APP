@@ -423,7 +423,10 @@ class _NotificationsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final repo = ref.read(preferencesRepositoryProvider);
-    final medication = ref.watch(notifMedicationProvider);
+    final medsAsync = ref.watch(allMedicationsStreamProvider);
+    final hasMedicationReminder = medsAsync.value
+            ?.any((m) => m.isActive && m.timings != '[]') ??
+        false;
     final supplement = ref.watch(notifSupplementProvider);
     final workout = ref.watch(notifWorkoutProvider);
     final water = ref.watch(notifWaterProvider);
@@ -432,7 +435,7 @@ class _NotificationsSection extends ConsumerWidget {
     final period = ref.watch(notifPeriodProvider);
     final periodEnabled = ref.watch(isPeriodTrackingEnabledProvider);
     final permissionAsync = ref.watch(_notificationPermissionStatusProvider);
-    final anyReminderEnabled = medication ||
+    final anyReminderEnabled = hasMedicationReminder ||
         supplement ||
         workout ||
         water ||
@@ -454,21 +457,16 @@ class _NotificationsSection extends ConsumerWidget {
                 },
               ),
             ),
-          _NotifTile(
-            title: l10n.notifMedication,
-            value: medication,
-            time: repo.notifMedicationTime,
-            onChanged: (v) async {
-              await ref.read(notifMedicationProvider.notifier).set(v);
-              if (!context.mounted) return;
-              await _reschedule(context, ref);
-            },
-            onTimeTap: () =>
-                _pickTime(context, ref, repo.notifMedicationTime, (t) async {
-                  await repo.setNotifMedicationTime(t);
-                  if (!context.mounted) return;
-                  await _reschedule(context, ref);
-                }),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: Text(
+              l10n.notifMedicationHint,
+              style: const TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 12,
+              ),
+            ),
           ),
           _NotifTile(
             title: l10n.notifSupplements,

@@ -856,7 +856,7 @@
   "metricSwitch": "Metric",
   "metricSwitchSubtitle": "kg, cm, km",
   "notificationsSection": "Notifications",
-  "notifMedication": "Medication",
+  "notifMedicationHint": "Set medication reminders directly on each medication under \"My substances\" — not centrally here.",
   "notifSupplements": "Supplements",
   "notifTraining": "Training",
   "notifWater": "Water",
