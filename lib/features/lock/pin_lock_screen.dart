@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +20,8 @@ class _PinLockScreenState extends State<PinLockScreen>
   String _pin = '';
   String? _error;
   bool _verifying = false;
+  int _lockedSecondsRemaining = 0;
+  Timer? _lockoutTimer;
   late final AnimationController _shakeController;
   late final Animation<double> _shakeAnimation;
 
@@ -33,16 +37,49 @@ class _PinLockScreenState extends State<PinLockScreen>
     _shakeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn),
     );
+    _checkLockout();
   }
 
   @override
   void dispose() {
+    _lockoutTimer?.cancel();
     _shakeController.dispose();
     super.dispose();
   }
 
+  Future<void> _checkLockout() async {
+    final until = await PinService.getLockedUntil();
+    if (!mounted) return;
+    if (until == null) {
+      _lockoutTimer?.cancel();
+      if (_lockedSecondsRemaining != 0) {
+        setState(() => _lockedSecondsRemaining = 0);
+      }
+      return;
+    }
+    setState(() {
+      _lockedSecondsRemaining = until.difference(DateTime.now()).inSeconds + 1;
+    });
+    _lockoutTimer?.cancel();
+    _lockoutTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      final remaining = until.difference(DateTime.now()).inSeconds + 1;
+      if (!mounted) return;
+      if (remaining <= 0) {
+        _lockoutTimer?.cancel();
+        setState(() {
+          _lockedSecondsRemaining = 0;
+          _error = null;
+        });
+      } else {
+        setState(() => _lockedSecondsRemaining = remaining);
+      }
+    });
+  }
+
   void _addDigit(String digit) {
-    if (_pin.length >= _maxLength || _verifying) return;
+    if (_pin.length >= _maxLength || _verifying || _lockedSecondsRemaining > 0) {
+      return;
+    }
     setState(() {
       _pin += digit;
       _error = null;
@@ -53,7 +90,7 @@ class _PinLockScreenState extends State<PinLockScreen>
   }
 
   void _removeDigit() {
-    if (_pin.isEmpty || _verifying) return;
+    if (_pin.isEmpty || _verifying || _lockedSecondsRemaining > 0) return;
     setState(() => _pin = _pin.substring(0, _pin.length - 1));
   }
 
@@ -67,11 +104,13 @@ class _PinLockScreenState extends State<PinLockScreen>
     } else {
       HapticFeedback.heavyImpact();
       await _shakeController.forward(from: 0);
+      if (!mounted) return;
       setState(() {
         _pin = '';
         _error = l10n.wrongPin;
         _verifying = false;
       });
+      await _checkLockout();
     }
   }
 
@@ -151,10 +190,12 @@ class _PinLockScreenState extends State<PinLockScreen>
                     ),
                   ),
                 ),
-                if (_error != null) ...[
+                if (_lockedSecondsRemaining > 0 || _error != null) ...[
                   const SizedBox(height: 12),
                   Text(
-                    _error!,
+                    _lockedSecondsRemaining > 0
+                        ? l10n.pinLocked(_lockedSecondsRemaining)
+                        : _error!,
                     style: const TextStyle(
                       color: TraumColors.roseRed,
                       fontFamily: 'DMSans',
@@ -167,7 +208,7 @@ class _PinLockScreenState extends State<PinLockScreen>
                 _Numpad(
                   onDigit: _addDigit,
                   onDelete: _removeDigit,
-                  enabled: !_verifying,
+                  enabled: !_verifying && _lockedSecondsRemaining == 0,
                 ),
               ],
             ),

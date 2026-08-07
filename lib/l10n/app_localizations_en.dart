@@ -1240,6 +1240,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get wrongPin => 'Wrong PIN';
 
   @override
+  String pinLocked(int seconds) {
+    return 'Too many failed attempts. Try again in ${seconds}s.';
+  }
+
+  @override
   String get activeLabel => 'Active';
 
   @override
@@ -1938,6 +1943,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String notifDailyAt(String time) {
     return 'Daily at $time';
   }
+
+  @override
+  String get notifPermissionDeniedTitle => 'Notifications disabled';
+
+  @override
+  String get notifPermissionDeniedMessage =>
+      'Reminders won\'t show up until Traum has notification permission in your system settings.';
 
   @override
   String get goals => 'Goals';

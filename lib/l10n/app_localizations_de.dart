@@ -1248,6 +1248,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get wrongPin => 'Falscher PIN';
 
   @override
+  String pinLocked(int seconds) {
+    return 'Zu viele Fehlversuche. Erneut versuchen in ${seconds}s.';
+  }
+
+  @override
   String get activeLabel => 'Aktiv';
 
   @override
@@ -1948,6 +1953,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String notifDailyAt(String time) {
     return 'Täglich um $time';
   }
+
+  @override
+  String get notifPermissionDeniedTitle => 'Benachrichtigungen deaktiviert';
+
+  @override
+  String get notifPermissionDeniedMessage =>
+      'Erinnerungen werden nicht angezeigt, solange Traum in den Systemeinstellungen keine Benachrichtigungs-Berechtigung hat.';
 
   @override
   String get goals => 'Ziele';

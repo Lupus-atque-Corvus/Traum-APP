@@ -524,6 +524,14 @@
   "biometricNotAvailableUsePin": "Biometrie nicht verfügbar. Bitte PIN verwenden.",
   "enterPin": "PIN eingeben",
   "wrongPin": "Falscher PIN",
+  "pinLocked": "Zu viele Fehlversuche. Erneut versuchen in {seconds}s.",
+  "@pinLocked": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "activeLabel": "Aktiv",
   "addMedication": "Medikament hinzufügen",
   "dosage": "Dosierung",
@@ -863,6 +871,8 @@
       }
     }
   },
+  "notifPermissionDeniedTitle": "Benachrichtigungen deaktiviert",
+  "notifPermissionDeniedMessage": "Erinnerungen werden nicht angezeigt, solange Traum in den Systemeinstellungen keine Benachrichtigungs-Berechtigung hat.",
   "goals": "Ziele",
   "kcalGoalLabel": "Kalorienziel",
   "proteinGoalLabel": "Proteinziel (g)",

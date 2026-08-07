@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:permission_handler/permission_handler.dart' show openAppSettings;
 import 'package:share_plus/share_plus.dart';
 import '../../core/navigation/nav_customization_sheet.dart';
 import '../../core/providers/database_provider.dart';
@@ -21,6 +22,7 @@ import '../../core/services/calendar_sync_service.dart' show NativeCalendar;
 import '../planning/calendar_picker_dialog.dart';
 import 'feedback/feedback_bottom_sheet.dart';
 import '../../core/navigation/routes.dart';
+import '../../core/notifications/notification_scheduler.dart';
 import '../../core/notifications/notification_service.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/security/pin_service.dart';
@@ -413,6 +415,9 @@ class _UnitsSection extends ConsumerWidget {
 
 // ─── Notifications ───────────────────────────────────────────────────────────
 
+final _notificationPermissionStatusProvider =
+    FutureProvider.autoDispose<bool>((ref) => NotificationService.hasPermission());
+
 class _NotificationsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -426,23 +431,43 @@ class _NotificationsSection extends ConsumerWidget {
     final todo = ref.watch(notifTodoProvider);
     final period = ref.watch(notifPeriodProvider);
     final periodEnabled = ref.watch(isPeriodTrackingEnabledProvider);
+    final permissionAsync = ref.watch(_notificationPermissionStatusProvider);
+    final anyReminderEnabled = medication ||
+        supplement ||
+        workout ||
+        water ||
+        habit ||
+        todo ||
+        (periodEnabled && period);
 
     return _Section(
       title: l10n.notificationsSection,
       child: Column(
         children: [
+          if (anyReminderEnabled && permissionAsync.value == false)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _NotificationPermissionWarning(
+                onOpenSettings: () async {
+                  await openAppSettings();
+                  ref.invalidate(_notificationPermissionStatusProvider);
+                },
+              ),
+            ),
           _NotifTile(
             title: l10n.notifMedication,
             value: medication,
             time: repo.notifMedicationTime,
             onChanged: (v) async {
               await ref.read(notifMedicationProvider.notifier).set(v);
-              await _reschedule(ref);
+              if (!context.mounted) return;
+              await _reschedule(context, ref);
             },
             onTimeTap: () =>
                 _pickTime(context, ref, repo.notifMedicationTime, (t) async {
                   await repo.setNotifMedicationTime(t);
-                  await _reschedule(ref);
+                  if (!context.mounted) return;
+                  await _reschedule(context, ref);
                 }),
           ),
           _NotifTile(
@@ -451,12 +476,14 @@ class _NotificationsSection extends ConsumerWidget {
             time: repo.notifSupplementTime,
             onChanged: (v) async {
               await ref.read(notifSupplementProvider.notifier).set(v);
-              await _reschedule(ref);
+              if (!context.mounted) return;
+              await _reschedule(context, ref);
             },
             onTimeTap: () =>
                 _pickTime(context, ref, repo.notifSupplementTime, (t) async {
                   await repo.setNotifSupplementTime(t);
-                  await _reschedule(ref);
+                  if (!context.mounted) return;
+                  await _reschedule(context, ref);
                 }),
           ),
           _NotifTile(
@@ -465,12 +492,14 @@ class _NotificationsSection extends ConsumerWidget {
             time: repo.notifWorkoutTime,
             onChanged: (v) async {
               await ref.read(notifWorkoutProvider.notifier).set(v);
-              await _reschedule(ref);
+              if (!context.mounted) return;
+              await _reschedule(context, ref);
             },
             onTimeTap: () =>
                 _pickTime(context, ref, repo.notifWorkoutTime, (t) async {
                   await repo.setNotifWorkoutTime(t);
-                  await _reschedule(ref);
+                  if (!context.mounted) return;
+                  await _reschedule(context, ref);
                 }),
           ),
           _NotifTile(
@@ -479,7 +508,8 @@ class _NotificationsSection extends ConsumerWidget {
             time: null,
             onChanged: (v) async {
               await ref.read(notifWaterProvider.notifier).set(v);
-              await _reschedule(ref);
+              if (!context.mounted) return;
+              await _reschedule(context, ref);
             },
             onTimeTap: null,
           ),
@@ -489,12 +519,14 @@ class _NotificationsSection extends ConsumerWidget {
             time: repo.notifHabitTime,
             onChanged: (v) async {
               await ref.read(notifHabitProvider.notifier).set(v);
-              await _reschedule(ref);
+              if (!context.mounted) return;
+              await _reschedule(context, ref);
             },
             onTimeTap: () =>
                 _pickTime(context, ref, repo.notifHabitTime, (t) async {
                   await repo.setNotifHabitTime(t);
-                  await _reschedule(ref);
+                  if (!context.mounted) return;
+                  await _reschedule(context, ref);
                 }),
           ),
           _NotifTile(
@@ -503,12 +535,14 @@ class _NotificationsSection extends ConsumerWidget {
             time: repo.notifTodoTime,
             onChanged: (v) async {
               await ref.read(notifTodoProvider.notifier).set(v);
-              await _reschedule(ref);
+              if (!context.mounted) return;
+              await _reschedule(context, ref);
             },
             onTimeTap: () =>
                 _pickTime(context, ref, repo.notifTodoTime, (t) async {
                   await repo.setNotifTodoTime(t);
-                  await _reschedule(ref);
+                  if (!context.mounted) return;
+                  await _reschedule(context, ref);
                 }),
           ),
           if (periodEnabled)
@@ -518,7 +552,8 @@ class _NotificationsSection extends ConsumerWidget {
               time: null,
               onChanged: (v) async {
                 await ref.read(notifPeriodProvider.notifier).set(v);
-                await _reschedule(ref);
+                if (!context.mounted) return;
+                await _reschedule(context, ref);
               },
               onTimeTap: null,
             ),
@@ -527,16 +562,23 @@ class _NotificationsSection extends ConsumerWidget {
     );
   }
 
-  Future<void> _reschedule(WidgetRef ref) async {
-    final repo = ref.read(preferencesRepositoryProvider);
-    await NotificationService.rescheduleAll({
-      'notif_medication': repo.notifMedication,
-      'notif_medication_time': repo.notifMedicationTime,
-      'notif_workout': repo.notifWorkout,
-      'notif_workout_time': repo.notifWorkoutTime,
-      'notif_habit': repo.notifHabit,
-      'notif_habit_time': repo.notifHabitTime,
-    });
+  Future<void> _reschedule(BuildContext context, WidgetRef ref) async {
+    final granted = await rescheduleAllNotifications(
+      ProviderScope.containerOf(context, listen: false),
+    );
+    ref.invalidate(_notificationPermissionStatusProvider);
+    if (!granted && context.mounted) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.notifPermissionDeniedMessage),
+          action: SnackBarAction(
+            label: l10n.openSettings,
+            onPressed: openAppSettings,
+          ),
+        ),
+      );
+    }
   }
 
   Future<void> _pickTime(
@@ -565,6 +607,61 @@ class _NotificationsSection extends ConsumerWidget {
           '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
       await onSave(formatted);
     }
+  }
+}
+
+class _NotificationPermissionWarning extends StatelessWidget {
+  final VoidCallback onOpenSettings;
+
+  const _NotificationPermissionWarning({required this.onOpenSettings});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: TraumColors.roseRed.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(TraumRadius.card),
+        border: Border.all(color: TraumColors.roseRed.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.notifications_off_rounded,
+              color: TraumColors.roseRed, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.notifPermissionDeniedTitle,
+                  style: const TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  l10n.notifPermissionDeniedMessage,
+                  style: const TextStyle(
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: onOpenSettings,
+            child: Text(l10n.openSettings),
+          ),
+        ],
+      ),
+    );
   }
 }
 

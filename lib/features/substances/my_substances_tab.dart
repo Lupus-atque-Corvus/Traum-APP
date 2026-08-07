@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart' show openAppSettings;
 import '../../core/components/components.dart';
-import '../../core/notifications/notification_service.dart';
+import '../../core/notifications/notification_scheduler.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
@@ -12,6 +13,29 @@ import '../../data/database/traum_database.dart';
 import '../../data/models/substance_record.dart';
 import '../../l10n/app_localizations.dart';
 import '../nutrition/micro_nutrients.dart';
+
+/// Re-derives every scheduled reminder (medication + all Settings-driven
+/// ones) from current DB/prefs state after a medication is added, deleted,
+/// or (de)activated — see [rescheduleAllNotifications]. Warns visibly via a
+/// SnackBar if reminders are enabled but the OS notification permission is
+/// missing, instead of letting the change look like it worked.
+Future<void> _syncMedicationReminders(BuildContext context) async {
+  final granted = await rescheduleAllNotifications(
+    ProviderScope.containerOf(context, listen: false),
+  );
+  if (!granted && context.mounted) {
+    final l10n = AppLocalizations.of(context)!;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n.notifPermissionDeniedMessage),
+        action: SnackBarAction(
+          label: l10n.openSettings,
+          onPressed: openAppSettings,
+        ),
+      ),
+    );
+  }
+}
 
 class MySubstancesTab extends ConsumerWidget {
   const MySubstancesTab({super.key});
@@ -58,10 +82,20 @@ class MySubstancesTab extends ConsumerWidget {
                       const SizedBox(height: 8),
                       ...meds.map((med) => _MedCard(
                             med: med,
-                            onDelete: () => ref.read(medicationDaoProvider).deleteMedication(med.id),
-                            onToggle: (active) => ref
-                                .read(medicationDaoProvider)
-                                .setMedicationActive(med.id, active),
+                            onDelete: () async {
+                              await ref
+                                  .read(medicationDaoProvider)
+                                  .deleteMedication(med.id);
+                              if (!context.mounted) return;
+                              await _syncMedicationReminders(context);
+                            },
+                            onToggle: (active) async {
+                              await ref
+                                  .read(medicationDaoProvider)
+                                  .setMedicationActive(med.id, active);
+                              if (!context.mounted) return;
+                              await _syncMedicationReminders(context);
+                            },
                           )),
                       const SizedBox(height: 16),
                     ],
@@ -185,25 +219,9 @@ class MySubstancesTab extends ConsumerWidget {
           borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
       builder: (ctx) => _AddMedSheet(
         onAdd: (companion) async {
-          final l10n = AppLocalizations.of(ctx)!;
           await ref.read(medicationDaoProvider).insertMedication(companion);
-          final timesJson = companion.timings.value;
-          if (timesJson != '[]') {
-            try {
-              final times = (jsonDecode(timesJson) as List).cast<String>();
-              for (int i = 0; i < times.length; i++) {
-                final parts = times[i].split(':');
-                await NotificationService.scheduleDailyAt(
-                  id: 100 + i,
-                  title: companion.name.value,
-                  body: l10n.timeForMedication(companion.name.value),
-                  hour: int.parse(parts[0]),
-                  minute: int.parse(parts[1]),
-                  channelId: 'medication',
-                );
-              }
-            } catch (_) {}
-          }
+          if (!ctx.mounted) return;
+          await _syncMedicationReminders(ctx);
         },
       ),
     );
@@ -248,25 +266,9 @@ void showAddMedSheetFor(
         // (substance_detail_sheet.dart) pops itself before opening this
         // sheet, so its `ref` is unmounted by the time the user hits Save.
         final container = ProviderScope.containerOf(ctx, listen: false);
-        final l10n = AppLocalizations.of(ctx)!;
         await container.read(medicationDaoProvider).insertMedication(companion);
-        final timesJson = companion.timings.value;
-        if (timesJson != '[]') {
-          try {
-            final times = (jsonDecode(timesJson) as List).cast<String>();
-            for (int i = 0; i < times.length; i++) {
-              final parts = times[i].split(':');
-              await NotificationService.scheduleDailyAt(
-                id: 100 + i,
-                title: companion.name.value,
-                body: l10n.timeForMedication(companion.name.value),
-                hour: int.parse(parts[0]),
-                minute: int.parse(parts[1]),
-                channelId: 'medication',
-              );
-            }
-          } catch (_) {}
-        }
+        if (!ctx.mounted) return;
+        await _syncMedicationReminders(ctx);
         // Pass the sheet's own (still-mounted) ctx — the caller's context
         // was already popped before this sheet opened.
         if (ctx.mounted) onAdded?.call(ctx);

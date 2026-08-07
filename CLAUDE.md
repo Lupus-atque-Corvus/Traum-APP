@@ -1,12 +1,97 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.9.9+99** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **0.10.0+100** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-07 — v0.9.9, Hotfix #5: JSON-Metadaten waren trotz v0.9.8 weiter komprimiert + Root-Cause-Grenze via Emulator gefunden)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-07 — v0.10.0, Phase 2: Sicherheit & Erinnerungen)
+
+**Zweite Phase des Nacharbeitungs-Plans aus dem Tiefenaudit
+(`C:\Users\Lupus\.claude\plans\schaue-dir-mithilfe-von-agile-wozniak.md`). Phase 1
+(Datensicherheit) bleibt formal offen — die Backup-„Wird gepackt…“-Performance auf einem echten
+Gerät steht noch aus, der Nutzer hat sich entschieden das erst am Ende des Gesamtplans per
+Live-`adb logcat`-Test zu klären, statt jetzt weiter zu raten. Diese Runde: Phase 2.**
+
+1. **PIN-Lockout.** `PinService` (`core/security/pin_service.dart`) zählt fehlgeschlagene
+   `verify()`-Aufrufe jetzt persistent (`flutter_secure_storage`, dieselbe Storage-Instanz wie der
+   PIN selbst). Die ersten 3 Fehlversuche verhalten sich wie bisher (nur Fehlermeldung), ab dem 4.
+   greift eine eskalierende Sperre (30s → 60s → 120s → 300s, gedeckelt). Während der Sperre wird
+   *kein* `verify()`-Aufruf mehr ausgewertet (auch der korrekte PIN wird abgelehnt) und der
+   Fehlerzähler nicht weiter erhöht — Spam während der Sperre verlängert sie nicht zusätzlich. Ein
+   erfolgreicher `verify()` sowie `save()` (PIN ändern) und `clear()` (PIN entfernen) setzen den
+   Zähler/die Sperre zurück. `PinLockScreen` zeigt einen Sekunden-Countdown
+   (`l10n.pinLocked(seconds)`) und sperrt das Zahlenfeld währenddessen komplett.
+2. **🔴 Echte Medikamenten-Notification-Kollision behoben.** Die pro-Medikament-Erinnerungen (eine
+   je Einnahmezeit) wurden bisher als `id: 100 + i` geplant — reiner Listen-Index *innerhalb* der
+   Zeiten eines Medikaments, ohne Bezug zur Medikamenten-ID. Zwei Medikamente mit derselben
+   Zeitslot-Position (z.B. beide „morgens“ als erste Zeit) kollidierten auf derselben
+   Notification-ID; das zweite überschrieb lautlos die geplante Erinnerung des ersten.
+   Fix: `NotificationService.medicationReminderId(medicationId, timeIndex)` — deterministisches,
+   kollisionsfreies Schema (`10000 + medicationId * 100 + timeIndex`), reserviert 100 Zeitslots pro
+   Medikament, kollidiert nicht mit den fixen Settings-Erinnerungs-IDs (1-7).
+3. **Fehlender Cancel bei Löschen/Deaktivieren behoben.** Weder Medikament löschen noch
+   deaktivieren hat bisher die zugehörigen geplanten Erinnerungen entfernt — sie feuerten
+   unverändert weiter. Gelöst nicht durch gezieltes Cancel pro Medikament, sondern strukturell:
+   neuer zentraler Helper `rescheduleAllNotifications()`
+   (`core/notifications/notification_scheduler.dart`) baut bei jeder relevanten Änderung *alle*
+   geplanten Erinnerungen aus dem aktuellen DB-/Prefs-Zustand neu auf (`NotificationService.
+   rescheduleAll()` cancelt zuerst alles, liest dann `getActiveMedications()` frisch aus der DB und
+   plant nur noch für tatsächlich aktive Medikamente). Aufgerufen nach Medikament hinzufügen/
+   löschen/(de)aktivieren (`my_substances_tab.dart`) UND nach jedem Settings-Notification-Toggle
+   (`settings_screen.dart`) — vorher rief `_reschedule()` in den Settings sogar versehentlich
+   `cancelAll()` auf, ohne die pro-Medikament-Erinnerungen je neu zu planen, ein bislang
+   unbemerkter Nebenschaden des ursprünglichen Designs.
+4. **Tote Supplement-/Wasser-/Todo-/Zyklus-Erinnerungen jetzt echt verdrahtet.** Die Settings-Toggles
+   existierten bereits vollständig in der UI (inkl. gespeicherter Uhrzeit/Intervall/Vorlaufzeit),
+   aber `NotificationService.rescheduleAll()` kannte bisher nur `notif_medication`/`_workout`/
+   `_habit` — Supplement, Wasser, Todo und Zyklus taten beim Umschalten schlicht nichts. Fund beim
+   Umsetzen entdeckt, nicht nur die im Plan genannten Todo/Wasser/Zyklus — Supplement war
+   ebenfalls betroffen. Jetzt:
+   - Supplement/Todo: normale tägliche `zonedSchedule`-Erinnerung wie Medikament/Training/Gewohnheit.
+   - Wasser: `periodicallyShowWithDuration(Duration(minutes: notifWaterInterval))` mit
+     `AndroidScheduleMode.inexactAllowWhileIdle` — bewusst *nicht* exakt: ein Wasser-Reminder
+     braucht keine `SCHEDULE_EXACT_ALARM`-Berechtigung, ein paar Minuten Abweichung sind irrelevant.
+   - Zyklus: einmalige (nicht tägliche) `zonedSchedule`-Erinnerung `notifPeriodDays` Tage vor
+     `CycleCalculation.nextPeriodPredicted` (dieselbe Vorhersage, die auch die Homescreen-Widgets
+     nutzen) — verschiebt sich jeden Zyklus neu, im Gegensatz zu den echten Tages-Erinnerungen.
+5. **Sichtbare Warnung bei fehlender Benachrichtigungs-Berechtigung.** Vorher: ein Toggle in den
+   Einstellungen wirkte aktiviert, aber ohne OS-Berechtigung feuerte nie etwas — stilles Scheitern.
+   `NotificationService.hasPermission()` (Wrapper um `Permission.notification.status`) wird nach
+   jedem Reschedule geprüft; `_NotificationsSection` zeigt bei aktivierten, aber nicht erlaubten
+   Erinnerungen eine persistente Warnkarte mit Link zu den Systemeinstellungen, zusätzlich eine
+   SnackBar direkt nach dem auslösenden Toggle (Settings) bzw. nach Medikament-Hinzufügen
+   (`my_substances_tab.dart`).
+6. **Reschedule-Fehler dürfen nie eine primäre Nutzeraktion crashen.** `rescheduleAllNotifications()`
+   fängt jeden internen Fehler ab (`debugPrint`, kein Rethrow) — Erinnerungen sind eine
+   Zusatzfunktion zu „Medikament speichern/löschen“, kein Blocker dafür. Beim Testen sichtbar
+   geworden: zwei bestehende Widget-Tests (`my_substances_tab_test.dart`,
+   `substance_add_flow_test.dart`) hatten kein `sharedPreferencesProvider`-Override, weil sie vor
+   dieser Änderung nie einen Preferences-Pfad berührten — mit dem Try/Catch bleiben sie unverändert
+   grün, statt jeden Testaufbau einzeln um Prefs-/Plugin-/Timezone-Mocking zu erweitern.
+
+**schemaVersion unverändert (28) — reine Verhaltens-/Logikänderung, kein Schema-Fund.**
+`flutter analyze` → **0 Issues**. `flutter test` → **514/514 grün** (498 vorher + 16 neu:
+`test/core/security/pin_service_test.dart` deckt die komplette Lockout-Eskalation inkl.
+„Sperre wird durch weitere Fehlversuche nicht verlängert“ und Reset bei Erfolg/`save()`/`clear()`
+ab; `test/core/notifications/notification_service_test.dart` deckt `medicationReminderId`-
+Determinismus/Kollisionsfreiheit und `hasPermission()` über alle drei relevanten
+`PermissionStatus`-Fälle ab).
+
+**Nicht in dieser Runde umgesetzt (bewusst, kein Bug):** Ein Medikament *bearbeiten* (Zeiten
+ändern) existiert in der UI noch nicht — nur Hinzufügen/Löschen/(De-)Aktivieren — daher gab es
+auch keinen „Reschedule nach Edit“-Fall zu behandeln.
+
+**Nächste Phase laut Plan:** Phase 3 — Unsichtbare Backend-Fixes (fehlender Index auf
+`transactions(date)`, `PRAGMA journal_mode=WAL`, `markerSearchProvider` auf `.autoDispose`,
+Health-Score Tag-/Wochenziel-Vergleich + `Future.wait`-Parallelisierung, Budget-Verlaufschart-
+Kontofilter-Konsistenz) — sobald Phase 1 (Backup-Performance) und Phase 2 (diese Runde) vom Nutzer
+am echten Gerät bestätigt sind.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-07 — v0.9.9, Hotfix #5: JSON-Metadaten waren trotz v0.9.8 weiter komprimiert + Root-Cause-Grenze via Emulator gefunden)
 
 **Direktes Nutzer-Feedback zu v0.9.8: "Wird gepackt…" hing weiterhin, obwohl die Datenmenge laut
 eigener Einschätzung klein war (wenige Videos, insgesamt < 500 MB). Diesmal nicht weiter aus dem

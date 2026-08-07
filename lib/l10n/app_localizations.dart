@@ -2480,6 +2480,12 @@ abstract class AppLocalizations {
   /// **'Falscher PIN'**
   String get wrongPin;
 
+  /// No description provided for @pinLocked.
+  ///
+  /// In de, this message translates to:
+  /// **'Zu viele Fehlversuche. Erneut versuchen in {seconds}s.'**
+  String pinLocked(int seconds);
+
   /// No description provided for @activeLabel.
   ///
   /// In de, this message translates to:
@@ -3811,6 +3817,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Täglich um {time}'**
   String notifDailyAt(String time);
+
+  /// No description provided for @notifPermissionDeniedTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Benachrichtigungen deaktiviert'**
+  String get notifPermissionDeniedTitle;
+
+  /// No description provided for @notifPermissionDeniedMessage.
+  ///
+  /// In de, this message translates to:
+  /// **'Erinnerungen werden nicht angezeigt, solange Traum in den Systemeinstellungen keine Benachrichtigungs-Berechtigung hat.'**
+  String get notifPermissionDeniedMessage;
 
   /// No description provided for @goals.
   ///

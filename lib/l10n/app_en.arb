@@ -524,6 +524,14 @@
   "biometricNotAvailableUsePin": "Biometrics not available. Please use PIN.",
   "enterPin": "Enter PIN",
   "wrongPin": "Wrong PIN",
+  "pinLocked": "Too many failed attempts. Try again in {seconds}s.",
+  "@pinLocked": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "activeLabel": "Active",
   "addMedication": "Add medication",
   "dosage": "Dosage",
@@ -863,6 +871,8 @@
       }
     }
   },
+  "notifPermissionDeniedTitle": "Notifications disabled",
+  "notifPermissionDeniedMessage": "Reminders won't show up until Traum has notification permission in your system settings.",
   "goals": "Goals",
   "kcalGoalLabel": "Calorie goal",
   "proteinGoalLabel": "Protein goal (g)",
