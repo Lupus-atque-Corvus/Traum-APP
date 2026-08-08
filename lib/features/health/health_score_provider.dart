@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
+import '../../data/database/traum_database.dart';
 import 'health_score_calculator.dart';
 import 'health_score_result.dart';
 
@@ -76,57 +77,87 @@ final healthScoreHistoryProvider = FutureProvider.autoDispose<List<int>>((ref) a
   final waterGoal = prefs.waterGoalMl.toDouble();
   final workoutGoal = prefs.workoutGoalPerWeek;
 
-  final suppTotal = await db.supplementDao.getActiveCount();
-  final medTotal = await db.medicationDao.getActiveCount();
-
   final now = DateTime.now();
+  final todayStart = DateTime(now.year, now.month, now.day);
+  final historyStart = todayStart.subtract(const Duration(days: 6)); // 7 days incl. today
+  // Sessions need to go back to the Monday of the week containing
+  // historyStart, not just historyStart itself — "workouts this week" for
+  // the oldest day in the graph still needs that whole week's sessions.
+  final earliestMonday =
+      historyStart.subtract(Duration(days: historyStart.weekday - 1));
+
+  // One query per data source for the whole window instead of one per
+  // data source PER DAY (was 5 x 7 = 35 sequential, overlapping-range
+  // queries) — fetched in parallel, then bucketed by day in memory below.
+  final results = await Future.wait([
+    db.trainingDao.getSessionsAfter(earliestMonday),
+    db.nutritionDao.getNutritionLogsAfter(historyStart),
+    db.nutritionDao.getWaterLogsAfter(historyStart),
+    db.healthDao.getSleepLogsAfter(historyStart),
+    db.healthDao.getMoodLogsAfter(historyStart),
+    db.supplementDao.getActiveCount(),
+    db.medicationDao.getActiveCount(),
+  ]);
+  final sessions = results[0] as List<WorkoutSession>;
+  final nutritionLogs = results[1] as List<NutritionLog>;
+  final waterLogs = results[2] as List<WaterLog>;
+  final sleepLogs = results[3] as List<SleepLog>;
+  final moodLogs = results[4] as List<MoodLog>;
+  final suppTotal = results[5] as int;
+  final medTotal = results[6] as int;
+
   final scores = <int>[];
 
   for (int i = 6; i >= 0; i--) {
-    final day = now.subtract(Duration(days: i));
-    final dayStart = DateTime(day.year, day.month, day.day);
-    final dayEnd = dayStart.add(const Duration(days: 1));
+    final day = todayStart.subtract(Duration(days: i));
+    final dayEnd = day.add(const Duration(days: 1));
+    // Calendar week containing `day` (Monday-start), matching how
+    // healthScoreProvider above defines "this week" for today — a single
+    // day's session count compared against a *weekly* goal would make the
+    // history graph read as permanently under-achieving on workouts.
+    final weekStart = day.subtract(Duration(days: day.weekday - 1));
 
-    final sessions = await db.trainingDao.getSessionsAfter(dayStart);
-    final daySessionCount = sessions
-        .where((s) => s.startedAt.isBefore(dayEnd))
+    final workoutsThisWeek = sessions
+        .where((s) =>
+            !s.startedAt.isBefore(weekStart) && s.startedAt.isBefore(dayEnd))
         .length;
 
-    final nutLogs = await db.nutritionDao.getNutritionLogsAfter(dayStart);
-    final dayNut = nutLogs.where((l) => l.logDate.isBefore(dayEnd)).toList();
-    final dayWater = (await db.nutritionDao.getWaterLogsAfter(dayStart))
-        .where((l) => l.logDate.isBefore(dayEnd))
+    final dayNut = nutritionLogs
+        .where((l) => !l.logDate.isBefore(day) && l.logDate.isBefore(dayEnd))
+        .toList();
+    final dayWater = waterLogs
+        .where((l) => !l.logDate.isBefore(day) && l.logDate.isBefore(dayEnd))
+        .toList();
+    final daySleep = sleepLogs
+        .where((l) => !l.bedtime.isBefore(day) && l.bedtime.isBefore(dayEnd))
+        .toList();
+    final dayMood = moodLogs
+        .where((l) => !l.logDate.isBefore(day) && l.logDate.isBefore(dayEnd))
         .toList();
 
-    final sleepLogs = await db.healthDao.getSleepLogsAfter(dayStart);
-    final daySleep = sleepLogs.where((l) => l.bedtime.isBefore(dayEnd)).toList();
-
-    final moodLogs = await db.healthDao.getMoodLogsAfter(dayStart);
-    final dayMood = moodLogs.where((l) => l.logDate.isBefore(dayEnd)).toList();
-
-    final avgCal = dayNut.isEmpty ? 0.0 : dayNut.map((l) => l.kcal).reduce((a, b) => a + b);
-    final avgProt = dayNut.isEmpty ? 0.0 : dayNut.map((l) => l.proteinG).reduce((a, b) => a + b);
-    final avgWater = dayWater.isEmpty ? 0.0 : dayWater.map((l) => l.amountMl.toDouble()).reduce((a, b) => a + b);
-    final avgSleep = daySleep.isEmpty
+    final dayCal = dayNut.isEmpty ? 0.0 : dayNut.map((l) => l.kcal).reduce((a, b) => a + b);
+    final dayProt = dayNut.isEmpty ? 0.0 : dayNut.map((l) => l.proteinG).reduce((a, b) => a + b);
+    final dayWaterMl = dayWater.isEmpty ? 0.0 : dayWater.map((l) => l.amountMl.toDouble()).reduce((a, b) => a + b);
+    final daySleepHours = daySleep.isEmpty
         ? 0.0
         : daySleep.map((l) => l.wakeTime.difference(l.bedtime).inMinutes / 60.0).reduce((a, b) => a + b) / daySleep.length;
-    final moodScores = dayMood.map((l) => l.moodScore).toList();
+    final dayMoodScores = dayMood.map((l) => l.moodScore).toList();
 
     final result = HealthScoreCalculator.calculate(
-      workoutsThisWeek: daySessionCount,
+      workoutsThisWeek: workoutsThisWeek,
       workoutGoalPerWeek: workoutGoal,
-      avgCaloriesLast7Days: avgCal,
+      avgCaloriesLast7Days: dayCal,
       calorieGoal: calorieGoal,
-      avgProteinLast7Days: avgProt,
+      avgProteinLast7Days: dayProt,
       proteinGoal: proteinGoal,
-      avgWaterLast7Days: avgWater,
+      avgWaterLast7Days: dayWaterMl,
       waterGoalMl: waterGoal,
-      avgSleepHoursLast7Days: avgSleep,
+      avgSleepHoursLast7Days: daySleepHours,
       supplementsTakenToday: 0,
       supplementsTotal: suppTotal,
       medicationsTakenToday: 0,
       medicationsTotal: medTotal,
-      moodScoresLast7Days: moodScores,
+      moodScoresLast7Days: dayMoodScores,
     );
     scores.add(result.gesamtScore);
   }

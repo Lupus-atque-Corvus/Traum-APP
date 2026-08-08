@@ -170,8 +170,19 @@ final dailyBalanceSpotsProvider = StreamProvider.autoDispose
   final opening = accounts.fold<double>(0.0, (s, a) => s + a.balance);
   final monthStart = DateTime(ym.$1, ym.$2, 1);
   final daysInMonth = DateTime(ym.$1, ym.$2 + 1, 0).day;
-  double net(Transaction t) =>
-      t.type == 'income' ? t.amount : (t.type == 'expense' ? -t.amount : 0.0);
+  // Must match deriveAccountBalances()'s filter exactly, or this chart's
+  // cumulative total silently diverges from totalAccountBalanceProvider's
+  // sum (the "Kontostand"-Summe shown elsewhere): a transaction with no
+  // assigned account never touches any account's derived balance there, so
+  // it must not touch the running total here either. Transfers stay net
+  // zero regardless — they only move money between two accounts already
+  // included in the total.
+  double net(Transaction t) {
+    if (t.accountId == null) return 0.0;
+    if (t.type == 'income') return t.amount;
+    if (t.type == 'expense') return -t.amount;
+    return 0.0;
+  }
   return ref.watch(budgetDaoProvider).watchAllTransactions().map((all) {
     final prior = all
         .where((t) => t.date.isBefore(monthStart))

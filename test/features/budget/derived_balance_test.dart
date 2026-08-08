@@ -57,4 +57,35 @@ void main() {
     final total = await c.read(totalAccountBalanceProvider.future);
     expect(total, 1600.0); // 1200 + 400 = 1600
   });
+
+  test(
+      'dailyBalanceSpotsProvider excludes unassigned transactions, matching '
+      'totalAccountBalanceProvider exactly (regression: previously counted '
+      'accountId==null transactions in the chart but not in the account '
+      'summary, so the two silently diverged)', () async {
+    final giro = await db.accountsDao.into(db.accounts).insert(
+        AccountsCompanion.insert(
+            name: 'Giro', type: 'checking', balance: 1000, updatedAt: DateTime.now()));
+    Future<void> tx(double a, String t, DateTime date, {int? acc}) =>
+        db.budgetDao.insertTransaction(TransactionsCompanion.insert(
+          amount: a, description: 't', date: date,
+          type: Value(t), accountId: Value(acc),
+        ));
+    // Assigned to the account — must count in both.
+    await tx(500, 'income', DateTime(2026, 6, 10), acc: giro);
+    // No account assigned — deriveAccountBalances()/totalAccountBalanceProvider
+    // silently drop this; the chart must now do the same.
+    await tx(9999, 'income', DateTime(2026, 6, 12));
+
+    c.listen(totalAccountBalanceProvider, (_, _) {});
+    final total = await c.read(totalAccountBalanceProvider.future);
+    expect(total, 1500.0); // 1000 + 500, the unassigned 9999 excluded
+
+    c.listen(dailyBalanceSpotsProvider((2026, 6)), (_, _) {});
+    final spots = await c.read(dailyBalanceSpotsProvider((2026, 6)).future);
+    final monthEndBalance = spots.last.y;
+    expect(monthEndBalance, total,
+        reason: 'the chart\'s cumulative end-of-month balance must equal '
+            'the account summary\'s total for the same set of transactions');
+  });
 }

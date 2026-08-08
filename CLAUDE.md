@@ -1,12 +1,66 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.2+102** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.3+103** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-08 — v1.0.2, Medikamente/Supplements: Zeitauswahl, Bearbeiten, Wochentage)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-08 — v1.0.3, Phase 3: Unsichtbare Backend-Fixes)
+
+**Dritte Phase des Nacharbeitungs-Plans aus dem Tiefenaudit. Reine Backend-Fixes ohne
+beabsichtigte sichtbare UI-Änderung — außer eventuell leicht andere Zahlen im Budget-
+Verlaufschart und im Health-Wochenverlauf, wo tatsächlich falsche Werte korrigiert wurden.**
+
+1. **Index auf `transactions(date)` + `PRAGMA journal_mode=WAL`.** Beide in `beforeOpen`
+   (läuft bei jedem Öffnen, idempotent) statt in einem einzelnen Migrationsschritt — WAL erlaubt
+   nebenläufige Leser neben einem Schreiber und entschärft `SQLITE_BUSY`-Konflikte zwischen der
+   Vordergrund-App und dem periodischen Homescreen-Widget-Hintergrundabgleich (WorkManager, eigene
+   `TraumDatabase()`-Verbindung, siehe `widget_data_collector.dart`).
+   **Beim Testen gefunden:** mehrere Migrations-Test-Fixtures (z.B. `diary_migration_v27_test.dart`,
+   `lost_place_migration_v25_test.dart`) seeden nur die für ihren jeweiligen Versionssprung
+   relevanten Tabellen — nicht `transactions`. Das ungeschützte `CREATE INDEX ... ON transactions`
+   crashte dort mit „no such table". Fix: Existenzprüfung über `sqlite_master` vor dem
+   `CREATE INDEX`, analog zum etablierten `pragma_table_info`-Muster für `_addColumnIfMissing`.
+2. **`markerSearchProvider` auf `.autoDispose` umgestellt.** War zuvor ein reiner
+   `FutureProvider.family` ohne AutoDispose — jede eingetippte Zeichenkette während der
+   Kartensuche erzeugte eine neue, dauerhaft im Speicher gehaltene Provider-Instanz samt
+   Marker-Liste. Bei Suche-als-du-tippst wächst das unbegrenzt über die App-Laufzeit.
+3. **`healthScoreHistoryProvider`: echter Tag-vs-Wochenziel-Bug behoben.** Der Trainings-Faktor
+   im 7-Tage-Verlauf verglich bisher die Workout-Sessions eines EINZELNEN Tages direkt gegen das
+   WÖCHENTLICHE Ziel (`workoutGoalPerWeek`) — ein Trainingstag zeigte praktisch nie einen guten
+   Trainings-Score, weil 1 Session gegen z.B. ein Ziel von 3 verglichen wurde, statt die
+   kumulierten Sessions der Kalenderwoche bis zu diesem Tag heranzuziehen (wie es der
+   Haupt-Score `healthScoreProvider` bereits korrekt macht). Zusätzlich: die Schleife führte
+   pro Tag 5 einzelne, sich überlappende DB-Abfragen aus (7 Tage × 5 = 35 sequenzielle Queries,
+   jede mit wachsendem Zeitfenster). Jetzt: je Datenquelle **eine** Abfrage für das gesamte
+   7-Tage-Fenster (Trainings-Sessions sogar bis zum Wochenanfang der ältesten Verlaufs-Woche),
+   parallel per `Future.wait`, danach In-Memory-Bucketing pro Tag — 35 auf 7 Abfragen reduziert.
+4. **`dailyBalanceSpotsProvider`: Konto-Filterlogik an `totalAccountBalanceProvider`
+   angeglichen.** Das Budget-Verlaufschart zählte bislang Einnahmen/Ausgaben OHNE zugewiesenes
+   Konto (`accountId == null`) in seine laufende Summe mit — die „Kontostand"-Summe
+   (`deriveAccountBalances`/`totalAccountBalanceProvider`, sichtbar in `AccountsCard`) hatte
+   solche Buchungen dagegen schon immer stillschweigend ausgeschlossen (sie berühren ja kein
+   echtes Konto). Beide Werte konnten dadurch dauerhaft auseinanderlaufen. Jetzt identische
+   Filterregel in beiden: nur Buchungen mit `accountId != null` zählen, Transfers bleiben
+   wie gehabt netto null über alle Konten hinweg.
+   **Beim Testen gefunden:** ein bestehender Test (`cashflow_line_test.dart`) hatte genau das
+   alte, inkonsistente Verhalten als Erwartung einprogrammiert (seine Test-Transaktionen hatten
+   nie ein `accountId` gesetzt) — korrigiert auf realistische, kontogebundene Transaktionen bei
+   unveränderter Testabsicht (gleiche erwarteten Werte).
+
+`flutter analyze` → **0 Issues**. `flutter test` → **527/527 grün** (525 vorher + 2 neu:
+`test/features/budget/derived_balance_test.dart` um den Konto-Filter-Konsistenztest erweitert,
+`test/features/health/health_score_history_test.dart` neu für den Wochenziel-Fix; zusätzlich
+`test/features/budget/cashflow_line_test.dart` korrigiert).
+
+**Nächste Phase laut Plan:** Phase 4 — Verteilte Kleinbugs (14 Einzelfunde über viele Module,
+u.a. Home-Kachel-Reorder Off-by-one, Abstinence-Frequenz, Planning-Zeitvalidierung,
+Notes-N+1-Query, Dezimaltrennzeichen-Konsistenz).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-08 — v1.0.2, Medikamente/Supplements: Zeitauswahl, Bearbeiten, Wochentage)
 
 **Direktes Nutzer-Feedback zu v1.0.1, drei zusammenhängende Punkte über mehrere Nachrichten:**
 1. Beim Anlegen von Supplements fehlte eine Zeitauswahl komplett (Medikamente hatten sie schon

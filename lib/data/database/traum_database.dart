@@ -215,6 +215,29 @@ class TraumDatabase extends _$TraumDatabase {
   MigrationStrategy get migration => MigrationStrategy(
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
+      // WAL instead of the default rollback journal: allows concurrent
+      // readers alongside a writer. Without it, the periodic Homescreen-
+      // Widget background refresh (WorkManager, its own `TraumDatabase()`
+      // connection — see widget_data_collector.dart) and the foreground app
+      // hitting the same file at once could hit SQLITE_BUSY lock
+      // contention. Persists in the database file once set; safe/cheap to
+      // re-issue on every open.
+      await customStatement('PRAGMA journal_mode = WAL');
+      // Guarded by an existence check, not just `IF NOT EXISTS` on the
+      // index itself: some migration-fixture tests hand-seed only the
+      // tables relevant to the specific version jump under test and don't
+      // include `transactions` at all — `CREATE INDEX ... ON transactions`
+      // would otherwise fail with "no such table" for those, even though
+      // every real install (transactions has existed since schema v1) has
+      // the table by the time beforeOpen runs.
+      final hasTransactionsTable = await customSelect(
+        "SELECT COUNT(*) AS c FROM sqlite_master WHERE type = 'table' AND name = 'transactions'",
+      ).getSingle();
+      if (hasTransactionsTable.read<int>('c') > 0) {
+        await customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions (date)',
+        );
+      }
       await _createNotesFtsObjects();
       await into(cycleProfile).insert(
         const CycleProfileCompanion(id: Value(0)),

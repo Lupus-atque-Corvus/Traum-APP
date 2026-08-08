@@ -131,8 +131,12 @@ final mostRecentMarkerProvider = FutureProvider<MapMarker?>((ref) {
   return ref.watch(mapMarkersDaoProvider).getMostRecentByCollection(id);
 });
 
-final markerSearchProvider = FutureProvider.family<List<MarkerWithPhotos>,
-    String>((ref, query) async {
+// autoDispose: every distinct query string typed while searching creates a
+// new provider instance keyed on that string — without autoDispose those
+// instances (and their cached marker lists) never get garbage-collected for
+// the lifetime of the app, growing unbounded with every keystroke.
+final markerSearchProvider = FutureProvider.autoDispose
+    .family<List<MarkerWithPhotos>, String>((ref, query) async {
   final id = ref.watch(activeCollectionProvider);
   final dao = ref.watch(mapMarkersDaoProvider);
   // Beide Zweige begrenzt: bei leerer Suche würde sonst die komplette
