@@ -14,6 +14,10 @@ class SupplementDao extends DatabaseAccessor<TraumDatabase>
   Stream<List<Supplement>> watchActiveSupplements() =>
       (select(supplements)..where((t) => t.isActive.equals(true))).watch();
 
+  /// One-shot list of active supplements (used for reminder scheduling).
+  Future<List<Supplement>> getActiveSupplements() =>
+      (select(supplements)..where((t) => t.isActive.equals(true))).get();
+
   Future<int> insertSupplement(SupplementsCompanion entry) =>
       into(supplements).insert(entry);
 

@@ -38,6 +38,48 @@ void main() {
         }
       }
     });
+
+    test('differs across weekdays for the same medication/slot — each '
+        'selected weekday needs its own recurring alarm', () {
+      final everyDay = NotificationService.medicationReminderId(3, 0);
+      final monday = NotificationService.medicationReminderId(3, 0, 1);
+      final tuesday = NotificationService.medicationReminderId(3, 0, 2);
+      final ids = {everyDay, monday, tuesday};
+      expect(ids, hasLength(3), reason: 'every-day and per-weekday ids must '
+          'all be distinct: $ids');
+    });
+
+    test('defaults to the every-day id (weekday 0) when weekday is omitted',
+        () {
+      expect(NotificationService.medicationReminderId(3, 0),
+          NotificationService.medicationReminderId(3, 0, 0));
+    });
+  });
+
+  group('supplementReminderId', () {
+    test('never collides with medicationReminderId for any realistic '
+        'medication/supplement id, slot, and weekday', () {
+      final medicationIds = <int>{};
+      for (var id = 1; id <= 100; id++) {
+        for (var slot = 0; slot < 9; slot++) {
+          for (var weekday = 0; weekday <= 7; weekday++) {
+            medicationIds.add(
+                NotificationService.medicationReminderId(id, slot, weekday));
+          }
+        }
+      }
+      for (var id = 1; id <= 100; id++) {
+        for (var slot = 0; slot < 9; slot++) {
+          for (var weekday = 0; weekday <= 7; weekday++) {
+            final suppId =
+                NotificationService.supplementReminderId(id, slot, weekday);
+            expect(medicationIds.contains(suppId), isFalse,
+                reason: 'supplementReminderId($id, $slot, $weekday) = '
+                    '$suppId collides with a medication reminder id');
+          }
+        }
+      }
+    });
   });
 
   group('hasPermission', () {

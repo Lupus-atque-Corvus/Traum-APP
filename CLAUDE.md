@@ -1,12 +1,93 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.1+101** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.2+102** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-07 — v1.0.1, Nachbesserung zu Phase 2: Medikamenten-Erinnerungen)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-08 — v1.0.2, Medikamente/Supplements: Zeitauswahl, Bearbeiten, Wochentage)
+
+**Direktes Nutzer-Feedback zu v1.0.1, drei zusammenhängende Punkte über mehrere Nachrichten:**
+1. Beim Anlegen von Supplements fehlte eine Zeitauswahl komplett (Medikamente hatten sie schon
+   seit Phase 2).
+2. Es fehlte generell eine Möglichkeit, Medikamente/Supplements nachträglich zu bearbeiten (nur
+   Hinzufügen/Löschen/(De-)Aktivieren existierten).
+3. Der globale „Supplements"-Schalter in den Einstellungen wurde als überflüssig gemeldet —
+   analog zum bereits in v1.0.1 entfernten „Medikamente"-Schalter.
+4. Zusätzlich gewünscht: Auswahl, an welchen Wochentagen ein Medikament/Supplement genommen
+   wird, und dass unterschiedliche Uhrzeiten an unterschiedlichen Tagen möglich sind (man nimmt
+   ja nicht alles jeden Tag zur gleichen Zeit).
+
+**Umsetzung:**
+
+1. **Supplements bekommen dieselbe Zeit-Infrastruktur wie Medikamente.** Die `Supplements`-
+   Tabelle hatte bereits eine `timings`-Spalte (seit jeher ungenutzt) — jetzt tatsächlich verdrahtet.
+   `SupplementDao.getActiveSupplements()` ergänzt (mirror von `getActiveMedications()`).
+2. **Bearbeiten-Menüpunkt** in beiden Kontextmenüs (`_MedCard`/`_SuppCard`, langes Drücken) vor
+   Deaktivieren/Löschen. `_AddMedSheet`/`_AddSuppSheet` nehmen jetzt einen optionalen `existing`-
+   Parameter: vorbefüllt aus dem bestehenden Datensatz (`Medication.toCompanion(true).copyWith(...)`
+   bzw. `Supplement.toCompanion(true).copyWith(...)` — bewahrt Felder wie `isActive`/`createdAt`/
+   `notificationId`, die das Formular nicht zeigt), Titel wechselt zu „… bearbeiten", Speichern
+   erkennt Update vs. Insert anhand `companion.id.present`.
+3. **Globaler „Supplements"-Schalter entfernt**, exakt wie zuvor beim Medikamenten-Schalter:
+   `notifSupplement`/`notifSupplementTime` aus `PreferencesRepository`, `notifSupplementProvider`
+   entfernt, `id=4`-Block aus `NotificationService.rescheduleAll()` entfernt. Der Hinweistext in
+   den Einstellungen erwähnt jetzt „Medikamente und Supplements" statt nur Medikamente.
+4. **🆕 Wochentag-Auswahl pro Erinnerungszeit — neue Datenstruktur.** `timings` ist bisher ein
+   JSON-Array reiner `"HH:mm"`-Strings gewesen (implizit „jeden Tag"). Neues Format (rückwärts-
+   kompatibel, Alt-Daten werden automatisch als „jeden Tag" interpretiert):
+   ```json
+   [{"time":"08:00","days":[1,2,3,4,5,6,7]}, {"time":"20:00","days":[1,3,5]}]
+   ```
+   Neue Datei `lib/core/notifications/reminder_time.dart`: `ReminderTime`-Klasse (`time` +
+   `days`-Set, ISO-Wochentage 1–7), `parseReminderTimes()`/`encodeReminderTimes()` als einzige
+   Stelle, die dieses Format kennt — sowohl `my_substances_tab.dart` (UI) als auch
+   `notification_service.dart` (Planung) importieren nur diese Datei, keine Duplikation.
+   Neue wiederverwendbare UI-Komponente `_ReminderTimesEditor` (in `my_substances_tab.dart`):
+   je Zeit-Eintrag ein Zeit-Chip + 7 Wochentag-Toggle-Chips (Mo–So, aus dem bereits vorhandenen
+   `l10n.weekdaysShort` abgeleitet). Mindestens ein Wochentag muss ausgewählt bleiben (Tippen auf
+   den letzten verbleibenden Tag wird ignoriert). Medikamente behalten die alte Mindestanforderung
+   „mindestens 1 Zeit-Eintrag" (`minEntries: 1`), Supplements dürfen auf 0 Einträge (= keine
+   Erinnerung) reduziert werden.
+5. **Scheduling erweitert:** `NotificationService.scheduleWeeklyAt()` (neu, analog zu
+   `scheduleDailyAt`, aber `matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime`,
+   berechnet den nächsten passenden Wochentag+Uhrzeit-Zeitpunkt). `medicationReminderId`/
+   `supplementReminderId` bekommen einen optionalen dritten `weekday`-Parameter (0 = „jeden Tag",
+   sonst ISO-Wochentag) und reservieren jetzt 1000 statt 100 IDs pro Medikament/Supplement (10 pro
+   Zeit-Slot statt 1 — jeder ausgewählte Wochentag braucht einen eigenen wiederkehrenden Alarm).
+   Supplement-Basis-Offset auf `10.000.000` angehoben (vorher `500.000`), um mit dem größeren
+   Medikamenten-Bereich garantiert kollisionsfrei zu bleiben. `rescheduleAll()`s Medikamenten-/
+   Supplement-Schleifen rufen jetzt einen gemeinsamen `_scheduleReminderTime()`-Helfer auf: bei
+   „jeden Tag" ein `scheduleDailyAt()`-Aufruf, sonst ein `scheduleWeeklyAt()`-Aufruf pro
+   ausgewähltem Wochentag. `markMedicationsTakenFromNotification()` (Background-Isolate-Handler
+   für den „Genommen"-Aktionsknopf) ebenfalls auf `parseReminderTimes()` umgestellt — hätte sonst
+   beim neuen Objekt-Format gecrasht.
+6. **„Heute"-Status-Karte** (`_TodayStatusCard`) filtert Zeiten jetzt zusätzlich auf den heutigen
+   Wochentag (`t.days.contains(DateTime.now().weekday)`) — zeigt nur noch Dosen, die tatsächlich
+   heute fällig sind, statt aller je konfigurierten Zeiten unabhängig vom Wochentag.
+7. **Aufräumen nebenbei:** doppelte `_parseTimes`-Methode (zwei fast identische private Kopien in
+   verschiedenen Klassen) durch eine einzige `_formatReminderTimes()`-Anzeigefunktion ersetzt;
+   beim Umbau des Supplement-Toggles ein Bestandsbug entdeckt und mitbehoben — `onToggle` baute
+   bisher einen unvollständigen `SupplementsCompanion(id:, name:, isActive:)` und hätte über
+   `.replace()` beim nächsten Aktivieren/Deaktivieren `category`/`dosageAmount`/`dosageUnit`/
+   `timings`/`notes`/`nutrientKey` stillschweigend auf `null`/Default zurückgesetzt; jetzt
+   `supp.toCompanion(true).copyWith(isActive: ...)`.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **525/525 grün** (514 vorher + 11 neu:
+`test/core/notifications/reminder_time_test.dart` — Legacy-/neues Format, Round-Trip, leeres
+Array, `copyWith`; `test/core/notifications/notification_service_test.dart` erweitert um
+Wochentag-Kollisionsfreiheit zwischen Zeit-Slots und zwischen Medikament/Supplement über einen
+realistischen ID-Bereich).
+
+**Nicht in dieser Runde geändert:** Die generischen Settings-Erinnerungen für Training/Gewohnheiten/
+Todo/Wasser/Zyklus bleiben unverändert (eine gemeinsame Uhrzeit für alle, kein Wochentag-Konzept)
+— das war nicht Teil des Feedbacks und bewusst nicht mit ausgeweitet, um den Umfang dieser Runde
+nicht unnötig zu vergrößern.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-07 — v1.0.1, Nachbesserung zu Phase 2: Medikamenten-Erinnerungen)
 
 **Versionshinweis vorab:** Dieser Release heißt `v1.0.1`, nicht `v0.10.1` — der Nutzer hat direkt
 in dieser Runde auf einen Fehler in der eigenen Anwendung von Non-Negotiable #17 hingewiesen: die

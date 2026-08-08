@@ -2498,6 +2498,12 @@ abstract class AppLocalizations {
   /// **'Medikament hinzufügen'**
   String get addMedication;
 
+  /// No description provided for @editMedication.
+  ///
+  /// In de, this message translates to:
+  /// **'Medikament bearbeiten'**
+  String get editMedication;
+
   /// No description provided for @dosage.
   ///
   /// In de, this message translates to:
@@ -3019,6 +3025,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Supplement hinzufügen'**
   String get addSupplement;
+
+  /// No description provided for @editSupplement.
+  ///
+  /// In de, this message translates to:
+  /// **'Supplement bearbeiten'**
+  String get editSupplement;
 
   /// No description provided for @category.
   ///
@@ -3773,14 +3785,8 @@ abstract class AppLocalizations {
   /// No description provided for @notifMedicationHint.
   ///
   /// In de, this message translates to:
-  /// **'Medikamenten-Erinnerungen stellst du direkt bei jedem Medikament unter „Meine Mittel“ ein — nicht hier zentral.'**
+  /// **'Erinnerungen für Medikamente und Supplements stellst du direkt bei jedem einzelnen unter „Meine Mittel“ ein — nicht hier zentral.'**
   String get notifMedicationHint;
-
-  /// No description provided for @notifSupplements.
-  ///
-  /// In de, this message translates to:
-  /// **'Supplements'**
-  String get notifSupplements;
 
   /// No description provided for @notifTraining.
   ///

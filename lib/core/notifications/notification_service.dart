@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
@@ -8,6 +6,7 @@ import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
 import '../../data/database/traum_database.dart';
+import 'reminder_time.dart';
 
 /// Action id for the "Genommen" (taken) button on medication reminders.
 const String kMedTakenActionId = 'med_taken';
@@ -24,17 +23,12 @@ Future<void> markMedicationsTakenFromNotification() async {
     final todayStart = DateTime(now.year, now.month, now.day);
     final logs = await db.medicationDao.watchLogsForDate(todayStart).first;
     for (final med in meds) {
-      List<String> times;
-      try {
-        times = (jsonDecode(med.timings) as List).cast<String>();
-      } catch (_) {
-        times = const [];
-      }
+      final times = parseReminderTimes(med.timings);
       if (times.isEmpty) continue;
       final takenCount =
           logs.where((l) => l.medicationId == med.id && l.taken).length;
       if (takenCount >= times.length) continue;
-      final parts = times[takenCount].split(':');
+      final parts = times[takenCount].time.split(':');
       var sched = DateTime(now.year, now.month, now.day);
       if (parts.length == 2) {
         sched = DateTime(now.year, now.month, now.day,
@@ -68,29 +62,43 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   /// Fixed notification ids for the single, settings-driven daily reminders.
-  /// Per-medication reminders (multiple times, multiple medications) use
-  /// [medicationReminderId] instead and must not collide with these.
-  /// (Id 1 is intentionally retired, not reused — it was the old blanket
-  /// "Medikamente" reminder, replaced entirely by per-medication reminders.)
+  /// Per-medication/-supplement reminders use [medicationReminderId]/
+  /// [supplementReminderId] instead and must not collide with these.
+  /// (Ids 1 and 4 are intentionally retired, not reused — they were the old
+  /// blanket "Medikamente"/"Supplements" reminders, replaced entirely by
+  /// per-item reminders.)
   static const int _workoutId = 2;
   static const int _habitId = 3;
-  static const int _supplementId = 4;
   static const int _waterId = 5;
   static const int _todoId = 6;
   static const int _periodId = 7;
 
   /// Deterministic, collision-free notification id for the [timeIndex]-th
-  /// scheduled time of medication [medicationId].
+  /// scheduled time of medication [medicationId]. [weekday] is 0 for an
+  /// every-day reminder (single daily repeat), or an ISO weekday (1=Monday..
+  /// 7=Sunday) when that time only applies on a subset of days — each
+  /// selected weekday needs its own id since flutter_local_notifications
+  /// schedules "every day at HH:mm" and "every Tuesday at HH:mm" as separate
+  /// recurring alarms.
   ///
   /// Previously these were scheduled as `100 + timeIndex` — a plain list
   /// index with no reference to which medication it belonged to. Two
   /// medications with reminders at the same time-of-day slot (e.g. both
   /// "morgens") collided on the same notification id, so the second
-  /// medication's schedule silently overwrote the first's. Reserves 100
-  /// slots per medication (`timeIndex` realistically never exceeds a
-  /// handful of daily doses) starting well above the fixed ids above.
-  static int medicationReminderId(int medicationId, int timeIndex) =>
-      10000 + medicationId * 100 + timeIndex;
+  /// medication's schedule silently overwrote the first's. Reserves 1000
+  /// ids per medication (10 per time slot, `timeIndex` realistically never
+  /// exceeds a handful of daily doses) starting well above the fixed ids
+  /// above.
+  static int medicationReminderId(int medicationId, int timeIndex,
+          [int weekday = 0]) =>
+      10000 + medicationId * 1000 + timeIndex * 10 + weekday;
+
+  /// Same scheme as [medicationReminderId], for supplements. A large,
+  /// disjoint base offset keeps the two id ranges from ever colliding
+  /// without needing to track both counters against each other.
+  static int supplementReminderId(int supplementId, int timeIndex,
+          [int weekday = 0]) =>
+      10000000 + supplementId * 1000 + timeIndex * 10 + weekday;
 
   /// Whether the OS currently grants notification permission. Reminders
   /// scheduled while this is false are silently dropped by the platform —
@@ -240,6 +248,66 @@ class NotificationService {
     );
   }
 
+  /// Like [scheduleDailyAt], but repeats weekly on a single [isoWeekday]
+  /// (1=Monday..7=Sunday) instead of every day — for medications/supplements
+  /// only taken on specific days of the week.
+  static Future<void> scheduleWeeklyAt({
+    required int id,
+    required String title,
+    required String body,
+    required int isoWeekday,
+    required int hour,
+    required int minute,
+    required String channelId,
+  }) async {
+    final now = tz.TZDateTime.now(tz.local);
+    var scheduledDate = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
+    var daysUntilTarget = (isoWeekday - scheduledDate.weekday) % 7;
+    if (daysUntilTarget < 0) daysUntilTarget += 7;
+    scheduledDate = scheduledDate.add(Duration(days: daysUntilTarget));
+    if (!scheduledDate.isAfter(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 7));
+    }
+
+    final isMedication = channelId == 'medication';
+    await _plugin.zonedSchedule(
+      id,
+      title,
+      body,
+      scheduledDate,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          channelId,
+          channelId,
+          importance: Importance.high,
+          priority: Priority.high,
+          actions: isMedication
+              ? <AndroidNotificationAction>[
+                  const AndroidNotificationAction(
+                    kMedTakenActionId,
+                    'Genommen',
+                    showsUserInterface: false,
+                  ),
+                ]
+              : null,
+        ),
+        iOS: const DarwinNotificationDetails(),
+      ),
+      payload: isMedication ? kMedTakenActionId : null,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+    );
+  }
+
   /// Foreground notification-response handler (app running).
   static void _onNotificationResponse(NotificationResponse response) {
     if (response.actionId == kMedTakenActionId) {
@@ -253,36 +321,25 @@ class NotificationService {
 
   /// Rebuilds every scheduled local notification from scratch: the fixed
   /// settings-driven daily/periodic reminders in [prefs], plus a per-
-  /// medication reminder for every active medication's stored intake times
-  /// (read fresh from [db] — these must survive a Settings-triggered
-  /// reschedule the same way they were originally added, and previously
-  /// they didn't: [cancelAll] below wiped them and nothing put them back).
+  /// medication/-supplement reminder for every active medication's/
+  /// supplement's stored intake times (read fresh from [db] — these must
+  /// survive a Settings-triggered reschedule the same way they were
+  /// originally added, and previously they didn't: [cancelAll] below wiped
+  /// them and nothing put them back).
   ///
-  /// [prefs] keys: `notif_supplement`(+`_time`), `notif_workout`(+`_time`),
-  /// `notif_habit`(+`_time`), `notif_todo`(+`_time`), `notif_water`
-  /// (+`_interval`, minutes), `notif_period`(+`_days`, `_next_date` as
-  /// `DateTime?` — the predicted next period start, or null if unknown/
-  /// period tracking disabled). No `notif_medication` key — medications are
-  /// always rebuilt below from their own per-medication intake times,
-  /// regardless of any settings toggle.
+  /// [prefs] keys: `notif_workout`(+`_time`), `notif_habit`(+`_time`),
+  /// `notif_todo`(+`_time`), `notif_water`(+`_interval`, minutes),
+  /// `notif_period`(+`_days`, `_next_date` as `DateTime?` — the predicted
+  /// next period start, or null if unknown/period tracking disabled). No
+  /// `notif_medication`/`notif_supplement` keys — those are always rebuilt
+  /// below from their own per-item intake times, regardless of any settings
+  /// toggle.
   static Future<void> rescheduleAll(
     Map<String, dynamic> prefs, {
     required TraumDatabase db,
   }) async {
     await cancelAll();
 
-    if (prefs['notif_supplement'] == true) {
-      final time = (prefs['notif_supplement_time'] as String?) ?? '09:00';
-      final parts = time.split(':');
-      await scheduleDailyAt(
-        id: _supplementId,
-        title: 'Supplements',
-        body: 'Zeit für deine Supplements',
-        hour: int.parse(parts[0]),
-        minute: int.parse(parts[1]),
-        channelId: 'supplement',
-      );
-    }
     if (prefs['notif_workout'] == true) {
       final time = (prefs['notif_workout_time'] as String?) ?? '18:00';
       final parts = time.split(':');
@@ -382,25 +439,69 @@ class NotificationService {
 
     final activeMedications = await db.medicationDao.getActiveMedications();
     for (final medication in activeMedications) {
-      List<String> times;
-      try {
-        times = (jsonDecode(medication.timings) as List).cast<String>();
-      } catch (_) {
-        times = const [];
-      }
+      final times = parseReminderTimes(medication.timings);
       for (var i = 0; i < times.length; i++) {
-        final parts = times[i].split(':');
-        if (parts.length != 2) continue;
-        final hour = int.tryParse(parts[0]);
-        final minute = int.tryParse(parts[1]);
-        if (hour == null || minute == null) continue;
-        await scheduleDailyAt(
-          id: medicationReminderId(medication.id, i),
+        await _scheduleReminderTime(
+          times[i],
+          idFor: (weekday) => medicationReminderId(medication.id, i, weekday),
           title: medication.name,
           body: 'Zeit für ${medication.name}',
+          channelId: 'medication',
+        );
+      }
+    }
+
+    final activeSupplements = await db.supplementDao.getActiveSupplements();
+    for (final supplement in activeSupplements) {
+      final times = parseReminderTimes(supplement.timings);
+      for (var i = 0; i < times.length; i++) {
+        await _scheduleReminderTime(
+          times[i],
+          idFor: (weekday) => supplementReminderId(supplement.id, i, weekday),
+          title: supplement.name,
+          body: 'Zeit für ${supplement.name}',
+          channelId: 'supplement',
+        );
+      }
+    }
+  }
+
+  /// Schedules a single [ReminderTime]: one daily repeat if it applies every
+  /// day, or one weekly-on-that-day repeat per selected weekday otherwise.
+  /// [idFor] maps a weekday (0 for "every day", else 1-7) to the id that
+  /// specific occurrence should use — see [medicationReminderId].
+  static Future<void> _scheduleReminderTime(
+    ReminderTime reminder, {
+    required int Function(int weekday) idFor,
+    required String title,
+    required String body,
+    required String channelId,
+  }) async {
+    final parts = reminder.time.split(':');
+    if (parts.length != 2) return;
+    final hour = int.tryParse(parts[0]);
+    final minute = int.tryParse(parts[1]);
+    if (hour == null || minute == null) return;
+
+    if (reminder.isEveryDay) {
+      await scheduleDailyAt(
+        id: idFor(0),
+        title: title,
+        body: body,
+        hour: hour,
+        minute: minute,
+        channelId: channelId,
+      );
+    } else {
+      for (final weekday in reminder.days) {
+        await scheduleWeeklyAt(
+          id: idFor(weekday),
+          title: title,
+          body: body,
+          isoWeekday: weekday,
           hour: hour,
           minute: minute,
-          channelId: 'medication',
+          channelId: channelId,
         );
       }
     }

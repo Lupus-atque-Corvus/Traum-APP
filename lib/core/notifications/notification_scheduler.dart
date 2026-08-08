@@ -53,8 +53,6 @@ Future<bool> rescheduleAllNotifications(ProviderContainer container) async {
 
     await NotificationService.rescheduleAll(
       {
-        'notif_supplement': repo.notifSupplement,
-        'notif_supplement_time': repo.notifSupplementTime,
         'notif_workout': repo.notifWorkout,
         'notif_workout_time': repo.notifWorkoutTime,
         'notif_habit': repo.notifHabit,
@@ -70,14 +68,17 @@ Future<bool> rescheduleAllNotifications(ProviderContainer container) async {
       db: db,
     );
 
-    // Medications don't have a category toggle (see preferences_provider.dart)
-    // — any active medication with at least one configured time counts on
-    // its own toward whether the permission check below is relevant.
+    // Medications/supplements don't have a category toggle (see
+    // preferences_provider.dart) — any active one with at least one
+    // configured time counts on its own toward whether the permission
+    // check below is relevant.
     final hasMedicationReminder = (await db.medicationDao.getActiveMedications())
         .any((m) => m.timings != '[]');
+    final hasSupplementReminder = (await db.supplementDao.getActiveSupplements())
+        .any((s) => s.timings != '[]');
 
     final anyEnabled = hasMedicationReminder ||
-        repo.notifSupplement ||
+        hasSupplementReminder ||
         repo.notifWorkout ||
         repo.notifHabit ||
         repo.notifTodo ||

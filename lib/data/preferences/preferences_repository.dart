@@ -155,13 +155,10 @@ class PreferencesRepository {
 
   // Notifications
   //
-  // No `notifMedication`/`notifMedicationTime` here on purpose — medications
-  // are reminded per-medication (each carries its own intake times), not via
-  // a single shared toggle+time like the categories below.
-  bool get notifSupplement => _prefs.getBool('notif_supplement') ?? true;
-  Future<void> setNotifSupplement(bool v) =>
-      _prefs.setBool('notif_supplement', v);
-
+  // No `notifMedication`/`notifMedicationTime` or `notifSupplement`/
+  // `notifSupplementTime` here on purpose — medications and supplements are
+  // reminded per-item (each carries its own intake times), not via a single
+  // shared toggle+time like the categories below.
   bool get notifWorkout => _prefs.getBool('notif_workout') ?? true;
   Future<void> setNotifWorkout(bool v) => _prefs.setBool('notif_workout', v);
 
@@ -181,11 +178,6 @@ class PreferencesRepository {
   Future<void> setNotifBudget(bool v) => _prefs.setBool('notif_budget', v);
 
   // Notification times
-  String get notifSupplementTime =>
-      _prefs.getString('notif_supplement_time') ?? '09:00';
-  Future<void> setNotifSupplementTime(String v) =>
-      _prefs.setString('notif_supplement_time', v);
-
   String get notifWorkoutTime =>
       _prefs.getString('notif_workout_time') ?? '18:00';
   Future<void> setNotifWorkoutTime(String v) =>

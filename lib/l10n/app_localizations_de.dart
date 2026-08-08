@@ -1259,6 +1259,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addMedication => 'Medikament hinzufügen';
 
   @override
+  String get editMedication => 'Medikament bearbeiten';
+
+  @override
   String get dosage => 'Dosierung';
 
   @override
@@ -1533,6 +1536,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get addSupplement => 'Supplement hinzufügen';
+
+  @override
+  String get editSupplement => 'Supplement bearbeiten';
 
   @override
   String get category => 'Kategorie';
@@ -1930,10 +1936,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get notifMedicationHint =>
-      'Medikamenten-Erinnerungen stellst du direkt bei jedem Medikament unter „Meine Mittel“ ein — nicht hier zentral.';
-
-  @override
-  String get notifSupplements => 'Supplements';
+      'Erinnerungen für Medikamente und Supplements stellst du direkt bei jedem einzelnen unter „Meine Mittel“ ein — nicht hier zentral.';
 
   @override
   String get notifTraining => 'Training';

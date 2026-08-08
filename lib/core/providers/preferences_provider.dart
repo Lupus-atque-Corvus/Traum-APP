@@ -348,25 +348,14 @@ final weightGoalNotifierProvider =
 
 // Notification providers
 //
-// There is deliberately no generic "Medikamente" toggle here: unlike
-// Supplement/Workout/Habit/Todo/Water/Period (one shared daily/periodic
-// reminder each), medications are reminded individually — every medication
-// carries its own configured intake times from when it was added (see
-// `my_substances_tab.dart` / `NotificationService.medicationReminderId`).
-// A blanket on/off-plus-single-time toggle here would be redundant with —
-// and confusingly disconnected from — those per-medication times.
-class NotifSupplementNotifier extends Notifier<bool> {
-  @override
-  bool build() => ref.watch(preferencesRepositoryProvider).notifSupplement;
-  Future<void> set(bool v) async {
-    await ref.read(preferencesRepositoryProvider).setNotifSupplement(v);
-    state = v;
-  }
-}
-
-final notifSupplementProvider =
-    NotifierProvider<NotifSupplementNotifier, bool>(NotifSupplementNotifier.new);
-
+// There are deliberately no generic "Medikamente"/"Supplements" toggles
+// here: unlike Workout/Habit/Todo/Water/Period (one shared daily/periodic
+// reminder each), medications and supplements are reminded individually —
+// every medication/supplement carries its own configured intake times from
+// when it was added (see `my_substances_tab.dart` /
+// `NotificationService.medicationReminderId`/`supplementReminderId`). A
+// blanket on/off-plus-single-time toggle here would be redundant with — and
+// confusingly disconnected from — those per-item times.
 class NotifWorkoutNotifier extends Notifier<bool> {
   @override
   bool build() => ref.watch(preferencesRepositoryProvider).notifWorkout;

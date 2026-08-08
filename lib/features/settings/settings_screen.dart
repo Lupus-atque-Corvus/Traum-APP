@@ -427,7 +427,10 @@ class _NotificationsSection extends ConsumerWidget {
     final hasMedicationReminder = medsAsync.value
             ?.any((m) => m.isActive && m.timings != '[]') ??
         false;
-    final supplement = ref.watch(notifSupplementProvider);
+    final suppsAsync = ref.watch(supplementsStreamProvider);
+    final hasSupplementReminder = suppsAsync.value
+            ?.any((s) => s.isActive && s.timings != '[]') ??
+        false;
     final workout = ref.watch(notifWorkoutProvider);
     final water = ref.watch(notifWaterProvider);
     final habit = ref.watch(notifHabitProvider);
@@ -436,7 +439,7 @@ class _NotificationsSection extends ConsumerWidget {
     final periodEnabled = ref.watch(isPeriodTrackingEnabledProvider);
     final permissionAsync = ref.watch(_notificationPermissionStatusProvider);
     final anyReminderEnabled = hasMedicationReminder ||
-        supplement ||
+        hasSupplementReminder ||
         workout ||
         water ||
         habit ||
@@ -467,22 +470,6 @@ class _NotificationsSection extends ConsumerWidget {
                 fontSize: 12,
               ),
             ),
-          ),
-          _NotifTile(
-            title: l10n.notifSupplements,
-            value: supplement,
-            time: repo.notifSupplementTime,
-            onChanged: (v) async {
-              await ref.read(notifSupplementProvider.notifier).set(v);
-              if (!context.mounted) return;
-              await _reschedule(context, ref);
-            },
-            onTimeTap: () =>
-                _pickTime(context, ref, repo.notifSupplementTime, (t) async {
-                  await repo.setNotifSupplementTime(t);
-                  if (!context.mounted) return;
-                  await _reschedule(context, ref);
-                }),
           ),
           _NotifTile(
             title: l10n.notifTraining,

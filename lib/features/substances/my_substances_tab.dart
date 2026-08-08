@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart' show openAppSettings;
 import '../../core/components/components.dart';
 import '../../core/notifications/notification_scheduler.dart';
+import '../../core/notifications/reminder_time.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
@@ -14,12 +14,188 @@ import '../../data/models/substance_record.dart';
 import '../../l10n/app_localizations.dart';
 import '../nutrition/micro_nutrients.dart';
 
-/// Re-derives every scheduled reminder (medication + all Settings-driven
-/// ones) from current DB/prefs state after a medication is added, deleted,
-/// or (de)activated — see [rescheduleAllNotifications]. Warns visibly via a
-/// SnackBar if reminders are enabled but the OS notification permission is
-/// missing, instead of letting the change look like it worked.
-Future<void> _syncMedicationReminders(BuildContext context) async {
+/// Editor for a medication's/supplement's list of [ReminderTime]s: add/edit/
+/// remove a time-of-day, and per time-of-day toggle which weekdays it
+/// applies on (defaults to every day — most medications/supplements are
+/// taken daily, so that stays a single tap away, but not everyone takes
+/// everything every day at the same time).
+class _ReminderTimesEditor extends StatelessWidget {
+  final List<ReminderTime> times;
+  final Color accentColor;
+  final void Function(List<ReminderTime>) onChanged;
+
+  /// Minimum number of time entries that must remain — the remove button on
+  /// an entry is hidden once [times] is down to this many. 0 (the default)
+  /// allows clearing every time, meaning no reminder at all.
+  final int minEntries;
+
+  const _ReminderTimesEditor({
+    required this.times,
+    required this.accentColor,
+    required this.onChanged,
+    this.minEntries = 0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final weekdayLabels = l10n.weekdaysShort.split(',');
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(children: [
+          Text(l10n.reminderTimes,
+              style: TextStyle(color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans', fontSize: 13)),
+          const Spacer(),
+          TextButton.icon(
+            onPressed: () => _addTime(context),
+            icon: Icon(Icons.add, size: 16, color: accentColor),
+            label: Text(l10n.add,
+                style: TextStyle(
+                    color: accentColor, fontFamily: 'DMSans', fontSize: 12)),
+          ),
+        ]),
+        ...times.asMap().entries.map((e) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(children: [
+                    GestureDetector(
+                      onTap: () => _editTime(context, e.key),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: TraumColors.surface,
+                          borderRadius: BorderRadius.circular(TraumRadius.chip),
+                          border: Border.all(
+                              color: accentColor.withValues(alpha: 0.3)),
+                        ),
+                        child: Text(e.value.time,
+                            style: TextStyle(
+                                color: accentColor,
+                                fontFamily: 'DMSans',
+                                fontWeight: FontWeight.w600)),
+                      ),
+                    ),
+                    if (times.length > minEntries)
+                      IconButton(
+                        icon: const Icon(Icons.close,
+                            size: 16, color: TraumColors.onBackgroundSubtle),
+                        onPressed: () {
+                          final next = List<ReminderTime>.of(times)..removeAt(e.key);
+                          onChanged(next);
+                        },
+                      ),
+                  ]),
+                  Wrap(
+                    spacing: 4,
+                    children: List.generate(7, (i) {
+                      final isoWeekday = i + 1;
+                      final selected = e.value.days.contains(isoWeekday);
+                      return GestureDetector(
+                        onTap: () => _toggleDay(e.key, isoWeekday),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: selected
+                                ? accentColor.withValues(alpha: 0.2)
+                                : TraumColors.surfaceVariant,
+                            borderRadius: BorderRadius.circular(TraumRadius.chip),
+                          ),
+                          child: Text(weekdayLabels[i],
+                              style: TextStyle(
+                                  color: selected
+                                      ? accentColor
+                                      : TraumColors.onBackgroundSubtle,
+                                  fontFamily: 'DMSans',
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600)),
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+              ),
+            )),
+      ],
+    );
+  }
+
+  void _toggleDay(int index, int isoWeekday) {
+    final entry = times[index];
+    final newDays = Set<int>.from(entry.days);
+    if (newDays.contains(isoWeekday)) {
+      if (newDays.length == 1) return; // keep at least one day selected
+      newDays.remove(isoWeekday);
+    } else {
+      newDays.add(isoWeekday);
+    }
+    final next = List<ReminderTime>.of(times);
+    next[index] = entry.copyWith(days: newDays);
+    onChanged(next);
+  }
+
+  Future<void> _addTime(BuildContext context) async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      builder: (ctx, child) => Theme(
+        data: ThemeData.dark()
+            .copyWith(colorScheme: ColorScheme.dark(primary: accentColor)),
+        child: child!,
+      ),
+    );
+    if (picked == null) return;
+    final formatted =
+        '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
+    onChanged([...times, ReminderTime.everyDay(formatted)]);
+  }
+
+  Future<void> _editTime(BuildContext context, int index) async {
+    final parts = times[index].time.split(':');
+    final picked = await showTimePicker(
+      context: context,
+      initialTime:
+          TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1])),
+      builder: (ctx, child) => Theme(
+        data: ThemeData.dark()
+            .copyWith(colorScheme: ColorScheme.dark(primary: accentColor)),
+        child: child!,
+      ),
+    );
+    if (picked == null) return;
+    final formatted =
+        '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
+    final next = List<ReminderTime>.of(times);
+    next[index] = times[index].copyWith(time: formatted);
+    onChanged(next);
+  }
+}
+
+/// Formats a list of [ReminderTime]s for display on a card, e.g.
+/// "08:00, 20:00" when every entry applies every day, or
+/// "08:00 (Mo, Mi, Fr), 20:00" once a time is restricted to specific days.
+String _formatReminderTimes(BuildContext context, List<ReminderTime> times) {
+  final weekdayLabels = AppLocalizations.of(context)!.weekdaysShort.split(',');
+  return times.map((t) {
+    if (t.isEveryDay) return t.time;
+    final sortedDays = t.days.toList()..sort();
+    final dayLabels = sortedDays.map((d) => weekdayLabels[d - 1]).join(', ');
+    return '${t.time} ($dayLabels)';
+  }).join(', ');
+}
+
+/// Re-derives every scheduled reminder (medication/supplement + all
+/// Settings-driven ones) from current DB/prefs state after a medication or
+/// supplement is added, edited, deleted, or (de)activated — see
+/// [rescheduleAllNotifications]. Warns visibly via a SnackBar if reminders
+/// are enabled but the OS notification permission is missing, instead of
+/// letting the change look like it worked.
+Future<void> _syncReminders(BuildContext context) async {
   final granted = await rescheduleAllNotifications(
     ProviderScope.containerOf(context, listen: false),
   );
@@ -82,19 +258,20 @@ class MySubstancesTab extends ConsumerWidget {
                       const SizedBox(height: 8),
                       ...meds.map((med) => _MedCard(
                             med: med,
+                            onEdit: () => _showEditMedSheet(context, ref, med),
                             onDelete: () async {
                               await ref
                                   .read(medicationDaoProvider)
                                   .deleteMedication(med.id);
                               if (!context.mounted) return;
-                              await _syncMedicationReminders(context);
+                              await _syncReminders(context);
                             },
                             onToggle: (active) async {
                               await ref
                                   .read(medicationDaoProvider)
                                   .setMedicationActive(med.id, active);
                               if (!context.mounted) return;
-                              await _syncMedicationReminders(context);
+                              await _syncReminders(context);
                             },
                           )),
                       const SizedBox(height: 16),
@@ -104,15 +281,21 @@ class MySubstancesTab extends ConsumerWidget {
                       const SizedBox(height: 8),
                       ...supps.map((s) => _SuppCard(
                             supp: s,
-                            onDelete: () => ref.read(supplementDaoProvider).deleteSupplement(s.id),
-                            onToggle: (active) =>
-                                ref.read(supplementDaoProvider).updateSupplement(
-                                  SupplementsCompanion(
-                                    id: Value(s.id),
-                                    name: Value(s.name),
-                                    isActive: Value(active),
-                                  ),
-                                ),
+                            onEdit: () => _showEditSuppSheet(context, ref, s),
+                            onDelete: () async {
+                              await ref
+                                  .read(supplementDaoProvider)
+                                  .deleteSupplement(s.id);
+                              if (!context.mounted) return;
+                              await _syncReminders(context);
+                            },
+                            onToggle: (active) async {
+                              await ref.read(supplementDaoProvider).updateSupplement(
+                                    s.toCompanion(true).copyWith(isActive: Value(active)),
+                                  );
+                              if (!context.mounted) return;
+                              await _syncReminders(context);
+                            },
                           )),
                     ],
                   ],
@@ -210,7 +393,13 @@ class MySubstancesTab extends ConsumerWidget {
     );
   }
 
-  void _showAddMedSheet(BuildContext context, WidgetRef ref) {
+  void _showAddMedSheet(BuildContext context, WidgetRef ref) =>
+      _showMedSheet(context, ref);
+
+  void _showEditMedSheet(BuildContext context, WidgetRef ref, Medication med) =>
+      _showMedSheet(context, ref, existing: med);
+
+  void _showMedSheet(BuildContext context, WidgetRef ref, {Medication? existing}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -218,24 +407,44 @@ class MySubstancesTab extends ConsumerWidget {
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
       builder: (ctx) => _AddMedSheet(
+        existing: existing,
         onAdd: (companion) async {
-          await ref.read(medicationDaoProvider).insertMedication(companion);
+          if (companion.id.present) {
+            await ref.read(medicationDaoProvider).updateMedication(companion);
+          } else {
+            await ref.read(medicationDaoProvider).insertMedication(companion);
+          }
           if (!ctx.mounted) return;
-          await _syncMedicationReminders(ctx);
+          await _syncReminders(ctx);
         },
       ),
     );
   }
 
-  void _showAddSuppSheet(BuildContext context, WidgetRef ref) {
+  void _showAddSuppSheet(BuildContext context, WidgetRef ref) =>
+      _showSuppSheet(context, ref);
+
+  void _showEditSuppSheet(BuildContext context, WidgetRef ref, Supplement supp) =>
+      _showSuppSheet(context, ref, existing: supp);
+
+  void _showSuppSheet(BuildContext context, WidgetRef ref, {Supplement? existing}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
-      builder: (_) => _AddSuppSheet(
-        onAdd: (c) => ref.read(supplementDaoProvider).insertSupplement(c),
+      builder: (ctx) => _AddSuppSheet(
+        existing: existing,
+        onAdd: (companion) async {
+          if (companion.id.present) {
+            await ref.read(supplementDaoProvider).updateSupplement(companion);
+          } else {
+            await ref.read(supplementDaoProvider).insertSupplement(companion);
+          }
+          if (!ctx.mounted) return;
+          await _syncReminders(ctx);
+        },
       ),
     );
   }
@@ -268,7 +477,7 @@ void showAddMedSheetFor(
         final container = ProviderScope.containerOf(ctx, listen: false);
         await container.read(medicationDaoProvider).insertMedication(companion);
         if (!ctx.mounted) return;
-        await _syncMedicationReminders(ctx);
+        await _syncReminders(ctx);
         // Pass the sheet's own (still-mounted) ctx — the caller's context
         // was already popped before this sheet opened.
         if (ctx.mounted) onAdded?.call(ctx);
@@ -330,14 +539,17 @@ class _TodayStatusCard extends ConsumerWidget {
                 fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 16)),
         const SizedBox(height: 12),
         ...activeMeds.map((med) {
-          final times = _parseTimes(med.timings);
+          final todayWeekday = DateTime.now().weekday;
+          final times = parseReminderTimes(med.timings)
+              .where((t) => t.days.contains(todayWeekday))
+              .toList();
           final takenCount = logs.where((l) => l.medicationId == med.id && l.taken).length;
           final takenList = List.generate(times.length, (i) => i < takenCount);
           return Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: MedicationDotRow(
               name: med.name,
-              times: times,
+              times: times.map((t) => t.time).toList(),
               taken: takenList,
               onTapDot: (i) {
                 // Tap empty dot → fill up to i+1; tap filled dot → reduce to i.
@@ -352,14 +564,14 @@ class _TodayStatusCard extends ConsumerWidget {
   }
 
   Future<void> _setTakenCount(
-      WidgetRef ref, Medication med, List<String> times, int target) async {
+      WidgetRef ref, Medication med, List<ReminderTime> times, int target) async {
     final dao = ref.read(medicationDaoProvider);
     final takenLogs =
         logs.where((l) => l.medicationId == med.id && l.taken).toList();
     var count = takenLogs.length;
     final now = DateTime.now();
     while (count < target) {
-      final timeStr = count < times.length ? times[count] : '';
+      final timeStr = count < times.length ? times[count].time : '';
       var sched = DateTime(now.year, now.month, now.day);
       final parts = timeStr.split(':');
       if (parts.length == 2) {
@@ -380,17 +592,19 @@ class _TodayStatusCard extends ConsumerWidget {
       count--;
     }
   }
-
-  List<String> _parseTimes(String t) {
-    try { return (jsonDecode(t) as List).cast<String>(); } catch (_) { return []; }
-  }
 }
 
 class _SuppCard extends StatelessWidget {
   final Supplement supp;
+  final VoidCallback onEdit;
   final VoidCallback onDelete;
   final void Function(bool)? onToggle;
-  const _SuppCard({required this.supp, required this.onDelete, this.onToggle});
+  const _SuppCard({
+    required this.supp,
+    required this.onEdit,
+    required this.onDelete,
+    this.onToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -412,11 +626,17 @@ class _SuppCard extends StatelessWidget {
           title: Text(supp.name,
               style: const TextStyle(color: TraumColors.onBackground,
                   fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
-          subtitle: Text(
-            '${supp.dosageAmount ?? '?'} ${supp.dosageUnit ?? ''}'.trim(),
-            style: const TextStyle(color: TraumColors.onBackgroundMuted,
-                fontFamily: 'DMSans', fontSize: 12),
-          ),
+          subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(
+              '${supp.dosageAmount ?? '?'} ${supp.dosageUnit ?? ''}'.trim(),
+              style: const TextStyle(color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans', fontSize: 12),
+            ),
+            if (parseReminderTimes(supp.timings).isNotEmpty)
+              Text(_formatReminderTimes(context, parseReminderTimes(supp.timings)),
+                  style: const TextStyle(color: TraumColors.onBackgroundSubtle,
+                      fontFamily: 'DMSans', fontSize: 11)),
+          ]),
           trailing: Switch(
             value: supp.isActive,
             activeThumbColor: TraumColors.indigoBlue,
@@ -436,6 +656,15 @@ class _SuppCard extends StatelessWidget {
       builder: (_) => SafeArea(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           const SizedBox(height: 12),
+          ListTile(
+            leading: const Icon(Icons.edit_rounded, color: TraumColors.indigoBlue),
+            title: Text(AppLocalizations.of(context)!.edit,
+                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+            onTap: () {
+              Navigator.pop(context);
+              onEdit();
+            },
+          ),
           ListTile(
             leading: const Icon(Icons.pause_circle_outline_rounded, color: TraumColors.amberGold),
             title: Text(AppLocalizations.of(context)!.substanceDeactivate,
@@ -478,13 +707,19 @@ class _SuppCard extends StatelessWidget {
 
 class _MedCard extends StatelessWidget {
   final Medication med;
+  final VoidCallback onEdit;
   final VoidCallback onDelete;
   final void Function(bool)? onToggle;
-  const _MedCard({required this.med, required this.onDelete, this.onToggle});
+  const _MedCard({
+    required this.med,
+    required this.onEdit,
+    required this.onDelete,
+    this.onToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final times = _parseTimes(med.timings);
+    final times = parseReminderTimes(med.timings);
     return GestureDetector(
       onLongPress: () => _showContextMenu(context),
       child: Container(
@@ -509,7 +744,7 @@ class _MedCard extends StatelessWidget {
                   style: const TextStyle(color: TraumColors.onBackgroundMuted,
                       fontFamily: 'DMSans', fontSize: 12)),
             if (times.isNotEmpty)
-              Text(times.join(', '),
+              Text(_formatReminderTimes(context, times),
                   style: const TextStyle(color: TraumColors.onBackgroundSubtle,
                       fontFamily: 'DMSans', fontSize: 11)),
           ]),
@@ -541,6 +776,15 @@ class _MedCard extends StatelessWidget {
       builder: (_) => SafeArea(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           const SizedBox(height: 12),
+          ListTile(
+            leading: const Icon(Icons.edit_rounded, color: TraumColors.roseRed),
+            title: Text(AppLocalizations.of(context)!.edit,
+                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+            onTap: () {
+              Navigator.pop(context);
+              onEdit();
+            },
+          ),
           ListTile(
             leading: const Icon(Icons.pause_circle_outline_rounded, color: TraumColors.amberGold),
             title: Text(AppLocalizations.of(context)!.substanceDeactivate,
@@ -578,10 +822,6 @@ class _MedCard extends StatelessWidget {
         ]),
       ),
     );
-  }
-
-  List<String> _parseTimes(String t) {
-    try { return (jsonDecode(t) as List).cast<String>(); } catch (_) { return []; }
   }
 }
 
@@ -648,12 +888,14 @@ class _EmptyState extends StatelessWidget {
 
 class _AddSuppSheet extends StatefulWidget {
   final Future<void> Function(SupplementsCompanion) onAdd;
+  final Supplement? existing;
   final String? initialName;
   final String? initialCategory;
   final String? initialAmount;
   final String? initialUnit;
   const _AddSuppSheet({
     required this.onAdd,
+    this.existing,
     this.initialName,
     this.initialCategory,
     this.initialAmount,
@@ -664,22 +906,26 @@ class _AddSuppSheet extends StatefulWidget {
 }
 
 class _AddSuppSheetState extends State<_AddSuppSheet> {
-  late final _nameCtrl = TextEditingController(text: widget.initialName ?? '');
-  late final _amountCtrl = TextEditingController(text: widget.initialAmount ?? '');
-  late String _category = (widget.initialCategory != null &&
-          _categories.contains(widget.initialCategory))
-      ? widget.initialCategory!
-      : 'Vitamine';
+  late final _nameCtrl =
+      TextEditingController(text: widget.existing?.name ?? widget.initialName ?? '');
+  late final _amountCtrl = TextEditingController(
+      text: widget.existing?.dosageAmount ?? widget.initialAmount ?? '');
+  late String _category = _initialFrom(
+      widget.existing?.category ?? widget.initialCategory, _categories, 'Vitamine');
   late String _unit =
-      (widget.initialUnit != null && _units.contains(widget.initialUnit))
-          ? widget.initialUnit!
-          : 'mg';
-  late String? _nutrientKey =
-      widget.initialName != null ? suggestNutrientKey(widget.initialName!) : null;
+      _initialFrom(widget.existing?.dosageUnit ?? widget.initialUnit, _units, 'mg');
+  late String? _nutrientKey = widget.existing?.nutrientKey ??
+      (widget.initialName != null ? suggestNutrientKey(widget.initialName!) : null);
+  late final List<ReminderTime> _times = widget.existing != null
+      ? parseReminderTimes(widget.existing!.timings)
+      : <ReminderTime>[];
   bool _nutrientTouched = false; // true sobald der Nutzer manuell wählt
   bool _saving = false;
   List<SubstanceRecord> _suggestions = [];
   Timer? _debounce;
+
+  static String _initialFrom(String? value, List<String> options, String fallback) =>
+      value != null && options.contains(value) ? value : fallback;
 
   static const _categories = [
     'Vitamine', 'Mineralien', 'Aminosäuren', 'Protein', 'Omega-3',
@@ -737,7 +983,10 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
               decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle,
                   borderRadius: BorderRadius.circular(2)))),
           const SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.addSupplement,
+          Text(
+              widget.existing != null
+                  ? AppLocalizations.of(context)!.editSupplement
+                  : AppLocalizations.of(context)!.addSupplement,
               style: TextStyle(color: TraumColors.onBackground,
                   fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
           const SizedBox(height: 16),
@@ -821,6 +1070,16 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
               _nutrientTouched = true;
             }),
           ),
+          const SizedBox(height: 12),
+          _ReminderTimesEditor(
+            times: _times,
+            accentColor: TraumColors.indigoBlue,
+            onChanged: (next) => setState(() {
+              _times
+                ..clear()
+                ..addAll(next);
+            }),
+          ),
           const SizedBox(height: 20),
           GradientButton(
             label: _saving
@@ -864,31 +1123,57 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
       return;
     }
     setState(() => _saving = true);
-    await widget.onAdd(SupplementsCompanion.insert(
-      name: _nameCtrl.text.trim(),
-      category: Value(_category),
-      dosageAmount: Value(_amountCtrl.text.trim().isEmpty ? null : _amountCtrl.text.trim()),
-      dosageUnit: Value(_unit),
-      nutrientKey: Value(_nutrientKey),
-    ));
+    final existing = widget.existing;
+    final companion = existing != null
+        ? existing.toCompanion(true).copyWith(
+            name: Value(_nameCtrl.text.trim()),
+            category: Value(_category),
+            dosageAmount:
+                Value(_amountCtrl.text.trim().isEmpty ? null : _amountCtrl.text.trim()),
+            dosageUnit: Value(_unit),
+            nutrientKey: Value(_nutrientKey),
+            timings: Value(encodeReminderTimes(_times)),
+          )
+        : SupplementsCompanion.insert(
+            name: _nameCtrl.text.trim(),
+            category: Value(_category),
+            dosageAmount:
+                Value(_amountCtrl.text.trim().isEmpty ? null : _amountCtrl.text.trim()),
+            dosageUnit: Value(_unit),
+            nutrientKey: Value(_nutrientKey),
+            timings: Value(encodeReminderTimes(_times)),
+          );
+    await widget.onAdd(companion);
     if (mounted) Navigator.pop(context);
   }
 }
 
 class _AddMedSheet extends StatefulWidget {
   final Future<void> Function(MedicationsCompanion) onAdd;
+  final Medication? existing;
   final String? initialName;
   final String? initialDosage;
-  const _AddMedSheet({required this.onAdd, this.initialName, this.initialDosage});
+  const _AddMedSheet({
+    required this.onAdd,
+    this.existing,
+    this.initialName,
+    this.initialDosage,
+  });
   @override
   State<_AddMedSheet> createState() => _AddMedSheetState();
 }
 
 class _AddMedSheetState extends State<_AddMedSheet> {
-  late final _nameCtrl = TextEditingController(text: widget.initialName ?? '');
-  late final _dosageCtrl = TextEditingController(text: widget.initialDosage ?? '');
-  String _form = 'Tablette';
-  final List<String> _times = ['08:00'];
+  late final _nameCtrl =
+      TextEditingController(text: widget.existing?.name ?? widget.initialName ?? '');
+  late final _dosageCtrl = TextEditingController(
+      text: widget.existing?.dosage ?? widget.initialDosage ?? '');
+  late String _form = widget.existing != null && _forms.contains(widget.existing!.form)
+      ? widget.existing!.form!
+      : 'Tablette';
+  late final List<ReminderTime> _times = widget.existing != null
+      ? parseReminderTimes(widget.existing!.timings)
+      : [ReminderTime.everyDay('08:00')];
   bool _saving = false;
   List<SubstanceRecord> _suggestions = [];
   Timer? _debounce;
@@ -938,7 +1223,10 @@ class _AddMedSheetState extends State<_AddMedSheet> {
               decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle,
                   borderRadius: BorderRadius.circular(2)))),
           const SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.addMedication,
+          Text(
+              widget.existing != null
+                  ? AppLocalizations.of(context)!.editMedication
+                  : AppLocalizations.of(context)!.addMedication,
               style: TextStyle(color: TraumColors.onBackground,
                   fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
           const SizedBox(height: 16),
@@ -992,42 +1280,16 @@ class _AddMedSheetState extends State<_AddMedSheet> {
             }).toList(),
           ),
           const SizedBox(height: 12),
-          Row(children: [
-            Text(AppLocalizations.of(context)!.reminderTimes,
-                style: TextStyle(color: TraumColors.onBackgroundMuted,
-                    fontFamily: 'DMSans', fontSize: 13)),
-            const Spacer(),
-            TextButton.icon(
-              onPressed: _addTime,
-              icon: const Icon(Icons.add, size: 16, color: TraumColors.coralOrange),
-              label: Text(AppLocalizations.of(context)!.add,
-                  style: TextStyle(color: TraumColors.coralOrange,
-                      fontFamily: 'DMSans', fontSize: 12)),
-            ),
-          ]),
-          ..._times.asMap().entries.map((e) => Row(children: [
-            GestureDetector(
-              onTap: () => _editTime(e.key),
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 6),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: TraumColors.surface,
-                  borderRadius: BorderRadius.circular(TraumRadius.chip),
-                  border: Border.all(color: TraumColors.roseRed.withValues(alpha: 0.3)),
-                ),
-                child: Text(e.value, style: const TextStyle(
-                    color: TraumColors.roseRed, fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w600)),
-              ),
-            ),
-            if (_times.length > 1)
-              IconButton(
-                icon: const Icon(Icons.close, size: 16,
-                    color: TraumColors.onBackgroundSubtle),
-                onPressed: () => setState(() => _times.removeAt(e.key)),
-              ),
-          ])),
+          _ReminderTimesEditor(
+            times: _times,
+            accentColor: TraumColors.roseRed,
+            minEntries: 1,
+            onChanged: (next) => setState(() {
+              _times
+                ..clear()
+                ..addAll(next);
+            }),
+          ),
           const SizedBox(height: 20),
           GradientButton(
             label: _saving
@@ -1062,38 +1324,6 @@ class _AddMedSheetState extends State<_AddMedSheet> {
         ),
       ]);
 
-  Future<void> _addTime() async {
-    final picked = await showTimePicker(
-      context: context, initialTime: TimeOfDay.now(),
-      builder: (ctx, child) => Theme(
-        data: ThemeData.dark().copyWith(
-            colorScheme: const ColorScheme.dark(primary: TraumColors.roseRed)),
-        child: child!,
-      ),
-    );
-    if (picked != null) {
-      setState(() => _times.add(
-          '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}'));
-    }
-  }
-
-  Future<void> _editTime(int index) async {
-    final parts = _times[index].split(':');
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1])),
-      builder: (ctx, child) => Theme(
-        data: ThemeData.dark().copyWith(
-            colorScheme: const ColorScheme.dark(primary: TraumColors.roseRed)),
-        child: child!,
-      ),
-    );
-    if (picked != null) {
-      setState(() => _times[index] =
-          '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}');
-    }
-  }
-
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -1101,12 +1331,21 @@ class _AddMedSheetState extends State<_AddMedSheet> {
       return;
     }
     setState(() => _saving = true);
-    await widget.onAdd(MedicationsCompanion.insert(
-      name: _nameCtrl.text.trim(),
-      dosage: Value(_dosageCtrl.text.trim().isEmpty ? null : _dosageCtrl.text.trim()),
-      form: Value(_form),
-      timings: Value(jsonEncode(_times)),
-    ));
+    final existing = widget.existing;
+    final companion = existing != null
+        ? existing.toCompanion(true).copyWith(
+            name: Value(_nameCtrl.text.trim()),
+            dosage: Value(_dosageCtrl.text.trim().isEmpty ? null : _dosageCtrl.text.trim()),
+            form: Value(_form),
+            timings: Value(encodeReminderTimes(_times)),
+          )
+        : MedicationsCompanion.insert(
+            name: _nameCtrl.text.trim(),
+            dosage: Value(_dosageCtrl.text.trim().isEmpty ? null : _dosageCtrl.text.trim()),
+            form: Value(_form),
+            timings: Value(encodeReminderTimes(_times)),
+          );
+    await widget.onAdd(companion);
     if (mounted) Navigator.pop(context);
   }
 }
