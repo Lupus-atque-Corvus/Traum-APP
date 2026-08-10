@@ -54,6 +54,7 @@ class _DatabaseTabState extends ConsumerState<DatabaseTab> {
               prefixIcon: const Icon(Icons.search_rounded, color: TraumColors.onBackgroundSubtle),
               suffixIcon: _query.isNotEmpty
                   ? IconButton(
+                      tooltip: AppLocalizations.of(context)!.close,
                       icon: const Icon(Icons.close_rounded, color: TraumColors.onBackgroundSubtle),
                       onPressed: () {
                         _debounce?.cancel();

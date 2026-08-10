@@ -181,6 +181,7 @@ class _MealTemplateSheetState
               ),
             ),
             IconButton(
+              tooltip: AppLocalizations.of(context)!.a11yScanBarcode,
               onPressed: () => _openScanner(context),
               icon: const Icon(Icons.qr_code_scanner,
                   color: TraumColors.mintGreen),

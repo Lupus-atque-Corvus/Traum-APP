@@ -22,7 +22,10 @@ class TraumColors {
   // Text
   static const Color onBackground = Color(0xFFFFFFFF);
   static const Color onBackgroundMuted = Color(0xFF8888AA);
-  static const Color onBackgroundSubtle = Color(0xFF555577);
+  // Was #555577 — only ~2.7:1 against `background`, below WCAG AA's 4.5:1
+  // for normal text. Lightened along the same hue to ~4.6:1 while staying
+  // visibly a step darker than onBackgroundMuted.
+  static const Color onBackgroundSubtle = Color(0xFF7878A4);
   static const Color textBright = Color(0xFFCFCFE0);   // helle Sekundärtexte (Status-Bar, Prognose)
 
   // Akzente Warm

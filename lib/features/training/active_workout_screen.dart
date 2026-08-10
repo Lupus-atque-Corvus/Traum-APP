@@ -246,6 +246,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
         ),
         actions: [
           IconButton(
+            tooltip: AppLocalizations.of(context)!.a11yToggleFavorite,
             icon: Icon(
               _isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
               color: _isFavorite ? TraumColors.coralOrange : TraumColors.onBackground,
@@ -253,6 +254,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
             onPressed: _toggleFavorite,
           ),
           IconButton(
+            tooltip: AppLocalizations.of(context)!.more,
             icon: const Icon(Icons.more_vert_rounded, color: TraumColors.onBackground),
             onPressed: () => _showWorkoutOptions(context),
           ),
@@ -881,6 +883,7 @@ class _ExerciseCardState extends State<_ExerciseCard> {
                 constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
               ),
             IconButton(
+              tooltip: AppLocalizations.of(context)!.more,
               icon: const Icon(Icons.more_vert_rounded,
                   color: TraumColors.onBackgroundMuted, size: 20),
               onPressed: () => _showExerciseOptions(context),
@@ -1013,6 +1016,7 @@ class _ExerciseCardState extends State<_ExerciseCard> {
             SizedBox(
               width: 36,
               child: IconButton(
+                tooltip: AppLocalizations.of(context)!.a11yAddSet,
                 icon: const Icon(Icons.add_rounded,
                     color: TraumColors.coralOrange, size: 22),
                 onPressed: _addSet,

@@ -207,6 +207,7 @@ class _DailyLogSheetState extends State<DailyLogSheet> {
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   suffixIcon: IconButton(
+                    tooltip: AppLocalizations.of(context)!.add,
                     icon: const Icon(Icons.add_rounded,
                         color: TraumColors.periodRose),
                     onPressed: () async {

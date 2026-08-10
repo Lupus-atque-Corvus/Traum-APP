@@ -244,6 +244,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                   const Spacer(),
                   IconButton(
                     visualDensity: VisualDensity.compact,
+                    tooltip: l10n.notes_new_folder,
                     icon: const Icon(Icons.create_new_folder_outlined,
                         size: 20, color: TraumColors.onBackgroundMuted),
                     onPressed: () => _createFolder(),
@@ -344,6 +345,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
             ),
             IconButton(
               visualDensity: VisualDensity.compact,
+              tooltip: l10n.notes_new_note,
               icon: const Icon(Icons.add_rounded,
                   size: 18, color: TraumColors.onBackgroundSubtle),
               onPressed: () => _createNote(folderId: folder.id),

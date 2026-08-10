@@ -96,6 +96,7 @@ class DiaryScreen extends ConsumerWidget {
                   ),
                 ),
                 IconButton(
+                  tooltip: l10n.diarySlideshow,
                   icon: const Icon(Icons.slideshow_outlined,
                       color: TraumColors.lavender),
                   onPressed: () => context.go('/diary/slideshow'),
@@ -333,6 +334,7 @@ class _DiaryRow extends ConsumerWidget {
           if (isActive)
             const Icon(Icons.check_circle, color: TraumColors.mintGreen),
           IconButton(
+            tooltip: l10n.edit,
             icon: const Icon(Icons.edit_outlined,
                 color: TraumColors.onBackgroundMuted),
             onPressed: onEdit,

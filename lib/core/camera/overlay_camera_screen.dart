@@ -288,10 +288,12 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
             children: [
               _RoundIconButton(
                 icon: Icons.close,
+                label: AppLocalizations.of(context)!.close,
                 onTap: () => Navigator.pop(context),
               ),
               _RoundIconButton(
                 icon: Icons.cameraswitch_outlined,
+                label: AppLocalizations.of(context)!.a11ySwitchCamera,
                 onTap: _cameras.length > 1 ? _flipCamera : null,
               ),
             ],
@@ -506,21 +508,27 @@ class _GridOverlay extends StatelessWidget {
 class _RoundIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onTap;
-  const _RoundIconButton({required this.icon, required this.onTap});
+  final String label;
+  const _RoundIconButton(
+      {required this.icon, required this.onTap, required this.label});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          color: Colors.black38,
-          shape: BoxShape.circle,
+    return Semantics(
+      button: true,
+      label: label,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: Colors.black38,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon,
+              color: onTap == null ? Colors.white38 : Colors.white, size: 19),
         ),
-        child: Icon(icon,
-            color: onTap == null ? Colors.white38 : Colors.white, size: 19),
       ),
     );
   }
@@ -614,7 +622,9 @@ class _MessageState extends StatelessWidget {
         top: 8,
         left: 8,
         child: _RoundIconButton(
-            icon: Icons.close, onTap: () => Navigator.pop(context)),
+            icon: Icons.close,
+            label: AppLocalizations.of(context)!.close,
+            onTap: () => Navigator.pop(context)),
       ),
     ]);
   }

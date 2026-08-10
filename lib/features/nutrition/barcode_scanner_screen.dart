@@ -44,6 +44,7 @@ class _BarcodeScannerScreenState
         ),
         actions: [
           IconButton(
+            tooltip: AppLocalizations.of(context)!.a11yToggleTorch,
             icon: const Icon(Icons.flash_on, color: Colors.white),
             onPressed: () => _controller.toggleTorch(),
           ),

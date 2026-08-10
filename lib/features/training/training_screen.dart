@@ -100,6 +100,7 @@ class TrainingScreen extends ConsumerWidget {
         elevation: 0,
         actions: [
           IconButton(
+            tooltip: AppLocalizations.of(context)!.a11yWorkoutHistory,
             icon: const Icon(
               Icons.history_rounded,
               color: TraumColors.onBackgroundMuted,
@@ -517,6 +518,7 @@ class _RoutineSlotRow extends ConsumerWidget {
           )
         else
           IconButton(
+            tooltip: AppLocalizations.of(context)!.add,
             icon: Icon(Icons.add_circle_outline_rounded, color: iconColor),
             onPressed: () =>
                 context.push(Routes.newRoutinePath(type: planType)),

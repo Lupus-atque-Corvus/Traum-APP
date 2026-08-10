@@ -100,6 +100,7 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
         elevation: 0,
         actions: [
           IconButton(
+            tooltip: AppLocalizations.of(context)!.calendarSyncTitle,
             icon: _isSyncing
                 ? const SizedBox(
                     width: 18,

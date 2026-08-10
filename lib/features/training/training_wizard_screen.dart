@@ -137,6 +137,7 @@ class _TrainingWizardScreenState
         elevation: 0,
         leading: _step > 0
             ? IconButton(
+                tooltip: AppLocalizations.of(context)!.back,
                 icon: const Icon(Icons.arrow_back_rounded,
                     color: TraumColors.onBackground),
                 onPressed: _back,

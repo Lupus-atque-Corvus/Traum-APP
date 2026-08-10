@@ -589,6 +589,7 @@ class _TransactionDetailScreenState
                       ),
                       if (_editingNote)
                         IconButton(
+                          tooltip: l10n.save,
                           icon: const Icon(Icons.check_rounded,
                               color: TraumColors.mintGreen),
                           onPressed: _saveNote,

@@ -82,6 +82,7 @@ class _ReminderTimesEditor extends StatelessWidget {
                     ),
                     if (times.length > minEntries)
                       IconButton(
+                        tooltip: AppLocalizations.of(context)!.delete,
                         icon: const Icon(Icons.close,
                             size: 16, color: TraumColors.onBackgroundSubtle),
                         onPressed: () {

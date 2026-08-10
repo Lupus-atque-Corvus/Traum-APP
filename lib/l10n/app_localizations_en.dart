@@ -63,6 +63,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get close => 'Close';
 
   @override
+  String get a11yToggleFavorite => 'Toggle favorite';
+
+  @override
+  String get a11yAddSet => 'Add set';
+
+  @override
+  String get a11yToggleTorch => 'Toggle flashlight';
+
+  @override
+  String get a11yScanBarcode => 'Scan barcode';
+
+  @override
+  String get a11yWorkoutHistory => 'Workout history';
+
+  @override
+  String get a11ySwitchCamera => 'Switch camera';
+
+  @override
   String get confirm => 'Confirm';
 
   @override
@@ -2736,6 +2754,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diaryTitle => 'Diary';
 
   @override
+  String get diarySlideshow => 'Slideshow';
+
+  @override
   String get diaryNoteHint => 'Write something about this moment... (optional)';
 
   @override
@@ -2874,6 +2895,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notes_new_folder => 'New folder';
+
+  @override
+  String get notes_new_note => 'New note';
+
+  @override
+  String get notes_toggle_preview => 'Toggle preview';
+
+  @override
+  String get notes_toggle_bookmark => 'Toggle bookmark';
+
+  @override
+  String get notes_toggle_panel => 'Expand/collapse panel';
 
   @override
   String get notes_recent => 'Recently edited';

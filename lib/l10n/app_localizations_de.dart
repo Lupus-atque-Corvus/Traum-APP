@@ -63,6 +63,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get close => 'Schließen';
 
   @override
+  String get a11yToggleFavorite => 'Favorit umschalten';
+
+  @override
+  String get a11yAddSet => 'Satz hinzufügen';
+
+  @override
+  String get a11yToggleTorch => 'Taschenlampe umschalten';
+
+  @override
+  String get a11yScanBarcode => 'Barcode scannen';
+
+  @override
+  String get a11yWorkoutHistory => 'Trainingsverlauf';
+
+  @override
+  String get a11ySwitchCamera => 'Kamera wechseln';
+
+  @override
   String get confirm => 'Bestätigen';
 
   @override
@@ -2749,6 +2767,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get diaryTitle => 'Tagebuch';
 
   @override
+  String get diarySlideshow => 'Diashow';
+
+  @override
   String get diaryNoteHint => 'Schreib etwas zu diesem Moment... (optional)';
 
   @override
@@ -2888,6 +2909,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get notes_new_folder => 'Neuer Ordner';
+
+  @override
+  String get notes_new_note => 'Neue Notiz';
+
+  @override
+  String get notes_toggle_preview => 'Vorschau umschalten';
+
+  @override
+  String get notes_toggle_bookmark => 'Lesezeichen umschalten';
+
+  @override
+  String get notes_toggle_panel => 'Bereich ein-/ausklappen';
 
   @override
   String get notes_recent => 'Zuletzt bearbeitet';

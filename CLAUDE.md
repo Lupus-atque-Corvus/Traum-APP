@@ -1,12 +1,69 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.4+104** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.5+105** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-09 — v1.0.4, Phase 4: Verteilte Kleinbugs)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-10 — v1.0.5, Phase 5: Barrierefreiheit)
+
+**Fünfte Phase des Nacharbeitungs-Plans aus dem Tiefenaudit. Große, flächendeckende, aber
+größtenteils unsichtbare Änderung (Screenreader-Labels) plus ein einzelner, sichtbarer
+Kontrast-Fix. Keine schemaVersion-Änderung.**
+
+1. **`TraumColors.onBackgroundSubtle`-Kontrast auf WCAG AA angehoben.** Der Farbwert lag bei
+   `#555577` gegen den `#0D0D1A`-Hintergrund rechnerisch nur bei ~2,7:1 Kontrast — WCAG AA
+   verlangt 4,5:1 für normalen Text. Der Token wird in 75 Dateien für Sekundärtext, Platzhalter
+   und Icons verwendet. Neuer Wert `#7878A4` (rechnerisch ~4,61:1) — entlang derselben
+   lavendel-grauen Farbrichtung aufgehellt, bleibt aber sichtbar dunkler als
+   `onBackgroundMuted` (#8888AA), damit die bestehende Drei-Stufen-Text-Hierarchie
+   (onBackground/onBackgroundMuted/onBackgroundSubtle) erhalten bleibt statt zu kollabieren.
+   Neuer Test `test/core/theme/colors_contrast_test.dart` berechnet den echten WCAG-2.1-
+   Kontrastwert (relative Luminanz-Formel) direkt aus dem Farbwert — verhindert, dass eine
+   künftige Änderung dieses zentralen Tokens den Kontrast unbemerkt wieder unter 4,5:1 drückt.
+2. **Screenreader-Labels für IconButtons app-weit ergänzt.** Vorheriger Audit-Befund: von 54
+   reinen Icon-Buttons hatten höchstens 10 ein `tooltip` (Flutters De-facto-Ersatz für ein
+   Screenreader-Label, sofern kein separates `semanticLabel` gesetzt ist) — der Großteil war für
+   TalkBack/VoiceOver nur als unbeschrifteter „Button" hörbar. Systematisch jede verbleibende
+   Fundstelle nachgetragen (42 `tooltip:`-Ergänzungen über 28 Dateien: Home, Diary, Budget,
+   Nutrition, Notes, Training, Planning, Substances, Period Tracking, Onboarding, Graffiti Map,
+   Kamera-Overlay). Wo ein passender l10n-Key schon existierte (`l10n.back`/`close`/`search`/
+   `add`/`delete`/`edit`/`save`/`more`/`done`/`startWorkout`/`calendarSyncTitle`), wurde er
+   wiederverwendet statt dupliziert; wo keiner existierte, neue de+en ARB-Keys ergänzt
+   (`a11yToggleFavorite`, `a11yAddSet`, `a11yToggleTorch`, `a11yScanBarcode`,
+   `a11yWorkoutHistory`, `a11ySwitchCamera`, `notes_new_note`, `notes_toggle_preview`,
+   `notes_toggle_bookmark`, `notes_toggle_panel`, `diarySlideshow`).
+   **Sonderfall gefunden:** `core/camera/overlay_camera_screen.dart` nutzt für seine
+   Kamera-Steuerelemente (Schließen ×2, Kamera wechseln) eine eigene `_RoundIconButton`-Klasse
+   (`GestureDetector` statt `IconButton`) — hat also kein `tooltip`-Property. Statt eine
+   Ersatzlösung zu bauen, hat die Klasse jetzt einen `label`-Parameter bekommen, der intern in
+   `Semantics(button: true, label: …)` um den `GestureDetector` gewickelt wird — dieselbe
+   Screenreader-Wirkung wie `tooltip` bei echten `IconButton`s.
+   **Bereits vorher korrekt beschriftet, unverändert gelassen:** `period_screen.dart` (3),
+   `notes_trash_screen.dart` (2), `workout_plan_detail_screen.dart`s Start-Button (1),
+   `graffiti_map_screen.dart`s Bearbeiten-Button (1).
+   `custom_lint`-Regel gegen künftige unbeschriftete IconButtons (analog zur für Phase 6
+   vorgesehenen Hardcoded-String-Regel) **nicht** eingerichtet — das war nicht Teil des
+   Plan-Scopes für diese Phase und wäre eine eigene, größere Entscheidung.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **534/534 grün** (532 vorher + 2 neu:
+`colors_contrast_test.dart`).
+
+**Bewusst nicht angetastet — außerhalb des Phase-5-Scopes laut Plan:** Tap-Target-Größen
+(minWidth/minHeight < 44dp, z.B. `active_workout_screen.dart`s 36×36-Constraints) — das war
+Gegenstand des bereits in Phase 4 erledigten Einzelfunds (Übungs-Picker-Button), eine
+vollständige App-weite Tap-Target-Runde ist ein separates, größeres Vorhaben und nicht Teil
+dieser Phase. `Colors.grey`/hartcodierte Kontrastwerte außerhalb des einen zentralen Tokens
+wurden im vorherigen Audit als unauffällig eingestuft (0 Treffer) und daher nicht erneut geprüft.
+
+**Nächste Phase laut Plan:** Phase 6 — Übersetzung (Budget ~30 hardcodierte Strings, Training
+EN/DE-Mischung, Rest verteilt über ~35 Dateien, neue ARB-Keys, `custom_lint`-Regel gegen künftige
+hardcodierte Strings).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-09 — v1.0.4, Phase 4: Verteilte Kleinbugs)
 
 **Vierte Phase des Nacharbeitungs-Plans aus dem Tiefenaudit. 14 über viele Module verstreute
 Einzelfunde, keine schemaVersion-Änderung. Zwischendurch kam direktes Nutzer-Feedback zur

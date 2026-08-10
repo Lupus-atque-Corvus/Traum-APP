@@ -324,6 +324,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     ? Align(
                         alignment: Alignment.centerLeft,
                         child: IconButton(
+                          tooltip: AppLocalizations.of(context)!.back,
                           icon: const Icon(
                             Icons.arrow_back_ios_rounded,
                             color: TraumColors.onBackground,

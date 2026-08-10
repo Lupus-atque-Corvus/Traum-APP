@@ -567,6 +567,7 @@ class _ProductsTabState extends ConsumerState<_ProductsTab>
           ),
           const SizedBox(width: 8),
           IconButton(
+            tooltip: AppLocalizations.of(context)!.a11yScanBarcode,
             icon: const Icon(Icons.qr_code_scanner,
                 color: TraumColors.mintGreen),
             onPressed: () async {

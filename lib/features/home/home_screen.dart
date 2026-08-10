@@ -114,11 +114,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             actions: [
               IconButton(
+                tooltip: l10n.notifications,
                 icon: const Icon(Icons.notifications_outlined,
                     color: TraumColors.onBackground),
                 onPressed: () => context.push(Routes.notifications),
               ),
               IconButton(
+                tooltip: _editMode ? l10n.done : l10n.edit,
                 icon: Icon(
                     _editMode ? Icons.check_rounded : Icons.edit_outlined,
                     color: TraumColors.onBackground),

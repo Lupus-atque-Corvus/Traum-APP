@@ -110,6 +110,7 @@ class ShoppingTemplatesSheet extends ConsumerWidget {
                           fontFamily: 'DMSans',
                           fontWeight: FontWeight.w600)),
                   trailing: IconButton(
+                    tooltip: AppLocalizations.of(context)!.delete,
                     icon: const Icon(Icons.delete_outline_rounded,
                         color: TraumColors.roseRed),
                     onPressed: () => ref

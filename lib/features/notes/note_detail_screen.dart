@@ -197,6 +197,7 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
         centerTitle: true,
         actions: [
           IconButton(
+            tooltip: l10n.notes_toggle_bookmark,
             icon: Icon(
                 note.isBookmarked
                     ? Icons.bookmark_rounded
@@ -335,6 +336,7 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
               ),
               IconButton(
                 visualDensity: VisualDensity.compact,
+                tooltip: l10n.notes_toggle_panel,
                 icon: Icon(
                     _panelOpen
                         ? Icons.keyboard_arrow_down_rounded

@@ -76,6 +76,7 @@ class NotesTemplatesScreen extends ConsumerWidget {
                                   fontSize: 12),
                             ),
                             trailing: IconButton(
+                              tooltip: l10n.delete,
                               icon: const Icon(Icons.delete_outline_rounded,
                                   color: TraumColors.error),
                               onPressed: () => ref
@@ -177,6 +178,7 @@ class _TemplateEditorState extends ConsumerState<_TemplateEditor> {
                   ),
                 ),
                 IconButton(
+                  tooltip: l10n.notes_toggle_preview,
                   icon: Icon(
                       _preview ? Icons.edit_outlined : Icons.menu_book_outlined,
                       color: kNotesAccent),

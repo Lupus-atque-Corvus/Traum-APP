@@ -58,6 +58,7 @@ class _MapGalleryScreenState extends ConsumerState<MapGalleryScreen> {
         backgroundColor: TraumColors.background,
         elevation: 0,
         leading: IconButton(
+          tooltip: AppLocalizations.of(context)!.back,
           icon: const Icon(Icons.arrow_back, color: TraumColors.onBackground),
           onPressed: () => context.pop(),
         ),

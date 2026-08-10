@@ -140,6 +140,7 @@ class _DayCard extends ConsumerWidget {
                         fontSize: 15)),
               ),
               IconButton(
+                tooltip: AppLocalizations.of(context)!.startWorkout,
                 icon: const Icon(Icons.play_circle_outline_rounded,
                     color: TraumColors.coralOrange, size: 28),
                 onPressed: onStartWorkout,

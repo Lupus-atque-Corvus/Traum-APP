@@ -224,6 +224,7 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
           backgroundColor: TraumColors.background,
           pinned: true,
           leading: IconButton(
+            tooltip: AppLocalizations.of(context)!.back,
             icon:
                 const Icon(Icons.arrow_back, color: TraumColors.onBackground),
             onPressed: () => context.pop(),

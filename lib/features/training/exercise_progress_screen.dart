@@ -170,6 +170,7 @@ class _ExerciseProgressScreenState
             ),
             actions: [
               IconButton(
+                tooltip: AppLocalizations.of(context)!.more,
                 icon: const Icon(Icons.more_vert_rounded, color: TraumColors.onBackground),
                 onPressed: () => _showExerciseOptions(context, ex),
               ),

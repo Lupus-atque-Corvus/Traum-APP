@@ -326,6 +326,7 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
         backgroundColor: TraumColors.background,
         elevation: 0,
         leading: IconButton(
+          tooltip: AppLocalizations.of(context)!.back,
           icon: const Icon(Icons.arrow_back_rounded, color: TraumColors.onBackground),
           onPressed: () => setState(() {
             _searchActive = false;
@@ -346,6 +347,7 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
         ),
         actions: [
           IconButton(
+            tooltip: AppLocalizations.of(context)!.close,
             icon: const Icon(Icons.close_rounded, color: TraumColors.onBackground),
             onPressed: () => setState(() {
               _searchActive = false;
@@ -364,6 +366,7 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
       title: const SizedBox.shrink(),
       actions: [
         IconButton(
+          tooltip: AppLocalizations.of(context)!.search,
           icon: const Icon(Icons.search_rounded, color: TraumColors.onBackground),
           onPressed: () => setState(() => _searchActive = true),
         ),

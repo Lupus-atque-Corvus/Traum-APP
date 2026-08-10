@@ -233,6 +233,7 @@ class _NewRoutineScreenState extends ConsumerState<NewRoutineScreen> {
                       ),
                       if (_days.length > 1)
                         IconButton(
+                          tooltip: AppLocalizations.of(context)!.delete,
                           icon: const Icon(
                             Icons.close_rounded,
                             color: TraumColors.onBackgroundSubtle,

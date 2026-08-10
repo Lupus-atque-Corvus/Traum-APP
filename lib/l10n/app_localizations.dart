@@ -206,6 +206,42 @@ abstract class AppLocalizations {
   /// **'Schließen'**
   String get close;
 
+  /// No description provided for @a11yToggleFavorite.
+  ///
+  /// In de, this message translates to:
+  /// **'Favorit umschalten'**
+  String get a11yToggleFavorite;
+
+  /// No description provided for @a11yAddSet.
+  ///
+  /// In de, this message translates to:
+  /// **'Satz hinzufügen'**
+  String get a11yAddSet;
+
+  /// No description provided for @a11yToggleTorch.
+  ///
+  /// In de, this message translates to:
+  /// **'Taschenlampe umschalten'**
+  String get a11yToggleTorch;
+
+  /// No description provided for @a11yScanBarcode.
+  ///
+  /// In de, this message translates to:
+  /// **'Barcode scannen'**
+  String get a11yScanBarcode;
+
+  /// No description provided for @a11yWorkoutHistory.
+  ///
+  /// In de, this message translates to:
+  /// **'Trainingsverlauf'**
+  String get a11yWorkoutHistory;
+
+  /// No description provided for @a11ySwitchCamera.
+  ///
+  /// In de, this message translates to:
+  /// **'Kamera wechseln'**
+  String get a11ySwitchCamera;
+
   /// No description provided for @confirm.
   ///
   /// In de, this message translates to:
@@ -5282,6 +5318,12 @@ abstract class AppLocalizations {
   /// **'Tagebuch'**
   String get diaryTitle;
 
+  /// No description provided for @diarySlideshow.
+  ///
+  /// In de, this message translates to:
+  /// **'Diashow'**
+  String get diarySlideshow;
+
   /// No description provided for @diaryNoteHint.
   ///
   /// In de, this message translates to:
@@ -5551,6 +5593,30 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Neuer Ordner'**
   String get notes_new_folder;
+
+  /// No description provided for @notes_new_note.
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Notiz'**
+  String get notes_new_note;
+
+  /// No description provided for @notes_toggle_preview.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorschau umschalten'**
+  String get notes_toggle_preview;
+
+  /// No description provided for @notes_toggle_bookmark.
+  ///
+  /// In de, this message translates to:
+  /// **'Lesezeichen umschalten'**
+  String get notes_toggle_bookmark;
+
+  /// No description provided for @notes_toggle_panel.
+  ///
+  /// In de, this message translates to:
+  /// **'Bereich ein-/ausklappen'**
+  String get notes_toggle_panel;
 
   /// No description provided for @notes_recent.
   ///
