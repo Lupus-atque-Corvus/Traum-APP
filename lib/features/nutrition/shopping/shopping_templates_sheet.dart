@@ -43,6 +43,7 @@ class ShoppingTemplatesSheet extends ConsumerWidget {
         ],
       ),
     );
+    ctrl.dispose();
     if (name == null || name.isEmpty) return;
     await ref.read(nutritionDaoProvider).saveTemplateFromItems(
           name,

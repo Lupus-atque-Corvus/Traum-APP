@@ -96,13 +96,19 @@ class OutgoingLinks {
 final backlinksProvider =
     FutureProvider.autoDispose.family<List<NoteRef>, int>((ref, id) async {
   ref.watch(noteStreamProvider(id));
-  ref.watch(allNotesStreamProvider);
+  // A single batch lookup instead of one `getNote` query per backlink — for
+  // a heavily-linked note (e.g. an index/hub note) that was one DB
+  // round-trip per incoming link. allNotesStreamProvider is already
+  // watched by the notes screens this feeds, so this adds no extra query
+  // in practice, just reuses data already being loaded.
+  final allNotes = await ref.watch(allNotesStreamProvider.future);
+  final notesById = {for (final n in allNotes) n.id: n};
   final repo = ref.watch(notesRepositoryProvider);
   final links = await repo.getBacklinks(id);
   final refs = <NoteRef>[];
   for (final link in links) {
-    final src = await repo.getNote(link.sourceNoteId);
-    if (src != null && src.deletedAt == null) refs.add(NoteRef(link, src));
+    final src = notesById[link.sourceNoteId];
+    if (src != null) refs.add(NoteRef(link, src));
   }
   return refs;
 });
@@ -110,21 +116,20 @@ final backlinksProvider =
 final outgoingLinksProvider =
     FutureProvider.autoDispose.family<OutgoingLinks, int>((ref, id) async {
   ref.watch(noteStreamProvider(id));
-  ref.watch(allNotesStreamProvider);
+  final allNotes = await ref.watch(allNotesStreamProvider.future);
+  final notesById = {for (final n in allNotes) n.id: n};
   final repo = ref.watch(notesRepositoryProvider);
   final links = await repo.getOutgoingLinks(id);
   final resolved = <NoteRef>[];
   final unresolved = <NoteLink>[];
   for (final link in links) {
     final targetId = link.targetNoteId;
-    if (targetId != null) {
-      final target = await repo.getNote(targetId);
-      if (target != null && target.deletedAt == null) {
-        resolved.add(NoteRef(link, target));
-        continue;
-      }
+    final target = targetId != null ? notesById[targetId] : null;
+    if (target != null) {
+      resolved.add(NoteRef(link, target));
+    } else {
+      unresolved.add(link);
     }
-    unresolved.add(link);
   }
   return OutgoingLinks(resolved, unresolved);
 });

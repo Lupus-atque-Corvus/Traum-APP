@@ -51,7 +51,7 @@ class _SetRow {
     double? weightKg,
     int? reps,
   })  : weightCtrl = TextEditingController(
-            text: weightKg != null ? weightKg.toStringAsFixed(1) : ''),
+            text: weightKg != null ? weightKg.toStringAsFixed(1).replaceAll('.', ',') : ''),
         repsCtrl = TextEditingController(
             text: reps != null ? '$reps' : '');
 
@@ -809,7 +809,7 @@ class _ExerciseCardState extends State<_ExerciseCard> {
           ]),
         ]),
       ),
-    );
+    ).whenComplete(ctrl.dispose);
   }
 
   void _showEquipmentPicker(BuildContext context) {

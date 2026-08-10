@@ -174,4 +174,54 @@ void main() {
       expect(result, isEmpty);
     });
   });
+
+  group('byHashtagSubstring', () {
+    test('finds markers outside any given viewport (collection-wide)',
+        () async {
+      final id = await _insertCollection(db);
+      await db.mapMarkersDao.insert(MapMarkersCompanion.insert(
+        collectionId: id,
+        hashtags: const Value('art,streetart'),
+        latitude: const Value(80.0), // far outside any typical viewport
+        longitude: const Value(170.0),
+        createdAt: DateTime.now(),
+      ));
+
+      final result = await db.mapMarkersDao.byHashtagSubstring(id, 'art');
+      expect(result.length, 1);
+    });
+
+    test('ignores markers from other collections', () async {
+      final id = await _insertCollection(db);
+      final other = await _insertCollection(db, iconName: 'other');
+      await db.mapMarkersDao.insert(MapMarkersCompanion.insert(
+        collectionId: id,
+        hashtags: const Value('art'),
+        createdAt: DateTime.now(),
+      ));
+      await db.mapMarkersDao.insert(MapMarkersCompanion.insert(
+        collectionId: other,
+        hashtags: const Value('art'),
+        createdAt: DateTime.now(),
+      ));
+
+      final result = await db.mapMarkersDao.byHashtagSubstring(id, 'art');
+      expect(result.length, 1);
+    });
+
+    test('respects the limit parameter', () async {
+      final id = await _insertCollection(db);
+      for (var i = 0; i < 10; i++) {
+        await db.mapMarkersDao.insert(MapMarkersCompanion.insert(
+          collectionId: id,
+          hashtags: const Value('art'),
+          createdAt: DateTime.now(),
+        ));
+      }
+
+      final result =
+          await db.mapMarkersDao.byHashtagSubstring(id, 'art', limit: 4);
+      expect(result.length, 4);
+    });
+  });
 }

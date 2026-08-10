@@ -741,7 +741,7 @@ class _OverviewTab extends ConsumerWidget {
                             fontWeight: FontWeight.w700, fontSize: 14)),
                   ]),
                   const SizedBox(height: 12),
-                  Text(l10n.avgHours(avgHours.toStringAsFixed(1)),
+                  Text(l10n.avgHours(avgHours.toStringAsFixed(1).replaceAll('.', ',')),
                       style: const TextStyle(color: TraumColors.cyanBlue, fontFamily: 'DMSans',
                           fontWeight: FontWeight.w700, fontSize: 28)),
                   Text(l10n.entriesRecorded(logs.length),
@@ -777,7 +777,7 @@ class _OverviewTab extends ConsumerWidget {
                 Text(l10n.currentWeight,
                     style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
                 Text(
-                  w != null ? '${w.weightKg.toStringAsFixed(1)} kg' : l10n.noEntry,
+                  w != null ? '${w.weightKg.toStringAsFixed(1).replaceAll('.', ',')} kg' : l10n.noEntry,
                   style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
                       fontWeight: FontWeight.w700, fontSize: 20),
                 ),
@@ -1108,8 +1108,8 @@ class _WeightTab extends ConsumerWidget {
                 child: ListTile(
                   title: Text(
                     unitSystem == 'imperial'
-                        ? '${(log.weightKg * 2.20462).toStringAsFixed(1)} lb'
-                        : '${log.weightKg.toStringAsFixed(1)} kg',
+                        ? '${(log.weightKg * 2.20462).toStringAsFixed(1).replaceAll('.', ',')} lb'
+                        : '${log.weightKg.toStringAsFixed(1).replaceAll('.', ',')} kg',
                     style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w600),
                   ),
                   trailing: Text('${log.logDate.day}.${log.logDate.month}.${log.logDate.year}',
@@ -1157,7 +1157,7 @@ class _WeightTab extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ).whenComplete(ctrl.dispose);
   }
 }
 
@@ -1248,7 +1248,7 @@ class _MeasurementRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 6),
       child: Row(children: [
         Expanded(child: Text(label, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13))),
-        Text('${value!.toStringAsFixed(1)} $suffix',
+        Text('${value!.toStringAsFixed(1).replaceAll('.', ',')} $suffix',
             style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
       ]),
     );
@@ -1272,15 +1272,15 @@ class _AddMeasurementSheetState extends State<_AddMeasurementSheet> {
     super.initState();
     final e = widget.existing;
     _controllers = {
-      'chest': TextEditingController(text: e?.chestCm?.toStringAsFixed(1) ?? ''),
-      'waist': TextEditingController(text: e?.waistCm?.toStringAsFixed(1) ?? ''),
-      'hips': TextEditingController(text: e?.hipsCm?.toStringAsFixed(1) ?? ''),
-      'thigh': TextEditingController(text: e?.thighCm?.toStringAsFixed(1) ?? ''),
-      'bicep': TextEditingController(text: e?.bicepCm?.toStringAsFixed(1) ?? ''),
-      'shoulder': TextEditingController(text: e?.shoulderCm?.toStringAsFixed(1) ?? ''),
-      'calf': TextEditingController(text: e?.calfCm?.toStringAsFixed(1) ?? ''),
-      'neck': TextEditingController(text: e?.neckCm?.toStringAsFixed(1) ?? ''),
-      'bodyfat': TextEditingController(text: e?.bodyFatPct?.toStringAsFixed(1) ?? ''),
+      'chest': TextEditingController(text: e?.chestCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
+      'waist': TextEditingController(text: e?.waistCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
+      'hips': TextEditingController(text: e?.hipsCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
+      'thigh': TextEditingController(text: e?.thighCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
+      'bicep': TextEditingController(text: e?.bicepCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
+      'shoulder': TextEditingController(text: e?.shoulderCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
+      'calf': TextEditingController(text: e?.calfCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
+      'neck': TextEditingController(text: e?.neckCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
+      'bodyfat': TextEditingController(text: e?.bodyFatPct?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
     };
   }
 

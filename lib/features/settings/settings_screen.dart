@@ -277,8 +277,36 @@ class _CalendarSyncSectionState extends ConsumerState<_CalendarSyncSection> {
   }
 
   Future<void> _openPicker() async {
-    final calendars = _availableCalendars;
+    var calendars = _availableCalendars;
     if (calendars == null) return;
+    if (calendars.isEmpty) {
+      // An empty list here is indistinguishable from "denied permission"
+      // at this point — getAvailableCalendars() swallows the native-channel
+      // failure silently. Ask explicitly so we can tell the two apart
+      // instead of opening a picker with nothing to pick.
+      final granted =
+          await ref.read(calendarSyncServiceProvider).requestPermissions();
+      if (granted) {
+        await _loadCalendars();
+        calendars = _availableCalendars;
+      }
+      if (calendars == null || calendars.isEmpty) {
+        if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.calendarAccessDeniedSyncOff),
+              action: SnackBarAction(
+                label: l10n.openSettings,
+                onPressed: openAppSettings,
+              ),
+            ),
+          );
+        }
+        return;
+      }
+    }
+    if (!mounted) return;
     final currentIds = ref
         .read(preferencesRepositoryProvider)
         .selectedCalendarIds;
@@ -846,7 +874,7 @@ class _GoalsSection extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ).whenComplete(ctrl.dispose);
   }
 
   void _editDoubleDialog(
@@ -856,7 +884,7 @@ class _GoalsSection extends ConsumerWidget {
     void Function(double) onSave,
   ) {
     final l10n = AppLocalizations.of(context)!;
-    final ctrl = TextEditingController(text: current.toStringAsFixed(1));
+    final ctrl = TextEditingController(text: current.toStringAsFixed(1).replaceAll('.', ','));
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -895,7 +923,7 @@ class _GoalsSection extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ).whenComplete(ctrl.dispose);
   }
 }
 
@@ -1167,7 +1195,7 @@ class _NutritionApiSection extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ).whenComplete(ctrl.dispose);
   }
 }
 

@@ -754,6 +754,7 @@
   "startLabel": "Start",
   "endLabel": "End",
   "titleRequired": "Title required",
+  "endBeforeStartError": "End time must be after the start time",
   "noTasks": "No tasks",
   "tapToAddTask": "Tap to add a task",
   "open": "Open",
@@ -791,6 +792,14 @@
   "habitsCompletedTodayLabel": "done today",
   "habitStreakDays": "{count}-day streak",
   "@habitStreakDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habitStreakWeeks": "{count}-week streak",
+  "@habitStreakWeeks": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -1160,6 +1169,51 @@
   "budgetDeleteCategoryConfirm": "Delete category?",
   "budgetDeleteCategoryContent": "\"{name}\" will be removed. Existing transactions remain and appear as \"Other\".",
   "@budgetDeleteCategoryContent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteGoalConfirmTitle": "Delete goal?",
+  "deleteGoalConfirmContent": "\"{name}\" will be permanently deleted.",
+  "@deleteGoalConfirmContent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteHabitConfirmTitle": "Delete habit?",
+  "deleteHabitConfirmContent": "\"{name}\" and its history will be permanently deleted.",
+  "@deleteHabitConfirmContent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTrackerConfirmTitle": "Delete tracker?",
+  "deleteTrackerConfirmContent": "\"{name}\" and its history will be permanently deleted.",
+  "@deleteTrackerConfirmContent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteAppointmentConfirmTitle": "Delete appointment?",
+  "deleteAppointmentConfirmContent": "\"{name}\" will be permanently deleted.",
+  "@deleteAppointmentConfirmContent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTodoConfirmTitle": "Delete task?",
+  "deleteTodoConfirmContent": "\"{name}\" will be permanently deleted.",
+  "@deleteTodoConfirmContent": {
     "placeholders": {
       "name": {
         "type": "String"

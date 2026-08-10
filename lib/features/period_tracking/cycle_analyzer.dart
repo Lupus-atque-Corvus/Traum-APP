@@ -147,8 +147,12 @@ class CycleAnalyzer {
   }
 
   static double? _avgPeriodLength(List<PeriodEntry> sorted) {
+    // Nothing in the current UI lets a user create endDate < startDate
+    // directly, but restored backup data isn't re-validated on import —
+    // an entry like that would otherwise silently pull the average
+    // negative instead of just being excluded as the bad data point it is.
     final durations = sorted
-        .where((e) => e.endDate != null)
+        .where((e) => e.endDate != null && !e.endDate!.isBefore(e.startDate))
         .map((e) => e.endDate!.difference(e.startDate).inDays + 1)
         .toList();
     if (durations.isEmpty) return null;

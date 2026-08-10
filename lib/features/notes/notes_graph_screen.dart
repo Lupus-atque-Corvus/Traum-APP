@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show setEquals, listEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -30,6 +31,21 @@ class _NotesGraphScreenState extends ConsumerState<NotesGraphScreen> {
   int? _focusId;
   bool _local = false;
   int _depth = 1;
+
+  // Cached layout: FruchtermanReingoldAlgorithm re-simulates 600 iterations
+  // and re-shuffles every node position whenever it's handed a *new* Graph
+  // instance. graphDataProvider re-emits (a new NotesGraphData, new object
+  // identity) on *any* note change — title edits, bookmark toggles, folder
+  // moves — not just link/structure changes, since it watches
+  // allNotesStreamProvider wholesale. Without this cache, editing a note's
+  // title anywhere in the app would make the entire graph jump/reshuffle
+  // the next time this screen rebuilds, even though not a single node or
+  // edge actually changed. Only rebuild+re-simulate when the visible node
+  // set or the edge set between them actually differs from last time.
+  Set<int>? _lastVisibleNodes;
+  List<(int, int)>? _lastEdges;
+  Graph? _cachedGraph;
+  FruchtermanReingoldAlgorithm? _cachedAlgorithm;
 
   @override
   void dispose() {
@@ -145,27 +161,38 @@ class _NotesGraphScreenState extends ConsumerState<NotesGraphScreen> {
   Widget _buildGraph(NotesGraphData data) {
     final visible = _visibleNodes(data);
     final notesById = {for (final n in data.nodes) n.id: n};
+    final relevantEdges = data.edges
+        .where((e) => visible.contains(e.$1) && visible.contains(e.$2) && e.$1 != e.$2)
+        .toList();
 
-    final graph = Graph();
-    final nodeById = <int, Node>{};
-    for (final id in visible) {
-      final node = Node.Id(id);
-      nodeById[id] = node;
-      graph.addNode(node);
-    }
-    for (final (s, t) in data.edges) {
-      if (visible.contains(s) && visible.contains(t) && s != t) {
+    final structureChanged = _cachedGraph == null ||
+        !setEquals(_lastVisibleNodes, visible) ||
+        !listEquals(_lastEdges, relevantEdges);
+
+    if (structureChanged) {
+      final graph = Graph();
+      final nodeById = <int, Node>{};
+      for (final id in visible) {
+        final node = Node.Id(id);
+        nodeById[id] = node;
+        graph.addNode(node);
+      }
+      for (final (s, t) in relevantEdges) {
         graph.addEdge(nodeById[s]!, nodeById[t]!,
             paint: Paint()
               ..color = kNotesAccent.withValues(alpha: 0.35)
               ..strokeWidth = 1);
       }
+      _cachedGraph = graph;
+      // Feste Iterationszahl → einmalige Stabilisierung statt Dauer-Repaint.
+      _cachedAlgorithm = FruchtermanReingoldAlgorithm(
+        FruchtermanReingoldConfiguration(iterations: 600, shuffleNodes: true),
+      );
+      _lastVisibleNodes = visible;
+      _lastEdges = relevantEdges;
     }
-
-    // Feste Iterationszahl → einmalige Stabilisierung statt Dauer-Repaint.
-    final algorithm = FruchtermanReingoldAlgorithm(
-      FruchtermanReingoldConfiguration(iterations: 600, shuffleNodes: true),
-    );
+    final graph = _cachedGraph!;
+    final algorithm = _cachedAlgorithm!;
 
     return RepaintBoundary(
       child: InteractiveViewer(

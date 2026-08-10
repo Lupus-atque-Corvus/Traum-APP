@@ -403,16 +403,27 @@ class _SelectedThumb extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: -4, right: -4,
+            // Hit area kept inside the 56x56 thumbnail's own bounds (44 < 56
+            // both dimensions) rather than overhanging via a negative offset:
+            // a Stack only hit-tests Positioned children within its own
+            // layout size, so a badge sticking out past the Stack's box via
+            // Clip.none paints visibly but isn't actually tappable there.
+            top: 0, right: 0,
             child: GestureDetector(
               onTap: onRemove,
+              behavior: HitTestBehavior.opaque,
               child: Container(
-                width: 18, height: 18,
-                decoration: const BoxDecoration(
-                  color: Colors.black54,
-                  shape: BoxShape.circle,
+                width: 44, height: 44,
+                alignment: Alignment.topRight,
+                padding: const EdgeInsets.only(top: 2, right: 2),
+                child: Container(
+                  width: 18, height: 18,
+                  decoration: const BoxDecoration(
+                    color: Colors.black54,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.close_rounded, size: 12, color: Colors.white),
                 ),
-                child: const Icon(Icons.close_rounded, size: 12, color: Colors.white),
               ),
             ),
           ),

@@ -46,6 +46,12 @@ class HomeLayoutNotifier extends StateNotifier<List<HomeTile>> {
 
   void reorder(int oldIndex, int newIndex) {
     if (oldIndex < 0 || oldIndex >= state.length) return;
+    // Dropping onto a tile that comes after the dragged one: once the
+    // dragged item is removed, every tile between the two shifts one
+    // index earlier — including the drop target itself. Without
+    // correcting for that, the dragged tile lands one slot past where it
+    // was dropped instead of taking the target's place.
+    if (oldIndex < newIndex) newIndex -= 1;
     final copy = [...state];
     final item = copy.removeAt(oldIndex);
     final target = newIndex.clamp(0, copy.length);

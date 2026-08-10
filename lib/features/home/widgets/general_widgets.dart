@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/navigation/routes.dart';
 import '../../../core/providers/preferences_provider.dart';
 import '../../../core/providers/repository_providers.dart';
+import '../../../core/services/app_launcher_service.dart';
 import '../../../core/theme/colors.dart';
 import '../../../data/database/traum_database.dart' show WaterLogsCompanion;
 import '../../health/health_score_provider.dart';
@@ -278,6 +279,25 @@ class _WeatherContent extends ConsumerWidget {
 }
 
 // ─── App favorites ──────────────────────────────────────────────────────────
+/// Resolves the real, installed-app display name for up to 3 favorites via
+/// [AppLauncherService.getApp] (already cached there) — previously this
+/// tile derived a label by splitting the package name on '.' and taking
+/// the last segment, which is often meaningless ("com.spotify.music" →
+/// "music", "com.facebook.katana" → "katana") instead of the real name.
+/// Falls back to that same last-segment heuristic only if an app can no
+/// longer be resolved (e.g. uninstalled since being favorited).
+final _favoriteAppNamesProvider =
+    FutureProvider.autoDispose<List<String>>((ref) async {
+  final favorites = ref.watch(appLauncherFavoritesProvider).take(3).toList();
+  final service = ref.watch(appLauncherServiceProvider);
+  return Future.wait(favorites.map((packageName) async {
+    final app = await service.getApp(packageName);
+    if (app != null) return app.name;
+    final parts = packageName.split('.');
+    return parts.isEmpty ? packageName : parts.last;
+  }));
+});
+
 class _AppFavoritesContent extends ConsumerWidget {
   const _AppFavoritesContent();
 
@@ -295,6 +315,7 @@ class _AppFavoritesContent extends ConsumerWidget {
         ),
       );
     }
+    final namesAsync = ref.watch(_favoriteAppNamesProvider);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,7 +331,10 @@ class _AppFavoritesContent extends ConsumerWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          favorites.take(3).map(_shortName).join(' · '),
+          namesAsync.maybeWhen(
+            data: (names) => names.join(' · '),
+            orElse: () => '',
+          ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
@@ -321,11 +345,6 @@ class _AppFavoritesContent extends ConsumerWidget {
         ),
       ],
     );
-  }
-
-  String _shortName(String packageName) {
-    final parts = packageName.split('.');
-    return parts.isEmpty ? packageName : parts.last;
   }
 }
 

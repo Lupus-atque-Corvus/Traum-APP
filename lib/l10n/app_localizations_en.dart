@@ -1717,6 +1717,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get titleRequired => 'Title required';
 
   @override
+  String get endBeforeStartError => 'End time must be after the start time';
+
+  @override
   String get noTasks => 'No tasks';
 
   @override
@@ -1805,6 +1808,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String habitStreakDays(int count) {
     return '$count-day streak';
+  }
+
+  @override
+  String habitStreakWeeks(int count) {
+    return '$count-week streak';
   }
 
   @override
@@ -2614,6 +2622,46 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String budgetDeleteCategoryContent(String name) {
     return '\"$name\" will be removed. Existing transactions remain and appear as \"Other\".';
+  }
+
+  @override
+  String get deleteGoalConfirmTitle => 'Delete goal?';
+
+  @override
+  String deleteGoalConfirmContent(String name) {
+    return '\"$name\" will be permanently deleted.';
+  }
+
+  @override
+  String get deleteHabitConfirmTitle => 'Delete habit?';
+
+  @override
+  String deleteHabitConfirmContent(String name) {
+    return '\"$name\" and its history will be permanently deleted.';
+  }
+
+  @override
+  String get deleteTrackerConfirmTitle => 'Delete tracker?';
+
+  @override
+  String deleteTrackerConfirmContent(String name) {
+    return '\"$name\" and its history will be permanently deleted.';
+  }
+
+  @override
+  String get deleteAppointmentConfirmTitle => 'Delete appointment?';
+
+  @override
+  String deleteAppointmentConfirmContent(String name) {
+    return '\"$name\" will be permanently deleted.';
+  }
+
+  @override
+  String get deleteTodoConfirmTitle => 'Delete task?';
+
+  @override
+  String deleteTodoConfirmContent(String name) {
+    return '\"$name\" will be permanently deleted.';
   }
 
   @override

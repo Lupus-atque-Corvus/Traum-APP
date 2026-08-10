@@ -283,6 +283,11 @@ class _GoalCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(TraumRadius.card)),
         child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
       ),
+      confirmDismiss: (_) => confirmDeleteDialog(
+        context,
+        title: AppLocalizations.of(context)!.deleteGoalConfirmTitle,
+        content: AppLocalizations.of(context)!.deleteGoalConfirmContent(goal.title),
+      ),
       onDismissed: (_) => ref.read(planningDaoProvider).deleteGoal(goal.id),
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
@@ -610,7 +615,8 @@ class _HabitsTab extends ConsumerWidget {
                   return _HabitTile(
                     habit: habit,
                     isCheckedToday: logs.any((l) => l.habitId == habit.id),
-                    streak: _currentStreakForHabit(habit.id, recentLogs),
+                    streak: _currentStreakForHabit(
+                        habit.id, recentLogs, habit.frequency),
                     onToggle: (checked) async {
                       if (checked) {
                         await ref.read(planningDaoProvider).insertHabitLog(
@@ -665,7 +671,14 @@ bool _isSameDay(DateTime a, DateTime b) =>
 /// yet) for a single habit — same algorithm as the home-widget "best habit
 /// streak" computation (`_BestHabitStreakContent` in
 /// `features/home/widgets/planning_widgets.dart`), scoped to one habit.
-int _currentStreakForHabit(int habitId, List<HabitLog> logs) {
+///
+/// [frequency] ('daily'/'weekly', from `Habit.frequency`) switches to a
+/// consecutive-WEEK streak instead: a habit only meant to happen once a
+/// week would otherwise almost always show a streak of 0 or 1, since this
+/// day-by-day algorithm requires *every single day* to have a log — a
+/// weekly habit logged faithfully every week still has 6 empty days out of
+/// 7 by design.
+int _currentStreakForHabit(int habitId, List<HabitLog> logs, String frequency) {
   final doneDays = <int>{};
   for (final l in logs) {
     if (l.habitId != habitId) continue;
@@ -675,6 +688,9 @@ int _currentStreakForHabit(int habitId, List<HabitLog> logs) {
     doneDays.add(dayKey);
   }
   final now = DateTime.now();
+  if (frequency == 'weekly') {
+    return _currentWeeklyStreak(doneDays, now);
+  }
   final todayKey =
       DateTime(now.year, now.month, now.day).difference(DateTime(2000)).inDays;
   int? start;
@@ -689,6 +705,37 @@ int _currentStreakForHabit(int habitId, List<HabitLog> logs) {
   while (doneDays.contains(anchor)) {
     streak++;
     anchor -= 1;
+  }
+  return streak;
+}
+
+/// Consecutive-week streak: a week counts as "done" if it contains at
+/// least one log. Weeks are Monday-start, matching the heatmap above.
+int _currentWeeklyStreak(Set<int> doneDayKeys, DateTime now) {
+  int weekStartKeyFor(int dayKey) {
+    final date = DateTime(2000).add(Duration(days: dayKey));
+    final monday = date.subtract(Duration(days: date.weekday - 1));
+    return DateTime(monday.year, monday.month, monday.day)
+        .difference(DateTime(2000))
+        .inDays;
+  }
+
+  final doneWeeks = doneDayKeys.map(weekStartKeyFor).toSet();
+  final todayKey =
+      DateTime(now.year, now.month, now.day).difference(DateTime(2000)).inDays;
+  final thisWeekStart = weekStartKeyFor(todayKey);
+  int? start;
+  if (doneWeeks.contains(thisWeekStart)) {
+    start = thisWeekStart;
+  } else if (doneWeeks.contains(thisWeekStart - 7)) {
+    start = thisWeekStart - 7;
+  }
+  if (start == null) return 0;
+  var anchor = start;
+  var streak = 0;
+  while (doneWeeks.contains(anchor)) {
+    streak++;
+    anchor -= 7;
   }
   return streak;
 }
@@ -721,6 +768,11 @@ class _HabitTile extends ConsumerWidget {
             color: TraumColors.roseRed.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(TraumRadius.card)),
         child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
+      ),
+      confirmDismiss: (_) => confirmDeleteDialog(
+        context,
+        title: AppLocalizations.of(context)!.deleteHabitConfirmTitle,
+        content: AppLocalizations.of(context)!.deleteHabitConfirmContent(habit.name),
       ),
       onDismissed: (_) => onDelete(),
       child: Container(
@@ -757,8 +809,11 @@ class _HabitTile extends ConsumerWidget {
                               size: 13, color: TraumColors.amberGold),
                           const SizedBox(width: 4),
                           Text(
-                              AppLocalizations.of(context)!
-                                  .habitStreakDays(streak),
+                              habit.frequency == 'weekly'
+                                  ? AppLocalizations.of(context)!
+                                      .habitStreakWeeks(streak)
+                                  : AppLocalizations.of(context)!
+                                      .habitStreakDays(streak),
                               style: const TextStyle(
                                   color: TraumColors.amberGold,
                                   fontFamily: 'DMSans',
@@ -1071,6 +1126,11 @@ class _TrackerCardState extends State<_TrackerCard> {
           borderRadius: BorderRadius.circular(TraumRadius.card),
         ),
         child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
+      ),
+      confirmDismiss: (_) => confirmDeleteDialog(
+        context,
+        title: l10n.deleteTrackerConfirmTitle,
+        content: l10n.deleteTrackerConfirmContent(widget.tracker.name),
       ),
       onDismissed: (_) => widget.onDelete(),
       child: Container(

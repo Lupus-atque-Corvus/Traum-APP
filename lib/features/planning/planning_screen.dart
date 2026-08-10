@@ -3,6 +3,7 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../core/components/components.dart';
 import '../../core/providers/database_provider.dart';
@@ -41,11 +42,15 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
       if (!mounted) return;
 
       if (result.permissionDenied) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-                AppLocalizations.of(context)!.calendarAccessDeniedSyncOff),
+            content: Text(l10n.calendarAccessDeniedSyncOff),
             duration: const Duration(seconds: 4),
+            action: SnackBarAction(
+              label: l10n.openSettings,
+              onPressed: openAppSettings,
+            ),
           ),
         );
         return;
@@ -270,6 +275,11 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
                         ),
                         child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
                       ),
+                      confirmDismiss: (_) => confirmDeleteDialog(
+                        context,
+                        title: AppLocalizations.of(context)!.deleteAppointmentConfirmTitle,
+                        content: AppLocalizations.of(context)!.deleteAppointmentConfirmContent(a.title),
+                      ),
                       onDismissed: (_) => ref.read(calendarSyncServiceProvider).deleteAppointmentWithSync(a.id),
                       child: AppointmentChip(
                         title: a.title,
@@ -423,6 +433,10 @@ class _AddAppointmentSheetState extends State<_AddAppointmentSheet> {
               onPressed: () async {
                 if (_titleCtrl.text.trim().isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.titleRequired)));
+                  return;
+                }
+                if (_endTime.isBefore(_startTime)) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.endBeforeStartError)));
                   return;
                 }
                 final existing = widget.existing;
@@ -617,6 +631,11 @@ class _TodoTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(TraumRadius.card),
         ),
         child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
+      ),
+      confirmDismiss: (_) => confirmDeleteDialog(
+        context,
+        title: AppLocalizations.of(context)!.deleteTodoConfirmTitle,
+        content: AppLocalizations.of(context)!.deleteTodoConfirmContent(todo.title),
       ),
       onDismissed: (_) => ref.read(planningDaoProvider).deleteTodo(todo.id),
       child: Container(

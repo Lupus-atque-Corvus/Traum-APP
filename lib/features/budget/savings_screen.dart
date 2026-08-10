@@ -347,7 +347,7 @@ class _SavingsGoalCard extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ).whenComplete(ctrl.dispose);
   }
 }
 

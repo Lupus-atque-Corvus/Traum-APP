@@ -675,7 +675,7 @@ class _StatisticsTab extends StatelessWidget {
                             showTitles: true,
                             reservedSize: 36,
                             getTitlesWidget: (v, _) => Text(
-                              v.toStringAsFixed(1),
+                              v.toStringAsFixed(1).replaceAll('.', ','),
                               style: const TextStyle(
                                 color: TraumColors.onBackgroundSubtle,
                                 fontFamily: 'DMSans',
@@ -807,11 +807,11 @@ class _ChartStats extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _MiniStat(label: 'Most recent', value: '${mostRecent.toStringAsFixed(1)} $unit',
+        _MiniStat(label: 'Most recent', value: '${mostRecent.toStringAsFixed(1).replaceAll('.', ',')} $unit',
             icon: Icons.access_time_rounded),
-        _MiniStat(label: 'Maximum', value: '${maximum.toStringAsFixed(1)} $unit',
+        _MiniStat(label: 'Maximum', value: '${maximum.toStringAsFixed(1).replaceAll('.', ',')} $unit',
             icon: Icons.trending_up_rounded),
-        _MiniStat(label: 'Average', value: '${average.toStringAsFixed(1)} $unit',
+        _MiniStat(label: 'Average', value: '${average.toStringAsFixed(1).replaceAll('.', ',')} $unit',
             icon: Icons.bar_chart_rounded),
       ],
     );
@@ -940,7 +940,7 @@ class _HistoryTab extends ConsumerWidget {
                     Expanded(
                       child: Text(
                         s.weightKg != null
-                            ? '${s.weightKg!.toDisplayUnit(useLbs).toStringAsFixed(1)} ${s.weightKg!.unitLabel(useLbs)}'
+                            ? '${s.weightKg!.toDisplayUnit(useLbs).toStringAsFixed(1).replaceAll('.', ',')} ${s.weightKg!.unitLabel(useLbs)}'
                             : '-',
                         style: const TextStyle(
                           color: TraumColors.onBackground,
@@ -964,7 +964,7 @@ class _HistoryTab extends ConsumerWidget {
                     ),
                     Expanded(
                       child: Text(
-                        s.weightKg != null ? '${s.weightKg!.toStringAsFixed(1)} km' : '-',
+                        s.weightKg != null ? '${s.weightKg!.toStringAsFixed(1).replaceAll('.', ',')} km' : '-',
                         style: const TextStyle(
                           color: TraumColors.onBackground,
                           fontFamily: 'DMSans',

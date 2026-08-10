@@ -72,6 +72,7 @@ void invalidateMarkerViews(WidgetRef ref) {
   ref.invalidate(galleryMarkersProvider);
   ref.invalidate(mostRecentMarkerProvider);
   ref.invalidate(allHashtagsProvider);
+  ref.invalidate(hashtagFilteredMarkersProvider);
 }
 
 /// Lat/Lon-Rechteck des aktuell sichtbaren Kartenausschnitts.
@@ -144,6 +145,27 @@ final markerSearchProvider = FutureProvider.autoDispose
   final markers = query.isEmpty
       ? await dao.getRecentByCollection(id)
       : await dao.search(id, query);
+  return _withPhotos(ref, markers);
+});
+
+// autoDispose: wie markerSearchProvider — jeder angeklickte Hashtag erzeugt
+// eine eigene Provider-Instanz, sonst würden diese über die App-Laufzeit
+// unbegrenzt im Speicher bleiben.
+/// Marker mit dem gegebenen Hashtag, kollektionsweit statt nur im aktuellen
+/// Kartenausschnitt — vorher filterte der Screen den Hashtag-Filter nur
+/// innerhalb von [markersInViewportProvider], wodurch Treffer außerhalb des
+/// sichtbaren Ausschnitts unauffindbar blieben, obwohl die Karte weder
+/// automatisch dorthin zoomte noch einen Hinweis darauf zeigte.
+final hashtagFilteredMarkersProvider = FutureProvider.autoDispose
+    .family<List<MarkerWithPhotos>, String>((ref, tag) async {
+  final id = ref.watch(activeCollectionProvider);
+  final dao = ref.watch(mapMarkersDaoProvider);
+  final candidates = await dao.byHashtagSubstring(id, tag);
+  final needle = tag.toLowerCase();
+  final markers = candidates.where((m) => m.hashtags
+      .split(',')
+      .map((t) => t.trim().toLowerCase())
+      .contains(needle)).toList();
   return _withPhotos(ref, markers);
 });
 

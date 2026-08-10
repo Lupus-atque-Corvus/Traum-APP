@@ -11,3 +11,4 @@ export 'budget_category_bar.dart';
 export 'shimmer_loader.dart';
 export 'medication_dot_row.dart';
 export 'inline_error.dart';
+export 'confirm_delete_dialog.dart';

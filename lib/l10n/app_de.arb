@@ -754,6 +754,7 @@
   "startLabel": "Beginn",
   "endLabel": "Ende",
   "titleRequired": "Titel erforderlich",
+  "endBeforeStartError": "Die Endzeit muss nach der Startzeit liegen",
   "noTasks": "Keine Aufgaben",
   "tapToAddTask": "Tippe, um eine Aufgabe hinzuzufügen",
   "open": "Offen",
@@ -791,6 +792,14 @@
   "habitsCompletedTodayLabel": "heute erledigt",
   "habitStreakDays": "{count} Tage in Folge",
   "@habitStreakDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habitStreakWeeks": "{count} Wochen in Folge",
+  "@habitStreakWeeks": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -1194,6 +1203,51 @@
   "budgetDeleteCategoryConfirm": "Kategorie löschen?",
   "budgetDeleteCategoryContent": "„{name}\" wird entfernt. Bestehende Transaktionen bleiben erhalten und erscheinen als „Sonstiges\".",
   "@budgetDeleteCategoryContent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteGoalConfirmTitle": "Ziel löschen?",
+  "deleteGoalConfirmContent": "„{name}\" wird unwiderruflich gelöscht.",
+  "@deleteGoalConfirmContent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteHabitConfirmTitle": "Gewohnheit löschen?",
+  "deleteHabitConfirmContent": "„{name}\" samt Verlauf wird unwiderruflich gelöscht.",
+  "@deleteHabitConfirmContent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTrackerConfirmTitle": "Tracker löschen?",
+  "deleteTrackerConfirmContent": "„{name}\" samt Verlauf wird unwiderruflich gelöscht.",
+  "@deleteTrackerConfirmContent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteAppointmentConfirmTitle": "Termin löschen?",
+  "deleteAppointmentConfirmContent": "„{name}\" wird unwiderruflich gelöscht.",
+  "@deleteAppointmentConfirmContent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTodoConfirmTitle": "Aufgabe löschen?",
+  "deleteTodoConfirmContent": "„{name}\" wird unwiderruflich gelöscht.",
+  "@deleteTodoConfirmContent": {
     "placeholders": {
       "name": {
         "type": "String"

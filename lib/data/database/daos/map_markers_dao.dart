@@ -123,6 +123,20 @@ class MapMarkersDao extends DatabaseAccessor<TraumDatabase>
         .toList();
   }
 
+  /// Marker mit einem gesetzten Hashtag, kollektionsweit — nicht auf den
+  /// aktuellen Kartenausschnitt begrenzt, damit ein Hashtag-Filter wirklich
+  /// alle Treffer der Sammlung findet statt nur die gerade sichtbaren. Die
+  /// LIKE-Vorauswahl ist wie bei [search] begrenzt (Aufrufer prüft danach den
+  /// exakten Tag anhand des kompletten, kommagetrennten `hashtags`-Felds).
+  Future<List<MapMarker>> byHashtagSubstring(int collectionId, String tag,
+          {int limit = 500}) =>
+      (select(mapMarkers)
+            ..where((t) =>
+                t.collectionId.equals(collectionId) & t.hashtags.like('%$tag%'))
+            ..orderBy([(t) => OrderingTerm.desc(t.createdAt)])
+            ..limit(limit))
+          .get();
+
   /// Marker einer Collection innerhalb eines Lat/Lon-Rechtecks (aktueller
   /// Kartenausschnitt), mit Obergrenze — verhindert, dass sehr große
   /// Collections (z.B. hunderttausende importierte Türme) komplett geladen

@@ -1727,6 +1727,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get titleRequired => 'Titel erforderlich';
 
   @override
+  String get endBeforeStartError =>
+      'Die Endzeit muss nach der Startzeit liegen';
+
+  @override
   String get noTasks => 'Keine Aufgaben';
 
   @override
@@ -1815,6 +1819,11 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String habitStreakDays(int count) {
     return '$count Tage in Folge';
+  }
+
+  @override
+  String habitStreakWeeks(int count) {
+    return '$count Wochen in Folge';
   }
 
   @override
@@ -2626,6 +2635,46 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String budgetDeleteCategoryContent(String name) {
     return '„$name\" wird entfernt. Bestehende Transaktionen bleiben erhalten und erscheinen als „Sonstiges\".';
+  }
+
+  @override
+  String get deleteGoalConfirmTitle => 'Ziel löschen?';
+
+  @override
+  String deleteGoalConfirmContent(String name) {
+    return '„$name\" wird unwiderruflich gelöscht.';
+  }
+
+  @override
+  String get deleteHabitConfirmTitle => 'Gewohnheit löschen?';
+
+  @override
+  String deleteHabitConfirmContent(String name) {
+    return '„$name\" samt Verlauf wird unwiderruflich gelöscht.';
+  }
+
+  @override
+  String get deleteTrackerConfirmTitle => 'Tracker löschen?';
+
+  @override
+  String deleteTrackerConfirmContent(String name) {
+    return '„$name\" samt Verlauf wird unwiderruflich gelöscht.';
+  }
+
+  @override
+  String get deleteAppointmentConfirmTitle => 'Termin löschen?';
+
+  @override
+  String deleteAppointmentConfirmContent(String name) {
+    return '„$name\" wird unwiderruflich gelöscht.';
+  }
+
+  @override
+  String get deleteTodoConfirmTitle => 'Aufgabe löschen?';
+
+  @override
+  String deleteTodoConfirmContent(String name) {
+    return '„$name\" wird unwiderruflich gelöscht.';
   }
 
   @override

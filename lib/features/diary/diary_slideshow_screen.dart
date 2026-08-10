@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
 import '../../core/utils/image_decode.dart';
+import '../../l10n/app_localizations.dart';
 import 'diary_provider.dart';
 import '../../core/components/inline_error.dart';
 
@@ -97,7 +98,7 @@ class _DiarySlideShowScreenState
                       ),
                       padding: const EdgeInsets.fromLTRB(20, 56, 20, 0),
                       child: Text(
-                        _formatDate(entry.date),
+                        _formatDate(entry.date, AppLocalizations.of(context)!),
                         style: const TextStyle(
                           fontFamily: 'DMSans',
                           color: Colors.white,
@@ -188,11 +189,15 @@ class _DiarySlideShowScreenState
     );
   }
 
-  String _formatDate(String dateStr) {
+  String _formatDate(String dateStr, AppLocalizations l10n) {
     final d = DateTime.tryParse(dateStr);
     if (d == null) return dateStr;
-    const months = ['Jan','Feb','Mär','Apr','Mai','Jun',
-        'Jul','Aug','Sep','Okt','Nov','Dez'];
+    final months = [
+      l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
+      l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
+      l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
+      l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
+    ];
     return '${d.day}. ${months[d.month - 1]} ${d.year}';
   }
 }

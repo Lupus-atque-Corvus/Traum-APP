@@ -1,12 +1,130 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.3+103** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.4+104** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-08 — v1.0.3, Phase 3: Unsichtbare Backend-Fixes)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-09 — v1.0.4, Phase 4: Verteilte Kleinbugs)
+
+**Vierte Phase des Nacharbeitungs-Plans aus dem Tiefenaudit. 14 über viele Module verstreute
+Einzelfunde, keine schemaVersion-Änderung. Zwischendurch kam direktes Nutzer-Feedback zur
+Benachrichtigungslücke ("ich bekomme immernoch keine Benachrichtigungen", zweites Mal trotz
+v1.0.1/v1.0.2) — auf Nutzerwunsch bewusst NICHT blind weiter gefixt, sondern zusammen mit der
+noch offenen Backup-Performance-Frage aus Phase 1 auf eine gemeinsame Live-USB-Diagnose am Ende
+des Gesamtplans verschoben.**
+
+1. **Home-Kachel-Reorder Off-by-one.** `HomeLayoutNotifier.reorder()` zog beim Verschieben einer
+   Kachel nach hinten (`oldIndex < newIndex`) den Ziel-Index nicht um 1 zurück, obwohl das
+   Entfernen der Quell-Kachel alle dazwischenliegenden Kacheln (inkl. Ziel) einen Index nach vorn
+   verschiebt — die Kachel landete dadurch immer eine Position hinter der eigentlich gewählten
+   Zielposition. Klassischer `ReorderableListView`-Bug, hier aber in einer eigenen
+   Drag-and-Drop-Implementierung (`LongPressDraggable`/`DragTarget`).
+2. **Abstinence: `frequency`-Feld jetzt tatsächlich im Streak berücksichtigt.** Eine wöchentliche
+   Gewohnheit lief bisher immer durch den Tages-Streak-Algorithmus — ein Habit, das treu jede
+   Woche geloggt wurde, zeigte praktisch immer Streak 0 oder 1, weil an den meisten Tagen
+   dazwischen naturgemäß kein Log existiert. Neuer wochenbasierter Streak-Zweig
+   (Montag-verankerte Wochen-Buckets) für `frequency == 'weekly'`, inkl. eigenem Label
+   ("X Wochen in Folge" statt "X Tage in Folge").
+3. **Planning: Validierung Endzeit ≥ Startzeit** beim Speichern eines Termins ergänzt (vorher
+   ließ sich ein Termin mit Ende vor Beginn anlegen).
+4. **Notes: zwei Performance-Fixes.** Backlinks/Outgoing-Links liefen bisher als N+1-Query (eine
+   DB-Abfrage pro verlinkter Notiz) — jetzt eine Batch-Auflösung über die bereits geladene
+   Notiz-Liste. Der Force-directed Graph (`FruchtermanReingoldAlgorithm`, 600 Iterationen)
+   simulierte bisher bei JEDER Notiz-Änderung neu (Titel-Edit, Bookmark-Toggle — nicht nur
+   Struktur-Änderungen), wodurch der ganze Graph beim Bearbeiten irgendeiner Notiz sichtbar
+   sprang. Jetzt gecacht, nur bei tatsächlich geänderter Knoten-/Kanten-Menge neu berechnet.
+5. **App-Launcher: hängender Lade-Spinner behoben.** `listInstalledApps()` (experimentelles
+   Feature) ließ bei einem Plattform-Fehler `_apps` dauerhaft `null` — jetzt try/catch mit
+   Fallback auf leere Liste, erreicht wenigstens den vorhandenen „Keine Apps"-Zustand.
+6. **Datumsformat: toter Code mit hartcodiertem `'de'` entfernt, echter Bug behoben.**
+   `core/utils/date_utils.dart`s `formatDate`/`formatDateTime`/`formatTime` stellten sich als
+   komplett unbenutzt heraus (einzige Importstelle nutzt nur `greeting()`) — entfernt statt mit
+   falscher Locale-Logik weiterzuschleppen. Der tatsächlich sichtbare Bug steckte in
+   `diary_slideshow_screen.dart`: ein hartcodiertes deutsches Monats-Array (`'Jan','Feb','Mär'…`)
+   unabhängig von der App-Locale — jetzt wie in `diary_screen.dart`/`diary_entry_screen.dart`
+   über `AppLocalizations`-Monatsnamen.
+7. **Graffiti-Map: Hashtag-Filter jetzt kollektionsweit statt nur im Kartenausschnitt.** Der
+   Filter arbeitete bisher als Client-seitiges `.where()` auf `markersInViewportProvider` — ein
+   Treffer außerhalb des sichtbaren Ausschnitts war unauffindbar, ohne dass die Karte dorthin
+   zoomte oder irgendein Hinweis erschien. Neue DAO-Methode `byHashtagSubstring` (LIKE-Vorfilter,
+   Limit 500, analog zu `search()`) + neuer `hashtagFilteredMarkersProvider`
+   (`FutureProvider.autoDispose.family`) ersetzt bei aktivem Filter komplett die
+   Viewport-Quelle — exaktes Tag-Matching (kommagetrennt) läuft weiterhin in Dart, jetzt aber über
+   die ganze Collection statt nur die sichtbaren Marker.
+8. **Launcher-Homescreen-Widget: echte App-Namen statt Package-Namen-Fragment.** Die
+   „App-Favoriten"-Kachel zeigte bisher den letzten Segment-Teil des Package-Namens
+   (z. B. `chrome` statt „Google Chrome"). Neuer `_favoriteAppNamesProvider` löst bis zu 3
+   Favoriten über `AppLauncherService.getApp()` auf echte Namen auf, Fallback auf die alte
+   Heuristik nur bei Auflösungsfehler.
+9. **Abstinence/Planning: Bestätigungsdialog vor Swipe-Löschen.** 5 `Dismissible`s (Goal, Habit,
+   AbstinenceTracker, Appointment, Todo) hatten kein `confirmDismiss` — ein versehentliches Wischen
+   löschte sofort, ohne Rückfrage. Neue geteilte Komponente `core/components/
+   confirm_delete_dialog.dart` (`confirmDeleteDialog()`, gleiches visuelles Muster wie das
+   bestehende `budget_categories_screen.dart`-Vorbild) an allen 5 Stellen verdrahtet, je mit
+   Name des betroffenen Eintrags im Dialogtext.
+10. **Period Tracking: defensive Prüfung Ende ≥ Start.** Code-Prüfung ergab: die AKTUELLE UI kann
+    `endDate < startDate` gar nicht erzeugen (Start-Picker `lastDate: DateTime.now()`, der einzige
+    Ende-Schreibpfad setzt immer `DateTime.now()`) — keine UI-Validierung für einen nicht
+    existierenden Bearbeitungspfad ergänzt. Stattdessen defensiver Ausschlussfilter in
+    `cycle_analyzer.dart`s `_avgPeriodLength()`, für den Fall, dass ein wiederhergestelltes Backup
+    doch mal so einen Datensatz enthält (Restore validiert nicht erneut).
+11. **Dezimaltrennzeichen Health/Training auf Komma umgestellt (wie Budget).** Health/Training
+    parsten Komma-Eingaben zwar bereits korrekt, zeigten gespeicherte Werte aber mit Punkt an
+    (`95.5` statt `95,5`) — inkonsistent zum in Budget etablierten Muster. 20 Fundstellen über
+    `health_screen.dart` (9 Körpermaß-Felder + 4 weitere Anzeigen), `active_workout_screen.dart`
+    (Gewichts-Eingabefeld), `exercise_progress_screen.dart` (6 Stellen, inkl. Achsenbeschriftung
+    und Mini-Stats), `training_screen.dart` (Tonnen-Anzeige) sowie zwei generische
+    Settings-Dialoge (Körpergröße, Gewichtsziel) auf `.replaceAll('.', ',')` umgestellt.
+12. **6 Dialog-`TextEditingController` jetzt disponiert** (Vorlage: `debts_screen.dart`s
+    `.whenComplete(ctrl.dispose)`). Betroffen: `health_screen.dart` (Gewicht-Dialog),
+    `savings_screen.dart` (Einzahlungs-Dialog), `shopping_templates_sheet.dart`
+    (Vorlagen-Dialog), `notes_common.dart`s `showNotesTextDialog` (mehrfach wiederverwendeter
+    Text-Eingabedialog), `settings_screen.dart` (3 Dialoge: Ganzzahl/Kommazahl-Editor,
+    API-Key-Editor) und `active_workout_screen.dart`s Notiz-Dialog — insgesamt 8 statt der im
+    Plan geschätzten 6, da die genaue Fundstellen-Zahl beim Umsetzen höher lag als beim
+    ursprünglichen Audit-Scan.
+13. **18×18-px-Button im Übungs-Picker auf 44×44 vergrößert.** Der Entfernen-Button auf den
+    ausgewählten Übungs-Thumbnails in der Sidebar saß als `Positioned(top: -4, right: -4, …)`
+    teilweise außerhalb der Bounds seines eigenen `Stack` (56×56). **Beim Umsetzen gefunden:**
+    ein `Stack` hit-testet `Positioned`-Kinder nur innerhalb seiner EIGENEN Layout-Größe, auch
+    bei `clipBehavior: Clip.none` — der über den Rand hinausragende Teil des alten 18px-Badges
+    war zwar sichtbar, aber vermutlich gar nicht antippbar. Fix: 44×44-Hit-Fläche jetzt komplett
+    innerhalb der 56×56-Thumbnail-Bounds (`Positioned(top: 0, right: 0, …)`, visuelles 18px-Badge
+    per `Align`/`Padding` in der Ecke), dadurch kein Overflow-Hit-Test-Risiko mehr.
+14. **Verweigerte Standort-/Kalenderberechtigung: Hinweis mit Link zu den Systemeinstellungen.**
+    Graffiti-Map (`_goToMyLocation`) zeigte bei verweigertem Standort bisher nur eine reine
+    Text-SnackBar — jetzt mit `SnackBarAction` zu `Geolocator.openAppSettings()`. Gleiches für
+    den Kalender-Sync-Fehlschlag in `planning_screen.dart` (`openAppSettings()` aus
+    `permission_handler`). **Beim Umsetzen gefunden:** `settings_screen.dart`s
+    Kalenderauswahl-Dialog öffnete bei fehlender Berechtigung eine LEERE Kalenderliste ohne jede
+    Erklärung (die native Channel-Abfrage scheitert dort lautlos) — jetzt wird bei leerer Liste
+    zuerst `requestPermissions()` versucht, bleibt sie leer, erscheint derselbe
+    Einstellungen-Hinweis statt eines leeren Pickers.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **532/532 grün** (527 vorher + 5 neu:
+`home_layout_provider_test.dart` um den Vorwärts-Reorder-Test erweitert, neuer
+`test/features/abstinence/habit_weekly_streak_test.dart`, `map_markers_dao_test.dart` um 3 Tests
+für `byHashtagSubstring` erweitert).
+
+**Bewusst nicht angetastet — außerhalb des Phase-4-Scopes:** `dynamic_marker_sheet.dart` und
+`training_widgets.dart` verwenden weiterhin reines `dd.MM.`-Zahlenformat ohne Monatsnamen (keine
+Sprach-Strings, nur Ziffern-Reihenfolge — eine vollständige Locale-abhängige Datums-*Ordnung*
+wäre ein deutlich größerer Umbau und gehört eher in Phase 6/7 als in diesen Kleinbug-Durchgang).
+
+**Nächste Phase laut Plan:** Phase 5 — Barrierefreiheit (44 unbeschriftete Icon-Buttons,
+`TraumColors.onBackgroundSubtle`-Kontrastanhebung).
+
+**Weiterhin offen, bewusst verschoben auf eine gemeinsame Live-Geräte-Diagnose am Ende des
+Gesamtplans:** Backup-„Wird gepackt…"-Performance auf echtem Gerät (Phase 1) UND die wiederholt
+gemeldete Benachrichtigungslücke (zwei Fix-Versuche in v1.0.1/v1.0.2 ohne bestätigte Wirkung) —
+auf ausdrücklichen Nutzerwunsch NICHT weiter blind per Ferndiagnose angegangen, sondern per USB
+mit `adb logcat` zusammen untersucht, sobald Zeit dafür ist.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-08 — v1.0.3, Phase 3: Unsichtbare Backend-Fixes)
 
 **Dritte Phase des Nacharbeitungs-Plans aus dem Tiefenaudit. Reine Backend-Fixes ohne
 beabsichtigte sichtbare UI-Änderung — außer eventuell leicht andere Zahlen im Budget-

@@ -3386,6 +3386,12 @@ abstract class AppLocalizations {
   /// **'Titel erforderlich'**
   String get titleRequired;
 
+  /// No description provided for @endBeforeStartError.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Endzeit muss nach der Startzeit liegen'**
+  String get endBeforeStartError;
+
   /// No description provided for @noTasks.
   ///
   /// In de, this message translates to:
@@ -3559,6 +3565,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'{count} Tage in Folge'**
   String habitStreakDays(int count);
+
+  /// No description provided for @habitStreakWeeks.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} Wochen in Folge'**
+  String habitStreakWeeks(int count);
 
   /// No description provided for @bmi.
   ///
@@ -5083,6 +5095,66 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'„{name}\" wird entfernt. Bestehende Transaktionen bleiben erhalten und erscheinen als „Sonstiges\".'**
   String budgetDeleteCategoryContent(String name);
+
+  /// No description provided for @deleteGoalConfirmTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Ziel löschen?'**
+  String get deleteGoalConfirmTitle;
+
+  /// No description provided for @deleteGoalConfirmContent.
+  ///
+  /// In de, this message translates to:
+  /// **'„{name}\" wird unwiderruflich gelöscht.'**
+  String deleteGoalConfirmContent(String name);
+
+  /// No description provided for @deleteHabitConfirmTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Gewohnheit löschen?'**
+  String get deleteHabitConfirmTitle;
+
+  /// No description provided for @deleteHabitConfirmContent.
+  ///
+  /// In de, this message translates to:
+  /// **'„{name}\" samt Verlauf wird unwiderruflich gelöscht.'**
+  String deleteHabitConfirmContent(String name);
+
+  /// No description provided for @deleteTrackerConfirmTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Tracker löschen?'**
+  String get deleteTrackerConfirmTitle;
+
+  /// No description provided for @deleteTrackerConfirmContent.
+  ///
+  /// In de, this message translates to:
+  /// **'„{name}\" samt Verlauf wird unwiderruflich gelöscht.'**
+  String deleteTrackerConfirmContent(String name);
+
+  /// No description provided for @deleteAppointmentConfirmTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Termin löschen?'**
+  String get deleteAppointmentConfirmTitle;
+
+  /// No description provided for @deleteAppointmentConfirmContent.
+  ///
+  /// In de, this message translates to:
+  /// **'„{name}\" wird unwiderruflich gelöscht.'**
+  String deleteAppointmentConfirmContent(String name);
+
+  /// No description provided for @deleteTodoConfirmTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgabe löschen?'**
+  String get deleteTodoConfirmTitle;
+
+  /// No description provided for @deleteTodoConfirmContent.
+  ///
+  /// In de, this message translates to:
+  /// **'„{name}\" wird unwiderruflich gelöscht.'**
+  String deleteTodoConfirmContent(String name);
 
   /// No description provided for @budgetCategoryLimitLabel.
   ///

@@ -106,21 +106,15 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     final viewMode = ref.watch(mapViewModeProvider);
     final collectionInfo = ref.watch(activeCollectionInfoProvider);
     final hashtagFilter = ref.watch(activeHashtagFilterProvider);
-    final markersAsync = _query.isEmpty
-        ? ref.watch(markersInViewportProvider)
-        : ref.watch(markerSearchProvider(_query));
+    final markersAsync = _query.isNotEmpty
+        ? ref.watch(markerSearchProvider(_query))
+        : hashtagFilter != null
+            ? ref.watch(hashtagFilteredMarkersProvider(hashtagFilter))
+            : ref.watch(markersInViewportProvider);
     final hasRating = collectionInfo.value?.hasRating ?? false;
     final mostRecentMarker = ref.watch(mostRecentMarkerProvider).value;
 
-    final all = markersAsync.value ?? const [];
-    final filtered = hashtagFilter == null
-        ? all
-        : all.where((d) {
-            final tags = d.marker.hashtags
-                .split(',')
-                .map((t) => t.trim().toLowerCase());
-            return tags.contains(hashtagFilter.toLowerCase());
-          }).toList();
+    final filtered = markersAsync.value ?? const [];
 
     final withCoords = filtered
         .where((d) => d.marker.latitude != null)
@@ -366,8 +360,15 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
       if (perm == LocationPermission.denied ||
           perm == LocationPermission.deniedForever) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(AppLocalizations.of(context)!.mapLocationPermissionMissing)),
+            SnackBar(
+              content: Text(l10n.mapLocationPermissionMissing),
+              action: SnackBarAction(
+                label: l10n.openSettings,
+                onPressed: Geolocator.openAppSettings,
+              ),
+            ),
           );
         }
         return;

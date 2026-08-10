@@ -38,7 +38,18 @@ class _AppPickerSheetState extends ConsumerState<_AppPickerSheet> {
   }
 
   Future<void> _load() async {
-    final apps = await ref.read(appLauncherServiceProvider).listInstalledApps();
+    List<LauncherApp> apps;
+    try {
+      apps = await ref.read(appLauncherServiceProvider).listInstalledApps();
+    } catch (e) {
+      // Without this, a platform-channel failure (this feature is
+      // explicitly experimental — see CLAUDE.md) left `_apps` null forever
+      // and the sheet showed a spinner that never resolved. Falling back
+      // to an empty list at least reaches the (already-existing)
+      // "no apps" empty state instead of hanging indefinitely.
+      debugPrint('[app_picker] listInstalledApps failed: $e');
+      apps = const [];
+    }
     if (mounted) setState(() => _apps = apps);
   }
 

@@ -1,18 +1,4 @@
-import 'package:intl/intl.dart';
-
 import '../../l10n/app_localizations.dart';
-
-String formatDate(DateTime date, {String format = 'dd.MM.yyyy'}) {
-  return DateFormat(format, 'de').format(date);
-}
-
-String formatDateTime(DateTime date) {
-  return DateFormat('dd.MM.yyyy HH:mm', 'de').format(date);
-}
-
-String formatTime(DateTime date) {
-  return DateFormat('HH:mm', 'de').format(date);
-}
 
 String greeting(String name, [AppLocalizations? l10n]) {
   final hour = DateTime.now().hour;

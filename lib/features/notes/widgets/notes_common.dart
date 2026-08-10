@@ -326,5 +326,5 @@ Future<String?> showNotesTextDialog(
         ),
       ],
     ),
-  );
+  ).whenComplete(controller.dispose);
 }
