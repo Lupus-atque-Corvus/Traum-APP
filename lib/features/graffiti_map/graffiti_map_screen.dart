@@ -431,15 +431,19 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
               ),
             ),
             if (_query.isNotEmpty)
-              GestureDetector(
-                onTap: () {
-                  _searchController.clear();
-                  setState(() => _query = '');
-                },
-                child: const Icon(
-                  Icons.close,
-                  color: TraumColors.onBackgroundMuted,
-                  size: 18,
+              Semantics(
+                button: true,
+                label: AppLocalizations.of(context)!.close,
+                child: GestureDetector(
+                  onTap: () {
+                    _searchController.clear();
+                    setState(() => _query = '');
+                  },
+                  child: const Icon(
+                    Icons.close,
+                    color: TraumColors.onBackgroundMuted,
+                    size: 18,
+                  ),
                 ),
               ),
           ],

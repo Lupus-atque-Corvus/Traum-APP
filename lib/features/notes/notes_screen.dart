@@ -78,6 +78,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
       backgroundColor: TraumColors.background,
       floatingActionButton: FloatingActionButton(
         backgroundColor: kNotesAccent,
+        tooltip: l10n.notes_new_note,
         onPressed: () => _createNote(),
         child: const Icon(Icons.edit_rounded, color: Colors.white),
       ),

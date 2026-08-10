@@ -81,6 +81,26 @@ class AppLocalizationsDe extends AppLocalizations {
   String get a11ySwitchCamera => 'Kamera wechseln';
 
   @override
+  String get a11yPreviousMonth => 'Vorheriger Monat';
+
+  @override
+  String get a11yNextMonth => 'Nächster Monat';
+
+  @override
+  String get a11yReceiptPhoto => 'Beleg-Foto';
+
+  @override
+  String get a11yMoreInfo => 'Weitere Informationen';
+
+  @override
+  String get a11yToggleCheck => 'Häkchen umschalten';
+
+  @override
+  String a11yStarRating(int count) {
+    return 'Bewertung: $count Sterne';
+  }
+
+  @override
   String get confirm => 'Bestätigen';
 
   @override
@@ -1143,6 +1163,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get currentMeasurements => 'Aktuelle Maße';
 
   @override
+  String get editMeasurements => 'Maße bearbeiten';
+
+  @override
   String get chest => 'Brust';
 
   @override
@@ -1727,6 +1750,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addAppointment => 'Termin hinzufügen';
 
   @override
+  String get addTodo => 'Aufgabe hinzufügen';
+
+  @override
   String get titleRequiredField => 'Titel';
 
   @override
@@ -1791,6 +1817,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get addGoal => 'Ziel hinzufügen';
+
+  @override
+  String get addTracker => 'Tracker hinzufügen';
+
+  @override
+  String get addSubstance => 'Mittel hinzufügen';
 
   @override
   String get targetValue => 'Zielwert';
@@ -2641,6 +2673,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get budgetTypeTransfer => 'Umbuchen';
 
   @override
+  String get addTransaction => 'Buchung hinzufügen';
+
+  @override
+  String get addDebt => 'Schuld hinzufügen';
+
+  @override
   String get budgetCategoriesScreenTitle => 'Budget-Kategorien';
 
   @override
@@ -2912,6 +2950,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get notes_new_note => 'Neue Notiz';
+
+  @override
+  String get notes_new_template => 'Neue Vorlage';
 
   @override
   String get notes_toggle_preview => 'Vorschau umschalten';

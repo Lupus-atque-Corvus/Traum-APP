@@ -155,13 +155,17 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                                   fontSize: 14,
                                 ),
                               ),
-                              GestureDetector(
-                                onTap: () =>
-                                    context.push('/health/score-detail'),
-                                child: const Icon(
-                                  Icons.info_outline_rounded,
-                                  color: TraumColors.onBackgroundMuted,
-                                  size: 20,
+                              Semantics(
+                                button: true,
+                                label: l10n.a11yMoreInfo,
+                                child: GestureDetector(
+                                  onTap: () =>
+                                      context.push('/health/score-detail'),
+                                  child: const Icon(
+                                    Icons.info_outline_rounded,
+                                    color: TraumColors.onBackgroundMuted,
+                                    size: 20,
+                                  ),
                                 ),
                               ),
                             ],
@@ -854,6 +858,7 @@ class _SleepTab extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton(
         backgroundColor: TraumColors.cyanBlue,
+        tooltip: AppLocalizations.of(context)!.logSleep,
         onPressed: () => _showAddSleepDialog(context, ref),
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),
@@ -982,10 +987,14 @@ class _AddSleepSheetState extends State<_AddSleepSheet> {
           const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            children: List.generate(5, (i) => GestureDetector(
-              onTap: () => setState(() => _quality = i + 1),
-              child: Icon(i < _quality ? Icons.star_rounded : Icons.star_outline_rounded,
-                  color: TraumColors.amberGold, size: 32),
+            children: List.generate(5, (i) => Semantics(
+              button: true,
+              label: l10n.a11yStarRating(i + 1),
+              child: GestureDetector(
+                onTap: () => setState(() => _quality = i + 1),
+                child: Icon(i < _quality ? Icons.star_rounded : Icons.star_outline_rounded,
+                    color: TraumColors.amberGold, size: 32),
+              ),
             )),
           ),
           const SizedBox(height: 20),
@@ -1056,6 +1065,7 @@ class _WeightTab extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton(
         backgroundColor: TraumColors.cyanBlue,
+        tooltip: AppLocalizations.of(context)!.logWeight,
         onPressed: () => _showAddWeightDialog(context, ref),
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),
@@ -1178,6 +1188,7 @@ class _MeasurementsTab extends ConsumerWidget {
           backgroundColor: Colors.transparent,
           floatingActionButton: FloatingActionButton(
             backgroundColor: TraumColors.cyanBlue,
+            tooltip: AppLocalizations.of(context)!.editMeasurements,
             onPressed: () => _showAddDialog(context, ref, latest),
             child: const Icon(Icons.edit_rounded, color: Colors.white),
           ),

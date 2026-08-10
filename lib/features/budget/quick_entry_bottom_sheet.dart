@@ -806,18 +806,22 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                 ),
                               ),
                             ),
-                            GestureDetector(
-                              onTap: _showReceiptSourceDialog,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: bs(10)),
-                                child: Icon(
-                                  _receiptImagePath != null
-                                      ? Icons.receipt_long_rounded
-                                      : Icons.camera_alt_outlined,
-                                  size: bs(13),
-                                  color: _receiptImagePath != null
-                                      ? TraumColors.amberGold
-                                      : TraumColors.onBackgroundSubtle,
+                            Semantics(
+                              button: true,
+                              label: l10n.a11yReceiptPhoto,
+                              child: GestureDetector(
+                                onTap: _showReceiptSourceDialog,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: bs(10)),
+                                  child: Icon(
+                                    _receiptImagePath != null
+                                        ? Icons.receipt_long_rounded
+                                        : Icons.camera_alt_outlined,
+                                    size: bs(13),
+                                    color: _receiptImagePath != null
+                                        ? TraumColors.amberGold
+                                        : TraumColors.onBackgroundSubtle,
+                                  ),
                                 ),
                               ),
                             ),

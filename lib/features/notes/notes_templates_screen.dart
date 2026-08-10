@@ -34,6 +34,7 @@ class NotesTemplatesScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: kNotesAccent,
+        tooltip: l10n.notes_new_template,
         onPressed: () => _editTemplate(context, ref, null),
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),

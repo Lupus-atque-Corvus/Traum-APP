@@ -170,6 +170,7 @@ class _CalendarTabState extends ConsumerState<_CalendarTab> {
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton(
         backgroundColor: TraumColors.lavender,
+        tooltip: AppLocalizations.of(context)!.addAppointment,
         onPressed: () => _showAddAppointment(context),
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),
@@ -550,6 +551,7 @@ class _TodosTab extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton(
         backgroundColor: TraumColors.lavender,
+        tooltip: AppLocalizations.of(context)!.addTodo,
         onPressed: () => _showAddTodo(context, ref),
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),

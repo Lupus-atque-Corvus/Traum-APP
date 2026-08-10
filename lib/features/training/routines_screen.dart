@@ -35,6 +35,7 @@ class RoutinesScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: TraumColors.coralOrange,
+        tooltip: AppLocalizations.of(context)!.newRoutine,
         onPressed: () => context.push(Routes.newRoutine),
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),

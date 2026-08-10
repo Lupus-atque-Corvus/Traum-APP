@@ -81,6 +81,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get a11ySwitchCamera => 'Switch camera';
 
   @override
+  String get a11yPreviousMonth => 'Previous month';
+
+  @override
+  String get a11yNextMonth => 'Next month';
+
+  @override
+  String get a11yReceiptPhoto => 'Receipt photo';
+
+  @override
+  String get a11yMoreInfo => 'More info';
+
+  @override
+  String get a11yToggleCheck => 'Toggle checkbox';
+
+  @override
+  String a11yStarRating(int count) {
+    return 'Rating: $count stars';
+  }
+
+  @override
   String get confirm => 'Confirm';
 
   @override
@@ -1137,6 +1157,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get currentMeasurements => 'Current measurements';
 
   @override
+  String get editMeasurements => 'Edit measurements';
+
+  @override
   String get chest => 'Chest';
 
   @override
@@ -1717,6 +1740,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addAppointment => 'Add appointment';
 
   @override
+  String get addTodo => 'Add task';
+
+  @override
   String get titleRequiredField => 'Title';
 
   @override
@@ -1780,6 +1806,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addGoal => 'Add goal';
+
+  @override
+  String get addTracker => 'Add tracker';
+
+  @override
+  String get addSubstance => 'Add substance';
 
   @override
   String get targetValue => 'Target value';
@@ -2628,6 +2660,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get budgetTypeTransfer => 'Transfer';
 
   @override
+  String get addTransaction => 'Add transaction';
+
+  @override
+  String get addDebt => 'Add debt';
+
+  @override
   String get budgetCategoriesScreenTitle => 'Budget categories';
 
   @override
@@ -2898,6 +2936,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notes_new_note => 'New note';
+
+  @override
+  String get notes_new_template => 'New template';
 
   @override
   String get notes_toggle_preview => 'Toggle preview';

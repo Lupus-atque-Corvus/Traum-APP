@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/radius.dart';
 import '../../../data/database/traum_database.dart';
+import '../../../l10n/app_localizations.dart';
 import '../notes_markdown_parser.dart';
 import '../notes_providers.dart';
 import 'notes_markdown_syntaxes.dart';
@@ -249,16 +250,20 @@ class _TaskCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => onToggle(index, checked),
-      child: Padding(
-        padding: const EdgeInsets.only(right: 6, top: 2),
-        child: Icon(
-          checked
-              ? Icons.check_box_rounded
-              : Icons.check_box_outline_blank_rounded,
-          size: 20,
-          color: checked ? TraumColors.mintGreen : TraumColors.onBackgroundMuted,
+    return Semantics(
+      checked: checked,
+      label: AppLocalizations.of(context)!.a11yToggleCheck,
+      child: GestureDetector(
+        onTap: () => onToggle(index, checked),
+        child: Padding(
+          padding: const EdgeInsets.only(right: 6, top: 2),
+          child: Icon(
+            checked
+                ? Icons.check_box_rounded
+                : Icons.check_box_outline_blank_rounded,
+            size: 20,
+            color: checked ? TraumColors.mintGreen : TraumColors.onBackgroundMuted,
+          ),
         ),
       ),
     );

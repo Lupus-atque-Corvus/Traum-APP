@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
+import '../../../l10n/app_localizations.dart';
 import '../budget_scale.dart';
 
 class BudgetSubHeader extends StatelessWidget {
@@ -16,16 +17,20 @@ class BudgetSubHeader extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.fromLTRB(bs(12), bs(4), bs(12), bs(9)),
       child: Row(children: [
-        GestureDetector(
-          onTap: () => Navigator.of(context).maybePop(),
-          child: Container(
-            width: bs(24), height: bs(24),
-            decoration: BoxDecoration(
-              color: TraumColors.surface,
-              borderRadius: BorderRadius.circular(bs(12)),
+        Semantics(
+          button: true,
+          label: AppLocalizations.of(context)!.back,
+          child: GestureDetector(
+            onTap: () => Navigator.of(context).maybePop(),
+            child: Container(
+              width: bs(24), height: bs(24),
+              decoration: BoxDecoration(
+                color: TraumColors.surface,
+                borderRadius: BorderRadius.circular(bs(12)),
+              ),
+              child: Icon(Icons.chevron_left,
+                  size: bs(16), color: TraumColors.onBackground),
             ),
-            child: Icon(Icons.chevron_left,
-                size: bs(16), color: TraumColors.onBackground),
           ),
         ),
         SizedBox(width: bs(8)),

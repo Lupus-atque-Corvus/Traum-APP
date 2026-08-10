@@ -177,17 +177,21 @@ class _NavCustomizationSheetState
             ),
           ],
         ),
-        trailing: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => _remove(module),
-          child: Container(
-            width: 32,
-            height: 32,
-            alignment: Alignment.center,
-            child: const Icon(
-              Icons.close_rounded,
-              color: TraumColors.onBackgroundSubtle,
-              size: 18,
+        trailing: Semantics(
+          button: true,
+          label: AppLocalizations.of(context)!.delete,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => _remove(module),
+            child: Container(
+              width: 32,
+              height: 32,
+              alignment: Alignment.center,
+              child: const Icon(
+                Icons.close_rounded,
+                color: TraumColors.onBackgroundSubtle,
+                size: 18,
+              ),
             ),
           ),
         ),

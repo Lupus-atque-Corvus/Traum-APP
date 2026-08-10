@@ -25,34 +25,42 @@ class HomeWidgetFrame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: route == null ? null : () => context.go(route!),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: accent.withValues(alpha: 0.25)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            if (showTitle)
-              Text(
-                title.toUpperCase(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontFamily: 'DMSans',
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.6,
-                  color: accent,
+    return Semantics(
+      // Home widgets vary wildly in their internal content (charts,
+      // progress rings, sparklines — none of it carries semantic meaning
+      // on its own), so TalkBack traversal needs one explicit label per
+      // tile rather than relying on whatever the child happens to expose.
+      button: route != null,
+      label: title,
+      child: GestureDetector(
+        onTap: route == null ? null : () => context.go(route!),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: TraumColors.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: accent.withValues(alpha: 0.25)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (showTitle)
+                Text(
+                  title.toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: 'DMSans',
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.6,
+                    color: accent,
+                  ),
                 ),
-              ),
-            Expanded(child: Center(child: child)),
-          ],
+              Expanded(child: Center(child: child)),
+            ],
+          ),
         ),
       ),
     );

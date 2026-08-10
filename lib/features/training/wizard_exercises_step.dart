@@ -201,10 +201,14 @@ class _ExerciseTile extends ConsumerWidget {
                     fontFamily: 'DMSans',
                     fontSize: 12)),
             const SizedBox(width: 4),
-            GestureDetector(
-              onTap: onRemove,
-              child: const Icon(Icons.close_rounded,
-                  color: TraumColors.onBackgroundMuted, size: 18),
+            Semantics(
+              button: true,
+              label: AppLocalizations.of(context)!.delete,
+              child: GestureDetector(
+                onTap: onRemove,
+                child: const Icon(Icons.close_rounded,
+                    color: TraumColors.onBackgroundMuted, size: 18),
+              ),
             ),
           ]),
         );

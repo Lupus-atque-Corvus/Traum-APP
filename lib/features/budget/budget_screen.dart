@@ -66,6 +66,7 @@ class BudgetScreen extends ConsumerWidget {
           width: bs(48),
           height: bs(48),
           child: FloatingActionButton(
+            tooltip: AppLocalizations.of(context)!.addTransaction,
             onPressed: () => showModalBottomSheet(
               context: context,
               isScrollControlled: true,
@@ -295,6 +296,7 @@ class _MonthPill extends ConsumerWidget {
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         _NavBtn(
           icon: Icons.chevron_left,
+          label: AppLocalizations.of(context)!.a11yPreviousMonth,
           onTap: () => ref.read(selectedBudgetMonthProvider.notifier).state =
               DateTime(month.year, month.month - 1),
         ),
@@ -311,6 +313,7 @@ class _MonthPill extends ConsumerWidget {
         ),
         _NavBtn(
           icon: Icons.chevron_right,
+          label: AppLocalizations.of(context)!.a11yNextMonth,
           onTap: () => ref.read(selectedBudgetMonthProvider.notifier).state =
               DateTime(month.year, month.month + 1),
         ),
@@ -791,18 +794,24 @@ TextStyle _style(double size, FontWeight weight, [Color? color]) =>
 class _NavBtn extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
-  const _NavBtn({required this.icon, required this.onTap});
+  final String label;
+  const _NavBtn(
+      {required this.icon, required this.onTap, required this.label});
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: bs(26),
-          height: bs(26),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(bs(13)),
+  Widget build(BuildContext context) => Semantics(
+        button: true,
+        label: label,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: bs(26),
+            height: bs(26),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(bs(13)),
+            ),
+            child: Icon(icon, color: Colors.white, size: bs(14)),
           ),
-          child: Icon(icon, color: Colors.white, size: bs(14)),
         ),
       );
 }

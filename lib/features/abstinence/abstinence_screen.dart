@@ -97,6 +97,7 @@ class _AbstinenceTab extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton(
         backgroundColor: TraumColors.roseRed,
+        tooltip: AppLocalizations.of(context)!.addTracker,
         onPressed: () => _showAddDialog(context, ref),
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),
@@ -205,6 +206,7 @@ class _GoalsTab extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton(
         backgroundColor: TraumColors.lavender,
+        tooltip: AppLocalizations.of(context)!.addGoal,
         onPressed: () => _showAddGoal(context, ref),
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),
@@ -525,6 +527,7 @@ class _HabitsTab extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton(
         backgroundColor: TraumColors.mintGreen,
+        tooltip: AppLocalizations.of(context)!.addHabit,
         onPressed: () => _showAddHabit(context, ref),
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),

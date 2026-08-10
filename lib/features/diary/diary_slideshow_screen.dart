@@ -142,16 +142,20 @@ class _DiarySlideShowScreenState
             Positioned(
               top: 48,
               right: 16,
-              child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.black38,
-                    borderRadius: BorderRadius.circular(20),
+              child: Semantics(
+                button: true,
+                label: AppLocalizations.of(context)!.close,
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.black38,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Icon(Icons.close,
+                        color: Colors.white, size: 22),
                   ),
-                  child: const Icon(Icons.close,
-                      color: Colors.white, size: 22),
                 ),
               ),
             ),

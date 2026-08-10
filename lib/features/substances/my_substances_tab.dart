@@ -229,6 +229,7 @@ class MySubstancesTab extends ConsumerWidget {
       backgroundColor: TraumColors.background,
       floatingActionButton: FloatingActionButton(
         backgroundColor: TraumColors.coralOrange,
+        tooltip: AppLocalizations.of(context)!.addSubstance,
         onPressed: () => _showAddTypeSelector(context, ref),
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),

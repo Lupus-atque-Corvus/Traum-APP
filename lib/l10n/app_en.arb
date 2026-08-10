@@ -24,6 +24,19 @@
   "a11yScanBarcode": "Scan barcode",
   "a11yWorkoutHistory": "Workout history",
   "a11ySwitchCamera": "Switch camera",
+  "a11yPreviousMonth": "Previous month",
+  "a11yNextMonth": "Next month",
+  "a11yReceiptPhoto": "Receipt photo",
+  "a11yMoreInfo": "More info",
+  "a11yToggleCheck": "Toggle checkbox",
+  "a11yStarRating": "Rating: {count} stars",
+  "@a11yStarRating": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "confirm": "Confirm",
   "camera": "Camera",
   "gallery": "Gallery",
@@ -471,6 +484,7 @@
   "logWeight": "Log weight",
   "noBodyMeasurements": "No body measurements",
   "currentMeasurements": "Current measurements",
+  "editMeasurements": "Edit measurements",
   "chest": "Chest",
   "waist": "Waist",
   "hips": "Hips",
@@ -754,6 +768,7 @@
     }
   },
   "addAppointment": "Add appointment",
+  "addTodo": "Add task",
   "titleRequiredField": "Title",
   "location": "Location",
   "optional": "(optional)",
@@ -782,6 +797,8 @@
   "dueDate": "Due date",
   "noGoals": "No goals",
   "addGoal": "Add goal",
+  "addTracker": "Add tracker",
+  "addSubstance": "Add substance",
   "targetValue": "Target value",
   "unitHintKgKm": "e.g. kg, km",
   "deadline": "Deadline",
@@ -1170,6 +1187,8 @@
   "budgetTypeExpense": "Expense",
   "budgetTypeIncome": "Income",
   "budgetTypeTransfer": "Transfer",
+  "addTransaction": "Add transaction",
+  "addDebt": "Add debt",
   "budgetCategoriesScreenTitle": "Budget categories",
   "budgetNoCategoriesHint": "No categories yet.\nTap + to create one.",
   "budgetDeleteCategoryConfirm": "Delete category?",
@@ -1335,6 +1354,7 @@
   "notes_title": "Notes",
   "notes_new_folder": "New folder",
   "notes_new_note": "New note",
+  "notes_new_template": "New template",
   "notes_toggle_preview": "Toggle preview",
   "notes_toggle_bookmark": "Toggle bookmark",
   "notes_toggle_panel": "Expand/collapse panel",

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Sterne-Bewertung mit Halbsterne-Anzeige; Tap setzt ganze Sterne.
 class StarRatingInput extends StatelessWidget {
@@ -18,16 +19,20 @@ class StarRatingInput extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: List.generate(
           5,
-          (i) => GestureDetector(
-            onTap: () => onChanged((i + 1).toDouble()),
-            child: Icon(
-              rating >= i + 1
-                  ? Icons.star
-                  : rating >= i + 0.5
-                      ? Icons.star_half
-                      : Icons.star_border,
-              color: TraumColors.amberGold,
-              size: size,
+          (i) => Semantics(
+            button: true,
+            label: AppLocalizations.of(context)!.a11yStarRating(i + 1),
+            child: GestureDetector(
+              onTap: () => onChanged((i + 1).toDouble()),
+              child: Icon(
+                rating >= i + 1
+                    ? Icons.star
+                    : rating >= i + 0.5
+                        ? Icons.star_half
+                        : Icons.star_border,
+                color: TraumColors.amberGold,
+                size: size,
+              ),
             ),
           ),
         ),

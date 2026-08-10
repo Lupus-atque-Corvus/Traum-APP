@@ -112,6 +112,7 @@ class TrainingScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push(Routes.activeWorkout),
         backgroundColor: TraumColors.coralOrange,
+        tooltip: AppLocalizations.of(context)!.startWorkout,
         child: const Icon(Icons.add_rounded, color: Colors.white, size: 28),
       ),
       body: CustomScrollView(

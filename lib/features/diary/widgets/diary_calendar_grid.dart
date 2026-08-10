@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
+import '../../../l10n/app_localizations.dart';
 import '../diary_provider.dart';
 import '../../../core/components/inline_error.dart';
 
@@ -34,11 +35,15 @@ class _DiaryCalendarGridState extends ConsumerState<DiaryCalendarGrid> {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          GestureDetector(
-            onTap: () => setState(
-                () => _month = DateTime(_month.year, _month.month - 1)),
-            child: const Icon(Icons.chevron_left,
-                color: TraumColors.onBackground, size: 24),
+          Semantics(
+            button: true,
+            label: AppLocalizations.of(context)!.a11yPreviousMonth,
+            child: GestureDetector(
+              onTap: () => setState(
+                  () => _month = DateTime(_month.year, _month.month - 1)),
+              child: const Icon(Icons.chevron_left,
+                  color: TraumColors.onBackground, size: 24),
+            ),
           ),
           const Spacer(),
           Text(_monthYear(_month),
@@ -48,11 +53,15 @@ class _DiaryCalendarGridState extends ConsumerState<DiaryCalendarGrid> {
                   color: TraumColors.onBackground,
                   fontSize: 16)),
           const Spacer(),
-          GestureDetector(
-            onTap: () => setState(
-                () => _month = DateTime(_month.year, _month.month + 1)),
-            child: const Icon(Icons.chevron_right,
-                color: TraumColors.onBackground, size: 24),
+          Semantics(
+            button: true,
+            label: AppLocalizations.of(context)!.a11yNextMonth,
+            child: GestureDetector(
+              onTap: () => setState(
+                  () => _month = DateTime(_month.year, _month.month + 1)),
+              child: const Icon(Icons.chevron_right,
+                  color: TraumColors.onBackground, size: 24),
+            ),
           ),
         ]),
         const SizedBox(height: 12),

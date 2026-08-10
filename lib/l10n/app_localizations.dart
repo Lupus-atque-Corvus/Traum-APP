@@ -242,6 +242,42 @@ abstract class AppLocalizations {
   /// **'Kamera wechseln'**
   String get a11ySwitchCamera;
 
+  /// No description provided for @a11yPreviousMonth.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorheriger Monat'**
+  String get a11yPreviousMonth;
+
+  /// No description provided for @a11yNextMonth.
+  ///
+  /// In de, this message translates to:
+  /// **'Nächster Monat'**
+  String get a11yNextMonth;
+
+  /// No description provided for @a11yReceiptPhoto.
+  ///
+  /// In de, this message translates to:
+  /// **'Beleg-Foto'**
+  String get a11yReceiptPhoto;
+
+  /// No description provided for @a11yMoreInfo.
+  ///
+  /// In de, this message translates to:
+  /// **'Weitere Informationen'**
+  String get a11yMoreInfo;
+
+  /// No description provided for @a11yToggleCheck.
+  ///
+  /// In de, this message translates to:
+  /// **'Häkchen umschalten'**
+  String get a11yToggleCheck;
+
+  /// No description provided for @a11yStarRating.
+  ///
+  /// In de, this message translates to:
+  /// **'Bewertung: {count} Sterne'**
+  String a11yStarRating(int count);
+
   /// No description provided for @confirm.
   ///
   /// In de, this message translates to:
@@ -2288,6 +2324,12 @@ abstract class AppLocalizations {
   /// **'Aktuelle Maße'**
   String get currentMeasurements;
 
+  /// No description provided for @editMeasurements.
+  ///
+  /// In de, this message translates to:
+  /// **'Maße bearbeiten'**
+  String get editMeasurements;
+
   /// No description provided for @chest.
   ///
   /// In de, this message translates to:
@@ -3386,6 +3428,12 @@ abstract class AppLocalizations {
   /// **'Termin hinzufügen'**
   String get addAppointment;
 
+  /// No description provided for @addTodo.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgabe hinzufügen'**
+  String get addTodo;
+
   /// No description provided for @titleRequiredField.
   ///
   /// In de, this message translates to:
@@ -3511,6 +3559,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Ziel hinzufügen'**
   String get addGoal;
+
+  /// No description provided for @addTracker.
+  ///
+  /// In de, this message translates to:
+  /// **'Tracker hinzufügen'**
+  String get addTracker;
+
+  /// No description provided for @addSubstance.
+  ///
+  /// In de, this message translates to:
+  /// **'Mittel hinzufügen'**
+  String get addSubstance;
 
   /// No description provided for @targetValue.
   ///
@@ -5108,6 +5168,18 @@ abstract class AppLocalizations {
   /// **'Umbuchen'**
   String get budgetTypeTransfer;
 
+  /// No description provided for @addTransaction.
+  ///
+  /// In de, this message translates to:
+  /// **'Buchung hinzufügen'**
+  String get addTransaction;
+
+  /// No description provided for @addDebt.
+  ///
+  /// In de, this message translates to:
+  /// **'Schuld hinzufügen'**
+  String get addDebt;
+
   /// No description provided for @budgetCategoriesScreenTitle.
   ///
   /// In de, this message translates to:
@@ -5599,6 +5671,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Neue Notiz'**
   String get notes_new_note;
+
+  /// No description provided for @notes_new_template.
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Vorlage'**
+  String get notes_new_template;
 
   /// No description provided for @notes_toggle_preview.
   ///

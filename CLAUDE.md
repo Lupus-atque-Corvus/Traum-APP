@@ -1,12 +1,69 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.5+105** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.6+106** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-10 — v1.0.5, Phase 5: Barrierefreiheit)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-10 — v1.0.6, Phase 5 Nachbesserung: TalkBack fand weitere Lücken)
+
+**Direktes Nutzer-Feedback nach v1.0.5: beim echten TalkBack-Test wurden weiterhin viele Elemente
+ohne aussagekräftige Ansage vorgelesen ("leere Platzhalter"). Root Cause: v1.0.5s Sweep suchte
+gezielt nach dem `IconButton`-Widget — aber ein erheblicher Teil der App baut Icon-Buttons als
+rohen `GestureDetector`/`InkWell` um ein `Icon(...)`, und `FloatingActionButton` wurde komplett
+übersehen (hat ebenfalls ein `tooltip`-Property, genau wie `IconButton`, aber eine andere
+Such-Signatur). Beides fehlte im ursprünglichen Grep.**
+
+1. **Alle 17 `FloatingActionButton`s app-weit hatten kein `tooltip`** — jeder zeigte nur ein
+   „+"/Stift-Icon ohne jeden Kontext, TalkBack sagte nur „Schaltfläche". Betroffen:
+   Abstinence (3: Tracker/Ziel/Gewohnheit hinzufügen), Budget (4: Schnelleingabe ×2, Schuld,
+   Sparziel), Health (3: Schlaf/Gewicht eintragen, Maße bearbeiten), Notes (2: neue Notiz, neue
+   Vorlage), Planning (2: Termin, Aufgabe), Substances (1), Training (2: neue Routine, Training
+   starten). Wo passend, existierende l10n-Keys wiederverwendet
+   (`logSleep`/`logWeight`/`addGoal`/`addHabit`/`addAppointment`/`newRoutine`/`startWorkout`),
+   sonst neue ergänzt (`addTracker`, `addSubstance`, `addTodo`, `addTransaction`, `addDebt`,
+   `editMeasurements`, `notes_new_template`).
+2. **15 rohe `GestureDetector`/`InkWell`-um-`Icon`-Konstrukte ohne jede Semantics gefunden**,
+   über 13 Dateien verteilt (Suche: alle `GestureDetector(`/`InkWell(`, deren `child:` innerhalb
+   von 8 Zeilen ein nacktes `Icon(` ist, ohne `Semantics(` in der Nähe). Jeweils mit
+   `Semantics(button: true, label: …)` umwickelt statt auf `IconButton` umgestellt (hätte an
+   vielen Stellen Layout/Styling-Nebenwirkungen gehabt). Zwei besonders wirkungsvolle Funde:
+   - **Die komplette untere Navigationsleiste** (`core/navigation/traum_scaffold.dart`s
+     `_NavItem`) hatte in BEIDEN Zuständen (aktiv/inaktiv) keine Semantics — der inaktive Zustand
+     zeigt nur ein Icon (kein Text), der aktive Zustand zeigt Icon+Text, aber ein reiner
+     `GestureDetector` fasst das nicht automatisch zu einem einzigen „Button, Home"-Knoten
+     zusammen. Jetzt beide Zustände mit `Semantics(button: true, selected: isActive, label: …)`,
+     aktiver Zustand zusätzlich mit `ExcludeSemantics` um die visuelle Icon+Text-Kombination, um
+     Doppel-Ansagen zu vermeiden. **Das ist vermutlich die Hauptursache des gemeldeten Problems**
+     — die Haupt-Navigation ist das Allererste, was ein TalkBack-Nutzer ausprobiert.
+   - **Alle Home-Kacheln** (`home_widget_frame.dart`s `HomeWidgetFrame`, von praktisch jedem
+     Home-Widget verwendet) waren ein nackter `GestureDetector` um beliebigen Kachel-Inhalt
+     (Charts, Progress-Ringe, Sparklines — nichts davon hat von sich aus Semantics). Jetzt
+     `Semantics(button: route != null, label: title)` um den ganzen Rahmen — jede Kachel sagt
+     jetzt mindestens ihren Titel an ("Notizen", "Budget" etc.), unabhängig vom internen Inhalt.
+   - Weitere Fundstellen: Monats-Vor/Zurück-Navigation (Budget-Kopfzeile, Tagebuch-Kalender),
+     Beleg-Foto-Button (Budget-Schnelleingabe), Zurück-Pfeil (Budget-Unterkopfzeile), Schließen-
+     Buttons (Tagebuch-Diashow, Karten-Suche), Stern-Bewertungen (Karten-Marker, Schlafqualität —
+     je Stern jetzt „Bewertung: X Sterne"), Info-Icon (Health-Score-Detail), Markdown-Checkbox
+     (Notizen-Checklisten, mit `checked:`-Semantics statt nur `button:`), Scanner/Hinzufügen-Icons
+     (Ernährungs-Mahlzeit-Abschnitt), Entfernen-Icon (Trainings-Assistent-Übungsliste),
+     Modul-Entfernen-Button (Navigations-Anpassung).
+   Neue generische ARB-Keys: `a11yPreviousMonth`, `a11yNextMonth`, `a11yReceiptPhoto`,
+   `a11yMoreInfo`, `a11yToggleCheck`, `a11yStarRating(count)`.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **534/534 grün** (unverändert — reine
+Accessibility-Ergänzung ohne Verhaltensänderung, kein neuer automatisierter Test nötig über den
+bereits in v1.0.5 ergänzten Kontrasttest hinaus).
+
+**Lehre für spätere Accessibility-Durchgänge:** Ein Grep nach `IconButton(` allein reicht nicht —
+`FloatingActionButton(` hat dieselbe Lücke, und rohe `GestureDetector`/`InkWell`-Icon-Konstrukte
+sind in dieser Codebasis mindestens so verbreitet wie das offizielle Widget. Ein vollständiger
+Audit muss beide zusätzlichen Muster explizit mit-scannen.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-10 — v1.0.5, Phase 5: Barrierefreiheit)
 
 **Fünfte Phase des Nacharbeitungs-Plans aus dem Tiefenaudit. Große, flächendeckende, aber
 größtenteils unsichtbare Änderung (Screenreader-Labels) plus ein einzelner, sichtbarer

@@ -69,6 +69,7 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
         child: FloatingActionButton(
           backgroundColor: TraumColors.amberGold,
           elevation: 4,
+          tooltip: AppLocalizations.of(context)!.addTransaction,
           onPressed: () => showModalBottomSheet(
             context: context,
             isScrollControlled: true,

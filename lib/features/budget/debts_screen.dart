@@ -23,6 +23,7 @@ class DebtsScreen extends ConsumerWidget {
       backgroundColor: TraumColors.background,
       floatingActionButton: FloatingActionButton(
         backgroundColor: TraumColors.roseRed,
+        tooltip: AppLocalizations.of(context)!.addDebt,
         onPressed: () => _showAddSheet(context, ref),
         child: Icon(Icons.add_rounded, color: Colors.white, size: bs(20)),
       ),

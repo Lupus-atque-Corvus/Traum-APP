@@ -62,17 +62,25 @@ class MealSection extends ConsumerWidget {
                       color: TraumColors.mintGreen,
                       letterSpacing: 0.8)),
               const Spacer(),
-              GestureDetector(
-                onTap: () => _openSheet(context),
-                child: const Icon(Icons.add_circle_outline,
-                    color: TraumColors.mintGreen, size: 22),
+              Semantics(
+                button: true,
+                label: AppLocalizations.of(context)!.add,
+                child: GestureDetector(
+                  onTap: () => _openSheet(context),
+                  child: const Icon(Icons.add_circle_outline,
+                      color: TraumColors.mintGreen, size: 22),
+                ),
               ),
               const SizedBox(width: 8),
-              GestureDetector(
-                onTap: () => _openScanner(context, ref),
-                child: const Icon(Icons.qr_code_scanner,
-                    color: TraumColors.onBackgroundMuted,
-                    size: 20),
+              Semantics(
+                button: true,
+                label: AppLocalizations.of(context)!.a11yScanBarcode,
+                child: GestureDetector(
+                  onTap: () => _openScanner(context, ref),
+                  child: const Icon(Icons.qr_code_scanner,
+                      color: TraumColors.onBackgroundMuted,
+                      size: 20),
+                ),
               ),
             ]),
             if (entries.isEmpty)

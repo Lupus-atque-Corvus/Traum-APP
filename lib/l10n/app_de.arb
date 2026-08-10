@@ -24,6 +24,19 @@
   "a11yScanBarcode": "Barcode scannen",
   "a11yWorkoutHistory": "Trainingsverlauf",
   "a11ySwitchCamera": "Kamera wechseln",
+  "a11yPreviousMonth": "Vorheriger Monat",
+  "a11yNextMonth": "Nächster Monat",
+  "a11yReceiptPhoto": "Beleg-Foto",
+  "a11yMoreInfo": "Weitere Informationen",
+  "a11yToggleCheck": "Häkchen umschalten",
+  "a11yStarRating": "Bewertung: {count} Sterne",
+  "@a11yStarRating": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "confirm": "Bestätigen",
   "camera": "Kamera",
   "gallery": "Galerie",
@@ -471,6 +484,7 @@
   "logWeight": "Gewicht eintragen",
   "noBodyMeasurements": "Keine Körpermaße",
   "currentMeasurements": "Aktuelle Maße",
+  "editMeasurements": "Maße bearbeiten",
   "chest": "Brust",
   "waist": "Taille",
   "hips": "Hüfte",
@@ -754,6 +768,7 @@
     }
   },
   "addAppointment": "Termin hinzufügen",
+  "addTodo": "Aufgabe hinzufügen",
   "titleRequiredField": "Titel",
   "location": "Ort",
   "optional": "(optional)",
@@ -782,6 +797,8 @@
   "dueDate": "Fälligkeitsdatum",
   "noGoals": "Keine Ziele",
   "addGoal": "Ziel hinzufügen",
+  "addTracker": "Tracker hinzufügen",
+  "addSubstance": "Mittel hinzufügen",
   "targetValue": "Zielwert",
   "unitHintKgKm": "z.B. kg, km",
   "deadline": "Deadline",
@@ -1204,6 +1221,8 @@
   "budgetTypeExpense": "Ausgabe",
   "budgetTypeIncome": "Einnahme",
   "budgetTypeTransfer": "Umbuchen",
+  "addTransaction": "Buchung hinzufügen",
+  "addDebt": "Schuld hinzufügen",
   "budgetCategoriesScreenTitle": "Budget-Kategorien",
   "budgetNoCategoriesHint": "Noch keine Kategorien.\nTippe auf + um eine anzulegen.",
   "budgetDeleteCategoryConfirm": "Kategorie löschen?",
@@ -1369,6 +1388,7 @@
   "notes_title": "Notizen",
   "notes_new_folder": "Neuer Ordner",
   "notes_new_note": "Neue Notiz",
+  "notes_new_template": "Neue Vorlage",
   "notes_toggle_preview": "Vorschau umschalten",
   "notes_toggle_bookmark": "Lesezeichen umschalten",
   "notes_toggle_panel": "Bereich ein-/ausklappen",

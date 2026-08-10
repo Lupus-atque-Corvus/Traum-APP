@@ -82,6 +82,7 @@ class SavingsScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: TraumColors.mintGreen,
         elevation: 0,
+        tooltip: AppLocalizations.of(context)!.addGoal,
         onPressed: () => _showAddGoalSheet(context, ref, currency),
         child: Icon(Icons.add_rounded,
             size: bs(20), color: TraumColors.background),
