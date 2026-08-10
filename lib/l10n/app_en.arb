@@ -37,6 +37,19 @@
       }
     }
   },
+  "a11yMapMarker": "Map marker",
+  "a11yViewPhoto": "Photo {index} of {total}",
+  "@a11yViewPhoto": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "a11yDiaryDayHasEntry": "Has entry",
   "confirm": "Confirm",
   "camera": "Camera",
   "gallery": "Gallery",

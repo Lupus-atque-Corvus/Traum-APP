@@ -37,6 +37,19 @@
       }
     }
   },
+  "a11yMapMarker": "Kartenmarker",
+  "a11yViewPhoto": "Foto {index} von {total}",
+  "@a11yViewPhoto": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "a11yDiaryDayHasEntry": "Eintrag vorhanden",
   "confirm": "Bestätigen",
   "camera": "Kamera",
   "gallery": "Galerie",

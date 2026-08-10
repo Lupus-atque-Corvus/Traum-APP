@@ -1,12 +1,57 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.6+106** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.7+107** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-10 — v1.0.6, Phase 5 Nachbesserung: TalkBack fand weitere Lücken)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-10 — v1.0.7, zweite Phase-5-Nachbesserung: Bild-Tap-Ziele + Kalenderzellen)
+
+**Auf Nutzerwunsch ("überprüfe ob du noch irgendwas übersehen hast") ein zweiter, tieferer
+Selbst-Audit nach v1.0.6 — diesmal gezielt nach Mustern gesucht, die die beiden vorherigen Sweeps
+(`IconButton(`/`FloatingActionButton(`, dann `GestureDetector`/`InkWell` um nacktes `Icon(`)
+nicht abdeckten.**
+
+1. **4 tappbare Bilder ohne jede Sprachausgabe-Information gefunden** (`GestureDetector`/`InkWell`
+   um `Image.file`/`Image.memory` statt um ein `Icon`, daher von den vorherigen Sweeps nicht
+   erfasst):
+   - App-Launcher-Favoriten-Kachel (`traum_scaffold.dart`) — zeigte App-Icon + Name als
+     unverbundene Geschwister-Widgets unter einem nackten `GestureDetector`; jetzt
+     `Semantics(button:, label: appName)` außen, `ExcludeSemantics` innen (kein Doppel-Ansagen).
+   - Beleg-Foto in der Buchungs-Detailansicht (`transaction_detail_screen.dart`) — jetzt
+     „Beleg-Foto" (wiederverwendet `a11yReceiptPhoto` aus v1.0.6).
+   - Karten-Galerie-Kachel (`map_gallery_screen.dart`) — jetzt Marker-Titel als Label (Fallback
+     „Kartenmarker" bei leerem Titel).
+   - Foto-Karussell in der Marker-Detailansicht (`marker_detail_screen.dart`) — jetzt „Foto X von
+     Y" (neuer parametrisierter Key `a11yViewPhoto`).
+2. **Tagebuch-Kalenderzellen hatten nur die nackte Tageszahl als Text, keinen vollen Kontext.**
+   Kein Totalausfall (die Zahl war technisch vorlesbar), aber ohne Monat/Jahr/Eintrag-Status
+   wenig hilfreich. Jetzt volle `Semantics(button: hatEintrag, label: "5. August, Eintrag
+   vorhanden"/"…, Kein Eintrag")`, visuelle Zelle per `ExcludeSemantics` stummgeschaltet, damit
+   nicht doppelt vorgelesen wird. Neuer Key `a11yDiaryDayHasEntry`.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **534/534 grün** (unverändert).
+
+**Bewusst nicht weiter verfolgt — als eigener, künftiger Durchgang eingestuft, nicht Teil dieser
+Nachbesserung:** Ein breiterer Scan nach `GestureDetector`/`InkWell` um einen reinen `Container`
+(ohne direktes `Icon`/`Text` in unmittelbarer Nähe, aber mit sichtbarem Text etwas weiter im
+Widget-Baum, z. B. Zeilen-weite Tap-Ziele wie Budget-Kategorie-Zeilen, Konten-Karten,
+Tagebuch-Eintrags-Karten) ergab **~48 weitere Fundstellen** über nahezu alle Module. Stichproben
+zeigten: das sind überwiegend **keine stummen Buttons** — der sichtbare Text (z. B. Kategorie-
+Name) ist einzeln durch TalkBack erreichbar, nur eben nicht zu einem einzigen „Button,
+Kategorie-Name"-Knoten zusammengefasst (mehrere separate Ansagen statt einer sauberen). Das ist
+spürbar niedrigere Priorität als die in v1.0.5/v1.0.6/v1.0.7 behobenen echten Totalausfälle
+(gar keine Ansage) und würde einen eigenen, größeren Durchgang über praktisch jede Listenzeile
+der App bedeuten — bewusst zurückgestellt statt hier unkontrolliert auszuweiten.
+
+**Nächste Phase laut Plan:** Phase 6 — Übersetzung (Budget ~30 hardcodierte Strings, Training
+EN/DE-Mischung, Rest verteilt über ~35 Dateien, neue ARB-Keys, `custom_lint`-Regel gegen künftige
+hardcodierte Strings).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-10 — v1.0.6, Phase 5 Nachbesserung: TalkBack fand weitere Lücken)
 
 **Direktes Nutzer-Feedback nach v1.0.5: beim echten TalkBack-Test wurden weiterhin viele Elemente
 ohne aussagekräftige Ansage vorgelesen ("leere Platzhalter"). Root Cause: v1.0.5s Sweep suchte

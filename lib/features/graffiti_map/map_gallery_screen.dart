@@ -146,7 +146,12 @@ class _MapGalleryScreenState extends ConsumerState<MapGalleryScreen> {
                     itemBuilder: (context, i) {
                       final data = filtered[i];
                       final photo = data.firstPhoto;
-                      return GestureDetector(
+                      return Semantics(
+                        button: true,
+                        label: data.marker.title.isNotEmpty
+                            ? data.marker.title
+                            : AppLocalizations.of(context)!.a11yMapMarker,
+                        child: GestureDetector(
                         onTap: () => context
                             .go('/graffitimap/marker/${data.marker.id}'),
                         child: ClipRRect(
@@ -230,6 +235,7 @@ class _MapGalleryScreenState extends ConsumerState<MapGalleryScreen> {
                                 ),
                             ],
                           ),
+                        ),
                         ),
                       );
                     },

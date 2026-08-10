@@ -101,6 +101,17 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get a11yMapMarker => 'Kartenmarker';
+
+  @override
+  String a11yViewPhoto(int index, int total) {
+    return 'Foto $index von $total';
+  }
+
+  @override
+  String get a11yDiaryDayHasEntry => 'Eintrag vorhanden';
+
+  @override
   String get confirm => 'Bestätigen';
 
   @override

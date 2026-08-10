@@ -802,44 +802,50 @@ class _AppLauncherTileState extends ConsumerState<_AppLauncherTile> {
         _app?.name ?? (_loaded ? widget.packageName.split('.').last : '…');
     final Uint8List? icon = _app?.icon;
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: _open,
-      onLongPress: _confirmRemove,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(14),
-            child: icon != null
-                ? Image.memory(icon, width: 48, height: 48, fit: BoxFit.cover)
-                : Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: TraumColors.surfaceVariant,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: const Icon(
-                      Icons.apps_rounded,
-                      color: TraumColors.onBackgroundMuted,
-                      size: 24,
-                    ),
-                  ),
+    return Semantics(
+      button: true,
+      label: label,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: _open,
+        onLongPress: _confirmRemove,
+        child: ExcludeSemantics(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: icon != null
+                    ? Image.memory(icon, width: 48, height: 48, fit: BoxFit.cover)
+                    : Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: TraumColors.surfaceVariant,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: const Icon(
+                          Icons.apps_rounded,
+                          color: TraumColors.onBackgroundMuted,
+                          size: 24,
+                        ),
+                      ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 11,
-              color: TraumColors.onBackgroundMuted,
-              fontFamily: 'DMSans',
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

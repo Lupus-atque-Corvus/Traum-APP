@@ -608,22 +608,26 @@ class _TransactionDetailScreenState
                 child: ClipRRect(
                   borderRadius:
                       BorderRadius.circular(TraumRadius.card),
-                  child: GestureDetector(
-                    onTap: () => _showFullscreenPhoto(
-                        context, tx.receiptImagePath!),
-                    child: Image.file(
-                      File(tx.receiptImagePath!),
-                      height: 200,
-                      width: double.infinity,
-                      cacheWidth: decodePxFor(
-                          context, MediaQuery.sizeOf(context).width),
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(l10n.budgetPhotoUnavailable,
-                            style: const TextStyle(
-                                color: TraumColors.onBackgroundMuted,
-                                fontFamily: 'DMSans')),
+                  child: Semantics(
+                    button: true,
+                    label: l10n.a11yReceiptPhoto,
+                    child: GestureDetector(
+                      onTap: () => _showFullscreenPhoto(
+                          context, tx.receiptImagePath!),
+                      child: Image.file(
+                        File(tx.receiptImagePath!),
+                        height: 200,
+                        width: double.infinity,
+                        cacheWidth: decodePxFor(
+                            context, MediaQuery.sizeOf(context).width),
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) => Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(l10n.budgetPhotoUnavailable,
+                              style: const TextStyle(
+                                  color: TraumColors.onBackgroundMuted,
+                                  fontFamily: 'DMSans')),
+                        ),
                       ),
                     ),
                   ),

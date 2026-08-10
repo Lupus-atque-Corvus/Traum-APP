@@ -650,14 +650,19 @@ class _PhotoGalleryState extends State<_PhotoGallery> {
                   controller: _controller,
                   itemCount: photos.length,
                   onPageChanged: (i) => setState(() => _page = i),
-                  itemBuilder: (ctx, i) => GestureDetector(
-                    onTap: () => _openFullscreen(i),
-                    child: Image.file(
-                      File(photos[i].photoPath),
-                      width: double.infinity,
-                      cacheWidth: decodePxFor(
-                          ctx, MediaQuery.sizeOf(ctx).width),
-                      fit: BoxFit.cover,
+                  itemBuilder: (ctx, i) => Semantics(
+                    button: true,
+                    label: AppLocalizations.of(ctx)!
+                        .a11yViewPhoto(i + 1, photos.length),
+                    child: GestureDetector(
+                      onTap: () => _openFullscreen(i),
+                      child: Image.file(
+                        File(photos[i].photoPath),
+                        width: double.infinity,
+                        cacheWidth: decodePxFor(
+                            ctx, MediaQuery.sizeOf(ctx).width),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),

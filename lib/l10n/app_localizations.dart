@@ -278,6 +278,24 @@ abstract class AppLocalizations {
   /// **'Bewertung: {count} Sterne'**
   String a11yStarRating(int count);
 
+  /// No description provided for @a11yMapMarker.
+  ///
+  /// In de, this message translates to:
+  /// **'Kartenmarker'**
+  String get a11yMapMarker;
+
+  /// No description provided for @a11yViewPhoto.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto {index} von {total}'**
+  String a11yViewPhoto(int index, int total);
+
+  /// No description provided for @a11yDiaryDayHasEntry.
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag vorhanden'**
+  String get a11yDiaryDayHasEntry;
+
   /// No description provided for @confirm.
   ///
   /// In de, this message translates to:

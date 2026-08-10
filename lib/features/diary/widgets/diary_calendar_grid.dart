@@ -116,49 +116,57 @@ class _DiaryCalendarGridState extends ConsumerState<DiaryCalendarGrid> {
                 final hasThumb =
                     thumbPath != null && File(thumbPath).existsSync();
 
-                return GestureDetector(
-                  onTap: () {
-                    if (entry != null) {
-                      context.go('/diary/entry/$dateStr');
-                    }
-                  },
-                  child: Opacity(
-                    opacity: isFuture ? 0.3 : 1.0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: isToday
-                            ? Border.all(
-                                color: TraumColors.coralOrange, width: 1.5)
-                            : null,
-                        image: hasThumb
-                            ? DecorationImage(
-                                image: FileImage(File(thumbPath)),
-                                fit: BoxFit.cover)
-                            : null,
-                        color: hasThumb ? null : TraumColors.surfaceVariant,
-                      ),
-                      child: Stack(children: [
-                        Positioned(
-                          top: 3,
-                          left: 4,
-                          child: Text('$day',
-                              style: TextStyle(
-                                  fontFamily: 'DMSans',
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: hasThumb
-                                      ? Colors.white
-                                      : TraumColors.onBackgroundMuted,
-                                  shadows: hasThumb
-                                      ? const [
-                                          Shadow(
-                                              color: Colors.black54,
-                                              blurRadius: 3)
-                                        ]
-                                      : null)),
+                final l10n = AppLocalizations.of(context)!;
+                return Semantics(
+                  button: entry != null,
+                  label:
+                      '$day. ${_monthYear(_month)}, ${entry != null ? l10n.a11yDiaryDayHasEntry : l10n.noEntry}',
+                  child: GestureDetector(
+                    onTap: () {
+                      if (entry != null) {
+                        context.go('/diary/entry/$dateStr');
+                      }
+                    },
+                    child: ExcludeSemantics(
+                      child: Opacity(
+                        opacity: isFuture ? 0.3 : 1.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: isToday
+                                ? Border.all(
+                                    color: TraumColors.coralOrange, width: 1.5)
+                                : null,
+                            image: hasThumb
+                                ? DecorationImage(
+                                    image: FileImage(File(thumbPath)),
+                                    fit: BoxFit.cover)
+                                : null,
+                            color: hasThumb ? null : TraumColors.surfaceVariant,
+                          ),
+                          child: Stack(children: [
+                            Positioned(
+                              top: 3,
+                              left: 4,
+                              child: Text('$day',
+                                  style: TextStyle(
+                                      fontFamily: 'DMSans',
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: hasThumb
+                                          ? Colors.white
+                                          : TraumColors.onBackgroundMuted,
+                                      shadows: hasThumb
+                                          ? const [
+                                              Shadow(
+                                                  color: Colors.black54,
+                                                  blurRadius: 3)
+                                            ]
+                                          : null)),
+                            ),
+                          ]),
                         ),
-                      ]),
+                      ),
                     ),
                   ),
                 );
