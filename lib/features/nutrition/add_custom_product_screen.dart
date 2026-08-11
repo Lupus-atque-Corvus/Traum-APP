@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../core/utils/validators.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'nutrition_providers.dart';
@@ -37,7 +38,7 @@ class _AddCustomProductScreenState
   }
 
   double _parse(TextEditingController ctrl) =>
-      double.tryParse(ctrl.text.replaceAll(',', '.')) ?? 0;
+      parseLocaleAmount(ctrl.text) ?? 0;
 
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) return;

@@ -1,12 +1,83 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.8+108** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.9+109** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-11 — v1.0.8, Phase 6: Übersetzung)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-11 — v1.0.9, Phase 7: Code-Qualität & neue Suchfelder)
+
+**Siebte Phase des Nacharbeitungs-Plans. Vier Teile: zentrale Betrags-Validierung, vereinheitlichte
+Übungssuche, zwei neue Suchfunktionen, kleinere Riverpod-Aufräumarbeiten. Keine schemaVersion-Änderung.**
+
+1. **`lib/core/utils/validators.dart`** (neu) — `parseLocaleAmount(String)` ersetzt das
+   25-fach duplizierte `double.tryParse(text.replaceAll(',', '.'))`-Muster über 17 Dateien
+   (Budget, Health, Nutrition, Abstinence, Training, Settings, Period Tracking, Shopping). Bewusst
+   NICHT angefasst: `receipt_scanner.dart`s OCR-Betrag-Extraktion — arbeitet auf rohem
+   Kamera-Scan-Text, nicht auf einem Nutzer-Eingabefeld, andere Fehlerklasse.
+2. **Übungssuche vereinheitlicht.** Drei fast identische Kopien (`exercise_library_screen.dart`,
+   `exercise_picker_screen.dart`, `wizard_exercises_step.dart`s `_ExercisePickerSheet`) nutzten
+   je eigene `.where((e) => e.name...contains(...))`-Filterlogik — nur die Bibliotheks-Ansicht
+   hatte ein 250ms-Debounce, Picker und Wizard-Sheet filterten bei 815+ Übungen auf jeden
+   Tastenanschlag. Neue `lib/features/training/exercise_search.dart` (`filterExercisesByQuery`)
+   + generischer `lib/core/utils/search_debouncer.dart` (`SearchDebouncer`, jetzt auch von den
+   beiden neuen Suchfeldern unten verwendet) an allen drei Stellen verdrahtet.
+3. **Riverpod-Aufräumarbeiten** — gezielter Audit (kein pauschaler Scan) fand über 235
+   `ref.read(...)`-Fundstellen nur 2 echte "liest im `build()` einen Wert, der sich ändern kann,
+   ohne ihn zu beobachten"-Bugs (der Rest folgt korrekt dem Repository-Pattern aus
+   Non-Negotiable #5):
+   - `settings_screen.dart`s `_NotificationsSection`: die drei Erinnerungszeiten (Training/
+     Gewohnheiten/Todos) wurden per `ref.read(preferencesRepositoryProvider).notifXTime` gelesen
+     — nach dem Ändern einer Zeit blieb die Anzeige bis zum nächsten zufälligen Rebuild (z.B.
+     Schalter umlegen) auf dem alten Wert stehen. Fix: drei neue `Notifier<String>`-Provider
+     (`notifWorkoutTimeProvider`/`notifHabitTimeProvider`/`notifTodoTimeProvider` in
+     `preferences_provider.dart`), exakt nach dem bereits etablierten Muster der Bool-Toggle-
+     Notifier — jetzt `ref.watch(...)` statt `ref.read(...)`.
+   - `home_widget_catalog_sheet.dart`: `_HomeWidgetCatalog` bekam `WidgetRef` bisher als
+     Konstruktor-Feld vom Aufrufer gereicht und las `isPeriodTrackingEnabledProvider` darüber per
+     `.read()` — niedrige Praxis-Relevanz (das Sheet wird bei jedem Öffnen neu gebaut), aber
+     strukturell derselbe Fehler. Fix: `_HomeWidgetCatalog` ist jetzt ein echtes
+     `ConsumerStatefulWidget` mit eigenem `ref`, `showHomeWidgetCatalog()` braucht dadurch auch
+     keinen `WidgetRef`-Parameter mehr. **Beim Umsetzen gefunden:** derselbe Screen hatte noch
+     zwei hartcodierte deutsche Strings ("Widget hinzufügen", "Suchen…") aus Phase 6 übersehen
+     (kein `Text('...')`-Literal-Match, weil in einer anderen Form) — neuer Key `addWidgetTitle`
+     + Wiederverwendung von `searchHint`.
+4. **Neu: Tagebuch-Suche.** `DiaryDao.searchEntries(diaryId, query)` (LIKE-Filter auf `note`,
+   200 Treffer, neueste zuerst) → `DiaryRepository` → neuer `diarySearchResultsProvider`
+   (`FutureProvider.family<List<DiaryEntry>, (int, String)>`, lädt nur bei nicht-leerer Query) →
+   neuer `diary_search_screen.dart` (Such-Icon im Tagebuch-Header, führt zu einer eigenen Seite
+   mit Ergebnis-Kacheln: Datum + Notiz-Ausschnitt, Tap öffnet den Eintrag). **Beim Umsetzen
+   gefunden:** `DiaryEntryCard` (Kurzvorschau-Kachel in der "Letzte Einträge"-Leiste) hatte ein
+   eigenes, drittes hartcodiertes deutsches Monats-Array — derselbe Bug-Typ wie mehrfach in
+   Phase 4/6 gefunden, hier aber übersehen, weil die Datei bis jetzt nie angefasst wurde. Auf
+   `AppLocalizations`-Monatsnamen umgestellt.
+5. **Neu: Budget-Transaktionssuche.** `transaction_list_screen.dart` bekam ein permanentes
+   Suchfeld über den bestehenden Alle/Ausgaben/Einnahmen-Filterchips — filtert client-seitig
+   (die Liste ist ohnehin schon vollständig geladen) nach Beschreibung, Notiz und Kategorie-Name,
+   mit Debounce. Leerer Zustand unterscheidet jetzt "keine Transaktionen" von "keine Treffer für
+   ⟨Suchbegriff⟩" (wiederverwendet `noResultsForQuery`).
+6. **`fake_async` als `dev_dependency` ergänzt** (war bisher nur transitiv über `flutter_test`
+   auflösbar) — für den neuen `search_debouncer_test.dart`, der echtes Timer-Verhalten
+   deterministisch statt über reale Verzögerungen testet.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **551/551 grün** (534 vorher + 17 neu:
+`test/core/utils/validators_test.dart`, `test/core/utils/search_debouncer_test.dart`,
+`test/features/training/exercise_search_test.dart`,
+`test/core/providers/notif_time_providers_test.dart`, `diary_dao_test.dart` um `searchEntries`
+erweitert).
+
+**Nicht umgesetzt — bewusst außerhalb des Phase-7-Scopes:** `home_widget_catalog_sheet.dart`s
+eigenes Suchfeld (Widget-Katalog, kleine Liste) bekam absichtlich KEIN Debounce — bei einer
+Handvoll Katalogeinträgen ist sofortiges Filtern unproblematisch, ein Debounce hätte nur
+gefühlte Verzögerung ohne Performance-Nutzen gebracht.
+
+**Nächste Phase laut Plan:** Phase 8 — Header-Vereinheitlichung (`TraumSubHeader` aus
+`BudgetSubHeader` extrahieren, Nutrition/Diary darauf umstellen — pixelgenau, höchste Sorgfalt).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-11 — v1.0.8, Phase 6: Übersetzung)
 
 **Sechste Phase des Nacharbeitungs-Plans aus dem Tiefenaudit. Große, flächendeckende
 Textänderung — jeder hartcodierte deutsche/englische String außerhalb von `l10n.*` wurde gesucht

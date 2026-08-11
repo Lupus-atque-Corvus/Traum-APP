@@ -10,6 +10,7 @@ import 'diary_camera_service.dart';
 import 'diary_capture_sheet.dart';
 import 'diary_edit_sheet.dart';
 import 'diary_provider.dart';
+import 'diary_search_screen.dart';
 import 'diary_visuals.dart';
 import 'widgets/diary_calendar_grid.dart';
 import 'widgets/diary_entry_card.dart';
@@ -93,6 +94,15 @@ class DiaryScreen extends ConsumerWidget {
                       ]),
                     ],
                     ),
+                  ),
+                ),
+                IconButton(
+                  tooltip: l10n.search,
+                  icon: const Icon(Icons.search_rounded,
+                      color: TraumColors.lavender),
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (_) => const DiarySearchScreen()),
                   ),
                 ),
                 IconButton(

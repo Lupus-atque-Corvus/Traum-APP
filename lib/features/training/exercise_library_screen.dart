@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,8 +7,10 @@ import '../../core/components/components.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
+import '../../core/utils/search_debouncer.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'exercise_search.dart';
 import 'muscle_groups.dart';
 import 'widgets/exercise_icon.dart';
 
@@ -67,29 +67,23 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
   String _search = '';
   bool _searchActive = false;
   final Set<int> _selectedCats = {};
-  Timer? _searchDebounce;
+  final _searchDebounce = SearchDebouncer();
 
   @override
   void dispose() {
-    _searchDebounce?.cancel();
+    _searchDebounce.dispose();
     _searchCtrl.dispose();
     super.dispose();
   }
 
-  // 815+ exercises — debounce search so filtering/re-sorting the full list
-  // doesn't run on every keystroke while typing.
   void _onSearchChanged(String value) {
-    _searchDebounce?.cancel();
-    _searchDebounce = Timer(const Duration(milliseconds: 250), () {
-      if (mounted) setState(() => _search = value);
+    _searchDebounce(value, (settled) {
+      if (mounted) setState(() => _search = settled);
     });
   }
 
   List<Exercise> _applyFilters(List<Exercise> all) {
-    var list = all;
-    if (_search.isNotEmpty) {
-      list = list.where((e) => e.name.toLowerCase().contains(_search.toLowerCase())).toList();
-    }
+    var list = filterExercisesByQuery(all, _search);
     if (_selectedCats.isNotEmpty) {
       final allowed = <String>{};
       for (final i in _selectedCats) {

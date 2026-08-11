@@ -2496,6 +2496,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get homeWidgetCalendar => 'Kalender';
 
   @override
+  String get addWidgetTitle => 'Widget hinzufügen';
+
+  @override
   String get weatherClear => 'Klar';
 
   @override

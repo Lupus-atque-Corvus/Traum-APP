@@ -5,7 +5,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
+import '../../core/utils/search_debouncer.dart';
 import '../../data/database/traum_database.dart';
+import 'exercise_search.dart';
 import 'muscle_groups.dart';
 import 'widgets/exercise_icon.dart';
 
@@ -55,21 +57,26 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
   String _search = '';
   bool _searchActive = false;
   final Set<int> _selectedCats = {};
+  final _searchDebounce = SearchDebouncer();
 
   // Selected exercise IDs in order
   final List<Exercise> _selected = [];
 
   @override
   void dispose() {
+    _searchDebounce.dispose();
     _searchCtrl.dispose();
     super.dispose();
   }
 
+  void _onSearchChanged(String value) {
+    _searchDebounce(value, (settled) {
+      if (mounted) setState(() => _search = settled);
+    });
+  }
+
   List<Exercise> _applyFilters(List<Exercise> all) {
-    var list = all;
-    if (_search.isNotEmpty) {
-      list = list.where((e) => e.name.toLowerCase().contains(_search.toLowerCase())).toList();
-    }
+    var list = filterExercisesByQuery(all, _search);
     if (_selectedCats.isNotEmpty) {
       final allowed = <String>{};
       for (final i in _selectedCats) {
@@ -328,7 +335,7 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
             hintText: AppLocalizations.of(context)!.exerciseSearchHint,
             hintStyle: TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
           ),
-          onChanged: (v) => setState(() => _search = v),
+          onChanged: _onSearchChanged,
         ),
         actions: [
           IconButton(

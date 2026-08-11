@@ -404,6 +404,48 @@ class NotifTodoNotifier extends Notifier<bool> {
 final notifTodoProvider =
     NotifierProvider<NotifTodoNotifier, bool>(NotifTodoNotifier.new);
 
+// Notification times ("HH:mm" strings) — same watch/set-through-Notifier
+// pattern as the on/off toggles above. Without this, a screen reading
+// `preferencesRepositoryProvider.notifWorkoutTime` directly via `ref.read()`
+// in `build()` never rebuilds when the time is changed, since the plain
+// `Provider<PreferencesRepository>` itself never notifies.
+class NotifWorkoutTimeNotifier extends Notifier<String> {
+  @override
+  String build() => ref.watch(preferencesRepositoryProvider).notifWorkoutTime;
+  Future<void> set(String v) async {
+    await ref.read(preferencesRepositoryProvider).setNotifWorkoutTime(v);
+    state = v;
+  }
+}
+
+final notifWorkoutTimeProvider =
+    NotifierProvider<NotifWorkoutTimeNotifier, String>(
+        NotifWorkoutTimeNotifier.new);
+
+class NotifHabitTimeNotifier extends Notifier<String> {
+  @override
+  String build() => ref.watch(preferencesRepositoryProvider).notifHabitTime;
+  Future<void> set(String v) async {
+    await ref.read(preferencesRepositoryProvider).setNotifHabitTime(v);
+    state = v;
+  }
+}
+
+final notifHabitTimeProvider = NotifierProvider<NotifHabitTimeNotifier, String>(
+    NotifHabitTimeNotifier.new);
+
+class NotifTodoTimeNotifier extends Notifier<String> {
+  @override
+  String build() => ref.watch(preferencesRepositoryProvider).notifTodoTime;
+  Future<void> set(String v) async {
+    await ref.read(preferencesRepositoryProvider).setNotifTodoTime(v);
+    state = v;
+  }
+}
+
+final notifTodoTimeProvider = NotifierProvider<NotifTodoTimeNotifier, String>(
+    NotifTodoTimeNotifier.new);
+
 class NotifPeriodNotifier extends Notifier<bool> {
   @override
   bool build() => ref.watch(preferencesRepositoryProvider).notifPeriod;

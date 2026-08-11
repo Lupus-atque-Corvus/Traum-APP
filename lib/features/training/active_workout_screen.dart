@@ -9,6 +9,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/providers/rest_duration_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
+import '../../core/utils/validators.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'exercise_picker_screen.dart';
@@ -55,7 +56,7 @@ class _SetRow {
         repsCtrl = TextEditingController(
             text: reps != null ? '$reps' : '');
 
-  double? get weightKg => double.tryParse(weightCtrl.text.replaceAll(',', '.'));
+  double? get weightKg => parseLocaleAmount(weightCtrl.text);
   int? get reps => int.tryParse(repsCtrl.text);
 
   void dispose() {

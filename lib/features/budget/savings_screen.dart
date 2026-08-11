@@ -6,6 +6,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
+import '../../core/utils/validators.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'budget_scale.dart';
@@ -334,8 +335,7 @@ class _SavingsGoalCard extends StatelessWidget {
           ),
           TextButton(
             onPressed: () async {
-              final v =
-                  double.tryParse(ctrl.text.replaceAll(',', '.'));
+              final v = parseLocaleAmount(ctrl.text);
               if (v != null && v > 0) {
                 Navigator.pop(ctx);
                 await onAddAmount(v);
@@ -522,16 +522,14 @@ class _AddGoalSheetState extends State<_AddGoalSheet> {
               Text(AppLocalizations.of(context)!.nameRequired)));
       return;
     }
-    final target =
-        double.tryParse(_targetCtrl.text.replaceAll(',', '.'));
+    final target = parseLocaleAmount(_targetCtrl.text);
     if (target == null || target <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(AppLocalizations.of(context)!
               .pleaseEnterValidTargetAmount)));
       return;
     }
-    final current =
-        double.tryParse(_currentCtrl.text.replaceAll(',', '.')) ?? 0;
+    final current = parseLocaleAmount(_currentCtrl.text) ?? 0;
     setState(() => _saving = true);
     await widget.onAdd(SavingsGoalsCompanion.insert(
       name: _nameCtrl.text.trim(),

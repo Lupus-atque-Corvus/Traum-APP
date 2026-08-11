@@ -7,6 +7,7 @@ import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/preferences_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/radius.dart';
+import '../../../core/utils/validators.dart';
 import '../../../data/database/traum_database.dart';
 import '../../../l10n/app_localizations.dart';
 import '../budget_helpers.dart';
@@ -307,14 +308,13 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
 
   Future<void> _save() async {
     final name = _nameCtrl.text.trim();
-    final balance =
-        double.tryParse(_balanceCtrl.text.trim().replaceAll(',', '.')) ?? 0;
+    final balance = parseLocaleAmount(_balanceCtrl.text) ?? 0;
     if (name.isEmpty) return;
 
     setState(() => _saving = true);
     try {
       final returnRate = _returnRateCtrl.text.trim().isNotEmpty
-          ? double.tryParse(_returnRateCtrl.text.trim().replaceAll(',', '.'))
+          ? parseLocaleAmount(_returnRateCtrl.text)
           : null;
       final lastFour =
           _type == 'credit' && _lastFourCtrl.text.trim().isNotEmpty

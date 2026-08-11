@@ -9,6 +9,7 @@ import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/utils/image_decode.dart';
 import '../../core/theme/radius.dart';
+import '../../core/utils/validators.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'budget_category_icons.dart';
@@ -210,8 +211,7 @@ class _TransactionDetailScreenState
         builder: (ctx, setDialogState) {
           double sumParts = 0;
           for (final p in parts) {
-            sumParts +=
-                double.tryParse(p.amountCtrl.text.replaceAll(',', '.')) ?? 0;
+            sumParts += parseLocaleAmount(p.amountCtrl.text) ?? 0;
           }
           final remaining = total - sumParts;
 
@@ -382,8 +382,7 @@ class _TransactionDetailScreenState
 
     // Insert split children
     for (final part in parts) {
-      final amount =
-          double.tryParse(part.amountCtrl.text.replaceAll(',', '.'));
+      final amount = parseLocaleAmount(part.amountCtrl.text);
       if (amount == null || amount <= 0) continue;
       await dao.insertTransaction(TransactionsCompanion.insert(
         amount: amount,

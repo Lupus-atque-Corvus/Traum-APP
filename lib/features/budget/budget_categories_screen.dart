@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../core/utils/validators.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'budget_category_colors.dart';
@@ -404,8 +405,7 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
     if (name.isEmpty) return;
     setState(() => _saving = true);
     try {
-      final limit =
-          double.tryParse(_limitCtrl.text.trim().replaceAll(',', '.'));
+      final limit = parseLocaleAmount(_limitCtrl.text);
       final dao = ref.read(budgetDaoProvider);
       final cat = widget.category;
       if (cat != null) {

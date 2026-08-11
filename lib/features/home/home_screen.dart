@@ -168,7 +168,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       crossAxisCellCount: 2,
                       mainAxisCellCount: 1,
                       child: _AddWidgetTile(
-                        onTap: () => showHomeWidgetCatalog(context, ref),
+                        onTap: () => showHomeWidgetCatalog(context),
                       ),
                     ),
                 ],

@@ -7,6 +7,7 @@ import '../../../core/providers/database_provider.dart';
 import '../../../core/services/grocery_price_service.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/radius.dart';
+import '../../../core/utils/validators.dart';
 import '../../../data/database/traum_database.dart';
 
 /// Bottom sheet to add a shopping item. Suggests a price from the local
@@ -62,14 +63,12 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
       return;
     }
     setState(() => _saving = true);
-    final price =
-        double.tryParse(_priceCtrl.text.replaceAll(',', '.').trim());
+    final price = parseLocaleAmount(_priceCtrl.text);
     try {
       await ref.read(nutritionDaoProvider).insertShoppingItem(
             ShoppingListItemsCompanion.insert(
               name: _nameCtrl.text.trim(),
-              quantity: Value(
-                  double.tryParse(_quantityCtrl.text.replaceAll(',', '.'))),
+              quantity: Value(parseLocaleAmount(_quantityCtrl.text)),
               unit: Value(_unitCtrl.text.trim().isEmpty
                   ? null
                   : _unitCtrl.text.trim()),

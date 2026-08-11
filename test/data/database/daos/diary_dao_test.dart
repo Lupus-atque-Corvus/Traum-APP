@@ -103,4 +103,23 @@ void main() {
     expect((await db.diaryDao.getEntryForDate(diaryA, '2026-04-01'))!.note,
         'zweiter Versuch');
   });
+
+  test(
+      'searchEntries matches case-insensitively on the note, scoped to '
+      'diary and newest first', () async {
+    await addEntry(diaryA, '2026-05-01',
+        note: 'Waldspaziergang mit Regen',
+        createdAt: DateTime(2026, 5, 1));
+    await addEntry(diaryA, '2026-05-10',
+        note: 'Sonniger Tag am See', createdAt: DateTime(2026, 5, 10));
+    await addEntry(diaryA, '2026-05-15',
+        note: 'Noch mehr Regen heute', createdAt: DateTime(2026, 5, 15));
+    await addEntry(diaryB, '2026-05-01',
+        note: 'Regen auch hier', createdAt: DateTime(2026, 5, 1));
+
+    final hits = await db.diaryDao.searchEntries(diaryA, 'regen');
+    expect(hits.map((e) => e.date), ['2026-05-15', '2026-05-01']);
+
+    expect(await db.diaryDao.searchEntries(diaryA, 'xyz'), isEmpty);
+  });
 }

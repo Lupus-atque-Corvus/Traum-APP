@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
+import '../../core/utils/search_debouncer.dart';
 import '../../data/database/traum_database.dart';
 import '../../data/repositories/plan_templates.dart';
 import '../../l10n/app_localizations.dart';
+import 'exercise_search.dart';
 import 'widgets/exercise_icon.dart';
 import '../../core/components/inline_error.dart';
 
@@ -229,14 +231,24 @@ class _ExercisePickerSheet extends StatefulWidget {
 
 class _ExercisePickerSheetState extends State<_ExercisePickerSheet> {
   String _query = '';
+  final _searchDebounce = SearchDebouncer();
+
+  @override
+  void dispose() {
+    _searchDebounce.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    _searchDebounce(value, (settled) {
+      if (mounted) setState(() => _query = settled);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final filtered = widget.exercises
-        .where((e) =>
-            e.name.toLowerCase().contains(_query.toLowerCase()))
-        .toList();
+    final filtered = filterExercisesByQuery(widget.exercises, _query);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
@@ -255,7 +267,7 @@ class _ExercisePickerSheetState extends State<_ExercisePickerSheet> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: TextField(
             autofocus: true,
-            onChanged: (v) => setState(() => _query = v),
+            onChanged: _onSearchChanged,
             style: const TextStyle(
                 color: TraumColors.onBackground, fontFamily: 'DMSans'),
             decoration: InputDecoration(

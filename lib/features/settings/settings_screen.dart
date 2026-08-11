@@ -29,6 +29,7 @@ import '../../core/security/pin_service.dart';
 import '../../core/services/launcher_service.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
+import '../../core/utils/validators.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/components/inline_error.dart';
 
@@ -451,7 +452,9 @@ class _NotificationsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final repo = ref.read(preferencesRepositoryProvider);
+    final workoutTime = ref.watch(notifWorkoutTimeProvider);
+    final habitTime = ref.watch(notifHabitTimeProvider);
+    final todoTime = ref.watch(notifTodoTimeProvider);
     final medsAsync = ref.watch(allMedicationsStreamProvider);
     final hasMedicationReminder = medsAsync.value
             ?.any((m) => m.isActive && m.timings != '[]') ??
@@ -503,15 +506,15 @@ class _NotificationsSection extends ConsumerWidget {
           _NotifTile(
             title: l10n.notifTraining,
             value: workout,
-            time: repo.notifWorkoutTime,
+            time: workoutTime,
             onChanged: (v) async {
               await ref.read(notifWorkoutProvider.notifier).set(v);
               if (!context.mounted) return;
               await _reschedule(context, ref);
             },
             onTimeTap: () =>
-                _pickTime(context, ref, repo.notifWorkoutTime, (t) async {
-                  await repo.setNotifWorkoutTime(t);
+                _pickTime(context, ref, workoutTime, (t) async {
+                  await ref.read(notifWorkoutTimeProvider.notifier).set(t);
                   if (!context.mounted) return;
                   await _reschedule(context, ref);
                 }),
@@ -530,15 +533,15 @@ class _NotificationsSection extends ConsumerWidget {
           _NotifTile(
             title: l10n.notifHabits,
             value: habit,
-            time: repo.notifHabitTime,
+            time: habitTime,
             onChanged: (v) async {
               await ref.read(notifHabitProvider.notifier).set(v);
               if (!context.mounted) return;
               await _reschedule(context, ref);
             },
             onTimeTap: () =>
-                _pickTime(context, ref, repo.notifHabitTime, (t) async {
-                  await repo.setNotifHabitTime(t);
+                _pickTime(context, ref, habitTime, (t) async {
+                  await ref.read(notifHabitTimeProvider.notifier).set(t);
                   if (!context.mounted) return;
                   await _reschedule(context, ref);
                 }),
@@ -546,15 +549,15 @@ class _NotificationsSection extends ConsumerWidget {
           _NotifTile(
             title: l10n.notifTodos,
             value: todo,
-            time: repo.notifTodoTime,
+            time: todoTime,
             onChanged: (v) async {
               await ref.read(notifTodoProvider.notifier).set(v);
               if (!context.mounted) return;
               await _reschedule(context, ref);
             },
             onTimeTap: () =>
-                _pickTime(context, ref, repo.notifTodoTime, (t) async {
-                  await repo.setNotifTodoTime(t);
+                _pickTime(context, ref, todoTime, (t) async {
+                  await ref.read(notifTodoTimeProvider.notifier).set(t);
                   if (!context.mounted) return;
                   await _reschedule(context, ref);
                 }),
@@ -913,7 +916,7 @@ class _GoalsSection extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () {
-              final v = double.tryParse(ctrl.text.replaceAll(',', '.'));
+              final v = parseLocaleAmount(ctrl.text);
               if (v != null && v > 0) onSave(v);
               Navigator.pop(ctx);
             },

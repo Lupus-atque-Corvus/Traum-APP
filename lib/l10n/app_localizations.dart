@@ -4820,6 +4820,12 @@ abstract class AppLocalizations {
   /// **'Kalender'**
   String get homeWidgetCalendar;
 
+  /// No description provided for @addWidgetTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Widget hinzufügen'**
+  String get addWidgetTitle;
+
   /// No description provided for @weatherClear.
   ///
   /// In de, this message translates to:

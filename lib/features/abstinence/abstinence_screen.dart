@@ -6,6 +6,7 @@ import '../../core/components/components.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
+import '../../core/utils/validators.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'widgets/goal_donut.dart';
@@ -1482,8 +1483,7 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
       startDate: _startDate,
       note: Value(
           _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim()),
-      costPerDay:
-          Value(double.tryParse(_costCtrl.text.trim().replaceAll(',', '.'))),
+      costPerDay: Value(parseLocaleAmount(_costCtrl.text)),
     ));
     if (mounted) Navigator.pop(context);
   }

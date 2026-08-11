@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../core/utils/validators.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'budget_helpers.dart';
@@ -376,8 +377,7 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
 
   void _save() {
     final desc = _descCtrl.text.trim();
-    final amount =
-        double.tryParse(_amountCtrl.text.trim().replaceAll(',', '.')) ?? 0;
+    final amount = parseLocaleAmount(_amountCtrl.text) ?? 0;
     if (desc.isEmpty || amount <= 0) return;
     widget.onSave(desc, amount, _day);
     Navigator.of(context).pop();

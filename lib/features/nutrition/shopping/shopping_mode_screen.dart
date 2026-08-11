@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/radius.dart';
+import '../../../core/utils/validators.dart';
 import '../../../data/database/traum_database.dart';
 import 'shopping_checkout_sheet.dart';
 
@@ -214,7 +215,7 @@ class _CartRow extends ConsumerWidget {
               border: InputBorder.none,
             ),
             onChanged: (v) {
-              final parsed = double.tryParse(v.replaceAll(',', '.').trim());
+              final parsed = parseLocaleAmount(v);
               dao.updateShoppingItem(ShoppingListItemsCompanion(
                 id: Value(item.id),
                 priceActual: Value(parsed),

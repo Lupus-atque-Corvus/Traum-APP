@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/providers/repository_providers.dart';
 import '../../core/theme/colors.dart';
+import '../../core/utils/validators.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'budget_helpers.dart';
@@ -579,9 +580,7 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
           ),
           TextButton(
             onPressed: () {
-              final a =
-                  double.tryParse(ctrl.text.trim().replaceAll(',', '.')) ??
-                      0;
+              final a = parseLocaleAmount(ctrl.text) ?? 0;
               if (a > 0) widget.onPay(a);
               Navigator.pop(ctx);
             },
@@ -641,9 +640,7 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
                   ),
                   onPressed: () {
                     final d = desc.text.trim();
-                    final a = double.tryParse(
-                            price.text.trim().replaceAll(',', '.')) ??
-                        0;
+                    final a = parseLocaleAmount(price.text) ?? 0;
                     if (d.isEmpty || a <= 0) return;
                     final repo = ref.read(budgetRepositoryProvider);
                     if (item == null) {

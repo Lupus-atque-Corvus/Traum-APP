@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/components/components.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
+import '../../core/utils/validators.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'cycle_enums.dart';
@@ -66,7 +67,7 @@ class _DailyLogSheetState extends State<DailyLogSheet> {
 
   Future<void> _save() async {
     setState(() => _saving = true);
-    final bbt = double.tryParse(_bbtCtrl.text.replaceAll(',', '.'));
+    final bbt = parseLocaleAmount(_bbtCtrl.text);
     await widget.onSave(DailyLogsCompanion(
       logDate: Value(DateTime(widget.date.year, widget.date.month, widget.date.day)),
       mood: Value(_mood),

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../core/utils/search_debouncer.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'budget_category_icons.dart';
@@ -22,6 +23,38 @@ class TransactionListScreen extends ConsumerStatefulWidget {
 
 class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
   String _filter = 'all';
+  final _searchCtrl = TextEditingController();
+  String _search = '';
+  final _searchDebounce = SearchDebouncer();
+
+  @override
+  void dispose() {
+    _searchDebounce.dispose();
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    _searchDebounce(value, (settled) {
+      if (mounted) setState(() => _search = settled);
+    });
+  }
+
+  List<Transaction> _applySearch(
+      List<Transaction> list, List<BudgetCategory> categories) {
+    final q = _search.trim().toLowerCase();
+    if (q.isEmpty) return list;
+    return list.where((t) {
+      if (t.description.toLowerCase().contains(q)) return true;
+      if (t.note?.toLowerCase().contains(q) ?? false) return true;
+      final cat = t.categoryId != null
+          ? categories.cast<BudgetCategory?>().firstWhere(
+              (c) => c?.id == t.categoryId,
+              orElse: () => null)
+          : null;
+      return cat?.name.toLowerCase().contains(q) ?? false;
+    }).toList();
+  }
 
   Future<void> _deleteWithUndo(Transaction t) async {
     await ref.read(budgetDaoProvider).deleteTransaction(t.id);
@@ -86,6 +119,34 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
       body: Column(
         children: [
           BudgetSubHeader(title: AppLocalizations.of(context)!.allTransactions),
+          // Search field
+          Padding(
+            padding: EdgeInsets.fromLTRB(bs(16), 0, bs(16), bs(8)),
+            child: TextField(
+              controller: _searchCtrl,
+              onChanged: _onSearchChanged,
+              style: const TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                  fontSize: 13),
+              decoration: InputDecoration(
+                isDense: true,
+                hintText: AppLocalizations.of(context)!.searchHint,
+                hintStyle: const TextStyle(
+                    color: TraumColors.onBackgroundSubtle,
+                    fontFamily: 'DMSans'),
+                prefixIcon: const Icon(Icons.search_rounded,
+                    color: TraumColors.onBackgroundSubtle, size: 18),
+                filled: true,
+                fillColor: TraumColors.surfaceVariant,
+                contentPadding: EdgeInsets.symmetric(vertical: bs(10)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(bs(12)),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+          ),
           // Filter chips
           Padding(
             padding: EdgeInsets.symmetric(horizontal: bs(16), vertical: bs(8)),
@@ -117,12 +178,13 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
           Expanded(
             child: txAsync.when(
               data: (allTx) {
-                final filtered = _filter == 'all'
+                final typeFiltered = _filter == 'all'
                     ? allTx
                     : allTx.where((t) => t.type == _filter).toList();
 
                 return categoriesAsync.when(
                   data: (categories) {
+                    final filtered = _applySearch(typeFiltered, categories);
                     if (filtered.isEmpty) {
                       return Center(
                         child: Column(
@@ -135,7 +197,10 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                             ),
                             SizedBox(height: bs(12)),
                             Text(
-                              AppLocalizations.of(context)!.noTransactions,
+                              _search.trim().isEmpty
+                                  ? AppLocalizations.of(context)!.noTransactions
+                                  : AppLocalizations.of(context)!
+                                      .noResultsForQuery(_search.trim()),
                               style: const TextStyle(
                                 color: TraumColors.onBackgroundMuted,
                                 fontFamily: 'DMSans',

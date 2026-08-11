@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../core/utils/validators.dart';
 import '../../data/database/traum_database.dart';
 import 'nutrition_providers.dart';
 
@@ -37,8 +38,7 @@ class _AmountEntrySheetState
   }
 
   void _onAmountChanged(String v) {
-    final parsed =
-        double.tryParse(v.replaceAll(',', '.')) ?? 0;
+    final parsed = parseLocaleAmount(v) ?? 0;
     setState(() => _grams = parsed);
   }
 

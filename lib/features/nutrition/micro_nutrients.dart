@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import '../../core/utils/validators.dart';
+
 /// Metadaten zu einem getrackten Nährstoff.
 class NutrientMeta {
   final String key;
@@ -153,7 +155,7 @@ MicroNutrients supplementContribution({
   if (nutrientKey == null || dosageAmount == null || dosageUnit == null) {
     return MicroNutrients.empty;
   }
-  final amount = double.tryParse(dosageAmount.replaceAll(',', '.'));
+  final amount = parseLocaleAmount(dosageAmount);
   if (amount == null) return MicroNutrients.empty;
   final value = normalizeDose(amount, dosageUnit, nutrientKey);
   if (value == null) return MicroNutrients.empty;

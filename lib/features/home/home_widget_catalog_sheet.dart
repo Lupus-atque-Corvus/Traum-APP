@@ -3,12 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 import 'home_layout_provider.dart';
 import 'home_tile.dart';
 import 'home_widget_registry.dart';
 
 /// Öffnet das Katalog-Bottom-Sheet zum Hinzufügen neuer Home-Widgets.
-Future<void> showHomeWidgetCatalog(BuildContext context, WidgetRef ref) {
+Future<void> showHomeWidgetCatalog(BuildContext context) {
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -16,20 +17,18 @@ Future<void> showHomeWidgetCatalog(BuildContext context, WidgetRef ref) {
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
-    builder: (_) => _HomeWidgetCatalog(ref: ref),
+    builder: (_) => const _HomeWidgetCatalog(),
   );
 }
 
-class _HomeWidgetCatalog extends StatefulWidget {
-  const _HomeWidgetCatalog({required this.ref});
-
-  final WidgetRef ref;
+class _HomeWidgetCatalog extends ConsumerStatefulWidget {
+  const _HomeWidgetCatalog();
 
   @override
-  State<_HomeWidgetCatalog> createState() => _HomeWidgetCatalogState();
+  ConsumerState<_HomeWidgetCatalog> createState() => _HomeWidgetCatalogState();
 }
 
-class _HomeWidgetCatalogState extends State<_HomeWidgetCatalog> {
+class _HomeWidgetCatalogState extends ConsumerState<_HomeWidgetCatalog> {
   String _query = '';
 
   String _sizeHint(HomeTileSize size) => switch (size) {
@@ -42,8 +41,7 @@ class _HomeWidgetCatalogState extends State<_HomeWidgetCatalog> {
 
   @override
   Widget build(BuildContext context) {
-    final periodEnabled =
-        widget.ref.read(isPeriodTrackingEnabledProvider) == true;
+    final periodEnabled = ref.watch(isPeriodTrackingEnabledProvider) == true;
     final q = _query.trim().toLowerCase();
 
     final viewInsets = MediaQuery.of(context).viewInsets.bottom;
@@ -68,11 +66,11 @@ class _HomeWidgetCatalogState extends State<_HomeWidgetCatalog> {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 16, 20, 8),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
               child: Text(
-                'Widget hinzufügen',
-                style: TextStyle(
+                AppLocalizations.of(context)!.addWidgetTitle,
+                style: const TextStyle(
                   color: TraumColors.onBackground,
                   fontFamily: 'DMSans',
                   fontSize: 20,
@@ -88,7 +86,7 @@ class _HomeWidgetCatalogState extends State<_HomeWidgetCatalog> {
                     color: TraumColors.onBackground, fontFamily: 'DMSans'),
                 onChanged: (v) => setState(() => _query = v),
                 decoration: InputDecoration(
-                  hintText: 'Suchen…',
+                  hintText: AppLocalizations.of(context)!.searchHint,
                   hintStyle:
                       const TextStyle(color: TraumColors.onBackgroundMuted),
                   prefixIcon: const Icon(Icons.search,
@@ -164,7 +162,7 @@ class _HomeWidgetCatalogState extends State<_HomeWidgetCatalog> {
   }
 
   void _add(HomeWidgetType type) {
-    widget.ref.read(homeLayoutProvider.notifier).add(type);
+    ref.read(homeLayoutProvider.notifier).add(type);
     Navigator.pop(context);
   }
 }

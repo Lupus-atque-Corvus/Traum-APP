@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
 import '../../../data/database/traum_database.dart';
+import '../../../l10n/app_localizations.dart';
 
 class DiaryEntryCard extends StatelessWidget {
   final DiaryEntry entry;
@@ -10,6 +11,7 @@ class DiaryEntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final thumbPath =
         entry.mediaType == 'video' ? entry.thumbnailPath : entry.mediaPath;
     return GestureDetector(
@@ -43,7 +45,7 @@ class DiaryEntryCard extends StatelessWidget {
               bottom: 6,
               left: 6,
               child: Text(
-                _shortDate(entry.date),
+                _shortDate(entry.date, l10n),
                 style: const TextStyle(
                   fontFamily: 'DMSans',
                   fontSize: 11,
@@ -59,11 +61,15 @@ class DiaryEntryCard extends StatelessWidget {
     );
   }
 
-  String _shortDate(String dateStr) {
+  String _shortDate(String dateStr, AppLocalizations l10n) {
     final d = DateTime.tryParse(dateStr);
     if (d == null) return dateStr;
-    const months = ['Jan','Feb','Mär','Apr','Mai','Jun',
-        'Jul','Aug','Sep','Okt','Nov','Dez'];
+    final months = [
+      l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
+      l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
+      l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
+      l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
+    ];
     return '${d.day}. ${months[d.month - 1]}';
   }
 }

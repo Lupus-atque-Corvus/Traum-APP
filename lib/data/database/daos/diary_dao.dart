@@ -91,6 +91,17 @@ class DiaryDao extends DatabaseAccessor<TraumDatabase> with _$DiaryDaoMixin {
         DiaryEntriesCompanion(thumbnailPath: Value(thumbnailPath)),
       );
 
+  /// Volltextsuche über die Notiz jedes Eintrags eines Tagebuchs (neueste
+  /// zuerst, auf 200 Treffer begrenzt — analog zum Limit-Muster anderer
+  /// Such-DAOs im Projekt, z.B. `MapMarkersDao.search()`).
+  Future<List<DiaryEntry>> searchEntries(int diaryId, String query) =>
+      (select(diaryEntries)
+            ..where((t) =>
+                t.diaryId.equals(diaryId) & t.note.like('%$query%'))
+            ..orderBy([(t) => OrderingTerm.desc(t.date)])
+            ..limit(200))
+          .get();
+
   Future<List<String>> getDatesLastYear(int diaryId) {
     final yearAgo = DateTime.now().subtract(const Duration(days: 365));
     return (select(diaryEntries)

@@ -70,6 +70,16 @@ final recentDiaryEntriesProvider = FutureProvider.autoDispose
   return ref.watch(diaryRepositoryProvider).getRecentEntries(diaryId, days);
 });
 
+/// Volltextsuche über die Notiz-Einträge des aktiven Tagebuchs. Lädt nur
+/// bei nicht-leerer Query (siehe `diarySearchScreen.dart`), damit ein
+/// leeres Suchfeld keine unnötige Abfrage auslöst.
+final diarySearchResultsProvider = FutureProvider.autoDispose
+    .family<List<DiaryEntry>, (int, String)>((ref, params) {
+  final (diaryId, query) = params;
+  if (query.trim().isEmpty) return Future.value(const <DiaryEntry>[]);
+  return ref.watch(diaryRepositoryProvider).searchEntries(diaryId, query);
+});
+
 int _calculateStreak(List<String> sortedDates) {
   if (sortedDates.isEmpty) return 0;
   int streak = 0;

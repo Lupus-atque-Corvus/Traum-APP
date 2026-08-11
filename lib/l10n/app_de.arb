@@ -1152,6 +1152,7 @@
   "homeWidgetQuickAccess": "Schnellzugriff",
   "homeWidgetDailyOverview": "Tagesübersicht",
   "homeWidgetCalendar": "Kalender",
+  "addWidgetTitle": "Widget hinzufügen",
   "weatherClear": "Klar",
   "weatherCloudy": "Bewölkt",
   "weatherFoggy": "Neblig",

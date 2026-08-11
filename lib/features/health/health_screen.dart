@@ -8,6 +8,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
+import '../../core/utils/validators.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'health_score_provider.dart';
@@ -1155,7 +1156,7 @@ class _WeightTab extends ConsumerWidget {
               child: Text(AppLocalizations.of(ctx)!.cancel, style: const TextStyle(color: TraumColors.onBackgroundMuted))),
           TextButton(
             onPressed: () async {
-              final v = double.tryParse(ctrl.text.replaceAll(',', '.'));
+              final v = parseLocaleAmount(ctrl.text);
               if (v != null && v > 0) {
                 await ref.read(healthDaoProvider).insertWeightLog(
                   WeightLogsCompanion.insert(weightKg: v, logDate: DateTime.now()),
@@ -1301,7 +1302,7 @@ class _AddMeasurementSheetState extends State<_AddMeasurementSheet> {
     super.dispose();
   }
 
-  double? _parse(String key) => double.tryParse(_controllers[key]!.text.replaceAll(',', '.'));
+  double? _parse(String key) => parseLocaleAmount(_controllers[key]!.text);
 
   @override
   Widget build(BuildContext context) {

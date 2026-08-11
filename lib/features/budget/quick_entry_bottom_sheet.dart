@@ -8,6 +8,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
+import '../../core/utils/validators.dart';
 import '../../data/database/traum_database.dart';
 import '../../data/services/recurring_poster.dart';
 import '../../l10n/app_localizations.dart';
@@ -95,7 +96,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
 
   double? get _parsedAmount {
     if (_numpadValue.isEmpty) return null;
-    return double.tryParse(_numpadValue.replaceAll(',', '.'));
+    return parseLocaleAmount(_numpadValue);
   }
 
   String _formatDisplay(String raw) {

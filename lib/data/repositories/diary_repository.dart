@@ -38,4 +38,6 @@ class DiaryRepository {
   Future<int> getTotalCount(int diaryId) => _entriesDao.getTotalCount(diaryId);
   Future<List<String>> getDatesLastYear(int diaryId) =>
       _entriesDao.getDatesLastYear(diaryId);
+  Future<List<DiaryEntry>> searchEntries(int diaryId, String query) =>
+      _entriesDao.searchEntries(diaryId, query);
 }
