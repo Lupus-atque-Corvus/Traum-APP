@@ -248,6 +248,36 @@
   "seconds": "Sekunden",
   "allDataOnDevice": "Alle Daten bleiben auf deinem Gerät.",
   "startWorkout": "Workout starten",
+  "newWorkoutTitle": "Neues Workout",
+  "setTypeNormal": "Normaler Satz",
+  "setTypeWarmup": "Aufwärmsatz",
+  "setTypeDrop": "Drop-Satz",
+  "setTypeFailure": "Bis zum Muskelversagen",
+  "lastWorkoutMinutesAgo": "Letztes Training vor {minutes} Min.",
+  "@lastWorkoutMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "lastWorkoutHoursAgo": "Letztes Training vor {hours} Std.",
+  "@lastWorkoutHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "lastWorkoutYesterday": "Letztes Training gestern",
+  "lastWorkoutDaysAgo": "Letztes Training vor {days} Tagen",
+  "@lastWorkoutDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "income": "Einnahmen",
   "expense": "Ausgaben",
   "balance": "Saldo",
@@ -1103,6 +1133,82 @@
   "exercises": "Übungen",
   "volumeKg": "Volumen (kg)",
   "createExercise": "Übung erstellen",
+  "deleteExercise": "Übung löschen",
+  "similarExercises": "Ähnliche Übungen",
+  "timesPerformed": "Ausgeführt",
+  "totalDurationLabel": "Gesamtdauer",
+  "totalVolumeLabel": "Gesamtvolumen",
+  "mostRecent": "Zuletzt",
+  "average": "Durchschnitt",
+  "removeBookmarkAction": "Lesezeichen entfernen",
+  "addBookmarkAction": "Als Lesezeichen",
+  "exerciseFeedbackPrompt": "Hast du Tipps zu dieser Übung?",
+  "selectCalendars": "Kalender auswählen",
+  "noCalendarsFoundHint": "Keine Kalender gefunden.\nBitte schließe den Planner und öffne ihn erneut.",
+  "iconLabel": "Icon",
+  "homeWidgetClock": "Uhr",
+  "homeWidgetWeather": "Wetter",
+  "homeWidgetApps": "Apps",
+  "homeWidgetQuickAccess": "Schnellzugriff",
+  "homeWidgetDailyOverview": "Tagesübersicht",
+  "homeWidgetCalendar": "Kalender",
+  "weatherClear": "Klar",
+  "weatherCloudy": "Bewölkt",
+  "weatherFoggy": "Neblig",
+  "weatherRain": "Regen",
+  "weatherSnow": "Schnee",
+  "weatherShowers": "Schauer",
+  "weatherThunderstorm": "Gewitter",
+  "noFavoriteApps": "Keine Favoriten",
+  "appSingular": "App",
+  "appPlural": "Apps",
+  "quickActionNote": "Notiz",
+  "quickActionPhoto": "Foto",
+  "quickActionExpense": "Ausgabe",
+  "pointCameraAtBarcode": "Halte die Kamera auf den Barcode",
+  "fetchingProduct": "Produkt wird abgefragt...",
+  "manualEntry": "Manuell",
+  "newCustomProductTitle": "Neues Produkt anlegen",
+  "productNameLabel": "Name *",
+  "productNameHint": "z.B. Hausgemachte Bolognese",
+  "brandOptionalLabel": "Marke (optional)",
+  "brandOptionalHint": "z.B. Selbst gekocht",
+  "nutrientsPer100g": "Nährwerte pro 100g",
+  "caloriesKcalLabel": "Kalorien (kcal)",
+  "proteinGramLabel": "Protein (g)",
+  "carbsGramLabel": "Kohlenhydrate (g)",
+  "fatGramLabel": "Fett (g)",
+  "loadingCalendars": "Lade Kalender…",
+  "noCalendarSelected": "Kein Kalender ausgewählt",
+  "calendarsSelectedCount": "{count} Kalender ausgewählt",
+  "@calendarsSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncedCalendarsTitle": "Synchronisierte Kalender",
+  "noModulesSelectedError": "Keine Module ausgewählt",
+  "sendFeedbackTitle": "Feedback senden",
+  "feedbackHelpText": "Dein Feedback hilft TRAUM besser zu machen.",
+  "feedbackTypeLabel": "TYP",
+  "shortTitleLabel": "KURZTITEL",
+  "feedbackTitleHintBug": "z.B. \"Wasser-Tracking aktualisiert nicht\"",
+  "feedbackTitleHintFeature": "z.B. \"Darkmode für Widgets\"",
+  "feedbackTitleHintImprovement": "z.B. \"Tipp-Fehler im Onboarding\"",
+  "descriptionSectionLabel": "BESCHREIBUNG",
+  "feedbackDescHintBug": "Beschreibe was passiert ist und wie man es reproduzieren kann...",
+  "feedbackDescHintOther": "Beschreibe deine Idee oder den gewünschten Verbesserungsvorschlag...",
+  "feedbackSystemInfoDisclaimer": "Systemdaten (App-Version, Android-Version, Gerät) werden automatisch angehängt.",
+  "openGitHubAndSubmit": "GitHub öffnen & absenden",
+  "githubSubmitFooter": "Öffnet GitHub im Browser. Ein GitHub-Account ist zum Absenden nötig.",
+  "feedbackTypeBug": "Bug",
+  "feedbackTypeFeature": "Feature",
+  "feedbackTypeImprovement": "Verbesserung",
+  "weatherLocationNeededTitle": "Standortzugriff benötigt",
+  "weatherLocationNeededContent": "TRAUM benötigt deinen Standort, um das aktuelle Wetter auf der Startseite anzuzeigen.\n\nBitte erlaube den Standortzugriff in den Systemeinstellungen.",
+  "continueWithoutWeather": "Ohne Wetter fortfahren",
   "medium": "Mittel",
   "noExercises": "Noch keine Übungen",
   "wizardSkip": "Überspringen",
@@ -1236,6 +1342,81 @@
   "budgetTypeTransfer": "Umbuchen",
   "addTransaction": "Buchung hinzufügen",
   "addDebt": "Schuld hinzufügen",
+  "debtsScreenTitle": "Schulden",
+  "noDebtsRecorded": "Keine Schulden erfasst",
+  "creditorLabel": "Gläubiger *",
+  "creditorHint": "z.B. Bank",
+  "totalOpenDebts": "Offene Schulden gesamt",
+  "payInstallment": "Rate zahlen",
+  "ok": "OK",
+  "primaryAccount": "Hauptkonto",
+  "returnRateLabel": "Rendite: {rate}%",
+  "@returnRateLabel": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteAccountConfirmTitle": "Konto löschen?",
+  "deleteAccountConfirmContent": "„{name}\" wird entfernt. Bereits erfasste Transaktionen bleiben erhalten.",
+  "@deleteAccountConfirmContent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "editAccount": "Konto bearbeiten",
+  "addAccount": "Konto hinzufügen",
+  "accountTypeChecking": "Girokonto",
+  "accountTypeSavings": "Sparkonto",
+  "accountTypeCredit": "Kreditkarte",
+  "accountTypeInvestment": "Investment",
+  "accountNameLabel": "Name *",
+  "accountNameHint": "z.B. Girokonto",
+  "bankInstitutionLabel": "Bank / Institut",
+  "bankInstitutionHint": "z.B. Sparkasse",
+  "accountBalanceLabel": "Kontostand *",
+  "lastFourDigitsLabel": "Letzte 4 Stellen",
+  "returnRatePercentLabel": "Rendite %",
+  "markAsPrimaryAccount": "Als Hauptkonto markieren",
+  "deleteAccountButton": "Konto löschen",
+  "recurringScreenTitle": "Wiederkehrend",
+  "noRecurringTransactions": "Keine wiederkehrenden Buchungen",
+  "monthlyIncome": "Monatliche Einnahmen",
+  "monthlyExpenses": "Monatliche Ausgaben",
+  "recurringDayOfMonth": "Jeden {day}. im Monat",
+  "@recurringDayOfMonth": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "editRecurringTitle": "Wiederkehrend bearbeiten",
+  "budgetAmountWithCurrencyLabel": "Betrag ({currency})",
+  "@budgetAmountWithCurrencyLabel": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "descriptionLabel": "Beschreibung",
+  "budgetOtherCategory": "Sonstiges",
+  "expensesByCategoryLabel": "Ausgaben nach Kategorie · {month}",
+  "@expensesByCategoryLabel": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "total": "Gesamt",
+  "monthlyOverview": "Monatliche Übersicht",
+  "transactionDeleted": "Transaktion gelöscht",
+  "undo": "Rückgängig",
   "budgetCategoriesScreenTitle": "Budget-Kategorien",
   "budgetNoCategoriesHint": "Noch keine Kategorien.\nTippe auf + um eine anzulegen.",
   "budgetDeleteCategoryConfirm": "Kategorie löschen?",

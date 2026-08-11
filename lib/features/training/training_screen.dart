@@ -187,10 +187,12 @@ class TrainingScreen extends ConsumerWidget {
 
   String _lastWorkoutLabel(DateTime dt, AppLocalizations l10n) {
     final diff = DateTime.now().difference(dt);
-    if (diff.inMinutes < 60) return 'Last workout ${diff.inMinutes} min ago';
-    if (diff.inHours < 24) return 'Last workout ${diff.inHours}h ago';
-    if (diff.inDays == 1) return 'Last workout yesterday';
-    return 'Last workout ${diff.inDays} days ago';
+    if (diff.inMinutes < 60) {
+      return l10n.lastWorkoutMinutesAgo(diff.inMinutes);
+    }
+    if (diff.inHours < 24) return l10n.lastWorkoutHoursAgo(diff.inHours);
+    if (diff.inDays == 1) return l10n.lastWorkoutYesterday;
+    return l10n.lastWorkoutDaysAgo(diff.inDays);
   }
 }
 

@@ -39,7 +39,8 @@ const List<Color> _kDonutColors = [
 ];
 
 List<DonutSlice> buildDonutSlices(
-    Map<int, double> spendingByCategory, List<BudgetCategory> cats) {
+    Map<int, double> spendingByCategory, List<BudgetCategory> cats,
+    {required String otherLabel}) {
   if (spendingByCategory.isEmpty) return [];
 
   final total = spendingByCategory.values.fold(0.0, (s, v) => s + v);
@@ -56,7 +57,7 @@ List<DonutSlice> buildDonutSlices(
           (c) => c?.id == e.key,
           orElse: () => null,
         );
-    final name = cat?.name ?? 'Sonstiges';
+    final name = cat?.name ?? otherLabel;
     return DonutSlice(
       color: _kDonutColors[i % _kDonutColors.length],
       fraction: e.value / total,
@@ -170,9 +171,12 @@ class _StatsBody extends StatelessWidget {
         .fold(0.0, (s, t) => s + t.amount);
 
     // Current month label for donut title
-    const monthNames = [
-      'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez',
+    final l10nMonths = AppLocalizations.of(context)!;
+    final monthNames = [
+      l10nMonths.monthShortJan, l10nMonths.monthShortFeb, l10nMonths.monthShortMar,
+      l10nMonths.monthShortApr, l10nMonths.monthShortMay, l10nMonths.monthShortJun,
+      l10nMonths.monthShortJul, l10nMonths.monthShortAug, l10nMonths.monthShortSep,
+      l10nMonths.monthShortOct, l10nMonths.monthShortNov, l10nMonths.monthShortDec,
     ];
     final currentMonthLabel = monthNames[now.month - 1];
 
@@ -188,7 +192,8 @@ class _StatsBody extends StatelessWidget {
       }
     }
 
-    final donutSlices = buildDonutSlices(donutSpendingByCategory, categories);
+    final donutSlices = buildDonutSlices(donutSpendingByCategory, categories,
+        otherLabel: AppLocalizations.of(context)!.budgetOtherCategory);
     final donutMonthTotal =
         donutSpendingByCategory.values.fold(0.0, (a, b) => a + b);
 
@@ -256,7 +261,8 @@ class _StatsBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Ausgaben nach Kategorie · $currentMonthLabel',
+                  AppLocalizations.of(context)!
+                      .expensesByCategoryLabel(currentMonthLabel),
                   style: const TextStyle(
                       color: TraumColors.onBackground,
                       fontFamily: 'DMSans',
@@ -434,9 +440,9 @@ class _CategoryDonut extends StatelessWidget {
                           fontSize: 12),
                       textAlign: TextAlign.center,
                     ),
-                    const Text(
-                      'Gesamt',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.total,
+                      style: const TextStyle(
                           color: TraumColors.onBackgroundMuted,
                           fontFamily: 'DMSans',
                           fontSize: 8),
@@ -710,9 +716,9 @@ class _MonthlyTableCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Monatliche Übersicht',
-            style: TextStyle(
+          Text(
+            l10n.monthlyOverview,
+            style: const TextStyle(
                 color: TraumColors.onBackground,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w600,
@@ -722,9 +728,9 @@ class _MonthlyTableCard extends StatelessWidget {
           // Header row
           _TableRow(
             month: '',
-            income: 'Einnahmen',
-            expense: 'Ausgaben',
-            balance: 'Bilanz',
+            income: l10n.income,
+            expense: l10n.expense,
+            balance: l10n.balance,
             isHeader: true,
             isCurrent: false,
           ),

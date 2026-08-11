@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/services/calendar_sync_service.dart' show NativeCalendar;
 import '../../core/theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Shows a multi-select calendar picker dialog.
 /// Returns the selected calendar IDs, or null if cancelled.
@@ -41,9 +42,9 @@ class _CalendarPickerDialogState extends State<_CalendarPickerDialog> {
     return AlertDialog(
       backgroundColor: TraumColors.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: const Text(
-        'Kalender auswählen',
-        style: TextStyle(
+      title: Text(
+        AppLocalizations.of(context)!.selectCalendars,
+        style: const TextStyle(
           color: TraumColors.onBackground,
           fontFamily: 'DMSans',
           fontWeight: FontWeight.w700,
@@ -51,11 +52,11 @@ class _CalendarPickerDialogState extends State<_CalendarPickerDialog> {
         ),
       ),
       content: widget.calendars.isEmpty
-          ? const Padding(
-              padding: EdgeInsets.symmetric(vertical: 12),
+          ? Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
               child: Text(
-                'Keine Kalender gefunden.\nBitte schließe den Planner und öffne ihn erneut.',
-                style: TextStyle(
+                AppLocalizations.of(context)!.noCalendarsFoundHint,
+                style: const TextStyle(
                   color: TraumColors.onBackgroundMuted,
                   fontFamily: 'DMSans',
                   fontSize: 14,
@@ -120,9 +121,9 @@ class _CalendarPickerDialogState extends State<_CalendarPickerDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, null),
-          child: const Text(
-            'Abbrechen',
-            style: TextStyle(
+          child: Text(
+            AppLocalizations.of(context)!.cancel,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
             ),
@@ -133,7 +134,7 @@ class _CalendarPickerDialogState extends State<_CalendarPickerDialog> {
               ? null
               : () => Navigator.pop(context, _selected.toList()),
           child: Text(
-            'Fertig',
+            AppLocalizations.of(context)!.done,
             style: TextStyle(
               color: _selected.isEmpty
                   ? TraumColors.onBackgroundSubtle

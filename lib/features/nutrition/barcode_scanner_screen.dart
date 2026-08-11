@@ -37,9 +37,9 @@ class _BarcodeScannerScreenState
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: const BackButton(color: Colors.white),
-        title: const Text(
-          'Barcode scannen',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context)!.a11yScanBarcode,
+          style: const TextStyle(
               fontFamily: 'DMSans', color: Colors.white),
         ),
         actions: [
@@ -66,14 +66,14 @@ class _BarcodeScannerScreenState
             ),
           ),
         ),
-        const Positioned(
+        Positioned(
           bottom: 80,
           left: 0,
           right: 0,
           child: Text(
-            'Halte die Kamera auf den Barcode',
+            AppLocalizations.of(context)!.pointCameraAtBarcode,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.white,
                 fontFamily: 'DMSans',
                 fontSize: 14),
@@ -82,16 +82,16 @@ class _BarcodeScannerScreenState
         if (_isProcessing)
           Container(
             color: Colors.black54,
-            child: const Center(
+            child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(
+                  const CircularProgressIndicator(
                       color: TraumColors.mintGreen),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
-                    'Produkt wird abgefragt...',
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.fetchingProduct,
+                    style: const TextStyle(
                         color: Colors.white,
                         fontFamily: 'DMSans'),
                   ),
@@ -132,7 +132,7 @@ class _BarcodeScannerScreenState
           content: Text(AppLocalizations.of(context)!.productNotFound),
           backgroundColor: TraumColors.surface,
           action: SnackBarAction(
-            label: 'Manuell',
+            label: AppLocalizations.of(context)!.manualEntry,
             textColor: TraumColors.mintGreen,
             onPressed: () => Navigator.pop(context),
           ),

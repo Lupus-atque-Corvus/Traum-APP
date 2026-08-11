@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 
 class DonutChart extends StatelessWidget {
   final List<DonutSection> sections;
@@ -20,10 +21,10 @@ class DonutChart extends StatelessWidget {
       return SizedBox(
         width: size,
         height: size,
-        child: const Center(
+        child: Center(
           child: Text(
-            'Keine Daten',
-            style: TextStyle(
+            AppLocalizations.of(context)!.noData,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontSize: 12,
               fontFamily: 'DMSans',

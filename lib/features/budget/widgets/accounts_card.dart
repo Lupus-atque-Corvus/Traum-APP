@@ -14,6 +14,7 @@ import '../budget_providers.dart';
 import '../budget_scale.dart';
 import 'hidden_amount.dart';
 import '../../../core/components/inline_error.dart';
+import '../../../core/components/confirm_delete_dialog.dart';
 
 class AccountsCard extends ConsumerWidget {
   const AccountsCard({super.key});
@@ -207,9 +208,9 @@ class _AccountRow extends StatelessWidget {
               ),
             ),
             if (account.isPrimary)
-              const Text(
-                'Hauptkonto',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context)!.primaryAccount,
+                style: const TextStyle(
                     fontFamily: 'DMSans',
                     color: TraumColors.mintGreen,
                     fontSize: 9),
@@ -224,7 +225,8 @@ class _AccountRow extends StatelessWidget {
               )
             else if (account.returnRate != null)
               Text(
-                'Rendite: ${account.returnRate!.toStringAsFixed(2)}%',
+                AppLocalizations.of(context)!
+                    .returnRateLabel(account.returnRate!.toStringAsFixed(2)),
                 style: const TextStyle(
                     fontFamily: 'DMSans',
                     color: TraumColors.mintGreen,
@@ -345,42 +347,11 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
   Future<void> _delete() async {
     final account = widget.account;
     if (account == null) return;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: TraumColors.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(bs(20))),
-        title: const Text('Konto löschen?',
-            style: TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackground,
-                fontWeight: FontWeight.w700,
-                fontSize: 18)),
-        content: Text(
-          '„${account.name}" wird entfernt. Bereits erfasste Transaktionen bleiben erhalten.',
-          style: const TextStyle(
-              fontFamily: 'DMSans',
-              color: TraumColors.onBackgroundMuted,
-              fontSize: 14),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Abbrechen',
-                style: TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackgroundMuted)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Löschen',
-                style: TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.roseRed,
-                    fontWeight: FontWeight.w600)),
-          ),
-        ],
-      ),
+    final confirmed = await confirmDeleteDialog(
+      context,
+      title: AppLocalizations.of(context)!.deleteAccountConfirmTitle,
+      content:
+          AppLocalizations.of(context)!.deleteAccountConfirmContent(account.name),
     );
     if (confirmed != true) return;
     await ref.read(accountsDaoProvider).deleteAccount(account.id);
@@ -402,7 +373,9 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            _isEditing ? 'Konto bearbeiten' : 'Konto hinzufügen',
+            _isEditing
+                ? AppLocalizations.of(context)!.editAccount
+                : AppLocalizations.of(context)!.addAccount,
             style: const TextStyle(
               fontFamily: 'DMSans',
               fontWeight: FontWeight.w700,
@@ -416,25 +389,26 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
             child: Row(
               children: [
                 _TypeChip(
-                    label: 'Girokonto',
+                    label: AppLocalizations.of(context)!.accountTypeChecking,
                     value: 'checking',
                     selected: _type,
                     onTap: (v) => setState(() => _type = v)),
                 SizedBox(width: bs(8)),
                 _TypeChip(
-                    label: 'Sparkonto',
+                    label: AppLocalizations.of(context)!.accountTypeSavings,
                     value: 'savings',
                     selected: _type,
                     onTap: (v) => setState(() => _type = v)),
                 SizedBox(width: bs(8)),
                 _TypeChip(
-                    label: 'Kreditkarte',
+                    label: AppLocalizations.of(context)!.accountTypeCredit,
                     value: 'credit',
                     selected: _type,
                     onTap: (v) => setState(() => _type = v)),
                 SizedBox(width: bs(8)),
                 _TypeChip(
-                    label: 'Investment',
+                    label:
+                        AppLocalizations.of(context)!.accountTypeInvestment,
                     value: 'investment',
                     selected: _type,
                     onTap: (v) => setState(() => _type = v)),
@@ -442,23 +416,26 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
             ),
           ),
           SizedBox(height: bs(12)),
-          _Field(ctrl: _nameCtrl, label: 'Name *', hint: 'z.B. Girokonto'),
+          _Field(
+              ctrl: _nameCtrl,
+              label: AppLocalizations.of(context)!.accountNameLabel,
+              hint: AppLocalizations.of(context)!.accountNameHint),
           SizedBox(height: bs(8)),
           _Field(
               ctrl: _institutionCtrl,
-              label: 'Bank / Institut',
-              hint: 'z.B. Sparkasse'),
+              label: AppLocalizations.of(context)!.bankInstitutionLabel,
+              hint: AppLocalizations.of(context)!.bankInstitutionHint),
           SizedBox(height: bs(8)),
           _Field(
               ctrl: _balanceCtrl,
-              label: 'Kontostand *',
+              label: AppLocalizations.of(context)!.accountBalanceLabel,
               hint: '0,00',
               keyboardType: TextInputType.number),
           if (_type == 'credit') ...[
             SizedBox(height: bs(8)),
             _Field(
                 ctrl: _lastFourCtrl,
-                label: 'Letzte 4 Stellen',
+                label: AppLocalizations.of(context)!.lastFourDigitsLabel,
                 hint: '1234',
                 keyboardType: TextInputType.number),
           ],
@@ -466,15 +443,15 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
             SizedBox(height: bs(8)),
             _Field(
                 ctrl: _returnRateCtrl,
-                label: 'Rendite %',
+                label: AppLocalizations.of(context)!.returnRatePercentLabel,
                 hint: '3,5',
                 keyboardType: TextInputType.number),
           ],
           SizedBox(height: bs(8)),
           Row(children: [
-            const Text(
-              'Als Hauptkonto markieren',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.markAsPrimaryAccount,
+              style: const TextStyle(
                 fontFamily: 'DMSans',
                 color: TraumColors.onBackground,
                 fontSize: 14,
@@ -507,9 +484,9 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
                       child: CircularProgressIndicator(
                           strokeWidth: bs(2), color: Colors.white),
                     )
-                  : const Text(
-                      'Speichern',
-                      style: TextStyle(
+                  : Text(
+                      AppLocalizations.of(context)!.save,
+                      style: const TextStyle(
                           fontFamily: 'DMSans',
                           fontWeight: FontWeight.w600),
                     ),
@@ -523,9 +500,9 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
                 onPressed: _saving ? null : _delete,
                 icon: Icon(Icons.delete_outline,
                     color: TraumColors.roseRed, size: bs(18)),
-                label: const Text(
-                  'Konto löschen',
-                  style: TextStyle(
+                label: Text(
+                  AppLocalizations.of(context)!.deleteAccountButton,
+                  style: const TextStyle(
                       fontFamily: 'DMSans',
                       color: TraumColors.roseRed,
                       fontWeight: FontWeight.w600),

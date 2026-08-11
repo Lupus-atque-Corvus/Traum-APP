@@ -1298,6 +1298,60 @@ abstract class AppLocalizations {
   /// **'Workout starten'**
   String get startWorkout;
 
+  /// No description provided for @newWorkoutTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Neues Workout'**
+  String get newWorkoutTitle;
+
+  /// No description provided for @setTypeNormal.
+  ///
+  /// In de, this message translates to:
+  /// **'Normaler Satz'**
+  String get setTypeNormal;
+
+  /// No description provided for @setTypeWarmup.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufwärmsatz'**
+  String get setTypeWarmup;
+
+  /// No description provided for @setTypeDrop.
+  ///
+  /// In de, this message translates to:
+  /// **'Drop-Satz'**
+  String get setTypeDrop;
+
+  /// No description provided for @setTypeFailure.
+  ///
+  /// In de, this message translates to:
+  /// **'Bis zum Muskelversagen'**
+  String get setTypeFailure;
+
+  /// No description provided for @lastWorkoutMinutesAgo.
+  ///
+  /// In de, this message translates to:
+  /// **'Letztes Training vor {minutes} Min.'**
+  String lastWorkoutMinutesAgo(int minutes);
+
+  /// No description provided for @lastWorkoutHoursAgo.
+  ///
+  /// In de, this message translates to:
+  /// **'Letztes Training vor {hours} Std.'**
+  String lastWorkoutHoursAgo(int hours);
+
+  /// No description provided for @lastWorkoutYesterday.
+  ///
+  /// In de, this message translates to:
+  /// **'Letztes Training gestern'**
+  String get lastWorkoutYesterday;
+
+  /// No description provided for @lastWorkoutDaysAgo.
+  ///
+  /// In de, this message translates to:
+  /// **'Letztes Training vor {days} Tagen'**
+  String lastWorkoutDaysAgo(int days);
+
   /// No description provided for @income.
   ///
   /// In de, this message translates to:
@@ -4652,6 +4706,420 @@ abstract class AppLocalizations {
   /// **'Übung erstellen'**
   String get createExercise;
 
+  /// No description provided for @deleteExercise.
+  ///
+  /// In de, this message translates to:
+  /// **'Übung löschen'**
+  String get deleteExercise;
+
+  /// No description provided for @similarExercises.
+  ///
+  /// In de, this message translates to:
+  /// **'Ähnliche Übungen'**
+  String get similarExercises;
+
+  /// No description provided for @timesPerformed.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausgeführt'**
+  String get timesPerformed;
+
+  /// No description provided for @totalDurationLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesamtdauer'**
+  String get totalDurationLabel;
+
+  /// No description provided for @totalVolumeLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesamtvolumen'**
+  String get totalVolumeLabel;
+
+  /// No description provided for @mostRecent.
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt'**
+  String get mostRecent;
+
+  /// No description provided for @average.
+  ///
+  /// In de, this message translates to:
+  /// **'Durchschnitt'**
+  String get average;
+
+  /// No description provided for @removeBookmarkAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Lesezeichen entfernen'**
+  String get removeBookmarkAction;
+
+  /// No description provided for @addBookmarkAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Als Lesezeichen'**
+  String get addBookmarkAction;
+
+  /// No description provided for @exerciseFeedbackPrompt.
+  ///
+  /// In de, this message translates to:
+  /// **'Hast du Tipps zu dieser Übung?'**
+  String get exerciseFeedbackPrompt;
+
+  /// No description provided for @selectCalendars.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalender auswählen'**
+  String get selectCalendars;
+
+  /// No description provided for @noCalendarsFoundHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Kalender gefunden.\nBitte schließe den Planner und öffne ihn erneut.'**
+  String get noCalendarsFoundHint;
+
+  /// No description provided for @iconLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Icon'**
+  String get iconLabel;
+
+  /// No description provided for @homeWidgetClock.
+  ///
+  /// In de, this message translates to:
+  /// **'Uhr'**
+  String get homeWidgetClock;
+
+  /// No description provided for @homeWidgetWeather.
+  ///
+  /// In de, this message translates to:
+  /// **'Wetter'**
+  String get homeWidgetWeather;
+
+  /// No description provided for @homeWidgetApps.
+  ///
+  /// In de, this message translates to:
+  /// **'Apps'**
+  String get homeWidgetApps;
+
+  /// No description provided for @homeWidgetQuickAccess.
+  ///
+  /// In de, this message translates to:
+  /// **'Schnellzugriff'**
+  String get homeWidgetQuickAccess;
+
+  /// No description provided for @homeWidgetDailyOverview.
+  ///
+  /// In de, this message translates to:
+  /// **'Tagesübersicht'**
+  String get homeWidgetDailyOverview;
+
+  /// No description provided for @homeWidgetCalendar.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalender'**
+  String get homeWidgetCalendar;
+
+  /// No description provided for @weatherClear.
+  ///
+  /// In de, this message translates to:
+  /// **'Klar'**
+  String get weatherClear;
+
+  /// No description provided for @weatherCloudy.
+  ///
+  /// In de, this message translates to:
+  /// **'Bewölkt'**
+  String get weatherCloudy;
+
+  /// No description provided for @weatherFoggy.
+  ///
+  /// In de, this message translates to:
+  /// **'Neblig'**
+  String get weatherFoggy;
+
+  /// No description provided for @weatherRain.
+  ///
+  /// In de, this message translates to:
+  /// **'Regen'**
+  String get weatherRain;
+
+  /// No description provided for @weatherSnow.
+  ///
+  /// In de, this message translates to:
+  /// **'Schnee'**
+  String get weatherSnow;
+
+  /// No description provided for @weatherShowers.
+  ///
+  /// In de, this message translates to:
+  /// **'Schauer'**
+  String get weatherShowers;
+
+  /// No description provided for @weatherThunderstorm.
+  ///
+  /// In de, this message translates to:
+  /// **'Gewitter'**
+  String get weatherThunderstorm;
+
+  /// No description provided for @noFavoriteApps.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Favoriten'**
+  String get noFavoriteApps;
+
+  /// No description provided for @appSingular.
+  ///
+  /// In de, this message translates to:
+  /// **'App'**
+  String get appSingular;
+
+  /// No description provided for @appPlural.
+  ///
+  /// In de, this message translates to:
+  /// **'Apps'**
+  String get appPlural;
+
+  /// No description provided for @quickActionNote.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz'**
+  String get quickActionNote;
+
+  /// No description provided for @quickActionPhoto.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto'**
+  String get quickActionPhoto;
+
+  /// No description provided for @quickActionExpense.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausgabe'**
+  String get quickActionExpense;
+
+  /// No description provided for @pointCameraAtBarcode.
+  ///
+  /// In de, this message translates to:
+  /// **'Halte die Kamera auf den Barcode'**
+  String get pointCameraAtBarcode;
+
+  /// No description provided for @fetchingProduct.
+  ///
+  /// In de, this message translates to:
+  /// **'Produkt wird abgefragt...'**
+  String get fetchingProduct;
+
+  /// No description provided for @manualEntry.
+  ///
+  /// In de, this message translates to:
+  /// **'Manuell'**
+  String get manualEntry;
+
+  /// No description provided for @newCustomProductTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Neues Produkt anlegen'**
+  String get newCustomProductTitle;
+
+  /// No description provided for @productNameLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Name *'**
+  String get productNameLabel;
+
+  /// No description provided for @productNameHint.
+  ///
+  /// In de, this message translates to:
+  /// **'z.B. Hausgemachte Bolognese'**
+  String get productNameHint;
+
+  /// No description provided for @brandOptionalLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Marke (optional)'**
+  String get brandOptionalLabel;
+
+  /// No description provided for @brandOptionalHint.
+  ///
+  /// In de, this message translates to:
+  /// **'z.B. Selbst gekocht'**
+  String get brandOptionalHint;
+
+  /// No description provided for @nutrientsPer100g.
+  ///
+  /// In de, this message translates to:
+  /// **'Nährwerte pro 100g'**
+  String get nutrientsPer100g;
+
+  /// No description provided for @caloriesKcalLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalorien (kcal)'**
+  String get caloriesKcalLabel;
+
+  /// No description provided for @proteinGramLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Protein (g)'**
+  String get proteinGramLabel;
+
+  /// No description provided for @carbsGramLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Kohlenhydrate (g)'**
+  String get carbsGramLabel;
+
+  /// No description provided for @fatGramLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Fett (g)'**
+  String get fatGramLabel;
+
+  /// No description provided for @loadingCalendars.
+  ///
+  /// In de, this message translates to:
+  /// **'Lade Kalender…'**
+  String get loadingCalendars;
+
+  /// No description provided for @noCalendarSelected.
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Kalender ausgewählt'**
+  String get noCalendarSelected;
+
+  /// No description provided for @calendarsSelectedCount.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} Kalender ausgewählt'**
+  String calendarsSelectedCount(int count);
+
+  /// No description provided for @syncedCalendarsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Synchronisierte Kalender'**
+  String get syncedCalendarsTitle;
+
+  /// No description provided for @noModulesSelectedError.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Module ausgewählt'**
+  String get noModulesSelectedError;
+
+  /// No description provided for @sendFeedbackTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Feedback senden'**
+  String get sendFeedbackTitle;
+
+  /// No description provided for @feedbackHelpText.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Feedback hilft TRAUM besser zu machen.'**
+  String get feedbackHelpText;
+
+  /// No description provided for @feedbackTypeLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'TYP'**
+  String get feedbackTypeLabel;
+
+  /// No description provided for @shortTitleLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'KURZTITEL'**
+  String get shortTitleLabel;
+
+  /// No description provided for @feedbackTitleHintBug.
+  ///
+  /// In de, this message translates to:
+  /// **'z.B. \"Wasser-Tracking aktualisiert nicht\"'**
+  String get feedbackTitleHintBug;
+
+  /// No description provided for @feedbackTitleHintFeature.
+  ///
+  /// In de, this message translates to:
+  /// **'z.B. \"Darkmode für Widgets\"'**
+  String get feedbackTitleHintFeature;
+
+  /// No description provided for @feedbackTitleHintImprovement.
+  ///
+  /// In de, this message translates to:
+  /// **'z.B. \"Tipp-Fehler im Onboarding\"'**
+  String get feedbackTitleHintImprovement;
+
+  /// No description provided for @descriptionSectionLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'BESCHREIBUNG'**
+  String get descriptionSectionLabel;
+
+  /// No description provided for @feedbackDescHintBug.
+  ///
+  /// In de, this message translates to:
+  /// **'Beschreibe was passiert ist und wie man es reproduzieren kann...'**
+  String get feedbackDescHintBug;
+
+  /// No description provided for @feedbackDescHintOther.
+  ///
+  /// In de, this message translates to:
+  /// **'Beschreibe deine Idee oder den gewünschten Verbesserungsvorschlag...'**
+  String get feedbackDescHintOther;
+
+  /// No description provided for @feedbackSystemInfoDisclaimer.
+  ///
+  /// In de, this message translates to:
+  /// **'Systemdaten (App-Version, Android-Version, Gerät) werden automatisch angehängt.'**
+  String get feedbackSystemInfoDisclaimer;
+
+  /// No description provided for @openGitHubAndSubmit.
+  ///
+  /// In de, this message translates to:
+  /// **'GitHub öffnen & absenden'**
+  String get openGitHubAndSubmit;
+
+  /// No description provided for @githubSubmitFooter.
+  ///
+  /// In de, this message translates to:
+  /// **'Öffnet GitHub im Browser. Ein GitHub-Account ist zum Absenden nötig.'**
+  String get githubSubmitFooter;
+
+  /// No description provided for @feedbackTypeBug.
+  ///
+  /// In de, this message translates to:
+  /// **'Bug'**
+  String get feedbackTypeBug;
+
+  /// No description provided for @feedbackTypeFeature.
+  ///
+  /// In de, this message translates to:
+  /// **'Feature'**
+  String get feedbackTypeFeature;
+
+  /// No description provided for @feedbackTypeImprovement.
+  ///
+  /// In de, this message translates to:
+  /// **'Verbesserung'**
+  String get feedbackTypeImprovement;
+
+  /// No description provided for @weatherLocationNeededTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Standortzugriff benötigt'**
+  String get weatherLocationNeededTitle;
+
+  /// No description provided for @weatherLocationNeededContent.
+  ///
+  /// In de, this message translates to:
+  /// **'TRAUM benötigt deinen Standort, um das aktuelle Wetter auf der Startseite anzuzeigen.\n\nBitte erlaube den Standortzugriff in den Systemeinstellungen.'**
+  String get weatherLocationNeededContent;
+
+  /// No description provided for @continueWithoutWeather.
+  ///
+  /// In de, this message translates to:
+  /// **'Ohne Wetter fortfahren'**
+  String get continueWithoutWeather;
+
   /// No description provided for @medium.
   ///
   /// In de, this message translates to:
@@ -5197,6 +5665,246 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Schuld hinzufügen'**
   String get addDebt;
+
+  /// No description provided for @debtsScreenTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Schulden'**
+  String get debtsScreenTitle;
+
+  /// No description provided for @noDebtsRecorded.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Schulden erfasst'**
+  String get noDebtsRecorded;
+
+  /// No description provided for @creditorLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Gläubiger *'**
+  String get creditorLabel;
+
+  /// No description provided for @creditorHint.
+  ///
+  /// In de, this message translates to:
+  /// **'z.B. Bank'**
+  String get creditorHint;
+
+  /// No description provided for @totalOpenDebts.
+  ///
+  /// In de, this message translates to:
+  /// **'Offene Schulden gesamt'**
+  String get totalOpenDebts;
+
+  /// No description provided for @payInstallment.
+  ///
+  /// In de, this message translates to:
+  /// **'Rate zahlen'**
+  String get payInstallment;
+
+  /// No description provided for @ok.
+  ///
+  /// In de, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @primaryAccount.
+  ///
+  /// In de, this message translates to:
+  /// **'Hauptkonto'**
+  String get primaryAccount;
+
+  /// No description provided for @returnRateLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Rendite: {rate}%'**
+  String returnRateLabel(String rate);
+
+  /// No description provided for @deleteAccountConfirmTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Konto löschen?'**
+  String get deleteAccountConfirmTitle;
+
+  /// No description provided for @deleteAccountConfirmContent.
+  ///
+  /// In de, this message translates to:
+  /// **'„{name}\" wird entfernt. Bereits erfasste Transaktionen bleiben erhalten.'**
+  String deleteAccountConfirmContent(String name);
+
+  /// No description provided for @editAccount.
+  ///
+  /// In de, this message translates to:
+  /// **'Konto bearbeiten'**
+  String get editAccount;
+
+  /// No description provided for @addAccount.
+  ///
+  /// In de, this message translates to:
+  /// **'Konto hinzufügen'**
+  String get addAccount;
+
+  /// No description provided for @accountTypeChecking.
+  ///
+  /// In de, this message translates to:
+  /// **'Girokonto'**
+  String get accountTypeChecking;
+
+  /// No description provided for @accountTypeSavings.
+  ///
+  /// In de, this message translates to:
+  /// **'Sparkonto'**
+  String get accountTypeSavings;
+
+  /// No description provided for @accountTypeCredit.
+  ///
+  /// In de, this message translates to:
+  /// **'Kreditkarte'**
+  String get accountTypeCredit;
+
+  /// No description provided for @accountTypeInvestment.
+  ///
+  /// In de, this message translates to:
+  /// **'Investment'**
+  String get accountTypeInvestment;
+
+  /// No description provided for @accountNameLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Name *'**
+  String get accountNameLabel;
+
+  /// No description provided for @accountNameHint.
+  ///
+  /// In de, this message translates to:
+  /// **'z.B. Girokonto'**
+  String get accountNameHint;
+
+  /// No description provided for @bankInstitutionLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Bank / Institut'**
+  String get bankInstitutionLabel;
+
+  /// No description provided for @bankInstitutionHint.
+  ///
+  /// In de, this message translates to:
+  /// **'z.B. Sparkasse'**
+  String get bankInstitutionHint;
+
+  /// No description provided for @accountBalanceLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Kontostand *'**
+  String get accountBalanceLabel;
+
+  /// No description provided for @lastFourDigitsLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte 4 Stellen'**
+  String get lastFourDigitsLabel;
+
+  /// No description provided for @returnRatePercentLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Rendite %'**
+  String get returnRatePercentLabel;
+
+  /// No description provided for @markAsPrimaryAccount.
+  ///
+  /// In de, this message translates to:
+  /// **'Als Hauptkonto markieren'**
+  String get markAsPrimaryAccount;
+
+  /// No description provided for @deleteAccountButton.
+  ///
+  /// In de, this message translates to:
+  /// **'Konto löschen'**
+  String get deleteAccountButton;
+
+  /// No description provided for @recurringScreenTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wiederkehrend'**
+  String get recurringScreenTitle;
+
+  /// No description provided for @noRecurringTransactions.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine wiederkehrenden Buchungen'**
+  String get noRecurringTransactions;
+
+  /// No description provided for @monthlyIncome.
+  ///
+  /// In de, this message translates to:
+  /// **'Monatliche Einnahmen'**
+  String get monthlyIncome;
+
+  /// No description provided for @monthlyExpenses.
+  ///
+  /// In de, this message translates to:
+  /// **'Monatliche Ausgaben'**
+  String get monthlyExpenses;
+
+  /// No description provided for @recurringDayOfMonth.
+  ///
+  /// In de, this message translates to:
+  /// **'Jeden {day}. im Monat'**
+  String recurringDayOfMonth(int day);
+
+  /// No description provided for @editRecurringTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wiederkehrend bearbeiten'**
+  String get editRecurringTitle;
+
+  /// No description provided for @budgetAmountWithCurrencyLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Betrag ({currency})'**
+  String budgetAmountWithCurrencyLabel(String currency);
+
+  /// No description provided for @descriptionLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Beschreibung'**
+  String get descriptionLabel;
+
+  /// No description provided for @budgetOtherCategory.
+  ///
+  /// In de, this message translates to:
+  /// **'Sonstiges'**
+  String get budgetOtherCategory;
+
+  /// No description provided for @expensesByCategoryLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausgaben nach Kategorie · {month}'**
+  String expensesByCategoryLabel(String month);
+
+  /// No description provided for @total.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesamt'**
+  String get total;
+
+  /// No description provided for @monthlyOverview.
+  ///
+  /// In de, this message translates to:
+  /// **'Monatliche Übersicht'**
+  String get monthlyOverview;
+
+  /// No description provided for @transactionDeleted.
+  ///
+  /// In de, this message translates to:
+  /// **'Transaktion gelöscht'**
+  String get transactionDeleted;
+
+  /// No description provided for @undo.
+  ///
+  /// In de, this message translates to:
+  /// **'Rückgängig'**
+  String get undo;
 
   /// No description provided for @budgetCategoriesScreenTitle.
   ///

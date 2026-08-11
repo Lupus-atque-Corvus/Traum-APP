@@ -235,9 +235,9 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
         backgroundColor: TraumColors.background,
         elevation: 0,
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
-        title: const Text(
-          'New Workout',
-          style: TextStyle(
+        title: Text(
+          l10n.newWorkoutTitle,
+          style: const TextStyle(
             color: TraumColors.onBackground,
             fontFamily: 'DMSans',
             fontWeight: FontWeight.w700,
@@ -669,10 +669,10 @@ class _ExerciseCardState extends State<_ExerciseCard> {
                 leading: _SetTypeBadge(type: type, number: setIndex + 1, size: 32),
                 title: Text(
                   switch (type) {
-                    _SetType.normal  => 'Normal set',
-                    _SetType.warmup  => 'Warm-up set',
-                    _SetType.drop    => 'Drop set',
-                    _SetType.failure => 'Failure set',
+                    _SetType.normal  => AppLocalizations.of(context)!.setTypeNormal,
+                    _SetType.warmup  => AppLocalizations.of(context)!.setTypeWarmup,
+                    _SetType.drop    => AppLocalizations.of(context)!.setTypeDrop,
+                    _SetType.failure => AppLocalizations.of(context)!.setTypeFailure,
                   },
                   style: TextStyle(
                     color: type == _SetType.normal
@@ -917,7 +917,7 @@ class _ExerciseCardState extends State<_ExerciseCard> {
           Row(children: [
             GestureDetector(
               onTap: () => _showEquipmentPicker(context),
-              child: _EquipmentPill(label: block.equipment.isNotEmpty ? block.equipment : 'Equipment'),
+              child: _EquipmentPill(label: block.equipment.isNotEmpty ? block.equipment : AppLocalizations.of(context)!.equipmentLabel),
             ),
             const SizedBox(width: 8),
             GestureDetector(
@@ -1243,7 +1243,7 @@ class _EquipmentModePickerState extends State<_EquipmentModePicker>
           indicatorSize: TabBarIndicatorSize.tab,
           labelStyle: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w700),
           tabs: [
-            Tab(text: _equipment.isNotEmpty ? _equipment : 'Equipment'),
+            Tab(text: _equipment.isNotEmpty ? _equipment : AppLocalizations.of(context)!.equipmentLabel),
             Tab(text: _mode),
           ],
         ),

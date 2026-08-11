@@ -12,6 +12,7 @@ import '../../../core/providers/repository_providers.dart';
 import '../../../core/services/app_launcher_service.dart';
 import '../../../core/theme/colors.dart';
 import '../../../data/database/traum_database.dart' show WaterLogsCompanion;
+import '../../../l10n/app_localizations.dart';
 import '../../health/health_score_provider.dart';
 import '../../health/health_score_result.dart';
 import '../home_tile.dart';
@@ -27,7 +28,7 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> generalHomeWidgets = {
     sizes: const {HomeTileSize.wide, HomeTileSize.large},
     route: null,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Uhr',
+      title: AppLocalizations.of(context)!.homeWidgetClock,
       accent: TraumColors.amberGold,
       size: size,
       route: null,
@@ -42,7 +43,7 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> generalHomeWidgets = {
     sizes: const {HomeTileSize.small, HomeTileSize.wide},
     route: null,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Wetter',
+      title: AppLocalizations.of(context)!.homeWidgetWeather,
       accent: TraumColors.amberGold,
       size: size,
       route: null,
@@ -57,7 +58,7 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> generalHomeWidgets = {
     sizes: const {HomeTileSize.wide, HomeTileSize.large},
     route: null,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Wetter',
+      title: AppLocalizations.of(context)!.homeWidgetWeather,
       accent: TraumColors.amberGold,
       size: size,
       route: null,
@@ -72,7 +73,7 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> generalHomeWidgets = {
     sizes: const {HomeTileSize.wide},
     route: null,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Apps',
+      title: AppLocalizations.of(context)!.homeWidgetApps,
       accent: TraumColors.cyanBlue,
       size: size,
       route: null,
@@ -87,7 +88,7 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> generalHomeWidgets = {
     sizes: const {HomeTileSize.wide},
     route: null,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Schnellzugriff',
+      title: AppLocalizations.of(context)!.homeWidgetQuickAccess,
       accent: TraumColors.mintGreen,
       size: size,
       route: null,
@@ -103,7 +104,7 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> generalHomeWidgets = {
     sizes: const {HomeTileSize.large},
     route: Routes.health,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Tagesübersicht',
+      title: AppLocalizations.of(context)!.homeWidgetDailyOverview,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.health,
@@ -118,7 +119,7 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> generalHomeWidgets = {
     sizes: const {HomeTileSize.large},
     route: Routes.planning,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Kalender',
+      title: AppLocalizations.of(context)!.homeWidgetCalendar,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.planning,
@@ -139,16 +140,16 @@ class _ClockDateContentState extends State<_ClockDateContent> {
   late final Stream<void> _ticker =
       Stream<void>.periodic(const Duration(seconds: 1));
 
-  static const _weekdays = [
-    'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'
-  ];
-  static const _months = [
-    'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final weekdays = l10n.weekdaysShort.split(',');
+    final months = [
+      l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
+      l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
+      l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
+      l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
+    ];
     return StreamBuilder<void>(
       stream: _ticker,
       builder: (_, _) {
@@ -156,7 +157,7 @@ class _ClockDateContentState extends State<_ClockDateContent> {
         final timeStr =
             '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
         final dateStr =
-            '${_weekdays[now.weekday - 1]}, ${now.day}. ${_months[now.month - 1]}';
+            '${weekdays[now.weekday - 1]}, ${now.day}. ${months[now.month - 1]}';
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -243,7 +244,7 @@ class _WeatherContent extends ConsumerWidget {
         if (showCondition) ...[
           const SizedBox(height: 2),
           Text(
-            _conditionForCode(code),
+            _conditionForCode(code, AppLocalizations.of(context)!),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
@@ -267,14 +268,14 @@ class _WeatherContent extends ConsumerWidget {
     return Icons.thunderstorm_rounded;
   }
 
-  String _conditionForCode(int code) {
-    if (code == 0) return 'Klar';
-    if (code <= 3) return 'Bewölkt';
-    if (code <= 48) return 'Neblig';
-    if (code <= 67) return 'Regen';
-    if (code <= 77) return 'Schnee';
-    if (code <= 82) return 'Schauer';
-    return 'Gewitter';
+  String _conditionForCode(int code, AppLocalizations l10n) {
+    if (code == 0) return l10n.weatherClear;
+    if (code <= 3) return l10n.weatherCloudy;
+    if (code <= 48) return l10n.weatherFoggy;
+    if (code <= 67) return l10n.weatherRain;
+    if (code <= 77) return l10n.weatherSnow;
+    if (code <= 82) return l10n.weatherShowers;
+    return l10n.weatherThunderstorm;
   }
 }
 
@@ -305,10 +306,10 @@ class _AppFavoritesContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final favorites = ref.watch(appLauncherFavoritesProvider);
     if (favorites.isEmpty) {
-      return const Text(
-        'Keine Favoriten',
+      return Text(
+        AppLocalizations.of(context)!.noFavoriteApps,
         textAlign: TextAlign.center,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 13,
           color: TraumColors.onBackgroundMuted,
           fontFamily: 'DMSans',
@@ -321,7 +322,7 @@ class _AppFavoritesContent extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '${favorites.length} ${favorites.length == 1 ? 'App' : 'Apps'}',
+          '${favorites.length} ${favorites.length == 1 ? AppLocalizations.of(context)!.appSingular : AppLocalizations.of(context)!.appPlural}',
           style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w700,
@@ -376,19 +377,19 @@ class _QuickActionsContent extends ConsumerWidget {
         ),
         _QuickActionButton(
           icon: Icons.note_add_rounded,
-          label: 'Notiz',
+          label: AppLocalizations.of(context)!.quickActionNote,
           color: TraumColors.mintGreen,
           onTap: () => context.go(Routes.notes),
         ),
         _QuickActionButton(
           icon: Icons.photo_camera_rounded,
-          label: 'Foto',
+          label: AppLocalizations.of(context)!.quickActionPhoto,
           color: TraumColors.amberGold,
           onTap: () => context.go(Routes.graffitiMap),
         ),
         _QuickActionButton(
           icon: Icons.payments_rounded,
-          label: 'Ausgabe',
+          label: AppLocalizations.of(context)!.quickActionExpense,
           color: TraumColors.coralOrange,
           onTap: () => context.go(Routes.budget),
         ),

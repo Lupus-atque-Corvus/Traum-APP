@@ -31,15 +31,15 @@ class DebtsScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const BudgetSubHeader(title: 'Schulden'),
+            BudgetSubHeader(title: AppLocalizations.of(context)!.debtsScreenTitle),
             Expanded(
               child: debts.when(
                 data: (list) {
                   if (list.isEmpty) {
-                    return const Center(
+                    return Center(
                       child: Text(
-                        'Keine Schulden erfasst',
-                        style: TextStyle(
+                        AppLocalizations.of(context)!.noDebtsRecorded,
+                        style: const TextStyle(
                           color: TraumColors.onBackgroundMuted,
                           fontFamily: 'DMSans',
                         ),
@@ -109,9 +109,9 @@ class DebtsScreen extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Schuld hinzufügen',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context)!.addDebt,
+                style: const TextStyle(
                   fontFamily: 'DMSans',
                   fontWeight: FontWeight.w700,
                   color: TraumColors.onBackground,
@@ -119,7 +119,8 @@ class DebtsScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              debtField(creditor, 'Gläubiger *', 'z.B. Bank'),
+              debtField(creditor, AppLocalizations.of(context)!.creditorLabel,
+                  AppLocalizations.of(context)!.creditorHint),
               const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
@@ -144,9 +145,9 @@ class DebtsScreen extends ConsumerWidget {
                         );
                     Navigator.of(ctx).pop();
                   },
-                  child: const Text(
-                    'Speichern',
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context)!.save,
+                    style: const TextStyle(
                         fontFamily: 'DMSans', fontWeight: FontWeight.w600),
                   ),
                 ),
@@ -223,9 +224,9 @@ class _DebtsHero extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Offene Schulden gesamt',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.totalOpenDebts,
+              style: const TextStyle(
                 fontSize: 9,
                 color: TraumColors.onBackgroundMuted,
                 fontFamily: 'DMSans',
@@ -495,9 +496,9 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
                         color: TraumColors.roseRed.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(bs(8)),
                       ),
-                      child: const Text(
-                        'Rate zahlen',
-                        style: TextStyle(
+                      child: Text(
+                        AppLocalizations.of(context)!.payInstallment,
+                        style: const TextStyle(
                           fontFamily: 'DMSans',
                           fontSize: 9,
                           fontWeight: FontWeight.w600,
@@ -558,9 +559,9 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surface,
-        title: const Text(
-          'Rate zahlen',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context)!.payInstallment,
+          style: const TextStyle(
               fontFamily: 'DMSans', color: TraumColors.onBackground),
         ),
         content: TextField(
@@ -574,7 +575,7 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Abbrechen'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () {
@@ -584,7 +585,7 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
               if (a > 0) widget.onPay(a);
               Navigator.pop(ctx);
             },
-            child: const Text('OK'),
+            child: Text(AppLocalizations.of(context)!.ok),
           ),
         ],
       ),

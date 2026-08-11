@@ -14,22 +14,6 @@ import '../../l10n/app_localizations.dart';
 import 'muscle_groups.dart';
 import 'widgets/exercise_icon.dart';
 
-// ── Muscle group display names ────────────────────────────────────────────────
-String _mgDisplay(String key) {
-  switch (key.toLowerCase()) {
-    case 'chest':     return 'PECTORALS';
-    case 'back':      return 'LATS';
-    case 'shoulders': return 'DELTOIDS';
-    case 'biceps':    return 'BICEPS';
-    case 'triceps':   return 'TRICEPS';
-    case 'core':      return 'ABDOMINALS';
-    case 'legs':      return 'QUADRICEPS, GLUTES';
-    case 'cardio':    return 'CARDIO';
-    case 'full_body': return 'FULL BODY';
-    default:          return key.toUpperCase();
-  }
-}
-
 // Icon-selection key normalization moved to `canonicalMuscleGroup`
 // (muscle_groups.dart) — the local `_mgKey` switch duplicated that logic
 // without covering glutes/calves/forearms, so it drifted from the single
@@ -462,7 +446,9 @@ class _ExerciseTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    _mgDisplay(exercise.muscleGroup),
+                    muscleGroupLabel(exercise.muscleGroup,
+                            AppLocalizations.of(context)!)
+                        .toUpperCase(),
                     style: const TextStyle(
                       color: TraumColors.coralOrange,
                       fontFamily: 'DMSans',
@@ -527,9 +513,9 @@ class _ExerciseTile extends StatelessWidget {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           ListTile(
             leading: const Icon(Icons.delete_rounded, color: TraumColors.coralOrange),
-            title: const Text(
-              'Delete Exercise',
-              style: TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans'),
+            title: Text(
+              AppLocalizations.of(context)!.deleteExercise,
+              style: const TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans'),
             ),
             onTap: () {
               Navigator.pop(context);
@@ -558,12 +544,12 @@ class _CreateExerciseButton extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Icon(Icons.add_rounded, color: TraumColors.onBackgroundMuted, size: 18),
-          SizedBox(width: 6),
+        children: [
+          const Icon(Icons.add_rounded, color: TraumColors.onBackgroundMuted, size: 18),
+          const SizedBox(width: 6),
           Text(
-            'Create Exercise',
-            style: TextStyle(
+            AppLocalizations.of(context)!.createExercise,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14,
@@ -659,7 +645,7 @@ class _AddExerciseSheetState extends State<_AddExerciseSheet> {
               underline: Container(height: 1, color: TraumColors.surfaceVariant),
               items: _muscleGroups.map((m) => DropdownMenuItem(
                 value: m,
-                child: Text(_mgDisplay(m)),
+                child: Text(muscleGroupLabel(m, l10n).toUpperCase()),
               )).toList(),
               onChanged: (v) => setState(() => _muscleGroup = v!),
             ),

@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 
 class TraumLineChart extends StatelessWidget {
   final List<FlSpot> spots;
@@ -27,10 +28,10 @@ class TraumLineChart extends StatelessWidget {
     if (spots.isEmpty) {
       return SizedBox(
         height: height,
-        child: const Center(
+        child: Center(
           child: Text(
-            'Noch keine Daten',
-            style: TextStyle(
+            AppLocalizations.of(context)!.noDataYet,
+            style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontSize: 13,
               fontFamily: 'DMSans',

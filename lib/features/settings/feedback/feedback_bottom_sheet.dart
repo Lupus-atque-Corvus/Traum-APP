@@ -6,6 +6,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/colors.dart';
+import '../../../l10n/app_localizations.dart';
 import 'feedback_type.dart';
 
 class FeedbackBottomSheet extends ConsumerStatefulWidget {
@@ -29,6 +30,7 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -54,9 +56,9 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Feedback senden',
-              style: TextStyle(
+            Text(
+              l10n.sendFeedbackTitle,
+              style: const TextStyle(
                 fontFamily: 'DMSans',
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -64,18 +66,18 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
               ),
             ),
             const SizedBox(height: 4),
-            const Text(
-              'Dein Feedback hilft TRAUM besser zu machen.',
-              style: TextStyle(
+            Text(
+              l10n.feedbackHelpText,
+              style: const TextStyle(
                 fontFamily: 'DMSans',
                 fontSize: 13,
                 color: TraumColors.onBackgroundMuted,
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'TYP',
-              style: TextStyle(
+            Text(
+              l10n.feedbackTypeLabel,
+              style: const TextStyle(
                 fontFamily: 'DMSans',
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
@@ -113,7 +115,7 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            type.label,
+                            type.label(l10n),
                             style: TextStyle(
                               fontFamily: 'DMSans',
                               fontSize: 11,
@@ -129,9 +131,9 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
               }).toList(),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'KURZTITEL',
-              style: TextStyle(
+            Text(
+              l10n.shortTitleLabel,
+              style: const TextStyle(
                 fontFamily: 'DMSans',
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
@@ -146,10 +148,10 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
               style: const TextStyle(fontFamily: 'DMSans', color: TraumColors.onBackground),
               decoration: InputDecoration(
                 hintText: _type == FeedbackType.bug
-                    ? 'z.B. "Wasser-Tracking aktualisiert nicht"'
+                    ? l10n.feedbackTitleHintBug
                     : _type == FeedbackType.feature
-                        ? 'z.B. "Darkmode für Widgets"'
-                        : 'z.B. "Tipp-Fehler im Onboarding"',
+                        ? l10n.feedbackTitleHintFeature
+                        : l10n.feedbackTitleHintImprovement,
                 hintStyle: const TextStyle(
                     color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
                 filled: true,
@@ -165,9 +167,9 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'BESCHREIBUNG',
-              style: TextStyle(
+            Text(
+              l10n.descriptionSectionLabel,
+              style: const TextStyle(
                 fontFamily: 'DMSans',
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
@@ -182,8 +184,8 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
               style: const TextStyle(fontFamily: 'DMSans', color: TraumColors.onBackground),
               decoration: InputDecoration(
                 hintText: _type == FeedbackType.bug
-                    ? 'Beschreibe was passiert ist und wie man es reproduzieren kann...'
-                    : 'Beschreibe deine Idee oder den gewünschten Verbesserungsvorschlag...',
+                    ? l10n.feedbackDescHintBug
+                    : l10n.feedbackDescHintOther,
                 hintStyle: const TextStyle(
                     color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
                 filled: true,
@@ -201,13 +203,13 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
             ),
             const SizedBox(height: 8),
             Row(
-              children: const [
-                Icon(Icons.info_outline, size: 14, color: TraumColors.onBackgroundSubtle),
-                SizedBox(width: 6),
+              children: [
+                const Icon(Icons.info_outline, size: 14, color: TraumColors.onBackgroundSubtle),
+                const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    'Systemdaten (App-Version, Android-Version, Gerät) werden automatisch angehängt.',
-                    style: TextStyle(
+                    l10n.feedbackSystemInfoDisclaimer,
+                    style: const TextStyle(
                       fontFamily: 'DMSans',
                       fontSize: 11,
                       color: TraumColors.onBackgroundSubtle,
@@ -234,9 +236,9 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
                       ? null
                       : () => _submit(context),
                   icon: const Icon(Icons.open_in_browser, color: Colors.white, size: 18),
-                  label: const Text(
-                    'GitHub öffnen & absenden',
-                    style: TextStyle(
+                  label: Text(
+                    l10n.openGitHubAndSubmit,
+                    style: const TextStyle(
                       fontFamily: 'DMSans',
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -247,11 +249,11 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
               ),
             ),
             const SizedBox(height: 8),
-            const Center(
+            Center(
               child: Text(
-                'Öffnet GitHub im Browser. Ein GitHub-Account ist zum Absenden nötig.',
+                l10n.githubSubmitFooter,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'DMSans',
                   fontSize: 10,
                   color: TraumColors.onBackgroundSubtle,

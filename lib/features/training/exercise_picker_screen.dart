@@ -15,21 +15,6 @@ import 'widgets/exercise_icon.dart';
 // without covering glutes/calves/forearms, so it drifted from the single
 // normalization point (Task 8.1b, completes Audit 6.1 / Task 8.1).
 
-String _mgDisplay(String key) {
-  switch (key.toLowerCase()) {
-    case 'chest':     return 'PECTORALS';
-    case 'back':      return 'LATS';
-    case 'shoulders': return 'DELTOIDS';
-    case 'biceps':    return 'BICEPS';
-    case 'triceps':   return 'TRICEPS';
-    case 'core':      return 'ABDOMINALS';
-    case 'legs':      return 'QUADRICEPS, GLUTES';
-    case 'cardio':    return 'CARDIO';
-    case 'full_body': return 'FULL BODY';
-    default:          return key.toUpperCase();
-  }
-}
-
 const _kPickerCats = [
   _PickerCat('assets/exercises/icons/cardio.svg',    'Cardio',    ['cardio']),
   _PickerCat('assets/exercises/icons/biceps.svg',    'Arms',      ['biceps', 'triceps']),
@@ -491,7 +476,10 @@ class _PickerTile extends StatelessWidget {
                         fontSize: 14,
                       )),
                   const SizedBox(height: 2),
-                  Text(_mgDisplay(exercise.muscleGroup),
+                  Text(
+                      muscleGroupLabel(
+                              exercise.muscleGroup, AppLocalizations.of(context)!)
+                          .toUpperCase(),
                       style: const TextStyle(
                         color: TraumColors.coralOrange,
                         fontFamily: 'DMSans',

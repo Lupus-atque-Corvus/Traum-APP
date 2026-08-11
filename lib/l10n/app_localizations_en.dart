@@ -623,6 +623,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startWorkout => 'Start workout';
 
   @override
+  String get newWorkoutTitle => 'New Workout';
+
+  @override
+  String get setTypeNormal => 'Normal set';
+
+  @override
+  String get setTypeWarmup => 'Warm-up set';
+
+  @override
+  String get setTypeDrop => 'Drop set';
+
+  @override
+  String get setTypeFailure => 'Failure set';
+
+  @override
+  String lastWorkoutMinutesAgo(int minutes) {
+    return 'Last workout $minutes min ago';
+  }
+
+  @override
+  String lastWorkoutHoursAgo(int hours) {
+    return 'Last workout ${hours}h ago';
+  }
+
+  @override
+  String get lastWorkoutYesterday => 'Last workout yesterday';
+
+  @override
+  String lastWorkoutDaysAgo(int days) {
+    return 'Last workout $days days ago';
+  }
+
+  @override
   String get income => 'Income';
 
   @override
@@ -2392,6 +2425,221 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createExercise => 'Create exercise';
 
   @override
+  String get deleteExercise => 'Delete exercise';
+
+  @override
+  String get similarExercises => 'Similar exercises';
+
+  @override
+  String get timesPerformed => 'Times performed';
+
+  @override
+  String get totalDurationLabel => 'Total duration';
+
+  @override
+  String get totalVolumeLabel => 'Total volume';
+
+  @override
+  String get mostRecent => 'Most recent';
+
+  @override
+  String get average => 'Average';
+
+  @override
+  String get removeBookmarkAction => 'Remove bookmark';
+
+  @override
+  String get addBookmarkAction => 'Add bookmark';
+
+  @override
+  String get exerciseFeedbackPrompt => 'Got tips for this exercise?';
+
+  @override
+  String get selectCalendars => 'Select calendars';
+
+  @override
+  String get noCalendarsFoundHint =>
+      'No calendars found.\nPlease close the planner and reopen it.';
+
+  @override
+  String get iconLabel => 'Icon';
+
+  @override
+  String get homeWidgetClock => 'Clock';
+
+  @override
+  String get homeWidgetWeather => 'Weather';
+
+  @override
+  String get homeWidgetApps => 'Apps';
+
+  @override
+  String get homeWidgetQuickAccess => 'Quick access';
+
+  @override
+  String get homeWidgetDailyOverview => 'Daily overview';
+
+  @override
+  String get homeWidgetCalendar => 'Calendar';
+
+  @override
+  String get weatherClear => 'Clear';
+
+  @override
+  String get weatherCloudy => 'Cloudy';
+
+  @override
+  String get weatherFoggy => 'Foggy';
+
+  @override
+  String get weatherRain => 'Rain';
+
+  @override
+  String get weatherSnow => 'Snow';
+
+  @override
+  String get weatherShowers => 'Showers';
+
+  @override
+  String get weatherThunderstorm => 'Thunderstorm';
+
+  @override
+  String get noFavoriteApps => 'No favorites';
+
+  @override
+  String get appSingular => 'app';
+
+  @override
+  String get appPlural => 'apps';
+
+  @override
+  String get quickActionNote => 'Note';
+
+  @override
+  String get quickActionPhoto => 'Photo';
+
+  @override
+  String get quickActionExpense => 'Expense';
+
+  @override
+  String get pointCameraAtBarcode => 'Point the camera at the barcode';
+
+  @override
+  String get fetchingProduct => 'Looking up product...';
+
+  @override
+  String get manualEntry => 'Manual';
+
+  @override
+  String get newCustomProductTitle => 'Add new product';
+
+  @override
+  String get productNameLabel => 'Name *';
+
+  @override
+  String get productNameHint => 'e.g. Homemade Bolognese';
+
+  @override
+  String get brandOptionalLabel => 'Brand (optional)';
+
+  @override
+  String get brandOptionalHint => 'e.g. Homemade';
+
+  @override
+  String get nutrientsPer100g => 'Nutrients per 100g';
+
+  @override
+  String get caloriesKcalLabel => 'Calories (kcal)';
+
+  @override
+  String get proteinGramLabel => 'Protein (g)';
+
+  @override
+  String get carbsGramLabel => 'Carbs (g)';
+
+  @override
+  String get fatGramLabel => 'Fat (g)';
+
+  @override
+  String get loadingCalendars => 'Loading calendars…';
+
+  @override
+  String get noCalendarSelected => 'No calendar selected';
+
+  @override
+  String calendarsSelectedCount(int count) {
+    return '$count calendars selected';
+  }
+
+  @override
+  String get syncedCalendarsTitle => 'Synced calendars';
+
+  @override
+  String get noModulesSelectedError => 'No modules selected';
+
+  @override
+  String get sendFeedbackTitle => 'Send feedback';
+
+  @override
+  String get feedbackHelpText => 'Your feedback helps make TRAUM better.';
+
+  @override
+  String get feedbackTypeLabel => 'TYPE';
+
+  @override
+  String get shortTitleLabel => 'SHORT TITLE';
+
+  @override
+  String get feedbackTitleHintBug => 'e.g. \"Water tracking doesn\'t update\"';
+
+  @override
+  String get feedbackTitleHintFeature => 'e.g. \"Dark mode for widgets\"';
+
+  @override
+  String get feedbackTitleHintImprovement => 'e.g. \"Typo in onboarding\"';
+
+  @override
+  String get descriptionSectionLabel => 'DESCRIPTION';
+
+  @override
+  String get feedbackDescHintBug =>
+      'Describe what happened and how to reproduce it...';
+
+  @override
+  String get feedbackDescHintOther =>
+      'Describe your idea or suggested improvement...';
+
+  @override
+  String get feedbackSystemInfoDisclaimer =>
+      'System info (app version, Android version, device) is attached automatically.';
+
+  @override
+  String get openGitHubAndSubmit => 'Open GitHub & submit';
+
+  @override
+  String get githubSubmitFooter =>
+      'Opens GitHub in the browser. A GitHub account is required to submit.';
+
+  @override
+  String get feedbackTypeBug => 'Bug';
+
+  @override
+  String get feedbackTypeFeature => 'Feature';
+
+  @override
+  String get feedbackTypeImprovement => 'Improvement';
+
+  @override
+  String get weatherLocationNeededTitle => 'Location access needed';
+
+  @override
+  String get weatherLocationNeededContent =>
+      'TRAUM needs your location to show the current weather on the home screen.\n\nPlease allow location access in the system settings.';
+
+  @override
+  String get continueWithoutWeather => 'Continue without weather';
+
+  @override
   String get medium => 'Medium';
 
   @override
@@ -2675,6 +2923,136 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addDebt => 'Add debt';
+
+  @override
+  String get debtsScreenTitle => 'Debts';
+
+  @override
+  String get noDebtsRecorded => 'No debts recorded';
+
+  @override
+  String get creditorLabel => 'Creditor *';
+
+  @override
+  String get creditorHint => 'e.g. Bank';
+
+  @override
+  String get totalOpenDebts => 'Total open debts';
+
+  @override
+  String get payInstallment => 'Pay installment';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get primaryAccount => 'Primary account';
+
+  @override
+  String returnRateLabel(String rate) {
+    return 'Return: $rate%';
+  }
+
+  @override
+  String get deleteAccountConfirmTitle => 'Delete account?';
+
+  @override
+  String deleteAccountConfirmContent(String name) {
+    return '\"$name\" will be removed. Existing transactions remain.';
+  }
+
+  @override
+  String get editAccount => 'Edit account';
+
+  @override
+  String get addAccount => 'Add account';
+
+  @override
+  String get accountTypeChecking => 'Checking account';
+
+  @override
+  String get accountTypeSavings => 'Savings account';
+
+  @override
+  String get accountTypeCredit => 'Credit card';
+
+  @override
+  String get accountTypeInvestment => 'Investment';
+
+  @override
+  String get accountNameLabel => 'Name *';
+
+  @override
+  String get accountNameHint => 'e.g. Checking';
+
+  @override
+  String get bankInstitutionLabel => 'Bank / Institution';
+
+  @override
+  String get bankInstitutionHint => 'e.g. Chase';
+
+  @override
+  String get accountBalanceLabel => 'Balance *';
+
+  @override
+  String get lastFourDigitsLabel => 'Last 4 digits';
+
+  @override
+  String get returnRatePercentLabel => 'Return %';
+
+  @override
+  String get markAsPrimaryAccount => 'Mark as primary account';
+
+  @override
+  String get deleteAccountButton => 'Delete account';
+
+  @override
+  String get recurringScreenTitle => 'Recurring';
+
+  @override
+  String get noRecurringTransactions => 'No recurring transactions';
+
+  @override
+  String get monthlyIncome => 'Monthly income';
+
+  @override
+  String get monthlyExpenses => 'Monthly expenses';
+
+  @override
+  String recurringDayOfMonth(int day) {
+    return 'Every $day of the month';
+  }
+
+  @override
+  String get editRecurringTitle => 'Edit recurring';
+
+  @override
+  String budgetAmountWithCurrencyLabel(String currency) {
+    return 'Amount ($currency)';
+  }
+
+  @override
+  String get descriptionLabel => 'Description';
+
+  @override
+  String get budgetOtherCategory => 'Other';
+
+  @override
+  String expensesByCategoryLabel(String month) {
+    return 'Expenses by category · $month';
+  }
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get monthlyOverview => 'Monthly overview';
+
+  @override
+  String get transactionDeleted => 'Transaction deleted';
+
+  @override
+  String get undo => 'Undo';
 
   @override
   String get budgetCategoriesScreenTitle => 'Budget categories';

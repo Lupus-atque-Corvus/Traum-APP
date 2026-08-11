@@ -330,11 +330,12 @@ class _CalendarSyncSectionState extends ConsumerState<_CalendarSyncSection> {
         .selectedCalendarIds;
     final calendars = _availableCalendars;
 
+    final l10n = AppLocalizations.of(context)!;
     String subtitle;
     if (_loading) {
-      subtitle = 'Lade Kalender…';
+      subtitle = l10n.loadingCalendars;
     } else if (selectedIds.isEmpty) {
-      subtitle = 'Kein Kalender ausgewählt';
+      subtitle = l10n.noCalendarSelected;
     } else if (calendars != null) {
       final names = selectedIds
           .map(
@@ -348,11 +349,11 @@ class _CalendarSyncSectionState extends ConsumerState<_CalendarSyncSection> {
           .join(', ');
       subtitle = names;
     } else {
-      subtitle = '${selectedIds.length} Kalender ausgewählt';
+      subtitle = l10n.calendarsSelectedCount(selectedIds.length);
     }
 
     return _Section(
-      title: AppLocalizations.of(context)!.calendarSyncTitle,
+      title: l10n.calendarSyncTitle,
       child: ListTile(
         leading: Container(
           width: 36,
@@ -375,9 +376,9 @@ class _CalendarSyncSectionState extends ConsumerState<_CalendarSyncSection> {
                   size: 18,
                 ),
         ),
-        title: const Text(
-          'Synchronisierte Kalender',
-          style: TextStyle(
+        title: Text(
+          l10n.syncedCalendarsTitle,
+          style: const TextStyle(
             color: TraumColors.onBackground,
             fontFamily: 'DMSans',
           ),
@@ -1936,7 +1937,7 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
       if (built == null) {
         messenger.showSnackBar(
           SnackBar(
-            content: Text(l10n.backupFailed('No modules selected')),
+            content: Text(l10n.backupFailed(l10n.noModulesSelectedError)),
             backgroundColor: TraumColors.roseRed,
           ),
         );

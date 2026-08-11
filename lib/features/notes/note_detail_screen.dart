@@ -71,6 +71,7 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
           widget.noteId,
           _contentCtrl.text,
           title: title.isEmpty ? _untitled : title,
+          untitledFallback: _untitled,
         );
   }
 

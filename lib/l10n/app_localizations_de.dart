@@ -624,6 +624,39 @@ class AppLocalizationsDe extends AppLocalizations {
   String get startWorkout => 'Workout starten';
 
   @override
+  String get newWorkoutTitle => 'Neues Workout';
+
+  @override
+  String get setTypeNormal => 'Normaler Satz';
+
+  @override
+  String get setTypeWarmup => 'Aufwärmsatz';
+
+  @override
+  String get setTypeDrop => 'Drop-Satz';
+
+  @override
+  String get setTypeFailure => 'Bis zum Muskelversagen';
+
+  @override
+  String lastWorkoutMinutesAgo(int minutes) {
+    return 'Letztes Training vor $minutes Min.';
+  }
+
+  @override
+  String lastWorkoutHoursAgo(int hours) {
+    return 'Letztes Training vor $hours Std.';
+  }
+
+  @override
+  String get lastWorkoutYesterday => 'Letztes Training gestern';
+
+  @override
+  String lastWorkoutDaysAgo(int days) {
+    return 'Letztes Training vor $days Tagen';
+  }
+
+  @override
   String get income => 'Einnahmen';
 
   @override
@@ -2405,6 +2438,223 @@ class AppLocalizationsDe extends AppLocalizations {
   String get createExercise => 'Übung erstellen';
 
   @override
+  String get deleteExercise => 'Übung löschen';
+
+  @override
+  String get similarExercises => 'Ähnliche Übungen';
+
+  @override
+  String get timesPerformed => 'Ausgeführt';
+
+  @override
+  String get totalDurationLabel => 'Gesamtdauer';
+
+  @override
+  String get totalVolumeLabel => 'Gesamtvolumen';
+
+  @override
+  String get mostRecent => 'Zuletzt';
+
+  @override
+  String get average => 'Durchschnitt';
+
+  @override
+  String get removeBookmarkAction => 'Lesezeichen entfernen';
+
+  @override
+  String get addBookmarkAction => 'Als Lesezeichen';
+
+  @override
+  String get exerciseFeedbackPrompt => 'Hast du Tipps zu dieser Übung?';
+
+  @override
+  String get selectCalendars => 'Kalender auswählen';
+
+  @override
+  String get noCalendarsFoundHint =>
+      'Keine Kalender gefunden.\nBitte schließe den Planner und öffne ihn erneut.';
+
+  @override
+  String get iconLabel => 'Icon';
+
+  @override
+  String get homeWidgetClock => 'Uhr';
+
+  @override
+  String get homeWidgetWeather => 'Wetter';
+
+  @override
+  String get homeWidgetApps => 'Apps';
+
+  @override
+  String get homeWidgetQuickAccess => 'Schnellzugriff';
+
+  @override
+  String get homeWidgetDailyOverview => 'Tagesübersicht';
+
+  @override
+  String get homeWidgetCalendar => 'Kalender';
+
+  @override
+  String get weatherClear => 'Klar';
+
+  @override
+  String get weatherCloudy => 'Bewölkt';
+
+  @override
+  String get weatherFoggy => 'Neblig';
+
+  @override
+  String get weatherRain => 'Regen';
+
+  @override
+  String get weatherSnow => 'Schnee';
+
+  @override
+  String get weatherShowers => 'Schauer';
+
+  @override
+  String get weatherThunderstorm => 'Gewitter';
+
+  @override
+  String get noFavoriteApps => 'Keine Favoriten';
+
+  @override
+  String get appSingular => 'App';
+
+  @override
+  String get appPlural => 'Apps';
+
+  @override
+  String get quickActionNote => 'Notiz';
+
+  @override
+  String get quickActionPhoto => 'Foto';
+
+  @override
+  String get quickActionExpense => 'Ausgabe';
+
+  @override
+  String get pointCameraAtBarcode => 'Halte die Kamera auf den Barcode';
+
+  @override
+  String get fetchingProduct => 'Produkt wird abgefragt...';
+
+  @override
+  String get manualEntry => 'Manuell';
+
+  @override
+  String get newCustomProductTitle => 'Neues Produkt anlegen';
+
+  @override
+  String get productNameLabel => 'Name *';
+
+  @override
+  String get productNameHint => 'z.B. Hausgemachte Bolognese';
+
+  @override
+  String get brandOptionalLabel => 'Marke (optional)';
+
+  @override
+  String get brandOptionalHint => 'z.B. Selbst gekocht';
+
+  @override
+  String get nutrientsPer100g => 'Nährwerte pro 100g';
+
+  @override
+  String get caloriesKcalLabel => 'Kalorien (kcal)';
+
+  @override
+  String get proteinGramLabel => 'Protein (g)';
+
+  @override
+  String get carbsGramLabel => 'Kohlenhydrate (g)';
+
+  @override
+  String get fatGramLabel => 'Fett (g)';
+
+  @override
+  String get loadingCalendars => 'Lade Kalender…';
+
+  @override
+  String get noCalendarSelected => 'Kein Kalender ausgewählt';
+
+  @override
+  String calendarsSelectedCount(int count) {
+    return '$count Kalender ausgewählt';
+  }
+
+  @override
+  String get syncedCalendarsTitle => 'Synchronisierte Kalender';
+
+  @override
+  String get noModulesSelectedError => 'Keine Module ausgewählt';
+
+  @override
+  String get sendFeedbackTitle => 'Feedback senden';
+
+  @override
+  String get feedbackHelpText => 'Dein Feedback hilft TRAUM besser zu machen.';
+
+  @override
+  String get feedbackTypeLabel => 'TYP';
+
+  @override
+  String get shortTitleLabel => 'KURZTITEL';
+
+  @override
+  String get feedbackTitleHintBug =>
+      'z.B. \"Wasser-Tracking aktualisiert nicht\"';
+
+  @override
+  String get feedbackTitleHintFeature => 'z.B. \"Darkmode für Widgets\"';
+
+  @override
+  String get feedbackTitleHintImprovement =>
+      'z.B. \"Tipp-Fehler im Onboarding\"';
+
+  @override
+  String get descriptionSectionLabel => 'BESCHREIBUNG';
+
+  @override
+  String get feedbackDescHintBug =>
+      'Beschreibe was passiert ist und wie man es reproduzieren kann...';
+
+  @override
+  String get feedbackDescHintOther =>
+      'Beschreibe deine Idee oder den gewünschten Verbesserungsvorschlag...';
+
+  @override
+  String get feedbackSystemInfoDisclaimer =>
+      'Systemdaten (App-Version, Android-Version, Gerät) werden automatisch angehängt.';
+
+  @override
+  String get openGitHubAndSubmit => 'GitHub öffnen & absenden';
+
+  @override
+  String get githubSubmitFooter =>
+      'Öffnet GitHub im Browser. Ein GitHub-Account ist zum Absenden nötig.';
+
+  @override
+  String get feedbackTypeBug => 'Bug';
+
+  @override
+  String get feedbackTypeFeature => 'Feature';
+
+  @override
+  String get feedbackTypeImprovement => 'Verbesserung';
+
+  @override
+  String get weatherLocationNeededTitle => 'Standortzugriff benötigt';
+
+  @override
+  String get weatherLocationNeededContent =>
+      'TRAUM benötigt deinen Standort, um das aktuelle Wetter auf der Startseite anzuzeigen.\n\nBitte erlaube den Standortzugriff in den Systemeinstellungen.';
+
+  @override
+  String get continueWithoutWeather => 'Ohne Wetter fortfahren';
+
+  @override
   String get medium => 'Mittel';
 
   @override
@@ -2688,6 +2938,136 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get addDebt => 'Schuld hinzufügen';
+
+  @override
+  String get debtsScreenTitle => 'Schulden';
+
+  @override
+  String get noDebtsRecorded => 'Keine Schulden erfasst';
+
+  @override
+  String get creditorLabel => 'Gläubiger *';
+
+  @override
+  String get creditorHint => 'z.B. Bank';
+
+  @override
+  String get totalOpenDebts => 'Offene Schulden gesamt';
+
+  @override
+  String get payInstallment => 'Rate zahlen';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get primaryAccount => 'Hauptkonto';
+
+  @override
+  String returnRateLabel(String rate) {
+    return 'Rendite: $rate%';
+  }
+
+  @override
+  String get deleteAccountConfirmTitle => 'Konto löschen?';
+
+  @override
+  String deleteAccountConfirmContent(String name) {
+    return '„$name\" wird entfernt. Bereits erfasste Transaktionen bleiben erhalten.';
+  }
+
+  @override
+  String get editAccount => 'Konto bearbeiten';
+
+  @override
+  String get addAccount => 'Konto hinzufügen';
+
+  @override
+  String get accountTypeChecking => 'Girokonto';
+
+  @override
+  String get accountTypeSavings => 'Sparkonto';
+
+  @override
+  String get accountTypeCredit => 'Kreditkarte';
+
+  @override
+  String get accountTypeInvestment => 'Investment';
+
+  @override
+  String get accountNameLabel => 'Name *';
+
+  @override
+  String get accountNameHint => 'z.B. Girokonto';
+
+  @override
+  String get bankInstitutionLabel => 'Bank / Institut';
+
+  @override
+  String get bankInstitutionHint => 'z.B. Sparkasse';
+
+  @override
+  String get accountBalanceLabel => 'Kontostand *';
+
+  @override
+  String get lastFourDigitsLabel => 'Letzte 4 Stellen';
+
+  @override
+  String get returnRatePercentLabel => 'Rendite %';
+
+  @override
+  String get markAsPrimaryAccount => 'Als Hauptkonto markieren';
+
+  @override
+  String get deleteAccountButton => 'Konto löschen';
+
+  @override
+  String get recurringScreenTitle => 'Wiederkehrend';
+
+  @override
+  String get noRecurringTransactions => 'Keine wiederkehrenden Buchungen';
+
+  @override
+  String get monthlyIncome => 'Monatliche Einnahmen';
+
+  @override
+  String get monthlyExpenses => 'Monatliche Ausgaben';
+
+  @override
+  String recurringDayOfMonth(int day) {
+    return 'Jeden $day. im Monat';
+  }
+
+  @override
+  String get editRecurringTitle => 'Wiederkehrend bearbeiten';
+
+  @override
+  String budgetAmountWithCurrencyLabel(String currency) {
+    return 'Betrag ($currency)';
+  }
+
+  @override
+  String get descriptionLabel => 'Beschreibung';
+
+  @override
+  String get budgetOtherCategory => 'Sonstiges';
+
+  @override
+  String expensesByCategoryLabel(String month) {
+    return 'Ausgaben nach Kategorie · $month';
+  }
+
+  @override
+  String get total => 'Gesamt';
+
+  @override
+  String get monthlyOverview => 'Monatliche Übersicht';
+
+  @override
+  String get transactionDeleted => 'Transaktion gelöscht';
+
+  @override
+  String get undo => 'Rückgängig';
 
   @override
   String get budgetCategoriesScreenTitle => 'Budget-Kategorien';

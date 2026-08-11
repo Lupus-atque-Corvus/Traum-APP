@@ -247,10 +247,13 @@ class _BudgetHeaderCard extends ConsumerWidget {
 
 }
 
-String _monthYear(DateTime d) {
-  const m = [
-    'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'
+String _monthYear(BuildContext context, DateTime d) {
+  final l10n = AppLocalizations.of(context)!;
+  final m = [
+    l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
+    l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
+    l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
+    l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
   ];
   return '${m[d.month - 1]} ${d.year}';
 }
@@ -305,7 +308,7 @@ class _MonthPill extends ConsumerWidget {
           child: SizedBox(
             width: bs(56),
             child: Text(
-              _monthYear(month),
+              _monthYear(context, month),
               style: _style(12, FontWeight.w600),
               textAlign: TextAlign.center,
             ),
@@ -755,9 +758,11 @@ class _LetzteTransaktionenCard extends ConsumerWidget {
     final d = DateTime(date.year, date.month, date.day);
     if (d == today) return l10n.today;
     if (d == today.subtract(const Duration(days: 1))) return l10n.yesterday;
-    const m = [
-      'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'
+    final m = [
+      l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
+      l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
+      l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
+      l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
     ];
     return '${date.day}. ${m[date.month - 1]}';
   }

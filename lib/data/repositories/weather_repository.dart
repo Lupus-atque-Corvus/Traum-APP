@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 
 class WeatherRepository {
   static const _timeoutSeconds = 5;
@@ -44,22 +45,20 @@ class WeatherRepository {
           barrierDismissible: false,
           builder: (ctx) => AlertDialog(
             backgroundColor: TraumColors.surface,
-            title: const Text(
-              'Standortzugriff benötigt',
-              style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
+            title: Text(
+              AppLocalizations.of(context)!.weatherLocationNeededTitle,
+              style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
             ),
-            content: const Text(
-              'TRAUM benötigt deinen Standort, um das aktuelle Wetter '
-              'auf der Startseite anzuzeigen.\n\n'
-              'Bitte erlaube den Standortzugriff in den Systemeinstellungen.',
-              style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+            content: Text(
+              AppLocalizations.of(context)!.weatherLocationNeededContent,
+              style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text(
-                  'Ohne Wetter fortfahren',
-                  style: TextStyle(color: TraumColors.onBackgroundMuted),
+                child: Text(
+                  AppLocalizations.of(context)!.continueWithoutWeather,
+                  style: const TextStyle(color: TraumColors.onBackgroundMuted),
                 ),
               ),
               TextButton(
@@ -67,9 +66,9 @@ class WeatherRepository {
                   Navigator.pop(ctx);
                   Geolocator.openAppSettings();
                 },
-                child: const Text(
-                  'Einstellungen öffnen',
-                  style: TextStyle(color: TraumColors.coralOrange),
+                child: Text(
+                  AppLocalizations.of(context)!.openSettings,
+                  style: const TextStyle(color: TraumColors.coralOrange),
                 ),
               ),
             ],

@@ -248,6 +248,36 @@
   "seconds": "Seconds",
   "allDataOnDevice": "All data stays on your device.",
   "startWorkout": "Start workout",
+  "newWorkoutTitle": "New Workout",
+  "setTypeNormal": "Normal set",
+  "setTypeWarmup": "Warm-up set",
+  "setTypeDrop": "Drop set",
+  "setTypeFailure": "Failure set",
+  "lastWorkoutMinutesAgo": "Last workout {minutes} min ago",
+  "@lastWorkoutMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "lastWorkoutHoursAgo": "Last workout {hours}h ago",
+  "@lastWorkoutHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "lastWorkoutYesterday": "Last workout yesterday",
+  "lastWorkoutDaysAgo": "Last workout {days} days ago",
+  "@lastWorkoutDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "income": "Income",
   "expense": "Expense",
   "balance": "Balance",
@@ -1069,6 +1099,82 @@
   "exercises": "Exercises",
   "volumeKg": "Volume (kg)",
   "createExercise": "Create exercise",
+  "deleteExercise": "Delete exercise",
+  "similarExercises": "Similar exercises",
+  "timesPerformed": "Times performed",
+  "totalDurationLabel": "Total duration",
+  "totalVolumeLabel": "Total volume",
+  "mostRecent": "Most recent",
+  "average": "Average",
+  "removeBookmarkAction": "Remove bookmark",
+  "addBookmarkAction": "Add bookmark",
+  "exerciseFeedbackPrompt": "Got tips for this exercise?",
+  "selectCalendars": "Select calendars",
+  "noCalendarsFoundHint": "No calendars found.\nPlease close the planner and reopen it.",
+  "iconLabel": "Icon",
+  "homeWidgetClock": "Clock",
+  "homeWidgetWeather": "Weather",
+  "homeWidgetApps": "Apps",
+  "homeWidgetQuickAccess": "Quick access",
+  "homeWidgetDailyOverview": "Daily overview",
+  "homeWidgetCalendar": "Calendar",
+  "weatherClear": "Clear",
+  "weatherCloudy": "Cloudy",
+  "weatherFoggy": "Foggy",
+  "weatherRain": "Rain",
+  "weatherSnow": "Snow",
+  "weatherShowers": "Showers",
+  "weatherThunderstorm": "Thunderstorm",
+  "noFavoriteApps": "No favorites",
+  "appSingular": "app",
+  "appPlural": "apps",
+  "quickActionNote": "Note",
+  "quickActionPhoto": "Photo",
+  "quickActionExpense": "Expense",
+  "pointCameraAtBarcode": "Point the camera at the barcode",
+  "fetchingProduct": "Looking up product...",
+  "manualEntry": "Manual",
+  "newCustomProductTitle": "Add new product",
+  "productNameLabel": "Name *",
+  "productNameHint": "e.g. Homemade Bolognese",
+  "brandOptionalLabel": "Brand (optional)",
+  "brandOptionalHint": "e.g. Homemade",
+  "nutrientsPer100g": "Nutrients per 100g",
+  "caloriesKcalLabel": "Calories (kcal)",
+  "proteinGramLabel": "Protein (g)",
+  "carbsGramLabel": "Carbs (g)",
+  "fatGramLabel": "Fat (g)",
+  "loadingCalendars": "Loading calendars…",
+  "noCalendarSelected": "No calendar selected",
+  "calendarsSelectedCount": "{count} calendars selected",
+  "@calendarsSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncedCalendarsTitle": "Synced calendars",
+  "noModulesSelectedError": "No modules selected",
+  "sendFeedbackTitle": "Send feedback",
+  "feedbackHelpText": "Your feedback helps make TRAUM better.",
+  "feedbackTypeLabel": "TYPE",
+  "shortTitleLabel": "SHORT TITLE",
+  "feedbackTitleHintBug": "e.g. \"Water tracking doesn't update\"",
+  "feedbackTitleHintFeature": "e.g. \"Dark mode for widgets\"",
+  "feedbackTitleHintImprovement": "e.g. \"Typo in onboarding\"",
+  "descriptionSectionLabel": "DESCRIPTION",
+  "feedbackDescHintBug": "Describe what happened and how to reproduce it...",
+  "feedbackDescHintOther": "Describe your idea or suggested improvement...",
+  "feedbackSystemInfoDisclaimer": "System info (app version, Android version, device) is attached automatically.",
+  "openGitHubAndSubmit": "Open GitHub & submit",
+  "githubSubmitFooter": "Opens GitHub in the browser. A GitHub account is required to submit.",
+  "feedbackTypeBug": "Bug",
+  "feedbackTypeFeature": "Feature",
+  "feedbackTypeImprovement": "Improvement",
+  "weatherLocationNeededTitle": "Location access needed",
+  "weatherLocationNeededContent": "TRAUM needs your location to show the current weather on the home screen.\n\nPlease allow location access in the system settings.",
+  "continueWithoutWeather": "Continue without weather",
   "medium": "Medium",
   "noExercises": "No exercises yet",
   "wizardSkip": "Skip",
@@ -1202,6 +1308,81 @@
   "budgetTypeTransfer": "Transfer",
   "addTransaction": "Add transaction",
   "addDebt": "Add debt",
+  "debtsScreenTitle": "Debts",
+  "noDebtsRecorded": "No debts recorded",
+  "creditorLabel": "Creditor *",
+  "creditorHint": "e.g. Bank",
+  "totalOpenDebts": "Total open debts",
+  "payInstallment": "Pay installment",
+  "ok": "OK",
+  "primaryAccount": "Primary account",
+  "returnRateLabel": "Return: {rate}%",
+  "@returnRateLabel": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteAccountConfirmTitle": "Delete account?",
+  "deleteAccountConfirmContent": "\"{name}\" will be removed. Existing transactions remain.",
+  "@deleteAccountConfirmContent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "editAccount": "Edit account",
+  "addAccount": "Add account",
+  "accountTypeChecking": "Checking account",
+  "accountTypeSavings": "Savings account",
+  "accountTypeCredit": "Credit card",
+  "accountTypeInvestment": "Investment",
+  "accountNameLabel": "Name *",
+  "accountNameHint": "e.g. Checking",
+  "bankInstitutionLabel": "Bank / Institution",
+  "bankInstitutionHint": "e.g. Chase",
+  "accountBalanceLabel": "Balance *",
+  "lastFourDigitsLabel": "Last 4 digits",
+  "returnRatePercentLabel": "Return %",
+  "markAsPrimaryAccount": "Mark as primary account",
+  "deleteAccountButton": "Delete account",
+  "recurringScreenTitle": "Recurring",
+  "noRecurringTransactions": "No recurring transactions",
+  "monthlyIncome": "Monthly income",
+  "monthlyExpenses": "Monthly expenses",
+  "recurringDayOfMonth": "Every {day} of the month",
+  "@recurringDayOfMonth": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "editRecurringTitle": "Edit recurring",
+  "budgetAmountWithCurrencyLabel": "Amount ({currency})",
+  "@budgetAmountWithCurrencyLabel": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "descriptionLabel": "Description",
+  "budgetOtherCategory": "Other",
+  "expensesByCategoryLabel": "Expenses by category · {month}",
+  "@expensesByCategoryLabel": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "total": "Total",
+  "monthlyOverview": "Monthly overview",
+  "transactionDeleted": "Transaction deleted",
+  "undo": "Undo",
   "budgetCategoriesScreenTitle": "Budget categories",
   "budgetNoCategoriesHint": "No categories yet.\nTap + to create one.",
   "budgetDeleteCategoryConfirm": "Delete category?",

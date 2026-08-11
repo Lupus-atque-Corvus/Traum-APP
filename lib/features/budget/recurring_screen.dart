@@ -5,6 +5,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 import 'budget_helpers.dart';
 import 'budget_providers.dart';
 import 'budget_scale.dart';
@@ -46,15 +47,16 @@ class RecurringScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const BudgetSubHeader(title: 'Wiederkehrend'),
+            BudgetSubHeader(
+                title: AppLocalizations.of(context)!.recurringScreenTitle),
             Expanded(
               child: defs.when(
                 data: (list) {
                   if (list.isEmpty) {
-                    return const Center(
+                    return Center(
                       child: Text(
-                        'Keine wiederkehrenden Buchungen',
-                        style: TextStyle(
+                        AppLocalizations.of(context)!.noRecurringTransactions,
+                        style: const TextStyle(
                           color: TraumColors.onBackgroundMuted,
                           fontFamily: 'DMSans',
                         ),
@@ -155,9 +157,9 @@ class _SummaryBar extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Monatliche Einnahmen',
-                  style: TextStyle(
+                Text(
+                  AppLocalizations.of(context)!.monthlyIncome,
+                  style: const TextStyle(
                     fontSize: 8,
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans',
@@ -186,9 +188,9 @@ class _SummaryBar extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Monatliche Ausgaben',
-                  style: TextStyle(
+                Text(
+                  AppLocalizations.of(context)!.monthlyExpenses,
+                  style: const TextStyle(
                     fontSize: 8,
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans',
@@ -269,7 +271,8 @@ class _RecurringRow extends StatelessWidget {
                 ),
                 SizedBox(height: bs(2)),
                 Text(
-                  'Jeden ${d.recurringDay ?? d.date.day}. im Monat',
+                  AppLocalizations.of(context)!
+                      .recurringDayOfMonth(d.recurringDay ?? d.date.day),
                   style: const TextStyle(
                     fontSize: 9,
                     color: TraumColors.onBackgroundMuted,
@@ -406,9 +409,9 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                 ),
               ),
             ),
-            const Text(
-              'Wiederkehrend bearbeiten',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.editRecurringTitle,
+              style: const TextStyle(
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w700,
                 color: TraumColors.onBackground,
@@ -416,15 +419,19 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
               ),
             ),
             const SizedBox(height: 16),
-            _field(_descCtrl, 'Beschreibung'),
+            _field(_descCtrl, AppLocalizations.of(context)!.descriptionLabel),
             const SizedBox(height: 8),
-            _field(_amountCtrl, 'Betrag (${widget.currency})', number: true),
+            _field(
+                _amountCtrl,
+                AppLocalizations.of(context)!
+                    .budgetAmountWithCurrencyLabel(widget.currency),
+                number: true),
             const SizedBox(height: 12),
             Row(
               children: [
-                const Text(
-                  'Am Tag des Monats:',
-                  style: TextStyle(
+                Text(
+                  AppLocalizations.of(context)!.budgetRecurringDayLabel,
+                  style: const TextStyle(
                     fontFamily: 'DMSans',
                     color: TraumColors.onBackgroundMuted,
                     fontSize: 13,
@@ -456,9 +463,9 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                       borderRadius: BorderRadius.circular(12)),
                 ),
                 onPressed: _save,
-                child: const Text(
-                  'Speichern',
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context)!.save,
+                  style: const TextStyle(
                       fontFamily: 'DMSans', fontWeight: FontWeight.w600),
                 ),
               ),

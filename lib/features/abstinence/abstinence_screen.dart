@@ -936,7 +936,7 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 12))),
               const SizedBox(height: 12),
-              Text('Icon',
+              Text(AppLocalizations.of(context)!.iconLabel,
                   style: const TextStyle(
                       color: TraumColors.onBackgroundMuted,
                       fontFamily: 'DMSans',
@@ -1360,7 +1360,7 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
               ),
             ),
             const SizedBox(height: 12),
-            Text('Icon',
+            Text(AppLocalizations.of(context)!.iconLabel,
                 style: const TextStyle(
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans',

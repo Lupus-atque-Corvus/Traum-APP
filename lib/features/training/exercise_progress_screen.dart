@@ -10,6 +10,7 @@ import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import '../settings/feedback/feedback_bottom_sheet.dart';
+import 'muscle_groups.dart';
 import 'widgets/body_map_widget.dart';
 
 /// Decodes an exercise's `primaryMuscles`/`secondaryMuscles` JSON-array
@@ -24,22 +25,6 @@ List<String> _decodeMuscleList(String raw) {
     // Ignore — treated as empty below.
   }
   return const [];
-}
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-String _mgDisplay(String key) {
-  switch (key.toLowerCase()) {
-    case 'chest':     return 'Pectorals';
-    case 'back':      return 'Lats';
-    case 'shoulders': return 'Deltoids';
-    case 'biceps':    return 'Biceps';
-    case 'triceps':   return 'Triceps';
-    case 'core':      return 'Abdominals';
-    case 'legs':      return 'Quadriceps, Glutes';
-    case 'cardio':    return 'Cardio';
-    case 'full_body': return 'Full Body';
-    default:          return key;
-  }
 }
 
 bool _isCardio(String muscleGroup) => muscleGroup.toLowerCase() == 'cardio';
@@ -113,7 +98,9 @@ class _ExerciseProgressScreenState
                 color: TraumColors.amberGold,
               ),
               title: Text(
-                ex.isBookmarked ? 'Lesezeichen entfernen' : 'Als Lesezeichen',
+                ex.isBookmarked
+                    ? AppLocalizations.of(context)!.removeBookmarkAction
+                    : AppLocalizations.of(context)!.addBookmarkAction,
                 style: const TextStyle(
                     color: TraumColors.onBackground, fontFamily: 'DMSans'),
               ),
@@ -297,7 +284,8 @@ class _InfoTab extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    _mgDisplay(ex.muscleGroup),
+                    muscleGroupLabel(
+                        ex.muscleGroup, AppLocalizations.of(context)!),
                     style: const TextStyle(
                       color: TraumColors.onBackgroundMuted,
                       fontFamily: 'DMSans',
@@ -417,9 +405,9 @@ class _InfoTab extends StatelessWidget {
             isScrollControlled: true,
             builder: (_) => const FeedbackBottomSheet(),
           ),
-          child: const Text(
-            'Hast du Tipps zu dieser Übung?',
-            style: TextStyle(
+          child: Text(
+            AppLocalizations.of(context)!.exerciseFeedbackPrompt,
+            style: const TextStyle(
               color: TraumColors.onBackgroundSubtle,
               fontFamily: 'DMSans',
               fontSize: 13,
@@ -431,9 +419,9 @@ class _InfoTab extends StatelessWidget {
 
         // Similar exercises
         if (similar.isNotEmpty) ...[
-          const Text(
-            'Similar Exercises',
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)!.similarExercises,
+            style: const TextStyle(
               color: TraumColors.onBackground,
               fontFamily: 'DMSans',
               fontWeight: FontWeight.w700,
@@ -466,7 +454,10 @@ class _InfoTab extends StatelessWidget {
                           fontFamily: 'DMSans',
                           fontWeight: FontWeight.w600,
                         )),
-                    Text(_mgDisplay(s.muscleGroup).toUpperCase(),
+                    Text(
+                        muscleGroupLabel(
+                                s.muscleGroup, AppLocalizations.of(context)!)
+                            .toUpperCase(),
                         style: const TextStyle(
                           color: TraumColors.coralOrange,
                           fontFamily: 'DMSans',
@@ -567,14 +558,16 @@ class _StatisticsTab extends StatelessWidget {
                     fontSize: 14,
                   )),
               const SizedBox(height: 12),
-              _StatRow(label: 'Times performed', value: '$totalSets'),
               _StatRow(
-                label: 'Total duration',
+                  label: AppLocalizations.of(context)!.timesPerformed,
+                  value: '$totalSets'),
+              _StatRow(
+                label: AppLocalizations.of(context)!.totalDurationLabel,
                 value: '${totalDuration.inHours > 0 ? '${totalDuration.inHours} h ' : ''}${totalDuration.inMinutes % 60} min',
               ),
               if (!cardio)
                 _StatRow(
-                  label: 'Total volume',
+                  label: AppLocalizations.of(context)!.totalVolumeLabel,
                   value: '${totalVolume.toStringAsFixed(0)} kg',
                 ),
             ],
@@ -808,11 +801,11 @@ class _ChartStats extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _MiniStat(label: 'Most recent', value: '${mostRecent.toStringAsFixed(1).replaceAll('.', ',')} $unit',
+        _MiniStat(label: AppLocalizations.of(context)!.mostRecent, value: '${mostRecent.toStringAsFixed(1).replaceAll('.', ',')} $unit',
             icon: Icons.access_time_rounded),
-        _MiniStat(label: 'Maximum', value: '${maximum.toStringAsFixed(1).replaceAll('.', ',')} $unit',
+        _MiniStat(label: AppLocalizations.of(context)!.maximum, value: '${maximum.toStringAsFixed(1).replaceAll('.', ',')} $unit',
             icon: Icons.trending_up_rounded),
-        _MiniStat(label: 'Average', value: '${average.toStringAsFixed(1).replaceAll('.', ',')} $unit',
+        _MiniStat(label: AppLocalizations.of(context)!.average, value: '${average.toStringAsFixed(1).replaceAll('.', ',')} $unit',
             icon: Icons.bar_chart_rounded),
       ],
     );

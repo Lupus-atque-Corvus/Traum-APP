@@ -1,12 +1,92 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.7+107** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.8+108** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-10 — v1.0.7, zweite Phase-5-Nachbesserung: Bild-Tap-Ziele + Kalenderzellen)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-11 — v1.0.8, Phase 6: Übersetzung)
+
+**Sechste Phase des Nacharbeitungs-Plans aus dem Tiefenaudit. Große, flächendeckende
+Textänderung — jeder hartcodierte deutsche/englische String außerhalb von `l10n.*` wurde gesucht
+und über ~35 Dateien hinweg auf `AppLocalizations` umgestellt. Keine schemaVersion-Änderung.**
+
+1. **Budget (Spitzenreiter, ~30 Fundstellen über 8 Dateien).** `debts_screen.dart`,
+   `accounts_card.dart`, `recurring_screen.dart`, `budget_stats_screen.dart`,
+   `transaction_list_screen.dart`, `budget_screen.dart` vollständig lokalisiert. Dabei
+   `accounts_card.dart`s Konto-Löschen-Dialog auf die geteilte `confirmDeleteDialog()`-Komponente
+   umgestellt (bisher eigener `AlertDialog`). `buildDonutSlices()` und `_monthYear()` bekamen
+   einen zusätzlichen Parameter (`otherLabel`/`context`), weil die "Sonstiges"-Kategorie bzw. das
+   hartcodierte Monats-Array vorher unabhängig von der App-Sprache waren.
+2. **Training.** `training_screen.dart`s `_lastWorkoutLabel` nutzt jetzt tatsächlich den bereits
+   übergebenen, aber bis dato ungenutzten `l10n`-Parameter statt fest codierter englischer Strings
+   ("X min ago" etc.). Drei fast identische, über `exercise_library_screen.dart`/
+   `exercise_picker_screen.dart`/`exercise_progress_screen.dart` verstreute
+   `_mgDisplay()`-Kopien (hartcodierte englische anatomische Begriffe, uneinheitliche
+   Groß-/Kleinschreibung) durch die bereits vorhandene, einheitliche
+   `muscleGroupLabel(canonical, l10n)`-Funktion ersetzt (`lib/features/training/
+   muscle_groups.dart`). `active_workout_screen.dart`s Satz-Typ-Auswahl (Normal/Warm-up/Drop/
+   Failure) lokalisiert. `'Bilateral'`/`'Unilateral'` bewusst NICHT angefasst — geprüft, das sind
+   identische Fachbegriffe in beiden Sprachen, kein Übersetzungsfehler.
+3. **Rest der App:** Home-Widgets (`general_widgets.dart` — Uhr-/Wetter-Karten, App-Favoriten,
+   Schnellzugriff-Labels; `widget_data_collector.dart` — derselbe Wetter-Text-Mapping-Fix für den
+   kontextlosen Homescreen-Widget-Refresh-Pfad, über `lookupAppLocalizations(Locale)` statt
+   `BuildContext`), Nutrition (Barcode-Scanner, Produkt-anlegen-Formular), Settings
+   (Kalender-Sync-Bereich, komplettes Feedback-Sheet inkl. `FeedbackType.label`), geteilte
+   Chart-Komponenten (`donut_chart.dart`, `traum_line_chart.dart`), Notes
+   (`notes_repository.dart`s "Unbenannt"-Fallback jetzt von der UI durchgereicht statt intern
+   hartcodiert — Repository hat kein `BuildContext`), Planning (Kalenderauswahl-Dialog),
+   Abstinence ("Icon"-Feldlabel), Weather (Standort-Berechtigungsdialog in
+   `weather_repository.dart`).
+4. **Echter Bug gefunden, nicht nur fehlende Lokalisierung:** `settings_screen.dart`s
+   `l10n.backupFailed('No modules selected')` interpolierte einen rohen ENGLISCHEN String in eine
+   sonst komplett deutsche Fehlermeldung — Sprachmischung mitten im Satz. Jetzt
+   `l10n.backupFailed(l10n.noModulesSelectedError)`.
+5. **`custom_lint`-Regel `avoid_hardcoded_strings_in_text_widget` gebaut, aber NICHT ins
+   Haupt-Projekt eingebunden — strukturell blockiert, keine Notlösung möglich.** Das Regelwerk
+   selbst existiert vollständig und funktionsfähig in `tool/traum_lints/` (eigenständiges,
+   unveröffentlichtes Dart-Paket, `dart pub get`/`dart analyze` dort laufen sauber durch). Beim
+   Einbinden als `path:`-`dev_dependency` der Haupt-App schlug `flutter pub get` fehl:
+   `custom_lint_builder 0.7.6` verlangt `analyzer: ^7.0.0`, aber das Haupt-Projekt hat über
+   `build_runner`/`riverpod_generator`/`drift_dev` bereits `analyzer 8.4.1` aufgelöst — eine
+   Versionsobergrenze in `custom_lint_builder` selbst, nicht behebbar durch Anpassen der eigenen
+   Constraint in `tool/traum_lints/pubspec.yaml`. `pubspec.yaml`/`analysis_options.yaml`-Änderungen
+   wieder zurückgenommen, `tool/traum_lints/` bleibt als fertiges, eigenständig lauffähiges Paket
+   liegen (in `analysis_options.yaml` per `analyzer: exclude: tool/traum_lints/**` von der
+   Haupt-App-Analyse ausgenommen, damit es kein eigenes `flutter analyze`-Rauschen erzeugt) — sobald
+   `custom_lint_builder` eine `analyzer 8.x`-kompatible Version veröffentlicht (oder die separate,
+   bereits im Plan als eigener Nachmittag vorgesehene Paket-Aktualisierung die App auf einen
+   niedrigeren `analyzer` zurückzieht), kann es ohne weitere Codeänderung eingebunden werden.
+6. **Bewusst nicht angetastet:** die GitHub-Issue-Markdown-Vorlagen in
+   `feedback_bottom_sheet.dart`s `_buildBody()`/`_buildSystemInfo()` — entwicklerseitiger
+   GitHub-Issue-Inhalt, konventionell englisch unabhängig von der App-Sprache. Das ÄUSSERE
+   `HomeWidgetDescriptor.title`-Feld (Widget-Katalog-Auswahl-Sheet, 69 Instanziierungsstellen über
+   4+ Widget-Registry-Dateien) — nur die tatsächlich gerenderten inneren
+   `HomeWidgetFrame(title:)`-Aufrufe wurden lokalisiert; das äußere Feld dient zusätzlich als
+   Such-Filter-Text im Katalog-Sheet, eine Umstellung auf `l10n` würde den Feldtyp app-weit ändern
+   müssen — deutlich größerer, eigener Umbau, bewusst zurückgestellt. Kein ICU-Plural für
+   App-Anzahl-Text (`{n} App`/`Apps`) — einfache Ternary-Lösung passend zum Rest der Codebasis, die
+   nirgends ICU-Plurale nutzt.
+
+**Beim Testen gefunden:** `test/features/home/group_general_test.dart` und
+`home_registry_completeness_test.dart` bauten ihre `MaterialApp` bisher ohne
+`localizationsDelegates`/`supportedLocales` — unauffällig, solange kein Widget in
+`generalHomeWidgets` `AppLocalizations.of(context)` aufrief. Mit der Uhr-/Wetter-Lokalisierung
+dieser Runde schlug `AppLocalizations.of(context)!` dort mit einem Null-Check-Fehler fehl. Beide
+Tests um die Delegates ergänzt statt die Produktivcode-Lokalisierung wieder zu entfernen.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **534/534 grün** (unverändert in der Zahl —
+`stats_donut_test.dart` an die neue `buildDonutSlices`-Signatur angepasst, die beiden
+Home-Widget-Tests um Localization-Delegates ergänzt, keine neuen Testdateien).
+
+**Nächste Phase laut Plan:** Phase 7 — Code-Qualität & neue Suchfelder (zentrale
+`validators.dart`/`parseLocaleAmount()`, Übungssuche vereinheitlichen, Riverpod-Aufräumarbeiten,
+neue Tagebuch-Suche, neue Budget-Transaktionssuche).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-10 — v1.0.7, zweite Phase-5-Nachbesserung: Bild-Tap-Ziele + Kalenderzellen)
 
 **Auf Nutzerwunsch ("überprüfe ob du noch irgendwas übersehen hast") ein zweiter, tieferer
 Selbst-Audit nach v1.0.6 — diesmal gezielt nach Mustern gesucht, die die beiden vorherigen Sweeps

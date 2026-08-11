@@ -79,8 +79,13 @@ class NotesRepository {
   // ─── Notiz speichern (Inhalt/Titel) ─────────────────────────────────────
 
   /// Speichert Inhalt (und optional Titel) und baut den kompletten Index neu auf.
-  Future<void> saveNoteContent(int id, String content, {String? title}) async {
-    final resolvedTitle = title ?? _deriveTitle(content);
+  /// [untitledFallback] wird nur verwendet, wenn weder [title] gesetzt ist
+  /// noch der Inhalt selbst einen Titel hergibt (Frontmatter/erste Zeile) —
+  /// die Repository-Schicht kennt die App-Locale nicht, der Aufrufer (mit
+  /// BuildContext) übergibt daher den bereits lokalisierten Text.
+  Future<void> saveNoteContent(int id, String content,
+      {String? title, required String untitledFallback}) async {
+    final resolvedTitle = title ?? _deriveTitle(content, untitledFallback);
     await _dao.updateNoteFields(
       id,
       NotesCompanion(
@@ -242,8 +247,8 @@ class NotesRepository {
   }
 
   /// Leitet aus dem Inhalt einen Titel ab, falls keiner gesetzt ist:
-  /// Frontmatter `title`, sonst erste Überschrift/Zeile, sonst „Unbenannt“.
-  String _deriveTitle(String content) {
+  /// Frontmatter `title`, sonst erste Überschrift/Zeile, sonst [fallback].
+  String _deriveTitle(String content, String fallback) {
     final raw = NotesMarkdownParser.extractFrontmatterRaw(content);
     if (raw != null) {
       try {
@@ -259,6 +264,6 @@ class NotesRepository {
       if (t.isEmpty) continue;
       return t.replaceFirst(RegExp(r'^#{1,6}\s+'), '').trim();
     }
-    return 'Unbenannt';
+    return fallback;
   }
 }

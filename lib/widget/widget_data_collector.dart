@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui' show Locale;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
@@ -14,6 +15,7 @@ import '../features/graffiti_map/graffiti_map_provider.dart'
 import '../features/health/health_score_provider.dart';
 import '../features/nutrition/nutrition_providers.dart';
 import '../features/training/muscle_groups.dart' show canonicalMuscleGroup;
+import '../l10n/app_localizations.dart';
 import 'widget_snapshot.dart';
 
 /// Collects all data needed for the homescreen widget snapshot.
@@ -987,14 +989,20 @@ class WidgetDataCollector {
     {
       final code = (weatherCurrent?['weathercode'] as num?)?.toInt() ?? -1;
       if (code >= 0) {
+        // No BuildContext in this background/home-widget refresh path, so
+        // AppLocalizations is resolved directly from the persisted locale
+        // preference instead of via .of(context).
+        final localeCode = read(preferencesRepositoryProvider).appLocale ?? 'de';
+        final l10n = lookupAppLocalizations(Locale(localeCode));
+
         String cond(int c) {
-          if (c == 0) return 'Klar';
-          if (c <= 3) return 'Bewölkt';
-          if (c <= 48) return 'Neblig';
-          if (c <= 67) return 'Regen';
-          if (c <= 77) return 'Schnee';
-          if (c <= 82) return 'Schauer';
-          return 'Gewitter';
+          if (c == 0) return l10n.weatherClear;
+          if (c <= 3) return l10n.weatherCloudy;
+          if (c <= 48) return l10n.weatherFoggy;
+          if (c <= 67) return l10n.weatherRain;
+          if (c <= 77) return l10n.weatherSnow;
+          if (c <= 82) return l10n.weatherShowers;
+          return l10n.weatherThunderstorm;
         }
 
         weatherForecast = cond(code);

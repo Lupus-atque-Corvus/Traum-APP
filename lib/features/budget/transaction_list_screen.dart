@@ -29,9 +29,9 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
     final messenger = ScaffoldMessenger.of(context)..clearSnackBars();
     messenger.showSnackBar(
       SnackBar(
-        content: const Text('Transaktion gelöscht'),
+        content: Text(AppLocalizations.of(context)!.transactionDeleted),
         action: SnackBarAction(
-          label: 'Rückgängig',
+          label: AppLocalizations.of(context)!.undo,
           textColor: TraumColors.amberGold,
           onPressed: () {
             ref.read(budgetDaoProvider).insertTransaction(
