@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import '../../../core/utils/sql_like.dart';
 import '../traum_database.dart';
 
 part 'food_products_dao.g.dart';
@@ -18,12 +19,15 @@ class FoodProductsDao extends DatabaseAccessor<TraumDatabase>
       (select(foodProducts)..where((t) => t.id.equals(id)))
           .getSingleOrNull();
 
-  Future<List<FoodProduct>> search(String query) =>
-      (select(foodProducts)
-            ..where((t) =>
-                t.name.like('%$query%') | t.brand.like('%$query%'))
-            ..orderBy([(t) => OrderingTerm.desc(t.useCount)]))
-          .get();
+  Future<List<FoodProduct>> search(String query) {
+    final pattern = '%${escapeLikePattern(query)}%';
+    return (select(foodProducts)
+          ..where((t) =>
+              t.name.like(pattern, escapeChar: likeEscapeChar) |
+              t.brand.like(pattern, escapeChar: likeEscapeChar))
+          ..orderBy([(t) => OrderingTerm.desc(t.useCount)]))
+        .get();
+  }
 
   Future<List<FoodProduct>> getRecent({int limit = 10}) =>
       (select(foodProducts)

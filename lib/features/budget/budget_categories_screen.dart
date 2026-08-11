@@ -9,6 +9,7 @@ import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
 import 'budget_category_colors.dart';
 import 'budget_category_icons.dart';
+import 'budget_helpers.dart';
 import 'budget_scale.dart';
 import 'widgets/budget_sub_header.dart';
 import 'widgets/icon_picker_grid.dart';
@@ -403,9 +404,15 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
   Future<void> _save() async {
     final name = _nameCtrl.text.trim();
     if (name.isEmpty) return;
+    final limit = parseLocaleAmount(_limitCtrl.text);
+    if (limit != null && limit > kMaxAmount) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context)!
+              .amountExceedsMax(fmtAmount(kMaxAmount)))));
+      return;
+    }
     setState(() => _saving = true);
     try {
-      final limit = parseLocaleAmount(_limitCtrl.text);
       final dao = ref.read(budgetDaoProvider);
       final cat = widget.category;
       if (cat != null) {

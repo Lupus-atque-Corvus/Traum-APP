@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import '../traum_database.dart';
 import '../../../core/services/grocery_price_service.dart';
+import '../../../core/utils/sql_like.dart';
 
 part 'nutrition_dao.g.dart';
 
@@ -48,7 +49,8 @@ class NutritionDao extends DatabaseAccessor<TraumDatabase>
 
   Future<List<MealTemplate>> searchTemplates(String query) =>
       (select(mealTemplates)
-            ..where((t) => t.name.like('%$query%')))
+            ..where((t) => t.name.like('%${escapeLikePattern(query)}%',
+                escapeChar: likeEscapeChar)))
           .get();
 
   Future<int> insertTemplate(MealTemplatesCompanion entry) =>

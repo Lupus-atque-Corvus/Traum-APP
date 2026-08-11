@@ -1323,6 +1323,14 @@
   "budgetGallery": "Galerie",
   "budgetTransferAccountsRequired": "Von- und Nach-Konto wählen (verschieden)",
   "budgetInvalidAmount": "Bitte einen gültigen Betrag eingeben",
+  "amountExceedsMax": "Betrag darf höchstens {max} sein",
+  "@amountExceedsMax": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
   "budgetDefaultDescriptionExpense": "Ausgabe",
   "budgetDefaultDescriptionIncome": "Einnahme",
   "budgetAmountLabel": "Betrag",

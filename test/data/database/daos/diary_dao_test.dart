@@ -122,4 +122,25 @@ void main() {
 
     expect(await db.diaryDao.searchEntries(diaryA, 'xyz'), isEmpty);
   });
+
+  test(
+      'searchEntries treats % and _ in the query as literal characters, '
+      'not SQL LIKE wildcards', () async {
+    await addEntry(diaryA, '2026-06-01',
+        note: '50% geschafft', createdAt: DateTime(2026, 6, 1));
+    await addEntry(diaryA, '2026-06-02',
+        note: 'Ganz normaler Tag', createdAt: DateTime(2026, 6, 2));
+
+    // A query of only wildcard characters must match just the entry that
+    // literally contains that character — not every row. This regressed
+    // once when "%" was interpolated straight into a LIKE pattern without
+    // escaping, so `LIKE '%%%'` matched everything, including the entry
+    // with no "%" in it at all.
+    final percentHits = await db.diaryDao.searchEntries(diaryA, '%');
+    expect(percentHits.map((e) => e.date), ['2026-06-01']);
+    expect(await db.diaryDao.searchEntries(diaryA, '_'), isEmpty);
+
+    final hits = await db.diaryDao.searchEntries(diaryA, '50%');
+    expect(hits.map((e) => e.date), ['2026-06-01']);
+  });
 }

@@ -3,7 +3,16 @@ import '../../data/database/traum_database.dart';
 
 String fmtAmount(double amount) {
   // German number format: 1.234,56
-  final str = amount.abs().toStringAsFixed(2).replaceAll('.', ',');
+  //
+  // toStringAsFixed(2) silently switches to scientific notation ("1e+44",
+  // no decimal point at all) once the magnitude gets large enough — an
+  // amount this app should never produce through normal input, but a
+  // malformed/extreme value must still render as *something* instead of
+  // crashing on the `parts[1]` access below.
+  final fixed = amount.abs().toStringAsFixed(2);
+  if (!fixed.contains('.')) return fixed;
+
+  final str = fixed.replaceAll('.', ',');
   final parts = str.split(',');
   final intPart = parts[0].replaceAllMapped(
     RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),

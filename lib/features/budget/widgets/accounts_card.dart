@@ -310,6 +310,12 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
     final name = _nameCtrl.text.trim();
     final balance = parseLocaleAmount(_balanceCtrl.text) ?? 0;
     if (name.isEmpty) return;
+    if (balance.abs() > kMaxAmount) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context)!
+              .amountExceedsMax(fmtAmount(kMaxAmount)))));
+      return;
+    }
 
     setState(() => _saving = true);
     try {

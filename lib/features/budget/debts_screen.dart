@@ -581,8 +581,16 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
           TextButton(
             onPressed: () {
               final a = parseLocaleAmount(ctrl.text) ?? 0;
-              if (a > 0) widget.onPay(a);
-              Navigator.pop(ctx);
+              if (a > 0 && a <= kMaxAmount) {
+                widget.onPay(a);
+                Navigator.pop(ctx);
+              } else if (a > kMaxAmount) {
+                ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+                    content: Text(AppLocalizations.of(ctx)!
+                        .amountExceedsMax(fmtAmount(kMaxAmount)))));
+              } else {
+                Navigator.pop(ctx);
+              }
             },
             child: Text(AppLocalizations.of(context)!.ok),
           ),
@@ -642,6 +650,12 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
                     final d = desc.text.trim();
                     final a = parseLocaleAmount(price.text) ?? 0;
                     if (d.isEmpty || a <= 0) return;
+                    if (a > kMaxAmount) {
+                      ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+                          content: Text(AppLocalizations.of(ctx)!
+                              .amountExceedsMax(fmtAmount(kMaxAmount)))));
+                      return;
+                    }
                     final repo = ref.read(budgetRepositoryProvider);
                     if (item == null) {
                       repo.addDebtItem(DebtItemsCompanion.insert(
@@ -659,9 +673,9 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
                     }
                     Navigator.of(ctx).pop();
                   },
-                  child: const Text(
-                    'Speichern',
-                    style: TextStyle(
+                  child: Text(
+                    l10n.save,
+                    style: const TextStyle(
                         fontFamily: 'DMSans', fontWeight: FontWeight.w600),
                   ),
                 ),

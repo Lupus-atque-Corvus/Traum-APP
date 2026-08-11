@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import '../../../core/utils/sql_like.dart';
 import '../traum_database.dart';
 
 part 'diary_dao.g.dart';
@@ -97,7 +98,9 @@ class DiaryDao extends DatabaseAccessor<TraumDatabase> with _$DiaryDaoMixin {
   Future<List<DiaryEntry>> searchEntries(int diaryId, String query) =>
       (select(diaryEntries)
             ..where((t) =>
-                t.diaryId.equals(diaryId) & t.note.like('%$query%'))
+                t.diaryId.equals(diaryId) &
+                t.note.like('%${escapeLikePattern(query)}%',
+                    escapeChar: likeEscapeChar))
             ..orderBy([(t) => OrderingTerm.desc(t.date)])
             ..limit(200))
           .get();

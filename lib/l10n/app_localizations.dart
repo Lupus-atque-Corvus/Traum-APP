@@ -5552,6 +5552,12 @@ abstract class AppLocalizations {
   /// **'Bitte einen gültigen Betrag eingeben'**
   String get budgetInvalidAmount;
 
+  /// No description provided for @amountExceedsMax.
+  ///
+  /// In de, this message translates to:
+  /// **'Betrag darf höchstens {max} sein'**
+  String amountExceedsMax(String max);
+
   /// No description provided for @budgetDefaultDescriptionExpense.
   ///
   /// In de, this message translates to:

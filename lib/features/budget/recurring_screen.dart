@@ -379,6 +379,12 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
     final desc = _descCtrl.text.trim();
     final amount = parseLocaleAmount(_amountCtrl.text) ?? 0;
     if (desc.isEmpty || amount <= 0) return;
+    if (amount > kMaxAmount) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context)!
+              .amountExceedsMax(fmtAmount(kMaxAmount)))));
+      return;
+    }
     widget.onSave(desc, amount, _day);
     Navigator.of(context).pop();
   }

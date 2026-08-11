@@ -158,7 +158,7 @@ class _TransactionDetailScreenState
     final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surface,
         title: Text(l10n.budgetDeleteTransactionConfirm,
             style: const TextStyle(
@@ -169,14 +169,14 @@ class _TransactionDetailScreenState
                 color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => Navigator.pop(ctx, false),
             child: Text(l10n.cancel,
                 style: const TextStyle(
                     color: TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans')),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.pop(ctx, true),
             child: Text(l10n.delete,
                 style: const TextStyle(
                     color: TraumColors.roseRed, fontFamily: 'DMSans')),

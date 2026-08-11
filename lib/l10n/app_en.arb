@@ -1289,6 +1289,14 @@
   "budgetGallery": "Gallery",
   "budgetTransferAccountsRequired": "Select from and to accounts (must differ)",
   "budgetInvalidAmount": "Please enter a valid amount",
+  "amountExceedsMax": "Amount must be at most {max}",
+  "@amountExceedsMax": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
   "budgetDefaultDescriptionExpense": "Expense",
   "budgetDefaultDescriptionIncome": "Income",
   "budgetAmountLabel": "Amount",

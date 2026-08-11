@@ -104,7 +104,7 @@ class _DiaryEntryBody extends ConsumerWidget {
                   } else if (value == 'delete') {
                     final confirm = await showDialog<bool>(
                       context: context,
-                      builder: (_) => AlertDialog(
+                      builder: (dialogCtx) => AlertDialog(
                         backgroundColor: TraumColors.surface,
                         title: Text(l10n.diaryDeleteTitle,
                             style: const TextStyle(
@@ -117,13 +117,13 @@ class _DiaryEntryBody extends ConsumerWidget {
                                 color: TraumColors.onBackgroundMuted)),
                         actions: [
                           TextButton(
-                            onPressed: () => Navigator.pop(context, false),
+                            onPressed: () => Navigator.pop(dialogCtx, false),
                             child: Text(l10n.cancel,
                                 style: const TextStyle(
                                     color: TraumColors.onBackgroundMuted)),
                           ),
                           TextButton(
-                            onPressed: () => Navigator.pop(context, true),
+                            onPressed: () => Navigator.pop(dialogCtx, true),
                             child: Text(l10n.delete,
                                 style: const TextStyle(color: TraumColors.roseRed)),
                           ),

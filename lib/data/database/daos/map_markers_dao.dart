@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import '../../../core/utils/sql_like.dart';
 import '../traum_database.dart';
 
 part 'map_markers_dao.g.dart';
@@ -26,17 +27,19 @@ class MapMarkersDao extends DatabaseAccessor<TraumDatabase>
   /// in den importierten Collections (413k Türme, 82k Lost Places) sonst
   /// zehntausende Treffer liefert, die alle gerendert werden müssten.
   Future<List<MapMarker>> search(int collectionId, String q,
-          {int limit = 500}) =>
-      (select(mapMarkers)
-            ..where((t) =>
-                t.collectionId.equals(collectionId) &
-                (t.note.like('%$q%') |
-                    t.hashtags.like('%$q%') |
-                    t.locationName.like('%$q%') |
-                    t.title.like('%$q%')))
-            ..orderBy([(t) => OrderingTerm.desc(t.createdAt)])
-            ..limit(limit))
-          .get();
+      {int limit = 500}) {
+    final pattern = '%${escapeLikePattern(q)}%';
+    return (select(mapMarkers)
+          ..where((t) =>
+              t.collectionId.equals(collectionId) &
+              (t.note.like(pattern, escapeChar: likeEscapeChar) |
+                  t.hashtags.like(pattern, escapeChar: likeEscapeChar) |
+                  t.locationName.like(pattern, escapeChar: likeEscapeChar) |
+                  t.title.like(pattern, escapeChar: likeEscapeChar)))
+          ..orderBy([(t) => OrderingTerm.desc(t.createdAt)])
+          ..limit(limit))
+        .get();
+  }
 
   /// Neueste Marker einer Collection mit Obergrenze — für Listen-/Galerie-
   /// Ansichten, die sonst über `getByCollection` die komplette Collection
@@ -132,7 +135,9 @@ class MapMarkersDao extends DatabaseAccessor<TraumDatabase>
           {int limit = 500}) =>
       (select(mapMarkers)
             ..where((t) =>
-                t.collectionId.equals(collectionId) & t.hashtags.like('%$tag%'))
+                t.collectionId.equals(collectionId) &
+                t.hashtags.like('%${escapeLikePattern(tag)}%',
+                    escapeChar: likeEscapeChar))
             ..orderBy([(t) => OrderingTerm.desc(t.createdAt)])
             ..limit(limit))
           .get();

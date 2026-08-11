@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import '../../../core/utils/sql_like.dart';
 import '../traum_database.dart';
 
 part 'notes_dao.g.dart';
@@ -302,7 +303,10 @@ class NotesDao extends DatabaseAccessor<TraumDatabase> with _$NotesDaoMixin {
           .get();
     }
     return (select(notes)
-          ..where((t) => t.deletedAt.isNull() & t.title.lower().like('%$q%'))
+          ..where((t) =>
+              t.deletedAt.isNull() &
+              t.title.lower().like('%${escapeLikePattern(q)}%',
+                  escapeChar: likeEscapeChar))
           ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])
           ..limit(30))
         .get();

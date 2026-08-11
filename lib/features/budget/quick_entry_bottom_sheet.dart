@@ -211,6 +211,14 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
       );
       return;
     }
+    if (amount > kMaxAmount) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.amountExceedsMax(fmtAmount(kMaxAmount))),
+        ),
+      );
+      return;
+    }
 
     setState(() => _saving = true);
     final isDef = _recurring && _type != 'transfer';

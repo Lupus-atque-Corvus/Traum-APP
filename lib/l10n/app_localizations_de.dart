@@ -2883,6 +2883,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get budgetInvalidAmount => 'Bitte einen gültigen Betrag eingeben';
 
   @override
+  String amountExceedsMax(String max) {
+    return 'Betrag darf höchstens $max sein';
+  }
+
+  @override
   String get budgetDefaultDescriptionExpense => 'Ausgabe';
 
   @override

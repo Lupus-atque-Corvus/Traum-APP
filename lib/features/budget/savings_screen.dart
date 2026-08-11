@@ -9,6 +9,7 @@ import '../../core/theme/radius.dart';
 import '../../core/utils/validators.dart';
 import '../../data/database/traum_database.dart';
 import '../../l10n/app_localizations.dart';
+import 'budget_helpers.dart';
 import 'budget_scale.dart';
 import 'widgets/budget_sub_header.dart';
 
@@ -336,9 +337,13 @@ class _SavingsGoalCard extends StatelessWidget {
           TextButton(
             onPressed: () async {
               final v = parseLocaleAmount(ctrl.text);
-              if (v != null && v > 0) {
+              if (v != null && v > 0 && v <= kMaxAmount) {
                 Navigator.pop(ctx);
                 await onAddAmount(v);
+              } else if (v != null && v > kMaxAmount) {
+                ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+                    content: Text(AppLocalizations.of(ctx)!
+                        .amountExceedsMax(fmtAmount(kMaxAmount)))));
               }
             },
             child: Text(AppLocalizations.of(ctx)!.deposit,
@@ -530,6 +535,12 @@ class _AddGoalSheetState extends State<_AddGoalSheet> {
       return;
     }
     final current = parseLocaleAmount(_currentCtrl.text) ?? 0;
+    if (target > kMaxAmount || current > kMaxAmount) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context)!
+              .amountExceedsMax(fmtAmount(kMaxAmount)))));
+      return;
+    }
     setState(() => _saving = true);
     await widget.onAdd(SavingsGoalsCompanion.insert(
       name: _nameCtrl.text.trim(),

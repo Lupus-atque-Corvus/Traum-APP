@@ -1,12 +1,83 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.0.9+109** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.0+110** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-11 — v1.0.9, Phase 7: Code-Qualität & neue Suchfelder)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-11 — v1.1.0, Nutzer-gemeldete Live-Bugs nach v1.0.9)
+
+**Direktes Nutzer-Feedback mit vier Screenshots, kurz nach dem v1.0.9-Release: Tagebuch-Suche
+nach `%%_%` lieferte alle Einträge statt gar keinen Treffer; ein absurd hoher Betrag im Budget
+("−1e+44 €") ließ sich weder korrekt anzeigen noch löschen, mit sichtbarem `RangeError` in der
+UI; das Lösch-Bestätigungsfenster für eine Transaktion blieb nach dem Bestätigen auf dem Bildschirm
+stehen. Alle drei Root-Causes gefunden und behoben, keine schemaVersion-Änderung.**
+
+1. **🔴 SQL-LIKE-Wildcard-Injection in JEDER Textsuche der App — nicht nur der neuen
+   Tagebuch-Suche.** `t.note.like('%$query%')` (und identisch in vier weiteren DAOs) baute das
+   `LIKE`-Pattern per roher String-Interpolation aus der Nutzereingabe — `%` und `_` sind in SQL
+   `LIKE` Wildcard-Zeichen, kein Escaping bedeutete: eine Suche nach z. B. `%` matched jede Zeile
+   (`LIKE '%%%'`), unabhängig vom tatsächlichen Inhalt. Neue `lib/core/utils/sql_like.dart`
+   (`escapeLikePattern()` + `likeEscapeChar`, nutzt Drifts eingebaute `escapeChar:`-Option auf
+   `.like()`) an **allen** betroffenen Stellen verdrahtet: `DiaryDao.searchEntries` (neu in
+   Phase 7, der gemeldete Fall), `FoodProductsDao.search`, `MapMarkersDao.search` +
+   `byHashtagSubstring`, `NotesDao.searchTitles` — alle vier bereits **vor** dieser Phase
+   bestehend und genauso betroffen, nur bisher nie mit `%`/`_` als Sucheingabe getestet worden.
+2. **🔴 Echter Absturz-Bug in `fmtAmount()` gefunden, nicht nur eine fehlende Obergrenze.**
+   `double.toStringAsFixed(2)` wechselt ab einer bestimmten Größenordnung (~10^21) laut
+   Dart-Spezifikation stillschweigend auf wissenschaftliche Notation ("1e+44", **kein**
+   Dezimalpunkt mehr) statt eine feste Nachkommastellen-Darstellung zu liefern.
+   `fmtAmount()` ging aber immer von genau einem Dezimalpunkt aus (`str.split(',')` gefolgt von
+   ungeprüftem Zugriff auf `parts[1]`) — bei einer einstelligen Ergebnisliste ohne Punkt/Komma
+   crashte das mit exakt der gemeldeten `RangeError (length): Invalid value: Only valid value is
+   0: 1`. Das erklärt auch das zweite Symptom ("kann Transaktion nicht mehr löschen") — die
+   Transaktionsliste crashte beim Rendern des kaputten Betrags, bevor der Löschen-Button überhaupt
+   erreichbar war. Fix zweigleisig:
+   - `fmtAmount()` selbst robust gemacht (prüft auf fehlenden Dezimalpunkt, bevor `parts[1]`
+     zugegriffen wird) — Absicherung, unabhängig davon, wie ein extremer Wert zustande kam.
+   - **Neue Obergrenze `kMaxAmount = 50.000.000` (`core/utils/validators.dart`)**, an allen
+     direkten Betrags-Eingabepunkten im Budget-Modul durchgesetzt (Nutzer-Vorschlag): Schnelleingabe/
+     Überweisung (`quick_entry_bottom_sheet.dart`, der tatsächliche Reproduktionspfad — das
+     Nummernfeld selbst begrenzt nur Nachkommastellen, keine Ganzzahlstellen), Konto-Kontostand
+     (`accounts_card.dart`), Sparziel-Zielbetrag/-Startbetrag/-Einzahlung (`savings_screen.dart`),
+     Schulden-Ratenzahlung/-Posten-Preis (`debts_screen.dart`), wiederkehrender Betrag
+     (`recurring_screen.dart`), Kategorie-Limit (`budget_categories_screen.dart`). Neuer
+     parametrisierter Key `amountExceedsMax(max)`.
+3. **🔴 Lösch-Dialog blieb nach Bestätigung sichtbar stehen — echter Navigator-Bug, kein reiner
+   Anzeigefehler.** `transaction_detail_screen.dart`s `_delete()` und `diary_entry_screen.dart`s
+   Lösch-Bestätigung bauten ihren `AlertDialog` mit `builder: (_) => ...` — der dialogeigene
+   `BuildContext` wurde verworfen, die Knöpfe riefen stattdessen `Navigator.pop(context, …)` mit
+   dem **äußeren Screen-Context** auf. Da `showDialog()` standardmäßig auf dem ROOT-Navigator
+   pusht, der äußere Screen aber innerhalb der verschachtelten `ShellRoute`-Navigator-Ebene von
+   go_router lebt, poppte `Navigator.pop(context)` die FALSCHE (Shell-)Navigator-Ebene — der
+   Dialog auf dem Root-Navigator schloss sich nie. Fix: dialogeigenen `builder`-Context
+   (`ctx`/`dialogCtx`) für die Pop-Aufrufe verwenden statt des äußeren. Per gezieltem Audit über
+   alle 21 `showDialog`-Aufrufstellen der App verifiziert: dies waren die einzigen zwei
+   Vorkommen dieses Musters — der etablierte Rest der App (u. a. der geteilte
+   `confirmDeleteDialog()`-Helfer) macht es bereits richtig.
+4. **Nebenbei gefunden:** ein weiterer von Phase 6 übersehener hartcodierter „Speichern"-String
+   im Schulden-Posten-Bearbeiten-Sheet (`debts_screen.dart`) — jetzt `l10n.save`.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **562/562 grün** (551 vorher + 11 neu:
+`test/core/utils/sql_like_test.dart`, `test/features/budget/budget_helpers_test.dart`,
+`diary_dao_test.dart` um einen Wildcard-Escaping-Regressionstest erweitert).
+
+**Für dich zu prüfen:**
+- Im Tagebuch nach `%` oder `_` suchen — sollte jetzt nur Einträge finden, die dieses Zeichen
+  tatsächlich enthalten, nicht mehr alle
+- Versuchen, einen Betrag über 50 Millionen einzugeben (Schnelleingabe, Konto, Sparziel, Schuld,
+  wiederkehrend, Kategorie-Limit) — sollte jetzt mit einer Fehlermeldung abgelehnt werden statt
+  die Anzeige zu zerstören
+- Eine Transaktion löschen — der Bestätigungsdialog sollte sich nach „Löschen" jetzt zuverlässig
+  schließen; gleiches beim Löschen eines Tagebuch-Eintrags
+
+**Nächste Phase laut Plan:** Phase 8 — Header-Vereinheitlichung (`TraumSubHeader` aus
+`BudgetSubHeader` extrahieren, Nutrition/Diary darauf umstellen — pixelgenau, höchste Sorgfalt).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-11 — v1.0.9, Phase 7: Code-Qualität & neue Suchfelder)
 
 **Siebte Phase des Nacharbeitungs-Plans. Vier Teile: zentrale Betrags-Validierung, vereinheitlichte
 Übungssuche, zwei neue Suchfunktionen, kleinere Riverpod-Aufräumarbeiten. Keine schemaVersion-Änderung.**
