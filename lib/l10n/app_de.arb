@@ -207,6 +207,15 @@
       }
     }
   },
+  "completeShoppingLabel": "✓  Einkauf abschließen",
+  "estimatedBudgetLabel": "Budget (geschätzt): {amount}",
+  "@estimatedBudgetLabel": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "listEmpty": "Liste ist leer",
   "saveTemplate": "Vorlage speichern",
   "templateNameHint": "z.B. Wocheneinkauf",

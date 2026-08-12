@@ -500,6 +500,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get completeShoppingLabel => '✓  Complete shopping';
+
+  @override
+  String estimatedBudgetLabel(String amount) {
+    return 'Budget (estimated): $amount';
+  }
+
+  @override
   String get listEmpty => 'List is empty';
 
   @override

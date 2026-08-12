@@ -1,12 +1,58 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.0+110** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.2+112** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-11 — v1.1.0, Nutzer-gemeldete Live-Bugs nach v1.0.9)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-12 — v1.1.2, Phase 8: Header-Vereinheitlichung)
+
+**Achte Phase des Nacharbeitungs-Plans. Vorab ein Vorschau-Testbuild (v1.1.1-test1, GitHub
+Pre-Release) an einem einzelnen Nutrition-Screen gezeigt und vom Nutzer bestätigt ("sieht gut
+aus"), bevor auf weitere Screens ausgerollt wurde — Sequenz explizit vom Nutzer so gewünscht, da
+der Plan selbst "höchste Sorgfalt" für diese Phase vorschreibt. Keine schemaVersion-Änderung.**
+
+1. **`TraumSubHeader`** (`lib/core/components/traum_sub_header.dart`, neu) aus Budgets eigenem
+   `BudgetSubHeader` extrahiert (abgerundeter Zurück-Chevron + fetter Titel). `BudgetSubHeader`
+   ist jetzt ein dünner Wrapper mit fixiertem `scale: kBudgetScale` — **pixelgenau unverändert**
+   für alle 5 bestehenden Budget-Sub-Screens (Schulden, Wiederkehrend, Sparziele, Kategorien,
+   Transaktionsliste). **Subtiler Fallstrick beim Extrahieren gefunden:** Budgets Original-Header
+   skalierte Struktur-Maße (Padding, Button-Größe, Radius) explizit über `bs()`, ließ die
+   Schriftgröße aber bewusst unskaliert (`fontSize: 15`, roh) — Budget-Screens bekommen ihre
+   Text-Skalierung stattdessen über den ambienten `BudgetTextScale`-MediaQuery-Wrapper. Hätte
+   `TraumSubHeader` `scale` auch auf die Schriftgröße angewendet, wäre sie dort doppelt skaliert
+   worden (1.12× im Layout-Code, nochmal 1.12× durch den MediaQuery-Wrapper). Fix: `scale`
+   multipliziert nur Struktur-Maße, Schriftgröße bleibt fix bei 15 — exakt wie im Original.
+   Regressionstest (`test/core/components/traum_sub_header_test.dart`) sichert das ab.
+2. **Auf Nutrition ausgerollt:** `add_custom_product_screen.dart` ("Neues Produkt anlegen") und
+   `shopping_mode_screen.dart` ("Im Laden") nutzen jetzt `TraumSubHeader` statt einer eigenen
+   `AppBar`. **Bewusst NICHT angefasst:** `barcode_scanner_screen.dart` — zeigt seine
+   (transparente) AppBar über der Live-Kamera-Vorschau; ein solider `TraumSubHeader` würde die
+   Vorschau sichtbar verdecken, exakt dieselbe Abwägung wie bei Diary (siehe unten).
+3. **Diary bewusst ausgelassen — echter struktureller Konflikt, keine offene Frage mehr.** Der
+   Tagebuch-Eintrag-Screen (`diary_entry_screen.dart`) zeigt sein Foto/Video randlos
+   (`extendBodyBehindAppBar: true`) hinter einem schwebenden, transparenten, TITELLOSEN AppBar
+   (nur Zurück-Pfeil + Popup-Menü). `TraumSubHeader` verlangt einen Pflicht-Titel und ist ein
+   fester Balken im Layout-Fluss (kein Overlay) — ein Austausch würde entweder einen bisher gar
+   nicht gezeigten Titel neu einführen (Inhaltsänderung, nicht nur Stil) oder die Foto-Ansicht
+   sichtbar verkleinern. Auf Nutzerentscheidung hin unverändert gelassen. `diary_search_screen.dart`
+   (aus Phase 7) passt ebenfalls nicht — dort ist der "Titel" ein Live-Suchfeld, kein fester Text.
+4. **Beim Umsetzen gefunden:** zwei weitere von Phase 6 übersehene hartcodierte deutsche Strings
+   in `shopping_mode_screen.dart` ("✓  Einkauf abschließen", "Budget (geschätzt): …") — jetzt
+   `completeShoppingLabel`/`estimatedBudgetLabel(amount)`.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **565/565 grün** (562 vorher + 3 neu:
+`test/core/components/traum_sub_header_test.dart`).
+
+**Nächste Phase laut Plan:** Phase 9 — Housekeeping (`catch (_) {}`-Blöcke, `dart format`,
+Icon-Workspace-Umbenennung, `TraumTheme.light` als toten Code entfernen, lokales
+Crash-Logging, Tests für lock/settings/legal/profile/notifications/planning, `apk lostplace/`
+löschen).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-11 — v1.1.0, Nutzer-gemeldete Live-Bugs nach v1.0.9)
 
 **Direktes Nutzer-Feedback mit vier Screenshots, kurz nach dem v1.0.9-Release: Tagebuch-Suche
 nach `%%_%` lieferte alle Einträge statt gar keinen Treffer; ein absurd hoher Betrag im Budget

@@ -1052,6 +1052,18 @@ abstract class AppLocalizations {
   /// **'IM KORB · ECHT · {inCart}/{total}'**
   String inCartStatus(int inCart, int total);
 
+  /// No description provided for @completeShoppingLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'✓  Einkauf abschließen'**
+  String get completeShoppingLabel;
+
+  /// No description provided for @estimatedBudgetLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Budget (geschätzt): {amount}'**
+  String estimatedBudgetLabel(String amount);
+
   /// No description provided for @listEmpty.
   ///
   /// In de, this message translates to:

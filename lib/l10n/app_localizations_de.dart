@@ -501,6 +501,14 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get completeShoppingLabel => '✓  Einkauf abschließen';
+
+  @override
+  String estimatedBudgetLabel(String amount) {
+    return 'Budget (geschätzt): $amount';
+  }
+
+  @override
   String get listEmpty => 'Liste ist leer';
 
   @override

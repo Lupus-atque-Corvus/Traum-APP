@@ -207,6 +207,15 @@
       }
     }
   },
+  "completeShoppingLabel": "✓  Complete shopping",
+  "estimatedBudgetLabel": "Budget (estimated): {amount}",
+  "@estimatedBudgetLabel": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "listEmpty": "List is empty",
   "saveTemplate": "Save template",
   "templateNameHint": "e.g. Weekly shopping",
