@@ -942,6 +942,32 @@
   "metricSwitch": "Metric",
   "metricSwitchSubtitle": "kg, cm, km",
   "notificationsSection": "Notifications",
+  "notificationCenterEmpty": "All done — nothing open",
+  "notificationCenterMedsToday": "Medications today",
+  "notificationCenterMedsStatus": "{taken} taken · {active} active",
+  "@notificationCenterMedsStatus": {
+    "placeholders": {
+      "taken": {
+        "type": "int"
+      },
+      "active": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationCenterNextAppointment": "Next appointment",
+  "notificationCenterOpenTodos": "Open tasks",
+  "notificationCenterTodosStatus": "{count} open · {title}",
+  "@notificationCenterTodosStatus": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "notifMedicationHint": "Set medication and supplement reminders directly on each one under \"My substances\" — not centrally here.",
   "notifTraining": "Training",
   "notifWater": "Water",
@@ -1141,6 +1167,9 @@
   "quickActionNote": "Note",
   "quickActionPhoto": "Photo",
   "quickActionExpense": "Expense",
+  "waterLogFailed": "Couldn't save water intake",
+  "cameraCaptureFailed": "Couldn't take photo",
+  "cameraRecordingFailed": "Couldn't start recording",
   "pointCameraAtBarcode": "Point the camera at the barcode",
   "fetchingProduct": "Looking up product...",
   "manualEntry": "Manual",

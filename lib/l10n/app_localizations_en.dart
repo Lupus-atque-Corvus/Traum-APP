@@ -2035,6 +2035,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsSection => 'Notifications';
 
   @override
+  String get notificationCenterEmpty => 'All done — nothing open';
+
+  @override
+  String get notificationCenterMedsToday => 'Medications today';
+
+  @override
+  String notificationCenterMedsStatus(int taken, int active) {
+    return '$taken taken · $active active';
+  }
+
+  @override
+  String get notificationCenterNextAppointment => 'Next appointment';
+
+  @override
+  String get notificationCenterOpenTodos => 'Open tasks';
+
+  @override
+  String notificationCenterTodosStatus(int count, String title) {
+    return '$count open · $title';
+  }
+
+  @override
   String get notifMedicationHint =>
       'Set medication and supplement reminders directly on each one under \"My substances\" — not centrally here.';
 
@@ -2531,6 +2553,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quickActionExpense => 'Expense';
+
+  @override
+  String get waterLogFailed => 'Couldn\'t save water intake';
+
+  @override
+  String get cameraCaptureFailed => 'Couldn\'t take photo';
+
+  @override
+  String get cameraRecordingFailed => 'Couldn\'t start recording';
 
   @override
   String get pointCameraAtBarcode => 'Point the camera at the barcode';

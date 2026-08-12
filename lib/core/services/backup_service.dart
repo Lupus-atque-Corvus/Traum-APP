@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../data/database/traum_database.dart';
+import 'crash_log_service.dart';
 
 /// Builds the ZIP archive from already-collected entry bytes. Top-level (not
 /// a method) so it can run via [compute] in a background isolate — encoding
@@ -134,6 +135,7 @@ class BackupService {
   static const String _jsonEntryName = 'backup.json';
   static const String _mediaPrefix = 'media/';
   static const String _restoredMediaDir = 'restored_media';
+  static const String _crashLogEntryName = 'crash_log.txt';
 
   /// SQL columns (per SQL table name) that store absolute paths to photo/video
   /// files which must be bundled into the archive.
@@ -311,6 +313,13 @@ class BackupService {
     debugPrint('[backup] media read: ${entries.length}/${candidatePaths.length} '
         'files, ${(mediaBytesTotal / 1e6).toStringAsFixed(1)} MB '
         '(+${buildSw.elapsedMilliseconds}ms total)');
+
+    // Local crash log, if any — lets a reported crash be diagnosed from the
+    // exported backup instead of requiring a live `adb logcat` session.
+    final crashLog = await CrashLogService.readForExport();
+    if (crashLog != null) {
+      entries[_crashLogEntryName] = crashLog;
+    }
 
     final backup = <String, dynamic>{
       'formatVersion': backupFormatVersion,

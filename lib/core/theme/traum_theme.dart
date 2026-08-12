@@ -207,13 +207,4 @@ class TraumTheme {
           behavior: SnackBarBehavior.floating,
         ),
       );
-
-  static ThemeData get light => ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.light,
-        colorScheme: const ColorScheme.light(
-          primary: TraumColors.coralOrange,
-          secondary: TraumColors.cyanBlue,
-        ),
-      );
 }

@@ -1,12 +1,105 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.2+112** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.3+113** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-12 — v1.1.2, Phase 8: Header-Vereinheitlichung)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-12 — v1.1.3, Phase 9: Housekeeping)
+
+**Neunte und letzte Phase des Nacharbeitungs-Plans. Grab-Bag aus kleineren Aufräumarbeiten, wie im
+Plan selbst als "kein/kaum User-Test nötig" eingestuft. Keine schemaVersion-Änderung.**
+
+1. **Lokales Crash-Logging eingebaut** (`lib/core/services/crash_log_service.dart`, neu).
+   `runZonedGuarded` um den kompletten `main()`-Rumpf (inkl. `runApp()`) + `FlutterError.onError`/
+   `PlatformDispatcher.onError`-Handler schreiben unbehandelte Fehler in eine lokale Textdatei
+   (`<support>/crash_log.txt`, 1-MB-Rotation). Kein Cloud-Dienst — die Datei wird stattdessen in
+   `BackupService.buildBackupZip()` als zusätzlicher `crash_log.txt`-Eintrag mitexportiert (nur
+   falls vorhanden), damit ein gemeldeter Absturz aus dem exportierten Backup rekonstruierbar ist,
+   ohne dass zuerst `adb logcat` mitgeschnitten werden muss.
+2. **`apk lostplace/`-Ordner gelöscht** (28 MB, unversionierter Recherche-Rest aus der
+   Lost-Places-Datenquellen-Suche in einer früheren Phase, Inhalt längst ausgewertet).
+3. **Icon-Workspace: `batch_09_PENDING` → `batch_09_DONE` umbenannt.** War nur falsch
+   beschriftet — alle 64 SVGs lagen bereits vollständig vor (verifiziert: jede der 64
+   nummerierten Übungs-Unterordner hatte schon ihre fertige `.svg`; der 65. Unterordner "Bild/"
+   ist kein Übungs-Eintrag, nur Restmaterial). `remaining_pool.txt` um die 64 jetzt fertigen
+   Namen bereinigt, `README.md` um einen kurzen, ehrlichen Status-Hinweis ergänzt (der
+   ursprüngliche Statusabschnitt war aus einer viel früheren Planungsphase und blieb als
+   historischer Kontext stehen, statt ihn komplett umzuschreiben).
+4. **`TraumTheme.light` als toten Code entfernt** (aus dem Plan bereits vorab entschieden: kein
+   Umschalter). War technisch referenziert (`theme: TraumTheme.light` in `app.dart`), aber wegen
+   `themeMode: ThemeMode.dark` nie tatsächlich gerendert — Zeile ersatzlos entfernt, `darkTheme`
+   bleibt unverändert alleinige Quelle.
+5. **Leere `catch (_) {}`-Blöcke: 87 Vorkommen über 18 Dateien geprüft, 3 echte
+   Nutzeraktions-Bugs gefunden und behoben (Priorität laut Plan: Speichern/Löschen/Import
+   zuerst).** 60 der 87 liegen allein in `widget_data_collector.dart` — dort bewusst und bereits
+   in einer früheren Phase dokumentiert so gewollt (jeder Homescreen-Widget-Datenpunkt hat seinen
+   eigenen Fehler-Fallback, damit ein einzelner fehlschlagender Read nicht den ganzen
+   Hintergrund-Refresh crasht). Der große Rest der übrigen 27 sind legitime Best-Effort-Fallbacks
+   (Parsing mit sinnvollem Default direkt danach, Aufräumen einer Mediendatei NACH einem bereits
+   erfolgreichen DB-Löschen, optionale Kartenauflösung) — bewusst unverändert gelassen. Echte
+   Bugs behoben:
+   - `general_widgets.dart`s `_addWater()` (Home-Widget-Schnellaktion "+250 ml") schluckte einen
+     DB-Fehler komplett lautlos — Nutzer tippt, nichts passiert, keine Erklärung. Jetzt SnackBar.
+   - `overlay_camera_screen.dart`s `_capturePhoto()`/`_toggleVideoRecording()` (Start) — Foto/
+     Video-Aufnahme konnte lautlos fehlschlagen. Jetzt je eine SnackBar-Fehlermeldung.
+   Neue Keys: `waterLogFailed`, `cameraCaptureFailed`, `cameraRecordingFailed`.
+6. **Tests für lock/settings/legal/profile/notifications/planning nachgezogen** — 6 neue
+   Testdateien für zuvor komplett bzw. faktisch ungetestete Screens:
+   - `lock/`: `pin_lock_screen_test.dart` — falscher PIN zeigt Fehlermeldung und leert die Eingabe.
+   - `legal/`: `legal_document_screen_test.dart` — echtes Markdown-Asset rendert, fehlendes Asset
+     zeigt Fehlertext statt zu crashen.
+   - `profile/`: `profile_screen_test.dart` — rendert ohne Gewichtseintrag, leitet die korrekte
+     BMI-Kategorie aus Körpergröße + letztem Gewichtseintrag her.
+   - `notifications/`: `notification_center_screen_test.dart` — Leerzustand, sowie befüllter
+     Zustand mit Medikament/Termin/Aufgabe. **Beim Schreiben gefunden:** dieser komplette Screen
+     hatte Phase 6 komplett verpasst — 8 hartcodierte deutsche Strings (Titel, Leerzustand, alle
+     drei Abschnittstitel/-untertitel), jetzt lokalisiert. Neue Keys:
+     `notificationCenterEmpty/MedsToday/MedsStatus/NextAppointment/OpenTodos/TodosStatus`.
+   - `settings/`: `feedback_type_test.dart` (`feedback/`-Untermodul — die restlichen 18
+     Settings-Sektionen sind private Klassen in einer einzigen 2800-Zeilen-Datei, ein
+     Voll-Screen-Rendertest lief in einen echten 10-Minuten-Timeout — vermutlich ein hängender
+     Timer/Kanal in `_CalendarSyncSection` oder `_SecuritySection` — bewusst NICHT
+     weiterverfolgt, siehe unten).
+   - `planning/`: `calendar_picker_dialog_test.dart` — leere Kalenderliste zeigt Hinweis statt
+     leerer Liste, "Fertig" bleibt deaktiviert bis eine Auswahl getroffen wurde, Abbrechen liefert
+     `null`. (`planning_screen.dart` selbst löst beim Mounten einen echten Kalender-Sync aus —
+     dasselbe Hänge-Risiko wie bei `_CalendarSyncSection`, deshalb hier bewusst nicht direkt
+     angefasst.)
+   **Beim Testen zweimal denselben echten UI-Bug gefunden:** `TraumCard` (geteilte Komponente)
+   UND `settings_screen.dart`s eigene `_Section`-Komponente wickelten ihren Inhalt in einen
+   rohen `Container(decoration: …)` statt in ein `Material`-Widget — jedes `ListTile` darin
+   (24 allein in Settings) hätte dadurch einen unsichtbaren Tap-Ripple gehabt. Beide mit
+   `Material(type: MaterialType.transparency, child: …)` behoben — rein additiv, ändert nichts
+   an Farben/Layout, betrifft aber potenziell jeden Screen, der `TraumCard` mit einem `ListTile`
+   nutzt.
+7. **Bewusst NICHT umgesetzt — `dart format` über die Codebasis.** Im Plan als eigener, inhalts-
+   loser Commit vorgesehen. Aus demselben Grund wie schon einmal in einer früheren Phase
+   dokumentiert (siehe v0.8.8-Eintrag weiter unten) zurückgestellt: das Projekt ist nicht
+   durchgehend formatiert, ein voller `dart format .`-Lauf würde eine sehr große, schwer
+   review-bare Diff über praktisch jede Datei erzeugen. Bleibt als eigener, bewusst separat zu
+   planender Schritt offen.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **584/584 grün** (562 vorher + 22 neu).
+
+**Nicht weiterverfolgt — echter, aber isolierter Befund, kein Teil dieser Phase:** ein
+Voll-Screen-Rendertest für `SettingsScreen` hing 10 Minuten lang fest (vermutlich ein
+`Timer.periodic` oder ein unbeantworteter Plattform-Kanal in `_CalendarSyncSection` oder
+`_SecuritySection`, die beim Mounten echte Kalender-/Biometrie-Abfragen auslösen). Kein
+bestätigter Produktivbug — die App selbst hängt beim normalen Öffnen der Einstellungen nicht,
+nur der isolierte Test-Kontext ohne echte Plattform-Antworten. Wert, bei Gelegenheit mit mehr
+Zeit zu untersuchen, aber nicht blockierend für diesen Release.
+
+**Damit ist der komplette 9-Phasen-Plan aus dem ursprünglichen Tiefenaudit durchlaufen.**
+Weiterhin offen, wie durchgehend seit Phase 1 vermerkt: die Backup-Performance-Frage und die
+Benachrichtigungslücke, beide auf eine gemeinsame Live-USB-Gerätediagnose verschoben, plus die
+separat gehaltene 105-Pakete-Aktualisierung (eigener Nachmittag) und jetzt `dart format` (siehe
+oben).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-12 — v1.1.2, Phase 8: Header-Vereinheitlichung)
 
 **Achte Phase des Nacharbeitungs-Plans. Vorab ein Vorschau-Testbuild (v1.1.1-test1, GitHub
 Pre-Release) an einem einzelnen Nutrition-Screen gezeigt und vom Nutzer bestätigt ("sieht gut

@@ -34,7 +34,15 @@ class TraumCard extends StatelessWidget {
                 )
               : null,
         ),
-        child: child,
+        // `Material(type: transparency)` paints nothing itself but gives any
+        // Material descendant placed inside (e.g. a ListTile, as used by
+        // NotificationCenterScreen) a proper ancestor to paint ink splashes
+        // on — without it those splashes are silently invisible since this
+        // Container's own decoration intercepts the paint layer instead.
+        child: Material(
+          type: MaterialType.transparency,
+          child: child,
+        ),
       ),
     );
   }

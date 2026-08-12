@@ -176,7 +176,6 @@ class _TraumAppState extends ConsumerState<TraumApp> {
     return MaterialApp.router(
       title: 'TRAUM',
       debugShowCheckedModeBanner: false,
-      theme: TraumTheme.light,
       darkTheme: TraumTheme.dark,
       themeMode: ThemeMode.dark,
       locale: locale,

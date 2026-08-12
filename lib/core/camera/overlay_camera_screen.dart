@@ -159,7 +159,13 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
         Navigator.pop(
             context, CameraCaptureResult(path: file.path, isVideo: false));
       }
-    } catch (_) {}
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+                AppLocalizations.of(context)!.cameraCaptureFailed)));
+      }
+    }
   }
 
   Future<void> _toggleVideoRecording() async {
@@ -184,7 +190,13 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
       _autoStopTimer = Timer(widget.maxVideoDuration, () {
         if (_isRecording) _toggleVideoRecording();
       });
-    } catch (_) {}
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+                AppLocalizations.of(context)!.cameraRecordingFailed)));
+      }
+    }
   }
 
   @override

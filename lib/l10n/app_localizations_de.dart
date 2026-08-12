@@ -2046,6 +2046,28 @@ class AppLocalizationsDe extends AppLocalizations {
   String get notificationsSection => 'Benachrichtigungen';
 
   @override
+  String get notificationCenterEmpty => 'Alles erledigt — keine offenen Punkte';
+
+  @override
+  String get notificationCenterMedsToday => 'Medikamente heute';
+
+  @override
+  String notificationCenterMedsStatus(int taken, int active) {
+    return '$taken eingenommen · $active aktiv';
+  }
+
+  @override
+  String get notificationCenterNextAppointment => 'Nächster Termin';
+
+  @override
+  String get notificationCenterOpenTodos => 'Offene Aufgaben';
+
+  @override
+  String notificationCenterTodosStatus(int count, String title) {
+    return '$count offen · $title';
+  }
+
+  @override
   String get notifMedicationHint =>
       'Erinnerungen für Medikamente und Supplements stellst du direkt bei jedem einzelnen unter „Meine Mittel“ ein — nicht hier zentral.';
 
@@ -2544,6 +2566,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get quickActionExpense => 'Ausgabe';
+
+  @override
+  String get waterLogFailed => 'Wasser konnte nicht gespeichert werden';
+
+  @override
+  String get cameraCaptureFailed => 'Foto konnte nicht aufgenommen werden';
+
+  @override
+  String get cameraRecordingFailed => 'Video konnte nicht gestartet werden';
 
   @override
   String get pointCameraAtBarcode => 'Halte die Kamera auf den Barcode';

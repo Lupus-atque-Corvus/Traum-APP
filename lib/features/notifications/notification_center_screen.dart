@@ -8,6 +8,7 @@ import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 import '../../data/database/traum_database.dart';
+import '../../l10n/app_localizations.dart';
 
 class _CenterData {
   final List<Medication> dueMeds;
@@ -49,6 +50,7 @@ class NotificationCenterScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final dataAsync = ref.watch(_centerProvider);
     return Scaffold(
       backgroundColor: TraumColors.background,
@@ -56,9 +58,9 @@ class NotificationCenterScreen extends ConsumerWidget {
         backgroundColor: TraumColors.background,
         elevation: 0,
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
-        title: const Text(
-          'Benachrichtigungen',
-          style: TextStyle(
+        title: Text(
+          l10n.notificationsSection,
+          style: const TextStyle(
             color: TraumColors.onBackground,
             fontFamily: 'DMSans',
             fontWeight: FontWeight.w700,
@@ -74,10 +76,10 @@ class NotificationCenterScreen extends ConsumerWidget {
         ),
         data: (data) {
           if (data.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
-                'Alles erledigt — keine offenen Punkte',
-                style: TextStyle(
+                l10n.notificationCenterEmpty,
+                style: const TextStyle(
                     color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
               ),
             );
@@ -87,16 +89,16 @@ class NotificationCenterScreen extends ConsumerWidget {
             children: [
               if (data.dueMeds.isNotEmpty)
                 _Section(
-                  title: 'Medikamente heute',
-                  subtitle:
-                      '${data.medsTaken} eingenommen · ${data.dueMeds.length} aktiv',
+                  title: l10n.notificationCenterMedsToday,
+                  subtitle: l10n.notificationCenterMedsStatus(
+                      data.medsTaken, data.dueMeds.length),
                   icon: Icons.medication_rounded,
                   color: TraumColors.roseRed,
                   onTap: () => context.push(Routes.substances),
                 ),
               if (data.nextAppointment != null)
                 _Section(
-                  title: 'Nächster Termin',
+                  title: l10n.notificationCenterNextAppointment,
                   subtitle: data.nextAppointment!.title,
                   icon: Icons.event_rounded,
                   color: TraumColors.indigoBlue,
@@ -104,9 +106,9 @@ class NotificationCenterScreen extends ConsumerWidget {
                 ),
               if (data.openTodos.isNotEmpty)
                 _Section(
-                  title: 'Offene Aufgaben',
-                  subtitle:
-                      '${data.openTodos.length} offen · ${data.openTodos.first.title}',
+                  title: l10n.notificationCenterOpenTodos,
+                  subtitle: l10n.notificationCenterTodosStatus(
+                      data.openTodos.length, data.openTodos.first.title),
                   icon: Icons.check_circle_outline_rounded,
                   color: TraumColors.coralOrange,
                   onTap: () => context.push(Routes.planning),

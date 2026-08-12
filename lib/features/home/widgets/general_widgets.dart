@@ -353,7 +353,7 @@ class _AppFavoritesContent extends ConsumerWidget {
 class _QuickActionsContent extends ConsumerWidget {
   const _QuickActionsContent();
 
-  Future<void> _addWater(WidgetRef ref, int ml) async {
+  Future<void> _addWater(BuildContext context, WidgetRef ref, int ml) async {
     try {
       await ref.read(nutritionRepositoryProvider).addWaterLog(
             WaterLogsCompanion(
@@ -361,7 +361,12 @@ class _QuickActionsContent extends ConsumerWidget {
               amountMl: Value(ml),
             ),
           );
-    } catch (_) {}
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(AppLocalizations.of(context)!.waterLogFailed)));
+      }
+    }
   }
 
   @override
@@ -373,7 +378,7 @@ class _QuickActionsContent extends ConsumerWidget {
           icon: Icons.water_drop_rounded,
           label: '+250 ml',
           color: TraumColors.cyanBlue,
-          onTap: () => _addWater(ref, 250),
+          onTap: () => _addWater(context, ref, 250),
         ),
         _QuickActionButton(
           icon: Icons.note_add_rounded,

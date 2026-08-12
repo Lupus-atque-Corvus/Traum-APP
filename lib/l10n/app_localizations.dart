@@ -3974,6 +3974,42 @@ abstract class AppLocalizations {
   /// **'Benachrichtigungen'**
   String get notificationsSection;
 
+  /// No description provided for @notificationCenterEmpty.
+  ///
+  /// In de, this message translates to:
+  /// **'Alles erledigt — keine offenen Punkte'**
+  String get notificationCenterEmpty;
+
+  /// No description provided for @notificationCenterMedsToday.
+  ///
+  /// In de, this message translates to:
+  /// **'Medikamente heute'**
+  String get notificationCenterMedsToday;
+
+  /// No description provided for @notificationCenterMedsStatus.
+  ///
+  /// In de, this message translates to:
+  /// **'{taken} eingenommen · {active} aktiv'**
+  String notificationCenterMedsStatus(int taken, int active);
+
+  /// No description provided for @notificationCenterNextAppointment.
+  ///
+  /// In de, this message translates to:
+  /// **'Nächster Termin'**
+  String get notificationCenterNextAppointment;
+
+  /// No description provided for @notificationCenterOpenTodos.
+  ///
+  /// In de, this message translates to:
+  /// **'Offene Aufgaben'**
+  String get notificationCenterOpenTodos;
+
+  /// No description provided for @notificationCenterTodosStatus.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} offen · {title}'**
+  String notificationCenterTodosStatus(int count, String title);
+
   /// No description provided for @notifMedicationHint.
   ///
   /// In de, this message translates to:
@@ -4915,6 +4951,24 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Ausgabe'**
   String get quickActionExpense;
+
+  /// No description provided for @waterLogFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Wasser konnte nicht gespeichert werden'**
+  String get waterLogFailed;
+
+  /// No description provided for @cameraCaptureFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto konnte nicht aufgenommen werden'**
+  String get cameraCaptureFailed;
+
+  /// No description provided for @cameraRecordingFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Video konnte nicht gestartet werden'**
+  String get cameraRecordingFailed;
 
   /// No description provided for @pointCameraAtBarcode.
   ///

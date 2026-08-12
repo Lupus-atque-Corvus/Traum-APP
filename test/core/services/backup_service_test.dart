@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:archive/archive.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,6 +9,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:traum/core/services/backup_service.dart';
+import 'package:traum/core/services/crash_log_service.dart';
 import 'package:traum/data/database/traum_database.dart';
 
 class _FakePathProviderPlatform extends PathProviderPlatform
@@ -16,6 +19,9 @@ class _FakePathProviderPlatform extends PathProviderPlatform
 
   @override
   Future<String?> getApplicationDocumentsPath() async => dir.path;
+
+  @override
+  Future<String?> getApplicationSupportPath() async => dir.path;
 }
 
 void main() {
@@ -25,6 +31,7 @@ void main() {
   setUp(() async {
     tempDir = await Directory.systemTemp.createTemp('backup_media_test');
     PathProviderPlatform.instance = _FakePathProviderPlatform(tempDir);
+    CrashLogService.debugResetForTest();
   });
   tearDown(() async {
     if (await tempDir.exists()) await tempDir.delete(recursive: true);
@@ -260,5 +267,28 @@ void main() {
 
     expect(restoredIds, {ratedId, photographedId, customId});
     expect(restoredIds.contains(1), isFalse); // the untouched bulk row
+  });
+
+  test('backup includes the local crash log when one exists', () async {
+    await CrashLogService.logForTest('ZONE', 'a real diagnosed crash');
+
+    final db = TraumDatabase.forTesting(NativeDatabase.memory());
+    final built = await BackupService(db).buildBackupZip();
+    await db.close();
+
+    final archive = ZipDecoder().decodeBytes(built.zipBytes);
+    final crashLogFile = archive.findFile('crash_log.txt');
+    expect(crashLogFile, isNotNull);
+    expect(utf8.decode(crashLogFile!.content as List<int>),
+        contains('a real diagnosed crash'));
+  });
+
+  test('backup omits the crash log entry when none exists', () async {
+    final db = TraumDatabase.forTesting(NativeDatabase.memory());
+    final built = await BackupService(db).buildBackupZip();
+    await db.close();
+
+    final archive = ZipDecoder().decodeBytes(built.zipBytes);
+    expect(archive.findFile('crash_log.txt'), isNull);
   });
 }

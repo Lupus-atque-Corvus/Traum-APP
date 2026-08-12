@@ -2600,7 +2600,14 @@ class _Section extends StatelessWidget {
             color: TraumColors.surface,
             borderRadius: BorderRadius.circular(TraumRadius.card),
           ),
-          child: child,
+          // See TraumCard for why this Material is needed: without it, the
+          // ListTiles used throughout every settings section paint their
+          // ink splashes nowhere, since this Container's own decoration
+          // intercepts the paint layer they'd otherwise use.
+          child: Material(
+            type: MaterialType.transparency,
+            child: child,
+          ),
         ),
       ],
     );

@@ -7,6 +7,7 @@ import 'core/notifications/notification_scheduler.dart';
 import 'core/notifications/notification_service.dart';
 import 'core/providers/database_provider.dart';
 import 'core/providers/preferences_provider.dart';
+import 'core/services/crash_log_service.dart';
 import 'data/database/traum_database.dart';
 import 'data/repositories/diary_seeder.dart';
 import 'data/repositories/exercise_library_seeder.dart';
@@ -22,8 +23,16 @@ import 'features/diary/diary_thumbnail_backfill.dart';
 import 'widget/widget_data_service.dart';
 import 'widget/widget_update_scheduler.dart';
 
-void main() async {
+void main() {
+  // Wraps the entire body (including runApp) in a zone that catches errors
+  // outside Flutter's own error path (e.g. in un-awaited Futures) — the
+  // standard pattern for local crash logging without a cloud service.
+  CrashLogService.runGuarded(_runApp);
+}
+
+Future<void> _runApp() async {
   WidgetsFlutterBinding.ensureInitialized();
+  CrashLogService.installFrameworkHandlers();
 
   // Surface rendering/layout exceptions (e.g. an invalid SliverGeometry) as a
   // visible error banner instead of a silent blank/black area — otherwise
