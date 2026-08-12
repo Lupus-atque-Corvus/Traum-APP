@@ -12,3 +12,4 @@ export 'shimmer_loader.dart';
 export 'medication_dot_row.dart';
 export 'inline_error.dart';
 export 'confirm_delete_dialog.dart';
+export 'traum_sub_header.dart';

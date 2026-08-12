@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/components/traum_sub_header.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../core/utils/validators.dart';
@@ -44,12 +45,16 @@ class _AddCustomProductScreenState
     if (_nameCtrl.text.trim().isEmpty) return;
     setState(() => _saving = true);
     try {
-      await ref.read(foodProductsDaoProvider).insertProduct(
+      await ref
+          .read(foodProductsDaoProvider)
+          .insertProduct(
             FoodProductsCompanion.insert(
               name: _nameCtrl.text.trim(),
-              brand: Value(_brandCtrl.text.trim().isNotEmpty
-                  ? _brandCtrl.text.trim()
-                  : null),
+              brand: Value(
+                _brandCtrl.text.trim().isNotEmpty
+                    ? _brandCtrl.text.trim()
+                    : null,
+              ),
               caloriesPer100g: _parse(_kcalCtrl),
               proteinPer100g: _parse(_proteinCtrl),
               carbsPer100g: _parse(_carbsCtrl),
@@ -71,77 +76,99 @@ class _AddCustomProductScreenState
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: TraumColors.background,
-      appBar: AppBar(
-        backgroundColor: TraumColors.surface,
-        leading:
-            const BackButton(color: TraumColors.onBackground),
-        title: Text(
-          l10n.newCustomProductTitle,
-          style: const TextStyle(
-              fontFamily: 'DMSans',
-              color: TraumColors.onBackground,
-              fontWeight: FontWeight.w600),
-        ),
-        elevation: 0,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+      body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _field(_nameCtrl, l10n.productNameLabel,
-                l10n.productNameHint),
-            const SizedBox(height: 8),
-            _field(_brandCtrl, l10n.brandOptionalLabel,
-                l10n.brandOptionalHint),
-            const SizedBox(height: 16),
-            Text(
-              l10n.nutrientsPer100g,
-              style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w600,
-                  color: TraumColors.onBackground,
-                  fontSize: 15),
-            ),
-            const SizedBox(height: 8),
-            _field(_kcalCtrl, l10n.caloriesKcalLabel, '0',
-                type: TextInputType.number),
-            const SizedBox(height: 8),
-            _field(_proteinCtrl, l10n.proteinGramLabel, '0',
-                type: TextInputType.number),
-            const SizedBox(height: 8),
-            _field(_carbsCtrl, l10n.carbsGramLabel, '0',
-                type: TextInputType.number),
-            const SizedBox(height: 8),
-            _field(_fatCtrl, l10n.fatGramLabel, '0',
-                type: TextInputType.number),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _saving ? null : _save,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: TraumColors.mintGreen,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(50)),
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 14),
+            TraumSubHeader(title: l10n.newCustomProductTitle),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _field(
+                      _nameCtrl,
+                      l10n.productNameLabel,
+                      l10n.productNameHint,
+                    ),
+                    const SizedBox(height: 8),
+                    _field(
+                      _brandCtrl,
+                      l10n.brandOptionalLabel,
+                      l10n.brandOptionalHint,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.nutrientsPer100g,
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                        color: TraumColors.onBackground,
+                        fontSize: 15,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    _field(
+                      _kcalCtrl,
+                      l10n.caloriesKcalLabel,
+                      '0',
+                      type: TextInputType.number,
+                    ),
+                    const SizedBox(height: 8),
+                    _field(
+                      _proteinCtrl,
+                      l10n.proteinGramLabel,
+                      '0',
+                      type: TextInputType.number,
+                    ),
+                    const SizedBox(height: 8),
+                    _field(
+                      _carbsCtrl,
+                      l10n.carbsGramLabel,
+                      '0',
+                      type: TextInputType.number,
+                    ),
+                    const SizedBox(height: 8),
+                    _field(
+                      _fatCtrl,
+                      l10n.fatGramLabel,
+                      '0',
+                      type: TextInputType.number,
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _saving ? null : _save,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: TraumColors.mintGreen,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                        child: _saving
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                l10n.save,
+                                style: const TextStyle(
+                                  fontFamily: 'DMSans',
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                ),
+                              ),
+                      ),
+                    ),
+                  ],
                 ),
-                child: _saving
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white))
-                    : Text(
-                        l10n.save,
-                        style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16)),
               ),
             ),
           ],
@@ -150,30 +177,38 @@ class _AddCustomProductScreenState
     );
   }
 
-  Widget _field(TextEditingController ctrl, String label,
-      String hint,
-      {TextInputType type = TextInputType.text}) {
+  Widget _field(
+    TextEditingController ctrl,
+    String label,
+    String hint, {
+    TextInputType type = TextInputType.text,
+  }) {
     return TextField(
       controller: ctrl,
       keyboardType: type,
       style: const TextStyle(
-          fontFamily: 'DMSans',
-          color: TraumColors.onBackground,
-          fontSize: 14),
+        fontFamily: 'DMSans',
+        color: TraumColors.onBackground,
+        fontSize: 14,
+      ),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
         labelStyle: const TextStyle(
-            fontFamily: 'DMSans',
-            color: TraumColors.onBackgroundMuted,
-            fontSize: 13),
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackgroundMuted,
+          fontSize: 13,
+        ),
         filled: true,
         fillColor: TraumColors.surfaceVariant,
         border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
         contentPadding: const EdgeInsets.symmetric(
-            horizontal: 14, vertical: 12),
+          horizontal: 14,
+          vertical: 12,
+        ),
       ),
     );
   }

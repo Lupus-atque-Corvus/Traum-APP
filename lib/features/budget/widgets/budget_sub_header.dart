@@ -1,42 +1,24 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/colors.dart';
-import '../../../l10n/app_localizations.dart';
+import '../../../core/components/traum_sub_header.dart';
 import '../budget_scale.dart';
 
+/// Thin Budget-specific wrapper around the shared [TraumSubHeader] —
+/// pins the scale to [kBudgetScale] so every existing call site
+/// (`debts_screen.dart`, `recurring_screen.dart`, `savings_screen.dart`,
+/// `budget_categories_screen.dart`, `transaction_list_screen.dart`) keeps
+/// rendering exactly the pixel sizes from `PIXELGENAUE_SPEZIFIKATION.md`.
 class BudgetSubHeader extends StatelessWidget {
   final String title;
   final List<Widget> actions;
-  const BudgetSubHeader({super.key, required this.title, this.actions = const []});
-
-  static const _t = TextStyle(
-      fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 15,
-      color: TraumColors.onBackground);
+  const BudgetSubHeader(
+      {super.key, required this.title, this.actions = const []});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(bs(12), bs(4), bs(12), bs(9)),
-      child: Row(children: [
-        Semantics(
-          button: true,
-          label: AppLocalizations.of(context)!.back,
-          child: GestureDetector(
-            onTap: () => Navigator.of(context).maybePop(),
-            child: Container(
-              width: bs(24), height: bs(24),
-              decoration: BoxDecoration(
-                color: TraumColors.surface,
-                borderRadius: BorderRadius.circular(bs(12)),
-              ),
-              child: Icon(Icons.chevron_left,
-                  size: bs(16), color: TraumColors.onBackground),
-            ),
-          ),
-        ),
-        SizedBox(width: bs(8)),
-        Expanded(child: Text(title, style: _t)),
-        ...actions,
-      ]),
+    return TraumSubHeader(
+      title: title,
+      actions: actions,
+      scale: kBudgetScale,
     );
   }
 }
