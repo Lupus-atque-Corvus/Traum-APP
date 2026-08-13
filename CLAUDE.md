@@ -1,12 +1,81 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.3+113** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.4+114** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-12 — v1.1.3, Phase 9: Housekeeping)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-13 — v1.1.4, Live-Gerätediagnose: die Benachrichtigungslücke gefunden)
+
+**Erste Live-USB-Diagnose-Session, wie seit Phase 1 mehrfach angekündigt. Handy per `adb`
+angeschlossen, `logcat` live mitgeschnitten während echter Nutzung — kein Rätselraten mehr.**
+
+1. **🔴 Root Cause der monatelang gemeldeten Benachrichtigungslücke gefunden und bestätigt
+   behoben.** Direkt beim App-Start (`rescheduleAllNotifications()`, läuft bei jedem Kaltstart
+   seit v1.0.1) schlug JEDER Aufruf mit einer `PlatformException` fehl:
+   ```
+   TypeToken must be created with a type argument: new TypeToken<...>() {};
+   When using code shrinkers (ProGuard, R8, ...) make sure that generic
+   signatures are preserved.
+   ```
+   `flutter_local_notifications` persistiert geplante Erinnerungen intern über Gson
+   (`new TypeToken<ArrayList<NotificationDetails>>(){}`), um sie nach einem Geräteneustart
+   wiederherzustellen — R8 (aktiv seit v0.8.5, Non-Negotiable #18) entfernt ohne eigene
+   ProGuard-Keep-Regel die für Gsons Reflection nötige generische Signatur. Das Paket bringt
+   selbst **keine** `consumer-rules.pro` mit (verifiziert: keine `.pro`-Datei im Paket) — jede
+   App, die es mit aktivierter Minifizierung nutzt, muss die Regeln selbst ergänzen. **Erklärt
+   exakt, warum das nie in einer früheren Runde auffiel:** der Fehler tritt AUSSCHLIESSLICH in
+   einem minifizierten Release-Build auf, nie im Debug-Modus (kein Shrinking) und nie im
+   Emulator-Test aus einer früheren Runde (lief damals auf einem `--debug`-Build). Da der
+   Reschedule schon ganz am Anfang scheiterte, wurde **überhaupt keine** Erinnerung geplant —
+   unabhängig von Berechtigungen, Medikamenten-Konfiguration oder sonst irgendwas, das in
+   v1.0.1–v1.0.3 bereits (korrekterweise) untersucht und für in Ordnung befunden wurde.
+   Fix: `android/app/proguard-rules.pro` um die Standard-Gson-unter-ProGuard-Regeln ergänzt
+   (`-keepattributes Signature` — exakt das, was die Fehlermeldung selbst als fehlend nennt —
+   plus `-keep class com.dexterous.**`/Gson-TypeAdapter-Keeps). **Live auf dem Gerät verifiziert,
+   nicht nur angenommen:** vor dem Fix kein einziger Alarm für die App in
+   `adb shell dumpsys alarm`; nach Neuinstallation des reparierten Release-Builds (gleiche
+   `versionCode`, `-r`-Reinstall, keine Datenverluste) erscheinen vier echte
+   `RTC_WAKEUP`-Alarme (`tag=*walarm*:de.traum.traum/…ScheduledNotificationReceiver`,
+   `exactAllowReason=policy_permission`) für die konfigurierten Erinnerungszeiten. Kein anderes
+   Paket im Projekt verwendet denselben Gson-`TypeToken`-Musters (verifiziert per Grep über den
+   gesamten Pub-Cache) — der Fix ist vollständig.
+2. **Backup-Performance (Phase 1, letzte offene Frage) live bestätigt: kein Problem mehr.**
+   Echter Export auf dem Gerät — 84.679 Zeilen über 59 Tabellen, 6–8 Mediendateien, 45,6 MB
+   JSON — lief in **~1,6–1,9 Sekunden** komplett durch (mehrfach reproduziert). Die
+   STORE-statt-DEFLATE- und Background-Isolate-Fixes aus v0.9.5–v0.9.9 haben das Problem
+   tatsächlich vollständig gelöst; die "Wird gepackt…"-Hänger von damals treten nicht mehr auf.
+3. **Ein zweiter, bisher ungeklärter Fehler beim Live-Test beobachtet, NICHT Teil dieses
+   Fixes.** Während intensiven Testens (App auf/zu, Tab-Wechsel, extreme Werte in den
+   Einstellungen) erschien wiederholt:
+   ```
+   PlatformException(500, Attempt to invoke virtual method
+   'int java.lang.Integer.intValue()' on a null object reference, null, null)
+   ```
+   Kein Stacktrace, kein Tag — schwer eindeutig zuzuordnen. Naheliegendster Verdacht (nicht
+   bestätigt): `castObjectToByteArray()` in `flutter_local_notifications`, dieselbe
+   Gson-Persistierungsschicht wie oben, tritt aber nur auf, wenn eine gespeicherte Erinnerung
+   Byte-Array-Icon-Daten enthält — die App setzt aktuell nirgends solche Daten (verifiziert per
+   Grep), am wahrscheinlichsten also **Alt-/Restdaten aus den monatelangen fehlgeschlagenen
+   Reschedule-Läufen**, die jetzt beim ersten erfolgreichen Lesen zum Vorschein kommen. Kein
+   sichtbarer Absturz, App lief während des gesamten Tests weiter. `run-as` funktioniert auf
+   dem signierten Release-Build nicht (nicht debuggable) — konnte die persistierten
+   Preferences des Plugins deshalb nicht direkt inspizieren/bereinigen. **Für dich zu
+   beobachten:** falls eine bestimmte Erinnerung nicht zuverlässig kommt, bitte melden — dann
+   gezielter nachgehen.
+
+`flutter analyze` → **0 Issues**. Keine Dart-Testsuite-Änderung nötig (reine
+`proguard-rules.pro`-Ergänzung, kein Dart-Code geändert) — `flutter test` unverändert grün.
+
+**Damit sind beide seit Phase 1 offen gehaltenen Punkte geklärt:** die Backup-Performance ist
+bestätigt gelöst, und die Benachrichtigungslücke hat jetzt eine konkrete, live verifizierte
+Ursache und einen bestätigten Fix — nicht mehr nur eine Vermutung wie in den vorherigen
+Fix-Versuchen (v1.0.1, v1.0.2).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-12 — v1.1.3, Phase 9: Housekeeping)
 
 **Neunte und letzte Phase des Nacharbeitungs-Plans. Grab-Bag aus kleineren Aufräumarbeiten, wie im
 Plan selbst als "kein/kaum User-Test nötig" eingestuft. Keine schemaVersion-Änderung.**
