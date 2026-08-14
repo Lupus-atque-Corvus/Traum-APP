@@ -134,10 +134,13 @@ class _HomeWidgetCatalogState extends ConsumerState<_HomeWidgetCatalog> {
       return const [];
     }
 
+    final l10n = AppLocalizations.of(context)!;
     final entries = homeWidgetRegistry.entries
         .where((e) => e.value.group == group)
         .where(
-          (e) => query.isEmpty || e.value.title.toLowerCase().contains(query),
+          (e) =>
+              query.isEmpty ||
+              e.value.title(l10n).toLowerCase().contains(query),
         )
         .toList();
 
@@ -192,6 +195,7 @@ class _WidgetChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final d = entry.value;
+    final l10n = AppLocalizations.of(context)!;
     return Material(
       color: TraumColors.surface,
       borderRadius: BorderRadius.circular(14),
@@ -213,7 +217,7 @@ class _WidgetChip extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Text(
-                d.title,
+                d.title(l10n),
                 style: const TextStyle(
                   color: TraumColors.onBackground,
                   fontFamily: 'DMSans',

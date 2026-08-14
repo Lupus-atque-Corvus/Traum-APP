@@ -2557,6 +2557,189 @@ class AppLocalizationsDe extends AppLocalizations {
   String get homeWidgetCalendar => 'Kalender';
 
   @override
+  String get homeWidgetNextWorkoutTitle => 'Nächstes Workout';
+
+  @override
+  String get homeWidgetWeeklyVolumeTitle => 'Wochen-Volumen';
+
+  @override
+  String get homeWidgetMuscleHeatmapTitle => 'Muskeln';
+
+  @override
+  String get homeWidgetLastWorkoutTitle => 'Letztes Workout';
+
+  @override
+  String get homeWidgetTrainingStreakTitle => 'Trainings-Streak';
+
+  @override
+  String get homeWidgetWeeklyWorkoutsTitle => 'Wochen-Workouts';
+
+  @override
+  String get homeWidgetPersonalRecordsTitle => 'Rekorde';
+
+  @override
+  String get homeWidgetRestTimerQuickTitle => 'Rest-Timer';
+
+  @override
+  String get homeWidgetOpenTodosTitle => 'Offene Todos';
+
+  @override
+  String get homeWidgetTodayAppointmentsTitle => 'Heute';
+
+  @override
+  String get homeWidgetHabitsTodayTitle => 'Gewohnheiten';
+
+  @override
+  String get homeWidgetMedicationsTodayTitle => 'Medikamente';
+
+  @override
+  String get homeWidgetNextAppointmentCountdownTitle => 'Nächster Termin';
+
+  @override
+  String get homeWidgetOverdueTodosTitle => 'Überfällig';
+
+  @override
+  String get homeWidgetBestHabitStreakTitle => 'Beste Serie';
+
+  @override
+  String get homeWidgetStepsTitle => 'Schritte';
+
+  @override
+  String get homeWidgetSleepTitle => 'Schlaf';
+
+  @override
+  String get homeWidgetHeartRateTitle => 'Herzfrequenz';
+
+  @override
+  String get homeWidgetMoodTodayTitle => 'Stimmung';
+
+  @override
+  String get homeWidgetWeightTrendTitle => 'Gewicht';
+
+  @override
+  String get homeWidgetHealthScoreTitle => 'Score';
+
+  @override
+  String get homeWidgetHealthSnapshotTitle => 'Gesundheit';
+
+  @override
+  String get homeWidgetActiveMinutesTitle => 'Aktive Min.';
+
+  @override
+  String get homeWidgetCaloriesBurnedTitle => 'Verbrannt';
+
+  @override
+  String get homeWidgetStepsWeekChartTitle => 'Schritte-Woche';
+
+  @override
+  String get homeWidgetWeightChartTitle => 'Gewichtsverlauf';
+
+  @override
+  String get homeWidgetCurrentStreakTitle => 'Aktueller Streak';
+
+  @override
+  String get homeWidgetLongestStreakTitle => 'Längster Streak';
+
+  @override
+  String get homeWidgetMoneySavedTitle => 'Gespart';
+
+  @override
+  String get homeWidgetAllCountersTitle => 'Alle Counter';
+
+  @override
+  String get homeWidgetLastIntakeTitle => 'Letzte Einnahme';
+
+  @override
+  String get homeWidgetTakenTodayTitle => 'Heute';
+
+  @override
+  String get homeWidgetCycleDayTitle => 'Zyklustag';
+
+  @override
+  String get homeWidgetNextPeriodTitle => 'Nächste Periode';
+
+  @override
+  String get homeWidgetNotesCountTitle => 'Notizen';
+
+  @override
+  String get homeWidgetLastNoteTitle => 'Letzte Notiz';
+
+  @override
+  String get homeWidgetPinnedNoteTitle => 'Angepinnt';
+
+  @override
+  String get homeWidgetPlacesCountTitle => 'Orte';
+
+  @override
+  String get homeWidgetLastPhotoTitle => 'Letztes Foto';
+
+  @override
+  String get homeWidgetMapPreviewTitle => 'Karte';
+
+  @override
+  String get homeWidgetCaloriesRingTitle => 'Kalorien';
+
+  @override
+  String get homeWidgetMacrosTitle => 'Makros';
+
+  @override
+  String get homeWidgetWaterTitle => 'Wasser';
+
+  @override
+  String get homeWidgetLastMealTitle => 'Letzte Mahlzeit';
+
+  @override
+  String get homeWidgetRemainingCaloriesTitle => 'Rest-kcal';
+
+  @override
+  String get homeWidgetSupplementsTodayTitle => 'Supplements';
+
+  @override
+  String get homeWidgetMealsTodayTitle => 'Mahlzeiten';
+
+  @override
+  String get homeWidgetBalanceMonthTitle => 'Saldo';
+
+  @override
+  String get homeWidgetIncomeExpenseTitle => 'Ein/Aus';
+
+  @override
+  String get homeWidgetBudgetProgressTitle => 'Budget';
+
+  @override
+  String get homeWidgetAccountsOverviewTitle => 'Konten';
+
+  @override
+  String get homeWidgetTopCategoryTitle => 'Top-Ausgabe';
+
+  @override
+  String get homeWidgetRecentTransactionsTitle => 'Letzte';
+
+  @override
+  String get homeWidgetSavingsGoalTitle => 'Sparziel';
+
+  @override
+  String get homeWidgetRecurringDueTitle => 'Wiederkehrend';
+
+  @override
+  String get homeWidgetMonthTrendTitle => 'Monats-Trend';
+
+  @override
+  String get homeWidgetWriteStreakTitle => 'Schreib-Streak';
+
+  @override
+  String get homeWidgetLastEntryTitle => 'Letzter Eintrag';
+
+  @override
+  String get homeWidgetYearHeatmapTitle => 'Jahres-Heatmap';
+
+  @override
+  String get homeWidgetMoodCalendarTitle => 'Stimmungs-Kalender';
+
+  @override
+  String get homeWidgetEntriesThisMonthTitle => 'Einträge/Monat';
+
+  @override
   String get addWidgetTitle => 'Widget hinzufügen';
 
   @override

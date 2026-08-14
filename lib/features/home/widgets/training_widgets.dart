@@ -9,6 +9,7 @@ import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../data/database/traum_database.dart'
     show Exercise, WorkoutDay, WorkoutSession, WorkoutSet;
+import '../../../l10n/app_localizations.dart';
 import '../../training/muscle_groups.dart';
 import '../home_tile.dart';
 import '../home_widget_frame.dart';
@@ -48,14 +49,14 @@ final _recentSessionsProvider =
 
 final Map<HomeWidgetType, HomeWidgetDescriptor> trainingHomeWidgets = {
   HomeWidgetType.nextWorkout: HomeWidgetDescriptor(
-    title: 'Nächstes Workout',
+    title: (l10n) => l10n.homeWidgetNextWorkoutTitle,
     group: HomeWidgetGroup.training,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.wide,
     sizes: const {HomeTileSize.wide},
     route: Routes.training,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Nächstes Workout',
+      title: AppLocalizations.of(context)!.homeWidgetNextWorkoutTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.training,
@@ -63,14 +64,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> trainingHomeWidgets = {
     ),
   ),
   HomeWidgetType.weeklyVolume: HomeWidgetDescriptor(
-    title: 'Wochen-Volumen',
+    title: (l10n) => l10n.homeWidgetWeeklyVolumeTitle,
     group: HomeWidgetGroup.training,
     accent: TraumColors.amberGold,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.training,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Wochen-Volumen',
+      title: AppLocalizations.of(context)!.homeWidgetWeeklyVolumeTitle,
       accent: TraumColors.amberGold,
       size: size,
       route: Routes.training,
@@ -78,14 +79,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> trainingHomeWidgets = {
     ),
   ),
   HomeWidgetType.muscleHeatmap: HomeWidgetDescriptor(
-    title: 'Muskeln',
+    title: (l10n) => l10n.homeWidgetMuscleHeatmapTitle,
     group: HomeWidgetGroup.training,
     accent: TraumColors.roseRed,
     defaultSize: HomeTileSize.large,
     sizes: const {HomeTileSize.large},
     route: Routes.training,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Muskeln',
+      title: AppLocalizations.of(context)!.homeWidgetMuscleHeatmapTitle,
       accent: TraumColors.roseRed,
       size: size,
       route: Routes.training,
@@ -93,14 +94,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> trainingHomeWidgets = {
     ),
   ),
   HomeWidgetType.lastWorkout: HomeWidgetDescriptor(
-    title: 'Letztes Workout',
+    title: (l10n) => l10n.homeWidgetLastWorkoutTitle,
     group: HomeWidgetGroup.training,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.training,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Letztes Workout',
+      title: AppLocalizations.of(context)!.homeWidgetLastWorkoutTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.training,
@@ -108,14 +109,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> trainingHomeWidgets = {
     ),
   ),
   HomeWidgetType.trainingStreak: HomeWidgetDescriptor(
-    title: 'Trainings-Streak',
+    title: (l10n) => l10n.homeWidgetTrainingStreakTitle,
     group: HomeWidgetGroup.training,
     accent: TraumColors.amberGold,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.training,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Trainings-Streak',
+      title: AppLocalizations.of(context)!.homeWidgetTrainingStreakTitle,
       accent: TraumColors.amberGold,
       size: size,
       route: Routes.training,
@@ -123,14 +124,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> trainingHomeWidgets = {
     ),
   ),
   HomeWidgetType.weeklyWorkouts: HomeWidgetDescriptor(
-    title: 'Wochen-Workouts',
+    title: (l10n) => l10n.homeWidgetWeeklyWorkoutsTitle,
     group: HomeWidgetGroup.training,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.training,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Wochen-Workouts',
+      title: AppLocalizations.of(context)!.homeWidgetWeeklyWorkoutsTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.training,
@@ -138,14 +139,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> trainingHomeWidgets = {
     ),
   ),
   HomeWidgetType.personalRecords: HomeWidgetDescriptor(
-    title: 'Rekorde',
+    title: (l10n) => l10n.homeWidgetPersonalRecordsTitle,
     group: HomeWidgetGroup.training,
     accent: TraumColors.amberGold,
     defaultSize: HomeTileSize.wide,
     sizes: const {HomeTileSize.wide},
     route: Routes.training,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Rekorde',
+      title: AppLocalizations.of(context)!.homeWidgetPersonalRecordsTitle,
       accent: TraumColors.amberGold,
       size: size,
       route: Routes.training,
@@ -153,14 +154,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> trainingHomeWidgets = {
     ),
   ),
   HomeWidgetType.restTimerQuick: HomeWidgetDescriptor(
-    title: 'Rest-Timer',
+    title: (l10n) => l10n.homeWidgetRestTimerQuickTitle,
     group: HomeWidgetGroup.training,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.training,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Rest-Timer',
+      title: AppLocalizations.of(context)!.homeWidgetRestTimerQuickTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.training,

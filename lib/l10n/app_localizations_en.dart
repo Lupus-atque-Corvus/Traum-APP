@@ -2544,6 +2544,189 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeWidgetCalendar => 'Calendar';
 
   @override
+  String get homeWidgetNextWorkoutTitle => 'Next workout';
+
+  @override
+  String get homeWidgetWeeklyVolumeTitle => 'Weekly volume';
+
+  @override
+  String get homeWidgetMuscleHeatmapTitle => 'Muscles';
+
+  @override
+  String get homeWidgetLastWorkoutTitle => 'Last workout';
+
+  @override
+  String get homeWidgetTrainingStreakTitle => 'Training streak';
+
+  @override
+  String get homeWidgetWeeklyWorkoutsTitle => 'Weekly workouts';
+
+  @override
+  String get homeWidgetPersonalRecordsTitle => 'Records';
+
+  @override
+  String get homeWidgetRestTimerQuickTitle => 'Rest timer';
+
+  @override
+  String get homeWidgetOpenTodosTitle => 'Open todos';
+
+  @override
+  String get homeWidgetTodayAppointmentsTitle => 'Today';
+
+  @override
+  String get homeWidgetHabitsTodayTitle => 'Habits';
+
+  @override
+  String get homeWidgetMedicationsTodayTitle => 'Medications';
+
+  @override
+  String get homeWidgetNextAppointmentCountdownTitle => 'Next appointment';
+
+  @override
+  String get homeWidgetOverdueTodosTitle => 'Overdue';
+
+  @override
+  String get homeWidgetBestHabitStreakTitle => 'Best streak';
+
+  @override
+  String get homeWidgetStepsTitle => 'Steps';
+
+  @override
+  String get homeWidgetSleepTitle => 'Sleep';
+
+  @override
+  String get homeWidgetHeartRateTitle => 'Heart rate';
+
+  @override
+  String get homeWidgetMoodTodayTitle => 'Mood';
+
+  @override
+  String get homeWidgetWeightTrendTitle => 'Weight';
+
+  @override
+  String get homeWidgetHealthScoreTitle => 'Score';
+
+  @override
+  String get homeWidgetHealthSnapshotTitle => 'Health';
+
+  @override
+  String get homeWidgetActiveMinutesTitle => 'Active min.';
+
+  @override
+  String get homeWidgetCaloriesBurnedTitle => 'Burned';
+
+  @override
+  String get homeWidgetStepsWeekChartTitle => 'Steps this week';
+
+  @override
+  String get homeWidgetWeightChartTitle => 'Weight trend';
+
+  @override
+  String get homeWidgetCurrentStreakTitle => 'Current streak';
+
+  @override
+  String get homeWidgetLongestStreakTitle => 'Longest streak';
+
+  @override
+  String get homeWidgetMoneySavedTitle => 'Saved';
+
+  @override
+  String get homeWidgetAllCountersTitle => 'All counters';
+
+  @override
+  String get homeWidgetLastIntakeTitle => 'Last intake';
+
+  @override
+  String get homeWidgetTakenTodayTitle => 'Today';
+
+  @override
+  String get homeWidgetCycleDayTitle => 'Cycle day';
+
+  @override
+  String get homeWidgetNextPeriodTitle => 'Next period';
+
+  @override
+  String get homeWidgetNotesCountTitle => 'Notes';
+
+  @override
+  String get homeWidgetLastNoteTitle => 'Last note';
+
+  @override
+  String get homeWidgetPinnedNoteTitle => 'Pinned';
+
+  @override
+  String get homeWidgetPlacesCountTitle => 'Places';
+
+  @override
+  String get homeWidgetLastPhotoTitle => 'Last photo';
+
+  @override
+  String get homeWidgetMapPreviewTitle => 'Map';
+
+  @override
+  String get homeWidgetCaloriesRingTitle => 'Calories';
+
+  @override
+  String get homeWidgetMacrosTitle => 'Macros';
+
+  @override
+  String get homeWidgetWaterTitle => 'Water';
+
+  @override
+  String get homeWidgetLastMealTitle => 'Last meal';
+
+  @override
+  String get homeWidgetRemainingCaloriesTitle => 'Remaining kcal';
+
+  @override
+  String get homeWidgetSupplementsTodayTitle => 'Supplements';
+
+  @override
+  String get homeWidgetMealsTodayTitle => 'Meals';
+
+  @override
+  String get homeWidgetBalanceMonthTitle => 'Balance';
+
+  @override
+  String get homeWidgetIncomeExpenseTitle => 'In/Out';
+
+  @override
+  String get homeWidgetBudgetProgressTitle => 'Budget';
+
+  @override
+  String get homeWidgetAccountsOverviewTitle => 'Accounts';
+
+  @override
+  String get homeWidgetTopCategoryTitle => 'Top expense';
+
+  @override
+  String get homeWidgetRecentTransactionsTitle => 'Recent';
+
+  @override
+  String get homeWidgetSavingsGoalTitle => 'Savings goal';
+
+  @override
+  String get homeWidgetRecurringDueTitle => 'Recurring';
+
+  @override
+  String get homeWidgetMonthTrendTitle => 'Month trend';
+
+  @override
+  String get homeWidgetWriteStreakTitle => 'Writing streak';
+
+  @override
+  String get homeWidgetLastEntryTitle => 'Last entry';
+
+  @override
+  String get homeWidgetYearHeatmapTitle => 'Year heatmap';
+
+  @override
+  String get homeWidgetMoodCalendarTitle => 'Mood calendar';
+
+  @override
+  String get homeWidgetEntriesThisMonthTitle => 'Entries/month';
+
+  @override
   String get addWidgetTitle => 'Add widget';
 
   @override

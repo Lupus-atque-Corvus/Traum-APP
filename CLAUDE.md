@@ -1,12 +1,55 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.7+117** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.8+118** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-14 — v1.1.7, Barrierefreiheit: fragmentierte TalkBack-Ansagen)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-15 — v1.1.8, Home-Widget-Katalog vollständig lokalisiert)
+
+**Letzter offener Übersetzungs-Rest aus Phase 6: die Titel der 68 Home-Widget-Kacheln waren
+hartcodiertes Deutsch, unabhängig von der App-Sprache. Vorher sorgfältig die Architektur
+geklärt (siehe unten), dann die eigentliche 8-Dateien/68-Stellen-Änderung mechanisch
+ausgeführt und selbst gegengeprüft (Diff-Stichproben + eigenständiger `flutter analyze`/
+`flutter test`-Lauf, nicht nur den Ausführungs-Bericht übernommen).**
+
+1. **Ursache:** `HomeWidgetDescriptor.title` in `home_widget_registry.dart` war ein simples
+   `final String`, gesetzt in 8 modul-eigenen `final Map<HomeWidgetType, HomeWidgetDescriptor>`
+   (training/planning/health/general/misc/nutrition/budget/diary). Jeder Eintrag hatte den
+   deutschen Titel-String **zweimal** hartcodiert dupliziert: einmal im äußeren `title`-Feld
+   (nur von der Widget-Auswahl-Sheet für Suche/Anzeige gelesen) und nochmal inline im
+   `builder:` (der die tatsächlich auf dem Homescreen sichtbare Kachel baut) — Letzteres war
+   der eigentliche, dauerhaft sichtbare Übersetzungsfehler.
+2. **Fix:** `title` von `String` auf `String Function(AppLocalizations l10n)` umgestellt —
+   bewusst KEIN Umbau der Maps selbst nötig (sie sind `final`, nicht `const`, Aufrufe nutzen
+   ohnehin kein `const`-Keyword, ein nicht-capturing Closure-Literal ist dort unproblematisch).
+   Alle 68 Descriptor-Einträge über 8 Dateien konvertiert: äußeres Feld auf
+   `title: (l10n) => l10n.homeWidgetXTitle` umgestellt, inline-`builder`-Titel auf
+   `AppLocalizations.of(context)!.homeWidgetXTitle` (gleicher Key, `context` war dort schon
+   vorhanden). Die 2 Lesestellen des äußeren Feldes (`home_widget_catalog_sheet.dart`:
+   Suchfilter + `_WidgetChip`-Anzeige) auf `.title(l10n)` umgestellt.
+3. **61 neue ARB-Keys** (DE+EN, Muster `homeWidget<TypeName>Title`). `general_widgets.dart`
+   hatte teils schon lokalisierte `builder`-Titel aus einer früheren Phase — dort bestehende
+   Keys fürs äußere Feld wiederverwendet statt Duplikate anzulegen.
+4. **8 Testdateien mussten mitgezogen werden** (beim Umbau selbst gefunden, nicht vorher
+   geplant): `home_registry_completeness_test.dart` griff direkt auf `.title.trim()` zu — jetzt
+   `AppLocalizationsDe()` direkt instanziiert (kein `BuildContext` in einem reinen `test()`
+   verfügbar) und `.title(l10n).trim()`. 7 von 8 `group_*_test.dart`-Dateien bauten ein rohes
+   `MaterialApp` ohne `localizationsDelegates`/`supportedLocales` — genau das gleiche
+   Fehlerbild wie bei den Phase-6/Phase-9-Übersetzungs-Nacharbeiten (`AppLocalizations.of(context)!`
+   wirft ohne Delegates einen Null-Check-Fehler) — Delegates ergänzt nach dem Muster, das
+   `group_general_test.dart` schon hatte.
+5. **Eigenständig gegengeprüft, nicht nur den Bericht übernommen:** Diff von
+   `home_widget_registry.dart` und `training_widgets.dart` stichprobenartig gelesen, dann
+   selbst `flutter analyze` und `flutter test` neu laufen lassen statt dem Ausführungs-Bericht
+   allein zu vertrauen.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **586/586 grün**.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-14 — v1.1.7, Barrierefreiheit: fragmentierte TalkBack-Ansagen)
 
 **Fortsetzung der "alles andere"-Liste nach dem v1.1.5-Hotfix, jetzt mit fester Vorgabe: jede
 Aufgabe einzeln vorher kurz planen, dann Release. v1.1.6 (dazwischen) war ein reiner

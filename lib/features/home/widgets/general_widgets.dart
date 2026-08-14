@@ -21,7 +21,7 @@ import '../home_widget_registry.dart';
 
 final Map<HomeWidgetType, HomeWidgetDescriptor> generalHomeWidgets = {
   HomeWidgetType.clockDate: HomeWidgetDescriptor(
-    title: 'Uhr',
+    title: (l10n) => l10n.homeWidgetClock,
     group: HomeWidgetGroup.general,
     accent: TraumColors.amberGold,
     defaultSize: HomeTileSize.wide,
@@ -36,7 +36,7 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> generalHomeWidgets = {
     ),
   ),
   HomeWidgetType.weatherNow: HomeWidgetDescriptor(
-    title: 'Wetter',
+    title: (l10n) => l10n.homeWidgetWeather,
     group: HomeWidgetGroup.general,
     accent: TraumColors.amberGold,
     defaultSize: HomeTileSize.small,
@@ -51,7 +51,7 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> generalHomeWidgets = {
     ),
   ),
   HomeWidgetType.weatherForecast: HomeWidgetDescriptor(
-    title: 'Wetter',
+    title: (l10n) => l10n.homeWidgetWeather,
     group: HomeWidgetGroup.general,
     accent: TraumColors.amberGold,
     defaultSize: HomeTileSize.wide,
@@ -66,7 +66,7 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> generalHomeWidgets = {
     ),
   ),
   HomeWidgetType.appFavorites: HomeWidgetDescriptor(
-    title: 'Apps',
+    title: (l10n) => l10n.homeWidgetApps,
     group: HomeWidgetGroup.general,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.wide,
@@ -81,7 +81,7 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> generalHomeWidgets = {
     ),
   ),
   HomeWidgetType.quickActions: HomeWidgetDescriptor(
-    title: 'Schnellzugriff',
+    title: (l10n) => l10n.homeWidgetQuickAccess,
     group: HomeWidgetGroup.general,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.wide,
@@ -97,7 +97,7 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> generalHomeWidgets = {
     ),
   ),
   HomeWidgetType.dailyScore: HomeWidgetDescriptor(
-    title: 'Tagesübersicht',
+    title: (l10n) => l10n.homeWidgetDailyOverview,
     group: HomeWidgetGroup.general,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.large,
@@ -112,7 +112,7 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> generalHomeWidgets = {
     ),
   ),
   HomeWidgetType.miniCalendar: HomeWidgetDescriptor(
-    title: 'Kalender',
+    title: (l10n) => l10n.homeWidgetCalendar,
     group: HomeWidgetGroup.general,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.large,

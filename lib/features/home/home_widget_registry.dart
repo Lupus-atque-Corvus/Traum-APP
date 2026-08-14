@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../l10n/app_localizations.dart';
 import 'home_tile.dart';
 import 'widgets/general_widgets.dart';
 import 'widgets/health_widgets.dart';
@@ -15,7 +16,7 @@ typedef HomeWidgetBuilder =
     Widget Function(BuildContext context, WidgetRef ref, HomeTileSize size);
 
 class HomeWidgetDescriptor {
-  final String title;
+  final String Function(AppLocalizations l10n) title;
   final HomeWidgetGroup group;
   final Color accent;
   final HomeTileSize defaultSize;

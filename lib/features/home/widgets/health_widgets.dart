@@ -7,6 +7,7 @@ import '../../../core/navigation/routes.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../data/database/traum_database.dart' show WeightLog;
+import '../../../l10n/app_localizations.dart';
 import '../../health/health_score_provider.dart';
 import '../../health/health_score_result.dart';
 import '../home_tile.dart';
@@ -23,14 +24,14 @@ final _weightLogsSnapshotProvider = FutureProvider.autoDispose<List<WeightLog>>(
 
 final Map<HomeWidgetType, HomeWidgetDescriptor> healthHomeWidgets = {
   HomeWidgetType.steps: HomeWidgetDescriptor(
-    title: 'Schritte',
+    title: (l10n) => l10n.homeWidgetStepsTitle,
     group: HomeWidgetGroup.health,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small, HomeTileSize.large},
     route: Routes.health,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Schritte',
+      title: AppLocalizations.of(context)!.homeWidgetStepsTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.health,
@@ -38,14 +39,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> healthHomeWidgets = {
     ),
   ),
   HomeWidgetType.sleep: HomeWidgetDescriptor(
-    title: 'Schlaf',
+    title: (l10n) => l10n.homeWidgetSleepTitle,
     group: HomeWidgetGroup.health,
     accent: TraumColors.lavender,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.health,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Schlaf',
+      title: AppLocalizations.of(context)!.homeWidgetSleepTitle,
       accent: TraumColors.lavender,
       size: size,
       route: Routes.health,
@@ -53,14 +54,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> healthHomeWidgets = {
     ),
   ),
   HomeWidgetType.heartRate: HomeWidgetDescriptor(
-    title: 'Herzfrequenz',
+    title: (l10n) => l10n.homeWidgetHeartRateTitle,
     group: HomeWidgetGroup.health,
     accent: TraumColors.roseRed,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.health,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Herzfrequenz',
+      title: AppLocalizations.of(context)!.homeWidgetHeartRateTitle,
       accent: TraumColors.roseRed,
       size: size,
       route: Routes.health,
@@ -72,14 +73,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> healthHomeWidgets = {
     ),
   ),
   HomeWidgetType.moodToday: HomeWidgetDescriptor(
-    title: 'Stimmung',
+    title: (l10n) => l10n.homeWidgetMoodTodayTitle,
     group: HomeWidgetGroup.health,
     accent: TraumColors.amberGold,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.health,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Stimmung',
+      title: AppLocalizations.of(context)!.homeWidgetMoodTodayTitle,
       accent: TraumColors.amberGold,
       size: size,
       route: Routes.health,
@@ -87,14 +88,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> healthHomeWidgets = {
     ),
   ),
   HomeWidgetType.weightTrend: HomeWidgetDescriptor(
-    title: 'Gewicht',
+    title: (l10n) => l10n.homeWidgetWeightTrendTitle,
     group: HomeWidgetGroup.health,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.wide,
     sizes: const {HomeTileSize.small, HomeTileSize.wide},
     route: Routes.health,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Gewicht',
+      title: AppLocalizations.of(context)!.homeWidgetWeightTrendTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.health,
@@ -102,14 +103,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> healthHomeWidgets = {
     ),
   ),
   HomeWidgetType.healthScore: HomeWidgetDescriptor(
-    title: 'Score',
+    title: (l10n) => l10n.homeWidgetHealthScoreTitle,
     group: HomeWidgetGroup.health,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.large,
     sizes: const {HomeTileSize.small, HomeTileSize.large},
     route: Routes.health,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Score',
+      title: AppLocalizations.of(context)!.homeWidgetHealthScoreTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.health,
@@ -117,14 +118,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> healthHomeWidgets = {
     ),
   ),
   HomeWidgetType.healthSnapshot: HomeWidgetDescriptor(
-    title: 'Gesundheit',
+    title: (l10n) => l10n.homeWidgetHealthSnapshotTitle,
     group: HomeWidgetGroup.health,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.large,
     sizes: const {HomeTileSize.large},
     route: Routes.health,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Gesundheit',
+      title: AppLocalizations.of(context)!.homeWidgetHealthSnapshotTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.health,
@@ -132,14 +133,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> healthHomeWidgets = {
     ),
   ),
   HomeWidgetType.activeMinutes: HomeWidgetDescriptor(
-    title: 'Aktive Min.',
+    title: (l10n) => l10n.homeWidgetActiveMinutesTitle,
     group: HomeWidgetGroup.health,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.health,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Aktive Min.',
+      title: AppLocalizations.of(context)!.homeWidgetActiveMinutesTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.health,
@@ -151,14 +152,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> healthHomeWidgets = {
     ),
   ),
   HomeWidgetType.caloriesBurned: HomeWidgetDescriptor(
-    title: 'Verbrannt',
+    title: (l10n) => l10n.homeWidgetCaloriesBurnedTitle,
     group: HomeWidgetGroup.health,
     accent: TraumColors.amberGold,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.health,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Verbrannt',
+      title: AppLocalizations.of(context)!.homeWidgetCaloriesBurnedTitle,
       accent: TraumColors.amberGold,
       size: size,
       route: Routes.health,
@@ -170,14 +171,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> healthHomeWidgets = {
     ),
   ),
   HomeWidgetType.stepsWeekChart: HomeWidgetDescriptor(
-    title: 'Schritte-Woche',
+    title: (l10n) => l10n.homeWidgetStepsWeekChartTitle,
     group: HomeWidgetGroup.health,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.large,
     sizes: const {HomeTileSize.large},
     route: Routes.health,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Schritte-Woche',
+      title: AppLocalizations.of(context)!.homeWidgetStepsWeekChartTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.health,
@@ -185,14 +186,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> healthHomeWidgets = {
     ),
   ),
   HomeWidgetType.weightChart: HomeWidgetDescriptor(
-    title: 'Gewichtsverlauf',
+    title: (l10n) => l10n.homeWidgetWeightChartTitle,
     group: HomeWidgetGroup.health,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.large,
     sizes: const {HomeTileSize.large},
     route: Routes.health,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Gewichtsverlauf',
+      title: AppLocalizations.of(context)!.homeWidgetWeightChartTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.health,

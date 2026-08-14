@@ -4910,6 +4910,372 @@ abstract class AppLocalizations {
   /// **'Kalender'**
   String get homeWidgetCalendar;
 
+  /// No description provided for @homeWidgetNextWorkoutTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Nächstes Workout'**
+  String get homeWidgetNextWorkoutTitle;
+
+  /// No description provided for @homeWidgetWeeklyVolumeTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wochen-Volumen'**
+  String get homeWidgetWeeklyVolumeTitle;
+
+  /// No description provided for @homeWidgetMuscleHeatmapTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Muskeln'**
+  String get homeWidgetMuscleHeatmapTitle;
+
+  /// No description provided for @homeWidgetLastWorkoutTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Letztes Workout'**
+  String get homeWidgetLastWorkoutTitle;
+
+  /// No description provided for @homeWidgetTrainingStreakTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Trainings-Streak'**
+  String get homeWidgetTrainingStreakTitle;
+
+  /// No description provided for @homeWidgetWeeklyWorkoutsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wochen-Workouts'**
+  String get homeWidgetWeeklyWorkoutsTitle;
+
+  /// No description provided for @homeWidgetPersonalRecordsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Rekorde'**
+  String get homeWidgetPersonalRecordsTitle;
+
+  /// No description provided for @homeWidgetRestTimerQuickTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Rest-Timer'**
+  String get homeWidgetRestTimerQuickTitle;
+
+  /// No description provided for @homeWidgetOpenTodosTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Offene Todos'**
+  String get homeWidgetOpenTodosTitle;
+
+  /// No description provided for @homeWidgetTodayAppointmentsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Heute'**
+  String get homeWidgetTodayAppointmentsTitle;
+
+  /// No description provided for @homeWidgetHabitsTodayTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Gewohnheiten'**
+  String get homeWidgetHabitsTodayTitle;
+
+  /// No description provided for @homeWidgetMedicationsTodayTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Medikamente'**
+  String get homeWidgetMedicationsTodayTitle;
+
+  /// No description provided for @homeWidgetNextAppointmentCountdownTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Nächster Termin'**
+  String get homeWidgetNextAppointmentCountdownTitle;
+
+  /// No description provided for @homeWidgetOverdueTodosTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Überfällig'**
+  String get homeWidgetOverdueTodosTitle;
+
+  /// No description provided for @homeWidgetBestHabitStreakTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Beste Serie'**
+  String get homeWidgetBestHabitStreakTitle;
+
+  /// No description provided for @homeWidgetStepsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Schritte'**
+  String get homeWidgetStepsTitle;
+
+  /// No description provided for @homeWidgetSleepTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Schlaf'**
+  String get homeWidgetSleepTitle;
+
+  /// No description provided for @homeWidgetHeartRateTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Herzfrequenz'**
+  String get homeWidgetHeartRateTitle;
+
+  /// No description provided for @homeWidgetMoodTodayTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Stimmung'**
+  String get homeWidgetMoodTodayTitle;
+
+  /// No description provided for @homeWidgetWeightTrendTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Gewicht'**
+  String get homeWidgetWeightTrendTitle;
+
+  /// No description provided for @homeWidgetHealthScoreTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Score'**
+  String get homeWidgetHealthScoreTitle;
+
+  /// No description provided for @homeWidgetHealthSnapshotTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesundheit'**
+  String get homeWidgetHealthSnapshotTitle;
+
+  /// No description provided for @homeWidgetActiveMinutesTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Aktive Min.'**
+  String get homeWidgetActiveMinutesTitle;
+
+  /// No description provided for @homeWidgetCaloriesBurnedTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Verbrannt'**
+  String get homeWidgetCaloriesBurnedTitle;
+
+  /// No description provided for @homeWidgetStepsWeekChartTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Schritte-Woche'**
+  String get homeWidgetStepsWeekChartTitle;
+
+  /// No description provided for @homeWidgetWeightChartTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Gewichtsverlauf'**
+  String get homeWidgetWeightChartTitle;
+
+  /// No description provided for @homeWidgetCurrentStreakTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Aktueller Streak'**
+  String get homeWidgetCurrentStreakTitle;
+
+  /// No description provided for @homeWidgetLongestStreakTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Längster Streak'**
+  String get homeWidgetLongestStreakTitle;
+
+  /// No description provided for @homeWidgetMoneySavedTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Gespart'**
+  String get homeWidgetMoneySavedTitle;
+
+  /// No description provided for @homeWidgetAllCountersTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Counter'**
+  String get homeWidgetAllCountersTitle;
+
+  /// No description provided for @homeWidgetLastIntakeTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte Einnahme'**
+  String get homeWidgetLastIntakeTitle;
+
+  /// No description provided for @homeWidgetTakenTodayTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Heute'**
+  String get homeWidgetTakenTodayTitle;
+
+  /// No description provided for @homeWidgetCycleDayTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Zyklustag'**
+  String get homeWidgetCycleDayTitle;
+
+  /// No description provided for @homeWidgetNextPeriodTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Nächste Periode'**
+  String get homeWidgetNextPeriodTitle;
+
+  /// No description provided for @homeWidgetNotesCountTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Notizen'**
+  String get homeWidgetNotesCountTitle;
+
+  /// No description provided for @homeWidgetLastNoteTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte Notiz'**
+  String get homeWidgetLastNoteTitle;
+
+  /// No description provided for @homeWidgetPinnedNoteTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Angepinnt'**
+  String get homeWidgetPinnedNoteTitle;
+
+  /// No description provided for @homeWidgetPlacesCountTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Orte'**
+  String get homeWidgetPlacesCountTitle;
+
+  /// No description provided for @homeWidgetLastPhotoTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Letztes Foto'**
+  String get homeWidgetLastPhotoTitle;
+
+  /// No description provided for @homeWidgetMapPreviewTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Karte'**
+  String get homeWidgetMapPreviewTitle;
+
+  /// No description provided for @homeWidgetCaloriesRingTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalorien'**
+  String get homeWidgetCaloriesRingTitle;
+
+  /// No description provided for @homeWidgetMacrosTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Makros'**
+  String get homeWidgetMacrosTitle;
+
+  /// No description provided for @homeWidgetWaterTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wasser'**
+  String get homeWidgetWaterTitle;
+
+  /// No description provided for @homeWidgetLastMealTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte Mahlzeit'**
+  String get homeWidgetLastMealTitle;
+
+  /// No description provided for @homeWidgetRemainingCaloriesTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Rest-kcal'**
+  String get homeWidgetRemainingCaloriesTitle;
+
+  /// No description provided for @homeWidgetSupplementsTodayTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Supplements'**
+  String get homeWidgetSupplementsTodayTitle;
+
+  /// No description provided for @homeWidgetMealsTodayTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Mahlzeiten'**
+  String get homeWidgetMealsTodayTitle;
+
+  /// No description provided for @homeWidgetBalanceMonthTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Saldo'**
+  String get homeWidgetBalanceMonthTitle;
+
+  /// No description provided for @homeWidgetIncomeExpenseTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Ein/Aus'**
+  String get homeWidgetIncomeExpenseTitle;
+
+  /// No description provided for @homeWidgetBudgetProgressTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Budget'**
+  String get homeWidgetBudgetProgressTitle;
+
+  /// No description provided for @homeWidgetAccountsOverviewTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Konten'**
+  String get homeWidgetAccountsOverviewTitle;
+
+  /// No description provided for @homeWidgetTopCategoryTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Top-Ausgabe'**
+  String get homeWidgetTopCategoryTitle;
+
+  /// No description provided for @homeWidgetRecentTransactionsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte'**
+  String get homeWidgetRecentTransactionsTitle;
+
+  /// No description provided for @homeWidgetSavingsGoalTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Sparziel'**
+  String get homeWidgetSavingsGoalTitle;
+
+  /// No description provided for @homeWidgetRecurringDueTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wiederkehrend'**
+  String get homeWidgetRecurringDueTitle;
+
+  /// No description provided for @homeWidgetMonthTrendTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Monats-Trend'**
+  String get homeWidgetMonthTrendTitle;
+
+  /// No description provided for @homeWidgetWriteStreakTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Schreib-Streak'**
+  String get homeWidgetWriteStreakTitle;
+
+  /// No description provided for @homeWidgetLastEntryTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Letzter Eintrag'**
+  String get homeWidgetLastEntryTitle;
+
+  /// No description provided for @homeWidgetYearHeatmapTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Jahres-Heatmap'**
+  String get homeWidgetYearHeatmapTitle;
+
+  /// No description provided for @homeWidgetMoodCalendarTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Stimmungs-Kalender'**
+  String get homeWidgetMoodCalendarTitle;
+
+  /// No description provided for @homeWidgetEntriesThisMonthTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Einträge/Monat'**
+  String get homeWidgetEntriesThisMonthTitle;
+
   /// No description provided for @addWidgetTitle.
   ///
   /// In de, this message translates to:

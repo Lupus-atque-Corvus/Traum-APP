@@ -9,9 +9,12 @@ import 'package:traum/data/database/traum_database.dart';
 import 'package:traum/features/home/home_tile.dart';
 import 'package:traum/features/home/home_widget_registry.dart';
 import 'package:traum/l10n/app_localizations.dart';
+import 'package:traum/l10n/app_localizations_de.dart';
 
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
+
+  final l10n = AppLocalizationsDe();
 
   test('every HomeWidgetType is registered with valid metadata', () {
     for (final t in HomeWidgetType.values) {
@@ -23,7 +26,7 @@ void main() {
         isTrue,
         reason: '$t defaultSize not in sizes',
       );
-      expect(d.title.trim(), isNotEmpty, reason: '$t has empty title');
+      expect(d.title(l10n).trim(), isNotEmpty, reason: '$t has empty title');
     }
     expect(homeWidgetRegistry.length, HomeWidgetType.values.length);
   });

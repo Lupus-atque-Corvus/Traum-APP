@@ -5,6 +5,7 @@ import '../../../core/components/components.dart';
 import '../../../core/navigation/routes.dart';
 import '../../../core/providers/preferences_provider.dart';
 import '../../../core/theme/colors.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../nutrition/nutrition_providers.dart';
 import '../home_tile.dart';
 import '../home_widget_frame.dart';
@@ -12,14 +13,14 @@ import '../home_widget_registry.dart';
 
 final Map<HomeWidgetType, HomeWidgetDescriptor> nutritionHomeWidgets = {
   HomeWidgetType.caloriesRing: HomeWidgetDescriptor(
-    title: 'Kalorien',
+    title: (l10n) => l10n.homeWidgetCaloriesRingTitle,
     group: HomeWidgetGroup.nutrition,
     accent: TraumColors.amberGold,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small, HomeTileSize.large},
     route: Routes.nutrition,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Kalorien',
+      title: AppLocalizations.of(context)!.homeWidgetCaloriesRingTitle,
       accent: TraumColors.amberGold,
       size: size,
       route: Routes.nutrition,
@@ -27,14 +28,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> nutritionHomeWidgets = {
     ),
   ),
   HomeWidgetType.macros: HomeWidgetDescriptor(
-    title: 'Makros',
+    title: (l10n) => l10n.homeWidgetMacrosTitle,
     group: HomeWidgetGroup.nutrition,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.wide,
     sizes: const {HomeTileSize.wide},
     route: Routes.nutrition,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Makros',
+      title: AppLocalizations.of(context)!.homeWidgetMacrosTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.nutrition,
@@ -42,14 +43,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> nutritionHomeWidgets = {
     ),
   ),
   HomeWidgetType.water: HomeWidgetDescriptor(
-    title: 'Wasser',
+    title: (l10n) => l10n.homeWidgetWaterTitle,
     group: HomeWidgetGroup.nutrition,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.wide,
     sizes: const {HomeTileSize.small, HomeTileSize.wide},
     route: Routes.nutrition,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Wasser',
+      title: AppLocalizations.of(context)!.homeWidgetWaterTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.nutrition,
@@ -57,14 +58,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> nutritionHomeWidgets = {
     ),
   ),
   HomeWidgetType.lastMeal: HomeWidgetDescriptor(
-    title: 'Letzte Mahlzeit',
+    title: (l10n) => l10n.homeWidgetLastMealTitle,
     group: HomeWidgetGroup.nutrition,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.nutrition,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Letzte Mahlzeit',
+      title: AppLocalizations.of(context)!.homeWidgetLastMealTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.nutrition,
@@ -72,14 +73,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> nutritionHomeWidgets = {
     ),
   ),
   HomeWidgetType.remainingCalories: HomeWidgetDescriptor(
-    title: 'Rest-kcal',
+    title: (l10n) => l10n.homeWidgetRemainingCaloriesTitle,
     group: HomeWidgetGroup.nutrition,
     accent: TraumColors.amberGold,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.nutrition,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Rest-kcal',
+      title: AppLocalizations.of(context)!.homeWidgetRemainingCaloriesTitle,
       accent: TraumColors.amberGold,
       size: size,
       route: Routes.nutrition,
@@ -87,14 +88,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> nutritionHomeWidgets = {
     ),
   ),
   HomeWidgetType.supplementsToday: HomeWidgetDescriptor(
-    title: 'Supplements',
+    title: (l10n) => l10n.homeWidgetSupplementsTodayTitle,
     group: HomeWidgetGroup.nutrition,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.nutrition,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Supplements',
+      title: AppLocalizations.of(context)!.homeWidgetSupplementsTodayTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.nutrition,
@@ -102,14 +103,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> nutritionHomeWidgets = {
     ),
   ),
   HomeWidgetType.mealsToday: HomeWidgetDescriptor(
-    title: 'Mahlzeiten',
+    title: (l10n) => l10n.homeWidgetMealsTodayTitle,
     group: HomeWidgetGroup.nutrition,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.nutrition,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Mahlzeiten',
+      title: AppLocalizations.of(context)!.homeWidgetMealsTodayTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.nutrition,

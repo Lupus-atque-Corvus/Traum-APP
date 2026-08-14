@@ -8,6 +8,7 @@ import 'package:traum/core/providers/database_provider.dart';
 import 'package:traum/data/database/traum_database.dart';
 import 'package:traum/features/home/home_tile.dart';
 import 'package:traum/features/home/home_widget_registry.dart';
+import 'package:traum/l10n/app_localizations.dart';
 
 const _group = HomeWidgetGroup.planning;
 
@@ -34,6 +35,8 @@ void main() {
               databaseProvider.overrideWithValue(db),
             ],
             child: MaterialApp(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
               home: Scaffold(
                 body: Consumer(
                   builder: (ctx, ref, _) => SizedBox(

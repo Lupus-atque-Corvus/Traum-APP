@@ -6,6 +6,7 @@ import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../data/database/traum_database.dart'
     show Appointment, Habit, HabitLog, Medication, Todo;
+import '../../../l10n/app_localizations.dart';
 import '../home_tile.dart';
 import '../home_widget_frame.dart';
 import '../home_widget_registry.dart';
@@ -52,14 +53,14 @@ final _activeMedicationsProvider = FutureProvider.autoDispose<List<Medication>>(
 
 final Map<HomeWidgetType, HomeWidgetDescriptor> planningHomeWidgets = {
   HomeWidgetType.openTodos: HomeWidgetDescriptor(
-    title: 'Offene Todos',
+    title: (l10n) => l10n.homeWidgetOpenTodosTitle,
     group: HomeWidgetGroup.planning,
     accent: TraumColors.lavender,
     defaultSize: HomeTileSize.wide,
     sizes: const {HomeTileSize.small, HomeTileSize.wide},
     route: Routes.planning,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Offene Todos',
+      title: AppLocalizations.of(context)!.homeWidgetOpenTodosTitle,
       accent: TraumColors.lavender,
       size: size,
       route: Routes.planning,
@@ -67,14 +68,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> planningHomeWidgets = {
     ),
   ),
   HomeWidgetType.todayAppointments: HomeWidgetDescriptor(
-    title: 'Heute',
+    title: (l10n) => l10n.homeWidgetTodayAppointmentsTitle,
     group: HomeWidgetGroup.planning,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.wide,
     sizes: const {HomeTileSize.wide},
     route: Routes.planning,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Heute',
+      title: AppLocalizations.of(context)!.homeWidgetTodayAppointmentsTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.planning,
@@ -82,14 +83,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> planningHomeWidgets = {
     ),
   ),
   HomeWidgetType.habitsToday: HomeWidgetDescriptor(
-    title: 'Gewohnheiten',
+    title: (l10n) => l10n.homeWidgetHabitsTodayTitle,
     group: HomeWidgetGroup.planning,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.wide,
     sizes: const {HomeTileSize.small, HomeTileSize.wide},
     route: Routes.planning,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Gewohnheiten',
+      title: AppLocalizations.of(context)!.homeWidgetHabitsTodayTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.planning,
@@ -97,14 +98,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> planningHomeWidgets = {
     ),
   ),
   HomeWidgetType.medicationsToday: HomeWidgetDescriptor(
-    title: 'Medikamente',
+    title: (l10n) => l10n.homeWidgetMedicationsTodayTitle,
     group: HomeWidgetGroup.planning,
     accent: TraumColors.roseRed,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.medication,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Medikamente',
+      title: AppLocalizations.of(context)!.homeWidgetMedicationsTodayTitle,
       accent: TraumColors.roseRed,
       size: size,
       route: Routes.medication,
@@ -112,14 +113,16 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> planningHomeWidgets = {
     ),
   ),
   HomeWidgetType.nextAppointmentCountdown: HomeWidgetDescriptor(
-    title: 'Nächster Termin',
+    title: (l10n) => l10n.homeWidgetNextAppointmentCountdownTitle,
     group: HomeWidgetGroup.planning,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.planning,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Nächster Termin',
+      title: AppLocalizations.of(
+        context,
+      )!.homeWidgetNextAppointmentCountdownTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.planning,
@@ -127,14 +130,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> planningHomeWidgets = {
     ),
   ),
   HomeWidgetType.overdueTodos: HomeWidgetDescriptor(
-    title: 'Überfällig',
+    title: (l10n) => l10n.homeWidgetOverdueTodosTitle,
     group: HomeWidgetGroup.planning,
     accent: TraumColors.roseRed,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.planning,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Überfällig',
+      title: AppLocalizations.of(context)!.homeWidgetOverdueTodosTitle,
       accent: TraumColors.roseRed,
       size: size,
       route: Routes.planning,
@@ -142,14 +145,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> planningHomeWidgets = {
     ),
   ),
   HomeWidgetType.bestHabitStreak: HomeWidgetDescriptor(
-    title: 'Beste Serie',
+    title: (l10n) => l10n.homeWidgetBestHabitStreakTitle,
     group: HomeWidgetGroup.planning,
     accent: TraumColors.amberGold,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.planning,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Beste Serie',
+      title: AppLocalizations.of(context)!.homeWidgetBestHabitStreakTitle,
       accent: TraumColors.amberGold,
       size: size,
       route: Routes.planning,

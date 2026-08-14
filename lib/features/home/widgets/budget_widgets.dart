@@ -9,6 +9,7 @@ import '../../../core/providers/preferences_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../data/database/traum_database.dart'
     show Account, SavingsGoal, Transaction;
+import '../../../l10n/app_localizations.dart';
 import '../../budget/budget_providers.dart';
 import '../home_tile.dart';
 import '../home_widget_frame.dart';
@@ -41,14 +42,14 @@ final _recurringSnapshotProvider =
 
 final Map<HomeWidgetType, HomeWidgetDescriptor> budgetHomeWidgets = {
   HomeWidgetType.balanceMonth: HomeWidgetDescriptor(
-    title: 'Saldo',
+    title: (l10n) => l10n.homeWidgetBalanceMonthTitle,
     group: HomeWidgetGroup.budget,
     accent: TraumColors.amberGold,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.budget,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Saldo',
+      title: AppLocalizations.of(context)!.homeWidgetBalanceMonthTitle,
       accent: TraumColors.amberGold,
       size: size,
       route: Routes.budget,
@@ -56,14 +57,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> budgetHomeWidgets = {
     ),
   ),
   HomeWidgetType.incomeExpense: HomeWidgetDescriptor(
-    title: 'Ein/Aus',
+    title: (l10n) => l10n.homeWidgetIncomeExpenseTitle,
     group: HomeWidgetGroup.budget,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.wide,
     sizes: const {HomeTileSize.wide},
     route: Routes.budget,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Ein/Aus',
+      title: AppLocalizations.of(context)!.homeWidgetIncomeExpenseTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.budget,
@@ -71,14 +72,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> budgetHomeWidgets = {
     ),
   ),
   HomeWidgetType.budgetProgress: HomeWidgetDescriptor(
-    title: 'Budget',
+    title: (l10n) => l10n.homeWidgetBudgetProgressTitle,
     group: HomeWidgetGroup.budget,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.budget,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Budget',
+      title: AppLocalizations.of(context)!.homeWidgetBudgetProgressTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.budget,
@@ -86,14 +87,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> budgetHomeWidgets = {
     ),
   ),
   HomeWidgetType.accountsOverview: HomeWidgetDescriptor(
-    title: 'Konten',
+    title: (l10n) => l10n.homeWidgetAccountsOverviewTitle,
     group: HomeWidgetGroup.budget,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.budget,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Konten',
+      title: AppLocalizations.of(context)!.homeWidgetAccountsOverviewTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.budget,
@@ -101,14 +102,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> budgetHomeWidgets = {
     ),
   ),
   HomeWidgetType.topCategory: HomeWidgetDescriptor(
-    title: 'Top-Ausgabe',
+    title: (l10n) => l10n.homeWidgetTopCategoryTitle,
     group: HomeWidgetGroup.budget,
     accent: TraumColors.roseRed,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.budget,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Top-Ausgabe',
+      title: AppLocalizations.of(context)!.homeWidgetTopCategoryTitle,
       accent: TraumColors.roseRed,
       size: size,
       route: Routes.budget,
@@ -116,14 +117,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> budgetHomeWidgets = {
     ),
   ),
   HomeWidgetType.recentTransactions: HomeWidgetDescriptor(
-    title: 'Letzte',
+    title: (l10n) => l10n.homeWidgetRecentTransactionsTitle,
     group: HomeWidgetGroup.budget,
     accent: TraumColors.amberGold,
     defaultSize: HomeTileSize.wide,
     sizes: const {HomeTileSize.wide},
     route: Routes.budget,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Letzte',
+      title: AppLocalizations.of(context)!.homeWidgetRecentTransactionsTitle,
       accent: TraumColors.amberGold,
       size: size,
       route: Routes.budget,
@@ -131,14 +132,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> budgetHomeWidgets = {
     ),
   ),
   HomeWidgetType.savingsGoal: HomeWidgetDescriptor(
-    title: 'Sparziel',
+    title: (l10n) => l10n.homeWidgetSavingsGoalTitle,
     group: HomeWidgetGroup.budget,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.budget,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Sparziel',
+      title: AppLocalizations.of(context)!.homeWidgetSavingsGoalTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.budget,
@@ -146,14 +147,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> budgetHomeWidgets = {
     ),
   ),
   HomeWidgetType.recurringDue: HomeWidgetDescriptor(
-    title: 'Wiederkehrend',
+    title: (l10n) => l10n.homeWidgetRecurringDueTitle,
     group: HomeWidgetGroup.budget,
     accent: TraumColors.roseRed,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.budget,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Wiederkehrend',
+      title: AppLocalizations.of(context)!.homeWidgetRecurringDueTitle,
       accent: TraumColors.roseRed,
       size: size,
       route: Routes.budget,
@@ -161,14 +162,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> budgetHomeWidgets = {
     ),
   ),
   HomeWidgetType.monthTrend: HomeWidgetDescriptor(
-    title: 'Monats-Trend',
+    title: (l10n) => l10n.homeWidgetMonthTrendTitle,
     group: HomeWidgetGroup.budget,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.large,
     sizes: const {HomeTileSize.large},
     route: Routes.budget,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Monats-Trend',
+      title: AppLocalizations.of(context)!.homeWidgetMonthTrendTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.budget,

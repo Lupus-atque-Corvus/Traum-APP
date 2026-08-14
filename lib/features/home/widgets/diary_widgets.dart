@@ -6,6 +6,7 @@ import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../core/theme/colors.dart';
 import '../../../data/database/traum_database.dart' show DiaryEntry, MoodLog;
+import '../../../l10n/app_localizations.dart';
 import '../../diary/diary_provider.dart';
 import '../home_tile.dart';
 import '../home_widget_frame.dart';
@@ -29,14 +30,14 @@ final _monthMoodLogsProvider = FutureProvider.autoDispose<List<MoodLog>>((ref) {
 
 final Map<HomeWidgetType, HomeWidgetDescriptor> diaryHomeWidgets = {
   HomeWidgetType.writeStreak: HomeWidgetDescriptor(
-    title: 'Schreib-Streak',
+    title: (l10n) => l10n.homeWidgetWriteStreakTitle,
     group: HomeWidgetGroup.diary,
     accent: TraumColors.amberGold,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.diary,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Schreib-Streak',
+      title: AppLocalizations.of(context)!.homeWidgetWriteStreakTitle,
       accent: TraumColors.amberGold,
       size: size,
       route: Routes.diary,
@@ -44,14 +45,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> diaryHomeWidgets = {
     ),
   ),
   HomeWidgetType.lastEntry: HomeWidgetDescriptor(
-    title: 'Letzter Eintrag',
+    title: (l10n) => l10n.homeWidgetLastEntryTitle,
     group: HomeWidgetGroup.diary,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.wide,
     sizes: const {HomeTileSize.wide},
     route: Routes.diary,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Letzter Eintrag',
+      title: AppLocalizations.of(context)!.homeWidgetLastEntryTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.diary,
@@ -59,14 +60,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> diaryHomeWidgets = {
     ),
   ),
   HomeWidgetType.yearHeatmap: HomeWidgetDescriptor(
-    title: 'Jahres-Heatmap',
+    title: (l10n) => l10n.homeWidgetYearHeatmapTitle,
     group: HomeWidgetGroup.diary,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.large,
     sizes: const {HomeTileSize.large},
     route: Routes.diary,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Jahres-Heatmap',
+      title: AppLocalizations.of(context)!.homeWidgetYearHeatmapTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.diary,
@@ -74,14 +75,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> diaryHomeWidgets = {
     ),
   ),
   HomeWidgetType.moodCalendar: HomeWidgetDescriptor(
-    title: 'Stimmungs-Kalender',
+    title: (l10n) => l10n.homeWidgetMoodCalendarTitle,
     group: HomeWidgetGroup.diary,
     accent: TraumColors.lavender,
     defaultSize: HomeTileSize.large,
     sizes: const {HomeTileSize.large},
     route: Routes.diary,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Stimmungs-Kalender',
+      title: AppLocalizations.of(context)!.homeWidgetMoodCalendarTitle,
       accent: TraumColors.lavender,
       size: size,
       route: Routes.diary,
@@ -89,14 +90,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> diaryHomeWidgets = {
     ),
   ),
   HomeWidgetType.entriesThisMonth: HomeWidgetDescriptor(
-    title: 'Einträge/Monat',
+    title: (l10n) => l10n.homeWidgetEntriesThisMonthTitle,
     group: HomeWidgetGroup.diary,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.diary,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Einträge/Monat',
+      title: AppLocalizations.of(context)!.homeWidgetEntriesThisMonthTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.diary,

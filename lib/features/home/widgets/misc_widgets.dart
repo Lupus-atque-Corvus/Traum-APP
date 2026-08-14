@@ -9,6 +9,7 @@ import '../../graffiti_map/graffiti_map_provider.dart'
     show mapMarkersDaoProvider, markerPhotosDaoProvider;
 import '../../../data/database/traum_database.dart'
     show AbstinenceTracker, MapMarker, MarkerPhoto, Note, PeriodEntry;
+import '../../../l10n/app_localizations.dart';
 import '../home_tile.dart';
 import '../home_widget_frame.dart';
 import '../home_widget_registry.dart';
@@ -64,14 +65,14 @@ final _mapPhotosProvider = FutureProvider.autoDispose<List<MarkerPhoto>>((ref) {
 final Map<HomeWidgetType, HomeWidgetDescriptor> miscHomeWidgets = {
   // ─── Abstinenz ──────────────────────────────────────────────────────────
   HomeWidgetType.currentStreak: HomeWidgetDescriptor(
-    title: 'Aktueller Streak',
+    title: (l10n) => l10n.homeWidgetCurrentStreakTitle,
     group: HomeWidgetGroup.abstinence,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.abstinence,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Aktueller Streak',
+      title: AppLocalizations.of(context)!.homeWidgetCurrentStreakTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.abstinence,
@@ -79,14 +80,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> miscHomeWidgets = {
     ),
   ),
   HomeWidgetType.longestStreak: HomeWidgetDescriptor(
-    title: 'Längster Streak',
+    title: (l10n) => l10n.homeWidgetLongestStreakTitle,
     group: HomeWidgetGroup.abstinence,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.abstinence,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Längster Streak',
+      title: AppLocalizations.of(context)!.homeWidgetLongestStreakTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.abstinence,
@@ -94,14 +95,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> miscHomeWidgets = {
     ),
   ),
   HomeWidgetType.moneySaved: HomeWidgetDescriptor(
-    title: 'Gespart',
+    title: (l10n) => l10n.homeWidgetMoneySavedTitle,
     group: HomeWidgetGroup.abstinence,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.abstinence,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Gespart',
+      title: AppLocalizations.of(context)!.homeWidgetMoneySavedTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.abstinence,
@@ -109,14 +110,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> miscHomeWidgets = {
     ),
   ),
   HomeWidgetType.allCounters: HomeWidgetDescriptor(
-    title: 'Alle Counter',
+    title: (l10n) => l10n.homeWidgetAllCountersTitle,
     group: HomeWidgetGroup.abstinence,
     accent: TraumColors.mintGreen,
     defaultSize: HomeTileSize.large,
     sizes: const {HomeTileSize.large},
     route: Routes.abstinence,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Alle Counter',
+      title: AppLocalizations.of(context)!.homeWidgetAllCountersTitle,
       accent: TraumColors.mintGreen,
       size: size,
       route: Routes.abstinence,
@@ -126,14 +127,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> miscHomeWidgets = {
 
   // ─── Substanzen ─────────────────────────────────────────────────────────
   HomeWidgetType.lastIntake: HomeWidgetDescriptor(
-    title: 'Letzte Einnahme',
+    title: (l10n) => l10n.homeWidgetLastIntakeTitle,
     group: HomeWidgetGroup.substances,
     accent: TraumColors.lavender,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.substances,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Letzte Einnahme',
+      title: AppLocalizations.of(context)!.homeWidgetLastIntakeTitle,
       accent: TraumColors.lavender,
       size: size,
       route: Routes.substances,
@@ -142,14 +143,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> miscHomeWidgets = {
     ),
   ),
   HomeWidgetType.takenToday: HomeWidgetDescriptor(
-    title: 'Heute',
+    title: (l10n) => l10n.homeWidgetTakenTodayTitle,
     group: HomeWidgetGroup.substances,
     accent: TraumColors.lavender,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.substances,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Heute',
+      title: AppLocalizations.of(context)!.homeWidgetTakenTodayTitle,
       accent: TraumColors.lavender,
       size: size,
       route: Routes.substances,
@@ -164,14 +165,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> miscHomeWidgets = {
 
   // ─── Periode ────────────────────────────────────────────────────────────
   HomeWidgetType.cycleDay: HomeWidgetDescriptor(
-    title: 'Zyklustag',
+    title: (l10n) => l10n.homeWidgetCycleDayTitle,
     group: HomeWidgetGroup.period,
     accent: TraumColors.periodRose,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.period,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Zyklustag',
+      title: AppLocalizations.of(context)!.homeWidgetCycleDayTitle,
       accent: TraumColors.periodRose,
       size: size,
       route: Routes.period,
@@ -179,14 +180,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> miscHomeWidgets = {
     ),
   ),
   HomeWidgetType.nextPeriod: HomeWidgetDescriptor(
-    title: 'Nächste Periode',
+    title: (l10n) => l10n.homeWidgetNextPeriodTitle,
     group: HomeWidgetGroup.period,
     accent: TraumColors.periodRose,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.period,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Nächste Periode',
+      title: AppLocalizations.of(context)!.homeWidgetNextPeriodTitle,
       accent: TraumColors.periodRose,
       size: size,
       route: Routes.period,
@@ -196,14 +197,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> miscHomeWidgets = {
 
   // ─── Notizen ────────────────────────────────────────────────────────────
   HomeWidgetType.notesCount: HomeWidgetDescriptor(
-    title: 'Notizen',
+    title: (l10n) => l10n.homeWidgetNotesCountTitle,
     group: HomeWidgetGroup.notes,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.notes,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Notizen',
+      title: AppLocalizations.of(context)!.homeWidgetNotesCountTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.notes,
@@ -211,14 +212,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> miscHomeWidgets = {
     ),
   ),
   HomeWidgetType.lastNote: HomeWidgetDescriptor(
-    title: 'Letzte Notiz',
+    title: (l10n) => l10n.homeWidgetLastNoteTitle,
     group: HomeWidgetGroup.notes,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.wide,
     sizes: const {HomeTileSize.wide},
     route: Routes.notes,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Letzte Notiz',
+      title: AppLocalizations.of(context)!.homeWidgetLastNoteTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.notes,
@@ -226,14 +227,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> miscHomeWidgets = {
     ),
   ),
   HomeWidgetType.pinnedNote: HomeWidgetDescriptor(
-    title: 'Angepinnt',
+    title: (l10n) => l10n.homeWidgetPinnedNoteTitle,
     group: HomeWidgetGroup.notes,
     accent: TraumColors.cyanBlue,
     defaultSize: HomeTileSize.wide,
     sizes: const {HomeTileSize.wide},
     route: Routes.notes,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Angepinnt',
+      title: AppLocalizations.of(context)!.homeWidgetPinnedNoteTitle,
       accent: TraumColors.cyanBlue,
       size: size,
       route: Routes.notes,
@@ -243,14 +244,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> miscHomeWidgets = {
 
   // ─── Map ────────────────────────────────────────────────────────────────
   HomeWidgetType.placesCount: HomeWidgetDescriptor(
-    title: 'Orte',
+    title: (l10n) => l10n.homeWidgetPlacesCountTitle,
     group: HomeWidgetGroup.map,
     accent: TraumColors.coralOrange,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.graffitiMap,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Orte',
+      title: AppLocalizations.of(context)!.homeWidgetPlacesCountTitle,
       accent: TraumColors.coralOrange,
       size: size,
       route: Routes.graffitiMap,
@@ -258,14 +259,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> miscHomeWidgets = {
     ),
   ),
   HomeWidgetType.lastPhoto: HomeWidgetDescriptor(
-    title: 'Letztes Foto',
+    title: (l10n) => l10n.homeWidgetLastPhotoTitle,
     group: HomeWidgetGroup.map,
     accent: TraumColors.coralOrange,
     defaultSize: HomeTileSize.small,
     sizes: const {HomeTileSize.small},
     route: Routes.graffitiMap,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Letztes Foto',
+      title: AppLocalizations.of(context)!.homeWidgetLastPhotoTitle,
       accent: TraumColors.coralOrange,
       size: size,
       route: Routes.graffitiMap,
@@ -273,14 +274,14 @@ final Map<HomeWidgetType, HomeWidgetDescriptor> miscHomeWidgets = {
     ),
   ),
   HomeWidgetType.mapPreview: HomeWidgetDescriptor(
-    title: 'Karte',
+    title: (l10n) => l10n.homeWidgetMapPreviewTitle,
     group: HomeWidgetGroup.map,
     accent: TraumColors.coralOrange,
     defaultSize: HomeTileSize.large,
     sizes: const {HomeTileSize.large},
     route: Routes.graffitiMap,
     builder: (context, ref, size) => HomeWidgetFrame(
-      title: 'Karte',
+      title: AppLocalizations.of(context)!.homeWidgetMapPreviewTitle,
       accent: TraumColors.coralOrange,
       size: size,
       route: Routes.graffitiMap,
