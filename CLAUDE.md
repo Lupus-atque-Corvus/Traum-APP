@@ -1,12 +1,49 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.8+118** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.9+119** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-15 — v1.1.8, Home-Widget-Katalog vollständig lokalisiert)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-15 — v1.1.9, sichere Paket-Updates — Rest bewusst zurückgestellt)
+
+**Letzter Punkt der "alles andere"-Liste: 105 veraltete Pakete. Bewusst NICHT komplett
+abgearbeitet — siehe Begründung unten.**
+
+1. **Scope bewusst eingeschränkt.** Der ursprüngliche Umsetzungsplan verlangt für diesen
+   Punkt explizit "einen echten Gerätetest danach" — das Handy war zum Zeitpunkt dieser
+   Session bereits wieder getrennt (seit der Live-Diagnose-Session in v1.1.4). Eine volle
+   `--major-versions`-Aktualisierung hätte u. a. `flutter_local_notifications` von 18.0.1 auf
+   22.3.0 gehievt — genau das Paket, dessen fehlende ProGuard-Keep-Regel gerade erst in v1.1.4
+   als monatelanger Bug gefunden wurde. Ein so großer Versionssprung an genau dieser Stelle
+   blind (ohne Gerät) zu machen wäre grob fahrlässig gewesen.
+2. **Stattdessen: nur `flutter pub upgrade` ohne `--major-versions`.** Das zieht ausschließlich
+   Versionen, die die **bestehenden** `^x.y.z`-Constraints in `pubspec.yaml` bereits erlauben —
+   per Semver-Definition rückwärtskompatibel, kein Constraint-Edit nötig. 59 Pakete
+   aktualisiert, u. a. `flutter_riverpod` 3.1.0→3.2.1, `riverpod`/`riverpod_annotation`/
+   `riverpod_generator`, `drift`-Unterbau (`sqlparser` 0.41.2→0.43.1), `go_router` bereits
+   aktuell, `video_player` 2.11.1→2.14.0 (inkl. nativer Android/iOS-Unterpakete),
+   `workmanager` 0.9.0+3→0.9.3, `table_calendar`, `mobile_scanner`-Unterbau. Nur
+   `pubspec.lock` geändert, `pubspec.yaml` unangetastet.
+3. **Bewusst NICHT angefasst** (bräuchten `--major-versions` + Einzelprüfung + Gerätetest):
+   `flutter_local_notifications` (18.0.1→22.3.0), `health` (13.1.4→13.3.2), `permission_handler`
+   (12.0.3→13.0.1), `camera` (0.11.4→0.12.0+2), `google_mlkit_text_recognition` (0.13.1→0.16.0),
+   `connectivity_plus`, `share_plus`, `geocoding`, `device_info_plus`, `sqlite3`,
+   `flutter_secure_storage`, `flutter_timezone`, `open_file`, `package_info_plus`, u. a. — noch
+   ~46 Pakete offen, siehe `flutter pub outdated` für die aktuelle Liste.
+4. **Release-Build zur Verifikation gebaut** (nicht nur `flutter analyze`/`flutter test` — ein
+   echter `flutter build apk --release` fängt Gradle/R8-Probleme ab, die reine Dart-Analyse
+   nicht sieht). Baute sauber durch.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **586/586 grün**. Release-Build erfolgreich.
+
+**Für die nächste Runde:** volle `--major-versions`-Aktualisierung bleibt ein eigener,
+sorgfältiger Nachmittag mit angeschlossenem Gerät — nicht vorher anfangen.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-15 — v1.1.8, Home-Widget-Katalog vollständig lokalisiert)
 
 **Letzter offener Übersetzungs-Rest aus Phase 6: die Titel der 68 Home-Widget-Kacheln waren
 hartcodiertes Deutsch, unabhängig von der App-Sprache. Vorher sorgfältig die Architektur
