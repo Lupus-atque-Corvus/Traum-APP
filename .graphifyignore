@@ -1,0 +1,5 @@
+# graphify: skip icon/image assets (874 exercise-icon SVGs + app-icon PNG duplicates).
+# These are generated/decorative assets, not knowledge content, and were burning
+# through the free-tier Gemini daily quota. Docs (.md etc.) are still extracted.
+*.svg
+*.png

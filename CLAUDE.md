@@ -1,12 +1,59 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.4+114** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.5+115** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-13 — v1.1.4, Live-Gerätediagnose: die Benachrichtigungslücke gefunden)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-14 — v1.1.5, Hotfix: stiller Absturz des In-App-Updaters)
+
+**Nutzer-Meldung nach der Live-Diagnose-Session:** "beim Installieren wird immer noch 1.1.3
+angezeigt und man wird immer zum Updaten gezwungen." Root-Cause-Suche, keine Vermutung.
+
+1. **Geprüft und ausgeschlossen:** GitHub-API `/releases/latest` liefert live und korrekt
+   `tag_name: v1.1.4` mit passendem `traum-v1.1.4-arm64.apk`-Asset (per `curl` verifiziert,
+   nur genau ein Asset angehängt — kein Altlast-Duplikat). Kein hartcodiertes `"1.1.3"` irgendwo
+   in `lib/` (per Grep über den gesamten Baum bestätigt). `_isNewer()`/`_parse()` in
+   `update_service.dart` fehlerfrei. `_VersionTile` in `settings_screen.dart` liest
+   `PackageInfo.fromPlatform()` frisch bei jedem Build, kein Caching. `versionName` kommt
+   sauber aus `pubspec.yaml` über `flutter.versionName` in `build.gradle.kts`, keine
+   Überschreibung.
+2. **🔴 Root Cause gefunden:** `_UpdateDialogState._download()` (`lib/core/utils/update_service.dart`)
+   rief `await OpenFile.open(file.path)` auf, um den heruntergeladenen APK-Installer zu starten
+   — **ohne das Ergebnis zu prüfen**. `open_file` liefert ein `OpenResult` mit `ResultType`
+   (`done`, `permissionDenied`, `noAppToOpen`, `fileNotFound`, `error`) zurück; `done` bedeutet
+   nur „Installer-Intent erfolgreich gestartet", nicht „Installation erfolgreich" (das
+   entscheidet der Nutzer im System-Dialog danach, außerhalb unserer Kontrolle — inhärente
+   Plattform-Grenze, nicht behebbar). Schlug aber schon der *Start* fehl — z. B.
+   `permissionDenied` durch Timing bei der „Unbekannte Apps"-Berechtigung, `noAppToOpen` auf
+   manchen OEM-ROMs — blieb das bisher komplett unbemerkt: die Download-Fläche setzte sich
+   lautlos zurück, der (bewusst nicht abbrechbare, `barrierDismissible: false` +
+   `PopScope(canPop: false)`) Update-Zwangsdialog blieb stehen, „Jetzt aktualisieren" war
+   erneut auswählbar — ohne jede Erklärung, warum. Exakt das gemeldete Symptom: endlos im
+   Update-Zwang gefangen, ohne sichtbaren Fortschritt.
+   Fix: `OpenResult` wird jetzt geprüft; bei `type != ResultType.done` erscheint eine konkrete,
+   lokalisierte Fehlermeldung mit der Plattform-Begründung (neuer ARB-Key
+   `updateInstallLaunchFailed`, DE+EN) statt des stillen Resets.
+3. **Bewusst NICHT verändert:** die selbst gebauten Release-APKs sind mangels
+   `android/key.properties` weiterhin debug-signiert (Fallback in `build.gradle.kts`,
+   `traum-release-key.jks` liegt bereit, ist aber nicht verdrahtet). Das ist seit Projektbeginn
+   so und für privaten Sideload-Gebrauch unkritisch (siehe Umsetzungsplan) — geprüft, ob ein
+   Signatur-Wechsel zwischen Builds die Ursache sein könnte: unwahrscheinlich, da derselbe
+   Debug-Keystore (`~/.android/debug.keystore`) über die gesamte Projektlaufzeit auf derselben
+   Maschine stabil bleibt.
+4. **Für dich zu prüfen, falls der Fehler nochmal auftritt:** jetzt erscheint im Update-Dialog
+   eine konkrete Fehlermeldung statt des stillen Hängers — bitte den genauen Text melden, dann
+   lässt sich die Plattform-Ursache (Berechtigung, OEM, o. Ä.) gezielt weiterverfolgen. Auf
+   deinem Gerät ist aktuell ohnehin schon v1.1.4 installiert (per `adb` während der
+   Live-Session), der Zwangsdialog sollte also gar nicht mehr erscheinen, solange kein neueres
+   Release veröffentlicht ist.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **584/584 grün**.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-13 — v1.1.4, Live-Gerätediagnose: die Benachrichtigungslücke gefunden)
 
 **Erste Live-USB-Diagnose-Session, wie seit Phase 1 mehrfach angekündigt. Handy per `adb`
 angeschlossen, `logcat` live mitgeschnitten während echter Nutzung — kein Rätselraten mehr.**

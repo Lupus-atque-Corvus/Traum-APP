@@ -4189,6 +4189,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Permission missing. Enable \"Install unknown apps\" in settings and try again.';
 
   @override
+  String updateInstallLaunchFailed(String reason) {
+    return 'Could not start the installer ($reason). Open the file traum-update.apk manually from the downloads/cache folder.';
+  }
+
+  @override
   String diaryStreakDays(int days) {
     return 'Streak: $days days';
   }

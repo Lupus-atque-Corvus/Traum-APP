@@ -4211,6 +4211,11 @@ class AppLocalizationsDe extends AppLocalizations {
       'Berechtigung fehlt. Aktiviere \"Unbekannte Apps\" in den Einstellungen und versuche es erneut.';
 
   @override
+  String updateInstallLaunchFailed(String reason) {
+    return 'Installation konnte nicht gestartet werden ($reason). Öffne die Datei traum-update.apk manuell aus dem Downloads-/Cache-Ordner.';
+  }
+
+  @override
   String diaryStreakDays(int days) {
     return 'Streak: $days Tage';
   }

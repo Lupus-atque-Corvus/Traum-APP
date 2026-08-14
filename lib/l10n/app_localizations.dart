@@ -8036,6 +8036,12 @@ abstract class AppLocalizations {
   /// **'Berechtigung fehlt. Aktiviere \"Unbekannte Apps\" in den Einstellungen und versuche es erneut.'**
   String get updateInstallPermissionMissing;
 
+  /// No description provided for @updateInstallLaunchFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Installation konnte nicht gestartet werden ({reason}). Öffne die Datei traum-update.apk manuell aus dem Downloads-/Cache-Ordner.'**
+  String updateInstallLaunchFailed(String reason);
+
   /// No description provided for @diaryStreakDays.
   ///
   /// In de, this message translates to:

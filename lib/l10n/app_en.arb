@@ -1934,6 +1934,14 @@
   "updatePreparing": "Preparing…",
   "updateDownloadFailed": "Download failed",
   "updateInstallPermissionMissing": "Permission missing. Enable \"Install unknown apps\" in settings and try again.",
+  "updateInstallLaunchFailed": "Could not start the installer ({reason}). Open the file traum-update.apk manually from the downloads/cache folder.",
+  "@updateInstallLaunchFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
   "diaryStreakDays": "Streak: {days} days",
   "@diaryStreakDays": {
     "placeholders": {

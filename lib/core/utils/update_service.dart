@@ -138,8 +138,27 @@ class _UpdateDialogState extends State<_UpdateDialog> {
         // Pflicht-Update: Dialog NICHT schließen. Öffnet den System-Installer;
         // bricht der Nutzer ihn ab, bleibt der blockierende Dialog bestehen und
         // „Jetzt aktualisieren" ist erneut auswählbar.
-        await OpenFile.open(file.path);
-        if (mounted) setState(() => _downloading = false);
+        //
+        // Das Ergebnis MUSS geprüft werden: `open_file` liefert `ResultType.done`
+        // nur dafür, dass der Installer-Intent erfolgreich gestartet wurde, nicht
+        // dass die Installation gelang (das entscheidet der Nutzer im System-
+        // Dialog danach, außerhalb unserer Kontrolle). Schlägt aber schon der
+        // Start fehl — z. B. `permissionDenied`, weil „Unbekannte Apps“ trotz
+        // erteilter Berechtigung vom OS neu abgefragt wird, oder `noAppToOpen`
+        // auf manchen OEM-ROMs — blieb das bisher unbemerkt: die Downloadfläche
+        // setzte sich einfach lautlos zurück, ohne Fehlermeldung. Der Nutzer sah
+        // nur den immer gleichen Update-Zwang ohne Erklärung, warum nichts
+        // passierte.
+        final result = await OpenFile.open(file.path);
+        if (mounted) {
+          setState(() {
+            _downloading = false;
+            if (result.type != ResultType.done) {
+              _errorMsg = AppLocalizations.of(context)!
+                  .updateInstallLaunchFailed(result.message);
+            }
+          });
+        }
       }
     } catch (e) {
       if (!mounted) return;
