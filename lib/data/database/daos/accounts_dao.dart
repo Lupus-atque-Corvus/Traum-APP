@@ -9,14 +9,11 @@ class AccountsDao extends DatabaseAccessor<TraumDatabase>
   AccountsDao(super.db);
 
   Future<List<Account>> getAll() =>
-      (select(accounts)
-            ..orderBy([(a) => OrderingTerm.asc(a.sortOrder)]))
-          .get();
+      (select(accounts)..orderBy([(a) => OrderingTerm.asc(a.sortOrder)])).get();
 
-  Stream<List<Account>> watchAll() =>
-      (select(accounts)
-            ..orderBy([(a) => OrderingTerm.asc(a.sortOrder)]))
-          .watch();
+  Stream<List<Account>> watchAll() => (select(
+    accounts,
+  )..orderBy([(a) => OrderingTerm.asc(a.sortOrder)])).watch();
 
   Future<Account?> getById(int id) =>
       (select(accounts)..where((a) => a.id.equals(id))).getSingleOrNull();
@@ -36,8 +33,9 @@ class AccountsDao extends DatabaseAccessor<TraumDatabase>
       return;
     }
     await transaction(() async {
-      await (update(accounts)..where((a) => a.isPrimary.equals(true)))
-          .write(const AccountsCompanion(isPrimary: Value(false)));
+      await (update(accounts)..where((a) => a.isPrimary.equals(true))).write(
+        const AccountsCompanion(isPrimary: Value(false)),
+      );
       await into(accounts).insertOnConflictUpdate(account);
     });
   }

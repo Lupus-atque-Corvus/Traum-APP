@@ -36,19 +36,25 @@ class MarkerDetailScreen extends ConsumerWidget {
         data: (data) {
           if (data == null) {
             return Center(
-              child: Text(AppLocalizations.of(context)!.mapEntryNotFound,
-                  style: TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackgroundMuted)),
+              child: Text(
+                AppLocalizations.of(context)!.mapEntryNotFound,
+                style: TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundMuted,
+                ),
+              ),
             );
           }
           return _MarkerDetailBody(data: data);
         },
         loading: () => const Center(
-            child: CircularProgressIndicator(color: TraumColors.cyanBlue)),
+          child: CircularProgressIndicator(color: TraumColors.cyanBlue),
+        ),
         error: (e, _) => Center(
-          child: Text(AppLocalizations.of(context)!.errorWithDetail(e.toString()),
-              style: const TextStyle(color: TraumColors.onBackgroundMuted)),
+          child: Text(
+            AppLocalizations.of(context)!.errorWithDetail(e.toString()),
+            style: const TextStyle(color: TraumColors.onBackgroundMuted),
+          ),
         ),
       ),
     );
@@ -79,7 +85,11 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
     try {
       final pos = await Geolocator.getCurrentPosition();
       final d = Geolocator.distanceBetween(
-          pos.latitude, pos.longitude, marker.latitude!, marker.longitude!);
+        pos.latitude,
+        pos.longitude,
+        marker.latitude!,
+        marker.longitude!,
+      );
       if (mounted) setState(() => _distanceMeters = d);
     } catch (_) {}
   }
@@ -88,15 +98,15 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
     if (marker.latitude == null) return;
     launchUrl(
       Uri.parse(
-          'https://www.google.com/maps/dir/?api=1&destination=${marker.latitude},${marker.longitude}'),
+        'https://www.google.com/maps/dir/?api=1&destination=${marker.latitude},${marker.longitude}',
+      ),
       mode: LaunchMode.externalApplication,
     );
   }
 
   Future<void> _setRating(double r) async {
     final db = ref.read(databaseProvider);
-    await db.mapMarkersDao
-        .updateMarker(marker.copyWith(rating: Value(r)));
+    await db.mapMarkersDao.updateMarker(marker.copyWith(rating: Value(r)));
     ref.invalidate(markerByIdProvider(marker.id));
     invalidateMarkerViews(ref);
   }
@@ -110,19 +120,31 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.photo_camera_rounded,
-                  color: TraumColors.cyanBlue),
-              title: Text(AppLocalizations.of(context)!.camera,
-                  style: TextStyle(
-                      fontFamily: 'DMSans', color: TraumColors.onBackground)),
+              leading: const Icon(
+                Icons.photo_camera_rounded,
+                color: TraumColors.cyanBlue,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.camera,
+                style: TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                ),
+              ),
               onTap: () => Navigator.pop(ctx, ImageSource.camera),
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library_outlined,
-                  color: TraumColors.cyanBlue),
-              title: Text(AppLocalizations.of(context)!.gallery,
-                  style: TextStyle(
-                      fontFamily: 'DMSans', color: TraumColors.onBackground)),
+              leading: const Icon(
+                Icons.photo_library_outlined,
+                color: TraumColors.cyanBlue,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.gallery,
+                style: TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                ),
+              ),
               onTap: () => Navigator.pop(ctx, ImageSource.gallery),
             ),
           ],
@@ -134,16 +156,18 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
     if (result == null) return;
     final dims = await readImageDimensions(result.photoPath);
     final db = ref.read(databaseProvider);
-    await db.markerPhotosDao.insert(MarkerPhotosCompanion.insert(
-      markerId: marker.id,
-      photoPath: result.photoPath,
-      widthPx: Value(dims?.width),
-      heightPx: Value(dims?.height),
-      latitude: Value(result.latitude),
-      longitude: Value(result.longitude),
-      takenAt: result.takenAt,
-      createdAt: DateTime.now(),
-    ));
+    await db.markerPhotosDao.insert(
+      MarkerPhotosCompanion.insert(
+        markerId: marker.id,
+        photoPath: result.photoPath,
+        widthPx: Value(dims?.width),
+        heightPx: Value(dims?.height),
+        latitude: Value(result.latitude),
+        longitude: Value(result.longitude),
+        takenAt: result.takenAt,
+        createdAt: DateTime.now(),
+      ),
+    );
     ref.invalidate(markerByIdProvider(marker.id));
     invalidateMarkerViews(ref);
   }
@@ -156,11 +180,13 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
       if (marker.locationName != null) marker.locationName!,
     ].join('\n');
     if (photo != null) {
-      await SharePlus.instance
-          .share(ShareParams(files: [XFile(photo.photoPath)], text: text));
+      await SharePlus.instance.share(
+        ShareParams(files: [XFile(photo.photoPath)], text: text),
+      );
     } else {
-      await SharePlus.instance
-          .share(ShareParams(text: text.isEmpty ? 'TRAUM Marker' : text));
+      await SharePlus.instance.share(
+        ShareParams(text: text.isEmpty ? 'TRAUM Marker' : text),
+      );
     }
   }
 
@@ -169,23 +195,36 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surface,
-        title: Text(AppLocalizations.of(context)!.deleteQuestion,
-            style: TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackground,
-                fontWeight: FontWeight.w700)),
-        content: Text(AppLocalizations.of(context)!.mapDeleteEntryConfirm,
-            style: TextStyle(
-                fontFamily: 'DMSans', color: TraumColors.onBackgroundMuted)),
+        title: Text(
+          AppLocalizations.of(context)!.deleteQuestion,
+          style: TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackground,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        content: Text(
+          AppLocalizations.of(context)!.mapDeleteEntryConfirm,
+          style: TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackgroundMuted,
+          ),
+        ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(AppLocalizations.of(context)!.cancel,
-                  style: TextStyle(color: TraumColors.onBackgroundMuted))),
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(
+              AppLocalizations.of(context)!.cancel,
+              style: TextStyle(color: TraumColors.onBackgroundMuted),
+            ),
+          ),
           TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(AppLocalizations.of(context)!.delete,
-                  style: TextStyle(color: TraumColors.roseRed))),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(
+              AppLocalizations.of(context)!.delete,
+              style: TextStyle(color: TraumColors.roseRed),
+            ),
+          ),
         ],
       ),
     );
@@ -204,8 +243,9 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
 
   @override
   Widget build(BuildContext context) {
-    final collectionAsync =
-        ref.watch(collectionByIdProvider(marker.collectionId));
+    final collectionAsync = ref.watch(
+      collectionByIdProvider(marker.collectionId),
+    );
     final collection = collectionAsync.value;
     final config = collection != null
         ? jsonDecode(collection.fieldConfig) as Map<String, dynamic>
@@ -214,8 +254,7 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
     final fields = (config['fields'] as List? ?? [])
         .map((f) => MapField.fromJson(f as Map<String, dynamic>))
         .toList();
-    final values =
-        jsonDecode(marker.customFields) as Map<String, dynamic>;
+    final values = jsonDecode(marker.customFields) as Map<String, dynamic>;
     final photos = widget.data.photos;
 
     return CustomScrollView(
@@ -225,14 +264,15 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
           pinned: true,
           leading: IconButton(
             tooltip: AppLocalizations.of(context)!.back,
-            icon:
-                const Icon(Icons.arrow_back, color: TraumColors.onBackground),
+            icon: const Icon(Icons.arrow_back, color: TraumColors.onBackground),
             onPressed: () => context.pop(),
           ),
           actions: [
             PopupMenuButton<String>(
-              icon: const Icon(Icons.more_vert,
-                  color: TraumColors.onBackground),
+              icon: const Icon(
+                Icons.more_vert,
+                color: TraumColors.onBackground,
+              ),
               color: TraumColors.surfaceVariant,
               onSelected: (v) {
                 if (v == 'addphoto') _addPhoto();
@@ -244,27 +284,45 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
               },
               itemBuilder: (_) => [
                 PopupMenuItem(
-                    value: 'addphoto',
-                    child: Text(AppLocalizations.of(context)!.mapAddPhoto,
-                        style: TextStyle(
-                            fontFamily: 'DMSans',
-                            color: TraumColors.onBackground))),
+                  value: 'addphoto',
+                  child: Text(
+                    AppLocalizations.of(context)!.mapAddPhoto,
+                    style: TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackground,
+                    ),
+                  ),
+                ),
                 PopupMenuItem(
-                    value: 'share',
-                    child: Text(AppLocalizations.of(context)!.share,
-                        style: TextStyle(
-                            fontFamily: 'DMSans',
-                            color: TraumColors.onBackground))),
+                  value: 'share',
+                  child: Text(
+                    AppLocalizations.of(context)!.share,
+                    style: TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackground,
+                    ),
+                  ),
+                ),
                 PopupMenuItem(
-                    value: 'location',
-                    child: Text(AppLocalizations.of(context)!.mapEditLocation,
-                        style: TextStyle(
-                            fontFamily: 'DMSans', color: TraumColors.onBackground))),
+                  value: 'location',
+                  child: Text(
+                    AppLocalizations.of(context)!.mapEditLocation,
+                    style: TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackground,
+                    ),
+                  ),
+                ),
                 PopupMenuItem(
-                    value: 'delete',
-                    child: Text(AppLocalizations.of(context)!.delete,
-                        style: TextStyle(
-                            fontFamily: 'DMSans', color: TraumColors.roseRed))),
+                  value: 'delete',
+                  child: Text(
+                    AppLocalizations.of(context)!.delete,
+                    style: TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.roseRed,
+                    ),
+                  ),
+                ),
               ],
             ),
           ],
@@ -289,14 +347,20 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.add_a_photo_outlined,
-                                color: TraumColors.cyanBlue, size: 40),
+                            Icon(
+                              Icons.add_a_photo_outlined,
+                              color: TraumColors.cyanBlue,
+                              size: 40,
+                            ),
                             SizedBox(height: 8),
-                            Text(AppLocalizations.of(context)!.mapAddPhoto,
-                                style: TextStyle(
-                                    fontFamily: 'DMSans',
-                                    color: TraumColors.cyanBlue,
-                                    fontSize: 13)),
+                            Text(
+                              AppLocalizations.of(context)!.mapAddPhoto,
+                              style: TextStyle(
+                                fontFamily: 'DMSans',
+                                color: TraumColors.cyanBlue,
+                                fontSize: 13,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -337,12 +401,16 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                       color: TraumColors.roseRed.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                          color: TraumColors.roseRed.withValues(alpha: 0.4)),
+                        color: TraumColors.roseRed.withValues(alpha: 0.4),
+                      ),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.warning_amber_rounded,
-                            color: TraumColors.roseRed, size: 20),
+                        const Icon(
+                          Icons.warning_amber_rounded,
+                          color: TraumColors.roseRed,
+                          size: 20,
+                        ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
@@ -385,19 +453,26 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                         .split(',')
                         .map((t) => t.trim())
                         .where((t) => t.isNotEmpty)
-                        .map((t) => Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                color: TraumColors.cyanDim,
-                                borderRadius: BorderRadius.circular(16),
+                        .map(
+                          (t) => Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: TraumColors.cyanDim,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Text(
+                              '#$t',
+                              style: const TextStyle(
+                                fontFamily: 'DMSans',
+                                color: TraumColors.cyanBlue,
+                                fontSize: 12,
                               ),
-                              child: Text('#$t',
-                                  style: const TextStyle(
-                                      fontFamily: 'DMSans',
-                                      color: TraumColors.cyanBlue,
-                                      fontSize: 12)),
-                            ))
+                            ),
+                          ),
+                        )
                         .toList(),
                   ),
                 ],
@@ -407,16 +482,20 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      const Icon(Icons.place_outlined,
-                          size: 18, color: TraumColors.cyanBlue),
+                      const Icon(
+                        Icons.place_outlined,
+                        size: 18,
+                        color: TraumColors.cyanBlue,
+                      ),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
                           marker.locationName!,
                           style: const TextStyle(
-                              fontFamily: 'DMSans',
-                              color: TraumColors.onBackgroundMuted,
-                              fontSize: 13),
+                            fontFamily: 'DMSans',
+                            color: TraumColors.onBackgroundMuted,
+                            fontSize: 13,
+                          ),
                         ),
                       ),
                     ],
@@ -425,12 +504,14 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                 if (_distanceMeters != null) ...[
                   const SizedBox(height: 6),
                   Text(
-                    AppLocalizations.of(context)!
-                        .mapDistanceFromYou(_formatDistance(_distanceMeters!)),
+                    AppLocalizations.of(
+                      context,
+                    )!.mapDistanceFromYou(_formatDistance(_distanceMeters!)),
                     style: const TextStyle(
-                        fontFamily: 'DMSans',
-                        color: TraumColors.onBackgroundMuted,
-                        fontSize: 13),
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackgroundMuted,
+                      fontSize: 13,
+                    ),
                   ),
                 ],
 
@@ -443,11 +524,14 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                       height: 160,
                       child: FlutterMap(
                         options: MapOptions(
-                          initialCenter:
-                              LatLng(marker.latitude!, marker.longitude!),
+                          initialCenter: LatLng(
+                            marker.latitude!,
+                            marker.longitude!,
+                          ),
                           initialZoom: 14,
                           interactionOptions: const InteractionOptions(
-                              flags: InteractiveFlag.none),
+                            flags: InteractiveFlag.none,
+                          ),
                         ),
                         children: [
                           TileLayer(
@@ -455,14 +539,21 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                                 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                             userAgentPackageName: 'com.traum.app',
                           ),
-                          MarkerLayer(markers: [
-                            Marker(
-                              point: LatLng(
-                                  marker.latitude!, marker.longitude!),
-                              child: const Icon(Icons.location_on,
-                                  color: TraumColors.cyanBlue, size: 36),
-                            ),
-                          ]),
+                          MarkerLayer(
+                            markers: [
+                              Marker(
+                                point: LatLng(
+                                  marker.latitude!,
+                                  marker.longitude!,
+                                ),
+                                child: const Icon(
+                                  Icons.location_on,
+                                  color: TraumColors.cyanBlue,
+                                  size: 36,
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -478,15 +569,21 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                       child: TextButton.icon(
                         onPressed: _navigate,
                         style: TextButton.styleFrom(
-                            padding:
-                                const EdgeInsets.symmetric(vertical: 14)),
-                        icon: const Icon(Icons.navigation_rounded,
-                            color: Colors.white, size: 20),
-                        label: Text(AppLocalizations.of(context)!.mapStartNavigation,
-                            style: TextStyle(
-                                fontFamily: 'DMSans',
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700)),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                        icon: const Icon(
+                          Icons.navigation_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        label: Text(
+                          AppLocalizations.of(context)!.mapStartNavigation,
+                          style: TextStyle(
+                            fontFamily: 'DMSans',
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -500,7 +597,9 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
   }
 
   List<Widget> _buildFieldChips(
-      List<MapField> fields, Map<String, dynamic> values) {
+    List<MapField> fields,
+    Map<String, dynamic> values,
+  ) {
     final widgets = <Widget>[];
     for (final f in fields) {
       if (f.key == 'danger') continue; // separate Warn-Card
@@ -515,74 +614,100 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
                 : const MapFieldOption(value: ''),
           );
           final color = colorFromHex(opt.colorHex);
-          widgets.add(Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Row(
-              children: [
-                Icon(mapFieldIcon(f.iconName), size: 16, color: color),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.18),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text(localizedOptionValue(context, '$v'),
-                      style: TextStyle(
-                          fontFamily: 'DMSans',
-                          color: color,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600)),
-                ),
-              ],
-            ),
-          ));
-          break;
-        case MapFieldType.toggle:
-          if (v == true) {
-            widgets.add(Padding(
+          widgets.add(
+            Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Row(
                 children: [
-                  Icon(mapFieldIcon(f.iconName),
-                      size: 16, color: TraumColors.cyanBlue),
+                  Icon(mapFieldIcon(f.iconName), size: 16, color: color),
                   const SizedBox(width: 8),
-                  Text(localizedFieldLabel(context, f.key, f.label),
-                      style: const TextStyle(
-                          fontFamily: 'DMSans',
-                          color: TraumColors.onBackground,
-                          fontSize: 13)),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      localizedOptionValue(context, '$v'),
+                      style: TextStyle(
+                        fontFamily: 'DMSans',
+                        color: color,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ));
+            ),
+          );
+          break;
+        case MapFieldType.toggle:
+          if (v == true) {
+            widgets.add(
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Row(
+                  children: [
+                    Icon(
+                      mapFieldIcon(f.iconName),
+                      size: 16,
+                      color: TraumColors.cyanBlue,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      localizedFieldLabel(context, f.key, f.label),
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        color: TraumColors.onBackground,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
           }
           break;
         case MapFieldType.text:
         case MapFieldType.number:
-          widgets.add(Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(mapFieldIcon(f.iconName),
-                    size: 16, color: TraumColors.onBackgroundMuted),
-                const SizedBox(width: 8),
-                Text('${localizedFieldLabel(context, f.key, f.label)}: ',
+          widgets.add(
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    mapFieldIcon(f.iconName),
+                    size: 16,
+                    color: TraumColors.onBackgroundMuted,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    '${localizedFieldLabel(context, f.key, f.label)}: ',
                     style: const TextStyle(
-                        fontFamily: 'DMSans',
-                        color: TraumColors.onBackgroundMuted,
-                        fontSize: 13)),
-                Expanded(
-                  child: Text('$v',
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackgroundMuted,
+                      fontSize: 13,
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      '$v',
                       style: const TextStyle(
-                          fontFamily: 'DMSans',
-                          color: TraumColors.onBackground,
-                          fontSize: 13)),
-                ),
-              ],
+                        fontFamily: 'DMSans',
+                        color: TraumColors.onBackground,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ));
+          );
           break;
       }
     }
@@ -616,22 +741,26 @@ class _PhotoGalleryState extends State<_PhotoGallery> {
   }
 
   void _openFullscreen(int index) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => Scaffold(
-        backgroundColor: Colors.black,
-        appBar: AppBar(
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => Scaffold(
           backgroundColor: Colors.black,
-          iconTheme: const IconThemeData(color: Colors.white),
-        ),
-        body: PageView.builder(
-          controller: PageController(initialPage: index),
-          itemCount: widget.photos.length,
-          itemBuilder: (_, i) => InteractiveViewer(
-            child: Center(child: Image.file(File(widget.photos[i].photoPath))),
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            iconTheme: const IconThemeData(color: Colors.white),
+          ),
+          body: PageView.builder(
+            controller: PageController(initialPage: index),
+            itemCount: widget.photos.length,
+            itemBuilder: (_, i) => InteractiveViewer(
+              child: Center(
+                child: Image.file(File(widget.photos[i].photoPath)),
+              ),
+            ),
           ),
         ),
       ),
-    ));
+    );
   }
 
   @override
@@ -652,15 +781,18 @@ class _PhotoGalleryState extends State<_PhotoGallery> {
                   onPageChanged: (i) => setState(() => _page = i),
                   itemBuilder: (ctx, i) => Semantics(
                     button: true,
-                    label: AppLocalizations.of(ctx)!
-                        .a11yViewPhoto(i + 1, photos.length),
+                    label: AppLocalizations.of(
+                      ctx,
+                    )!.a11yViewPhoto(i + 1, photos.length),
                     child: GestureDetector(
                       onTap: () => _openFullscreen(i),
                       child: Image.file(
                         File(photos[i].photoPath),
                         width: double.infinity,
                         cacheWidth: decodePxFor(
-                            ctx, MediaQuery.sizeOf(ctx).width),
+                          ctx,
+                          MediaQuery.sizeOf(ctx).width,
+                        ),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -670,25 +802,34 @@ class _PhotoGalleryState extends State<_PhotoGallery> {
                   right: 8,
                   top: 8,
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.black.withValues(alpha: 0.55),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text('${_page + 1} / ${photos.length}',
-                        style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600)),
+                    child: Text(
+                      '${_page + 1} / ${photos.length}',
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
                 Positioned(
                   right: 8,
                   bottom: 8,
-                  child: MegapixelBadge(formatMegapixels(
-                      photos[_page].widthPx, photos[_page].heightPx)),
+                  child: MegapixelBadge(
+                    formatMegapixels(
+                      photos[_page].widthPx,
+                      photos[_page].heightPx,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -731,10 +872,14 @@ class _PhotoGalleryState extends State<_PhotoGallery> {
                       color: TraumColors.surfaceVariant,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                          color: TraumColors.cyanBlue.withValues(alpha: 0.4)),
+                        color: TraumColors.cyanBlue.withValues(alpha: 0.4),
+                      ),
                     ),
-                    child: const Icon(Icons.add_a_photo_outlined,
-                        color: TraumColors.cyanBlue, size: 22),
+                    child: const Icon(
+                      Icons.add_a_photo_outlined,
+                      color: TraumColors.cyanBlue,
+                      size: 22,
+                    ),
                   ),
                 );
               }
@@ -747,8 +892,9 @@ class _PhotoGalleryState extends State<_PhotoGallery> {
                     width: 64,
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color:
-                            selected ? TraumColors.cyanBlue : Colors.transparent,
+                        color: selected
+                            ? TraumColors.cyanBlue
+                            : Colors.transparent,
                         width: 2,
                       ),
                     ),

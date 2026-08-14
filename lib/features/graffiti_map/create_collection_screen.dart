@@ -37,7 +37,8 @@ class _CreateCollectionScreenState
   bool _multiPhoto = false;
   int _groupRadius = 50;
   bool _autoGroup = false;
-  List<PhotoPoint> _points = const []; // vorhandene Fotos (nur Bearbeiten-Modus)
+  List<PhotoPoint> _points =
+      const []; // vorhandene Fotos (nur Bearbeiten-Modus)
   final List<MapField> _selectedFields = [];
 
   bool get _isEditing => widget.collection != null;
@@ -56,8 +57,11 @@ class _CreateCollectionScreenState
         final cfg = jsonDecode(c.fieldConfig) as Map<String, dynamic>;
         final gr = cfg['groupRadius'];
         if (gr is num) _groupRadius = gr.toInt();
-        _selectedFields.addAll((cfg['fields'] as List? ?? [])
-            .map((f) => MapField.fromJson(f as Map<String, dynamic>)));
+        _selectedFields.addAll(
+          (cfg['fields'] as List? ?? []).map(
+            (f) => MapField.fromJson(f as Map<String, dynamic>),
+          ),
+        );
       } catch (_) {}
       _autoGroup = autoGroupFromConfig(c.fieldConfig);
     }
@@ -86,12 +90,15 @@ class _CreateCollectionScreenState
       final lat = p.latitude ?? byId[p.markerId]?.latitude;
       final lon = p.longitude ?? byId[p.markerId]?.longitude;
       if (lat == null || lon == null) continue;
-      pts.add(PhotoPoint(
+      pts.add(
+        PhotoPoint(
           id: p.id,
           markerId: p.markerId,
           lat: lat,
           lon: lon,
-          createdAt: p.createdAt));
+          createdAt: p.createdAt,
+        ),
+      );
     }
     if (mounted) setState(() => _points = pts);
   }
@@ -148,33 +155,40 @@ class _CreateCollectionScreenState
     final dao = ref.read(mapCollectionsDaoProvider);
     final existing = widget.collection;
     if (existing != null) {
-      await dao.updateCollection(existing.copyWith(
-        name: name,
-        iconName: _selectedIcon,
-        colorHex: Value(_selectedColor),
-        hasRating: _hasRating,
-        multiPhoto: multiPhoto,
-        fieldConfig: config,
-      ));
+      await dao.updateCollection(
+        existing.copyWith(
+          name: name,
+          iconName: _selectedIcon,
+          colorHex: Value(_selectedColor),
+          hasRating: _hasRating,
+          multiPhoto: multiPhoto,
+          fieldConfig: config,
+        ),
+      );
       ref.invalidate(collectionByIdProvider(existing.id));
       ref.invalidate(activeCollectionInfoProvider);
       invalidateMarkerViews(ref);
       if (_autoGroup) {
         await regroupCollection(
-            ref.read(databaseProvider), existing.id, _groupRadius.toDouble());
+          ref.read(databaseProvider),
+          existing.id,
+          _groupRadius.toDouble(),
+        );
         invalidateMarkerViews(ref);
       }
     } else {
-      await dao.insert(MapCollectionsCompanion.insert(
-        name: name,
-        iconName: _selectedIcon,
-        colorHex: Value(_selectedColor),
-        hasRating: Value(_hasRating),
-        multiPhoto: Value(multiPhoto),
-        fieldConfig: Value(config),
-        sortOrder: Value(await dao.nextSortOrder()),
-        createdAt: DateTime.now(),
-      ));
+      await dao.insert(
+        MapCollectionsCompanion.insert(
+          name: name,
+          iconName: _selectedIcon,
+          colorHex: Value(_selectedColor),
+          hasRating: Value(_hasRating),
+          multiPhoto: Value(multiPhoto),
+          fieldConfig: Value(config),
+          sortOrder: Value(await dao.nextSortOrder()),
+          createdAt: DateTime.now(),
+        ),
+      );
     }
     ref.invalidate(mapCollectionsProvider);
     if (mounted) context.pop();
@@ -194,13 +208,15 @@ class _CreateCollectionScreenState
           onPressed: () => context.pop(),
         ),
         title: Text(
-            _isEditing
-                ? AppLocalizations.of(context)!.mapEditCollectionTitle
-                : AppLocalizations.of(context)!.mapCreateTitle,
-            style: const TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackground,
-                fontWeight: FontWeight.w700)),
+          _isEditing
+              ? AppLocalizations.of(context)!.mapEditCollectionTitle
+              : AppLocalizations.of(context)!.mapCreateTitle,
+          style: const TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackground,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
@@ -225,7 +241,9 @@ class _CreateCollectionScreenState
                       color: TraumColors.surface,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                          color: c.withValues(alpha: 0.4), width: 1),
+                        color: c.withValues(alpha: 0.4),
+                        width: 1,
+                      ),
                     ),
                     child: Row(
                       children: [
@@ -236,17 +254,23 @@ class _CreateCollectionScreenState
                             color: c.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Icon(mapCollectionIcon(t.iconName),
-                              color: c, size: 20),
+                          child: Icon(
+                            mapCollectionIcon(t.iconName),
+                            color: c,
+                            size: 20,
+                          ),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
-                          child: Text(localizedTemplateDisplayName(context, t),
-                              style: const TextStyle(
-                                  fontFamily: 'DMSans',
-                                  color: TraumColors.onBackground,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 13)),
+                          child: Text(
+                            localizedTemplateDisplayName(context, t),
+                            style: const TextStyle(
+                              fontFamily: 'DMSans',
+                              color: TraumColors.onBackground,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -262,9 +286,12 @@ class _CreateCollectionScreenState
           TextField(
             controller: _nameController,
             style: const TextStyle(
-                fontFamily: 'DMSans', color: TraumColors.onBackground),
+              fontFamily: 'DMSans',
+              color: TraumColors.onBackground,
+            ),
             decoration: mapInputDecoration(
-                AppLocalizations.of(context)!.mapNameHint),
+              AppLocalizations.of(context)!.mapNameHint,
+            ),
           ),
           const SizedBox(height: 20),
 
@@ -286,11 +313,15 @@ class _CreateCollectionScreenState
                         : TraumColors.surface,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                        color: sel ? accent : Colors.transparent, width: 1.5),
+                      color: sel ? accent : Colors.transparent,
+                      width: 1.5,
+                    ),
                   ),
-                  child: Icon(mapCollectionIcon(ic),
-                      color: sel ? accent : TraumColors.onBackgroundMuted,
-                      size: 22),
+                  child: Icon(
+                    mapCollectionIcon(ic),
+                    color: sel ? accent : TraumColors.onBackgroundMuted,
+                    size: 22,
+                  ),
                 ),
               );
             }).toList(),
@@ -314,8 +345,9 @@ class _CreateCollectionScreenState
                     color: c,
                     shape: BoxShape.circle,
                     border: Border.all(
-                        color: sel ? Colors.white : Colors.transparent,
-                        width: 2.5),
+                      color: sel ? Colors.white : Colors.transparent,
+                      width: 2.5,
+                    ),
                   ),
                   child: sel
                       ? const Icon(Icons.check, color: Colors.white, size: 18)
@@ -333,18 +365,26 @@ class _CreateCollectionScreenState
             activeThumbColor: accent,
             value: _hasRating,
             onChanged: (v) => setState(() => _hasRating = v),
-            title: Text(AppLocalizations.of(context)!.mapStarRating,
-                style: TextStyle(
-                    fontFamily: 'DMSans', color: TraumColors.onBackground)),
+            title: Text(
+              AppLocalizations.of(context)!.mapStarRating,
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
+              ),
+            ),
           ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             activeThumbColor: accent,
             value: _multiPhoto,
             onChanged: (v) => setState(() => _multiPhoto = v),
-            title: Text(AppLocalizations.of(context)!.mapMultiplePhotos,
-                style: TextStyle(
-                    fontFamily: 'DMSans', color: TraumColors.onBackground)),
+            title: Text(
+              AppLocalizations.of(context)!.mapMultiplePhotos,
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
+              ),
+            ),
           ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
@@ -358,15 +398,21 @@ class _CreateCollectionScreenState
                 _loadPoints(widget.collection!.id);
               }
             },
-            title: Text(AppLocalizations.of(context)!.mapAutoGroupPhotos,
-                style: TextStyle(
-                    fontFamily: 'DMSans', color: TraumColors.onBackground)),
+            title: Text(
+              AppLocalizations.of(context)!.mapAutoGroupPhotos,
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
+              ),
+            ),
             subtitle: Text(
-                AppLocalizations.of(context)!.mapAutoGroupDescription,
-                style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackgroundMuted,
-                    fontSize: 12)),
+              AppLocalizations.of(context)!.mapAutoGroupDescription,
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackgroundMuted,
+                fontSize: 12,
+              ),
+            ),
           ),
           if (_autoGroup) ...[
             const SizedBox(height: 8),
@@ -382,8 +428,7 @@ class _CreateCollectionScreenState
                     divisions: 38,
                     label: '$_groupRadius m',
                     activeColor: accent,
-                    onChanged: (v) =>
-                        setState(() => _groupRadius = v.round()),
+                    onChanged: (v) => setState(() => _groupRadius = v.round()),
                   ),
                 ),
                 SizedBox(
@@ -392,10 +437,11 @@ class _CreateCollectionScreenState
                     '$_groupRadius m',
                     textAlign: TextAlign.end,
                     style: const TextStyle(
-                        fontFamily: 'DMSans',
-                        color: TraumColors.onBackground,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13),
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackground,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
                   ),
                 ),
               ],
@@ -407,10 +453,11 @@ class _CreateCollectionScreenState
                   '${_points.length} Fotos → '
                   '${groupPhotos(_points, _groupRadius.toDouble()).length} Orte',
                   style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.cyanBlue,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600),
+                    fontFamily: 'DMSans',
+                    color: TraumColors.cyanBlue,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
           ],
@@ -425,34 +472,53 @@ class _CreateCollectionScreenState
               activeColor: accent,
               value: sel,
               onChanged: (_) => _toggleField(f),
-              title: Text(localizedFieldLabel(context, f.key, f.label),
-                  style: const TextStyle(
-                      fontFamily: 'DMSans', color: TraumColors.onBackground)),
-              secondary: Icon(mapFieldIcon(f.iconName),
-                  color: TraumColors.onBackgroundMuted, size: 20),
+              title: Text(
+                localizedFieldLabel(context, f.key, f.label),
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                ),
+              ),
+              secondary: Icon(
+                mapFieldIcon(f.iconName),
+                color: TraumColors.onBackgroundMuted,
+                size: 20,
+              ),
             );
           }),
           // Eigene Felder, die nicht zu den vordefinierten gehören
           ..._selectedFields
               .where((f) => !PredefinedFields.all.any((p) => p.key == f.key))
-              .map((f) => CheckboxListTile(
-                    contentPadding: EdgeInsets.zero,
-                    activeColor: accent,
-                    value: true,
-                    onChanged: (_) => _toggleField(f),
-                    title: Text(f.label,
-                        style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            color: TraumColors.onBackground)),
-                    secondary: const Icon(Icons.label_outline,
-                        color: TraumColors.onBackgroundMuted, size: 20),
-                  )),
+              .map(
+                (f) => CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  activeColor: accent,
+                  value: true,
+                  onChanged: (_) => _toggleField(f),
+                  title: Text(
+                    f.label,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackground,
+                    ),
+                  ),
+                  secondary: const Icon(
+                    Icons.label_outline,
+                    color: TraumColors.onBackgroundMuted,
+                    size: 20,
+                  ),
+                ),
+              ),
           TextButton.icon(
             onPressed: _addCustomField,
             icon: const Icon(Icons.add, color: TraumColors.cyanBlue, size: 18),
-            label: Text(AppLocalizations.of(context)!.mapAddCustomField,
-                style: TextStyle(
-                    fontFamily: 'DMSans', color: TraumColors.cyanBlue)),
+            label: Text(
+              AppLocalizations.of(context)!.mapAddCustomField,
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.cyanBlue,
+              ),
+            ),
           ),
         ],
       ),
@@ -469,16 +535,19 @@ class _CreateCollectionScreenState
             child: TextButton(
               onPressed: _save,
               style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16)),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
               child: Text(
-                  _isEditing
-                      ? AppLocalizations.of(context)!.save
-                      : AppLocalizations.of(context)!.mapCreateButton,
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15)),
+                _isEditing
+                    ? AppLocalizations.of(context)!.save
+                    : AppLocalizations.of(context)!.mapCreateButton,
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 15,
+                ),
+              ),
             ),
           ),
         ),
@@ -487,15 +556,15 @@ class _CreateCollectionScreenState
   }
 
   Widget _sectionLabel(String text) => Text(
-        text.toUpperCase(),
-        style: const TextStyle(
-          fontFamily: 'DMSans',
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: TraumColors.onBackgroundMuted,
-          letterSpacing: 0.8,
-        ),
-      );
+    text.toUpperCase(),
+    style: const TextStyle(
+      fontFamily: 'DMSans',
+      fontSize: 12,
+      fontWeight: FontWeight.w600,
+      color: TraumColors.onBackgroundMuted,
+      letterSpacing: 0.8,
+    ),
+  );
 }
 
 /// Dialog zum Erstellen eines eigenen Feldes.
@@ -541,20 +610,26 @@ class _CustomFieldDialogState extends State<_CustomFieldDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: TraumColors.surface,
-      title: Text(AppLocalizations.of(context)!.mapCustomField,
-          style: TextStyle(
-              fontFamily: 'DMSans',
-              color: TraumColors.onBackground,
-              fontWeight: FontWeight.w700)),
+      title: Text(
+        AppLocalizations.of(context)!.mapCustomField,
+        style: TextStyle(
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackground,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: _labelController,
             style: const TextStyle(
-                fontFamily: 'DMSans', color: TraumColors.onBackground),
+              fontFamily: 'DMSans',
+              color: TraumColors.onBackground,
+            ),
             decoration: mapInputDecoration(
-                AppLocalizations.of(context)!.mapLabelHint),
+              AppLocalizations.of(context)!.mapLabelHint,
+            ),
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<MapFieldType>(
@@ -562,28 +637,40 @@ class _CustomFieldDialogState extends State<_CustomFieldDialog> {
             dropdownColor: TraumColors.surfaceVariant,
             decoration: mapInputDecoration(''),
             style: const TextStyle(
-                fontFamily: 'DMSans', color: TraumColors.onBackground),
+              fontFamily: 'DMSans',
+              color: TraumColors.onBackground,
+            ),
             items: [
               DropdownMenuItem(
-                  value: MapFieldType.text, child: Text(AppLocalizations.of(context)!.fieldTypeText)),
+                value: MapFieldType.text,
+                child: Text(AppLocalizations.of(context)!.fieldTypeText),
+              ),
               DropdownMenuItem(
-                  value: MapFieldType.select, child: Text(AppLocalizations.of(context)!.fieldTypeSelect)),
+                value: MapFieldType.select,
+                child: Text(AppLocalizations.of(context)!.fieldTypeSelect),
+              ),
               DropdownMenuItem(
-                  value: MapFieldType.toggle, child: Text(AppLocalizations.of(context)!.fieldTypeToggle)),
+                value: MapFieldType.toggle,
+                child: Text(AppLocalizations.of(context)!.fieldTypeToggle),
+              ),
               DropdownMenuItem(
-                  value: MapFieldType.number, child: Text(AppLocalizations.of(context)!.fieldTypeNumber)),
+                value: MapFieldType.number,
+                child: Text(AppLocalizations.of(context)!.fieldTypeNumber),
+              ),
             ],
-            onChanged: (v) =>
-                setState(() => _type = v ?? MapFieldType.text),
+            onChanged: (v) => setState(() => _type = v ?? MapFieldType.text),
           ),
           if (_type == MapFieldType.select) ...[
             const SizedBox(height: 12),
             TextField(
               controller: _optionsController,
               style: const TextStyle(
-                  fontFamily: 'DMSans', color: TraumColors.onBackground),
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
+              ),
               decoration: mapInputDecoration(
-                  AppLocalizations.of(context)!.mapOptionsCommaHint),
+                AppLocalizations.of(context)!.mapOptionsCommaHint,
+              ),
             ),
           ],
         ],
@@ -591,13 +678,17 @@ class _CustomFieldDialogState extends State<_CustomFieldDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text(AppLocalizations.of(context)!.cancel,
-              style: TextStyle(color: TraumColors.onBackgroundMuted)),
+          child: Text(
+            AppLocalizations.of(context)!.cancel,
+            style: TextStyle(color: TraumColors.onBackgroundMuted),
+          ),
         ),
         TextButton(
           onPressed: _submit,
-          child: Text(AppLocalizations.of(context)!.add,
-              style: TextStyle(color: TraumColors.cyanBlue)),
+          child: Text(
+            AppLocalizations.of(context)!.add,
+            style: TextStyle(color: TraumColors.cyanBlue),
+          ),
         ),
       ],
     );

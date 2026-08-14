@@ -27,12 +27,14 @@ class UsdaSource implements FoodSource {
   @override
   Future<List<FoodSearchResult>> search(String query) async {
     try {
-      final uri = Uri.parse(_usdaSearchUrl).replace(queryParameters: {
-        'api_key': _prefs.usdaApiKey,
-        'query': query,
-        'pageSize': '20',
-        'dataType': 'Foundation,SR Legacy',
-      });
+      final uri = Uri.parse(_usdaSearchUrl).replace(
+        queryParameters: {
+          'api_key': _prefs.usdaApiKey,
+          'query': query,
+          'pageSize': '20',
+          'dataType': 'Foundation,SR Legacy',
+        },
+      );
       final response = await http
           .get(uri, headers: {'User-Agent': 'TRAUM-App/1.0'})
           .timeout(const Duration(seconds: 8));
@@ -76,18 +78,20 @@ List<FoodSearchResult> parseUsdaSearch(Map json) {
 
     final fdcId = entry['fdcId'];
 
-    results.add(FoodSearchResult(
-      name: name,
-      kcalPer100g: nutrients[_kcalId] ?? 0,
-      proteinPer100g: nutrients[_proteinId] ?? 0,
-      carbsPer100g: nutrients[_carbsId] ?? 0,
-      fatPer100g: nutrients[_fatId] ?? 0,
-      sugarPer100g: nutrients[_sugarId],
-      fiberPer100g: nutrients[_fiberId],
-      saltPer100g: sodium != null ? sodium * 2.5 / 1000 : null,
-      source: 'usda',
-      sourceId: fdcId?.toString(),
-    ));
+    results.add(
+      FoodSearchResult(
+        name: name,
+        kcalPer100g: nutrients[_kcalId] ?? 0,
+        proteinPer100g: nutrients[_proteinId] ?? 0,
+        carbsPer100g: nutrients[_carbsId] ?? 0,
+        fatPer100g: nutrients[_fatId] ?? 0,
+        sugarPer100g: nutrients[_sugarId],
+        fiberPer100g: nutrients[_fiberId],
+        saltPer100g: sodium != null ? sodium * 2.5 / 1000 : null,
+        source: 'usda',
+        sourceId: fdcId?.toString(),
+      ),
+    );
   }
   return results;
 }

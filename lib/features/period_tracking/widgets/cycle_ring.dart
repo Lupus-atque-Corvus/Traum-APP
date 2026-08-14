@@ -30,23 +30,32 @@ class CycleRing extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(phaseLabel,
-                  style: const TextStyle(
-                      color: TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontSize: 11)),
-              Text(cycleDay?.toString() ?? '–',
-                  style: const TextStyle(
-                      color: TraumColors.periodRose,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w800,
-                      fontSize: 34)),
+              Text(
+                phaseLabel,
+                style: const TextStyle(
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                  fontSize: 11,
+                ),
+              ),
+              Text(
+                cycleDay?.toString() ?? '–',
+                style: const TextStyle(
+                  color: TraumColors.periodRose,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w800,
+                  fontSize: 34,
+                ),
+              ),
               if (centerSubtitle != null)
-                Text(centerSubtitle!,
-                    style: const TextStyle(
-                        color: TraumColors.ovulationCyan,
-                        fontFamily: 'DMSans',
-                        fontSize: 11)),
+                Text(
+                  centerSubtitle!,
+                  style: const TextStyle(
+                    color: TraumColors.ovulationCyan,
+                    fontFamily: 'DMSans',
+                    fontSize: 11,
+                  ),
+                ),
             ],
           ),
         ),

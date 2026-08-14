@@ -22,11 +22,13 @@ class PlanningRepository {
   Future<bool> updateTodo(TodosCompanion entry) => _dao.updateTodo(entry);
   Future<int> deleteTodo(int id) => _dao.deleteTodo(id);
   Future<bool> toggleTodo(Todo todo) {
-    return _dao.updateTodo(TodosCompanion(
-      id: Value(todo.id),
-      done: Value(!todo.done),
-      completedAt: Value(!todo.done ? DateTime.now() : null),
-    ));
+    return _dao.updateTodo(
+      TodosCompanion(
+        id: Value(todo.id),
+        done: Value(!todo.done),
+        completedAt: Value(!todo.done ? DateTime.now() : null),
+      ),
+    );
   }
 
   // Goals
@@ -54,15 +56,18 @@ class PlanningRepository {
       _dao.watchHabitLogsForDate(date);
   Future<void> toggleHabitLog(int habitId, DateTime date, bool done) async {
     if (done) {
-      await _dao.insertHabitLog(HabitLogsCompanion(
-        habitId: Value(habitId),
-        logDate: Value(date),
-        done: const Value(true),
-      ));
+      await _dao.insertHabitLog(
+        HabitLogsCompanion(
+          habitId: Value(habitId),
+          logDate: Value(date),
+          done: const Value(true),
+        ),
+      );
     } else {
       await _dao.deleteHabitLog(habitId, date);
     }
   }
+
   Future<List<HabitLog>> getHabitLogsForLast7Days(int habitId) =>
       _dao.getHabitLogsForLast7Days(habitId);
 }

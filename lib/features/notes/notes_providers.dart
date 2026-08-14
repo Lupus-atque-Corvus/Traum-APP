@@ -4,7 +4,8 @@ import '../../core/providers/repository_providers.dart';
 import '../../data/database/traum_database.dart';
 import 'notes_vault_service.dart';
 
-export '../../core/providers/repository_providers.dart' show notesRepositoryProvider;
+export '../../core/providers/repository_providers.dart'
+    show notesRepositoryProvider;
 
 final notesVaultServiceProvider = Provider<NotesVaultService>(
   (ref) => NotesVaultService(ref.watch(notesRepositoryProvider)),
@@ -32,8 +33,10 @@ final trashedNotesProvider = StreamProvider.autoDispose<List<Note>>(
   (ref) => ref.watch(notesRepositoryProvider).watchTrashedNotes(),
 );
 
-final noteStreamProvider =
-    StreamProvider.autoDispose.family<Note?, int>((ref, id) {
+final noteStreamProvider = StreamProvider.autoDispose.family<Note?, int>((
+  ref,
+  id,
+) {
   return ref.watch(notesRepositoryProvider).watchNote(id);
 });
 
@@ -51,31 +54,29 @@ final tagsStreamProvider = StreamProvider.autoDispose<List<Tag>>(
   (ref) => ref.watch(notesRepositoryProvider).watchAllTags(),
 );
 
-final tagCountsProvider = FutureProvider.autoDispose<Map<String, int>>(
-  (ref) {
-    // Bei jeder Notizänderung neu berechnen.
-    ref.watch(allNotesStreamProvider);
-    return ref.watch(notesRepositoryProvider).getTagCounts();
-  },
-);
-
-final notesForTagProvider =
-    FutureProvider.autoDispose.family<List<Note>, String>((ref, tag) {
+final tagCountsProvider = FutureProvider.autoDispose<Map<String, int>>((ref) {
+  // Bei jeder Notizänderung neu berechnen.
   ref.watch(allNotesStreamProvider);
-  return ref.watch(notesRepositoryProvider).getNotesForTag(tag);
+  return ref.watch(notesRepositoryProvider).getTagCounts();
 });
+
+final notesForTagProvider = FutureProvider.autoDispose
+    .family<List<Note>, String>((ref, tag) {
+      ref.watch(allNotesStreamProvider);
+      return ref.watch(notesRepositoryProvider).getNotesForTag(tag);
+    });
 
 // ─── Suche ──────────────────────────────────────────────────────────────────
 
-final noteSearchProvider =
-    FutureProvider.autoDispose.family<List<NoteSearchHit>, String>((ref, q) {
-  return ref.watch(notesRepositoryProvider).search(q);
-});
+final noteSearchProvider = FutureProvider.autoDispose
+    .family<List<NoteSearchHit>, String>((ref, q) {
+      return ref.watch(notesRepositoryProvider).search(q);
+    });
 
-final titleSearchProvider =
-    FutureProvider.autoDispose.family<List<Note>, String>((ref, q) {
-  return ref.watch(notesRepositoryProvider).searchTitles(q);
-});
+final titleSearchProvider = FutureProvider.autoDispose
+    .family<List<Note>, String>((ref, q) {
+      return ref.watch(notesRepositoryProvider).searchTitles(q);
+    });
 
 // ─── Backlinks / Outgoing ────────────────────────────────────────────────────
 
@@ -93,46 +94,47 @@ class OutgoingLinks {
   const OutgoingLinks(this.resolved, this.unresolved);
 }
 
-final backlinksProvider =
-    FutureProvider.autoDispose.family<List<NoteRef>, int>((ref, id) async {
-  ref.watch(noteStreamProvider(id));
-  // A single batch lookup instead of one `getNote` query per backlink — for
-  // a heavily-linked note (e.g. an index/hub note) that was one DB
-  // round-trip per incoming link. allNotesStreamProvider is already
-  // watched by the notes screens this feeds, so this adds no extra query
-  // in practice, just reuses data already being loaded.
-  final allNotes = await ref.watch(allNotesStreamProvider.future);
-  final notesById = {for (final n in allNotes) n.id: n};
-  final repo = ref.watch(notesRepositoryProvider);
-  final links = await repo.getBacklinks(id);
-  final refs = <NoteRef>[];
-  for (final link in links) {
-    final src = notesById[link.sourceNoteId];
-    if (src != null) refs.add(NoteRef(link, src));
-  }
-  return refs;
-});
-
-final outgoingLinksProvider =
-    FutureProvider.autoDispose.family<OutgoingLinks, int>((ref, id) async {
-  ref.watch(noteStreamProvider(id));
-  final allNotes = await ref.watch(allNotesStreamProvider.future);
-  final notesById = {for (final n in allNotes) n.id: n};
-  final repo = ref.watch(notesRepositoryProvider);
-  final links = await repo.getOutgoingLinks(id);
-  final resolved = <NoteRef>[];
-  final unresolved = <NoteLink>[];
-  for (final link in links) {
-    final targetId = link.targetNoteId;
-    final target = targetId != null ? notesById[targetId] : null;
-    if (target != null) {
-      resolved.add(NoteRef(link, target));
-    } else {
-      unresolved.add(link);
+final backlinksProvider = FutureProvider.autoDispose.family<List<NoteRef>, int>(
+  (ref, id) async {
+    ref.watch(noteStreamProvider(id));
+    // A single batch lookup instead of one `getNote` query per backlink — for
+    // a heavily-linked note (e.g. an index/hub note) that was one DB
+    // round-trip per incoming link. allNotesStreamProvider is already
+    // watched by the notes screens this feeds, so this adds no extra query
+    // in practice, just reuses data already being loaded.
+    final allNotes = await ref.watch(allNotesStreamProvider.future);
+    final notesById = {for (final n in allNotes) n.id: n};
+    final repo = ref.watch(notesRepositoryProvider);
+    final links = await repo.getBacklinks(id);
+    final refs = <NoteRef>[];
+    for (final link in links) {
+      final src = notesById[link.sourceNoteId];
+      if (src != null) refs.add(NoteRef(link, src));
     }
-  }
-  return OutgoingLinks(resolved, unresolved);
-});
+    return refs;
+  },
+);
+
+final outgoingLinksProvider = FutureProvider.autoDispose
+    .family<OutgoingLinks, int>((ref, id) async {
+      ref.watch(noteStreamProvider(id));
+      final allNotes = await ref.watch(allNotesStreamProvider.future);
+      final notesById = {for (final n in allNotes) n.id: n};
+      final repo = ref.watch(notesRepositoryProvider);
+      final links = await repo.getOutgoingLinks(id);
+      final resolved = <NoteRef>[];
+      final unresolved = <NoteLink>[];
+      for (final link in links) {
+        final targetId = link.targetNoteId;
+        final target = targetId != null ? notesById[targetId] : null;
+        if (target != null) {
+          resolved.add(NoteRef(link, target));
+        } else {
+          unresolved.add(link);
+        }
+      }
+      return OutgoingLinks(resolved, unresolved);
+    });
 
 // ─── Graph ──────────────────────────────────────────────────────────────────
 
@@ -148,7 +150,9 @@ class NotesGraphData {
   const NotesGraphData(this.nodes, this.edges, this.inDegree);
 }
 
-final graphDataProvider = FutureProvider.autoDispose<NotesGraphData>((ref) async {
+final graphDataProvider = FutureProvider.autoDispose<NotesGraphData>((
+  ref,
+) async {
   ref.watch(allNotesStreamProvider);
   final repo = ref.watch(notesRepositoryProvider);
   final notes = await repo.watchActiveNotes().first;

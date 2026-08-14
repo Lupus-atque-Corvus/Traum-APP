@@ -5,6 +5,7 @@ import '../onboarding_models.dart';
 class PhaseProgressBar extends StatelessWidget {
   /// Aktuelle Phase.
   final OnboardingPhase current;
+
   /// Fortschritt innerhalb der aktuellen Phase (0..1).
   final double phaseProgress;
 
@@ -28,8 +29,8 @@ class PhaseProgressBar extends StatelessWidget {
                 fill: p.index < current.index
                     ? 1.0
                     : p.index == current.index
-                        ? phaseProgress.clamp(0.0, 1.0)
-                        : 0.0,
+                    ? phaseProgress.clamp(0.0, 1.0)
+                    : 0.0,
               ),
             ),
             if (p != phases.last) const SizedBox(width: 6),
@@ -56,7 +57,9 @@ class _Segment extends StatelessWidget {
             widthFactor: fill,
             child: Container(
               height: 6,
-              decoration: const BoxDecoration(gradient: TraumColors.gradientWarm),
+              decoration: const BoxDecoration(
+                gradient: TraumColors.gradientWarm,
+              ),
             ),
           ),
         ],

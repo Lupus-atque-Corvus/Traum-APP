@@ -79,19 +79,23 @@ class CalendarSyncService {
   /// Falls back to device_calendar on iOS or if the native call fails.
   Future<List<NativeCalendar>> getAvailableCalendars() async {
     try {
-      final raw =
-          await _nativeChannel.invokeMethod<List<dynamic>>('getCalendars');
+      final raw = await _nativeChannel.invokeMethod<List<dynamic>>(
+        'getCalendars',
+      );
       if (raw != null && raw.isNotEmpty) {
         return raw
             .cast<Map<dynamic, dynamic>>()
-            .map((m) => NativeCalendar(
-                  id: m['id'].toString(),
-                  name: m['name']?.toString() ??
-                      m['accountName']?.toString() ??
-                      'Kalender',
-                  accountName: m['accountName']?.toString(),
-                  color: m['color'] as int?,
-                ))
+            .map(
+              (m) => NativeCalendar(
+                id: m['id'].toString(),
+                name:
+                    m['name']?.toString() ??
+                    m['accountName']?.toString() ??
+                    'Kalender',
+                accountName: m['accountName']?.toString(),
+                color: m['color'] as int?,
+              ),
+            )
             .toList();
       }
     } catch (_) {}
@@ -99,12 +103,14 @@ class CalendarSyncService {
     final result = await _plugin.retrieveCalendars();
     return result.data
             ?.where((c) => c.id != null && c.isReadOnly != true)
-            .map((c) => NativeCalendar(
-                  id: c.id!,
-                  name: c.name ?? c.accountName ?? 'Kalender',
-                  accountName: c.accountName,
-                  color: c.color,
-                ))
+            .map(
+              (c) => NativeCalendar(
+                id: c.id!,
+                name: c.name ?? c.accountName ?? 'Kalender',
+                accountName: c.accountName,
+                color: c.color,
+              ),
+            )
             .toList() ??
         [];
   }
@@ -116,11 +122,12 @@ class CalendarSyncService {
     DateTime end,
   ) async {
     try {
-      final raw = await _nativeChannel.invokeMethod<List<dynamic>>('getEvents', {
-        'calendarIds': calendarIds,
-        'startMs': start.millisecondsSinceEpoch,
-        'endMs': end.millisecondsSinceEpoch,
-      });
+      final raw = await _nativeChannel
+          .invokeMethod<List<dynamic>>('getEvents', {
+            'calendarIds': calendarIds,
+            'startMs': start.millisecondsSinceEpoch,
+            'endMs': end.millisecondsSinceEpoch,
+          });
       if (raw == null) return [];
       return raw.cast<Map<dynamic, dynamic>>().map((m) {
         final startMs = m['startMs'] as int? ?? 0;
@@ -157,42 +164,44 @@ class CalendarSyncService {
   }
 
   Future<void> _pullInsertEvent(_NativeEvent event, DateTime now) async {
-    await _dao.insertAppointment(AppointmentsCompanion.insert(
-      title: event.title,
-      description: Value(event.description),
-      location: Value(event.location),
-      startTime: event.startTime,
-      endTime: Value(event.endTime),
-      allDay: Value(event.allDay),
-      externalEventId: Value(event.id),
-      sourceCalendarId: Value(event.calendarId),
-      isAppOrigin: const Value(false),
-      lastSyncedAt: Value(now),
-      updatedAt: Value(now),
-    ));
+    await _dao.insertAppointment(
+      AppointmentsCompanion.insert(
+        title: event.title,
+        description: Value(event.description),
+        location: Value(event.location),
+        startTime: event.startTime,
+        endTime: Value(event.endTime),
+        allDay: Value(event.allDay),
+        externalEventId: Value(event.id),
+        sourceCalendarId: Value(event.calendarId),
+        isAppOrigin: const Value(false),
+        lastSyncedAt: Value(now),
+        updatedAt: Value(now),
+      ),
+    );
   }
 
   AppointmentSyncView _toSyncView(Appointment a) => AppointmentSyncView(
-        id: a.id,
-        externalEventId: a.externalEventId,
-        isAppOrigin: a.isAppOrigin,
-        title: a.title,
-        description: a.description,
-        location: a.location,
-        start: a.startTime,
-        end: a.endTime ?? a.startTime.add(const Duration(hours: 1)),
-        allDay: a.allDay,
-      );
+    id: a.id,
+    externalEventId: a.externalEventId,
+    isAppOrigin: a.isAppOrigin,
+    title: a.title,
+    description: a.description,
+    location: a.location,
+    start: a.startTime,
+    end: a.endTime ?? a.startTime.add(const Duration(hours: 1)),
+    allDay: a.allDay,
+  );
 
   SyncEventData _toSyncEventData(_NativeEvent e) => SyncEventData(
-        externalId: e.id,
-        title: e.title,
-        description: e.description,
-        location: e.location,
-        start: e.startTime,
-        end: e.endTime,
-        allDay: e.allDay,
-      );
+    externalId: e.id,
+    title: e.title,
+    description: e.description,
+    location: e.location,
+    start: e.startTime,
+    end: e.endTime,
+    allDay: e.allDay,
+  );
 
   /// Push a single newly created app appointment to the primary device calendar.
   Future<void> syncNewAppointment(int appointmentId) async {
@@ -232,7 +241,9 @@ class CalendarSyncService {
       }
       return true;
     } catch (e, st) {
-      debugPrint('[CalendarSyncService] syncUpdatedAppointment failed: $e\n$st');
+      debugPrint(
+        '[CalendarSyncService] syncUpdatedAppointment failed: $e\n$st',
+      );
       return false;
     }
   }
@@ -255,15 +266,20 @@ class CalendarSyncService {
     if (!granted) return const SyncResult(permissionDenied: true);
 
     final calendarIds = _prefs.selectedCalendarIds;
-    if (calendarIds.isEmpty) return const SyncResult(needsCalendarSelection: true);
+    if (calendarIds.isEmpty) {
+      return const SyncResult(needsCalendarSelection: true);
+    }
 
     final now = DateTime.now();
     final windowStart = now.subtract(const Duration(days: 180));
     final windowEnd = now.add(const Duration(days: 365));
 
     // Read events from ALL selected calendars via native channel
-    final deviceEvents =
-        await _getNativeEvents(calendarIds, windowStart, windowEnd);
+    final deviceEvents = await _getNativeEvents(
+      calendarIds,
+      windowStart,
+      windowEnd,
+    );
     final appAppointments = await _dao.getAllAppointments();
 
     final appById = {for (final a in appAppointments) a.id: a};
@@ -340,8 +356,9 @@ class CalendarSyncService {
           case SyncActionType.deleteRemote:
             final externalId = action.externalId;
             if (externalId == null) break;
-            final apt =
-                action.appointmentId != null ? appById[action.appointmentId] : null;
+            final apt = action.appointmentId != null
+                ? appById[action.appointmentId]
+                : null;
             final targetCalendarId = apt?.sourceCalendarId ?? calendarIds.first;
             await _plugin.deleteEvent(targetCalendarId, externalId);
             synced++;

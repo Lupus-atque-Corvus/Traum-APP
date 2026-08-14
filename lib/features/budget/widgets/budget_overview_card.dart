@@ -27,47 +27,51 @@ class BudgetOverviewCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(children: [
-            const Text(
-              'Budgets',
-              style: TextStyle(
-                fontFamily: 'DMSans',
-                fontWeight: FontWeight.w600,
-                color: TraumColors.onBackground,
-                fontSize: 13,
-              ),
-            ),
-            const Spacer(),
-            // Soll-Legende (Pacing-Marker Erklärung)
-            Row(children: [
-              Container(
-                width: bs(10),
-                height: bs(1.5),
-                color: Colors.white.withValues(alpha: 0.5),
-              ),
-              SizedBox(width: bs(3)),
+          Row(
+            children: [
               const Text(
-                'Soll',
+                'Budgets',
                 style: TextStyle(
                   fontFamily: 'DMSans',
-                  fontSize: 8,
-                  color: TraumColors.onBackgroundMuted,
+                  fontWeight: FontWeight.w600,
+                  color: TraumColors.onBackground,
+                  fontSize: 13,
                 ),
               ),
-            ]),
-            SizedBox(width: bs(8)),
-            GestureDetector(
-              onTap: () => context.push(Routes.budgetCategories),
-              child: const Text(
-                'Verwalten ›',
-                style: TextStyle(
-                  fontFamily: 'DMSans',
-                  fontSize: 11,
-                  color: TraumColors.amberGold,
+              const Spacer(),
+              // Soll-Legende (Pacing-Marker Erklärung)
+              Row(
+                children: [
+                  Container(
+                    width: bs(10),
+                    height: bs(1.5),
+                    color: Colors.white.withValues(alpha: 0.5),
+                  ),
+                  SizedBox(width: bs(3)),
+                  const Text(
+                    'Soll',
+                    style: TextStyle(
+                      fontFamily: 'DMSans',
+                      fontSize: 8,
+                      color: TraumColors.onBackgroundMuted,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(width: bs(8)),
+              GestureDetector(
+                onTap: () => context.push(Routes.budgetCategories),
+                child: const Text(
+                  'Verwalten ›',
+                  style: TextStyle(
+                    fontFamily: 'DMSans',
+                    fontSize: 11,
+                    color: TraumColors.amberGold,
+                  ),
                 ),
               ),
-            ),
-          ]),
+            ],
+          ),
           SizedBox(height: bs(6)),
           catsAsync.when(
             data: (cats) => cats.isEmpty
@@ -96,7 +100,9 @@ class BudgetOverviewCard extends ConsumerWidget {
               height: bs(40),
               child: const Center(
                 child: CircularProgressIndicator(
-                    strokeWidth: 2, color: TraumColors.amberGold),
+                  strokeWidth: 2,
+                  color: TraumColors.amberGold,
+                ),
               ),
             ),
             error: (e, _) => InlineError(e),
@@ -113,15 +119,17 @@ class _BudgetContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: EdgeInsets.all(bs(13)),
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(bs(16)),
-          border: Border.all(
-              color: Colors.white.withValues(alpha: 0.08), width: bs(1)),
-        ),
-        child: child,
-      );
+    padding: EdgeInsets.all(bs(13)),
+    decoration: BoxDecoration(
+      color: TraumColors.surface,
+      borderRadius: BorderRadius.circular(bs(16)),
+      border: Border.all(
+        color: Colors.white.withValues(alpha: 0.08),
+        width: bs(1),
+      ),
+    ),
+    child: child,
+  );
 }
 
 class _BudgetCategoryRow extends StatelessWidget {
@@ -140,10 +148,10 @@ class _BudgetCategoryRow extends StatelessWidget {
     final barColor = cat.isOverBudget
         ? TraumColors.roseRed
         : cat.ratio > 0.85
-            ? TraumColors.coralOrange
-            : cat.category.color != null
-                ? Color(cat.category.color!)
-                : TraumColors.amberGold;
+        ? TraumColors.coralOrange
+        : cat.category.color != null
+        ? Color(cat.category.color!)
+        : TraumColors.amberGold;
     final percent = (cat.ratio * 100).toStringAsFixed(0);
     final remaining = cat.budgetLimit - cat.spent;
     final now = DateTime.now();
@@ -164,99 +172,113 @@ class _BudgetCategoryRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(children: [
-                Container(
-                  width: bs(30),
-                  height: bs(30),
-                  decoration: BoxDecoration(
-                    color: barColor.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(bs(8)),
-                  ),
-                  child: Center(
-                    child: budgetCategoryGlyph(cat.emoji,
-                        color: barColor, size: bs(14)),
-                  ),
-                ),
-                SizedBox(width: bs(10)),
-                Expanded(
-                  child: Row(children: [
-                    Flexible(
-                      child: Text(
-                        cat.name,
-                        style: const TextStyle(
-                          fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w600,
-                          color: TraumColors.onBackground,
-                          fontSize: 11,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+              Row(
+                children: [
+                  Container(
+                    width: bs(30),
+                    height: bs(30),
+                    decoration: BoxDecoration(
+                      color: barColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(bs(8)),
+                    ),
+                    child: Center(
+                      child: budgetCategoryGlyph(
+                        cat.emoji,
+                        color: barColor,
+                        size: bs(14),
                       ),
                     ),
-                    if (cat.isOverBudget) ...[
-                      SizedBox(width: bs(6)),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: bs(4), vertical: bs(1)),
-                        decoration: BoxDecoration(
-                          color: TraumColors.roseRed.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(bs(3)),
-                        ),
-                        child: const Text(
-                          'ÜBER',
-                          style: TextStyle(
-                            fontFamily: 'DMSans',
-                            fontSize: 8,
-                            fontWeight: FontWeight.w700,
-                            color: TraumColors.roseRed,
+                  ),
+                  SizedBox(width: bs(10)),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            cat.name,
+                            style: const TextStyle(
+                              fontFamily: 'DMSans',
+                              fontWeight: FontWeight.w600,
+                              color: TraumColors.onBackground,
+                              fontSize: 11,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
+                        ),
+                        if (cat.isOverBudget) ...[
+                          SizedBox(width: bs(6)),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: bs(4),
+                              vertical: bs(1),
+                            ),
+                            decoration: BoxDecoration(
+                              color: TraumColors.roseRed.withValues(
+                                alpha: 0.15,
+                              ),
+                              borderRadius: BorderRadius.circular(bs(3)),
+                            ),
+                            child: const Text(
+                              'ÜBER',
+                              style: TextStyle(
+                                fontFamily: 'DMSans',
+                                fontSize: 8,
+                                fontWeight: FontWeight.w700,
+                                color: TraumColors.roseRed,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: bs(8)),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      HiddenAmount(
+                        child: Text(
+                          '$currency${fmtAmount(cat.spent)} von $currency${fmtAmount(cat.budgetLimit)}',
+                          style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            color: TraumColors.onBackgroundMuted,
+                            fontSize: 9,
+                          ),
+                        ),
+                      ),
+                      HiddenAmount(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '$percent%',
+                              style: TextStyle(
+                                fontFamily: 'DMSans',
+                                fontWeight: FontWeight.w700,
+                                color: barColor,
+                                fontSize: 11,
+                              ),
+                            ),
+                            SizedBox(width: bs(6)),
+                            Text(
+                              cat.isOverBudget
+                                  ? '+$currency${fmtAmount(remaining.abs())}'
+                                  : 'noch $currency${fmtAmount(remaining)}',
+                              style: TextStyle(
+                                fontFamily: 'DMSans',
+                                fontSize: 8,
+                                color: cat.isOverBudget
+                                    ? TraumColors.roseRed
+                                    : TraumColors.onBackgroundMuted,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
-                  ]),
-                ),
-                SizedBox(width: bs(8)),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    HiddenAmount(
-                      child: Text(
-                        '$currency${fmtAmount(cat.spent)} von $currency${fmtAmount(cat.budgetLimit)}',
-                        style: const TextStyle(
-                          fontFamily: 'DMSans',
-                          color: TraumColors.onBackgroundMuted,
-                          fontSize: 9,
-                        ),
-                      ),
-                    ),
-                    HiddenAmount(
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Text(
-                          '$percent%',
-                          style: TextStyle(
-                            fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w700,
-                            color: barColor,
-                            fontSize: 11,
-                          ),
-                        ),
-                        SizedBox(width: bs(6)),
-                        Text(
-                          cat.isOverBudget
-                              ? '+$currency${fmtAmount(remaining.abs())}'
-                              : 'noch $currency${fmtAmount(remaining)}',
-                          style: TextStyle(
-                            fontFamily: 'DMSans',
-                            fontSize: 8,
-                            color: cat.isOverBudget
-                                ? TraumColors.roseRed
-                                : TraumColors.onBackgroundMuted,
-                          ),
-                        ),
-                      ]),
-                    ),
-                  ],
-                ),
-              ]),
+                  ),
+                ],
+              ),
               SizedBox(height: bs(6)),
               LayoutBuilder(
                 builder: (context, constraints) {
@@ -279,7 +301,8 @@ class _BudgetCategoryRow extends StatelessWidget {
                             color: barColor,
                             borderRadius: cat.isOverBudget
                                 ? BorderRadius.horizontal(
-                                    left: Radius.circular(bs(2)))
+                                    left: Radius.circular(bs(2)),
+                                  )
                                 : BorderRadius.circular(bs(2)),
                           ),
                         ),
@@ -302,7 +325,8 @@ class _BudgetCategoryRow extends StatelessWidget {
                                 end: Alignment.centerRight,
                               ),
                               borderRadius: BorderRadius.horizontal(
-                                  right: Radius.circular(bs(3))),
+                                right: Radius.circular(bs(3)),
+                              ),
                             ),
                           ),
                         ),
@@ -314,8 +338,10 @@ class _BudgetCategoryRow extends StatelessWidget {
                           // Änderung beim Rein-/Rausnavigieren) — ohne max()
                           // würde clamp(0.0, negativ) einen ArgumentError
                           // werfen und den ganzen Sliver-Baum leer rendern.
-                          left: (width * pacingRatio - bs(1.5))
-                              .clamp(0.0, max(0.0, width - bs(3))),
+                          left: (width * pacingRatio - bs(1.5)).clamp(
+                            0.0,
+                            max(0.0, width - bs(3)),
+                          ),
                           top: -3,
                           bottom: -3,
                           child: Container(

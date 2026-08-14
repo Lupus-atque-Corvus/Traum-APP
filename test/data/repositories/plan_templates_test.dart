@@ -8,7 +8,10 @@ void main() {
 
   test('PPL Push Day contains Bankdruecken', () {
     final pushDay = PlanTemplates.ppl.days[0];
-    expect(pushDay.exercises.any((e) => e.exerciseName == 'Bankdruecken'), isTrue);
+    expect(
+      pushDay.exercises.any((e) => e.exerciseName == 'Bankdruecken'),
+      isTrue,
+    );
   });
 
   test('all non-custom templates have at least one day', () {

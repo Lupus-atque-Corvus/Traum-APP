@@ -3,8 +3,9 @@ import 'widget_keys.dart';
 /// Vollständiger Datenstand für die Homescreen-Widgets.
 class WidgetSnapshot {
   /// Kodiert eine Zahlenreihe als CSV-String ("4200,5100,…") für den Group-Store.
-  static String encodeSeries(List<num> values) =>
-      values.map((v) => v == v.roundToDouble() ? '${v.toInt()}' : '$v').join(',');
+  static String encodeSeries(List<num> values) => values
+      .map((v) => v == v.roundToDouble() ? '${v.toInt()}' : '$v')
+      .join(',');
 
   /// Kodiert Labels als ";"-getrennte Liste ("Apfel;Reis").
   static String encodeLabels(List<String> labels) => labels.join(';');
@@ -254,141 +255,141 @@ class WidgetSnapshot {
   });
 
   factory WidgetSnapshot.empty() => const WidgetSnapshot(
-        steps: 0,
-        stepsGoal: 10000,
-        sleepHours: 0,
-        heartRate: 0,
-        mood: 0,
-        kcal: 0,
-        kcalGoal: 2200,
-        waterMl: 0,
-        waterGoalMl: 2500,
-        protein: 0,
-        proteinGoal: 150,
-        nextTodo: '',
-      );
+    steps: 0,
+    stepsGoal: 10000,
+    sleepHours: 0,
+    heartRate: 0,
+    mood: 0,
+    kcal: 0,
+    kcalGoal: 2200,
+    waterMl: 0,
+    waterGoalMl: 2500,
+    protein: 0,
+    proteinGoal: 150,
+    nextTodo: '',
+  );
 
   /// Flache String-Map fürs Schreiben in den Group-Store.
   Map<String, String> toStringMap() => {
-        // ── health (Phase 1) ───────────────────────────────────────────────
-        WidgetKeys.steps: '$steps',
-        WidgetKeys.stepsGoal: '$stepsGoal',
-        WidgetKeys.sleepHours: _trimDouble(sleepHours),
-        WidgetKeys.heartRate: '$heartRate',
-        WidgetKeys.mood: '$mood',
-        // ── nutrition (Phase 1) ────────────────────────────────────────────
-        WidgetKeys.kcal: '$kcal',
-        WidgetKeys.kcalGoal: '$kcalGoal',
-        WidgetKeys.waterMl: '$waterMl',
-        WidgetKeys.waterGoalMl: '$waterGoalMl',
-        WidgetKeys.protein: '$protein',
-        WidgetKeys.proteinGoal: '$proteinGoal',
-        // ── planning (Phase 1) ─────────────────────────────────────────────
-        WidgetKeys.nextTodo: nextTodo,
-        // ── health (Phase 2) ───────────────────────────────────────────────
-        WidgetKeys.healthScore: '$healthScore',
-        WidgetKeys.weightKg: _trimDouble(weightKg),
-        WidgetKeys.activeMinutes: '$activeMinutes',
-        // ── nutrition (Phase 2) ────────────────────────────────────────────
-        WidgetKeys.carbs: '$carbs',
-        WidgetKeys.fat: '$fat',
-        WidgetKeys.lastMeal: lastMeal,
-        // ── training ──────────────────────────────────────────────────────
-        WidgetKeys.nextWorkout: nextWorkout,
-        WidgetKeys.weeklyVolume: '$weeklyVolume',
-        WidgetKeys.trainingStreak: '$trainingStreak',
-        // ── planning (Phase 2) ─────────────────────────────────────────────
-        WidgetKeys.openTodos: '$openTodos',
-        WidgetKeys.nextAppointment: nextAppointment,
-        WidgetKeys.habitsDone: '$habitsDone',
-        WidgetKeys.habitsTotal: '$habitsTotal',
-        WidgetKeys.medsDone: '$medsDone',
-        WidgetKeys.medsTotal: '$medsTotal',
-        // ── budget ────────────────────────────────────────────────────────
-        WidgetKeys.balanceMonth: _trimDouble(balanceMonth),
-        WidgetKeys.income: _trimDouble(income),
-        WidgetKeys.expense: _trimDouble(expense),
-        WidgetKeys.budgetSpent: _trimDouble(budgetSpent),
-        WidgetKeys.budgetLimit: _trimDouble(budgetLimit),
-        WidgetKeys.topCategory: topCategory,
-        // ── diary ─────────────────────────────────────────────────────────
-        WidgetKeys.writeStreak: '$writeStreak',
-        WidgetKeys.lastEntry: lastEntry,
-        WidgetKeys.entriesThisMonth: '$entriesThisMonth',
-        // ── abstinence ────────────────────────────────────────────────────
-        WidgetKeys.abstinenceTitle: abstinenceTitle,
-        WidgetKeys.abstinenceDuration: abstinenceDuration,
-        WidgetKeys.moneySaved: _trimDouble(moneySaved),
-        // ── substances ────────────────────────────────────────────────────
-        WidgetKeys.lastIntake: lastIntake,
-        WidgetKeys.takenToday: '$takenToday',
-        // ── period ────────────────────────────────────────────────────────
-        WidgetKeys.cycleDay: '$cycleDay',
-        WidgetKeys.periodPhase: periodPhase,
-        WidgetKeys.nextPeriodDays: '$nextPeriodDays',
-        // ── notes ─────────────────────────────────────────────────────────
-        WidgetKeys.notesCount: '$notesCount',
-        WidgetKeys.lastNote: lastNote,
-        // ── map ───────────────────────────────────────────────────────────
-        WidgetKeys.placesCount: '$placesCount',
-        WidgetKeys.lastPhoto: lastPhoto,
-        WidgetKeys.mapPreview: '$mapPreview',
-        // ── general (Phase 3) ─────────────────────────────────────────────
-        WidgetKeys.clockDate: clockDate,
-        WidgetKeys.weatherTemp: weatherTemp,
-        WidgetKeys.weatherForecast: weatherForecast,
-        WidgetKeys.appFavorites: '$appFavorites',
-        WidgetKeys.quickActions: quickActions,
-        // ── health (Phase 3) ──────────────────────────────────────────────
-        WidgetKeys.caloriesBurned: '$caloriesBurned',
-        WidgetKeys.stepsWeekAvg: '$stepsWeekAvg',
-        // ── nutrition (Phase 3) ───────────────────────────────────────────
-        WidgetKeys.supplementsToday: '$supplementsToday',
-        WidgetKeys.mealsToday: '$mealsToday',
-        // ── training (Phase 3) ────────────────────────────────────────────
-        WidgetKeys.muscleHeatmap: '$muscleHeatmap',
-        WidgetKeys.lastWorkout: lastWorkout,
-        WidgetKeys.weeklyWorkouts: '$weeklyWorkouts',
-        WidgetKeys.personalRecords: '$personalRecords',
-        WidgetKeys.restTimer: restTimer,
-        // ── planning (Phase 3) ────────────────────────────────────────────
-        WidgetKeys.overdueTodos: '$overdueTodos',
-        WidgetKeys.bestHabitStreak: '$bestHabitStreak',
-        // ── budget (Phase 3) ──────────────────────────────────────────────
-        WidgetKeys.accountsOverview: accountsOverview,
-        WidgetKeys.recentTransaction: recentTransaction,
-        WidgetKeys.savingsGoal: savingsGoal,
-        WidgetKeys.recurringDue: '$recurringDue',
-        WidgetKeys.monthTrend: monthTrend,
-        // ── diary (Phase 3) ───────────────────────────────────────────────
-        WidgetKeys.yearHeatmap: '$yearHeatmap',
-        WidgetKeys.moodCalendar: '$moodCalendar',
-        // ── abstinence (Phase 3) ──────────────────────────────────────────
-        WidgetKeys.longestStreak: '$longestStreak',
-        WidgetKeys.allCounters: '$allCounters',
-        // ── notes (Phase 3) ───────────────────────────────────────────────
-        WidgetKeys.pinnedNote: pinnedNote,
-        // ── v2 series ─────────────────────────────────────────────────────
-        WidgetKeys.stepsWeek: stepsWeek,
-        WidgetKeys.sleepWeek: sleepWeek,
-        WidgetKeys.weightHistory: weightHistory,
-        WidgetKeys.moodWeek: moodWeek,
-        WidgetKeys.macroSplit: macroSplit,
-        WidgetKeys.mealsTodayList: mealsTodayList,
-        WidgetKeys.volumeWeek: volumeWeek,
-        WidgetKeys.todayAgenda: todayAgenda,
-        WidgetKeys.habitWeek: habitWeek,
-        WidgetKeys.categorySplit: categorySplit,
-        WidgetKeys.monthTrendSeries: monthTrendSeries,
-        WidgetKeys.counters: counters,
-        WidgetKeys.quote: quote,
-        WidgetKeys.countdownLabel: countdownLabel,
-        WidgetKeys.countdownDays: countdownDays,
-        // ── v2 fixed-goal constants (rings with a fixed target) ───────────
-        WidgetKeys.sleepGoalH: '8',
-        WidgetKeys.activeGoalMin: '30',
-        WidgetKeys.cycleLenDays: '28',
-      };
+    // ── health (Phase 1) ───────────────────────────────────────────────
+    WidgetKeys.steps: '$steps',
+    WidgetKeys.stepsGoal: '$stepsGoal',
+    WidgetKeys.sleepHours: _trimDouble(sleepHours),
+    WidgetKeys.heartRate: '$heartRate',
+    WidgetKeys.mood: '$mood',
+    // ── nutrition (Phase 1) ────────────────────────────────────────────
+    WidgetKeys.kcal: '$kcal',
+    WidgetKeys.kcalGoal: '$kcalGoal',
+    WidgetKeys.waterMl: '$waterMl',
+    WidgetKeys.waterGoalMl: '$waterGoalMl',
+    WidgetKeys.protein: '$protein',
+    WidgetKeys.proteinGoal: '$proteinGoal',
+    // ── planning (Phase 1) ─────────────────────────────────────────────
+    WidgetKeys.nextTodo: nextTodo,
+    // ── health (Phase 2) ───────────────────────────────────────────────
+    WidgetKeys.healthScore: '$healthScore',
+    WidgetKeys.weightKg: _trimDouble(weightKg),
+    WidgetKeys.activeMinutes: '$activeMinutes',
+    // ── nutrition (Phase 2) ────────────────────────────────────────────
+    WidgetKeys.carbs: '$carbs',
+    WidgetKeys.fat: '$fat',
+    WidgetKeys.lastMeal: lastMeal,
+    // ── training ──────────────────────────────────────────────────────
+    WidgetKeys.nextWorkout: nextWorkout,
+    WidgetKeys.weeklyVolume: '$weeklyVolume',
+    WidgetKeys.trainingStreak: '$trainingStreak',
+    // ── planning (Phase 2) ─────────────────────────────────────────────
+    WidgetKeys.openTodos: '$openTodos',
+    WidgetKeys.nextAppointment: nextAppointment,
+    WidgetKeys.habitsDone: '$habitsDone',
+    WidgetKeys.habitsTotal: '$habitsTotal',
+    WidgetKeys.medsDone: '$medsDone',
+    WidgetKeys.medsTotal: '$medsTotal',
+    // ── budget ────────────────────────────────────────────────────────
+    WidgetKeys.balanceMonth: _trimDouble(balanceMonth),
+    WidgetKeys.income: _trimDouble(income),
+    WidgetKeys.expense: _trimDouble(expense),
+    WidgetKeys.budgetSpent: _trimDouble(budgetSpent),
+    WidgetKeys.budgetLimit: _trimDouble(budgetLimit),
+    WidgetKeys.topCategory: topCategory,
+    // ── diary ─────────────────────────────────────────────────────────
+    WidgetKeys.writeStreak: '$writeStreak',
+    WidgetKeys.lastEntry: lastEntry,
+    WidgetKeys.entriesThisMonth: '$entriesThisMonth',
+    // ── abstinence ────────────────────────────────────────────────────
+    WidgetKeys.abstinenceTitle: abstinenceTitle,
+    WidgetKeys.abstinenceDuration: abstinenceDuration,
+    WidgetKeys.moneySaved: _trimDouble(moneySaved),
+    // ── substances ────────────────────────────────────────────────────
+    WidgetKeys.lastIntake: lastIntake,
+    WidgetKeys.takenToday: '$takenToday',
+    // ── period ────────────────────────────────────────────────────────
+    WidgetKeys.cycleDay: '$cycleDay',
+    WidgetKeys.periodPhase: periodPhase,
+    WidgetKeys.nextPeriodDays: '$nextPeriodDays',
+    // ── notes ─────────────────────────────────────────────────────────
+    WidgetKeys.notesCount: '$notesCount',
+    WidgetKeys.lastNote: lastNote,
+    // ── map ───────────────────────────────────────────────────────────
+    WidgetKeys.placesCount: '$placesCount',
+    WidgetKeys.lastPhoto: lastPhoto,
+    WidgetKeys.mapPreview: '$mapPreview',
+    // ── general (Phase 3) ─────────────────────────────────────────────
+    WidgetKeys.clockDate: clockDate,
+    WidgetKeys.weatherTemp: weatherTemp,
+    WidgetKeys.weatherForecast: weatherForecast,
+    WidgetKeys.appFavorites: '$appFavorites',
+    WidgetKeys.quickActions: quickActions,
+    // ── health (Phase 3) ──────────────────────────────────────────────
+    WidgetKeys.caloriesBurned: '$caloriesBurned',
+    WidgetKeys.stepsWeekAvg: '$stepsWeekAvg',
+    // ── nutrition (Phase 3) ───────────────────────────────────────────
+    WidgetKeys.supplementsToday: '$supplementsToday',
+    WidgetKeys.mealsToday: '$mealsToday',
+    // ── training (Phase 3) ────────────────────────────────────────────
+    WidgetKeys.muscleHeatmap: '$muscleHeatmap',
+    WidgetKeys.lastWorkout: lastWorkout,
+    WidgetKeys.weeklyWorkouts: '$weeklyWorkouts',
+    WidgetKeys.personalRecords: '$personalRecords',
+    WidgetKeys.restTimer: restTimer,
+    // ── planning (Phase 3) ────────────────────────────────────────────
+    WidgetKeys.overdueTodos: '$overdueTodos',
+    WidgetKeys.bestHabitStreak: '$bestHabitStreak',
+    // ── budget (Phase 3) ──────────────────────────────────────────────
+    WidgetKeys.accountsOverview: accountsOverview,
+    WidgetKeys.recentTransaction: recentTransaction,
+    WidgetKeys.savingsGoal: savingsGoal,
+    WidgetKeys.recurringDue: '$recurringDue',
+    WidgetKeys.monthTrend: monthTrend,
+    // ── diary (Phase 3) ───────────────────────────────────────────────
+    WidgetKeys.yearHeatmap: '$yearHeatmap',
+    WidgetKeys.moodCalendar: '$moodCalendar',
+    // ── abstinence (Phase 3) ──────────────────────────────────────────
+    WidgetKeys.longestStreak: '$longestStreak',
+    WidgetKeys.allCounters: '$allCounters',
+    // ── notes (Phase 3) ───────────────────────────────────────────────
+    WidgetKeys.pinnedNote: pinnedNote,
+    // ── v2 series ─────────────────────────────────────────────────────
+    WidgetKeys.stepsWeek: stepsWeek,
+    WidgetKeys.sleepWeek: sleepWeek,
+    WidgetKeys.weightHistory: weightHistory,
+    WidgetKeys.moodWeek: moodWeek,
+    WidgetKeys.macroSplit: macroSplit,
+    WidgetKeys.mealsTodayList: mealsTodayList,
+    WidgetKeys.volumeWeek: volumeWeek,
+    WidgetKeys.todayAgenda: todayAgenda,
+    WidgetKeys.habitWeek: habitWeek,
+    WidgetKeys.categorySplit: categorySplit,
+    WidgetKeys.monthTrendSeries: monthTrendSeries,
+    WidgetKeys.counters: counters,
+    WidgetKeys.quote: quote,
+    WidgetKeys.countdownLabel: countdownLabel,
+    WidgetKeys.countdownDays: countdownDays,
+    // ── v2 fixed-goal constants (rings with a fixed target) ───────────
+    WidgetKeys.sleepGoalH: '8',
+    WidgetKeys.activeGoalMin: '30',
+    WidgetKeys.cycleLenDays: '28',
+  };
 
   static String _trimDouble(double v) =>
       v == v.roundToDouble() ? '${v.toInt()}' : '$v';

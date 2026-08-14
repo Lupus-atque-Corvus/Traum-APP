@@ -4,8 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 const _kRestKey = 'rest_duration_seconds';
 const restDurationOptions = [60, 90, 120, 180];
 
-final restDurationProvider =
-    StateNotifierProvider<RestDurationNotifier, int>((ref) {
+final restDurationProvider = StateNotifierProvider<RestDurationNotifier, int>((
+  ref,
+) {
   return RestDurationNotifier();
 });
 

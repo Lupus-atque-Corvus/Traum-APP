@@ -22,13 +22,11 @@ class Notes extends Table {
   /// Gesetzt wenn [isDaily]; ISO-Datum als reines Datum.
   DateTimeColumn get dailyDate => dateTime().nullable()();
 
-  BoolColumn get isBookmarked =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get isBookmarked => boolean().withDefault(const Constant(false))();
   BoolColumn get isPinned => boolean().withDefault(const Constant(false))();
 
   /// YAML-Frontmatter als JSON gespeichert.
-  TextColumn get propertiesJson =>
-      text().withDefault(const Constant('{}'))();
+  TextColumn get propertiesJson => text().withDefault(const Constant('{}'))();
 
   IntColumn get wordCount => integer().withDefault(const Constant(0))();
 

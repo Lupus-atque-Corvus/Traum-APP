@@ -5,8 +5,7 @@ import 'package:traum/core/security/pin_service.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  const channel =
-      MethodChannel('plugins.it_nomads.com/flutter_secure_storage');
+  const channel = MethodChannel('plugins.it_nomads.com/flutter_secure_storage');
   final messenger =
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
   late Map<String, String> store;
@@ -47,8 +46,7 @@ void main() {
     expect(await PinService.isSet(), isTrue);
   });
 
-  test('verify returns true for the correct PIN and false otherwise',
-      () async {
+  test('verify returns true for the correct PIN and false otherwise', () async {
     await PinService.save('1234');
     expect(await PinService.verify('1234'), isTrue);
     expect(await PinService.verify('0000'), isFalse);
@@ -62,8 +60,7 @@ void main() {
     expect(await PinService.getLockedUntil(), isNull);
   });
 
-  test('4th consecutive wrong attempt locks the PIN entry for ~30s',
-      () async {
+  test('4th consecutive wrong attempt locks the PIN entry for ~30s', () async {
     await PinService.save('1234');
     for (var i = 0; i < 4; i++) {
       await PinService.verify('0000');
@@ -104,18 +101,20 @@ void main() {
     expect(await PinService.verify('1234'), isFalse);
   });
 
-  test('a successful verify resets the failure count and lockout state',
-      () async {
-    await PinService.save('1234');
-    await PinService.verify('0000');
-    await PinService.verify('0000');
-    await PinService.verify('1234'); // correct -> resets counter
-    // Three more wrong attempts should not lock again (counter restarted).
-    for (var i = 0; i < 3; i++) {
-      expect(await PinService.verify('0000'), isFalse);
-    }
-    expect(await PinService.getLockedUntil(), isNull);
-  });
+  test(
+    'a successful verify resets the failure count and lockout state',
+    () async {
+      await PinService.save('1234');
+      await PinService.verify('0000');
+      await PinService.verify('0000');
+      await PinService.verify('1234'); // correct -> resets counter
+      // Three more wrong attempts should not lock again (counter restarted).
+      for (var i = 0; i < 3; i++) {
+        expect(await PinService.verify('0000'), isFalse);
+      }
+      expect(await PinService.getLockedUntil(), isNull);
+    },
+  );
 
   test('save() resets any prior lockout state (e.g. PIN changed in '
       'Settings)', () async {

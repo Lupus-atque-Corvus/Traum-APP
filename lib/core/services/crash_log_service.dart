@@ -36,8 +36,7 @@ class CrashLogService {
     final previousOnError = FlutterError.onError;
     FlutterError.onError = (FlutterErrorDetails details) {
       previousOnError?.call(details);
-      unawaited(
-          _append('FLUTTER', details.exceptionAsString(), details.stack));
+      unawaited(_append('FLUTTER', details.exceptionAsString(), details.stack));
     };
     PlatformDispatcher.instance.onError = (error, stack) {
       unawaited(_append('PLATFORM', error.toString(), stack));
@@ -55,7 +54,10 @@ class CrashLogService {
   }
 
   static Future<void> _append(
-      String source, String message, StackTrace? stack) async {
+    String source,
+    String message,
+    StackTrace? stack,
+  ) async {
     try {
       final file = await _logFile();
       if (await file.exists() && await file.length() > _maxBytes) {
@@ -67,8 +69,11 @@ class CrashLogService {
         ..writeln('[${DateTime.now().toIso8601String()}] [$source] $message');
       if (stack != null) buffer.writeln(stack.toString());
       buffer.writeln('---');
-      await file.writeAsString(buffer.toString(),
-          mode: FileMode.append, flush: true);
+      await file.writeAsString(
+        buffer.toString(),
+        mode: FileMode.append,
+        flush: true,
+      );
     } catch (_) {
       // Logging selbst darf nie einen weiteren, unbehandelten Fehler
       // auslösen — bewusst still.
@@ -93,9 +98,11 @@ class CrashLogService {
   /// Framework-Handler zu gehen — für deterministische Tests der
   /// Rotations-/Lese-Logik ohne Zeitabhängigkeit auf einen echten Zone-Fehler.
   @visibleForTesting
-  static Future<void> logForTest(String source, String message,
-          [StackTrace? stack]) =>
-      _append(source, message, stack);
+  static Future<void> logForTest(
+    String source,
+    String message, [
+    StackTrace? stack,
+  ]) => _append(source, message, stack);
 
   /// Setzt den gecachten Dateipfad zurück — nötig, damit Tests mit
   /// wechselndem `PathProviderPlatform.instance` (je ein frisches Temp-Dir

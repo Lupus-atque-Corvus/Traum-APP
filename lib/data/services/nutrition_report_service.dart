@@ -58,87 +58,108 @@ class NutritionReportService {
         .toList();
   }
 
-  Future<File> generatePdf({required DateTime from, required DateTime to}) async {
+  Future<File> generatePdf({
+    required DateTime from,
+    required DateTime to,
+  }) async {
     final entries = await _loadEntries(from, to);
     if (entries.isEmpty) throw const EmptyReportException();
     final sections = buildDailySections(entries);
 
-    final fontRegular =
-        pw.Font.ttf(await rootBundle.load('assets/fonts/DMSans-Regular.ttf'));
-    final fontBold =
-        pw.Font.ttf(await rootBundle.load('assets/fonts/DMSans-Bold.ttf'));
+    final fontRegular = pw.Font.ttf(
+      await rootBundle.load('assets/fonts/DMSans-Regular.ttf'),
+    );
+    final fontBold = pw.Font.ttf(
+      await rootBundle.load('assets/fonts/DMSans-Bold.ttf'),
+    );
 
     final doc = pw.Document();
-    doc.addPage(pw.MultiPage(
-      pageFormat: PdfPageFormat.a4,
-      theme: pw.ThemeData.withFont(base: fontRegular, bold: fontBold),
-      build: (ctx) => [
-        pw.Header(level: 0, text: 'Ernährungsprotokoll'),
-        pw.Paragraph(
-            text: 'Zeitraum: ${_fmt(from)} – ${_fmt(to)} · '
-                'erstellt mit TRAUM am ${_fmt(DateTime.now())}'),
-        _summaryTable(sections),
-        ...sections.map(_daySection),
-      ],
-    ));
+    doc.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        theme: pw.ThemeData.withFont(base: fontRegular, bold: fontBold),
+        build: (ctx) => [
+          pw.Header(level: 0, text: 'Ernährungsprotokoll'),
+          pw.Paragraph(
+            text:
+                'Zeitraum: ${_fmt(from)} – ${_fmt(to)} · '
+                'erstellt mit TRAUM am ${_fmt(DateTime.now())}',
+          ),
+          _summaryTable(sections),
+          ...sections.map(_daySection),
+        ],
+      ),
+    );
 
     final dir = await getTemporaryDirectory();
     final file = File(
-        '${dir.path}/ernaehrung_${_fileStamp(from)}_${_fileStamp(to)}.pdf');
+      '${dir.path}/ernaehrung_${_fileStamp(from)}_${_fileStamp(to)}.pdf',
+    );
     await file.writeAsBytes(await doc.save());
     return file;
   }
 
   pw.Widget _summaryTable(List<DailySection> sections) {
     final days = sections.length;
-    double avg(double Function(DailySection) f) => days == 0
-        ? 0
-        : sections.fold(0.0, (a, s) => a + f(s)) / days;
+    double avg(double Function(DailySection) f) =>
+        days == 0 ? 0 : sections.fold(0.0, (a, s) => a + f(s)) / days;
     return pw.TableHelper.fromTextArray(
       headers: ['Ø pro Tag', 'Kalorien', 'Protein', 'Kohlenhydrate', 'Fett'],
-      data: [[
-        '$days Tage',
-        '${avg((s) => s.totalKcal).toStringAsFixed(0)} kcal',
-        '${avg((s) => s.totalProtein).toStringAsFixed(0)} g',
-        '${avg((s) => s.totalCarbs).toStringAsFixed(0)} g',
-        '${avg((s) => s.totalFat).toStringAsFixed(0)} g',
-      ]],
+      data: [
+        [
+          '$days Tage',
+          '${avg((s) => s.totalKcal).toStringAsFixed(0)} kcal',
+          '${avg((s) => s.totalProtein).toStringAsFixed(0)} g',
+          '${avg((s) => s.totalCarbs).toStringAsFixed(0)} g',
+          '${avg((s) => s.totalFat).toStringAsFixed(0)} g',
+        ],
+      ],
     );
   }
 
   pw.Widget _daySection(DailySection s) {
     const mealLabels = {
-      'breakfast': 'Frühstück', 'lunch': 'Mittagessen',
-      'dinner': 'Abendessen', 'snack': 'Snacks',
+      'breakfast': 'Frühstück',
+      'lunch': 'Mittagessen',
+      'dinner': 'Abendessen',
+      'snack': 'Snacks',
     };
-    return pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-      pw.SizedBox(height: 12),
-      pw.Header(level: 1, text: _fmt(s.day)),
-      for (final meal in s.meals.entries) ...[
-        pw.Text(mealLabels[meal.key] ?? meal.key,
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-        pw.TableHelper.fromTextArray(
-          headers: ['Lebensmittel', 'Menge', 'kcal', 'P', 'K', 'F'],
-          data: meal.value
-              .map((e) => [
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(height: 12),
+        pw.Header(level: 1, text: _fmt(s.day)),
+        for (final meal in s.meals.entries) ...[
+          pw.Text(
+            mealLabels[meal.key] ?? meal.key,
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+          ),
+          pw.TableHelper.fromTextArray(
+            headers: ['Lebensmittel', 'Menge', 'kcal', 'P', 'K', 'F'],
+            data: meal.value
+                .map(
+                  (e) => [
                     e.foodName,
                     '${e.grams.toStringAsFixed(0)} g',
                     e.kcal.toStringAsFixed(0),
                     '${e.protein.toStringAsFixed(1)} g',
                     '${e.carbs.toStringAsFixed(1)} g',
                     '${e.fat.toStringAsFixed(1)} g',
-                  ])
-              .toList(),
-        ),
-        pw.SizedBox(height: 6),
-      ],
-      pw.Text(
+                  ],
+                )
+                .toList(),
+          ),
+          pw.SizedBox(height: 6),
+        ],
+        pw.Text(
           'Tagessumme: ${s.totalKcal.toStringAsFixed(0)} kcal · '
           'Protein ${s.totalProtein.toStringAsFixed(0)} g · '
           'KH ${s.totalCarbs.toStringAsFixed(0)} g · '
           'Fett ${s.totalFat.toStringAsFixed(0)} g',
-          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-    ]);
+          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+        ),
+      ],
+    );
   }
 
   String _fmt(DateTime d) =>

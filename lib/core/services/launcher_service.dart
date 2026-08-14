@@ -33,5 +33,6 @@ class LauncherService {
   }
 }
 
-final launcherServiceProvider =
-    Provider<LauncherService>((ref) => LauncherService());
+final launcherServiceProvider = Provider<LauncherService>(
+  (ref) => LauncherService(),
+);

@@ -8,13 +8,12 @@ class MapCollectionsDao extends DatabaseAccessor<TraumDatabase>
     with _$MapCollectionsDaoMixin {
   MapCollectionsDao(super.db);
 
-  Future<List<MapCollection>> getAll() =>
-      (select(mapCollections)..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
-          .get();
+  Future<List<MapCollection>> getAll() => (select(
+    mapCollections,
+  )..orderBy([(t) => OrderingTerm.asc(t.sortOrder)])).get();
 
   Future<MapCollection?> getById(int id) =>
-      (select(mapCollections)..where((t) => t.id.equals(id)))
-          .getSingleOrNull();
+      (select(mapCollections)..where((t) => t.id.equals(id))).getSingleOrNull();
 
   Future<int> insert(MapCollectionsCompanion c) =>
       into(mapCollections).insert(c);

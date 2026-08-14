@@ -14,8 +14,7 @@ class HealthFlag {
   const HealthFlag(this.type);
 
   @override
-  bool operator ==(Object other) =>
-      other is HealthFlag && other.type == type;
+  bool operator ==(Object other) => other is HealthFlag && other.type == type;
   @override
   int get hashCode => type.hashCode;
 }

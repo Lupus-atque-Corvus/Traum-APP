@@ -74,6 +74,6 @@ class HomeLayoutNotifier extends StateNotifier<List<HomeTile>> {
 
 final homeLayoutProvider =
     StateNotifierProvider<HomeLayoutNotifier, List<HomeTile>>((ref) {
-  final prefs = ref.watch(sharedPreferencesProvider);
-  return HomeLayoutNotifier(prefs);
-});
+      final prefs = ref.watch(sharedPreferencesProvider);
+      return HomeLayoutNotifier(prefs);
+    });

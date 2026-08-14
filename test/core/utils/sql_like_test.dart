@@ -23,8 +23,7 @@ void main() {
     // let a query of just "%" (or "%%_%") match every row, since unescaped
     // wildcards in user input are interpreted by SQLite rather than matched
     // literally.
-    test('a query of only wildcard characters becomes a literal pattern',
-        () {
+    test('a query of only wildcard characters becomes a literal pattern', () {
       expect(escapeLikePattern('%%_%'), r'\%\%\_\%');
     });
   });

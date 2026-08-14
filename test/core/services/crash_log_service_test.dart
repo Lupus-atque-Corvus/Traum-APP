@@ -32,16 +32,18 @@ void main() {
     expect(await CrashLogService.readForExport(), isNull);
   });
 
-  test('a logged error is readable for export with source tag and message',
-      () async {
-    await CrashLogService.logForTest('ZONE', 'boom', StackTrace.current);
+  test(
+    'a logged error is readable for export with source tag and message',
+    () async {
+      await CrashLogService.logForTest('ZONE', 'boom', StackTrace.current);
 
-    final bytes = await CrashLogService.readForExport();
-    expect(bytes, isNotNull);
-    final text = utf8.decode(bytes!);
-    expect(text, contains('[ZONE]'));
-    expect(text, contains('boom'));
-  });
+      final bytes = await CrashLogService.readForExport();
+      expect(bytes, isNotNull);
+      final text = utf8.decode(bytes!);
+      expect(text, contains('[ZONE]'));
+      expect(text, contains('boom'));
+    },
+  );
 
   test('multiple entries append rather than overwrite', () async {
     await CrashLogService.logForTest('FLUTTER', 'first error');
@@ -52,17 +54,19 @@ void main() {
     expect(text, contains('second error'));
   });
 
-  test('log rotates instead of growing unboundedly past the size cap',
-      () async {
-    // Write comfortably past the 1 MB cap so rotation is guaranteed to
-    // trigger, without depending on the exact internal threshold.
-    final big = 'x' * (600 * 1024);
-    await CrashLogService.logForTest('ZONE', big);
-    await CrashLogService.logForTest('ZONE', big);
-    await CrashLogService.logForTest('ZONE', 'after rotation marker');
+  test(
+    'log rotates instead of growing unboundedly past the size cap',
+    () async {
+      // Write comfortably past the 1 MB cap so rotation is guaranteed to
+      // trigger, without depending on the exact internal threshold.
+      final big = 'x' * (600 * 1024);
+      await CrashLogService.logForTest('ZONE', big);
+      await CrashLogService.logForTest('ZONE', big);
+      await CrashLogService.logForTest('ZONE', 'after rotation marker');
 
-    final text = utf8.decode((await CrashLogService.readForExport())!);
-    expect(text, contains('after rotation marker'));
-    expect(text.length, lessThan(1024 * 1024));
-  });
+      final text = utf8.decode((await CrashLogService.readForExport())!);
+      expect(text, contains('after rotation marker'));
+      expect(text.length, lessThan(1024 * 1024));
+    },
+  );
 }

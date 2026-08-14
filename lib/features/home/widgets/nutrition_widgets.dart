@@ -434,13 +434,8 @@ class _RemainingCaloriesContent extends ConsumerWidget {
     }
     final eaten = totals?.calories ?? 0;
     final remaining = (goal - eaten).round();
-    final color =
-        remaining < 0 ? TraumColors.roseRed : TraumColors.amberGold;
-    return _ValueUnit(
-      value: '$remaining',
-      unit: 'kcal übrig',
-      color: color,
-    );
+    final color = remaining < 0 ? TraumColors.roseRed : TraumColors.amberGold;
+    return _ValueUnit(value: '$remaining', unit: 'kcal übrig', color: color);
   }
 }
 

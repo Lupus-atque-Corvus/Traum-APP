@@ -52,7 +52,8 @@ class GroceryPrices extends Table {
   TextColumn get category => text().nullable()();
   RealColumn get avgPrice => real()();
   TextColumn get unit => text().nullable()();
-  BoolColumn get isUserAdjusted => boolean().withDefault(const Constant(false))();
+  BoolColumn get isUserAdjusted =>
+      boolean().withDefault(const Constant(false))();
   IntColumn get sampleCount => integer().withDefault(const Constant(1))();
 }
 
@@ -86,14 +87,14 @@ class FoodProducts extends Table {
   RealColumn get saltPer100g => real().nullable()();
   RealColumn get saturatedFatPer100g => real().nullable()();
   TextColumn get microsJson => text().nullable()();
-  BoolColumn get isCustom =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get isCustom => boolean().withDefault(const Constant(false))();
   DateTimeColumn get lastUsed => dateTime().nullable()();
-  IntColumn get useCount =>
-      integer().withDefault(const Constant(0))();
+  IntColumn get useCount => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAt => dateTime()();
+
   /// Herkunft: 'off' | 'usda' | 'custom' | 'merged'
   TextColumn get sourceApi => text().nullable()();
+
   /// Externe ID in der Quelle (z.B. USDA fdcId), für Dedupe/Refresh.
   TextColumn get sourceId => text().nullable()();
 }
@@ -126,6 +127,5 @@ class WeeklyMealPlan extends Table {
   IntColumn get templateId => integer().nullable()();
   IntColumn get productId => integer().nullable()();
   RealColumn get amountGrams => real().nullable()();
-  BoolColumn get isLogged =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get isLogged => boolean().withDefault(const Constant(false))();
 }

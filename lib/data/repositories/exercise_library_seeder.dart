@@ -66,15 +66,17 @@ class ExerciseLibrarySeeder {
 
       final existingRow = byName[name];
       if (existingRow == null) {
-        toInsert.add(ExercisesCompanion.insert(
-          name: name,
-          muscleGroup: muscleGroup,
-          primaryMuscles: Value(jsonEncode(primary)),
-          secondaryMuscles: Value(jsonEncode(secondary)),
-          equipment: Value(equipment),
-          instructions: Value(instructions),
-          isCustom: const Value(false),
-        ));
+        toInsert.add(
+          ExercisesCompanion.insert(
+            name: name,
+            muscleGroup: muscleGroup,
+            primaryMuscles: Value(jsonEncode(primary)),
+            secondaryMuscles: Value(jsonEncode(secondary)),
+            equipment: Value(equipment),
+            instructions: Value(instructions),
+            isCustom: const Value(false),
+          ),
+        );
         continue;
       }
 
@@ -89,13 +91,15 @@ class ExerciseLibrarySeeder {
       }
       var equipmentVal = const Value<String?>.absent();
       if ((existingRow.equipment == null || existingRow.equipment!.isEmpty) &&
-          equipment != null && equipment.isNotEmpty) {
+          equipment != null &&
+          equipment.isNotEmpty) {
         equipmentVal = Value(equipment);
       }
       var instructionsVal = const Value<String?>.absent();
       if ((existingRow.instructions == null ||
               existingRow.instructions!.isEmpty) &&
-          instructions != null && instructions.isNotEmpty) {
+          instructions != null &&
+          instructions.isNotEmpty) {
         instructionsVal = Value(instructions);
       }
 

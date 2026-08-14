@@ -49,8 +49,7 @@ class _MapGalleryScreenState extends ConsumerState<MapGalleryScreen> {
 
     // Kachelbreite des 3-spaltigen Rasters (16 px Außenabstand je Seite,
     // 8 px zwischen den Spalten) — Zielauflösung für die Bild-Dekodierung.
-    final gridTileWidth =
-        (MediaQuery.sizeOf(context).width - 32 - 16) / 3;
+    final gridTileWidth = (MediaQuery.sizeOf(context).width - 32 - 16) / 3;
 
     return Scaffold(
       backgroundColor: TraumColors.background,
@@ -81,13 +80,19 @@ class _MapGalleryScreenState extends ConsumerState<MapGalleryScreen> {
               controller: _searchController,
               onChanged: (v) => setState(() => _query = v),
               style: const TextStyle(
-                  fontFamily: 'DMSans', color: TraumColors.onBackground),
-              decoration: mapInputDecoration(
-                      AppLocalizations.of(context)!.searchHint)
-                  .copyWith(
-                prefixIcon: const Icon(Icons.search,
-                    color: TraumColors.onBackgroundMuted, size: 20),
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
               ),
+              decoration:
+                  mapInputDecoration(
+                    AppLocalizations.of(context)!.searchHint,
+                  ).copyWith(
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: TraumColors.onBackgroundMuted,
+                      size: 20,
+                    ),
+                  ),
             ),
           ),
           if (hashtags.isNotEmpty)
@@ -113,12 +118,11 @@ class _MapGalleryScreenState extends ConsumerState<MapGalleryScreen> {
                       backgroundColor: TraumColors.surface,
                       selectedColor: TraumColors.cyanDim,
                       side: BorderSide(
-                          color: sel
-                              ? TraumColors.cyanBlue
-                              : Colors.transparent),
-                      onSelected: (v) => ref
-                          .read(activeHashtagFilterProvider.notifier)
-                          .state = v ? t : null,
+                        color: sel ? TraumColors.cyanBlue : Colors.transparent,
+                      ),
+                      onSelected: (v) =>
+                          ref.read(activeHashtagFilterProvider.notifier).state =
+                              v ? t : null,
                     ),
                   );
                 }).toList(),
@@ -130,18 +134,19 @@ class _MapGalleryScreenState extends ConsumerState<MapGalleryScreen> {
                     child: Text(
                       AppLocalizations.of(context)!.mapNoEntriesYet,
                       style: const TextStyle(
-                          fontFamily: 'DMSans',
-                          color: TraumColors.onBackgroundMuted),
+                        fontFamily: 'DMSans',
+                        color: TraumColors.onBackgroundMuted,
+                      ),
                     ),
                   )
                 : GridView.builder(
                     padding: const EdgeInsets.all(16),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 8,
-                      mainAxisSpacing: 8,
-                    ),
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                        ),
                     itemCount: filtered.length,
                     itemBuilder: (context, i) {
                       final data = filtered[i];
@@ -152,90 +157,108 @@ class _MapGalleryScreenState extends ConsumerState<MapGalleryScreen> {
                             ? data.marker.title
                             : AppLocalizations.of(context)!.a11yMapMarker,
                         child: GestureDetector(
-                        onTap: () => context
-                            .go('/graffitimap/marker/${data.marker.id}'),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              if (photo != null)
-                                Image.file(
-                                  File(photo.thumbnailPath ?? photo.photoPath),
-                                  cacheWidth: decodePxFor(context, gridTileWidth),
-                                  fit: BoxFit.cover,
-                                )
-                              else
-                                Container(
-                                  color: TraumColors.surfaceVariant,
-                                  child: const Icon(Icons.image,
-                                      color: TraumColors.cyanBlue),
-                                ),
-                              // Megapixel-Label
-                              Positioned(
-                                right: 4,
-                                bottom: 4,
-                                child: MegapixelBadge(formatMegapixels(
-                                    photo?.widthPx, photo?.heightPx)),
-                              ),
-                              // Sterne-Badge
-                              if ((collection?.hasRating ?? false) &&
-                                  data.marker.rating != null)
-                                Positioned(
-                                  left: 4,
-                                  top: 4,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: TraumColors.amberGold,
-                                      borderRadius: BorderRadius.circular(8),
+                          onTap: () => context.go(
+                            '/graffitimap/marker/${data.marker.id}',
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                if (photo != null)
+                                  Image.file(
+                                    File(
+                                      photo.thumbnailPath ?? photo.photoPath,
                                     ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(Icons.star,
-                                            color: Colors.white, size: 9),
-                                        const SizedBox(width: 1),
-                                        Text(
-                                          data.marker.rating!
-                                              .toStringAsFixed(1),
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 9,
-                                            fontWeight: FontWeight.w700,
-                                            fontFamily: 'DMSans',
-                                          ),
-                                        ),
-                                      ],
+                                    cacheWidth: decodePxFor(
+                                      context,
+                                      gridTileWidth,
+                                    ),
+                                    fit: BoxFit.cover,
+                                  )
+                                else
+                                  Container(
+                                    color: TraumColors.surfaceVariant,
+                                    child: const Icon(
+                                      Icons.image,
+                                      color: TraumColors.cyanBlue,
+                                    ),
+                                  ),
+                                // Megapixel-Label
+                                Positioned(
+                                  right: 4,
+                                  bottom: 4,
+                                  child: MegapixelBadge(
+                                    formatMegapixels(
+                                      photo?.widthPx,
+                                      photo?.heightPx,
                                     ),
                                   ),
                                 ),
-                              // Fotoanzahl-Badge
-                              if (data.photos.length > 1)
-                                Positioned(
-                                  right: 4,
-                                  top: 4,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: const BoxDecoration(
-                                      color: TraumColors.cyanBlue,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Text(
-                                      '${data.photos.length}',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 9,
-                                        fontWeight: FontWeight.w700,
-                                        fontFamily: 'DMSans',
+                                // Sterne-Badge
+                                if ((collection?.hasRating ?? false) &&
+                                    data.marker.rating != null)
+                                  Positioned(
+                                    left: 4,
+                                    top: 4,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 5,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: TraumColors.amberGold,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.star,
+                                            color: Colors.white,
+                                            size: 9,
+                                          ),
+                                          const SizedBox(width: 1),
+                                          Text(
+                                            data.marker.rating!.toStringAsFixed(
+                                              1,
+                                            ),
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 9,
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: 'DMSans',
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                ),
-                            ],
+                                // Fotoanzahl-Badge
+                                if (data.photos.length > 1)
+                                  Positioned(
+                                    right: 4,
+                                    top: 4,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: const BoxDecoration(
+                                        color: TraumColors.cyanBlue,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Text(
+                                        '${data.photos.length}',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.w700,
+                                          fontFamily: 'DMSans',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
-                        ),
                         ),
                       );
                     },

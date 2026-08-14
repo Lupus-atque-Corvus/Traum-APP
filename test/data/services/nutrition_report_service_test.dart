@@ -77,68 +77,71 @@ void main() {
     // this test should paper over. The date-range query + join/mapping
     // logic (the actual non-trivial part of _loadEntries) is covered
     // below and by the pure mapToReportEntry tests above.
-    test('filters to the requested range and joins the right product name',
-        () async {
-      final db = TraumDatabase.forTesting(NativeDatabase.memory());
-      final productId = await db.foodProductsDao.insertProduct(
-        FoodProductsCompanion.insert(
-          name: 'Haferflocken',
-          caloriesPer100g: 370,
-          proteinPer100g: 13.5,
-          carbsPer100g: 59,
-          fatPer100g: 7,
-          createdAt: DateTime(2026, 1, 1),
-        ),
-      );
-      await db.mealEntriesDao.insertEntry(
-        MealEntriesCompanion.insert(
-          date: '2026-07-01',
-          mealType: 'breakfast',
-          productId: productId,
-          amountGrams: 80,
-          calories: 296,
-          protein: 10.8,
-          carbs: 47.2,
-          fat: 5.6,
-          loggedAt: DateTime(2026, 7, 1, 8, 0),
-        ),
-      );
-      // Outside the requested range — must not show up in the report.
-      await db.mealEntriesDao.insertEntry(
-        MealEntriesCompanion.insert(
-          date: '2026-08-15',
-          mealType: 'dinner',
-          productId: productId,
-          amountGrams: 100,
-          calories: 370,
-          protein: 13.5,
-          carbs: 59,
-          fat: 7,
-          loggedAt: DateTime(2026, 8, 15, 19, 0),
-        ),
-      );
+    test(
+      'filters to the requested range and joins the right product name',
+      () async {
+        final db = TraumDatabase.forTesting(NativeDatabase.memory());
+        final productId = await db.foodProductsDao.insertProduct(
+          FoodProductsCompanion.insert(
+            name: 'Haferflocken',
+            caloriesPer100g: 370,
+            proteinPer100g: 13.5,
+            carbsPer100g: 59,
+            fatPer100g: 7,
+            createdAt: DateTime(2026, 1, 1),
+          ),
+        );
+        await db.mealEntriesDao.insertEntry(
+          MealEntriesCompanion.insert(
+            date: '2026-07-01',
+            mealType: 'breakfast',
+            productId: productId,
+            amountGrams: 80,
+            calories: 296,
+            protein: 10.8,
+            carbs: 47.2,
+            fat: 5.6,
+            loggedAt: DateTime(2026, 7, 1, 8, 0),
+          ),
+        );
+        // Outside the requested range — must not show up in the report.
+        await db.mealEntriesDao.insertEntry(
+          MealEntriesCompanion.insert(
+            date: '2026-08-15',
+            mealType: 'dinner',
+            productId: productId,
+            amountGrams: 100,
+            calories: 370,
+            protein: 13.5,
+            carbs: 59,
+            fat: 7,
+            loggedAt: DateTime(2026, 8, 15, 19, 0),
+          ),
+        );
 
-      final entriesInRange = await db.mealEntriesDao
-          .getEntriesBetween(DateTime(2026, 7, 1), DateTime(2026, 7, 31));
-      expect(entriesInRange, hasLength(1));
-      expect(entriesInRange.single.calories, 296);
+        final entriesInRange = await db.mealEntriesDao.getEntriesBetween(
+          DateTime(2026, 7, 1),
+          DateTime(2026, 7, 31),
+        );
+        expect(entriesInRange, hasLength(1));
+        expect(entriesInRange.single.calories, 296);
 
-      final products = await db.foodProductsDao.getAll();
-      final productById = {for (final p in products) p.id: p};
-      final reportEntries = entriesInRange
-          .map((e) => mapToReportEntry(e, productById[e.productId]))
-          .toList();
-      expect(reportEntries.single.foodName, 'Haferflocken');
-      expect(reportEntries.single.meal, 'breakfast');
-      expect(reportEntries.single.day, DateTime(2026, 7, 1));
+        final products = await db.foodProductsDao.getAll();
+        final productById = {for (final p in products) p.id: p};
+        final reportEntries = entriesInRange
+            .map((e) => mapToReportEntry(e, productById[e.productId]))
+            .toList();
+        expect(reportEntries.single.foodName, 'Haferflocken');
+        expect(reportEntries.single.meal, 'breakfast');
+        expect(reportEntries.single.day, DateTime(2026, 7, 1));
 
-      await db.close();
-    });
+        await db.close();
+      },
+    );
   });
 
   group('NutritionReportService.generatePdf empty-range guard', () {
-    test('throws EmptyReportException when the range has no entries',
-        () async {
+    test('throws EmptyReportException when the range has no entries', () async {
       final db = TraumDatabase.forTesting(NativeDatabase.memory());
       final service = NutritionReportService(db);
 

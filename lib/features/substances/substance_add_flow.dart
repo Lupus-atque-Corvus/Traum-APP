@@ -9,7 +9,11 @@ import 'my_substances_tab.dart' show showAddMedSheetFor, showAddSuppSheetFor;
 /// Öffnet den passenden Add-Sheet aus "Meine Mittel", vorbefüllt mit Name und
 /// Dosierungstext aus [record] — der Cross-Tab-Weg von der Datenbank-
 /// Detailansicht (Task 15) zum bestehenden Add-Flow. Routet nach `klasse`.
-void openAddFlowForRecord(BuildContext context, WidgetRef ref, SubstanceRecord record) {
+void openAddFlowForRecord(
+  BuildContext context,
+  WidgetRef ref,
+  SubstanceRecord record,
+) {
   final lang = Localizations.localeOf(context).languageCode;
   if (record.klasse == SubstanceKlasse.medikament) {
     showAddMedSheetFor(
@@ -38,9 +42,16 @@ void _showAddedSnackbar(BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       backgroundColor: TraumColors.surfaceElevated,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(TraumRadius.chip)),
-      content: Text(l10n.substanceAddedToMyMeds,
-          style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(TraumRadius.chip),
+      ),
+      content: Text(
+        l10n.substanceAddedToMyMeds,
+        style: const TextStyle(
+          color: TraumColors.onBackground,
+          fontFamily: 'DMSans',
+        ),
+      ),
       action: SnackBarAction(
         label: l10n.substanceAddedShow,
         textColor: TraumColors.coralOrange,

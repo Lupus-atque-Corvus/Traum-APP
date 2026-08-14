@@ -19,23 +19,29 @@ class EditCollectionScreen extends ConsumerWidget {
           ? Scaffold(
               backgroundColor: TraumColors.background,
               body: Center(
-                child: Text(AppLocalizations.of(context)!.mapNotFound,
-                    style: TextStyle(
-                        fontFamily: 'DMSans',
-                        color: TraumColors.onBackgroundMuted)),
+                child: Text(
+                  AppLocalizations.of(context)!.mapNotFound,
+                  style: TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackgroundMuted,
+                  ),
+                ),
               ),
             )
           : CreateCollectionScreen(collection: c),
       loading: () => const Scaffold(
         backgroundColor: TraumColors.background,
         body: Center(
-            child: CircularProgressIndicator(color: TraumColors.cyanBlue)),
+          child: CircularProgressIndicator(color: TraumColors.cyanBlue),
+        ),
       ),
       error: (e, _) => Scaffold(
         backgroundColor: TraumColors.background,
         body: Center(
-          child: Text(AppLocalizations.of(context)!.errorWithDetail(e.toString()),
-              style: const TextStyle(color: TraumColors.onBackgroundMuted)),
+          child: Text(
+            AppLocalizations.of(context)!.errorWithDetail(e.toString()),
+            style: const TextStyle(color: TraumColors.onBackgroundMuted),
+          ),
         ),
       ),
     );

@@ -11,8 +11,8 @@ import 'widgets/diary_widgets.dart';
 import 'widgets/misc_widgets.dart';
 
 /// Baut den Inhalt eines Widgets für die gegebene Größe.
-typedef HomeWidgetBuilder = Widget Function(
-    BuildContext context, WidgetRef ref, HomeTileSize size);
+typedef HomeWidgetBuilder =
+    Widget Function(BuildContext context, WidgetRef ref, HomeTileSize size);
 
 class HomeWidgetDescriptor {
   final String title;
@@ -58,16 +58,16 @@ HomeTileSize nextSize(HomeWidgetType type, HomeTileSize current) {
 const List<HomeWidgetGroup> homeWidgetGroupOrder = HomeWidgetGroup.values;
 
 String homeWidgetGroupLabel(HomeWidgetGroup g) => switch (g) {
-      HomeWidgetGroup.general => 'Allgemein',
-      HomeWidgetGroup.health => 'Gesundheit',
-      HomeWidgetGroup.nutrition => 'Ernährung',
-      HomeWidgetGroup.training => 'Training',
-      HomeWidgetGroup.planning => 'Planung',
-      HomeWidgetGroup.budget => 'Budget',
-      HomeWidgetGroup.diary => 'Tagebuch',
-      HomeWidgetGroup.abstinence => 'Abstinenz',
-      HomeWidgetGroup.substances => 'Substanzen',
-      HomeWidgetGroup.period => 'Periode',
-      HomeWidgetGroup.notes => 'Notizen',
-      HomeWidgetGroup.map => 'Graffiti Map',
-    };
+  HomeWidgetGroup.general => 'Allgemein',
+  HomeWidgetGroup.health => 'Gesundheit',
+  HomeWidgetGroup.nutrition => 'Ernährung',
+  HomeWidgetGroup.training => 'Training',
+  HomeWidgetGroup.planning => 'Planung',
+  HomeWidgetGroup.budget => 'Budget',
+  HomeWidgetGroup.diary => 'Tagebuch',
+  HomeWidgetGroup.abstinence => 'Abstinenz',
+  HomeWidgetGroup.substances => 'Substanzen',
+  HomeWidgetGroup.period => 'Periode',
+  HomeWidgetGroup.notes => 'Notizen',
+  HomeWidgetGroup.map => 'Graffiti Map',
+};

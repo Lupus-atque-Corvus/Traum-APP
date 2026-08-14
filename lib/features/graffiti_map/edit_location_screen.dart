@@ -51,19 +51,22 @@ class _EditLocationScreenState extends ConsumerState<EditLocationScreen> {
     try {
       final p = await placemarkFromCoordinates(c.latitude, c.longitude);
       if (p.isNotEmpty) {
-        locationName = [p.first.locality, p.first.country]
-            .where((s) => s != null && s.isNotEmpty)
-            .join(', ');
+        locationName = [
+          p.first.locality,
+          p.first.country,
+        ].where((s) => s != null && s.isNotEmpty).join(', ');
       }
     } catch (_) {}
     final dao = ref.read(mapMarkersDaoProvider);
     final m = await dao.getById(widget.markerId);
     if (m != null) {
-      await dao.updateMarker(m.copyWith(
-        latitude: Value(c.latitude),
-        longitude: Value(c.longitude),
-        locationName: Value(locationName ?? m.locationName),
-      ));
+      await dao.updateMarker(
+        m.copyWith(
+          latitude: Value(c.latitude),
+          longitude: Value(c.longitude),
+          locationName: Value(locationName ?? m.locationName),
+        ),
+      );
     }
     ref.invalidate(markerByIdProvider(widget.markerId));
     invalidateMarkerViews(ref);
@@ -82,15 +85,19 @@ class _EditLocationScreenState extends ConsumerState<EditLocationScreen> {
           icon: const Icon(Icons.arrow_back, color: TraumColors.onBackground),
           onPressed: () => context.pop(),
         ),
-        title: Text(AppLocalizations.of(context)!.mapEditLocation,
-            style: TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackground,
-                fontWeight: FontWeight.w700)),
+        title: Text(
+          AppLocalizations.of(context)!.mapEditLocation,
+          style: TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackground,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
       body: !_ready
           ? const Center(
-              child: CircularProgressIndicator(color: TraumColors.cyanBlue))
+              child: CircularProgressIndicator(color: TraumColors.cyanBlue),
+            )
           : Stack(
               alignment: Alignment.center,
               children: [
@@ -115,8 +122,11 @@ class _EditLocationScreenState extends ConsumerState<EditLocationScreen> {
                   ],
                 ),
                 const IgnorePointer(
-                  child: Icon(Icons.add_location,
-                      color: TraumColors.cyanBlue, size: 44),
+                  child: Icon(
+                    Icons.add_location,
+                    color: TraumColors.cyanBlue,
+                    size: 44,
+                  ),
                 ),
                 Positioned(
                   left: 16,
@@ -130,19 +140,26 @@ class _EditLocationScreenState extends ConsumerState<EditLocationScreen> {
                     child: TextButton(
                       onPressed: _saving ? null : _save,
                       style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16)),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
                       child: _saving
                           ? const SizedBox(
                               width: 20,
                               height: 20,
                               child: CircularProgressIndicator(
-                                  strokeWidth: 2, color: Colors.white))
-                          : Text(AppLocalizations.of(context)!.mapSetHere,
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              AppLocalizations.of(context)!.mapSetHere,
                               style: TextStyle(
-                                  fontFamily: 'DMSans',
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 15)),
+                                fontFamily: 'DMSans',
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 15,
+                              ),
+                            ),
                     ),
                   ),
                 ),

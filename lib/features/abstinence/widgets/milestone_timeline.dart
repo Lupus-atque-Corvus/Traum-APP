@@ -53,12 +53,9 @@ List<MilestoneStatus> computeMilestones(
   DateTime now,
 ) {
   final elapsed = now.difference(start);
-  final sorted = [...milestones]..sort(
-      (a, b) => a.duration.compareTo(b.duration),
-    );
-  final firstNotReachedIndex = sorted.indexWhere(
-    (m) => elapsed < m.duration,
-  );
+  final sorted = [...milestones]
+    ..sort((a, b) => a.duration.compareTo(b.duration));
+  final firstNotReachedIndex = sorted.indexWhere((m) => elapsed < m.duration);
 
   return List.generate(sorted.length, (i) {
     final m = sorted[i];
@@ -127,8 +124,8 @@ class _MilestoneRow extends StatelessWidget {
     final pipColor = status.reached
         ? accentColor
         : status.isCurrent
-            ? accentColor
-            : TraumColors.surfaceVariant;
+        ? accentColor
+        : TraumColors.surfaceVariant;
 
     return IntrinsicHeight(
       child: Row(
@@ -188,8 +185,8 @@ class _MilestoneRow extends StatelessWidget {
                     status.reached
                         ? 'erreicht'
                         : status.remaining != null
-                            ? formatMilestoneRemaining(status.remaining!)
-                            : '—',
+                        ? formatMilestoneRemaining(status.remaining!)
+                        : '—',
                     style: TextStyle(
                       fontFamily: 'DMSans',
                       fontSize: 12,

@@ -22,8 +22,10 @@ class DiaryRepository {
   Future<DiaryEntry?> getEntryForDate(int diaryId, String date) =>
       _entriesDao.getEntryForDate(diaryId, date);
   Future<List<DiaryEntry>> getEntriesForMonth(
-          int diaryId, int year, int month) =>
-      _entriesDao.getEntriesForMonth(diaryId, year, month);
+    int diaryId,
+    int year,
+    int month,
+  ) => _entriesDao.getEntriesForMonth(diaryId, year, month);
   Future<List<DiaryEntry>> getRecentEntries(int diaryId, int days) =>
       _entriesDao.getRecentEntries(diaryId, days);
   Future<List<DiaryEntry>> getAllEntries(int diaryId) =>

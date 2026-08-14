@@ -48,9 +48,15 @@ void main() {
     final after = n.state.map((t) => t.type).toList();
     // The dragged tile must land exactly where the target was, pushing the
     // target one slot later — not one slot past the target.
-    expect(after[1], aType,
-        reason: 'dragged tile should take the target\'s old slot');
-    expect(after[2], targetType,
-        reason: 'target should be pushed one slot later, not skipped past');
+    expect(
+      after[1],
+      aType,
+      reason: 'dragged tile should take the target\'s old slot',
+    );
+    expect(
+      after[2],
+      targetType,
+      reason: 'target should be pushed one slot later, not skipped past',
+    );
   });
 }

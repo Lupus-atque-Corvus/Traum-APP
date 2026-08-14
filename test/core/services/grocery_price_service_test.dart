@@ -5,18 +5,34 @@ void main() {
   group('normalizeName', () {
     test('lowercases, trims, strips diacritics and punctuation', () {
       expect(GroceryPriceService.normalizeName('  Äpfel! '), 'aepfel');
-      expect(GroceryPriceService.normalizeName('Müsli-Riegel'), 'muesli riegel');
+      expect(
+        GroceryPriceService.normalizeName('Müsli-Riegel'),
+        'muesli riegel',
+      );
       expect(GroceryPriceService.normalizeName('Café  Crème'), 'cafe creme');
     });
   });
 
   group('match', () {
     final prices = [
-      const PriceEntry(name: 'Milch', normalized: 'milch', price: 1.19, unit: 'L'),
       const PriceEntry(
-          name: 'Bio Milch', normalized: 'bio milch', price: 1.59, unit: 'L'),
+        name: 'Milch',
+        normalized: 'milch',
+        price: 1.19,
+        unit: 'L',
+      ),
       const PriceEntry(
-          name: 'Vollkornbrot', normalized: 'vollkornbrot', price: 2.49, unit: 'Stück'),
+        name: 'Bio Milch',
+        normalized: 'bio milch',
+        price: 1.59,
+        unit: 'L',
+      ),
+      const PriceEntry(
+        name: 'Vollkornbrot',
+        normalized: 'vollkornbrot',
+        price: 2.49,
+        unit: 'Stück',
+      ),
     ];
 
     test('exact normalized match wins', () {
@@ -50,15 +66,21 @@ void main() {
       expect(GroceryPriceService.match('Milch', const []), isNull);
     });
 
-    test('contains prefers the most specific entry when query is a superstring',
-        () {
-      const ps = [
-        PriceEntry(name: 'Milch', normalized: 'milch', price: 1.19),
-        PriceEntry(name: 'Bio Vollmilch', normalized: 'bio vollmilch', price: 1.59),
-      ];
-      final m = GroceryPriceService.match('bio vollmilch extra', ps);
-      expect(m, isNotNull);
-      expect(m!.name, 'Bio Vollmilch');
-    });
+    test(
+      'contains prefers the most specific entry when query is a superstring',
+      () {
+        const ps = [
+          PriceEntry(name: 'Milch', normalized: 'milch', price: 1.19),
+          PriceEntry(
+            name: 'Bio Vollmilch',
+            normalized: 'bio vollmilch',
+            price: 1.59,
+          ),
+        ];
+        final m = GroceryPriceService.match('bio vollmilch extra', ps);
+        expect(m, isNotNull);
+        expect(m!.name, 'Bio Vollmilch');
+      },
+    );
   });
 }

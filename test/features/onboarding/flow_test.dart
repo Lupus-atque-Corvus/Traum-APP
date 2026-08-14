@@ -7,11 +7,14 @@ void main() {
     test('Seeding enthält Signatur-Widgets der Auswahl', () {
       final tiles = seededLayoutForModules({'training', 'budget', 'notes'});
       final types = tiles.map((t) => t.type).toSet();
-      expect(types, containsAll([
-        HomeWidgetType.nextWorkout,
-        HomeWidgetType.incomeExpense,
-        HomeWidgetType.lastNote,
-      ]));
+      expect(
+        types,
+        containsAll([
+          HomeWidgetType.nextWorkout,
+          HomeWidgetType.incomeExpense,
+          HomeWidgetType.lastNote,
+        ]),
+      );
     });
 
     test('Default-Layout bei leerer Auswahl', () {

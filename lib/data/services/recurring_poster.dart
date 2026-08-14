@@ -18,15 +18,17 @@ class RecurringPoster {
             cursor.year == today.year && cursor.month == today.month;
         if (!isCurrent || today.day >= day) {
           final dim = DateTime(cursor.year, cursor.month + 1, 0).day;
-          await db.budgetDao.insertTransaction(TransactionsCompanion.insert(
-            amount: def.amount,
-            description: def.description,
-            date: DateTime(cursor.year, cursor.month, day > dim ? dim : day),
-            type: Value(def.type),
-            categoryId: Value(def.categoryId),
-            accountId: Value(def.accountId),
-            note: Value(def.note),
-          ));
+          await db.budgetDao.insertTransaction(
+            TransactionsCompanion.insert(
+              amount: def.amount,
+              description: def.description,
+              date: DateTime(cursor.year, cursor.month, day > dim ? dim : day),
+              type: Value(def.type),
+              categoryId: Value(def.categoryId),
+              accountId: Value(def.accountId),
+              note: Value(def.note),
+            ),
+          );
           lastPosted = _key(cursor.year, cursor.month);
         }
         cursor = DateTime(cursor.year, cursor.month + 1, 1);

@@ -23,18 +23,20 @@ void main() {
     final product = await db.foodProductsDao.getById(pid);
     expect(product!.microsJson, '{"vitC":60.0}');
 
-    await db.mealEntriesDao.insertEntry(MealEntriesCompanion.insert(
-      date: '2026-06-10',
-      mealType: 'snack',
-      productId: pid,
-      amountGrams: 100,
-      calories: 100,
-      protein: 1,
-      carbs: 2,
-      fat: 3,
-      loggedAt: DateTime.now(),
-      microsJson: const Value('{"vitC":60.0}'),
-    ));
+    await db.mealEntriesDao.insertEntry(
+      MealEntriesCompanion.insert(
+        date: '2026-06-10',
+        mealType: 'snack',
+        productId: pid,
+        amountGrams: 100,
+        calories: 100,
+        protein: 1,
+        carbs: 2,
+        fat: 3,
+        loggedAt: DateTime.now(),
+        microsJson: const Value('{"vitC":60.0}'),
+      ),
+    );
     final entries = await db.mealEntriesDao.getForDate('2026-06-10');
     expect(entries.single.microsJson, '{"vitC":60.0}');
   });

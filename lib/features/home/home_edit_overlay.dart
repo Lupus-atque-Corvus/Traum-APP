@@ -121,9 +121,7 @@ class _HomeEditTileState extends State<HomeEditTile> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: highlighted
-                    ? TraumColors.cyanBlue
-                    : Colors.transparent,
+                color: highlighted ? TraumColors.cyanBlue : Colors.transparent,
                 width: 2,
               ),
             ),

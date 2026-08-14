@@ -16,15 +16,16 @@ class FoodProductsDao extends DatabaseAccessor<TraumDatabase>
           .getSingleOrNull();
 
   Future<FoodProduct?> getById(int id) =>
-      (select(foodProducts)..where((t) => t.id.equals(id)))
-          .getSingleOrNull();
+      (select(foodProducts)..where((t) => t.id.equals(id))).getSingleOrNull();
 
   Future<List<FoodProduct>> search(String query) {
     final pattern = '%${escapeLikePattern(query)}%';
     return (select(foodProducts)
-          ..where((t) =>
-              t.name.like(pattern, escapeChar: likeEscapeChar) |
-              t.brand.like(pattern, escapeChar: likeEscapeChar))
+          ..where(
+            (t) =>
+                t.name.like(pattern, escapeChar: likeEscapeChar) |
+                t.brand.like(pattern, escapeChar: likeEscapeChar),
+          )
           ..orderBy([(t) => OrderingTerm.desc(t.useCount)]))
         .get();
   }
@@ -44,9 +45,10 @@ class FoodProductsDao extends DatabaseAccessor<TraumDatabase>
   /// eines Online-Suchtreffers.
   Future<FoodProduct?> getBySource(String sourceApi, String sourceId) =>
       (select(foodProducts)
-            ..where((t) =>
-                t.sourceApi.equals(sourceApi) &
-                t.sourceId.equals(sourceId))
+            ..where(
+              (t) =>
+                  t.sourceApi.equals(sourceApi) & t.sourceId.equals(sourceId),
+            )
             ..limit(1))
           .getSingleOrNull();
 
@@ -66,12 +68,15 @@ class FoodProductsDao extends DatabaseAccessor<TraumDatabase>
         entry.sourceApi.present &&
         entry.sourceId.present &&
         entry.sourceId.value != null) {
-      existing =
-          await getBySource(entry.sourceApi.value!, entry.sourceId.value!);
+      existing = await getBySource(
+        entry.sourceApi.value!,
+        entry.sourceId.value!,
+      );
     }
     if (existing != null) {
-      await (update(foodProducts)..where((t) => t.id.equals(existing!.id)))
-          .write(entry);
+      await (update(
+        foodProducts,
+      )..where((t) => t.id.equals(existing!.id))).write(entry);
       return (await getById(existing.id))!;
     }
     final id = await insertProduct(entry);
@@ -96,10 +101,9 @@ class FoodProductsDao extends DatabaseAccessor<TraumDatabase>
       (select(foodProducts)..where((t) => t.isCustom)).get();
 
   Future<List<FoodProduct>> getAll() =>
-      (select(foodProducts)
-            ..orderBy([
-              (t) => OrderingTerm.desc(t.isCustom),
-              (t) => OrderingTerm.desc(t.useCount),
-            ]))
+      (select(foodProducts)..orderBy([
+            (t) => OrderingTerm.desc(t.isCustom),
+            (t) => OrderingTerm.desc(t.useCount),
+          ]))
           .get();
 }

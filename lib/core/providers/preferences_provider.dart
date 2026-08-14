@@ -133,7 +133,9 @@ class PeriodTrackingNotifier extends Notifier<bool> {
   }
 
   Future<void> set(bool value) async {
-    await ref.read(preferencesRepositoryProvider).setPeriodTrackingEnabled(value);
+    await ref
+        .read(preferencesRepositoryProvider)
+        .setPeriodTrackingEnabled(value);
     state = value;
   }
 }
@@ -154,7 +156,8 @@ class AppLauncherEnabledNotifier extends Notifier<bool> {
 
 final appLauncherEnabledProvider =
     NotifierProvider<AppLauncherEnabledNotifier, bool>(
-        AppLauncherEnabledNotifier.new);
+      AppLauncherEnabledNotifier.new,
+    );
 
 class AppLauncherFavoritesNotifier extends Notifier<List<String>> {
   @override
@@ -203,7 +206,8 @@ class AppLauncherFavoritesNotifier extends Notifier<List<String>> {
 
 final appLauncherFavoritesProvider =
     NotifierProvider<AppLauncherFavoritesNotifier, List<String>>(
-        AppLauncherFavoritesNotifier.new);
+      AppLauncherFavoritesNotifier.new,
+    );
 
 // Simple derived providers
 final userNameProvider = Provider<String>((ref) {
@@ -255,8 +259,9 @@ class CurrencySymbolNotifier extends Notifier<String> {
   }
 }
 
-final currencySymbolProvider =
-    NotifierProvider<CurrencySymbolNotifier, String>(CurrencySymbolNotifier.new);
+final currencySymbolProvider = NotifierProvider<CurrencySymbolNotifier, String>(
+  CurrencySymbolNotifier.new,
+);
 
 class UsdaApiKeyNotifier extends Notifier<String> {
   @override
@@ -269,8 +274,9 @@ class UsdaApiKeyNotifier extends Notifier<String> {
   }
 }
 
-final usdaApiKeyProvider =
-    NotifierProvider<UsdaApiKeyNotifier, String>(UsdaApiKeyNotifier.new);
+final usdaApiKeyProvider = NotifierProvider<UsdaApiKeyNotifier, String>(
+  UsdaApiKeyNotifier.new,
+);
 
 class KcalGoalNotifier extends Notifier<int> {
   @override
@@ -281,8 +287,9 @@ class KcalGoalNotifier extends Notifier<int> {
   }
 }
 
-final kcalGoalNotifierProvider =
-    NotifierProvider<KcalGoalNotifier, int>(KcalGoalNotifier.new);
+final kcalGoalNotifierProvider = NotifierProvider<KcalGoalNotifier, int>(
+  KcalGoalNotifier.new,
+);
 
 /// Zuletzt gewähltes Tagebuch — bleibt über App-Neustarts erhalten (anders
 /// als der In-Memory-`activeCollectionProvider` der Graffiti-Map).
@@ -295,8 +302,9 @@ class ActiveDiaryNotifier extends Notifier<int> {
   }
 }
 
-final activeDiaryProvider =
-    NotifierProvider<ActiveDiaryNotifier, int>(ActiveDiaryNotifier.new);
+final activeDiaryProvider = NotifierProvider<ActiveDiaryNotifier, int>(
+  ActiveDiaryNotifier.new,
+);
 
 class ProteinGoalNotifier extends Notifier<int> {
   @override
@@ -307,8 +315,9 @@ class ProteinGoalNotifier extends Notifier<int> {
   }
 }
 
-final proteinGoalNotifierProvider =
-    NotifierProvider<ProteinGoalNotifier, int>(ProteinGoalNotifier.new);
+final proteinGoalNotifierProvider = NotifierProvider<ProteinGoalNotifier, int>(
+  ProteinGoalNotifier.new,
+);
 
 class StepsGoalNotifier extends Notifier<int> {
   @override
@@ -319,8 +328,9 @@ class StepsGoalNotifier extends Notifier<int> {
   }
 }
 
-final stepsGoalNotifierProvider =
-    NotifierProvider<StepsGoalNotifier, int>(StepsGoalNotifier.new);
+final stepsGoalNotifierProvider = NotifierProvider<StepsGoalNotifier, int>(
+  StepsGoalNotifier.new,
+);
 
 class HeightCmNotifier extends Notifier<double> {
   @override
@@ -331,8 +341,9 @@ class HeightCmNotifier extends Notifier<double> {
   }
 }
 
-final heightCmNotifierProvider =
-    NotifierProvider<HeightCmNotifier, double>(HeightCmNotifier.new);
+final heightCmNotifierProvider = NotifierProvider<HeightCmNotifier, double>(
+  HeightCmNotifier.new,
+);
 
 class WeightGoalNotifier extends Notifier<double> {
   @override
@@ -343,8 +354,9 @@ class WeightGoalNotifier extends Notifier<double> {
   }
 }
 
-final weightGoalNotifierProvider =
-    NotifierProvider<WeightGoalNotifier, double>(WeightGoalNotifier.new);
+final weightGoalNotifierProvider = NotifierProvider<WeightGoalNotifier, double>(
+  WeightGoalNotifier.new,
+);
 
 // Notification providers
 //
@@ -365,8 +377,9 @@ class NotifWorkoutNotifier extends Notifier<bool> {
   }
 }
 
-final notifWorkoutProvider =
-    NotifierProvider<NotifWorkoutNotifier, bool>(NotifWorkoutNotifier.new);
+final notifWorkoutProvider = NotifierProvider<NotifWorkoutNotifier, bool>(
+  NotifWorkoutNotifier.new,
+);
 
 class NotifWaterNotifier extends Notifier<bool> {
   @override
@@ -377,8 +390,9 @@ class NotifWaterNotifier extends Notifier<bool> {
   }
 }
 
-final notifWaterProvider =
-    NotifierProvider<NotifWaterNotifier, bool>(NotifWaterNotifier.new);
+final notifWaterProvider = NotifierProvider<NotifWaterNotifier, bool>(
+  NotifWaterNotifier.new,
+);
 
 class NotifHabitNotifier extends Notifier<bool> {
   @override
@@ -389,8 +403,9 @@ class NotifHabitNotifier extends Notifier<bool> {
   }
 }
 
-final notifHabitProvider =
-    NotifierProvider<NotifHabitNotifier, bool>(NotifHabitNotifier.new);
+final notifHabitProvider = NotifierProvider<NotifHabitNotifier, bool>(
+  NotifHabitNotifier.new,
+);
 
 class NotifTodoNotifier extends Notifier<bool> {
   @override
@@ -401,8 +416,9 @@ class NotifTodoNotifier extends Notifier<bool> {
   }
 }
 
-final notifTodoProvider =
-    NotifierProvider<NotifTodoNotifier, bool>(NotifTodoNotifier.new);
+final notifTodoProvider = NotifierProvider<NotifTodoNotifier, bool>(
+  NotifTodoNotifier.new,
+);
 
 // Notification times ("HH:mm" strings) — same watch/set-through-Notifier
 // pattern as the on/off toggles above. Without this, a screen reading
@@ -420,7 +436,8 @@ class NotifWorkoutTimeNotifier extends Notifier<String> {
 
 final notifWorkoutTimeProvider =
     NotifierProvider<NotifWorkoutTimeNotifier, String>(
-        NotifWorkoutTimeNotifier.new);
+      NotifWorkoutTimeNotifier.new,
+    );
 
 class NotifHabitTimeNotifier extends Notifier<String> {
   @override
@@ -432,7 +449,8 @@ class NotifHabitTimeNotifier extends Notifier<String> {
 }
 
 final notifHabitTimeProvider = NotifierProvider<NotifHabitTimeNotifier, String>(
-    NotifHabitTimeNotifier.new);
+  NotifHabitTimeNotifier.new,
+);
 
 class NotifTodoTimeNotifier extends Notifier<String> {
   @override
@@ -444,7 +462,8 @@ class NotifTodoTimeNotifier extends Notifier<String> {
 }
 
 final notifTodoTimeProvider = NotifierProvider<NotifTodoTimeNotifier, String>(
-    NotifTodoTimeNotifier.new);
+  NotifTodoTimeNotifier.new,
+);
 
 class NotifPeriodNotifier extends Notifier<bool> {
   @override
@@ -455,8 +474,9 @@ class NotifPeriodNotifier extends Notifier<bool> {
   }
 }
 
-final notifPeriodProvider =
-    NotifierProvider<NotifPeriodNotifier, bool>(NotifPeriodNotifier.new);
+final notifPeriodProvider = NotifierProvider<NotifPeriodNotifier, bool>(
+  NotifPeriodNotifier.new,
+);
 
 class NotifBudgetNotifier extends Notifier<bool> {
   @override
@@ -467,8 +487,9 @@ class NotifBudgetNotifier extends Notifier<bool> {
   }
 }
 
-final notifBudgetProvider =
-    NotifierProvider<NotifBudgetNotifier, bool>(NotifBudgetNotifier.new);
+final notifBudgetProvider = NotifierProvider<NotifBudgetNotifier, bool>(
+  NotifBudgetNotifier.new,
+);
 
 final selectedCalendarIdProvider = Provider<String?>((ref) {
   return ref.watch(preferencesRepositoryProvider).selectedCalendarId;

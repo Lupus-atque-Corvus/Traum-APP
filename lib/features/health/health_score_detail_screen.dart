@@ -44,16 +44,19 @@ class _HealthScoreDetailScreenState
       ),
       body: scoreAsync.when(
         loading: () => const Center(
-            child: CircularProgressIndicator(color: TraumColors.coralOrange)),
+          child: CircularProgressIndicator(color: TraumColors.coralOrange),
+        ),
         error: (e, _) => Center(
-            child: Text('$e',
-                style: const TextStyle(color: TraumColors.roseRed))),
+          child: Text('$e', style: const TextStyle(color: TraumColors.roseRed)),
+        ),
         data: (result) {
           final history = historyAsync.value ?? [];
-          final yesterday =
-              history.length >= 2 ? history[history.length - 2] : null;
-          final diff =
-              yesterday != null ? result.gesamtScore - yesterday : null;
+          final yesterday = history.length >= 2
+              ? history[history.length - 2]
+              : null;
+          final diff = yesterday != null
+              ? result.gesamtScore - yesterday
+              : null;
 
           return ListView(
             padding: const EdgeInsets.all(16),
@@ -103,12 +106,15 @@ class _HealthScoreDetailScreenState
                       Container(
                         margin: const EdgeInsets.only(top: 6),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 4),
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
-                          color: (diff >= 0
-                                  ? TraumColors.mintGreen
-                                  : TraumColors.roseRed)
-                              .withValues(alpha: 0.15),
+                          color:
+                              (diff >= 0
+                                      ? TraumColors.mintGreen
+                                      : TraumColors.roseRed)
+                                  .withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
@@ -232,9 +238,7 @@ class _PeriodTabs extends StatelessWidget {
             child: Text(
               e.value,
               style: TextStyle(
-                color: isActive
-                    ? Colors.white
-                    : TraumColors.onBackgroundMuted,
+                color: isActive ? Colors.white : TraumColors.onBackgroundMuted,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
@@ -286,12 +290,15 @@ class _ScoreBarChart extends StatelessWidget {
           gridData: const FlGridData(show: false),
           borderData: FlBorderData(show: false),
           titlesData: FlTitlesData(
-            leftTitles:
-                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles:
-                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles:
-                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            leftTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,

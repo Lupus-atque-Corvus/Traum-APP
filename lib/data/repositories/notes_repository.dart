@@ -19,7 +19,8 @@ class NotesRepository {
   Stream<List<Note>> watchActiveNotes() => _dao.watchActiveNotes();
   Stream<List<Note>> watchNotesInFolder(int? folderId) =>
       _dao.watchNotesInFolder(folderId);
-  Stream<List<Note>> watchRecentNotes(int limit) => _dao.watchRecentNotes(limit);
+  Stream<List<Note>> watchRecentNotes(int limit) =>
+      _dao.watchRecentNotes(limit);
   Stream<List<Note>> watchBookmarkedNotes() => _dao.watchBookmarkedNotes();
   Stream<List<Note>> watchTrashedNotes() => _dao.watchTrashedNotes();
   Stream<List<NoteFolder>> watchFolders() => _dao.watchFolders();
@@ -58,17 +59,19 @@ class NotesRepository {
     DateTime? dailyDate,
   }) async {
     final now = DateTime.now();
-    final id = await _dao.insertNote(NotesCompanion.insert(
-      title: title,
-      content: Value(content),
-      folderId: Value(folderId),
-      isDaily: Value(isDaily),
-      dailyDate: Value(dailyDate),
-      wordCount: Value(NotesMarkdownParser.wordCount(content)),
-      propertiesJson: Value(_extractPropertiesJson(content)),
-      createdAt: now,
-      updatedAt: now,
-    ));
+    final id = await _dao.insertNote(
+      NotesCompanion.insert(
+        title: title,
+        content: Value(content),
+        folderId: Value(folderId),
+        isDaily: Value(isDaily),
+        dailyDate: Value(dailyDate),
+        wordCount: Value(NotesMarkdownParser.wordCount(content)),
+        propertiesJson: Value(_extractPropertiesJson(content)),
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
     // Bestehende unaufgelöste Links, die jetzt auflösbar sind, verbinden.
     await _resolveIncomingFor(title, id);
     // Eigene Links/Tags indexieren.
@@ -83,8 +86,12 @@ class NotesRepository {
   /// noch der Inhalt selbst einen Titel hergibt (Frontmatter/erste Zeile) —
   /// die Repository-Schicht kennt die App-Locale nicht, der Aufrufer (mit
   /// BuildContext) übergibt daher den bereits lokalisierten Text.
-  Future<void> saveNoteContent(int id, String content,
-      {String? title, required String untitledFallback}) async {
+  Future<void> saveNoteContent(
+    int id,
+    String content, {
+    String? title,
+    required String untitledFallback,
+  }) async {
     final resolvedTitle = title ?? _deriveTitle(content, untitledFallback);
     await _dao.updateNoteFields(
       id,
@@ -110,8 +117,8 @@ class NotesRepository {
 
   // ─── Flags / Verschieben ─────────────────────────────────────────────────
 
-  Future<void> setBookmarked(int id, bool value) => _dao.updateNoteFields(
-      id, NotesCompanion(isBookmarked: Value(value)));
+  Future<void> setBookmarked(int id, bool value) =>
+      _dao.updateNoteFields(id, NotesCompanion(isBookmarked: Value(value)));
   Future<void> setPinned(int id, bool value) =>
       _dao.updateNoteFields(id, NotesCompanion(isPinned: Value(value)));
   Future<void> moveToFolder(int noteId, int? folderId) =>
@@ -140,12 +147,13 @@ class NotesRepository {
 
   // ─── Ordner ─────────────────────────────────────────────────────────────
 
-  Future<int> createFolder(String name, {int? parentId}) =>
-      _dao.insertFolder(NoteFoldersCompanion.insert(
-        name: name,
-        parentId: Value(parentId),
-        createdAt: DateTime.now(),
-      ));
+  Future<int> createFolder(String name, {int? parentId}) => _dao.insertFolder(
+    NoteFoldersCompanion.insert(
+      name: name,
+      parentId: Value(parentId),
+      createdAt: DateTime.now(),
+    ),
+  );
 
   Future<void> renameFolder(int id, String name) => _dao.renameFolder(id, name);
   Future<void> deleteFolder(int id) => _dao.deleteFolder(id);
@@ -153,11 +161,13 @@ class NotesRepository {
   // ─── Vorlagen ───────────────────────────────────────────────────────────
 
   Future<int> createTemplate(String name, String content) =>
-      _dao.insertTemplate(NoteTemplatesCompanion.insert(
-        name: name,
-        content: Value(content),
-        createdAt: DateTime.now(),
-      ));
+      _dao.insertTemplate(
+        NoteTemplatesCompanion.insert(
+          name: name,
+          content: Value(content),
+          createdAt: DateTime.now(),
+        ),
+      );
 
   Future<void> updateTemplate(int id, String name, String content) =>
       _dao.updateTemplate(
@@ -174,12 +184,14 @@ class NotesRepository {
     final companions = <NoteLinksCompanion>[];
     for (final link in links) {
       final target = await _resolveTarget(link.target);
-      companions.add(NoteLinksCompanion.insert(
-        sourceNoteId: noteId,
-        targetNoteId: Value(target?.id),
-        targetTitleRaw: link.target,
-        linkType: Value(link.linkType),
-      ));
+      companions.add(
+        NoteLinksCompanion.insert(
+          sourceNoteId: noteId,
+          targetNoteId: Value(target?.id),
+          targetTitleRaw: link.target,
+          linkType: Value(link.linkType),
+        ),
+      );
     }
     await _dao.replaceLinks(noteId, companions);
 

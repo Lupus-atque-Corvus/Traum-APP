@@ -24,8 +24,7 @@ class NutritionScreen extends ConsumerStatefulWidget {
   const NutritionScreen({super.key});
 
   @override
-  ConsumerState<NutritionScreen> createState() =>
-      _NutritionScreenState();
+  ConsumerState<NutritionScreen> createState() => _NutritionScreenState();
 }
 
 class _NutritionScreenState extends ConsumerState<NutritionScreen>
@@ -54,26 +53,30 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen>
       body: NestedScrollView(
         headerSliverBuilder: (ctx, _) => [
           SliverToBoxAdapter(
-            child: Column(children: [
-              SizedBox(
-                  height:
-                      MediaQuery.of(ctx).padding.top + 8),
-              Padding(
-                padding:
-                    const EdgeInsets.fromLTRB(20, 0, 16, 0),
-                child: Row(children: [
-                  Text(AppLocalizations.of(context)!.nutrition,
-                      style: TextStyle(
+            child: Column(
+              children: [
+                SizedBox(height: MediaQuery.of(ctx).padding.top + 8),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 16, 0),
+                  child: Row(
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.nutrition,
+                        style: TextStyle(
                           fontFamily: 'DMSans',
                           fontWeight: FontWeight.w700,
                           color: TraumColors.onBackground,
-                          fontSize: 24)),
-                ]),
-              ),
-              const SizedBox(height: 8),
-              _PillTabs(controller: _tabs),
-              const SizedBox(height: 4),
-            ]),
+                          fontSize: 24,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _PillTabs(controller: _tabs),
+                const SizedBox(height: 4),
+              ],
+            ),
           ),
         ],
         body: TabBarView(
@@ -117,9 +120,10 @@ class _PillTabs extends StatelessWidget {
         labelColor: Colors.white,
         unselectedLabelColor: TraumColors.onBackgroundMuted,
         labelStyle: const TextStyle(
-            fontFamily: 'DMSans',
-            fontSize: 13,
-            fontWeight: FontWeight.w600),
+          fontFamily: 'DMSans',
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+        ),
         tabs: labels.map((l) => Tab(text: l)).toList(),
       ),
     );
@@ -139,10 +143,8 @@ class _TodayTab extends ConsumerWidget {
     final kcalGoal = ref.watch(kcalGoalNotifierProvider);
     final proteinGoal = ref.watch(proteinGoalNotifierProvider);
     final now = DateTime.now();
-    final todayDate =
-        DateTime(now.year, now.month, now.day);
-    final waterAsync =
-        ref.watch(waterForDateProvider(todayDate));
+    final todayDate = DateTime(now.year, now.month, now.day);
+    final waterAsync = ref.watch(waterForDateProvider(todayDate));
 
     return ListView(
       padding: const EdgeInsets.only(bottom: 100),
@@ -154,87 +156,96 @@ class _TodayTab extends ConsumerWidget {
           decoration: BoxDecoration(
             color: TraumColors.surface,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-                color: Colors.white.withValues(alpha: 0.08)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
           child: macrosAsync.when(
-            data: (macros) => Column(children: [
-              Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
+            data: (macros) => Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(_dayLabel(),
-                        style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w600,
-                            color: TraumColors.onBackground,
-                            fontSize: 14)),
                     Text(
-                        '${macros.calories.toStringAsFixed(0)} / $kcalGoal kcal',
-                        style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            color: TraumColors.mintGreen,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600)),
-                  ]),
-              const SizedBox(height: 16),
-              MacroRingRow(
-                calories: macros.calories,
-                caloriesGoal: kcalGoal.toDouble(),
-                protein: macros.protein,
-                proteinGoal: proteinGoal.toDouble(),
-                carbs: macros.carbs,
-                carbsGoal: 250,
-                fat: macros.fat,
-                fatGoal: 70,
-              ),
-              const SizedBox(height: 12),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value:
-                      (macros.calories / kcalGoal)
-                          .clamp(0.0, 1.0)
-                          .toDouble(),
-                  minHeight: 6,
-                  backgroundColor: TraumColors.surfaceVariant,
-                  valueColor: const AlwaysStoppedAnimation(
-                      TraumColors.mintGreen),
+                      _dayLabel(),
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                        color: TraumColors.onBackground,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Text(
+                      '${macros.calories.toStringAsFixed(0)} / $kcalGoal kcal',
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        color: TraumColors.mintGreen,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                MacroRingRow(
+                  calories: macros.calories,
+                  caloriesGoal: kcalGoal.toDouble(),
+                  protein: macros.protein,
+                  proteinGoal: proteinGoal.toDouble(),
+                  carbs: macros.carbs,
+                  carbsGoal: 250,
+                  fat: macros.fat,
+                  fatGoal: 70,
+                ),
+                const SizedBox(height: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: (macros.calories / kcalGoal)
+                        .clamp(0.0, 1.0)
+                        .toDouble(),
+                    minHeight: 6,
+                    backgroundColor: TraumColors.surfaceVariant,
+                    valueColor: const AlwaysStoppedAnimation(
+                      TraumColors.mintGreen,
+                    ),
+                  ),
+                ),
+                MicroNutrientPanel(dateStr: dateStr),
+              ],
+            ),
+            loading: () => const SizedBox(
+              height: 80,
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: TraumColors.mintGreen,
+                  strokeWidth: 2,
                 ),
               ),
-              MicroNutrientPanel(dateStr: dateStr),
-            ]),
-            loading: () => const SizedBox(
-                height: 80,
-                child: Center(
-                    child: CircularProgressIndicator(
-                        color: TraumColors.mintGreen,
-                        strokeWidth: 2))),
+            ),
             error: (e, _) => InlineError(e),
           ),
         ),
 
         // Meal sections
         mealsAsync.when(
-          data: (meals) => Column(children: [
-            for (final type in [
-              'breakfast',
-              'lunch',
-              'dinner',
-              'snack'
-            ])
-              MealSection(
-                mealType: type,
-                date: dateStr,
-                entries: meals[type] ?? [],
-              ),
-          ]),
+          data: (meals) => Column(
+            children: [
+              for (final type in ['breakfast', 'lunch', 'dinner', 'snack'])
+                MealSection(
+                  mealType: type,
+                  date: dateStr,
+                  entries: meals[type] ?? [],
+                ),
+            ],
+          ),
           loading: () => const SizedBox(
-              height: 100,
-              child: Center(
-                  child: CircularProgressIndicator(
-                      color: TraumColors.mintGreen,
-                      strokeWidth: 2))),
+            height: 100,
+            child: Center(
+              child: CircularProgressIndicator(
+                color: TraumColors.mintGreen,
+                strokeWidth: 2,
+              ),
+            ),
+          ),
           error: (e, _) => InlineError(e),
         ),
 
@@ -245,84 +256,93 @@ class _TodayTab extends ConsumerWidget {
           decoration: BoxDecoration(
             color: TraumColors.surface,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-                color: Colors.white.withValues(alpha: 0.08)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
           child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(children: [
-                  Text(AppLocalizations.of(context)!.waterUpper,
-                      style: TextStyle(
-                          fontFamily: 'DMSans',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: TraumColors.cyanBlue,
-                          letterSpacing: 0.8)),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.waterUpper,
+                    style: TextStyle(
+                      fontFamily: 'DMSans',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: TraumColors.cyanBlue,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
                   const Spacer(),
                   waterAsync.when(
                     data: (logs) {
-                      final total = logs.fold(
-                          0, (s, l) => s + l.amountMl);
-                      return Text('$total / 2500 ml',
-                          style: const TextStyle(
-                              fontFamily: 'DMSans',
-                              color: TraumColors.cyanBlue,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500));
+                      final total = logs.fold(0, (s, l) => s + l.amountMl);
+                      return Text(
+                        '$total / 2500 ml',
+                        style: const TextStyle(
+                          fontFamily: 'DMSans',
+                          color: TraumColors.cyanBlue,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      );
                     },
                     loading: () => const SizedBox.shrink(),
                     error: (e, _) => InlineError(e),
                   ),
-                ]),
-                const SizedBox(height: 8),
-                waterAsync.when(
-                  data: (logs) {
-                    final total =
-                        logs.fold(0, (s, l) => s + l.amountMl);
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: LinearProgressIndicator(
-                        value:
-                            (total / 2500).clamp(0.0, 1.0),
-                        minHeight: 8,
-                        backgroundColor:
-                            TraumColors.surfaceVariant,
-                        valueColor:
-                            const AlwaysStoppedAnimation(
-                                TraumColors.cyanBlue),
+                ],
+              ),
+              const SizedBox(height: 8),
+              waterAsync.when(
+                data: (logs) {
+                  final total = logs.fold(0, (s, l) => s + l.amountMl);
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: (total / 2500).clamp(0.0, 1.0),
+                      minHeight: 8,
+                      backgroundColor: TraumColors.surfaceVariant,
+                      valueColor: const AlwaysStoppedAnimation(
+                        TraumColors.cyanBlue,
                       ),
-                    );
-                  },
-                  loading: () => const SizedBox.shrink(),
-                  error: (e, _) => InlineError(e),
-                ),
-                const SizedBox(height: 10),
-                Row(children: [
+                    ),
+                  );
+                },
+                loading: () => const SizedBox.shrink(),
+                error: (e, _) => InlineError(e),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
                   for (final ml in [200, 300, 500])
                     Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: OutlinedButton(
-                        onPressed: () =>
-                            _addWater(ref, ml),
+                        onPressed: () => _addWater(ref, ml),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: TraumColors.cyanBlue,
-                          side: const BorderSide(
-                              color: TraumColors.cyanBlue),
+                          side: const BorderSide(color: TraumColors.cyanBlue),
                           shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(50)),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 8),
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
                         ),
-                        child: Text('+${ml}ml',
-                            style: const TextStyle(
-                                fontFamily: 'DMSans',
-                                fontSize: 12)),
+                        child: Text(
+                          '+${ml}ml',
+                          style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            fontSize: 12,
+                          ),
+                        ),
                       ),
                     ),
-                ]),
-              ]),
+                ],
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -330,22 +350,29 @@ class _TodayTab extends ConsumerWidget {
 
   String _dayLabel() {
     final d = DateTime.now();
-    const weekdays = [
-      'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'
-    ];
+    const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
     const months = [
-      'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'
+      'Jan',
+      'Feb',
+      'Mär',
+      'Apr',
+      'Mai',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Dez',
     ];
     return '${weekdays[d.weekday - 1]}, ${d.day}. ${months[d.month - 1]}';
   }
 
   Future<void> _addWater(WidgetRef ref, int ml) async {
-    await ref.read(nutritionDaoProvider).insertWaterLog(
-          WaterLogsCompanion.insert(
-            logDate: DateTime.now(),
-            amountMl: ml,
-          ),
+    await ref
+        .read(nutritionDaoProvider)
+        .insertWaterLog(
+          WaterLogsCompanion.insert(logDate: DateTime.now(), amountMl: ml),
         );
     ref.invalidate(waterForDateProvider);
   }
@@ -369,46 +396,51 @@ class _WeekTab extends ConsumerWidget {
           decoration: BoxDecoration(
             color: TraumColors.surface,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-                color: Colors.white.withValues(alpha: 0.08)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
           child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(AppLocalizations.of(context)!.weeklyTrend,
-                    style: TextStyle(
-                        fontFamily: 'DMSans',
-                        fontWeight: FontWeight.w600,
-                        color: TraumColors.onBackground,
-                        fontSize: 16)),
-                const SizedBox(height: 12),
-                weeklyAsync.when(
-                  data: (data) {
-                    final avg = data.isEmpty
-                        ? 0.0
-                        : data.fold(0.0,
-                                (s, d) => s + d.calories) /
-                            data.length;
-                    return Column(children: [
-                      WeeklyBarChart(
-                          data: data, kcalGoal: kcalGoal),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.weeklyTrend,
+                style: TextStyle(
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w600,
+                  color: TraumColors.onBackground,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 12),
+              weeklyAsync.when(
+                data: (data) {
+                  final avg = data.isEmpty
+                      ? 0.0
+                      : data.fold(0.0, (s, d) => s + d.calories) / data.length;
+                  return Column(
+                    children: [
+                      WeeklyBarChart(data: data, kcalGoal: kcalGoal),
                       const SizedBox(height: 12),
                       Text(
-                          'Ø ${avg.toStringAsFixed(0)} kcal / Tag',
-                          style: const TextStyle(
-                              fontFamily: 'DMSans',
-                              color:
-                                  TraumColors.onBackgroundMuted,
-                              fontSize: 13)),
-                    ]);
-                  },
-                  loading: () => const Center(
-                      child: CircularProgressIndicator(
-                          color: TraumColors.mintGreen,
-                          strokeWidth: 2)),
-                  error: (e, _) => InlineError(e),
+                        'Ø ${avg.toStringAsFixed(0)} kcal / Tag',
+                        style: const TextStyle(
+                          fontFamily: 'DMSans',
+                          color: TraumColors.onBackgroundMuted,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+                loading: () => const Center(
+                  child: CircularProgressIndicator(
+                    color: TraumColors.mintGreen,
+                    strokeWidth: 2,
+                  ),
                 ),
-              ]),
+                error: (e, _) => InlineError(e),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -421,8 +453,7 @@ class _ProductsTab extends ConsumerStatefulWidget {
   const _ProductsTab();
 
   @override
-  ConsumerState<_ProductsTab> createState() =>
-      _ProductsTabState();
+  ConsumerState<_ProductsTab> createState() => _ProductsTabState();
 }
 
 class _ProductsTabState extends ConsumerState<_ProductsTab>
@@ -539,86 +570,98 @@ class _ProductsTabState extends ConsumerState<_ProductsTab>
     final query = ref.watch(productSearchQueryProvider);
     final searchActive = query.trim().isNotEmpty;
 
-    return Column(children: [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-        child: Row(children: [
-          Expanded(
-            child: TextField(
-              controller: _searchCtrl,
-              style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  color: TraumColors.onBackground,
-                  fontSize: 14),
-              decoration: InputDecoration(
-                hintText: AppLocalizations.of(context)!.searchFoodHint,
-                hintStyle: const TextStyle(
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _searchCtrl,
+                  style: const TextStyle(
                     fontFamily: 'DMSans',
-                    color: TraumColors.onBackgroundSubtle),
-                prefixIcon: const Icon(Icons.search,
-                    color: TraumColors.onBackgroundMuted),
-                filled: true,
-                fillColor: TraumColors.surface,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none),
+                    color: TraumColors.onBackground,
+                    fontSize: 14,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: AppLocalizations.of(context)!.searchFoodHint,
+                    hintStyle: const TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackgroundSubtle,
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: TraumColors.onBackgroundMuted,
+                    ),
+                    filled: true,
+                    fillColor: TraumColors.surface,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          IconButton(
-            tooltip: AppLocalizations.of(context)!.a11yScanBarcode,
-            icon: const Icon(Icons.qr_code_scanner,
-                color: TraumColors.mintGreen),
-            onPressed: () async {
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) =>
-                          const BarcodeScannerScreen()));
-              ref.invalidate(productSearchProvider);
-            },
-          ),
-        ]),
-      ),
-      Expanded(
-        child: searchActive
-            ? _MultiSourceResults(
-                l10n: l10n,
-                onTapResult: _handleSearchResultTap,
-              )
-            : _LocalProductsBrowse(
-                onTapProduct: _handleLocalProductTap,
+              const SizedBox(width: 8),
+              IconButton(
+                tooltip: AppLocalizations.of(context)!.a11yScanBarcode,
+                icon: const Icon(
+                  Icons.qr_code_scanner,
+                  color: TraumColors.mintGreen,
+                ),
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const BarcodeScannerScreen(),
+                    ),
+                  );
+                  ref.invalidate(productSearchProvider);
+                },
               ),
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-        child: SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: () => Navigator.push(
+            ],
+          ),
+        ),
+        Expanded(
+          child: searchActive
+              ? _MultiSourceResults(
+                  l10n: l10n,
+                  onTapResult: _handleSearchResultTap,
+                )
+              : _LocalProductsBrowse(onTapProduct: _handleLocalProductTap),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          child: SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) =>
-                        const AddCustomProductScreen())).then(
-                (_) => ref.invalidate(productSearchProvider)),
-            icon: const Icon(Icons.add,
-                color: TraumColors.mintGreen),
-            label: Text(AppLocalizations.of(context)!.createCustomProduct,
+                  builder: (_) => const AddCustomProductScreen(),
+                ),
+              ).then((_) => ref.invalidate(productSearchProvider)),
+              icon: const Icon(Icons.add, color: TraumColors.mintGreen),
+              label: Text(
+                AppLocalizations.of(context)!.createCustomProduct,
                 style: TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.mintGreen)),
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(
-                  color: TraumColors.mintGreen),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50)),
-              padding: const EdgeInsets.symmetric(vertical: 12),
+                  fontFamily: 'DMSans',
+                  color: TraumColors.mintGreen,
+                ),
+              ),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: TraumColors.mintGreen),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
             ),
           ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }
 
@@ -639,13 +682,19 @@ class _LocalProductsBrowse extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.search_off,
-                    color: TraumColors.onBackgroundSubtle, size: 48),
+                const Icon(
+                  Icons.search_off,
+                  color: TraumColors.onBackgroundSubtle,
+                  size: 48,
+                ),
                 const SizedBox(height: 12),
-                Text(AppLocalizations.of(context)!.noProductsFound,
-                    style: TextStyle(
-                        fontFamily: 'DMSans',
-                        color: TraumColors.onBackgroundMuted)),
+                Text(
+                  AppLocalizations.of(context)!.noProductsFound,
+                  style: TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackgroundMuted,
+                  ),
+                ),
               ],
             ),
           );
@@ -655,30 +704,40 @@ class _LocalProductsBrowse extends ConsumerWidget {
           itemBuilder: (_, i) {
             final p = products[i];
             return ListTile(
-              title: Text(p.name,
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackground,
-                      fontWeight: FontWeight.w500)),
+              title: Text(
+                p.name,
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               subtitle: Text(
-                  '${p.caloriesPer100g.toStringAsFixed(0)} kcal · '
-                  '${p.proteinPer100g.toStringAsFixed(0)}g P · '
-                  '${p.carbsPer100g.toStringAsFixed(0)}g C · '
-                  '${p.fatPer100g.toStringAsFixed(0)}g F / 100g',
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackgroundMuted,
-                      fontSize: 11)),
-              trailing: const Icon(Icons.add_circle_outline,
-                  color: TraumColors.mintGreen),
+                '${p.caloriesPer100g.toStringAsFixed(0)} kcal · '
+                '${p.proteinPer100g.toStringAsFixed(0)}g P · '
+                '${p.carbsPer100g.toStringAsFixed(0)}g C · '
+                '${p.fatPer100g.toStringAsFixed(0)}g F / 100g',
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundMuted,
+                  fontSize: 11,
+                ),
+              ),
+              trailing: const Icon(
+                Icons.add_circle_outline,
+                color: TraumColors.mintGreen,
+              ),
               onTap: () => onTapProduct(p),
             );
           },
         );
       },
       loading: () => const Center(
-          child: CircularProgressIndicator(
-              color: TraumColors.mintGreen, strokeWidth: 2)),
+        child: CircularProgressIndicator(
+          color: TraumColors.mintGreen,
+          strokeWidth: 2,
+        ),
+      ),
       error: (e, _) => InlineError(e),
     );
   }
@@ -691,10 +750,7 @@ class _MultiSourceResults extends ConsumerWidget {
   final AppLocalizations l10n;
   final Future<void> Function(FoodSearchResult) onTapResult;
 
-  const _MultiSourceResults({
-    required this.l10n,
-    required this.onTapResult,
-  });
+  const _MultiSourceResults({required this.l10n, required this.onTapResult});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -711,20 +767,29 @@ class _MultiSourceResults extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.search_off,
-                    color: TraumColors.onBackgroundSubtle, size: 48),
+                const Icon(
+                  Icons.search_off,
+                  color: TraumColors.onBackgroundSubtle,
+                  size: 48,
+                ),
                 const SizedBox(height: 12),
-                Text(AppLocalizations.of(context)!.noProductsFound,
-                    style: TextStyle(
-                        fontFamily: 'DMSans',
-                        color: TraumColors.onBackgroundMuted)),
+                Text(
+                  AppLocalizations.of(context)!.noProductsFound,
+                  style: TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackgroundMuted,
+                  ),
+                ),
                 if (isOffline) ...[
                   const SizedBox(height: 8),
-                  Text(l10n.searchOffline,
-                      style: const TextStyle(
-                          fontFamily: 'DMSans',
-                          fontSize: 12,
-                          color: TraumColors.onBackgroundSubtle)),
+                  Text(
+                    l10n.searchOffline,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      fontSize: 12,
+                      color: TraumColors.onBackgroundSubtle,
+                    ),
+                  ),
                 ],
               ],
             ),
@@ -735,20 +800,27 @@ class _MultiSourceResults extends ConsumerWidget {
           children: [
             if (isOffline)
               Padding(
-                padding:
-                    const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                child: Row(children: [
-                  const Icon(Icons.cloud_off,
-                      size: 14, color: TraumColors.onBackgroundSubtle),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(l10n.searchOffline,
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.cloud_off,
+                      size: 14,
+                      color: TraumColors.onBackgroundSubtle,
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        l10n.searchOffline,
                         style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            fontSize: 12,
-                            color: TraumColors.onBackgroundSubtle)),
-                  ),
-                ]),
+                          fontFamily: 'DMSans',
+                          fontSize: 12,
+                          color: TraumColors.onBackgroundSubtle,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             if (local.isNotEmpty) ...[
               _SectionHeader(l10n.myFoodsSection),
@@ -772,13 +844,19 @@ class _MultiSourceResults extends ConsumerWidget {
         );
       },
       loading: () => const Center(
-          child: CircularProgressIndicator(
-              color: TraumColors.mintGreen, strokeWidth: 2)),
+        child: CircularProgressIndicator(
+          color: TraumColors.mintGreen,
+          strokeWidth: 2,
+        ),
+      ),
       error: (_, _) => Center(
-        child: Text(l10n.searchOffline,
-            style: const TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackgroundMuted)),
+        child: Text(
+          l10n.searchOffline,
+          style: const TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackgroundMuted,
+          ),
+        ),
       ),
     );
   }
@@ -790,17 +868,18 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
-        child: Text(
-          title.toUpperCase(),
-          style: const TextStyle(
-              fontFamily: 'DMSans',
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              color: TraumColors.onBackgroundSubtle,
-              letterSpacing: 0.8),
-        ),
-      );
+    padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
+    child: Text(
+      title.toUpperCase(),
+      style: const TextStyle(
+        fontFamily: 'DMSans',
+        fontSize: 11,
+        fontWeight: FontWeight.w700,
+        color: TraumColors.onBackgroundSubtle,
+        letterSpacing: 0.8,
+      ),
+    ),
+  );
 }
 
 class _SearchResultTile extends StatelessWidget {
@@ -817,33 +896,42 @@ class _SearchResultTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Row(children: [
-        Expanded(
-          child: Text(result.name,
+      title: Row(
+        children: [
+          Expanded(
+            child: Text(
+              result.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  color: TraumColors.onBackground,
-                  fontWeight: FontWeight.w500)),
-        ),
-        if (result.source != 'local') ...[
-          const SizedBox(width: 8),
-          _SourceBadge(source: result.source, l10n: l10n),
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          if (result.source != 'local') ...[
+            const SizedBox(width: 8),
+            _SourceBadge(source: result.source, l10n: l10n),
+          ],
         ],
-      ]),
+      ),
       subtitle: Text(
-          '${result.kcalPer100g.toStringAsFixed(0)} kcal · '
-          '${result.proteinPer100g.toStringAsFixed(0)}g P · '
-          '${result.carbsPer100g.toStringAsFixed(0)}g C · '
-          '${result.fatPer100g.toStringAsFixed(0)}g F / 100g'
-          '${result.brand != null ? " · ${result.brand}" : ""}',
-          style: const TextStyle(
-              fontFamily: 'DMSans',
-              color: TraumColors.onBackgroundMuted,
-              fontSize: 11)),
-      trailing: const Icon(Icons.add_circle_outline,
-          color: TraumColors.mintGreen),
+        '${result.kcalPer100g.toStringAsFixed(0)} kcal · '
+        '${result.proteinPer100g.toStringAsFixed(0)}g P · '
+        '${result.carbsPer100g.toStringAsFixed(0)}g C · '
+        '${result.fatPer100g.toStringAsFixed(0)}g F / 100g'
+        '${result.brand != null ? " · ${result.brand}" : ""}',
+        style: const TextStyle(
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackgroundMuted,
+          fontSize: 11,
+        ),
+      ),
+      trailing: const Icon(
+        Icons.add_circle_outline,
+        color: TraumColors.mintGreen,
+      ),
       onTap: onTap,
     );
   }
@@ -870,15 +958,17 @@ class _SourceBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: TraumColors.cyanDim,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-            color: TraumColors.cyanBlue.withValues(alpha: 0.4)),
+        border: Border.all(color: TraumColors.cyanBlue.withValues(alpha: 0.4)),
       ),
-      child: Text(label,
-          style: const TextStyle(
-              fontFamily: 'DMSans',
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-              color: TraumColors.cyanBlue)),
+      child: Text(
+        label,
+        style: const TextStyle(
+          fontFamily: 'DMSans',
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          color: TraumColors.cyanBlue,
+        ),
+      ),
     );
   }
 }

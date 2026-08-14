@@ -37,11 +37,13 @@ void main() {
   test('upsertDailyLog overwrites existing log for same date', () async {
     final date = DateTime(2026, 6, 15);
     await db.periodDao.upsertDailyLog(
-      DailyLogsCompanion.insert(logDate: date, mood: const Value(2)));
+      DailyLogsCompanion.insert(logDate: date, mood: const Value(2)),
+    );
     await db.periodDao.upsertDailyLog(
-      DailyLogsCompanion.insert(logDate: date, mood: const Value(5)));
+      DailyLogsCompanion.insert(logDate: date, mood: const Value(5)),
+    );
     final logs = await db.periodDao.watchAllDailyLogs().first;
-    expect(logs, hasLength(1));   // no duplicate row
-    expect(logs.single.mood, 5);  // value was updated
+    expect(logs, hasLength(1)); // no duplicate row
+    expect(logs.single.mood, 5); // value was updated
   });
 }

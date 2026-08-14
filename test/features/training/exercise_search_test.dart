@@ -3,14 +3,14 @@ import 'package:traum/data/database/traum_database.dart';
 import 'package:traum/features/training/exercise_search.dart';
 
 Exercise _ex(int id, String name, {String muscleGroup = 'chest'}) => Exercise(
-      id: id,
-      name: name,
-      muscleGroup: muscleGroup,
-      primaryMuscles: '[]',
-      secondaryMuscles: '[]',
-      isBookmarked: false,
-      isCustom: false,
-    );
+  id: id,
+  name: name,
+  muscleGroup: muscleGroup,
+  primaryMuscles: '[]',
+  secondaryMuscles: '[]',
+  isBookmarked: false,
+  isCustom: false,
+);
 
 void main() {
   group('filterExercisesByQuery', () {

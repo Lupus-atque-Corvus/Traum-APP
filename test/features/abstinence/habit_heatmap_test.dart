@@ -33,16 +33,27 @@ void main() {
     });
 
     test('full resolves to the fully opaque base color', () {
-      final color = heatmapIntensityColor(HeatmapIntensity.full, base: base, track: track);
+      final color = heatmapIntensityColor(
+        HeatmapIntensity.full,
+        base: base,
+        track: track,
+      );
       expect(color, base);
     });
 
-    test('partial resolves to a dimmed version of the base color, distinct from full and none', () {
-      final color = heatmapIntensityColor(HeatmapIntensity.partial, base: base, track: track);
-      expect(color, isNot(base));
-      expect(color, isNot(track));
-      expect(color.a, lessThan(base.a));
-    });
+    test(
+      'partial resolves to a dimmed version of the base color, distinct from full and none',
+      () {
+        final color = heatmapIntensityColor(
+          HeatmapIntensity.partial,
+          base: base,
+          track: track,
+        );
+        expect(color, isNot(base));
+        expect(color, isNot(track));
+        expect(color.a, lessThan(base.a));
+      },
+    );
   });
 
   group('HabitHeatmapRow', () {
@@ -53,7 +64,10 @@ void main() {
       );
       // does not throw with exactly 7 values
       expect(
-        HabitHeatmapRow(name: 'x', dayValues: const [1, 0, 1, 0, 1, 0, 1]).dayValues.length,
+        HabitHeatmapRow(
+          name: 'x',
+          dayValues: const [1, 0, 1, 0, 1, 0, 1],
+        ).dayValues.length,
         7,
       );
     });

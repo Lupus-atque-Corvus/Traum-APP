@@ -27,7 +27,9 @@ void main() {
 
       // Override only the note — everything else must survive.
       await db.budgetDao.updateTransaction(
-        fullTransactionCompanion(original).copyWith(note: const Value('Notiz B')),
+        fullTransactionCompanion(
+          original,
+        ).copyWith(note: const Value('Notiz B')),
       );
 
       final updated = (await db.budgetDao.getTransaction(id))!;

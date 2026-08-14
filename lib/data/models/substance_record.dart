@@ -21,8 +21,9 @@ List<String> _parseQuellenTags(String? raw) {
       .toList();
 }
 
-SubstanceKlasse _parseKlasse(String raw) =>
-    raw == 'Supplemente' ? SubstanceKlasse.supplement : SubstanceKlasse.medikament;
+SubstanceKlasse _parseKlasse(String raw) => raw == 'Supplemente'
+    ? SubstanceKlasse.supplement
+    : SubstanceKlasse.medikament;
 
 DatenStatus _parseDatenStatus(String? raw) {
   switch (raw) {
@@ -52,18 +53,20 @@ class DosierungNachAltersgruppe {
     String? seniorenEn,
     String? schwangerschaftDe,
     String? schwangerschaftEn,
-  })  : _erwachseneDe = erwachseneDe,
-        _erwachseneEn = erwachseneEn,
-        _kinderDe = kinderDe,
-        _kinderEn = kinderEn,
-        _seniorenDe = seniorenDe,
-        _seniorenEn = seniorenEn,
-        _schwangerschaftDe = schwangerschaftDe,
-        _schwangerschaftEn = schwangerschaftEn;
+  }) : _erwachseneDe = erwachseneDe,
+       _erwachseneEn = erwachseneEn,
+       _kinderDe = kinderDe,
+       _kinderEn = kinderEn,
+       _seniorenDe = seniorenDe,
+       _seniorenEn = seniorenEn,
+       _schwangerschaftDe = schwangerschaftDe,
+       _schwangerschaftEn = schwangerschaftEn;
 
-  String? erwachsene(String lang) => _resolveBilingual(_erwachseneDe, _erwachseneEn, lang);
+  String? erwachsene(String lang) =>
+      _resolveBilingual(_erwachseneDe, _erwachseneEn, lang);
   String? kinder(String lang) => _resolveBilingual(_kinderDe, _kinderEn, lang);
-  String? senioren(String lang) => _resolveBilingual(_seniorenDe, _seniorenEn, lang);
+  String? senioren(String lang) =>
+      _resolveBilingual(_seniorenDe, _seniorenEn, lang);
   String? schwangerschaft(String lang) =>
       _resolveBilingual(_schwangerschaftDe, _schwangerschaftEn, lang);
 
@@ -152,22 +155,22 @@ class SubstanceRecord {
     String? spezPopEn,
     String? nebenwirkungenTextDe,
     String? nebenwirkungenTextEn,
-  })  : _beschreibungDe = beschreibungDe,
-        _beschreibungEn = beschreibungEn,
-        _effektDe = effektDe,
-        _effektEn = effektEn,
-        _indikationDe = indikationDe,
-        _indikationEn = indikationEn,
-        _wechselwirkungenDe = wechselwirkungenDe,
-        _wechselwirkungenEn = wechselwirkungenEn,
-        _warnungenDe = warnungenDe,
-        _warnungenEn = warnungenEn,
-        _kontraindikationenDe = kontraindikationenDe,
-        _kontraindikationenEn = kontraindikationenEn,
-        _spezPopDe = spezPopDe,
-        _spezPopEn = spezPopEn,
-        _nebenwirkungenTextDe = nebenwirkungenTextDe,
-        _nebenwirkungenTextEn = nebenwirkungenTextEn;
+  }) : _beschreibungDe = beschreibungDe,
+       _beschreibungEn = beschreibungEn,
+       _effektDe = effektDe,
+       _effektEn = effektEn,
+       _indikationDe = indikationDe,
+       _indikationEn = indikationEn,
+       _wechselwirkungenDe = wechselwirkungenDe,
+       _wechselwirkungenEn = wechselwirkungenEn,
+       _warnungenDe = warnungenDe,
+       _warnungenEn = warnungenEn,
+       _kontraindikationenDe = kontraindikationenDe,
+       _kontraindikationenEn = kontraindikationenEn,
+       _spezPopDe = spezPopDe,
+       _spezPopEn = spezPopEn,
+       _nebenwirkungenTextDe = nebenwirkungenTextDe,
+       _nebenwirkungenTextEn = nebenwirkungenTextEn;
 
   factory SubstanceRecord.fromRow(Map<String, Object?> row) {
     String? s(String key) => row[key] as String?;
@@ -224,15 +227,19 @@ class SubstanceRecord {
     );
   }
 
-  String? beschreibung(String lang) => _resolveBilingual(_beschreibungDe, _beschreibungEn, lang);
+  String? beschreibung(String lang) =>
+      _resolveBilingual(_beschreibungDe, _beschreibungEn, lang);
   String? effekt(String lang) => _resolveBilingual(_effektDe, _effektEn, lang);
-  String? indikation(String lang) => _resolveBilingual(_indikationDe, _indikationEn, lang);
+  String? indikation(String lang) =>
+      _resolveBilingual(_indikationDe, _indikationEn, lang);
   String? wechselwirkungen(String lang) =>
       _resolveBilingual(_wechselwirkungenDe, _wechselwirkungenEn, lang);
-  String? warnungen(String lang) => _resolveBilingual(_warnungenDe, _warnungenEn, lang);
+  String? warnungen(String lang) =>
+      _resolveBilingual(_warnungenDe, _warnungenEn, lang);
   String? kontraindikationen(String lang) =>
       _resolveBilingual(_kontraindikationenDe, _kontraindikationenEn, lang);
-  String? spezellePopulationen(String lang) => _resolveBilingual(_spezPopDe, _spezPopEn, lang);
+  String? spezellePopulationen(String lang) =>
+      _resolveBilingual(_spezPopDe, _spezPopEn, lang);
   String? nebenwirkungenText(String lang) =>
       _resolveBilingual(_nebenwirkungenTextDe, _nebenwirkungenTextEn, lang);
 }
@@ -254,12 +261,12 @@ class TopNebenwirkung {
   });
 
   factory TopNebenwirkung.fromRow(Map<String, Object?> row) => TopNebenwirkung(
-        id: row['id'] as int,
-        substanceId: row['substance_id'] as int,
-        begriff: row['begriff'] as String,
-        begriffDe: row['begriff_de'] as String?,
-        meldungen: row['meldungen'] as int?,
-      );
+    id: row['id'] as int,
+    substanceId: row['substance_id'] as int,
+    begriff: row['begriff'] as String,
+    begriffDe: row['begriff_de'] as String?,
+    meldungen: row['meldungen'] as int?,
+  );
 
   String label(String lang) {
     if (lang == 'de' && begriffDe != null && begriffDe!.trim().isNotEmpty) {

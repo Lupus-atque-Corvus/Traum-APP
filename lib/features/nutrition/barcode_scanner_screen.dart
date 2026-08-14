@@ -15,8 +15,7 @@ class BarcodeScannerScreen extends ConsumerStatefulWidget {
       _BarcodeScannerScreenState();
 }
 
-class _BarcodeScannerScreenState
-    extends ConsumerState<BarcodeScannerScreen> {
+class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen> {
   final _controller = MobileScannerController(
     detectionSpeed: DetectionSpeed.normal,
     facing: CameraFacing.back,
@@ -39,8 +38,7 @@ class _BarcodeScannerScreenState
         leading: const BackButton(color: Colors.white),
         title: Text(
           AppLocalizations.of(context)!.a11yScanBarcode,
-          style: const TextStyle(
-              fontFamily: 'DMSans', color: Colors.white),
+          style: const TextStyle(fontFamily: 'DMSans', color: Colors.white),
         ),
         actions: [
           IconButton(
@@ -50,56 +48,57 @@ class _BarcodeScannerScreenState
           ),
         ],
       ),
-      body: Stack(children: [
-        MobileScanner(
-          controller: _controller,
-          onDetect: _onDetect,
-        ),
-        Center(
-          child: Container(
-            width: 260,
-            height: 160,
-            decoration: BoxDecoration(
-              border: Border.all(
-                  color: TraumColors.mintGreen, width: 2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: 80,
-          left: 0,
-          right: 0,
-          child: Text(
-            AppLocalizations.of(context)!.pointCameraAtBarcode,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-                color: Colors.white,
-                fontFamily: 'DMSans',
-                fontSize: 14),
-          ),
-        ),
-        if (_isProcessing)
-          Container(
-            color: Colors.black54,
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const CircularProgressIndicator(
-                      color: TraumColors.mintGreen),
-                  const SizedBox(height: 16),
-                  Text(
-                    AppLocalizations.of(context)!.fetchingProduct,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'DMSans'),
-                  ),
-                ],
+      body: Stack(
+        children: [
+          MobileScanner(controller: _controller, onDetect: _onDetect),
+          Center(
+            child: Container(
+              width: 260,
+              height: 160,
+              decoration: BoxDecoration(
+                border: Border.all(color: TraumColors.mintGreen, width: 2),
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),
-      ]),
+          Positioned(
+            bottom: 80,
+            left: 0,
+            right: 0,
+            child: Text(
+              AppLocalizations.of(context)!.pointCameraAtBarcode,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontFamily: 'DMSans',
+                fontSize: 14,
+              ),
+            ),
+          ),
+          if (_isProcessing)
+            Container(
+              color: Colors.black54,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const CircularProgressIndicator(
+                      color: TraumColors.mintGreen,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      AppLocalizations.of(context)!.fetchingProduct,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'DMSans',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -116,8 +115,7 @@ class _BarcodeScannerScreenState
     FoodProduct? product = await dao.getByBarcode(barcode);
 
     if (product == null) {
-      final companion =
-          await OpenFoodFactsService.fetchProduct(barcode);
+      final companion = await OpenFoodFactsService.fetchProduct(barcode);
       if (companion != null) {
         final id = await dao.insertProduct(companion);
         product = await dao.getById(id);

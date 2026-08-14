@@ -23,25 +23,29 @@ class WizardTemplateStep extends StatelessWidget {
         Text(
           l10n.templateSelectTitle,
           style: const TextStyle(
-              color: TraumColors.onBackground,
-              fontFamily: 'DMSans',
-              fontWeight: FontWeight.w700,
-              fontSize: 20),
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+            fontWeight: FontWeight.w700,
+            fontSize: 20,
+          ),
         ),
         const SizedBox(height: 6),
         Text(
           l10n.templateSelectSubtitle,
           style: const TextStyle(
-              color: TraumColors.onBackgroundMuted,
-              fontFamily: 'DMSans',
-              fontSize: 14),
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            fontSize: 14,
+          ),
         ),
         const SizedBox(height: 20),
-        ...PlanTemplates.all.map((t) => _TemplateCard(
-          template: t,
-          isSelected: selected?.id == t.id,
-          onTap: () => onSelect(t),
-        )),
+        ...PlanTemplates.all.map(
+          (t) => _TemplateCard(
+            template: t,
+            isSelected: selected?.id == t.id,
+            onTap: () => onSelect(t),
+          ),
+        ),
       ],
     );
   }
@@ -72,42 +76,47 @@ class _TemplateCard extends StatelessWidget {
               : TraumColors.surface,
           borderRadius: BorderRadius.circular(TraumRadius.card),
           border: Border.all(
-            color: isSelected
-                ? TraumColors.coralOrange
-                : TraumColors.surface,
+            color: isSelected ? TraumColors.coralOrange : TraumColors.surface,
             width: 1.5,
           ),
         ),
-        child: Row(children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  template.name,
-                  style: TextStyle(
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    template.name,
+                    style: TextStyle(
                       color: isSelected
                           ? TraumColors.coralOrange
                           : TraumColors.onBackground,
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w600,
-                      fontSize: 15),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  template.subtitle,
-                  style: const TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    template.subtitle,
+                    style: const TextStyle(
                       color: TraumColors.onBackgroundMuted,
                       fontFamily: 'DMSans',
-                      fontSize: 13),
-                ),
-              ],
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          if (isSelected)
-            const Icon(Icons.check_circle_rounded,
-                color: TraumColors.coralOrange, size: 22),
-        ]),
+            if (isSelected)
+              const Icon(
+                Icons.check_circle_rounded,
+                color: TraumColors.coralOrange,
+                size: 22,
+              ),
+          ],
+        ),
       ),
     );
   }

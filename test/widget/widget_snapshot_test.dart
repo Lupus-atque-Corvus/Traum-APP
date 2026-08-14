@@ -5,11 +5,17 @@ import 'package:traum/widget/widget_snapshot.dart';
 void main() {
   test('toStringMap enthält alle namespaced Keys als String', () {
     const snap = WidgetSnapshot(
-      steps: 4200, stepsGoal: 10000,
-      sleepHours: 7.5, heartRate: 62, mood: 4,
-      kcal: 1500, kcalGoal: 2200,
-      waterMl: 1200, waterGoalMl: 2500,
-      protein: 90, proteinGoal: 150,
+      steps: 4200,
+      stepsGoal: 10000,
+      sleepHours: 7.5,
+      heartRate: 62,
+      mood: 4,
+      kcal: 1500,
+      kcalGoal: 2200,
+      waterMl: 1200,
+      waterGoalMl: 2500,
+      protein: 90,
+      proteinGoal: 150,
       nextTodo: 'Einkaufen',
     );
     final m = snap.toStringMap();

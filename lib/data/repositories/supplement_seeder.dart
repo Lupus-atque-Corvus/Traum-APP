@@ -6,8 +6,15 @@ import '../database/traum_database.dart';
 
 class SupplementSeeder {
   static const _categories = [
-    'vitamins', 'minerals', 'amino_acids', 'protein', 'omega',
-    'adaptogens', 'pre_workout', 'gut_health', 'creatine',
+    'vitamins',
+    'minerals',
+    'amino_acids',
+    'protein',
+    'omega',
+    'adaptogens',
+    'pre_workout',
+    'gut_health',
+    'creatine',
   ];
 
   static Future<void> seedIfNeeded(
@@ -23,15 +30,17 @@ class SupplementSeeder {
         );
         final List<dynamic> items = jsonDecode(data) as List<dynamic>;
         for (final item in items) {
-          await db.into(db.supplements).insertOnConflictUpdate(
-            SupplementsCompanion(
-              name: Value(item['name'] as String),
-              category: Value(category),
-              dosageAmount: Value(item['dosage'] as String?),
-              dosageUnit: Value(item['unit'] as String?),
-              isActive: const Value(false),
-            ),
-          );
+          await db
+              .into(db.supplements)
+              .insertOnConflictUpdate(
+                SupplementsCompanion(
+                  name: Value(item['name'] as String),
+                  category: Value(category),
+                  dosageAmount: Value(item['dosage'] as String?),
+                  dosageUnit: Value(item['unit'] as String?),
+                  isActive: const Value(false),
+                ),
+              );
         }
       } catch (_) {
         // Asset not found yet — skip

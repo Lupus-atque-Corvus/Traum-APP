@@ -28,10 +28,7 @@ class TraumCard extends StatelessWidget {
           color: color ?? TraumColors.surface,
           borderRadius: BorderRadius.circular(TraumRadius.card),
           border: borderColor != null
-              ? Border.all(
-                  color: borderColor!.withValues(alpha: 0.3),
-                  width: 1,
-                )
+              ? Border.all(color: borderColor!.withValues(alpha: 0.3), width: 1)
               : null,
         ),
         // `Material(type: transparency)` paints nothing itself but gives any
@@ -39,10 +36,7 @@ class TraumCard extends StatelessWidget {
         // NotificationCenterScreen) a proper ancestor to paint ink splashes
         // on — without it those splashes are silently invisible since this
         // Container's own decoration intercepts the paint layer instead.
-        child: Material(
-          type: MaterialType.transparency,
-          child: child,
-        ),
+        child: Material(type: MaterialType.transparency, child: child),
       ),
     );
   }

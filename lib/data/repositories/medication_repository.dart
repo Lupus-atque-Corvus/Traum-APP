@@ -7,8 +7,7 @@ class MedicationRepository {
   Stream<List<Medication>> watchAllMedications() => _dao.watchAllMedications();
   Stream<List<Medication>> watchActiveMedications() =>
       _dao.watchActiveMedications();
-  Future<int> addMedication(MedicationsCompanion e) =>
-      _dao.insertMedication(e);
+  Future<int> addMedication(MedicationsCompanion e) => _dao.insertMedication(e);
   Future<bool> updateMedication(MedicationsCompanion e) =>
       _dao.updateMedication(e);
   Future<int> deleteMedication(int id) => _dao.deleteMedication(id);

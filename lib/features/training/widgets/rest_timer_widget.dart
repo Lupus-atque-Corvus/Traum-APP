@@ -76,25 +76,33 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
           ),
         ),
         const SizedBox(height: 16),
-        Text(l10n.restTimerLabel, style: const TextStyle(
-          color: TraumColors.onBackgroundMuted,
-          fontFamily: 'DMSans',
-          fontSize: 13,
-        )),
+        Text(
+          l10n.restTimerLabel,
+          style: const TextStyle(
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            fontSize: 13,
+          ),
+        ),
         const SizedBox(height: 8),
-        Text(formatDurationHMS(_remaining), style: const TextStyle(
-          color: TraumColors.mintGreen,
-          fontFamily: 'DMSans',
-          fontWeight: FontWeight.w700,
-          fontSize: 48,
-        )),
+        Text(
+          formatDurationHMS(_remaining),
+          style: const TextStyle(
+            color: TraumColors.mintGreen,
+            fontFamily: 'DMSans',
+            fontWeight: FontWeight.w700,
+            fontSize: 48,
+          ),
+        ),
         const SizedBox(height: 12),
         SizedBox(
           width: 200,
           child: LinearProgressIndicator(
             value: ratio,
             backgroundColor: TraumColors.surfaceVariant,
-            valueColor: const AlwaysStoppedAnimation<Color>(TraumColors.mintGreen),
+            valueColor: const AlwaysStoppedAnimation<Color>(
+              TraumColors.mintGreen,
+            ),
             minHeight: 4,
             borderRadius: BorderRadius.circular(2),
           ),
@@ -107,10 +115,13 @@ class _RestTimerWidgetState extends State<RestTimerWidget> {
             const SizedBox(width: 24),
             TextButton(
               onPressed: widget.onSkip,
-              child: Text(l10n.restTimerSkip, style: const TextStyle(
-                color: TraumColors.onBackgroundMuted,
-                fontFamily: 'DMSans',
-              )),
+              child: Text(
+                l10n.restTimerSkip,
+                style: const TextStyle(
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                ),
+              ),
             ),
             const SizedBox(width: 24),
             _AdjustButton(label: '+15', onTap: () => _adjust(15)),

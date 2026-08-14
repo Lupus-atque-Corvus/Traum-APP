@@ -91,11 +91,7 @@ class SyncAction {
   final int? appointmentId;
   final String? externalId;
 
-  const SyncAction({
-    required this.type,
-    this.appointmentId,
-    this.externalId,
-  });
+  const SyncAction({required this.type, this.appointmentId, this.externalId});
 }
 
 bool _sameMinute(DateTime a, DateTime b) =>
@@ -155,7 +151,9 @@ List<SyncAction> computeSyncActions({
     final linkedId = apt.externalEventId;
 
     if (linkedId == null) {
-      actions.add(SyncAction(type: SyncActionType.pushInsert, appointmentId: apt.id));
+      actions.add(
+        SyncAction(type: SyncActionType.pushInsert, appointmentId: apt.id),
+      );
       continue;
     }
 
@@ -164,27 +162,35 @@ List<SyncAction> computeSyncActions({
       final inWindow =
           !apt.start.isBefore(windowStart) && apt.start.isBefore(windowEnd);
       if (inWindow) {
-        actions.add(SyncAction(
-          type: SyncActionType.deleteLocal,
-          appointmentId: apt.id,
-          externalId: linkedId,
-        ));
+        actions.add(
+          SyncAction(
+            type: SyncActionType.deleteLocal,
+            appointmentId: apt.id,
+            externalId: linkedId,
+          ),
+        );
       }
       continue;
     }
 
     if (sameContent(apt, deviceEvent)) {
-      actions.add(SyncAction(
-        type: SyncActionType.none,
-        appointmentId: apt.id,
-        externalId: linkedId,
-      ));
+      actions.add(
+        SyncAction(
+          type: SyncActionType.none,
+          appointmentId: apt.id,
+          externalId: linkedId,
+        ),
+      );
     } else {
-      actions.add(SyncAction(
-        type: apt.isAppOrigin ? SyncActionType.pushUpdate : SyncActionType.pullUpdate,
-        appointmentId: apt.id,
-        externalId: linkedId,
-      ));
+      actions.add(
+        SyncAction(
+          type: apt.isAppOrigin
+              ? SyncActionType.pushUpdate
+              : SyncActionType.pullUpdate,
+          appointmentId: apt.id,
+          externalId: linkedId,
+        ),
+      );
     }
   }
 

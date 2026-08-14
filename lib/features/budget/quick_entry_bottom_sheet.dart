@@ -64,9 +64,7 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
       _categoryId = t.categoryId;
       _templateNameCtrl.text = t.name;
       if (t.defaultAmount != null) {
-        _numpadValue = t.defaultAmount!
-            .toStringAsFixed(2)
-            .replaceAll('.', ',');
+        _numpadValue = t.defaultAmount!.toStringAsFixed(2).replaceAll('.', ',');
       }
     }
 
@@ -105,12 +103,16 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
     if (raw.contains(',')) {
       final parts = raw.split(',');
       final euros = parts[0].replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+$)'), (m) => '${m[1]}.');
+        RegExp(r'(\d{1,3})(?=(\d{3})+$)'),
+        (m) => '${m[1]}.',
+      );
       final cents = parts[1].padRight(2, '0');
       return '$euros,$cents';
     }
     return raw.replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+$)'), (m) => '${m[1]}.');
+      RegExp(r'(\d{1,3})(?=(\d{3})+$)'),
+      (m) => '${m[1]}.',
+    );
   }
 
   void _setDateChip(DateTime date) => setState(() => _date = date);
@@ -157,8 +159,10 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.camera_alt_rounded,
-                  color: TraumColors.amberGold),
+              leading: const Icon(
+                Icons.camera_alt_rounded,
+                color: TraumColors.amberGold,
+              ),
               title: Text(
                 l10n.budgetCamera,
                 style: const TextStyle(
@@ -172,8 +176,10 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library_rounded,
-                  color: TraumColors.amberGold),
+              leading: const Icon(
+                Icons.photo_library_rounded,
+                color: TraumColors.amberGold,
+              ),
               title: Text(
                 l10n.budgetGallery,
                 style: const TextStyle(
@@ -195,27 +201,26 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
   Future<void> _save() async {
     final l10n = AppLocalizations.of(context)!;
     if (_type == 'transfer') {
-      if (_accountId == null || _toAccountId == null || _accountId == _toAccountId) {
+      if (_accountId == null ||
+          _toAccountId == null ||
+          _accountId == _toAccountId) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.budgetTransferAccountsRequired)));
+          SnackBar(content: Text(l10n.budgetTransferAccountsRequired)),
+        );
         return;
       }
     }
 
     final amount = _parsedAmount;
     if (amount == null || amount <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.budgetInvalidAmount),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.budgetInvalidAmount)));
       return;
     }
     if (amount > kMaxAmount) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.amountExceedsMax(fmtAmount(kMaxAmount))),
-        ),
+        SnackBar(content: Text(l10n.amountExceedsMax(fmtAmount(kMaxAmount)))),
       );
       return;
     }
@@ -227,23 +232,24 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
       final effectiveAccount = _type == 'transfer'
           ? _accountId
           : (_accountId ??
-              (accounts.where((a) => a.isPrimary).isNotEmpty
-                  ? accounts.firstWhere((a) => a.isPrimary).id
-                  : null));
+                (accounts.where((a) => a.isPrimary).isNotEmpty
+                    ? accounts.firstWhere((a) => a.isPrimary).id
+                    : null));
 
       final description = _descCtrl.text.trim().isNotEmpty
           ? _descCtrl.text.trim()
           : (_categoryName ??
-              (_type == 'expense'
-                  ? l10n.budgetDefaultDescriptionExpense
-                  : _type == 'income'
-                      ? l10n.budgetDefaultDescriptionIncome
-                      : l10n.budgetTransferLabel));
-      final note =
-          _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim();
+                (_type == 'expense'
+                    ? l10n.budgetDefaultDescriptionExpense
+                    : _type == 'income'
+                    ? l10n.budgetDefaultDescriptionIncome
+                    : l10n.budgetTransferLabel));
+      final note = _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim();
 
       if (_isEditing) {
-        await ref.read(budgetDaoProvider).updateTransaction(
+        await ref
+            .read(budgetDaoProvider)
+            .updateTransaction(
               fullTransactionCompanion(widget.editTransaction!).copyWith(
                 amount: Value(amount),
                 description: Value(description),
@@ -262,7 +268,9 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
         return;
       }
 
-      await ref.read(budgetDaoProvider).insertTransaction(
+      await ref
+          .read(budgetDaoProvider)
+          .insertTransaction(
             TransactionsCompanion.insert(
               amount: amount,
               description: description,
@@ -280,7 +288,9 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
           );
 
       if (_saveAsTemplate && _templateNameCtrl.text.trim().isNotEmpty) {
-        await ref.read(budgetDaoProvider).insertTemplate(
+        await ref
+            .read(budgetDaoProvider)
+            .insertTemplate(
               QuickTemplatesCompanion.insert(
                 name: _templateNameCtrl.text.trim(),
                 defaultAmount: Value(amount),
@@ -297,7 +307,8 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
       }
 
       if (_appliedTemplate != null) {
-        await ref.read(budgetDaoProvider)
+        await ref
+            .read(budgetDaoProvider)
             .incrementTemplateUsage(_appliedTemplate!.id, amount);
       }
 
@@ -327,639 +338,744 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
     // Step 1: Container — sheetBg, radius 22, border-top white@0.08, max 91%
     return BudgetTextScale(
       child: ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.91,
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: TraumColors.sheetBg,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(bs(22))),
-          border: Border(
-            top: BorderSide(
-              color: TraumColors.onBackground.withValues(alpha: 0.08),
-              width: bs(1),
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.91,
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: TraumColors.sheetBg,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(bs(22))),
+            border: Border(
+              top: BorderSide(
+                color: TraumColors.onBackground.withValues(alpha: 0.08),
+                width: bs(1),
+              ),
             ),
           ),
-        ),
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              // Step 2: Grabber — 32×3, dimBar, margin bottom 10
-              Padding(
-                padding: EdgeInsets.only(top: bs(10), bottom: bs(10)),
-                child: Center(
-                  child: Container(
-                    width: bs(32),
-                    height: bs(3),
-                    decoration: BoxDecoration(
-                      color: TraumColors.dimBar,
-                      borderRadius: BorderRadius.circular(bs(2)),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                // Step 2: Grabber — 32×3, dimBar, margin bottom 10
+                Padding(
+                  padding: EdgeInsets.only(top: bs(10), bottom: bs(10)),
+                  child: Center(
+                    child: Container(
+                      width: bs(32),
+                      height: bs(3),
+                      decoration: BoxDecoration(
+                        color: TraumColors.dimBar,
+                        borderRadius: BorderRadius.circular(bs(2)),
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              // Step 3: Title row — "Hinzufügen" + close button
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: bs(16)),
-                child: Row(
-                  children: [
-                    Text(
-                      _isEditing ? l10n.edit : l10n.add,
-                      style: const TextStyle(
-                        fontFamily: 'DMSans',
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: TraumColors.onBackground,
-                      ),
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Container(
-                        width: bs(26),
-                        height: bs(26),
-                        decoration: BoxDecoration(
-                          color: TraumColors.surfaceVariant,
-                          borderRadius: BorderRadius.circular(bs(13)),
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.close,
-                            size: bs(12),
-                            color: TraumColors.onBackgroundMuted,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: bs(10)),
-
-              // Scrollable body
-              Expanded(
-                child: SingleChildScrollView(
+                // Step 3: Title row — "Hinzufügen" + close button
+                Padding(
                   padding: EdgeInsets.symmetric(horizontal: bs(16)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                  child: Row(
                     children: [
-                      // Step 4: Type toggle — segmented, solid fills
-                      _SegmentedTypeToggle(
-                        selected: _type,
-                        onChanged: (v) => setState(() => _type = v),
-                        labels: (
-                          expense: l10n.budgetTypeExpense,
-                          income: l10n.budgetTypeIncome,
-                          transfer: l10n.budgetTypeTransfer,
+                      Text(
+                        _isEditing ? l10n.edit : l10n.add,
+                        style: const TextStyle(
+                          fontFamily: 'DMSans',
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: TraumColors.onBackground,
                         ),
                       ),
-                      SizedBox(height: bs(16)),
-
-                      // Step 5: Amount display — "Betrag" label + 34/w700 amount
-                      Column(
-                        children: [
-                          Text(
-                            l10n.budgetAmountLabel,
-                            style: const TextStyle(
-                              fontFamily: 'DMSans',
-                              fontSize: 8,
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          width: bs(26),
+                          height: bs(26),
+                          decoration: BoxDecoration(
+                            color: TraumColors.surfaceVariant,
+                            borderRadius: BorderRadius.circular(bs(13)),
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.close,
+                              size: bs(12),
                               color: TraumColors.onBackgroundMuted,
                             ),
                           ),
-                          SizedBox(height: bs(2)),
-                          Text(
-                            '${_formatDisplay(_numpadValue)} $currency',
-                            style: TextStyle(
-                              color: _type == 'income'
-                                  ? TraumColors.mintGreen
-                                  : _type == 'transfer'
-                                      ? TraumColors.indigoBlue
-                                      : TraumColors.onBackground,
-                              fontFamily: 'DMSans',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 34,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: bs(12)),
-
-                      // Numpad or scanning indicator
-                      if (_scanning)
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: bs(16)),
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const CircularProgressIndicator(
-                                    color: TraumColors.amberGold),
-                                SizedBox(height: bs(8)),
-                                Text(
-                                  l10n.budgetScanningReceipt,
-                                  style: const TextStyle(
-                                    color: TraumColors.onBackgroundMuted,
-                                    fontFamily: 'DMSans',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      else
-                        NumpadWidget(
-                          displayValue: _numpadValue,
-                          onChanged: (v) => setState(() => _numpadValue = v),
                         ),
-                      SizedBox(height: bs(14)),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: bs(10)),
 
-                      // Step 6: Template chips — amberGold@0.1 bg, border amberGold@0.35,
-                      //           radius 18, padding 5×10, zap icon 11
-                      if (_type != 'transfer')
-                        Consumer(builder: (ctx, r, _) {
-                          final tpls = r.watch(quickTemplatesProvider).value ?? const [];
-                          if (tpls.isEmpty) return const SizedBox.shrink();
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: bs(12)),
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(children: [
-                                for (final t in tpls) ...[
-                                  GestureDetector(
-                                    onTap: () => setState(() {
-                                      _appliedTemplate = t;
-                                      _type = t.type;
-                                      _categoryId = t.categoryId;
-                                      if (t.defaultAmount != null) {
-                                        _numpadValue = t.defaultAmount!
-                                            .toStringAsFixed(2)
-                                            .replaceAll('.', ',');
-                                      }
-                                    }),
-                                    onLongPress: () =>
-                                        ref.read(budgetDaoProvider).deleteTemplate(t.id),
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: bs(10), vertical: bs(5)),
-                                      decoration: BoxDecoration(
-                                        color: TraumColors.amberGold.withValues(alpha: 0.1),
-                                        borderRadius: BorderRadius.circular(bs(18)),
-                                        border: Border.all(
-                                            color: TraumColors.amberGold.withValues(alpha: 0.35)),
-                                      ),
-                                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                                        Icon(Icons.bolt_rounded,
-                                            size: bs(11), color: TraumColors.amberGold),
-                                        SizedBox(width: bs(4)),
-                                        Text(
-                                          t.name,
-                                          style: const TextStyle(
-                                            fontFamily: 'DMSans',
-                                            color: TraumColors.amberGold,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 10,
-                                          ),
-                                        ),
-                                      ]),
+                // Scrollable body
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: bs(16)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Step 4: Type toggle — segmented, solid fills
+                        _SegmentedTypeToggle(
+                          selected: _type,
+                          onChanged: (v) => setState(() => _type = v),
+                          labels: (
+                            expense: l10n.budgetTypeExpense,
+                            income: l10n.budgetTypeIncome,
+                            transfer: l10n.budgetTypeTransfer,
+                          ),
+                        ),
+                        SizedBox(height: bs(16)),
+
+                        // Step 5: Amount display — "Betrag" label + 34/w700 amount
+                        Column(
+                          children: [
+                            Text(
+                              l10n.budgetAmountLabel,
+                              style: const TextStyle(
+                                fontFamily: 'DMSans',
+                                fontSize: 8,
+                                color: TraumColors.onBackgroundMuted,
+                              ),
+                            ),
+                            SizedBox(height: bs(2)),
+                            Text(
+                              '${_formatDisplay(_numpadValue)} $currency',
+                              style: TextStyle(
+                                color: _type == 'income'
+                                    ? TraumColors.mintGreen
+                                    : _type == 'transfer'
+                                    ? TraumColors.indigoBlue
+                                    : TraumColors.onBackground,
+                                fontFamily: 'DMSans',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 34,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: bs(12)),
+
+                        // Numpad or scanning indicator
+                        if (_scanning)
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: bs(16)),
+                            child: Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const CircularProgressIndicator(
+                                    color: TraumColors.amberGold,
+                                  ),
+                                  SizedBox(height: bs(8)),
+                                  Text(
+                                    l10n.budgetScanningReceipt,
+                                    style: const TextStyle(
+                                      color: TraumColors.onBackgroundMuted,
+                                      fontFamily: 'DMSans',
                                     ),
                                   ),
-                                  SizedBox(width: bs(8)),
                                 ],
-                              ]),
+                              ),
                             ),
-                          );
-                        }),
+                          )
+                        else
+                          NumpadWidget(
+                            displayValue: _numpadValue,
+                            onChanged: (v) => setState(() => _numpadValue = v),
+                          ),
+                        SizedBox(height: bs(14)),
 
-                      // Step 7: Category chips — horizontal scroll row, 50px wide column-chips
-                      if (_type != 'transfer')
-                        categoriesAsync.when(
-                          data: (cats) {
-                            final filtered = cats
-                                .where((c) => c.isExpense == (_type == 'expense'))
-                                .toList();
-                            if (filtered.isEmpty) return const SizedBox.shrink();
+                        // Step 6: Template chips — amberGold@0.1 bg, border amberGold@0.35,
+                        //           radius 18, padding 5×10, zap icon 11
+                        if (_type != 'transfer')
+                          Consumer(
+                            builder: (ctx, r, _) {
+                              final tpls =
+                                  r.watch(quickTemplatesProvider).value ??
+                                  const [];
+                              if (tpls.isEmpty) return const SizedBox.shrink();
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: bs(12)),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      for (final t in tpls) ...[
+                                        GestureDetector(
+                                          onTap: () => setState(() {
+                                            _appliedTemplate = t;
+                                            _type = t.type;
+                                            _categoryId = t.categoryId;
+                                            if (t.defaultAmount != null) {
+                                              _numpadValue = t.defaultAmount!
+                                                  .toStringAsFixed(2)
+                                                  .replaceAll('.', ',');
+                                            }
+                                          }),
+                                          onLongPress: () => ref
+                                              .read(budgetDaoProvider)
+                                              .deleteTemplate(t.id),
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: bs(10),
+                                              vertical: bs(5),
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: TraumColors.amberGold
+                                                  .withValues(alpha: 0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(bs(18)),
+                                              border: Border.all(
+                                                color: TraumColors.amberGold
+                                                    .withValues(alpha: 0.35),
+                                              ),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(
+                                                  Icons.bolt_rounded,
+                                                  size: bs(11),
+                                                  color: TraumColors.amberGold,
+                                                ),
+                                                SizedBox(width: bs(4)),
+                                                Text(
+                                                  t.name,
+                                                  style: const TextStyle(
+                                                    fontFamily: 'DMSans',
+                                                    color:
+                                                        TraumColors.amberGold,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: bs(8)),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+
+                        // Step 7: Category chips — horizontal scroll row, 50px wide column-chips
+                        if (_type != 'transfer')
+                          categoriesAsync.when(
+                            data: (cats) {
+                              final filtered = cats
+                                  .where(
+                                    (c) => c.isExpense == (_type == 'expense'),
+                                  )
+                                  .toList();
+                              if (filtered.isEmpty) {
+                                return const SizedBox.shrink();
+                              }
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: bs(12)),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      for (
+                                        int i = 0;
+                                        i < filtered.length;
+                                        i++
+                                      ) ...[
+                                        _CategoryColumnChip(
+                                          cat: filtered[i],
+                                          isSelected:
+                                              _categoryId == filtered[i].id,
+                                          onTap: () => setState(() {
+                                            final isSelected =
+                                                _categoryId == filtered[i].id;
+                                            _categoryId = isSelected
+                                                ? null
+                                                : filtered[i].id;
+                                            _categoryName = isSelected
+                                                ? null
+                                                : filtered[i].name;
+                                          }),
+                                        ),
+                                        SizedBox(width: bs(6)),
+                                      ],
+                                      // "+ Neu" tile
+                                      GestureDetector(
+                                        onTap: () {
+                                          final router = GoRouter.of(context);
+                                          Navigator.of(context).pop();
+                                          router.push('/budget/categories');
+                                        },
+                                        child: Container(
+                                          width: bs(50),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: bs(3),
+                                            vertical: bs(7),
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: TraumColors.background,
+                                            borderRadius: BorderRadius.circular(
+                                              bs(10),
+                                            ),
+                                            border: Border.all(
+                                              color: TraumColors.amberGold
+                                                  .withValues(alpha: 0.5),
+                                            ),
+                                          ),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.add_rounded,
+                                                color: TraumColors.amberGold,
+                                                size: bs(18),
+                                              ),
+                                              SizedBox(height: bs(2)),
+                                              Text(
+                                                l10n.budgetNewCategoryTile,
+                                                style: const TextStyle(
+                                                  color: TraumColors.amberGold,
+                                                  fontFamily: 'DMSans',
+                                                  fontSize: 8,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                            loading: () => const SizedBox.shrink(),
+                            error: (e, _) => InlineError(e),
+                          ),
+
+                        // Account picker (income/expense only)
+                        Consumer(
+                          builder: (ctx, r, _) {
+                            final accounts =
+                                r.watch(accountsStreamProvider).value ??
+                                const [];
+                            if (accounts.isEmpty || _type == 'transfer') {
+                              return const SizedBox.shrink();
+                            }
+                            final selected =
+                                _accountId ??
+                                (accounts.where((a) => a.isPrimary).isNotEmpty
+                                    ? accounts.firstWhere((a) => a.isPrimary).id
+                                    : null);
                             return Padding(
                               padding: EdgeInsets.only(bottom: bs(12)),
                               child: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
                                   children: [
-                                    for (int i = 0; i < filtered.length; i++) ...[
-                                      _CategoryColumnChip(
-                                        cat: filtered[i],
-                                        isSelected: _categoryId == filtered[i].id,
-                                        onTap: () => setState(() {
-                                          final isSelected = _categoryId == filtered[i].id;
-                                          _categoryId = isSelected ? null : filtered[i].id;
-                                          _categoryName = isSelected ? null : filtered[i].name;
-                                        }),
-                                      ),
-                                      SizedBox(width: bs(6)),
-                                    ],
-                                    // "+ Neu" tile
-                                    GestureDetector(
-                                      onTap: () {
-                                        final router = GoRouter.of(context);
-                                        Navigator.of(context).pop();
-                                        router.push('/budget/categories');
-                                      },
-                                      child: Container(
-                                        width: bs(50),
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: bs(3), vertical: bs(7)),
-                                        decoration: BoxDecoration(
-                                          color: TraumColors.background,
-                                          borderRadius: BorderRadius.circular(bs(10)),
-                                          border: Border.all(
-                                            color: TraumColors.amberGold.withValues(alpha: 0.5),
-                                          ),
-                                        ),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(
-                                              Icons.add_rounded,
-                                              color: TraumColors.amberGold,
-                                              size: bs(18),
-                                            ),
-                                            SizedBox(height: bs(2)),
-                                            Text(
-                                              l10n.budgetNewCategoryTile,
-                                              style: const TextStyle(
-                                                color: TraumColors.amberGold,
-                                                fontFamily: 'DMSans',
-                                                fontSize: 8,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                    _AccountChip(
+                                      label: l10n.budgetNoAccount,
+                                      selected: selected == null,
+                                      onTap: () =>
+                                          setState(() => _accountId = null),
                                     ),
+                                    for (final a in accounts) ...[
+                                      SizedBox(width: bs(8)),
+                                      _AccountChip(
+                                        label: a.name,
+                                        selected: selected == a.id,
+                                        onTap: () =>
+                                            setState(() => _accountId = a.id),
+                                      ),
+                                    ],
                                   ],
                                 ),
                               ),
                             );
                           },
-                          loading: () => const SizedBox.shrink(),
-                          error: (e, _) => InlineError(e),
                         ),
 
-                      // Account picker (income/expense only)
-                      Consumer(builder: (ctx, r, _) {
-                        final accounts = r.watch(accountsStreamProvider).value ?? const [];
-                        if (accounts.isEmpty || _type == 'transfer') return const SizedBox.shrink();
-                        final selected = _accountId ??
-                            (accounts.where((a) => a.isPrimary).isNotEmpty
-                                ? accounts.firstWhere((a) => a.isPrimary).id
-                                : null);
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: bs(12)),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(children: [
-                              _AccountChip(
-                                label: l10n.budgetNoAccount,
-                                selected: selected == null,
-                                onTap: () => setState(() => _accountId = null),
-                              ),
-                              for (final a in accounts) ...[
-                                SizedBox(width: bs(8)),
-                                _AccountChip(
-                                  label: a.name,
-                                  selected: selected == a.id,
-                                  onTap: () => setState(() => _accountId = a.id),
-                                ),
-                              ],
-                            ]),
-                          ),
-                        );
-                      }),
-
-                      // Von/Nach pickers for transfer
-                      if (_type == 'transfer')
-                        Consumer(builder: (ctx, r, _) {
-                          final accounts = r.watch(accountsStreamProvider).value ?? const [];
-                          Widget picker(String title, int? sel, ValueChanged<int?> onSel) => Column(
+                        // Von/Nach pickers for transfer
+                        if (_type == 'transfer')
+                          Consumer(
+                            builder: (ctx, r, _) {
+                              final accounts =
+                                  r.watch(accountsStreamProvider).value ??
+                                  const [];
+                              Widget picker(
+                                String title,
+                                int? sel,
+                                ValueChanged<int?> onSel,
+                              ) => Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(title, style: const TextStyle(
+                                  Text(
+                                    title,
+                                    style: const TextStyle(
                                       fontFamily: 'DMSans',
                                       color: TraumColors.onBackgroundMuted,
-                                      fontSize: 12)),
+                                      fontSize: 12,
+                                    ),
+                                  ),
                                   SizedBox(height: bs(6)),
                                   SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
-                                    child: Row(children: [
-                                      for (final a in accounts) ...[
-                                        _AccountChip(label: a.name, selected: sel == a.id,
-                                            onTap: () => onSel(a.id)),
-                                        SizedBox(width: bs(8)),
+                                    child: Row(
+                                      children: [
+                                        for (final a in accounts) ...[
+                                          _AccountChip(
+                                            label: a.name,
+                                            selected: sel == a.id,
+                                            onTap: () => onSel(a.id),
+                                          ),
+                                          SizedBox(width: bs(8)),
+                                        ],
                                       ],
-                                    ]),
+                                    ),
                                   ),
                                   SizedBox(height: bs(12)),
                                 ],
                               );
-                          return Column(children: [
-                            picker(l10n.budgetFromAccount, _accountId, (v) => setState(() => _accountId = v)),
-                            picker(l10n.budgetToAccount, _toAccountId, (v) => setState(() => _toAccountId = v)),
-                          ]);
-                        }),
-
-                      // Step 8: Date chips — 4 equal Expanded, radius 9, padding 6
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _DateChip(
-                              label: l10n.today,
-                              isSelected: isToday,
-                              onTap: () => _setDateChip(today),
-                            ),
-                          ),
-                          SizedBox(width: bs(6)),
-                          Expanded(
-                            child: _DateChip(
-                              label: l10n.yesterday,
-                              isSelected: isYesterday,
-                              onTap: () => _setDateChip(yesterday),
-                            ),
-                          ),
-                          SizedBox(width: bs(6)),
-                          Expanded(
-                            child: _DateChip(
-                              label: l10n.budgetDayBeforeYesterday,
-                              isSelected: isDayBefore,
-                              onTap: () => _setDateChip(dayBefore),
-                            ),
-                          ),
-                          SizedBox(width: bs(6)),
-                          Expanded(
-                            child: _DateChip(
-                              label: (!isToday && !isYesterday && !isDayBefore)
-                                  ? '${_date.day}.${_date.month}.${_date.year}'
-                                  : l10n.budgetOtherDate,
-                              isSelected: !isToday && !isYesterday && !isDayBefore,
-                              onTap: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  backgroundColor: Colors.transparent,
-                                  isScrollControlled: true,
-                                  builder: (_) => _CalendarSheet(
-                                    initialDate: _date,
-                                    onDaySelected: (picked) {
-                                      _setDateChip(picked);
-                                      Navigator.of(context).pop();
-                                    },
+                              return Column(
+                                children: [
+                                  picker(
+                                    l10n.budgetFromAccount,
+                                    _accountId,
+                                    (v) => setState(() => _accountId = v),
                                   ),
-                                );
-                              },
-                            ),
+                                  picker(
+                                    l10n.budgetToAccount,
+                                    _toAccountId,
+                                    (v) => setState(() => _toAccountId = v),
+                                  ),
+                                ],
+                              );
+                            },
                           ),
-                        ],
-                      ),
-                      SizedBox(height: bs(12)),
 
-                      // Beschreibung (Titel der Transaktion)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: TraumColors.background,
-                          borderRadius: BorderRadius.circular(bs(10)),
-                          border: Border.all(
-                            color: TraumColors.onBackground.withValues(alpha: 0.06),
-                          ),
-                        ),
-                        child: Row(
+                        // Step 8: Date chips — 4 equal Expanded, radius 9, padding 6
+                        Row(
                           children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: bs(10)),
-                              child: Icon(
-                                Icons.title_rounded,
-                                size: bs(13),
-                                color: TraumColors.onBackgroundSubtle,
+                            Expanded(
+                              child: _DateChip(
+                                label: l10n.today,
+                                isSelected: isToday,
+                                onTap: () => _setDateChip(today),
                               ),
                             ),
+                            SizedBox(width: bs(6)),
                             Expanded(
-                              child: TextField(
-                                controller: _descCtrl,
-                                style: const TextStyle(
-                                  color: TraumColors.onBackground,
-                                  fontFamily: 'DMSans',
-                                  fontSize: 11,
-                                ),
-                                decoration: InputDecoration(
-                                  hintText: l10n.budgetDescriptionHint,
-                                  hintStyle: const TextStyle(
-                                    color: TraumColors.onBackgroundSubtle,
-                                    fontFamily: 'DMSans',
-                                    fontSize: 11,
-                                  ),
-                                  border: InputBorder.none,
-                                  isDense: true,
-                                ),
+                              child: _DateChip(
+                                label: l10n.yesterday,
+                                isSelected: isYesterday,
+                                onTap: () => _setDateChip(yesterday),
+                              ),
+                            ),
+                            SizedBox(width: bs(6)),
+                            Expanded(
+                              child: _DateChip(
+                                label: l10n.budgetDayBeforeYesterday,
+                                isSelected: isDayBefore,
+                                onTap: () => _setDateChip(dayBefore),
+                              ),
+                            ),
+                            SizedBox(width: bs(6)),
+                            Expanded(
+                              child: _DateChip(
+                                label:
+                                    (!isToday && !isYesterday && !isDayBefore)
+                                    ? '${_date.day}.${_date.month}.${_date.year}'
+                                    : l10n.budgetOtherDate,
+                                isSelected:
+                                    !isToday && !isYesterday && !isDayBefore,
+                                onTap: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    backgroundColor: Colors.transparent,
+                                    isScrollControlled: true,
+                                    builder: (_) => _CalendarSheet(
+                                      initialDate: _date,
+                                      onDaySelected: (picked) {
+                                        _setDateChip(picked);
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           ],
                         ),
-                      ),
-                      SizedBox(height: bs(8)),
+                        SizedBox(height: bs(12)),
 
-                      // Step 9: Note field — bg background, radius 10, pencil icon + camera
-                      Container(
-                        decoration: BoxDecoration(
-                          color: TraumColors.background,
-                          borderRadius: BorderRadius.circular(bs(10)),
-                          border: Border.all(
-                            color: TraumColors.onBackground.withValues(alpha: 0.06),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: bs(10)),
-                              child: Icon(
-                                Icons.edit_outlined,
-                                size: bs(13),
-                                color: TraumColors.onBackgroundSubtle,
+                        // Beschreibung (Titel der Transaktion)
+                        Container(
+                          decoration: BoxDecoration(
+                            color: TraumColors.background,
+                            borderRadius: BorderRadius.circular(bs(10)),
+                            border: Border.all(
+                              color: TraumColors.onBackground.withValues(
+                                alpha: 0.06,
                               ),
                             ),
-                            Expanded(
+                          ),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: bs(10),
+                                ),
+                                child: Icon(
+                                  Icons.title_rounded,
+                                  size: bs(13),
+                                  color: TraumColors.onBackgroundSubtle,
+                                ),
+                              ),
+                              Expanded(
+                                child: TextField(
+                                  controller: _descCtrl,
+                                  style: const TextStyle(
+                                    color: TraumColors.onBackground,
+                                    fontFamily: 'DMSans',
+                                    fontSize: 11,
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintText: l10n.budgetDescriptionHint,
+                                    hintStyle: const TextStyle(
+                                      color: TraumColors.onBackgroundSubtle,
+                                      fontFamily: 'DMSans',
+                                      fontSize: 11,
+                                    ),
+                                    border: InputBorder.none,
+                                    isDense: true,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: bs(8)),
+
+                        // Step 9: Note field — bg background, radius 10, pencil icon + camera
+                        Container(
+                          decoration: BoxDecoration(
+                            color: TraumColors.background,
+                            borderRadius: BorderRadius.circular(bs(10)),
+                            border: Border.all(
+                              color: TraumColors.onBackground.withValues(
+                                alpha: 0.06,
+                              ),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: bs(10),
+                                ),
+                                child: Icon(
+                                  Icons.edit_outlined,
+                                  size: bs(13),
+                                  color: TraumColors.onBackgroundSubtle,
+                                ),
+                              ),
+                              Expanded(
+                                child: TextField(
+                                  controller: _noteCtrl,
+                                  style: const TextStyle(
+                                    color: TraumColors.onBackground,
+                                    fontFamily: 'DMSans',
+                                    fontSize: 11,
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintText: _receiptImagePath != null
+                                        ? l10n.budgetReceiptAttachedHint
+                                        : l10n.budgetNoteOptionalHint,
+                                    hintStyle: const TextStyle(
+                                      color: TraumColors.onBackgroundSubtle,
+                                      fontFamily: 'DMSans',
+                                      fontSize: 11,
+                                    ),
+                                    border: InputBorder.none,
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: bs(10),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Semantics(
+                                button: true,
+                                label: l10n.a11yReceiptPhoto,
+                                child: GestureDetector(
+                                  onTap: _showReceiptSourceDialog,
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: bs(10),
+                                    ),
+                                    child: Icon(
+                                      _receiptImagePath != null
+                                          ? Icons.receipt_long_rounded
+                                          : Icons.camera_alt_outlined,
+                                      size: bs(13),
+                                      color: _receiptImagePath != null
+                                          ? TraumColors.amberGold
+                                          : TraumColors.onBackgroundSubtle,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: bs(10)),
+
+                        // Step 10: Save-as-template toggle — custom 34×18 switch
+                        // (nur beim Anlegen, nicht beim Bearbeiten)
+                        if (!_isEditing) ...[
+                          _ToggleRow(
+                            icon: Icons.bookmark_add_rounded,
+                            label: l10n.budgetSaveAsTemplate,
+                            value: _saveAsTemplate,
+                            onChanged: (v) =>
+                                setState(() => _saveAsTemplate = v),
+                          ),
+                          if (_saveAsTemplate) ...[
+                            SizedBox(height: bs(6)),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: TraumColors.background,
+                                borderRadius: BorderRadius.circular(bs(8)),
+                                border: Border.all(
+                                  color: TraumColors.onBackground.withValues(
+                                    alpha: 0.06,
+                                  ),
+                                ),
+                              ),
                               child: TextField(
-                                controller: _noteCtrl,
+                                controller: _templateNameCtrl,
                                 style: const TextStyle(
                                   color: TraumColors.onBackground,
                                   fontFamily: 'DMSans',
-                                  fontSize: 11,
+                                  fontSize: 13,
                                 ),
                                 decoration: InputDecoration(
-                                  hintText: _receiptImagePath != null
-                                      ? l10n.budgetReceiptAttachedHint
-                                      : l10n.budgetNoteOptionalHint,
+                                  hintText: l10n.budgetTemplateNameFieldHint,
                                   hintStyle: const TextStyle(
                                     color: TraumColors.onBackgroundSubtle,
                                     fontFamily: 'DMSans',
-                                    fontSize: 11,
+                                    fontSize: 13,
                                   ),
                                   border: InputBorder.none,
                                   isDense: true,
                                   contentPadding: EdgeInsets.symmetric(
-                                    vertical: bs(10),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Semantics(
-                              button: true,
-                              label: l10n.a11yReceiptPhoto,
-                              child: GestureDetector(
-                                onTap: _showReceiptSourceDialog,
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: bs(10)),
-                                  child: Icon(
-                                    _receiptImagePath != null
-                                        ? Icons.receipt_long_rounded
-                                        : Icons.camera_alt_outlined,
-                                    size: bs(13),
-                                    color: _receiptImagePath != null
-                                        ? TraumColors.amberGold
-                                        : TraumColors.onBackgroundSubtle,
+                                    horizontal: bs(10),
+                                    vertical: bs(8),
                                   ),
                                 ),
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                      SizedBox(height: bs(10)),
-
-                      // Step 10: Save-as-template toggle — custom 34×18 switch
-                      // (nur beim Anlegen, nicht beim Bearbeiten)
-                      if (!_isEditing) ...[
-                        _ToggleRow(
-                          icon: Icons.bookmark_add_rounded,
-                          label: l10n.budgetSaveAsTemplate,
-                          value: _saveAsTemplate,
-                          onChanged: (v) => setState(() => _saveAsTemplate = v),
-                        ),
-                        if (_saveAsTemplate) ...[
-                          SizedBox(height: bs(6)),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: TraumColors.background,
-                              borderRadius: BorderRadius.circular(bs(8)),
-                              border: Border.all(
-                                color: TraumColors.onBackground.withValues(alpha: 0.06),
-                              ),
-                            ),
-                            child: TextField(
-                              controller: _templateNameCtrl,
-                              style: const TextStyle(
-                                color: TraumColors.onBackground,
-                                fontFamily: 'DMSans',
-                                fontSize: 13,
-                              ),
-                              decoration: InputDecoration(
-                                hintText: l10n.budgetTemplateNameFieldHint,
-                                hintStyle: const TextStyle(
-                                  color: TraumColors.onBackgroundSubtle,
-                                  fontFamily: 'DMSans',
-                                  fontSize: 13,
-                                ),
-                                border: InputBorder.none,
-                                isDense: true,
-                                contentPadding: EdgeInsets.symmetric(
-                                  horizontal: bs(10),
-                                  vertical: bs(8),
-                                ),
-                              ),
-                            ),
-                          ),
                         ],
-                      ],
 
-                      // Step 10: Recurring toggle (income/expense only)
-                      if (_type != 'transfer') ...[
-                        SizedBox(height: bs(6)),
-                        _ToggleRow(
-                          icon: Icons.repeat_rounded,
-                          label: l10n.budgetMonthlyRecurring,
-                          value: _recurring,
-                          onChanged: (v) => setState(() => _recurring = v),
-                        ),
-                        if (_recurring) ...[
+                        // Step 10: Recurring toggle (income/expense only)
+                        if (_type != 'transfer') ...[
                           SizedBox(height: bs(6)),
-                          Row(children: [
-                            Text(l10n.budgetRecurringDayLabel,
-                                style: const TextStyle(
+                          _ToggleRow(
+                            icon: Icons.repeat_rounded,
+                            label: l10n.budgetMonthlyRecurring,
+                            value: _recurring,
+                            onChanged: (v) => setState(() => _recurring = v),
+                          ),
+                          if (_recurring) ...[
+                            SizedBox(height: bs(6)),
+                            Row(
+                              children: [
+                                Text(
+                                  l10n.budgetRecurringDayLabel,
+                                  style: const TextStyle(
                                     fontFamily: 'DMSans',
                                     color: TraumColors.onBackgroundMuted,
-                                    fontSize: 13)),
-                            SizedBox(width: bs(8)),
-                            DropdownButton<int>(
-                              value: _recurringDay,
-                              dropdownColor: TraumColors.surfaceVariant,
-                              style: const TextStyle(
-                                  fontFamily: 'DMSans',
-                                  color: TraumColors.onBackground),
-                              items: [
-                                for (var d = 1; d <= 28; d++)
-                                  DropdownMenuItem(value: d, child: Text('$d.'))
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                SizedBox(width: bs(8)),
+                                DropdownButton<int>(
+                                  value: _recurringDay,
+                                  dropdownColor: TraumColors.surfaceVariant,
+                                  style: const TextStyle(
+                                    fontFamily: 'DMSans',
+                                    color: TraumColors.onBackground,
+                                  ),
+                                  items: [
+                                    for (var d = 1; d <= 28; d++)
+                                      DropdownMenuItem(
+                                        value: d,
+                                        child: Text('$d.'),
+                                      ),
+                                  ],
+                                  onChanged: (v) =>
+                                      setState(() => _recurringDay = v ?? 1),
+                                ),
                               ],
-                              onChanged: (v) =>
-                                  setState(() => _recurringDay = v ?? 1),
                             ),
-                          ]),
+                          ],
                         ],
+                        // Bottom padding so content isn't hidden behind footer
+                        SizedBox(height: bs(70)),
                       ],
-                      // Bottom padding so content isn't hidden behind footer
-                      SizedBox(height: bs(70)),
-                    ],
+                    ),
                   ),
                 ),
-              ),
 
-              // Step 11: Pinned Speichern footer — 44px, radius 12, amberGold
-              Padding(
-                padding: EdgeInsets.fromLTRB(bs(16), bs(8), bs(16), bs(8)),
-                child: Builder(builder: (ctx) {
-                  final l10n = AppLocalizations.of(ctx)!;
-                  return GestureDetector(
-                    onTap: _saving ? null : _save,
-                    child: Container(
-                      height: bs(44),
-                      decoration: BoxDecoration(
-                        color: _saving
-                            ? TraumColors.amberGold.withValues(alpha: 0.5)
-                            : TraumColors.amberGold,
-                        borderRadius: BorderRadius.circular(bs(12)),
-                      ),
-                      child: Center(
-                        child: Text(
-                          _saving ? l10n.saving : l10n.save,
-                          style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            color: TraumColors.background,
+                // Step 11: Pinned Speichern footer — 44px, radius 12, amberGold
+                Padding(
+                  padding: EdgeInsets.fromLTRB(bs(16), bs(8), bs(16), bs(8)),
+                  child: Builder(
+                    builder: (ctx) {
+                      final l10n = AppLocalizations.of(ctx)!;
+                      return GestureDetector(
+                        onTap: _saving ? null : _save,
+                        child: Container(
+                          height: bs(44),
+                          decoration: BoxDecoration(
+                            color: _saving
+                                ? TraumColors.amberGold.withValues(alpha: 0.5)
+                                : TraumColors.amberGold,
+                            borderRadius: BorderRadius.circular(bs(12)),
+                          ),
+                          child: Center(
+                            child: Text(
+                              _saving ? l10n.saving : l10n.save,
+                              style: const TextStyle(
+                                fontFamily: 'DMSans',
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: TraumColors.background,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                }),
-              ),
-            ],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ));
+    );
   }
 }
 
@@ -1047,7 +1163,9 @@ class _Segment extends StatelessWidget {
                 fontFamily: 'DMSans',
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: isSelected ? activeTextColor : TraumColors.onBackgroundMuted,
+                color: isSelected
+                    ? activeTextColor
+                    : TraumColors.onBackgroundMuted,
               ),
             ),
           ),
@@ -1092,14 +1210,18 @@ class _CategoryColumnChip extends StatelessWidget {
           children: [
             budgetCategoryGlyph(
               cat.emoji,
-              color: isSelected ? TraumColors.amberGold : TraumColors.onBackgroundSubtle,
+              color: isSelected
+                  ? TraumColors.amberGold
+                  : TraumColors.onBackgroundSubtle,
               size: bs(18),
             ),
             SizedBox(height: bs(2)),
             Text(
               cat.name,
               style: TextStyle(
-                color: isSelected ? TraumColors.onBackground : TraumColors.onBackgroundMuted,
+                color: isSelected
+                    ? TraumColors.onBackground
+                    : TraumColors.onBackgroundMuted,
                 fontFamily: 'DMSans',
                 fontSize: 8,
                 fontWeight: FontWeight.w600,
@@ -1219,7 +1341,9 @@ class _DateChip extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(bs(6)),
         decoration: BoxDecoration(
-          color: isSelected ? TraumColors.amberGold : TraumColors.surfaceVariant,
+          color: isSelected
+              ? TraumColors.amberGold
+              : TraumColors.surfaceVariant,
           borderRadius: BorderRadius.circular(bs(9)),
         ),
         child: Center(
@@ -1246,8 +1370,10 @@ class _CalendarSheet extends StatefulWidget {
   final DateTime initialDate;
   final void Function(DateTime) onDaySelected;
 
-  const _CalendarSheet(
-      {required this.initialDate, required this.onDaySelected});
+  const _CalendarSheet({
+    required this.initialDate,
+    required this.onDaySelected,
+  });
 
   @override
   State<_CalendarSheet> createState() => _CalendarSheetState();
@@ -1306,32 +1432,51 @@ class _CalendarSheetState extends State<_CalendarSheet> {
                 color: TraumColors.amberGoldDim,
                 shape: BoxShape.circle,
               ),
-              todayTextStyle:
-                  TextStyle(color: TraumColors.amberGold, fontFamily: 'DMSans'),
-              defaultTextStyle:
-                  TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
-              weekendTextStyle:
-                  TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
+              todayTextStyle: TextStyle(
+                color: TraumColors.amberGold,
+                fontFamily: 'DMSans',
+              ),
+              defaultTextStyle: TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
+              weekendTextStyle: TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
               outsideTextStyle: TextStyle(
-                  color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+              ),
             ),
             headerStyle: const HeaderStyle(
               formatButtonVisible: false,
               titleCentered: true,
               titleTextStyle: TextStyle(
-                  color: TraumColors.onBackground,
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w700),
-              leftChevronIcon: Icon(Icons.chevron_left,
-                  color: TraumColors.onBackgroundMuted),
-              rightChevronIcon: Icon(Icons.chevron_right,
-                  color: TraumColors.onBackgroundMuted),
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+              ),
+              leftChevronIcon: Icon(
+                Icons.chevron_left,
+                color: TraumColors.onBackgroundMuted,
+              ),
+              rightChevronIcon: Icon(
+                Icons.chevron_right,
+                color: TraumColors.onBackgroundMuted,
+              ),
             ),
             daysOfWeekStyle: const DaysOfWeekStyle(
               weekdayStyle: TextStyle(
-                  color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12),
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 12,
+              ),
               weekendStyle: TextStyle(
-                  color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12),
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 12,
+              ),
             ),
           ),
         ],
@@ -1344,22 +1489,32 @@ class _AccountChip extends StatelessWidget {
   final String label;
   final bool selected;
   final VoidCallback onTap;
-  const _AccountChip({required this.label, required this.selected, required this.onTap});
+  const _AccountChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: bs(14), vertical: bs(8)),
-          decoration: BoxDecoration(
-            color: selected ? TraumColors.amberGoldDim : TraumColors.surface,
-            borderRadius: BorderRadius.circular(bs(20)),
-            border: selected ? Border.all(color: TraumColors.amberGold) : null,
-          ),
-          child: Text(label,
-              style: TextStyle(
-                  color: selected ? TraumColors.amberGold : TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans', fontSize: 13,
-                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400)),
+    onTap: onTap,
+    child: Container(
+      padding: EdgeInsets.symmetric(horizontal: bs(14), vertical: bs(8)),
+      decoration: BoxDecoration(
+        color: selected ? TraumColors.amberGoldDim : TraumColors.surface,
+        borderRadius: BorderRadius.circular(bs(20)),
+        border: selected ? Border.all(color: TraumColors.amberGold) : null,
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: selected
+              ? TraumColors.amberGold
+              : TraumColors.onBackgroundMuted,
+          fontFamily: 'DMSans',
+          fontSize: 13,
+          fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
         ),
-      );
+      ),
+    ),
+  );
 }

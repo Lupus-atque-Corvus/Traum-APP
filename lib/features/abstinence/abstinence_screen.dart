@@ -75,11 +75,7 @@ class _AbstinenceScreenState extends ConsumerState<AbstinenceScreen>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          _AbstinenceTab(),
-          _GoalsTab(),
-          _HabitsTab(),
-        ],
+        children: const [_AbstinenceTab(), _GoalsTab(), _HabitsTab()],
       ),
     );
   }
@@ -112,16 +108,19 @@ class _AbstinenceTab extends ConsumerWidget {
               tracker: trackers[i],
               onDelete: () =>
                   ref.read(abstinenceDaoProvider).deleteTracker(trackers[i].id),
-              onRelapse: () =>
-                  _showRelapseDialog(context, ref, trackers[i]),
+              onRelapse: () => _showRelapseDialog(context, ref, trackers[i]),
             ),
           );
         },
         loading: () => const Center(
-            child: CircularProgressIndicator(color: TraumColors.roseRed)),
+          child: CircularProgressIndicator(color: TraumColors.roseRed),
+        ),
         error: (e, _) => Center(
-            child: Text('${AppLocalizations.of(context)!.error}: $e',
-                style: const TextStyle(color: TraumColors.roseRed))),
+          child: Text(
+            '${AppLocalizations.of(context)!.error}: $e',
+            style: const TextStyle(color: TraumColors.roseRed),
+          ),
+        ),
       ),
     );
   }
@@ -132,8 +131,9 @@ class _AbstinenceTab extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
       ),
       builder: (ctx) => _AddTrackerSheet(
         onAdd: (c) => ref.read(abstinenceDaoProvider).insertTracker(c),
@@ -142,38 +142,52 @@ class _AbstinenceTab extends ConsumerWidget {
   }
 
   void _showRelapseDialog(
-      BuildContext context, WidgetRef ref, AbstinenceTracker tracker) {
+    BuildContext context,
+    WidgetRef ref,
+    AbstinenceTracker tracker,
+  ) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surfaceElevated,
-        title: Text(AppLocalizations.of(ctx)!.relapseAt(tracker.name),
-            style: const TextStyle(
-                color: TraumColors.roseRed, fontFamily: 'DMSans')),
+        title: Text(
+          AppLocalizations.of(ctx)!.relapseAt(tracker.name),
+          style: const TextStyle(
+            color: TraumColors.roseRed,
+            fontFamily: 'DMSans',
+          ),
+        ),
         content: Text(
           AppLocalizations.of(ctx)!.relapseDescription,
           style: const TextStyle(
-              color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text(AppLocalizations.of(ctx)!.cancel,
-                style:
-                    const TextStyle(color: TraumColors.onBackgroundMuted)),
+            child: Text(
+              AppLocalizations.of(ctx)!.cancel,
+              style: const TextStyle(color: TraumColors.onBackgroundMuted),
+            ),
           ),
           TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
               final now = DateTime.now();
-              await ref.read(abstinenceDaoProvider).insertEvent(
+              await ref
+                  .read(abstinenceDaoProvider)
+                  .insertEvent(
                     AbstinenceEventsCompanion.insert(
                       trackerId: tracker.id,
                       type: 'relapse',
                       eventDate: now,
                     ),
                   );
-              await ref.read(abstinenceDaoProvider).updateTracker(
+              await ref
+                  .read(abstinenceDaoProvider)
+                  .updateTracker(
                     AbstinenceTrackersCompanion(
                       id: Value(tracker.id),
                       name: Value(tracker.name),
@@ -183,10 +197,13 @@ class _AbstinenceTab extends ConsumerWidget {
                     ),
                   );
             },
-            child: Text(AppLocalizations.of(ctx)!.confirmRelapse,
-                style: const TextStyle(
-                    color: TraumColors.roseRed,
-                    fontWeight: FontWeight.w700)),
+            child: Text(
+              AppLocalizations.of(ctx)!.confirmRelapse,
+              style: const TextStyle(
+                color: TraumColors.roseRed,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
         ],
       ),
@@ -215,18 +232,28 @@ class _GoalsTab extends ConsumerWidget {
         data: (goals) {
           if (goals.isEmpty) {
             return Center(
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.flag_rounded,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.flag_rounded,
                     size: 64,
-                    color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
-                const SizedBox(height: 16),
-                Text(AppLocalizations.of(context)!.noGoals,
+                    color: TraumColors.onBackgroundSubtle.withValues(
+                      alpha: 0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    AppLocalizations.of(context)!.noGoals,
                     style: const TextStyle(
-                        color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600)),
-              ]),
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
             );
           }
           final achieved = goals.where((g) => g.done).length;
@@ -242,10 +269,11 @@ class _GoalsTab extends ConsumerWidget {
           );
         },
         loading: () => const Center(
-            child: CircularProgressIndicator(color: TraumColors.lavender)),
+          child: CircularProgressIndicator(color: TraumColors.lavender),
+        ),
         error: (e, _) => Center(
-            child: Text('$e',
-                style: const TextStyle(color: TraumColors.roseRed))),
+          child: Text('$e', style: const TextStyle(color: TraumColors.roseRed)),
+        ),
       ),
     );
   }
@@ -256,10 +284,13 @@ class _GoalsTab extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
-      builder: (ctx) =>
-          _AddGoalSheet(onAdd: (c) => ref.read(planningDaoProvider).insertGoal(c)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
+      ),
+      builder: (ctx) => _AddGoalSheet(
+        onAdd: (c) => ref.read(planningDaoProvider).insertGoal(c),
+      ),
     );
   }
 }
@@ -282,14 +313,17 @@ class _GoalCard extends StatelessWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
         decoration: BoxDecoration(
-            color: TraumColors.roseRed.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(TraumRadius.card)),
+          color: TraumColors.roseRed.withValues(alpha: 0.2),
+          borderRadius: BorderRadius.circular(TraumRadius.card),
+        ),
         child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
       ),
       confirmDismiss: (_) => confirmDeleteDialog(
         context,
         title: AppLocalizations.of(context)!.deleteGoalConfirmTitle,
-        content: AppLocalizations.of(context)!.deleteGoalConfirmContent(goal.title),
+        content: AppLocalizations.of(
+          context,
+        )!.deleteGoalConfirmContent(goal.title),
       ),
       onDismissed: (_) => ref.read(planningDaoProvider).deleteGoal(goal.id),
       child: Container(
@@ -297,61 +331,82 @@ class _GoalCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: TraumColors.surface,
           borderRadius: BorderRadius.circular(TraumRadius.card),
-          border:
-              Border.all(color: TraumColors.lavender.withValues(alpha: 0.25)),
+          border: Border.all(
+            color: TraumColors.lavender.withValues(alpha: 0.25),
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              Expanded(
-                  child: Text(goal.title,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      goal.title,
                       style: const TextStyle(
-                          color: TraumColors.onBackground,
-                          fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w700))),
-              if (goal.done)
-                Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  if (goal.done)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
                         color: TraumColors.mintGreenDim,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Text(AppLocalizations.of(context)!.reached,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.reached,
                         style: const TextStyle(
-                            color: TraumColors.mintGreen,
-                            fontFamily: 'DMSans',
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600))),
-            ]),
-            if (goal.description != null) ...[
-              const SizedBox(height: 4),
-              Text(goal.description!,
+                          color: TraumColors.mintGreen,
+                          fontFamily: 'DMSans',
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              if (goal.description != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  goal.description!,
                   style: const TextStyle(
-                      color: TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontSize: 12)),
-            ],
-            const SizedBox(height: 12),
-            LabeledProgressBar(
-              name: AppLocalizations.of(context)!.progress,
-              value: progress,
-              gradient: TraumColors.gradientPlanning,
-              metaLine: goal.targetValue != null
-                  ? '${goal.currentValue} / ${goal.targetValue} ${goal.unit ?? ''}'
-                  : null,
-            ),
-            if (goal.targetDate != null) ...[
-              const SizedBox(height: 6),
-              Text(
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+              const SizedBox(height: 12),
+              LabeledProgressBar(
+                name: AppLocalizations.of(context)!.progress,
+                value: progress,
+                gradient: TraumColors.gradientPlanning,
+                metaLine: goal.targetValue != null
+                    ? '${goal.currentValue} / ${goal.targetValue} ${goal.unit ?? ''}'
+                    : null,
+              ),
+              if (goal.targetDate != null) ...[
+                const SizedBox(height: 6),
+                Text(
                   '${AppLocalizations.of(context)!.deadline}: ${goal.targetDate!.day}.${goal.targetDate!.month}.${goal.targetDate!.year}',
                   style: const TextStyle(
-                      color: TraumColors.onBackgroundSubtle,
-                      fontFamily: 'DMSans',
-                      fontSize: 11)),
+                    color: TraumColors.onBackgroundSubtle,
+                    fontFamily: 'DMSans',
+                    fontSize: 11,
+                  ),
+                ),
+              ],
             ],
-          ]),
+          ),
         ),
       ),
     );
@@ -387,126 +442,176 @@ class _AddGoalSheetState extends State<_AddGoalSheet> {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.only(
-          left: 20,
-          right: 20,
-          top: 16,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+        left: 20,
+        right: 20,
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
       child: SingleChildScrollView(
         child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                  child: Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                          color: TraumColors.onBackgroundSubtle,
-                          borderRadius: BorderRadius.circular(2)))),
-              const SizedBox(height: 16),
-              Text(l10n.addGoal,
-                  style: const TextStyle(
-                      color: TraumColors.onBackground,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18)),
-              const SizedBox(height: 16),
-              _field(l10n.titleRequiredField, _titleCtrl),
-              const SizedBox(height: 10),
-              _field(l10n.fieldDescription, _descCtrl, maxLines: 2),
-              const SizedBox(height: 10),
-              Row(children: [
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: TraumColors.onBackgroundSubtle,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l10n.addGoal,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
+              ),
+            ),
+            const SizedBox(height: 16),
+            _field(l10n.titleRequiredField, _titleCtrl),
+            const SizedBox(height: 10),
+            _field(l10n.fieldDescription, _descCtrl, maxLines: 2),
+            const SizedBox(height: 10),
+            Row(
+              children: [
                 Expanded(
-                    child: _field(l10n.targetValue, _targetCtrl,
-                        keyboard: TextInputType.number)),
+                  child: _field(
+                    l10n.targetValue,
+                    _targetCtrl,
+                    keyboard: TextInputType.number,
+                  ),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
-                    child: _field(l10n.fieldUnit, _unitCtrl,
-                        hint: l10n.unitHintKgKm)),
-              ]),
-              const SizedBox(height: 12),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.deadline,
-                    style: const TextStyle(
-                        color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans',
-                        fontSize: 13)),
-                trailing: Text(
-                    _deadline != null
-                        ? '${_deadline!.day}.${_deadline!.month}.${_deadline!.year}'
-                        : l10n.noDate,
-                    style: TextStyle(
-                        color: _deadline != null
-                            ? TraumColors.lavender
-                            : TraumColors.onBackgroundSubtle,
-                        fontFamily: 'DMSans',
-                        fontWeight: FontWeight.w600)),
-                onTap: () async {
-                  final p = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2100),
-                      builder: (ctx, child) => Theme(
-                          data: ThemeData.dark().copyWith(
-                              colorScheme: const ColorScheme.dark(
-                                  primary: TraumColors.lavender)),
-                          child: child!));
-                  if (p != null) setState(() => _deadline = p);
-                },
+                  child: _field(
+                    l10n.fieldUnit,
+                    _unitCtrl,
+                    hint: l10n.unitHintKgKm,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                l10n.deadline,
+                style: const TextStyle(
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                  fontSize: 13,
+                ),
               ),
-              const SizedBox(height: 20),
-              GradientButton(
-                  label: l10n.save,
-                  onPressed: () async {
-                    if (_titleCtrl.text.trim().isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(l10n.titleRequired)));
-                      return;
-                    }
-                    await widget.onAdd(GoalsCompanion.insert(
-                      title: _titleCtrl.text.trim(),
-                      description: Value(_descCtrl.text.trim().isEmpty
+              trailing: Text(
+                _deadline != null
+                    ? '${_deadline!.day}.${_deadline!.month}.${_deadline!.year}'
+                    : l10n.noDate,
+                style: TextStyle(
+                  color: _deadline != null
+                      ? TraumColors.lavender
+                      : TraumColors.onBackgroundSubtle,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              onTap: () async {
+                final p = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2100),
+                  builder: (ctx, child) => Theme(
+                    data: ThemeData.dark().copyWith(
+                      colorScheme: const ColorScheme.dark(
+                        primary: TraumColors.lavender,
+                      ),
+                    ),
+                    child: child!,
+                  ),
+                );
+                if (p != null) setState(() => _deadline = p);
+              },
+            ),
+            const SizedBox(height: 20),
+            GradientButton(
+              label: l10n.save,
+              onPressed: () async {
+                if (_titleCtrl.text.trim().isEmpty) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(l10n.titleRequired)));
+                  return;
+                }
+                await widget.onAdd(
+                  GoalsCompanion.insert(
+                    title: _titleCtrl.text.trim(),
+                    description: Value(
+                      _descCtrl.text.trim().isEmpty
                           ? null
-                          : _descCtrl.text.trim()),
-                      targetValue:
-                          Value(int.tryParse(_targetCtrl.text)),
-                      unit: Value(_unitCtrl.text.trim().isEmpty
+                          : _descCtrl.text.trim(),
+                    ),
+                    targetValue: Value(int.tryParse(_targetCtrl.text)),
+                    unit: Value(
+                      _unitCtrl.text.trim().isEmpty
                           ? null
-                          : _unitCtrl.text.trim()),
-                      targetDate: Value(_deadline),
-                    ));
-                    if (context.mounted) Navigator.pop(context);
-                  }),
-              const SizedBox(height: 8),
-            ]),
+                          : _unitCtrl.text.trim(),
+                    ),
+                    targetDate: Value(_deadline),
+                  ),
+                );
+                if (context.mounted) Navigator.pop(context);
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _field(String label, TextEditingController ctrl,
-      {String? hint, int maxLines = 1, TextInputType? keyboard}) {
+  Widget _field(
+    String label,
+    TextEditingController ctrl, {
+    String? hint,
+    int maxLines = 1,
+    TextInputType? keyboard,
+  }) {
     return TextField(
-        controller: ctrl,
-        maxLines: maxLines,
-        keyboardType: keyboard,
-        style: const TextStyle(
-            color: TraumColors.onBackground, fontFamily: 'DMSans'),
-        decoration: InputDecoration(
-            labelText: label,
-            hintText: hint,
-            labelStyle: const TextStyle(
-                color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
-            hintStyle: const TextStyle(
-                color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
-            filled: true,
-            fillColor: TraumColors.surface,
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(TraumRadius.card),
-                borderSide: BorderSide.none),
-            contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16, vertical: 12)));
+      controller: ctrl,
+      maxLines: maxLines,
+      keyboardType: keyboard,
+      style: const TextStyle(
+        color: TraumColors.onBackground,
+        fontFamily: 'DMSans',
+      ),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        labelStyle: const TextStyle(
+          color: TraumColors.onBackgroundMuted,
+          fontFamily: 'DMSans',
+        ),
+        hintStyle: const TextStyle(
+          color: TraumColors.onBackgroundSubtle,
+          fontFamily: 'DMSans',
+        ),
+        filled: true,
+        fillColor: TraumColors.surface,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(TraumRadius.card),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
+      ),
+    );
   }
 }
 
@@ -536,26 +641,38 @@ class _HabitsTab extends ConsumerWidget {
         data: (habits) {
           if (habits.isEmpty) {
             return Center(
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.loop_rounded,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.loop_rounded,
                     size: 64,
-                    color:
-                        TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
-                const SizedBox(height: 16),
-                Text(AppLocalizations.of(context)!.noHabits,
+                    color: TraumColors.onBackgroundSubtle.withValues(
+                      alpha: 0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    AppLocalizations.of(context)!.noHabits,
                     style: const TextStyle(
-                        color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600)),
-                const SizedBox(height: 8),
-                Text(AppLocalizations.of(context)!.tapToAddHabit,
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    AppLocalizations.of(context)!.tapToAddHabit,
                     style: const TextStyle(
-                        color: TraumColors.onBackgroundSubtle,
-                        fontFamily: 'DMSans',
-                        fontSize: 13),
-                    textAlign: TextAlign.center),
-              ]),
+                      color: TraumColors.onBackgroundSubtle,
+                      fontFamily: 'DMSans',
+                      fontSize: 13,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             );
           }
           return logsAsync.when(
@@ -564,19 +681,29 @@ class _HabitsTab extends ConsumerWidget {
               final total = habits.length;
               final weekday = today.weekday; // 1=Mo..7=So
               final monday = today.subtract(Duration(days: weekday - 1));
-              final weekDays =
-                  List.generate(7, (i) => monday.add(Duration(days: i)));
+              final weekDays = List.generate(
+                7,
+                (i) => monday.add(Duration(days: i)),
+              );
               final heatmapRows = habits
-                  .map((h) => HabitHeatmapRow(
-                        name: h.name,
-                        iconKey: h.emoji,
-                        dayValues: weekDays
-                            .map((d) => recentLogs.any((l) =>
-                                    l.habitId == h.id && _isSameDay(l.logDate, d))
+                  .map(
+                    (h) => HabitHeatmapRow(
+                      name: h.name,
+                      iconKey: h.emoji,
+                      dayValues: weekDays
+                          .map(
+                            (d) =>
+                                recentLogs.any(
+                                  (l) =>
+                                      l.habitId == h.id &&
+                                      _isSameDay(l.logDate, d),
+                                )
                                 ? 1.0
-                                : 0.0)
-                            .toList(),
-                      ))
+                                : 0.0,
+                          )
+                          .toList(),
+                    ),
+                  )
                   .toList();
 
               return ListView.builder(
@@ -590,8 +717,9 @@ class _HabitsTab extends ConsumerWidget {
                         child: StreakRing(
                           value: total == 0 ? 0.0 : doneToday / total,
                           bigNumber: '$doneToday/$total',
-                          unitLabel:
-                              AppLocalizations.of(context)!.habitsCompletedTodayLabel,
+                          unitLabel: AppLocalizations.of(
+                            context,
+                          )!.habitsCompletedTodayLabel,
                           color: TraumColors.mintGreen,
                           size: 116,
                         ),
@@ -606,7 +734,8 @@ class _HabitsTab extends ConsumerWidget {
                         color: TraumColors.surface,
                         borderRadius: BorderRadius.circular(TraumRadius.card),
                         border: Border.all(
-                            color: TraumColors.mintGreen.withValues(alpha: 0.25)),
+                          color: TraumColors.mintGreen.withValues(alpha: 0.25),
+                        ),
                       ),
                       child: WeeklyHabitHeatmap(
                         rows: heatmapRows,
@@ -620,12 +749,19 @@ class _HabitsTab extends ConsumerWidget {
                     habit: habit,
                     isCheckedToday: logs.any((l) => l.habitId == habit.id),
                     streak: _currentStreakForHabit(
-                        habit.id, recentLogs, habit.frequency),
+                      habit.id,
+                      recentLogs,
+                      habit.frequency,
+                    ),
                     onToggle: (checked) async {
                       if (checked) {
-                        await ref.read(planningDaoProvider).insertHabitLog(
+                        await ref
+                            .read(planningDaoProvider)
+                            .insertHabitLog(
                               HabitLogsCompanion.insert(
-                                  habitId: habit.id, logDate: today),
+                                habitId: habit.id,
+                                logDate: today,
+                              ),
                             );
                       } else {
                         await ref
@@ -640,16 +776,17 @@ class _HabitsTab extends ConsumerWidget {
               );
             },
             loading: () => const Center(
-                child:
-                    CircularProgressIndicator(color: TraumColors.mintGreen)),
+              child: CircularProgressIndicator(color: TraumColors.mintGreen),
+            ),
             error: (e, _) => InlineError(e),
           );
         },
         loading: () => const Center(
-            child: CircularProgressIndicator(color: TraumColors.mintGreen)),
+          child: CircularProgressIndicator(color: TraumColors.mintGreen),
+        ),
         error: (e, _) => Center(
-            child: Text('$e',
-                style: const TextStyle(color: TraumColors.roseRed))),
+          child: Text('$e', style: const TextStyle(color: TraumColors.roseRed)),
+        ),
       ),
     );
   }
@@ -660,10 +797,13 @@ class _HabitsTab extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
+      ),
       builder: (ctx) => _AddHabitSheet(
-          onAdd: (c) => ref.read(planningDaoProvider).insertHabit(c)),
+        onAdd: (c) => ref.read(planningDaoProvider).insertHabit(c),
+      ),
     );
   }
 }
@@ -687,16 +827,22 @@ int _currentStreakForHabit(int habitId, List<HabitLog> logs, String frequency) {
   for (final l in logs) {
     if (l.habitId != habitId) continue;
     final d = l.logDate;
-    final dayKey =
-        DateTime(d.year, d.month, d.day).difference(DateTime(2000)).inDays;
+    final dayKey = DateTime(
+      d.year,
+      d.month,
+      d.day,
+    ).difference(DateTime(2000)).inDays;
     doneDays.add(dayKey);
   }
   final now = DateTime.now();
   if (frequency == 'weekly') {
     return _currentWeeklyStreak(doneDays, now);
   }
-  final todayKey =
-      DateTime(now.year, now.month, now.day).difference(DateTime(2000)).inDays;
+  final todayKey = DateTime(
+    now.year,
+    now.month,
+    now.day,
+  ).difference(DateTime(2000)).inDays;
   int? start;
   if (doneDays.contains(todayKey)) {
     start = todayKey;
@@ -719,14 +865,19 @@ int _currentWeeklyStreak(Set<int> doneDayKeys, DateTime now) {
   int weekStartKeyFor(int dayKey) {
     final date = DateTime(2000).add(Duration(days: dayKey));
     final monday = date.subtract(Duration(days: date.weekday - 1));
-    return DateTime(monday.year, monday.month, monday.day)
-        .difference(DateTime(2000))
-        .inDays;
+    return DateTime(
+      monday.year,
+      monday.month,
+      monday.day,
+    ).difference(DateTime(2000)).inDays;
   }
 
   final doneWeeks = doneDayKeys.map(weekStartKeyFor).toSet();
-  final todayKey =
-      DateTime(now.year, now.month, now.day).difference(DateTime(2000)).inDays;
+  final todayKey = DateTime(
+    now.year,
+    now.month,
+    now.day,
+  ).difference(DateTime(2000)).inDays;
   final thisWeekStart = weekStartKeyFor(todayKey);
   int? start;
   if (doneWeeks.contains(thisWeekStart)) {
@@ -751,12 +902,13 @@ class _HabitTile extends ConsumerWidget {
   final void Function(bool) onToggle;
   final VoidCallback onDelete;
 
-  const _HabitTile(
-      {required this.habit,
-      required this.isCheckedToday,
-      required this.streak,
-      required this.onToggle,
-      required this.onDelete});
+  const _HabitTile({
+    required this.habit,
+    required this.isCheckedToday,
+    required this.streak,
+    required this.onToggle,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -769,14 +921,17 @@ class _HabitTile extends ConsumerWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
         decoration: BoxDecoration(
-            color: TraumColors.roseRed.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(TraumRadius.card)),
+          color: TraumColors.roseRed.withValues(alpha: 0.2),
+          borderRadius: BorderRadius.circular(TraumRadius.card),
+        ),
         child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
       ),
       confirmDismiss: (_) => confirmDeleteDialog(
         context,
         title: AppLocalizations.of(context)!.deleteHabitConfirmTitle,
-        content: AppLocalizations.of(context)!.deleteHabitConfirmContent(habit.name),
+        content: AppLocalizations.of(
+          context,
+        )!.deleteHabitConfirmContent(habit.name),
       ),
       onDismissed: (_) => onDelete(),
       child: Container(
@@ -785,82 +940,104 @@ class _HabitTile extends ConsumerWidget {
           color: TraumColors.surface,
           borderRadius: BorderRadius.circular(TraumRadius.card),
           border: Border.all(
-              color: isCheckedToday
-                  ? TraumColors.mintGreen.withValues(alpha: 0.3)
-                  : TraumColors.surfaceVariant),
+            color: isCheckedToday
+                ? TraumColors.mintGreen.withValues(alpha: 0.3)
+                : TraumColors.surfaceVariant,
+          ),
         ),
         child: Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Column(children: [
-            Row(children: [
-              ProgressIcon(habit.emoji, size: 20, color: TraumColors.lavender),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: Column(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  ProgressIcon(
+                    habit.emoji,
+                    size: 20,
+                    color: TraumColors.lavender,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                    Text(habit.name,
-                        style: const TextStyle(
+                        Text(
+                          habit.name,
+                          style: const TextStyle(
                             color: TraumColors.onBackground,
                             fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w600)),
-                    if (streak > 0)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          const Icon(Icons.local_fire_department_rounded,
-                              size: 13, color: TraumColors.amberGold),
-                          const SizedBox(width: 4),
-                          Text(
-                              habit.frequency == 'weekly'
-                                  ? AppLocalizations.of(context)!
-                                      .habitStreakWeeks(streak)
-                                  : AppLocalizations.of(context)!
-                                      .habitStreakDays(streak),
-                              style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        if (streak > 0)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.local_fire_department_rounded,
+                                  size: 13,
                                   color: TraumColors.amberGold,
-                                  fontFamily: 'DMSans',
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600)),
-                        ]),
-                      ),
-                  ])),
-              GestureDetector(
-                onTap: () => onToggle(!isCheckedToday),
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: isCheckedToday
-                        ? TraumColors.mintGreen
-                        : TraumColors.surfaceVariant,
-                    shape: BoxShape.circle,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  habit.frequency == 'weekly'
+                                      ? AppLocalizations.of(
+                                          context,
+                                        )!.habitStreakWeeks(streak)
+                                      : AppLocalizations.of(
+                                          context,
+                                        )!.habitStreakDays(streak),
+                                  style: const TextStyle(
+                                    color: TraumColors.amberGold,
+                                    fontFamily: 'DMSans',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                  child: Icon(
-                      isCheckedToday
-                          ? Icons.check_rounded
-                          : Icons.add_rounded,
-                      color: Colors.white,
-                      size: 18),
-                ),
+                  GestureDetector(
+                    onTap: () => onToggle(!isCheckedToday),
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: isCheckedToday
+                            ? TraumColors.mintGreen
+                            : TraumColors.surfaceVariant,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        isCheckedToday
+                            ? Icons.check_rounded
+                            : Icons.add_rounded,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ]),
-            const SizedBox(height: 10),
-            last7Async.when(
-              data: (logs) {
-                final weekStatus = List.generate(7, (i) {
-                  final day =
-                      DateTime.now().subtract(Duration(days: 6 - i));
-                  return logs.any((l) => _isSameDay(l.logDate, day));
-                });
-                return HabitWeekRow(
-                    habitName: '', weekStatus: weekStatus);
-              },
-              loading: () => const SizedBox(height: 28),
-              error: (e, _) => InlineError(e),
-            ),
-          ]),
+              const SizedBox(height: 10),
+              last7Async.when(
+                data: (logs) {
+                  final weekStatus = List.generate(7, (i) {
+                    final day = DateTime.now().subtract(Duration(days: 6 - i));
+                    return logs.any((l) => _isSameDay(l.logDate, day));
+                  });
+                  return HabitWeekRow(habitName: '', weekStatus: weekStatus);
+                },
+                loading: () => const SizedBox(height: 28),
+                error: (e, _) => InlineError(e),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -894,113 +1071,156 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.only(
-          left: 20,
-          right: 20,
-          top: 16,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+        left: 20,
+        right: 20,
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
       child: SingleChildScrollView(
         child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                  child: Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                          color: TraumColors.onBackgroundSubtle,
-                          borderRadius: BorderRadius.circular(2)))),
-              const SizedBox(height: 16),
-              Text(l10n.addHabit,
-                  style: const TextStyle(
-                      color: TraumColors.onBackground,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18)),
-              const SizedBox(height: 16),
-              TextField(
-                  controller: _nameCtrl,
-                  autofocus: true,
-                  style: const TextStyle(
-                      color: TraumColors.onBackground, fontFamily: 'DMSans'),
-                  decoration: InputDecoration(
-                      labelText: l10n.fieldName,
-                      labelStyle: const TextStyle(
-                          color: TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans'),
-                      filled: true,
-                      fillColor: TraumColors.surface,
-                      border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(TraumRadius.card),
-                          borderSide: BorderSide.none),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12))),
-              const SizedBox(height: 12),
-              Text(AppLocalizations.of(context)!.iconLabel,
-                  style: const TextStyle(
-                      color: TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontSize: 13)),
-              const SizedBox(height: 6),
-              GestureDetector(
-                onTap: () async {
-                  final picked = await showIconPickerSheet(context,
-                      selected: _iconKey, accentColor: TraumColors.lavender);
-                  if (picked != null) setState(() => _iconKey = picked);
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      color: TraumColors.lavenderDim,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: TraumColors.lavender)),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    ProgressIcon(_iconKey,
-                        size: 22, color: TraumColors.lavender),
-                    const SizedBox(width: 8),
-                    const Icon(Icons.edit_rounded,
-                        size: 14, color: TraumColors.onBackgroundMuted),
-                  ]),
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: TraumColors.onBackgroundSubtle,
+                  borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: 12),
-              Text(l10n.frequency,
-                  style: const TextStyle(
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l10n.addHabit,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _nameCtrl,
+              autofocus: true,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
+              decoration: InputDecoration(
+                labelText: l10n.fieldName,
+                labelStyle: const TextStyle(
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                ),
+                filled: true,
+                fillColor: TraumColors.surface,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(TraumRadius.card),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              AppLocalizations.of(context)!.iconLabel,
+              style: const TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+            ),
+            const SizedBox(height: 6),
+            GestureDetector(
+              onTap: () async {
+                final picked = await showIconPickerSheet(
+                  context,
+                  selected: _iconKey,
+                  accentColor: TraumColors.lavender,
+                );
+                if (picked != null) setState(() => _iconKey = picked);
+              },
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: TraumColors.lavenderDim,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: TraumColors.lavender),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ProgressIcon(
+                      _iconKey,
+                      size: 22,
+                      color: TraumColors.lavender,
+                    ),
+                    const SizedBox(width: 8),
+                    const Icon(
+                      Icons.edit_rounded,
+                      size: 14,
                       color: TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontSize: 13)),
-              const SizedBox(height: 6),
-              Row(children: [
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              l10n.frequency,
+              style: const TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Row(
+              children: [
                 _FreqChip(
-                    label: l10n.frequencyDaily,
-                    value: 'daily',
-                    selected: _frequency == 'daily',
-                    onTap: () => setState(() => _frequency = 'daily')),
+                  label: l10n.frequencyDaily,
+                  value: 'daily',
+                  selected: _frequency == 'daily',
+                  onTap: () => setState(() => _frequency = 'daily'),
+                ),
                 const SizedBox(width: 8),
                 _FreqChip(
-                    label: l10n.frequencyWeekly,
-                    value: 'weekly',
-                    selected: _frequency == 'weekly',
-                    onTap: () => setState(() => _frequency = 'weekly')),
-              ]),
-              const SizedBox(height: 20),
-              GradientButton(
-                  label: l10n.save,
-                  onPressed: () async {
-                    if (_nameCtrl.text.trim().isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(l10n.nameRequired)));
-                      return;
-                    }
-                    await widget.onAdd(HabitsCompanion.insert(
-                        name: _nameCtrl.text.trim(),
-                        emoji: Value(_iconKey),
-                        frequency: Value(_frequency)));
-                    if (context.mounted) Navigator.pop(context);
-                  }),
-              const SizedBox(height: 8),
-            ]),
+                  label: l10n.frequencyWeekly,
+                  value: 'weekly',
+                  selected: _frequency == 'weekly',
+                  onTap: () => setState(() => _frequency = 'weekly'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            GradientButton(
+              label: l10n.save,
+              onPressed: () async {
+                if (_nameCtrl.text.trim().isEmpty) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(l10n.nameRequired)));
+                  return;
+                }
+                await widget.onAdd(
+                  HabitsCompanion.insert(
+                    name: _nameCtrl.text.trim(),
+                    emoji: Value(_iconKey),
+                    frequency: Value(_frequency),
+                  ),
+                );
+                if (context.mounted) Navigator.pop(context);
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
@@ -1011,37 +1231,40 @@ class _FreqChip extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _FreqChip(
-      {required this.label,
-      required this.value,
-      required this.selected,
-      required this.onTap});
+  const _FreqChip({
+    required this.label,
+    required this.value,
+    required this.selected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-          decoration: BoxDecoration(
-            color: selected
-                ? TraumColors.lavenderDim
-                : TraumColors.surfaceVariant,
-            borderRadius: BorderRadius.circular(TraumRadius.chip),
-            border: Border.all(
-                color: selected
-                    ? TraumColors.lavender
-                    : Colors.transparent),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected
+              ? TraumColors.lavenderDim
+              : TraumColors.surfaceVariant,
+          borderRadius: BorderRadius.circular(TraumRadius.chip),
+          border: Border.all(
+            color: selected ? TraumColors.lavender : Colors.transparent,
           ),
-          child: Text(label,
-              style: TextStyle(
-                  color: selected
-                      ? TraumColors.lavender
-                      : TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans',
-                  fontSize: 13)),
-        ));
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: selected
+                ? TraumColors.lavender
+                : TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            fontSize: 13,
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -1052,10 +1275,11 @@ class _TrackerCard extends StatefulWidget {
   final VoidCallback onDelete;
   final VoidCallback onRelapse;
 
-  const _TrackerCard(
-      {required this.tracker,
-      required this.onDelete,
-      required this.onRelapse});
+  const _TrackerCard({
+    required this.tracker,
+    required this.onDelete,
+    required this.onRelapse,
+  });
 
   @override
   State<_TrackerCard> createState() => _TrackerCardState();
@@ -1070,13 +1294,16 @@ class _TrackerCardState extends State<_TrackerCard> {
     super.initState();
     _updateElapsed();
     _timer = Timer.periodic(
-        const Duration(seconds: 1), (_) => _updateElapsed());
+      const Duration(seconds: 1),
+      (_) => _updateElapsed(),
+    );
   }
 
   void _updateElapsed() {
     if (mounted) {
-      setState(() =>
-          _elapsed = DateTime.now().difference(widget.tracker.startDate));
+      setState(
+        () => _elapsed = DateTime.now().difference(widget.tracker.startDate),
+      );
     }
   }
 
@@ -1095,7 +1322,10 @@ class _TrackerCardState extends State<_TrackerCard> {
     final l10n = AppLocalizations.of(context)!;
 
     final milestones = computeMilestones(
-        widget.tracker.startDate, kAbstinenceMilestones, DateTime.now());
+      widget.tracker.startDate,
+      kAbstinenceMilestones,
+      DateTime.now(),
+    );
     final allReached = milestones.every((m) => m.reached);
     MilestoneStatus? nextMilestone;
     for (final m in milestones) {
@@ -1116,7 +1346,9 @@ class _TrackerCardState extends State<_TrackerCard> {
           ? 1.0
           : (_elapsed.inSeconds / targetSeconds).clamp(0.0, 1.0);
       captionText = l10n.milestoneProgressCaption(
-          (ringValue * 100).round(), nextMilestone.milestone.label);
+        (ringValue * 100).round(),
+        nextMilestone.milestone.label,
+      );
     }
 
     return Dismissible(
@@ -1142,35 +1374,49 @@ class _TrackerCardState extends State<_TrackerCard> {
         decoration: BoxDecoration(
           color: TraumColors.surface,
           borderRadius: BorderRadius.circular(TraumRadius.card),
-          border:
-              Border.all(color: TraumColors.roseRed.withValues(alpha: 0.25)),
+          border: Border.all(
+            color: TraumColors.roseRed.withValues(alpha: 0.25),
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(children: [
-                ProgressIcon(widget.tracker.emoji,
-                    size: 24, color: TraumColors.roseRed),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(widget.tracker.name,
+              Row(
+                children: [
+                  ProgressIcon(
+                    widget.tracker.emoji,
+                    size: 24,
+                    color: TraumColors.roseRed,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      widget.tracker.name,
                       style: const TextStyle(
-                          color: TraumColors.onBackground,
-                          fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 18)),
-                ),
-                TextButton(
-                  onPressed: widget.onRelapse,
-                  style: TextButton.styleFrom(
-                      foregroundColor: TraumColors.roseRed),
-                  child: Text(l10n.relapse,
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: widget.onRelapse,
+                    style: TextButton.styleFrom(
+                      foregroundColor: TraumColors.roseRed,
+                    ),
+                    child: Text(
+                      l10n.relapse,
                       style: const TextStyle(
-                          fontFamily: 'DMSans', fontSize: 12)),
-                ),
-              ]),
+                        fontFamily: 'DMSans',
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 16),
               Center(
                 child: StreakRing(
@@ -1186,47 +1432,62 @@ class _TrackerCardState extends State<_TrackerCard> {
                 child: Text(
                   captionText,
                   style: const TextStyle(
-                      color: TraumColors.roseRed,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 13),
+                    color: TraumColors.roseRed,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
               MilestoneTimeline(
-                  statuses: milestones, accentColor: TraumColors.roseRed),
+                statuses: milestones,
+                accentColor: TraumColors.roseRed,
+              ),
               const SizedBox(height: 4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _TimeUnit(value: days, label: l10n.daysShort),
-                  const Text(':',
-                      style: TextStyle(
-                          color: TraumColors.roseRed,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20)),
+                  const Text(
+                    ':',
+                    style: TextStyle(
+                      color: TraumColors.roseRed,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20,
+                    ),
+                  ),
                   _TimeUnit(value: hours, label: l10n.hoursShort),
-                  const Text(':',
-                      style: TextStyle(
-                          color: TraumColors.roseRed,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20)),
+                  const Text(
+                    ':',
+                    style: TextStyle(
+                      color: TraumColors.roseRed,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20,
+                    ),
+                  ),
                   _TimeUnit(value: minutes, label: l10n.minutesShort),
-                  const Text(':',
-                      style: TextStyle(
-                          color: TraumColors.roseRed,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20)),
+                  const Text(
+                    ':',
+                    style: TextStyle(
+                      color: TraumColors.roseRed,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20,
+                    ),
+                  ),
                   _TimeUnit(value: seconds, label: l10n.secondsShort),
                 ],
               ),
               if (widget.tracker.note != null) ...[
                 const SizedBox(height: 8),
-                Text(widget.tracker.note!,
-                    style: const TextStyle(
-                        color: TraumColors.onBackgroundSubtle,
-                        fontFamily: 'DMSans',
-                        fontSize: 12)),
+                Text(
+                  widget.tracker.note!,
+                  style: const TextStyle(
+                    color: TraumColors.onBackgroundSubtle,
+                    fontFamily: 'DMSans',
+                    fontSize: 12,
+                  ),
+                ),
               ],
             ],
           ),
@@ -1243,19 +1504,28 @@ class _TimeUnit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      Text(value.toString().padLeft(2, '0'),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          value.toString().padLeft(2, '0'),
           style: const TextStyle(
-              color: TraumColors.roseRed,
-              fontFamily: 'DMSans',
-              fontWeight: FontWeight.w700,
-              fontSize: 28)),
-      Text(label,
+            color: TraumColors.roseRed,
+            fontFamily: 'DMSans',
+            fontWeight: FontWeight.w700,
+            fontSize: 28,
+          ),
+        ),
+        Text(
+          label,
           style: const TextStyle(
-              color: TraumColors.onBackgroundMuted,
-              fontFamily: 'DMSans',
-              fontSize: 11)),
-    ]);
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            fontSize: 11,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -1265,25 +1535,36 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.block_rounded,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.block_rounded,
             size: 64,
-            color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
-        const SizedBox(height: 16),
-        Text(AppLocalizations.of(context)!.noTrackers,
+            color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            AppLocalizations.of(context)!.noTrackers,
             style: const TextStyle(
-                color: TraumColors.onBackgroundMuted,
-                fontFamily: 'DMSans',
-                fontWeight: FontWeight.w600,
-                fontSize: 16)),
-        const SizedBox(height: 8),
-        Text(AppLocalizations.of(context)!.tapToStartTracker,
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            AppLocalizations.of(context)!.tapToStartTracker,
             style: const TextStyle(
-                color: TraumColors.onBackgroundSubtle,
-                fontFamily: 'DMSans',
-                fontSize: 13),
-            textAlign: TextAlign.center),
-      ]),
+              color: TraumColors.onBackgroundSubtle,
+              fontFamily: 'DMSans',
+              fontSize: 13,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1328,79 +1609,112 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-                child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                        color: TraumColors.onBackgroundSubtle,
-                        borderRadius: BorderRadius.circular(2)))),
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: TraumColors.onBackgroundSubtle,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
             const SizedBox(height: 16),
-            Text(l10n.startTracker,
-                style: const TextStyle(
-                    color: TraumColors.onBackground,
-                    fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18)),
+            Text(
+              l10n.startTracker,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
+              ),
+            ),
             const SizedBox(height: 16),
             TextField(
               controller: _nameCtrl,
               style: const TextStyle(
-                  color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
               decoration: InputDecoration(
                 labelText: l10n.whatToAvoid,
                 labelStyle: const TextStyle(
-                    color: TraumColors.onBackgroundMuted,
-                    fontFamily: 'DMSans'),
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                ),
                 filled: true,
                 fillColor: TraumColors.surface,
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(TraumRadius.card),
-                    borderSide: BorderSide.none),
+                  borderRadius: BorderRadius.circular(TraumRadius.card),
+                  borderSide: BorderSide.none,
+                ),
                 contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 12),
+                  horizontal: 16,
+                  vertical: 12,
+                ),
               ),
             ),
             const SizedBox(height: 12),
-            Text(AppLocalizations.of(context)!.iconLabel,
-                style: const TextStyle(
-                    color: TraumColors.onBackgroundMuted,
-                    fontFamily: 'DMSans',
-                    fontSize: 13)),
+            Text(
+              AppLocalizations.of(context)!.iconLabel,
+              style: const TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+            ),
             const SizedBox(height: 6),
             GestureDetector(
               onTap: () async {
-                final picked = await showIconPickerSheet(context,
-                    selected: _iconKey, accentColor: TraumColors.roseRed);
+                final picked = await showIconPickerSheet(
+                  context,
+                  selected: _iconKey,
+                  accentColor: TraumColors.roseRed,
+                );
                 if (picked != null) setState(() => _iconKey = picked);
               },
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                    color: TraumColors.roseRedDim,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: TraumColors.roseRed)),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  ProgressIcon(_iconKey, size: 22, color: TraumColors.roseRed),
-                  const SizedBox(width: 8),
-                  const Icon(Icons.edit_rounded,
-                      size: 14, color: TraumColors.onBackgroundMuted),
-                ]),
+                  color: TraumColors.roseRedDim,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: TraumColors.roseRed),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ProgressIcon(
+                      _iconKey,
+                      size: 22,
+                      color: TraumColors.roseRed,
+                    ),
+                    const SizedBox(width: 8),
+                    const Icon(
+                      Icons.edit_rounded,
+                      size: 14,
+                      color: TraumColors.onBackgroundMuted,
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 12),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text(l10n.startDate,
-                  style: const TextStyle(
-                      color: TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontSize: 13)),
+              title: Text(
+                l10n.startDate,
+                style: const TextStyle(
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                  fontSize: 13,
+                ),
+              ),
               trailing: Text(
                 '${_startDate.day.toString().padLeft(2, '0')}.${_startDate.month.toString().padLeft(2, '0')}.${_startDate.year}',
                 style: const TextStyle(
-                    color: TraumColors.coralOrange,
-                    fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w600),
+                  color: TraumColors.coralOrange,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               onTap: () async {
                 final picked = await showDatePicker(
@@ -1410,8 +1724,10 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
                   lastDate: DateTime.now(),
                   builder: (ctx, child) => Theme(
                     data: ThemeData.dark().copyWith(
-                        colorScheme: const ColorScheme.dark(
-                            primary: TraumColors.roseRed)),
+                      colorScheme: const ColorScheme.dark(
+                        primary: TraumColors.roseRed,
+                      ),
+                    ),
                     child: child!,
                   ),
                 );
@@ -1421,47 +1737,61 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
             TextField(
               controller: _noteCtrl,
               style: const TextStyle(
-                  color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
               maxLines: 2,
               decoration: InputDecoration(
                 labelText: l10n.motivationOptional,
                 labelStyle: const TextStyle(
-                    color: TraumColors.onBackgroundMuted,
-                    fontFamily: 'DMSans'),
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                ),
                 filled: true,
                 fillColor: TraumColors.surface,
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(TraumRadius.card),
-                    borderSide: BorderSide.none),
+                  borderRadius: BorderRadius.circular(TraumRadius.card),
+                  borderSide: BorderSide.none,
+                ),
                 contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 12),
+                  horizontal: 16,
+                  vertical: 12,
+                ),
               ),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: _costCtrl,
               style: const TextStyle(
-                  color: TraumColors.onBackground, fontFamily: 'DMSans'),
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: InputDecoration(
                 labelText: 'Kosten pro Tag (€, optional)',
                 labelStyle: const TextStyle(
-                    color: TraumColors.onBackgroundMuted,
-                    fontFamily: 'DMSans'),
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                ),
                 filled: true,
                 fillColor: TraumColors.surface,
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(TraumRadius.card),
-                    borderSide: BorderSide.none),
+                  borderRadius: BorderRadius.circular(TraumRadius.card),
+                  borderSide: BorderSide.none,
+                ),
                 contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 12),
+                  horizontal: 16,
+                  vertical: 12,
+                ),
               ),
             ),
             const SizedBox(height: 20),
             GradientButton(
-                label: _saving ? l10n.starting : l10n.startTrackerButton,
-                onPressed: _saving ? null : _save),
+              label: _saving ? l10n.starting : l10n.startTrackerButton,
+              onPressed: _saving ? null : _save,
+            ),
             const SizedBox(height: 8),
           ],
         ),
@@ -1472,19 +1802,23 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
   Future<void> _save() async {
     final l10n = AppLocalizations.of(context)!;
     if (_nameCtrl.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(l10n.nameRequired)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.nameRequired)));
       return;
     }
     setState(() => _saving = true);
-    await widget.onAdd(AbstinenceTrackersCompanion.insert(
-      name: _nameCtrl.text.trim(),
-      emoji: Value(_iconKey),
-      startDate: _startDate,
-      note: Value(
-          _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim()),
-      costPerDay: Value(parseLocaleAmount(_costCtrl.text)),
-    ));
+    await widget.onAdd(
+      AbstinenceTrackersCompanion.insert(
+        name: _nameCtrl.text.trim(),
+        emoji: Value(_iconKey),
+        startDate: _startDate,
+        note: Value(
+          _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim(),
+        ),
+        costPerDay: Value(parseLocaleAmount(_costCtrl.text)),
+      ),
+    );
     if (mounted) Navigator.pop(context);
   }
 }

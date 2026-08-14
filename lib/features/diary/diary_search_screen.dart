@@ -38,8 +38,9 @@ class _DiarySearchScreenState extends ConsumerState<DiarySearchScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final diaryId = ref.watch(activeDiaryProvider);
-    final resultsAsync =
-        ref.watch(diarySearchResultsProvider((diaryId, _query)));
+    final resultsAsync = ref.watch(
+      diarySearchResultsProvider((diaryId, _query)),
+    );
 
     return Scaffold(
       backgroundColor: TraumColors.background,
@@ -48,20 +49,26 @@ class _DiarySearchScreenState extends ConsumerState<DiarySearchScreen> {
         elevation: 0,
         leading: IconButton(
           tooltip: l10n.back,
-          icon: const Icon(Icons.arrow_back_rounded,
-              color: TraumColors.onBackground),
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: TraumColors.onBackground,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: TextField(
           controller: _searchCtrl,
           autofocus: true,
           style: const TextStyle(
-              color: TraumColors.onBackground, fontFamily: 'DMSans'),
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+          ),
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: l10n.searchHint,
             hintStyle: const TextStyle(
-                color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
+              color: TraumColors.onBackgroundSubtle,
+              fontFamily: 'DMSans',
+            ),
           ),
           onChanged: _onSearchChanged,
         ),
@@ -115,13 +122,22 @@ class _DiarySearchResultTile extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final d = DateTime.tryParse(entry.date);
     final months = [
-      l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
-      l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
-      l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
-      l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
+      l10n.monthShortJan,
+      l10n.monthShortFeb,
+      l10n.monthShortMar,
+      l10n.monthShortApr,
+      l10n.monthShortMay,
+      l10n.monthShortJun,
+      l10n.monthShortJul,
+      l10n.monthShortAug,
+      l10n.monthShortSep,
+      l10n.monthShortOct,
+      l10n.monthShortNov,
+      l10n.monthShortDec,
     ];
-    final dateLabel =
-        d == null ? entry.date : '${d.day}. ${months[d.month - 1]} ${d.year}';
+    final dateLabel = d == null
+        ? entry.date
+        : '${d.day}. ${months[d.month - 1]} ${d.year}';
 
     return Material(
       color: TraumColors.surface,

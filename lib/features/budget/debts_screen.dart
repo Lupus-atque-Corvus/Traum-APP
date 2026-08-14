@@ -32,7 +32,9 @@ class DebtsScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            BudgetSubHeader(title: AppLocalizations.of(context)!.debtsScreenTitle),
+            BudgetSubHeader(
+              title: AppLocalizations.of(context)!.debtsScreenTitle,
+            ),
             Expanded(
               child: debts.when(
                 data: (list) {
@@ -98,8 +100,7 @@ class DebtsScreen extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Padding(
-        padding:
-            EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
         child: Container(
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
           decoration: const BoxDecoration(
@@ -120,8 +121,11 @@ class DebtsScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              debtField(creditor, AppLocalizations.of(context)!.creditorLabel,
-                  AppLocalizations.of(context)!.creditorHint),
+              debtField(
+                creditor,
+                AppLocalizations.of(context)!.creditorLabel,
+                AppLocalizations.of(context)!.creditorHint,
+              ),
               const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
@@ -137,7 +141,9 @@ class DebtsScreen extends ConsumerWidget {
                   onPressed: () {
                     final c = creditor.text.trim();
                     if (c.isEmpty) return;
-                    ref.read(budgetRepositoryProvider).addDebt(
+                    ref
+                        .read(budgetRepositoryProvider)
+                        .addDebt(
                           DebtsCompanion.insert(
                             creditor: c,
                             originalAmount: 0,
@@ -149,7 +155,9 @@ class DebtsScreen extends ConsumerWidget {
                   child: Text(
                     AppLocalizations.of(context)!.save,
                     style: const TextStyle(
-                        fontFamily: 'DMSans', fontWeight: FontWeight.w600),
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
@@ -165,33 +173,31 @@ class DebtsScreen extends ConsumerWidget {
     String label,
     String hint, {
     bool number = false,
-  }) =>
-      TextField(
-        controller: c,
-        keyboardType: number ? TextInputType.number : TextInputType.text,
-        style: const TextStyle(
-          fontFamily: 'DMSans',
-          color: TraumColors.onBackground,
-          fontSize: 14,
-        ),
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          filled: true,
-          fillColor: TraumColors.surfaceVariant,
-          labelStyle: const TextStyle(
-            fontFamily: 'DMSans',
-            color: TraumColors.onBackgroundMuted,
-            fontSize: 13,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none,
-          ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        ),
-      );
+  }) => TextField(
+    controller: c,
+    keyboardType: number ? TextInputType.number : TextInputType.text,
+    style: const TextStyle(
+      fontFamily: 'DMSans',
+      color: TraumColors.onBackground,
+      fontSize: 14,
+    ),
+    decoration: InputDecoration(
+      labelText: label,
+      hintText: hint,
+      filled: true,
+      fillColor: TraumColors.surfaceVariant,
+      labelStyle: const TextStyle(
+        fontFamily: 'DMSans',
+        color: TraumColors.onBackgroundMuted,
+        fontSize: 13,
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide.none,
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+    ),
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -213,48 +219,46 @@ class _DebtsHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        margin: EdgeInsets.only(bottom: bs(10)),
-        padding: EdgeInsets.all(bs(12)),
-        decoration: BoxDecoration(
-          color: TraumColors.roseRed.withValues(alpha: 0.07),
-          borderRadius: BorderRadius.circular(bs(13)),
-          border: Border.all(
-            color: TraumColors.roseRed.withValues(alpha: 0.2),
+    margin: EdgeInsets.only(bottom: bs(10)),
+    padding: EdgeInsets.all(bs(12)),
+    decoration: BoxDecoration(
+      color: TraumColors.roseRed.withValues(alpha: 0.07),
+      borderRadius: BorderRadius.circular(bs(13)),
+      border: Border.all(color: TraumColors.roseRed.withValues(alpha: 0.2)),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          AppLocalizations.of(context)!.totalOpenDebts,
+          style: const TextStyle(
+            fontSize: 9,
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              AppLocalizations.of(context)!.totalOpenDebts,
-              style: const TextStyle(
-                fontSize: 9,
-                color: TraumColors.onBackgroundMuted,
-                fontFamily: 'DMSans',
-              ),
-            ),
-            SizedBox(height: bs(2)),
-            Text(
-              '${fmtAmount(totalDebt)} $currency',
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: TraumColors.roseRed,
-                fontFamily: 'DMSans',
-              ),
-            ),
-            SizedBox(height: bs(2)),
-            Text(
-              '$openCount offen · $paidCount beglichen',
-              style: const TextStyle(
-                fontSize: 9,
-                color: TraumColors.onBackgroundMuted,
-                fontFamily: 'DMSans',
-              ),
-            ),
-          ],
+        SizedBox(height: bs(2)),
+        Text(
+          '${fmtAmount(totalDebt)} $currency',
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+            color: TraumColors.roseRed,
+            fontFamily: 'DMSans',
+          ),
         ),
-      );
+        SizedBox(height: bs(2)),
+        Text(
+          '$openCount offen · $paidCount beglichen',
+          style: const TextStyle(
+            fontSize: 9,
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -293,8 +297,10 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
     final items = itemsAsync.value ?? const <DebtItem>[];
     final l10n = AppLocalizations.of(context)!;
     final ratio = widget.debt.originalAmount > 0
-        ? (1 - widget.debt.remainingAmount / widget.debt.originalAmount)
-            .clamp(0.0, 1.0)
+        ? (1 - widget.debt.remainingAmount / widget.debt.originalAmount).clamp(
+            0.0,
+            1.0,
+          )
         : 0.0;
     final paidAmount = widget.debt.originalAmount - widget.debt.remainingAmount;
     final paidPct = (ratio * 100).round();
@@ -309,8 +315,11 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
           color: TraumColors.roseRed.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(bs(15)),
         ),
-        child: Icon(Icons.delete_outline,
-            color: TraumColors.roseRed, size: bs(22)),
+        child: Icon(
+          Icons.delete_outline,
+          color: TraumColors.roseRed,
+          size: bs(22),
+        ),
       ),
       onDismissed: (_) => widget.onDelete(),
       child: Container(
@@ -382,8 +391,11 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
                       ? Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.check_circle_rounded,
-                                size: bs(14), color: TraumColors.mintGreen),
+                            Icon(
+                              Icons.check_circle_rounded,
+                              size: bs(14),
+                              color: TraumColors.mintGreen,
+                            ),
                             SizedBox(width: bs(4)),
                             const Text(
                               'Bezahlt',
@@ -439,8 +451,9 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
                   child: LinearProgressIndicator(
                     value: ratio,
                     backgroundColor: TraumColors.surfaceVariant,
-                    valueColor:
-                        const AlwaysStoppedAnimation(Colors.transparent),
+                    valueColor: const AlwaysStoppedAnimation(
+                      Colors.transparent,
+                    ),
                   ),
                 ),
               ),
@@ -492,7 +505,9 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
                     onTap: () => _payDialog(context),
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                          horizontal: bs(10), vertical: bs(5)),
+                        horizontal: bs(10),
+                        vertical: bs(5),
+                      ),
                       decoration: BoxDecoration(
                         color: TraumColors.roseRed.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(bs(8)),
@@ -514,25 +529,29 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
             // ── Expandable items section ──────────────────────────────────
             if (_expanded) ...[
               SizedBox(height: bs(10)),
-              Container(
-                  height: 1, color: Colors.white.withValues(alpha: 0.06)),
+              Container(height: 1, color: Colors.white.withValues(alpha: 0.06)),
               SizedBox(height: bs(6)),
-              ...items.map((item) => _DebtItemRow(
-                    item: item,
-                    currency: widget.currency,
-                    onDelete: () => ref
-                        .read(budgetRepositoryProvider)
-                        .deleteDebtItem(item.id),
-                    onEdit: () => _showItemSheet(context, item: item),
-                  )),
+              ...items.map(
+                (item) => _DebtItemRow(
+                  item: item,
+                  currency: widget.currency,
+                  onDelete: () => ref
+                      .read(budgetRepositoryProvider)
+                      .deleteDebtItem(item.id),
+                  onEdit: () => _showItemSheet(context, item: item),
+                ),
+              ),
               GestureDetector(
                 onTap: () => _showItemSheet(context),
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: bs(8)),
                   child: Row(
                     children: [
-                      Icon(Icons.add_rounded,
-                          size: bs(16), color: TraumColors.roseRed),
+                      Icon(
+                        Icons.add_rounded,
+                        size: bs(16),
+                        color: TraumColors.roseRed,
+                      ),
                       SizedBox(width: bs(6)),
                       Text(
                         l10n.addDebtItem,
@@ -563,14 +582,18 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
         title: Text(
           AppLocalizations.of(context)!.payInstallment,
           style: const TextStyle(
-              fontFamily: 'DMSans', color: TraumColors.onBackground),
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackground,
+          ),
         ),
         content: TextField(
           controller: ctrl,
           keyboardType: TextInputType.number,
           autofocus: true,
           style: const TextStyle(
-              fontFamily: 'DMSans', color: TraumColors.onBackground),
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackground,
+          ),
           decoration: const InputDecoration(hintText: '0,00'),
         ),
         actions: [
@@ -585,9 +608,15 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
                 widget.onPay(a);
                 Navigator.pop(ctx);
               } else if (a > kMaxAmount) {
-                ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
-                    content: Text(AppLocalizations.of(ctx)!
-                        .amountExceedsMax(fmtAmount(kMaxAmount)))));
+                ScaffoldMessenger.of(ctx).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      AppLocalizations.of(
+                        ctx,
+                      )!.amountExceedsMax(fmtAmount(kMaxAmount)),
+                    ),
+                  ),
+                );
               } else {
                 Navigator.pop(ctx);
               }
@@ -602,7 +631,8 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
   void _showItemSheet(BuildContext context, {DebtItem? item}) {
     final desc = TextEditingController(text: item?.description ?? '');
     final price = TextEditingController(
-        text: item == null ? '' : fmtAmount(item.amount));
+      text: item == null ? '' : fmtAmount(item.amount),
+    );
     final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
@@ -632,8 +662,12 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
               const SizedBox(height: 16),
               DebtsScreen.debtField(desc, l10n.debtItemDescription, ''),
               const SizedBox(height: 8),
-              DebtsScreen.debtField(price, l10n.debtItemPrice, '0,00',
-                  number: true),
+              DebtsScreen.debtField(
+                price,
+                l10n.debtItemPrice,
+                '0,00',
+                number: true,
+              ),
               const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
@@ -651,32 +685,45 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
                     final a = parseLocaleAmount(price.text) ?? 0;
                     if (d.isEmpty || a <= 0) return;
                     if (a > kMaxAmount) {
-                      ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
-                          content: Text(AppLocalizations.of(ctx)!
-                              .amountExceedsMax(fmtAmount(kMaxAmount)))));
+                      ScaffoldMessenger.of(ctx).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            AppLocalizations.of(
+                              ctx,
+                            )!.amountExceedsMax(fmtAmount(kMaxAmount)),
+                          ),
+                        ),
+                      );
                       return;
                     }
                     final repo = ref.read(budgetRepositoryProvider);
                     if (item == null) {
-                      repo.addDebtItem(DebtItemsCompanion.insert(
+                      repo.addDebtItem(
+                        DebtItemsCompanion.insert(
                           debtId: widget.debt.id,
                           description: d,
-                          amount: a));
+                          amount: a,
+                        ),
+                      );
                     } else {
-                      repo.updateDebtItem(DebtItemsCompanion(
-                        id: Value(item.id),
-                        debtId: Value(item.debtId),
-                        description: Value(d),
-                        amount: Value(a),
-                        createdAt: Value(item.createdAt),
-                      ));
+                      repo.updateDebtItem(
+                        DebtItemsCompanion(
+                          id: Value(item.id),
+                          debtId: Value(item.debtId),
+                          description: Value(d),
+                          amount: Value(a),
+                          createdAt: Value(item.createdAt),
+                        ),
+                      );
                     }
                     Navigator.of(ctx).pop();
                   },
                   child: Text(
                     l10n.save,
                     style: const TextStyle(
-                        fontFamily: 'DMSans', fontWeight: FontWeight.w600),
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
@@ -710,44 +757,47 @@ class _DebtItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Dismissible(
-        key: ValueKey('item_${item.id}'),
-        direction: DismissDirection.endToStart,
-        background: Container(
-          alignment: Alignment.centerRight,
-          padding: EdgeInsets.only(right: bs(12)),
-          child: Icon(Icons.delete_outline,
-              color: TraumColors.roseRed, size: bs(18)),
-        ),
-        onDismissed: (_) => onDelete(),
-        child: GestureDetector(
-          onTap: onEdit,
-          behavior: HitTestBehavior.opaque,
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: bs(6)),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    item.description,
-                    style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      fontSize: 12,
-                      color: TraumColors.onBackground,
-                    ),
-                  ),
+    key: ValueKey('item_${item.id}'),
+    direction: DismissDirection.endToStart,
+    background: Container(
+      alignment: Alignment.centerRight,
+      padding: EdgeInsets.only(right: bs(12)),
+      child: Icon(
+        Icons.delete_outline,
+        color: TraumColors.roseRed,
+        size: bs(18),
+      ),
+    ),
+    onDismissed: (_) => onDelete(),
+    child: GestureDetector(
+      onTap: onEdit,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: bs(6)),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                item.description,
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  fontSize: 12,
+                  color: TraumColors.onBackground,
                 ),
-                Text(
-                  '${fmtAmount(item.amount)} $currency',
-                  style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: TraumColors.onBackground,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            Text(
+              '${fmtAmount(item.amount)} $currency',
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: TraumColors.onBackground,
+              ),
+            ),
+          ],
         ),
-      );
+      ),
+    ),
+  );
 }

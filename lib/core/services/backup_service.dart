@@ -48,13 +48,17 @@ Uint8List _encodeBackupArchive(Map<String, dynamic> payload) {
   final backup = payload['backup'] as Map<String, dynamic>;
   final media = (payload['media'] as Map).cast<String, Uint8List>();
   final mediaBytesTotal = media.values.fold<int>(0, (s, b) => s + b.length);
-  debugPrint('[backup] isolate entry: ${media.length} media files, '
-      '${(mediaBytesTotal / 1e6).toStringAsFixed(1)} MB total '
-      '(+${sw.elapsedMilliseconds}ms)');
+  debugPrint(
+    '[backup] isolate entry: ${media.length} media files, '
+    '${(mediaBytesTotal / 1e6).toStringAsFixed(1)} MB total '
+    '(+${sw.elapsedMilliseconds}ms)',
+  );
 
   final jsonBytes = utf8.encode(const JsonEncoder().convert(backup));
-  debugPrint('[backup] json encoded: ${(jsonBytes.length / 1e6).toStringAsFixed(1)} MB '
-      '(+${sw.elapsedMilliseconds}ms)');
+  debugPrint(
+    '[backup] json encoded: ${(jsonBytes.length / 1e6).toStringAsFixed(1)} MB '
+    '(+${sw.elapsedMilliseconds}ms)',
+  );
 
   final archive = Archive();
   media.forEach((name, bytes) {
@@ -74,10 +78,13 @@ Uint8List _encodeBackupArchive(Map<String, dynamic> payload) {
   // reason above; a personal backup values speed and reliability over the
   // few-MB size difference DEFLATE would have bought here.
   archive.addFile(
-      ArchiveFile(BackupService._jsonEntryName, jsonBytes.length, jsonBytes)
-        ..compress = false);
-  debugPrint('[backup] archive assembled: ${archive.files.length} entries '
-      '(+${sw.elapsedMilliseconds}ms)');
+    ArchiveFile(BackupService._jsonEntryName, jsonBytes.length, jsonBytes)
+      ..compress = false,
+  );
+  debugPrint(
+    '[backup] archive assembled: ${archive.files.length} entries '
+    '(+${sw.elapsedMilliseconds}ms)',
+  );
 
   final zipBytes = ZipEncoder().encode(archive);
   debugPrint('[backup] zip encoded (+${sw.elapsedMilliseconds}ms total)');
@@ -147,8 +154,8 @@ class BackupService {
   };
 
   Map<String, TableInfo> get _tablesByName => {
-        for (final t in _db.allTables) t.actualTableName: t,
-      };
+    for (final t in _db.allTables) t.actualTableName: t,
+  };
 
   // ─── Export ────────────────────────────────────────────────────────────────
 
@@ -179,7 +186,7 @@ class BackupService {
   /// progress indicator around just this (bounded, isolate-backed) step; see
   /// [shareFile] for why the share step itself must stay outside of it.
   Future<({File file, int tableCount, int rowCount, int mediaCount})>
-      buildBackupFile({
+  buildBackupFile({
     void Function(int done, int total)? onTableProgress,
     void Function(int done, int total)? onMediaProgress,
     void Function()? onEncodingStart,
@@ -216,13 +223,12 @@ class BackupService {
     File file, {
     required String subject,
     String mimeType = 'application/zip',
-  }) =>
-      SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(file.path, mimeType: mimeType)],
-          subject: subject,
-        ),
-      );
+  }) => SharePlus.instance.share(
+    ShareParams(
+      files: [XFile(file.path, mimeType: mimeType)],
+      subject: subject,
+    ),
+  );
 
   /// Per-table `WHERE` filter, applied instead of a full `SELECT *` for
   /// tables where that would be wasteful.
@@ -237,7 +243,8 @@ class BackupService {
   /// anything the user has actually edited, rated, hidden, or photographed
   /// is kept regardless of its origin, alongside every purely custom marker.
   static const Map<String, String> _tableWhereClauses = {
-    'map_markers': "(osm_id IS NULL AND external_id IS NULL) "
+    'map_markers':
+        "(osm_id IS NULL AND external_id IS NULL) "
         "OR note != '' "
         "OR hashtags != '' "
         "OR rating IS NOT NULL "
@@ -255,7 +262,7 @@ class BackupService {
   /// isolate call and can't be broken into steps the same way; callers
   /// should show an indeterminate state for that last phase.
   Future<({Uint8List zipBytes, int tableCount, int rowCount, int mediaCount})>
-      buildBackupZip({
+  buildBackupZip({
     void Function(int done, int total)? onTableProgress,
     void Function(int done, int total)? onMediaProgress,
     void Function()? onEncodingStart,
@@ -267,15 +274,18 @@ class BackupService {
     for (var i = 0; i < allTables.length; i++) {
       final name = allTables[i].actualTableName;
       final where = _tableWhereClauses[name];
-      final sql =
-          where == null ? 'SELECT * FROM "$name"' : 'SELECT * FROM "$name" WHERE $where';
+      final sql = where == null
+          ? 'SELECT * FROM "$name"'
+          : 'SELECT * FROM "$name" WHERE $where';
       final rows = await _db.customSelect(sql).get();
       tables[name] = rows.map((r) => _jsonSafeRow(r.data)).toList();
       rowCount += rows.length;
       onTableProgress?.call(i + 1, allTables.length);
     }
-    debugPrint('[backup] tables read: $rowCount rows across ${allTables.length} '
-        'tables (+${buildSw.elapsedMilliseconds}ms)');
+    debugPrint(
+      '[backup] tables read: $rowCount rows across ${allTables.length} '
+      'tables (+${buildSw.elapsedMilliseconds}ms)',
+    );
 
     // Collect media files referenced by the known path columns. Reading
     // stays here (async I/O, doesn't block the UI isolate) — only the
@@ -310,9 +320,11 @@ class BackupService {
       onMediaProgress?.call(i + 1, candidatePaths.length);
     }
     final mediaBytesTotal = entries.values.fold<int>(0, (s, b) => s + b.length);
-    debugPrint('[backup] media read: ${entries.length}/${candidatePaths.length} '
-        'files, ${(mediaBytesTotal / 1e6).toStringAsFixed(1)} MB '
-        '(+${buildSw.elapsedMilliseconds}ms total)');
+    debugPrint(
+      '[backup] media read: ${entries.length}/${candidatePaths.length} '
+      'files, ${(mediaBytesTotal / 1e6).toStringAsFixed(1)} MB '
+      '(+${buildSw.elapsedMilliseconds}ms total)',
+    );
 
     // Local crash log, if any — lets a reported crash be diagnosed from the
     // exported backup instead of requiring a live `adb logcat` session.
@@ -332,15 +344,19 @@ class BackupService {
     };
 
     onEncodingStart?.call();
-    debugPrint('[backup] calling compute() with ${tables.length} tables, '
-        '$rowCount rows, ${entries.length} media entries');
-    final callerSw = Stopwatch()..start();
-    final zipBytes = await compute(
-      _encodeBackupArchive,
-      {'backup': backup, 'media': entries},
+    debugPrint(
+      '[backup] calling compute() with ${tables.length} tables, '
+      '$rowCount rows, ${entries.length} media entries',
     );
-    debugPrint('[backup] compute() returned after '
-        '${callerSw.elapsedMilliseconds}ms (caller-side)');
+    final callerSw = Stopwatch()..start();
+    final zipBytes = await compute(_encodeBackupArchive, {
+      'backup': backup,
+      'media': entries,
+    });
+    debugPrint(
+      '[backup] compute() returned after '
+      '${callerSw.elapsedMilliseconds}ms (caller-side)',
+    );
 
     return (
       zipBytes: zipBytes,
@@ -416,8 +432,11 @@ class BackupService {
       if (built == null) {
         return const ExportResult(error: 'No modules selected');
       }
-      await shareFile(built.file,
-          subject: 'TRAUM Export', mimeType: built.mimeType);
+      await shareFile(
+        built.file,
+        subject: 'TRAUM Export',
+        mimeType: built.mimeType,
+      );
       return ExportResult(
         success: true,
         tableCount: built.tableCount,
@@ -431,14 +450,13 @@ class BackupService {
   /// Builds the selective export file (JSON or CSV-ZIP) without sharing it
   /// yet. Returns `null` if no known module tables were selected.
   Future<({File file, String mimeType, int tableCount, int rowCount})?>
-      buildModulesFile(
-    List<String> modules, {
-    required String format,
-  }) async {
+  buildModulesFile(List<String> modules, {required String format}) async {
     final tables = await _dumpModuleTables(modules);
     if (tables.isEmpty) return null;
-    final rowCount =
-        tables.values.fold<int>(0, (sum, rows) => sum + rows.length);
+    final rowCount = tables.values.fold<int>(
+      0,
+      (sum, rows) => sum + rows.length,
+    );
 
     final dir = await getTemporaryDirectory();
     final stamp = DateTime.now()
@@ -451,7 +469,9 @@ class BackupService {
     if (format == 'csv') {
       final csvEntries = <String, Uint8List>{
         for (final entry in tables.entries)
-          '${entry.key}.csv': Uint8List.fromList(utf8.encode(_toCsv(entry.value))),
+          '${entry.key}.csv': Uint8List.fromList(
+            utf8.encode(_toCsv(entry.value)),
+          ),
       };
       final zipBytes = await compute(_encodeZipArchive, csvEntries);
       file = File(p.join(dir.path, 'traum_export_$stamp.zip'));
@@ -578,8 +598,9 @@ class BackupService {
         if (jsonFile == null) {
           return const ImportResult(error: 'No backup.json in archive');
         }
-        backup = jsonDecode(utf8.decode(jsonFile.content as List<int>))
-            as Map<String, dynamic>;
+        backup =
+            jsonDecode(utf8.decode(jsonFile.content as List<int>))
+                as Map<String, dynamic>;
       } else {
         backup = jsonDecode(utf8.decode(bytes)) as Map<String, dynamic>;
       }
@@ -587,14 +608,16 @@ class BackupService {
       final format = backup['formatVersion'] as int? ?? 0;
       if (format > backupFormatVersion) {
         return ImportResult(
-          error: 'Backup format v$format is newer than supported '
+          error:
+              'Backup format v$format is newer than supported '
               'v$backupFormatVersion',
         );
       }
       final backupSchema = backup['schemaVersion'] as int? ?? 0;
       if (backupSchema > _db.schemaVersion) {
         return ImportResult(
-          error: 'Backup schema v$backupSchema is newer than app '
+          error:
+              'Backup schema v$backupSchema is newer than app '
               'schema v${_db.schemaVersion}',
         );
       }
@@ -604,8 +627,7 @@ class BackupService {
           ? await _restoreMedia(archive, backup)
           : const <String, String>{};
 
-      final tablesJson =
-          (backup['tables'] as Map).cast<String, dynamic>();
+      final tablesJson = (backup['tables'] as Map).cast<String, dynamic>();
       final tablesByName = _tablesByName;
 
       var rowCount = 0;

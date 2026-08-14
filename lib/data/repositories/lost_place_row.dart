@@ -48,13 +48,15 @@ List<LostPlaceRow> parseLostPlaceRows(String raw) {
       if (sourceUrl.isNotEmpty) 'Quelle: $sourceUrl',
     ];
 
-    rows.add(LostPlaceRow(
-      externalId: externalId,
-      lat: lat,
-      lon: lon,
-      title: (e['title'] as String?) ?? '',
-      note: noteParts.join('\n\n'),
-    ));
+    rows.add(
+      LostPlaceRow(
+        externalId: externalId,
+        lat: lat,
+        lon: lon,
+        title: (e['title'] as String?) ?? '',
+        note: noteParts.join('\n\n'),
+      ),
+    );
   }
   return rows;
 }

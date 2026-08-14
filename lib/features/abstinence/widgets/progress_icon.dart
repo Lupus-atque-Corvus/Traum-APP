@@ -124,12 +124,12 @@ Future<String?> showIconPickerSheet(
     isScrollControlled: true,
     backgroundColor: TraumColors.surfaceElevated,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(TraumRadius.card),
+      ),
     ),
-    builder: (ctx) => IconPickerSheet(
-      selected: selected,
-      accentColor: accentColor,
-    ),
+    builder: (ctx) =>
+        IconPickerSheet(selected: selected, accentColor: accentColor),
   );
 }
 

@@ -34,8 +34,7 @@ class NotesMarkdownParser {
 
   /// `[[Ziel]]`, `[[Ziel|Alias]]`, `[[Ziel#Überschrift]]`, `[[Ziel#^block]]`,
   /// optional mit führendem `!` für Embeds.
-  static final RegExp wikilinkPattern =
-      RegExp(r'(!?)\[\[([^\]\[]+?)\]\]');
+  static final RegExp wikilinkPattern = RegExp(r'(!?)\[\[([^\]\[]+?)\]\]');
 
   /// Inline-Tags `#tag` und verschachtelt `#eltern/kind`.
   /// Muss am Zeilenanfang oder nach Whitespace stehen (sonst greift es in
@@ -47,8 +46,10 @@ class NotesMarkdownParser {
   );
 
   /// Block-Anker am Absatzende, z. B. `^abc-123`.
-  static final RegExp blockIdPattern =
-      RegExp(r'(?<=\s|^)\^([\w-]+)\s*$', multiLine: true);
+  static final RegExp blockIdPattern = RegExp(
+    r'(?<=\s|^)\^([\w-]+)\s*$',
+    multiLine: true,
+  );
 
   /// Entfernt Codeblöcke und Inline-Code, damit Links/Tags darin nicht als
   /// Syntax gewertet werden.
@@ -82,12 +83,14 @@ class NotesMarkdownParser {
         anchor = inner.substring(hash + 1).trim();
         inner = inner.substring(0, hash).trim();
       }
-      result.add(ParsedLink(
-        target: inner,
-        anchor: anchor?.isEmpty == true ? null : anchor,
-        alias: alias?.isEmpty == true ? null : alias,
-        isEmbed: isEmbed,
-      ));
+      result.add(
+        ParsedLink(
+          target: inner,
+          anchor: anchor?.isEmpty == true ? null : anchor,
+          alias: alias?.isEmpty == true ? null : alias,
+          isEmbed: isEmbed,
+        ),
+      );
     }
     return result;
   }

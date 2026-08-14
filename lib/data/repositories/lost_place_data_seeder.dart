@@ -23,8 +23,9 @@ class LostPlaceDataSeeder {
 
     try {
       final collections = await db.mapCollectionsDao.getAll();
-      final lostPlaceCollection =
-          collections.where((c) => c.iconName == 'home_broken').firstOrNull;
+      final lostPlaceCollection = collections
+          .where((c) => c.iconName == 'home_broken')
+          .firstOrNull;
       if (lostPlaceCollection == null) {
         // Lost-Places-Collection noch nicht angelegt (Seeder-Reihenfolge
         // verletzt) — kein Flag setzen, nächster Start versucht es erneut.
@@ -49,15 +50,17 @@ class LostPlaceDataSeeder {
       var buffer = <MapMarkersCompanion>[];
       final now = DateTime.now();
       for (final r in rows) {
-        buffer.add(MapMarkersCompanion.insert(
-          collectionId: lostPlaceCollection.id,
-          title: Value(r.title),
-          latitude: Value(r.lat),
-          longitude: Value(r.lon),
-          note: Value(r.note),
-          externalId: Value(r.externalId),
-          createdAt: now,
-        ));
+        buffer.add(
+          MapMarkersCompanion.insert(
+            collectionId: lostPlaceCollection.id,
+            title: Value(r.title),
+            latitude: Value(r.lat),
+            longitude: Value(r.lon),
+            note: Value(r.note),
+            externalId: Value(r.externalId),
+            createdAt: now,
+          ),
+        );
 
         if (buffer.length >= _chunkSize) {
           await db.mapMarkersDao.bulkInsertNew(buffer);

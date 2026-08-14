@@ -31,16 +31,24 @@ class _SubstancesTabs extends StatelessWidget {
         backgroundColor: TraumColors.background,
         appBar: AppBar(
           backgroundColor: TraumColors.background,
-          title: Text(l10n.moduleSubstances,
-              style: const TextStyle(color: TraumColors.onBackground,
-                  fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
+          title: Text(
+            l10n.moduleSubstances,
+            style: const TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           elevation: 0,
           bottom: TabBar(
             labelColor: TraumColors.coralOrange,
             unselectedLabelColor: TraumColors.onBackgroundMuted,
             indicatorColor: TraumColors.coralOrange,
             indicatorSize: TabBarIndicatorSize.label,
-            labelStyle: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w700),
+            labelStyle: const TextStyle(
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w700,
+            ),
             unselectedLabelStyle: const TextStyle(fontFamily: 'DMSans'),
             tabs: [
               Tab(text: l10n.substancesTabMyMeds),
@@ -48,9 +56,7 @@ class _SubstancesTabs extends StatelessWidget {
             ],
           ),
         ),
-        body: const TabBarView(
-          children: [MySubstancesTab(), DatabaseTab()],
-        ),
+        body: const TabBarView(children: [MySubstancesTab(), DatabaseTab()]),
       ),
     );
   }
@@ -82,7 +88,8 @@ class _DisclaimerGateState extends ConsumerState<_DisclaimerGate> {
 
   Future<void> _loadBody() async {
     final lang = Localizations.localeOf(context).languageCode;
-    final path = 'assets/legal/substances_disclaimer_${lang == 'de' ? 'de' : 'en'}.md';
+    final path =
+        'assets/legal/substances_disclaimer_${lang == 'de' ? 'de' : 'en'}.md';
     final text = await rootBundle.loadString(path);
     if (mounted) setState(() => _body = text);
   }
@@ -95,54 +102,79 @@ class _DisclaimerGateState extends ConsumerState<_DisclaimerGate> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Column(children: [
-            const SizedBox(height: 24),
-            const Icon(Icons.health_and_safety_rounded,
-                size: 40, color: TraumColors.coralOrange),
-            const SizedBox(height: 16),
-            Text(l10n.substancesDisclaimerTitle,
-                style: const TextStyle(color: TraumColors.onBackground,
-                    fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
-            const SizedBox(height: 16),
-            Expanded(
-              child: _body == null
-                  ? const Center(
-                      child: CircularProgressIndicator(color: TraumColors.coralOrange))
-                  : Markdown(
-                      data: _body!,
-                      styleSheet: MarkdownStyleSheet(
-                        p: const TextStyle(
-                            color: TraumColors.onBackgroundMuted,
-                            fontFamily: 'DMSans', fontSize: 13, height: 1.6),
-                        strong: const TextStyle(
-                            color: TraumColors.onBackground, fontWeight: FontWeight.w600),
-                      ),
-                    ),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                key: const Key('substances_disclaimer_accept'),
-                style: FilledButton.styleFrom(
-                  backgroundColor: TraumColors.coralOrange,
-                  foregroundColor: TraumColors.background,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(TraumRadius.card)),
-                ),
-                onPressed: () async {
-                  await ref
-                      .read(preferencesRepositoryProvider)
-                      .setSubstancesDisclaimerAccepted(true);
-                  if (!context.mounted) return;
-                  ref.invalidate(substancesDisclaimerAcceptedProvider);
-                },
-                child: Text(l10n.substancesDisclaimerAccept,
-                    style: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
+          child: Column(
+            children: [
+              const SizedBox(height: 24),
+              const Icon(
+                Icons.health_and_safety_rounded,
+                size: 40,
+                color: TraumColors.coralOrange,
               ),
-            ),
-          ]),
+              const SizedBox(height: 16),
+              Text(
+                l10n.substancesDisclaimerTitle,
+                style: const TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: _body == null
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          color: TraumColors.coralOrange,
+                        ),
+                      )
+                    : Markdown(
+                        data: _body!,
+                        styleSheet: MarkdownStyleSheet(
+                          p: const TextStyle(
+                            color: TraumColors.onBackgroundMuted,
+                            fontFamily: 'DMSans',
+                            fontSize: 13,
+                            height: 1.6,
+                          ),
+                          strong: const TextStyle(
+                            color: TraumColors.onBackground,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  key: const Key('substances_disclaimer_accept'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: TraumColors.coralOrange,
+                    foregroundColor: TraumColors.background,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(TraumRadius.card),
+                    ),
+                  ),
+                  onPressed: () async {
+                    await ref
+                        .read(preferencesRepositoryProvider)
+                        .setSubstancesDisclaimerAccepted(true);
+                    if (!context.mounted) return;
+                    ref.invalidate(substancesDisclaimerAcceptedProvider);
+                  },
+                  child: Text(
+                    l10n.substancesDisclaimerAccept,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

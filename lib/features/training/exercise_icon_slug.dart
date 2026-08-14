@@ -5,10 +5,24 @@
 library;
 
 const Map<String, String> _transliterations = {
-  'ä': 'ae', 'ö': 'oe', 'ü': 'ue', 'ß': 'ss',
-  'á': 'a', 'à': 'a', 'â': 'a', 'é': 'e', 'è': 'e', 'ê': 'e',
-  'í': 'i', 'î': 'i', 'ó': 'o', 'ô': 'o', 'ú': 'u', 'û': 'u',
-  'ñ': 'n', 'ç': 'c',
+  'ä': 'ae',
+  'ö': 'oe',
+  'ü': 'ue',
+  'ß': 'ss',
+  'á': 'a',
+  'à': 'a',
+  'â': 'a',
+  'é': 'e',
+  'è': 'e',
+  'ê': 'e',
+  'í': 'i',
+  'î': 'i',
+  'ó': 'o',
+  'ô': 'o',
+  'ú': 'u',
+  'û': 'u',
+  'ñ': 'n',
+  'ç': 'c',
 };
 
 /// Slugifies an exercise name into the key used to look up its bespoke SVG

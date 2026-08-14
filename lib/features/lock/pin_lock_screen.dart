@@ -77,7 +77,9 @@ class _PinLockScreenState extends State<PinLockScreen>
   }
 
   void _addDigit(String digit) {
-    if (_pin.length >= _maxLength || _verifying || _lockedSecondsRemaining > 0) {
+    if (_pin.length >= _maxLength ||
+        _verifying ||
+        _lockedSecondsRemaining > 0) {
       return;
     }
     setState(() {
@@ -133,8 +135,11 @@ class _PinLockScreenState extends State<PinLockScreen>
                     gradient: TraumColors.gradientCool,
                     shape: BoxShape.circle,
                   ),
-                  child:
-                      const Icon(Icons.lock_rounded, color: Colors.white, size: 40),
+                  child: const Icon(
+                    Icons.lock_rounded,
+                    color: Colors.white,
+                    size: 40,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 const Text(
@@ -159,7 +164,8 @@ class _PinLockScreenState extends State<PinLockScreen>
                 AnimatedBuilder(
                   animation: _shakeAnimation,
                   builder: (_, child) {
-                    final offset = (_shakeAnimation.value * 12) *
+                    final offset =
+                        (_shakeAnimation.value * 12) *
                         ((_shakeController.value < 0.5) ? 1 : -1);
                     return Transform.translate(
                       offset: Offset(offset, 0),
@@ -299,9 +305,7 @@ class _NumpadKey extends StatelessWidget {
         decoration: BoxDecoration(
           color: onTap != null ? TraumColors.surface : TraumColors.background,
           shape: BoxShape.circle,
-          border: Border.all(
-            color: TraumColors.surfaceVariant,
-          ),
+          border: Border.all(color: TraumColors.surfaceVariant),
         ),
         child: Center(
           child: Text(

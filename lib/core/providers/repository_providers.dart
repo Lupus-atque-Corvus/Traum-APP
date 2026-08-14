@@ -59,5 +59,7 @@ final notesRepositoryProvider = Provider<NotesRepository>((ref) {
 
 final diaryRepositoryProvider = Provider<DiaryRepository>((ref) {
   return DiaryRepository(
-      ref.watch(diaryDaoProvider), ref.watch(diariesDaoProvider));
+    ref.watch(diaryDaoProvider),
+    ref.watch(diariesDaoProvider),
+  );
 });

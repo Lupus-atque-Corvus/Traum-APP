@@ -13,19 +13,23 @@ void main() {
     final db = TraumDatabase.forTesting(NativeDatabase.memory());
     addTearDown(db.close);
     await db.periodDao.insertPeriodEntry(
-        PeriodEntriesCompanion.insert(startDate: DateTime(2026, 6, 1)));
+      PeriodEntriesCompanion.insert(startDate: DateTime(2026, 6, 1)),
+    );
     final container = ProviderContainer(
-        overrides: [databaseProvider.overrideWithValue(db)]);
+      overrides: [databaseProvider.overrideWithValue(db)],
+    );
     addTearDown(container.dispose);
-    await tester.pumpWidget(UncontrolledProviderScope(
-      container: container,
-      child: const MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: Locale('de'),
-        home: CycleHistoryScreen(),
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: Locale('de'),
+          home: CycleHistoryScreen(),
+        ),
       ),
-    ));
+    );
     await tester.pumpAndSettle();
     // "Periode beenden" is the DE value of l10n.endPeriod
     final endBtn = find.text('Periode beenden');
@@ -40,27 +44,30 @@ void main() {
     final db = TraumDatabase.forTesting(NativeDatabase.memory());
     addTearDown(db.close);
     await db.periodDao.insertPeriodEntry(
-        PeriodEntriesCompanion.insert(
-          startDate: DateTime(2026, 5, 1),
-          endDate: Value(DateTime(2026, 5, 5)),
-        ));
-    final container = ProviderContainer(
-        overrides: [databaseProvider.overrideWithValue(db)]);
-    addTearDown(container.dispose);
-    await tester.pumpWidget(UncontrolledProviderScope(
-      container: container,
-      child: const MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: Locale('de'),
-        home: CycleHistoryScreen(),
+      PeriodEntriesCompanion.insert(
+        startDate: DateTime(2026, 5, 1),
+        endDate: Value(DateTime(2026, 5, 5)),
       ),
-    ));
+    );
+    final container = ProviderContainer(
+      overrides: [databaseProvider.overrideWithValue(db)],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: Locale('de'),
+          home: CycleHistoryScreen(),
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
 
     // Swipe the Dismissible from right to left
-    await tester.drag(
-        find.byType(Dismissible).first, const Offset(-500, 0));
+    await tester.drag(find.byType(Dismissible).first, const Offset(-500, 0));
     await tester.pumpAndSettle();
 
     final entries = await db.periodDao.getAllPeriodEntries();

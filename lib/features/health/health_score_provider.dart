@@ -5,7 +5,9 @@ import '../../data/database/traum_database.dart';
 import 'health_score_calculator.dart';
 import 'health_score_result.dart';
 
-final healthScoreProvider = FutureProvider.autoDispose<HealthScoreResult>((ref) async {
+final healthScoreProvider = FutureProvider.autoDispose<HealthScoreResult>((
+  ref,
+) async {
   final db = ref.watch(databaseProvider);
   final prefs = ref.watch(preferencesRepositoryProvider);
   final now = DateTime.now();
@@ -16,7 +18,9 @@ final healthScoreProvider = FutureProvider.autoDispose<HealthScoreResult>((ref) 
   final sessions = await db.trainingDao.getSessionsAfter(weekStartDay);
   final workoutGoal = prefs.workoutGoalPerWeek;
 
-  final nutritionLogs = await db.nutritionDao.getNutritionLogsAfter(sevenDaysAgo);
+  final nutritionLogs = await db.nutritionDao.getNutritionLogsAfter(
+    sevenDaysAgo,
+  );
   final waterLogs = await db.nutritionDao.getWaterLogsAfter(sevenDaysAgo);
   final calorieGoal = prefs.kcalGoal.toDouble();
   final proteinGoal = prefs.proteinGoalG.toDouble();
@@ -36,9 +40,9 @@ final healthScoreProvider = FutureProvider.autoDispose<HealthScoreResult>((ref) 
   final avgSleep = sleepLogs.isEmpty
       ? 0.0
       : sleepLogs
-              .map((l) => l.wakeTime.difference(l.bedtime).inMinutes / 60.0)
-              .reduce((a, b) => a + b) /
-          sleepLogs.length;
+                .map((l) => l.wakeTime.difference(l.bedtime).inMinutes / 60.0)
+                .reduce((a, b) => a + b) /
+            sleepLogs.length;
 
   final suppTotal = await db.supplementDao.getActiveCount();
   final suppToday = await db.supplementDao.getTakenCountToday();
@@ -68,7 +72,9 @@ final healthScoreProvider = FutureProvider.autoDispose<HealthScoreResult>((ref) 
 });
 
 // Score history for the last 7 days (oldest first)
-final healthScoreHistoryProvider = FutureProvider.autoDispose<List<int>>((ref) async {
+final healthScoreHistoryProvider = FutureProvider.autoDispose<List<int>>((
+  ref,
+) async {
   final db = ref.watch(databaseProvider);
   final prefs = ref.watch(preferencesRepositoryProvider);
 
@@ -79,12 +85,15 @@ final healthScoreHistoryProvider = FutureProvider.autoDispose<List<int>>((ref) a
 
   final now = DateTime.now();
   final todayStart = DateTime(now.year, now.month, now.day);
-  final historyStart = todayStart.subtract(const Duration(days: 6)); // 7 days incl. today
+  final historyStart = todayStart.subtract(
+    const Duration(days: 6),
+  ); // 7 days incl. today
   // Sessions need to go back to the Monday of the week containing
   // historyStart, not just historyStart itself — "workouts this week" for
   // the oldest day in the graph still needs that whole week's sessions.
-  final earliestMonday =
-      historyStart.subtract(Duration(days: historyStart.weekday - 1));
+  final earliestMonday = historyStart.subtract(
+    Duration(days: historyStart.weekday - 1),
+  );
 
   // One query per data source for the whole window instead of one per
   // data source PER DAY (was 5 x 7 = 35 sequential, overlapping-range
@@ -118,8 +127,10 @@ final healthScoreHistoryProvider = FutureProvider.autoDispose<List<int>>((ref) a
     final weekStart = day.subtract(Duration(days: day.weekday - 1));
 
     final workoutsThisWeek = sessions
-        .where((s) =>
-            !s.startedAt.isBefore(weekStart) && s.startedAt.isBefore(dayEnd))
+        .where(
+          (s) =>
+              !s.startedAt.isBefore(weekStart) && s.startedAt.isBefore(dayEnd),
+        )
         .length;
 
     final dayNut = nutritionLogs
@@ -135,12 +146,21 @@ final healthScoreHistoryProvider = FutureProvider.autoDispose<List<int>>((ref) a
         .where((l) => !l.logDate.isBefore(day) && l.logDate.isBefore(dayEnd))
         .toList();
 
-    final dayCal = dayNut.isEmpty ? 0.0 : dayNut.map((l) => l.kcal).reduce((a, b) => a + b);
-    final dayProt = dayNut.isEmpty ? 0.0 : dayNut.map((l) => l.proteinG).reduce((a, b) => a + b);
-    final dayWaterMl = dayWater.isEmpty ? 0.0 : dayWater.map((l) => l.amountMl.toDouble()).reduce((a, b) => a + b);
+    final dayCal = dayNut.isEmpty
+        ? 0.0
+        : dayNut.map((l) => l.kcal).reduce((a, b) => a + b);
+    final dayProt = dayNut.isEmpty
+        ? 0.0
+        : dayNut.map((l) => l.proteinG).reduce((a, b) => a + b);
+    final dayWaterMl = dayWater.isEmpty
+        ? 0.0
+        : dayWater.map((l) => l.amountMl.toDouble()).reduce((a, b) => a + b);
     final daySleepHours = daySleep.isEmpty
         ? 0.0
-        : daySleep.map((l) => l.wakeTime.difference(l.bedtime).inMinutes / 60.0).reduce((a, b) => a + b) / daySleep.length;
+        : daySleep
+                  .map((l) => l.wakeTime.difference(l.bedtime).inMinutes / 60.0)
+                  .reduce((a, b) => a + b) /
+              daySleep.length;
     final dayMoodScores = dayMood.map((l) => l.moodScore).toList();
 
     final result = HealthScoreCalculator.calculate(

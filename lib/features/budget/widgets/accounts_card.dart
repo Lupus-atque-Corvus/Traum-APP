@@ -31,29 +31,31 @@ class AccountsCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(children: [
-            Text(
-              l10n.budgetAccounts,
-              style: const TextStyle(
-                fontFamily: 'DMSans',
-                fontWeight: FontWeight.w600,
-                color: TraumColors.onBackground,
-                fontSize: 13,
-              ),
-            ),
-            const Spacer(),
-            GestureDetector(
-              onTap: () => context.push(Routes.transactionList),
-              child: Text(
-                l10n.budgetMoreLink,
+          Row(
+            children: [
+              Text(
+                l10n.budgetAccounts,
                 style: const TextStyle(
                   fontFamily: 'DMSans',
-                  color: TraumColors.amberGold,
-                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: TraumColors.onBackground,
+                  fontSize: 13,
                 ),
               ),
-            ),
-          ]),
+              const Spacer(),
+              GestureDetector(
+                onTap: () => context.push(Routes.transactionList),
+                child: Text(
+                  l10n.budgetMoreLink,
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.amberGold,
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+            ],
+          ),
           SizedBox(height: bs(8)),
           accountsAsync.when(
             data: (list) => list.isEmpty
@@ -66,9 +68,10 @@ class AccountsCard extends ConsumerWidget {
                           onTap: () =>
                               _showAccountSheet(context, account: list[i]),
                           child: _AccountRow(
-                              account: list[i],
-                              balance: derived[list[i].id] ?? list[i].balance,
-                              currency: currency),
+                            account: list[i],
+                            balance: derived[list[i].id] ?? list[i].balance,
+                            currency: currency,
+                          ),
                         ),
                         if (i < list.length - 1)
                           Divider(
@@ -80,7 +83,9 @@ class AccountsCard extends ConsumerWidget {
                   ),
             loading: () => Center(
               child: CircularProgressIndicator(
-                  strokeWidth: bs(2), color: TraumColors.amberGold),
+                strokeWidth: bs(2),
+                color: TraumColors.amberGold,
+              ),
             ),
             error: (e, _) => InlineError(e),
           ),
@@ -126,15 +131,19 @@ class _AccountRow extends StatelessWidget {
   final double balance;
   final String currency;
 
-  const _AccountRow(
-      {required this.account, required this.balance, required this.currency});
+  const _AccountRow({
+    required this.account,
+    required this.balance,
+    required this.currency,
+  });
 
   @override
   Widget build(BuildContext context) {
     final isInvestment = account.type == 'investment';
     final negative = balance < 0;
-    final balanceColor =
-        negative ? TraumColors.roseRed : TraumColors.onBackground;
+    final balanceColor = negative
+        ? TraumColors.roseRed
+        : TraumColors.onBackground;
 
     final iconColor = switch (account.type) {
       'checking' => TraumColors.coralOrange,
@@ -158,84 +167,90 @@ class _AccountRow extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: bs(7)),
-      child: Row(children: [
-        Container(
-          width: bs(34),
-          height: bs(34),
-          decoration: BoxDecoration(
-            color: iconColor.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(bs(9)),
+      child: Row(
+        children: [
+          Container(
+            width: bs(34),
+            height: bs(34),
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(bs(9)),
+            ),
+            child: Icon(icon, color: iconColor, size: bs(16)),
           ),
-          child: Icon(icon, color: iconColor, size: bs(16)),
-        ),
-        SizedBox(width: bs(12)),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                account.name,
-                style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w600,
-                  color: TraumColors.onBackground,
-                  fontSize: 12,
-                ),
-              ),
-              if (subtitle.isNotEmpty)
+          SizedBox(width: bs(12)),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(
-                  subtitle,
+                  account.name,
                   style: const TextStyle(
                     fontFamily: 'DMSans',
-                    color: TraumColors.onBackgroundMuted,
+                    fontWeight: FontWeight.w600,
+                    color: TraumColors.onBackground,
+                    fontSize: 12,
+                  ),
+                ),
+                if (subtitle.isNotEmpty)
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackgroundMuted,
+                      fontSize: 9,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              HiddenAmount(
+                child: Text(
+                  '${negative ? '-' : ''}$currency${fmtAmount(balance.abs())}',
+                  style: TextStyle(
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w700,
+                    color: balanceColor,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              if (account.isPrimary)
+                Text(
+                  AppLocalizations.of(context)!.primaryAccount,
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.mintGreen,
+                    fontSize: 9,
+                  ),
+                )
+              else if (account.returnRate != null && isInvestment)
+                Text(
+                  '↗ +${account.returnRate!.toStringAsFixed(1)}%',
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.mintGreen,
+                    fontSize: 9,
+                  ),
+                )
+              else if (account.returnRate != null)
+                Text(
+                  AppLocalizations.of(
+                    context,
+                  )!.returnRateLabel(account.returnRate!.toStringAsFixed(2)),
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.mintGreen,
                     fontSize: 9,
                   ),
                 ),
             ],
           ),
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            HiddenAmount(
-              child: Text(
-                '${negative ? '-' : ''}$currency${fmtAmount(balance.abs())}',
-                style: TextStyle(
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w700,
-                  color: balanceColor,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-            if (account.isPrimary)
-              Text(
-                AppLocalizations.of(context)!.primaryAccount,
-                style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.mintGreen,
-                    fontSize: 9),
-              )
-            else if (account.returnRate != null && isInvestment)
-              Text(
-                '↗ +${account.returnRate!.toStringAsFixed(1)}%',
-                style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.mintGreen,
-                    fontSize: 9),
-              )
-            else if (account.returnRate != null)
-              Text(
-                AppLocalizations.of(context)!
-                    .returnRateLabel(account.returnRate!.toStringAsFixed(2)),
-                style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.mintGreen,
-                    fontSize: 9),
-              ),
-          ],
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }
@@ -246,15 +261,17 @@ class _AccountsContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: EdgeInsets.all(bs(13)),
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(bs(16)),
-          border:
-              Border.all(color: Colors.white.withValues(alpha: 0.08), width: bs(1)),
-        ),
-        child: child,
-      );
+    padding: EdgeInsets.all(bs(13)),
+    decoration: BoxDecoration(
+      color: TraumColors.surface,
+      borderRadius: BorderRadius.circular(bs(16)),
+      border: Border.all(
+        color: Colors.white.withValues(alpha: 0.08),
+        width: bs(1),
+      ),
+    ),
+    child: child,
+  );
 }
 
 class AddAccountSheet extends ConsumerStatefulWidget {
@@ -284,12 +301,12 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
     if (a != null) {
       _nameCtrl.text = a.name;
       _institutionCtrl.text = a.institution ?? '';
-      _balanceCtrl.text =
-          a.balance.toStringAsFixed(2).replaceAll('.', ',');
+      _balanceCtrl.text = a.balance.toStringAsFixed(2).replaceAll('.', ',');
       _lastFourCtrl.text = a.lastFour ?? '';
       if (a.returnRate != null) {
-        _returnRateCtrl.text =
-            a.returnRate!.toStringAsFixed(2).replaceAll('.', ',');
+        _returnRateCtrl.text = a.returnRate!
+            .toStringAsFixed(2)
+            .replaceAll('.', ',');
       }
       _type = a.type;
       _isPrimary = a.isPrimary;
@@ -311,9 +328,15 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
     final balance = parseLocaleAmount(_balanceCtrl.text) ?? 0;
     if (name.isEmpty) return;
     if (balance.abs() > kMaxAmount) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context)!
-              .amountExceedsMax(fmtAmount(kMaxAmount)))));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(
+              context,
+            )!.amountExceedsMax(fmtAmount(kMaxAmount)),
+          ),
+        ),
+      );
       return;
     }
 
@@ -322,15 +345,16 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
       final returnRate = _returnRateCtrl.text.trim().isNotEmpty
           ? parseLocaleAmount(_returnRateCtrl.text)
           : null;
-      final lastFour =
-          _type == 'credit' && _lastFourCtrl.text.trim().isNotEmpty
-              ? _lastFourCtrl.text.trim()
-              : null;
+      final lastFour = _type == 'credit' && _lastFourCtrl.text.trim().isNotEmpty
+          ? _lastFourCtrl.text.trim()
+          : null;
       final institution = _institutionCtrl.text.trim().isNotEmpty
           ? _institutionCtrl.text.trim()
           : null;
       final existing = widget.account;
-      await ref.read(accountsDaoProvider).upsertAccount(
+      await ref
+          .read(accountsDaoProvider)
+          .upsertAccount(
             AccountsCompanion(
               id: existing != null ? Value(existing.id) : const Value.absent(),
               name: Value(name),
@@ -356,8 +380,9 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
     final confirmed = await confirmDeleteDialog(
       context,
       title: AppLocalizations.of(context)!.deleteAccountConfirmTitle,
-      content:
-          AppLocalizations.of(context)!.deleteAccountConfirmContent(account.name),
+      content: AppLocalizations.of(
+        context,
+      )!.deleteAccountConfirmContent(account.name),
     );
     if (confirmed != true) return;
     await ref.read(accountsDaoProvider).deleteAccount(account.id);
@@ -395,81 +420,91 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
             child: Row(
               children: [
                 _TypeChip(
-                    label: AppLocalizations.of(context)!.accountTypeChecking,
-                    value: 'checking',
-                    selected: _type,
-                    onTap: (v) => setState(() => _type = v)),
+                  label: AppLocalizations.of(context)!.accountTypeChecking,
+                  value: 'checking',
+                  selected: _type,
+                  onTap: (v) => setState(() => _type = v),
+                ),
                 SizedBox(width: bs(8)),
                 _TypeChip(
-                    label: AppLocalizations.of(context)!.accountTypeSavings,
-                    value: 'savings',
-                    selected: _type,
-                    onTap: (v) => setState(() => _type = v)),
+                  label: AppLocalizations.of(context)!.accountTypeSavings,
+                  value: 'savings',
+                  selected: _type,
+                  onTap: (v) => setState(() => _type = v),
+                ),
                 SizedBox(width: bs(8)),
                 _TypeChip(
-                    label: AppLocalizations.of(context)!.accountTypeCredit,
-                    value: 'credit',
-                    selected: _type,
-                    onTap: (v) => setState(() => _type = v)),
+                  label: AppLocalizations.of(context)!.accountTypeCredit,
+                  value: 'credit',
+                  selected: _type,
+                  onTap: (v) => setState(() => _type = v),
+                ),
                 SizedBox(width: bs(8)),
                 _TypeChip(
-                    label:
-                        AppLocalizations.of(context)!.accountTypeInvestment,
-                    value: 'investment',
-                    selected: _type,
-                    onTap: (v) => setState(() => _type = v)),
+                  label: AppLocalizations.of(context)!.accountTypeInvestment,
+                  value: 'investment',
+                  selected: _type,
+                  onTap: (v) => setState(() => _type = v),
+                ),
               ],
             ),
           ),
           SizedBox(height: bs(12)),
           _Field(
-              ctrl: _nameCtrl,
-              label: AppLocalizations.of(context)!.accountNameLabel,
-              hint: AppLocalizations.of(context)!.accountNameHint),
+            ctrl: _nameCtrl,
+            label: AppLocalizations.of(context)!.accountNameLabel,
+            hint: AppLocalizations.of(context)!.accountNameHint,
+          ),
           SizedBox(height: bs(8)),
           _Field(
-              ctrl: _institutionCtrl,
-              label: AppLocalizations.of(context)!.bankInstitutionLabel,
-              hint: AppLocalizations.of(context)!.bankInstitutionHint),
+            ctrl: _institutionCtrl,
+            label: AppLocalizations.of(context)!.bankInstitutionLabel,
+            hint: AppLocalizations.of(context)!.bankInstitutionHint,
+          ),
           SizedBox(height: bs(8)),
           _Field(
-              ctrl: _balanceCtrl,
-              label: AppLocalizations.of(context)!.accountBalanceLabel,
-              hint: '0,00',
-              keyboardType: TextInputType.number),
+            ctrl: _balanceCtrl,
+            label: AppLocalizations.of(context)!.accountBalanceLabel,
+            hint: '0,00',
+            keyboardType: TextInputType.number,
+          ),
           if (_type == 'credit') ...[
             SizedBox(height: bs(8)),
             _Field(
-                ctrl: _lastFourCtrl,
-                label: AppLocalizations.of(context)!.lastFourDigitsLabel,
-                hint: '1234',
-                keyboardType: TextInputType.number),
+              ctrl: _lastFourCtrl,
+              label: AppLocalizations.of(context)!.lastFourDigitsLabel,
+              hint: '1234',
+              keyboardType: TextInputType.number,
+            ),
           ],
           if (_type == 'savings' || _type == 'investment') ...[
             SizedBox(height: bs(8)),
             _Field(
-                ctrl: _returnRateCtrl,
-                label: AppLocalizations.of(context)!.returnRatePercentLabel,
-                hint: '3,5',
-                keyboardType: TextInputType.number),
+              ctrl: _returnRateCtrl,
+              label: AppLocalizations.of(context)!.returnRatePercentLabel,
+              hint: '3,5',
+              keyboardType: TextInputType.number,
+            ),
           ],
           SizedBox(height: bs(8)),
-          Row(children: [
-            Text(
-              AppLocalizations.of(context)!.markAsPrimaryAccount,
-              style: const TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackground,
-                fontSize: 14,
+          Row(
+            children: [
+              Text(
+                AppLocalizations.of(context)!.markAsPrimaryAccount,
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                  fontSize: 14,
+                ),
               ),
-            ),
-            const Spacer(),
-            Switch(
-              value: _isPrimary,
-              onChanged: (v) => setState(() => _isPrimary = v),
-              activeThumbColor: TraumColors.amberGold,
-            ),
-          ]),
+              const Spacer(),
+              Switch(
+                value: _isPrimary,
+                onChanged: (v) => setState(() => _isPrimary = v),
+                activeThumbColor: TraumColors.amberGold,
+              ),
+            ],
+          ),
           SizedBox(height: bs(16)),
           SizedBox(
             width: double.infinity,
@@ -479,8 +514,8 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
                 backgroundColor: TraumColors.amberGold,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(TraumRadius.button)),
+                  borderRadius: BorderRadius.circular(TraumRadius.button),
+                ),
                 padding: EdgeInsets.symmetric(vertical: bs(14)),
               ),
               child: _saving
@@ -488,13 +523,16 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
                       height: bs(18),
                       width: bs(18),
                       child: CircularProgressIndicator(
-                          strokeWidth: bs(2), color: Colors.white),
+                        strokeWidth: bs(2),
+                        color: Colors.white,
+                      ),
                     )
                   : Text(
                       AppLocalizations.of(context)!.save,
                       style: const TextStyle(
-                          fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w600),
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
             ),
           ),
@@ -504,14 +542,18 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
               width: double.infinity,
               child: TextButton.icon(
                 onPressed: _saving ? null : _delete,
-                icon: Icon(Icons.delete_outline,
-                    color: TraumColors.roseRed, size: bs(18)),
+                icon: Icon(
+                  Icons.delete_outline,
+                  color: TraumColors.roseRed,
+                  size: bs(18),
+                ),
                 label: Text(
                   AppLocalizations.of(context)!.deleteAccountButton,
                   style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.roseRed,
-                      fontWeight: FontWeight.w600),
+                    fontFamily: 'DMSans',
+                    color: TraumColors.roseRed,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
@@ -528,11 +570,12 @@ class _TypeChip extends StatelessWidget {
   final String selected;
   final void Function(String) onTap;
 
-  const _TypeChip(
-      {required this.label,
-      required this.value,
-      required this.selected,
-      required this.onTap});
+  const _TypeChip({
+    required this.label,
+    required this.value,
+    required this.selected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -585,28 +628,33 @@ class _Field extends StatelessWidget {
       controller: ctrl,
       keyboardType: keyboardType,
       style: const TextStyle(
-          fontFamily: 'DMSans',
-          color: TraumColors.onBackground,
-          fontSize: 14),
+        fontFamily: 'DMSans',
+        color: TraumColors.onBackground,
+        fontSize: 14,
+      ),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
         labelStyle: const TextStyle(
-            fontFamily: 'DMSans',
-            color: TraumColors.onBackgroundMuted,
-            fontSize: 13),
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackgroundMuted,
+          fontSize: 13,
+        ),
         hintStyle: const TextStyle(
-            fontFamily: 'DMSans',
-            color: TraumColors.onBackgroundSubtle,
-            fontSize: 13),
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackgroundSubtle,
+          fontSize: 13,
+        ),
         filled: true,
         fillColor: TraumColors.surfaceVariant,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(TraumRadius.input),
           borderSide: BorderSide.none,
         ),
-        contentPadding:
-            EdgeInsets.symmetric(horizontal: bs(12), vertical: bs(10)),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: bs(12),
+          vertical: bs(10),
+        ),
       ),
     );
   }

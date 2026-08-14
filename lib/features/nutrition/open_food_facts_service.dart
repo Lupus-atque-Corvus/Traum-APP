@@ -6,11 +6,9 @@ import '../../data/database/traum_database.dart';
 import 'micro_nutrients.dart';
 
 class OpenFoodFactsService {
-  static const _baseUrl =
-      'https://world.openfoodfacts.org/api/v0/product';
+  static const _baseUrl = 'https://world.openfoodfacts.org/api/v0/product';
 
-  static Future<FoodProductsCompanion?> fetchProduct(
-      String barcode) async {
+  static Future<FoodProductsCompanion?> fetchProduct(String barcode) async {
     try {
       final response = await http
           .get(
@@ -20,8 +18,7 @@ class OpenFoodFactsService {
           .timeout(const Duration(seconds: 8));
 
       if (response.statusCode != 200) return null;
-      final json =
-          jsonDecode(response.body) as Map<String, dynamic>;
+      final json = jsonDecode(response.body) as Map<String, dynamic>;
       if (json['status'] != 1) return null;
 
       final product = json['product'] as Map<String, dynamic>;
@@ -36,11 +33,13 @@ class OpenFoodFactsService {
 /// Baut den FoodProducts-Companion aus einem OFF-`product`-Objekt.
 /// Pure und testbar (kein HTTP).
 FoodProductsCompanion buildProductCompanion(
-    String barcode, Map<String, dynamic> product) {
-  final nutriments =
-      product['nutriments'] as Map<String, dynamic>? ?? {};
+  String barcode,
+  Map<String, dynamic> product,
+) {
+  final nutriments = product['nutriments'] as Map<String, dynamic>? ?? {};
 
-  final name = (product['product_name'] as String?)?.trim() ??
+  final name =
+      (product['product_name'] as String?)?.trim() ??
       (product['product_name_de'] as String?)?.trim() ??
       'Unbekanntes Produkt';
 

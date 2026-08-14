@@ -5,8 +5,8 @@ const _kUnitKey = 'weight_unit';
 
 final unitPreferenceProvider =
     StateNotifierProvider<UnitPreferenceNotifier, bool>((ref) {
-  return UnitPreferenceNotifier();
-});
+      return UnitPreferenceNotifier();
+    });
 
 /// true = lbs, false = kg (default)
 class UnitPreferenceNotifier extends StateNotifier<bool> {

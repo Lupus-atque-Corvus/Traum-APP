@@ -19,17 +19,19 @@ import '../home_widget_registry.dart';
 
 final _abstinenceTrackersProvider =
     FutureProvider.autoDispose<List<AbstinenceTracker>>((ref) {
-  return ref.watch(abstinenceDaoProvider).getAllTrackers();
-});
+      return ref.watch(abstinenceDaoProvider).getAllTrackers();
+    });
 
-final _latestPeriodEntryProvider =
-    FutureProvider.autoDispose<PeriodEntry?>((ref) {
+final _latestPeriodEntryProvider = FutureProvider.autoDispose<PeriodEntry?>((
+  ref,
+) {
   return ref.watch(periodDaoProvider).getLatestPeriodEntry();
 });
 
 /// Predicted next-period date for the latest period entry, if computed.
-final _nextPeriodPredictedProvider =
-    FutureProvider.autoDispose<DateTime?>((ref) async {
+final _nextPeriodPredictedProvider = FutureProvider.autoDispose<DateTime?>((
+  ref,
+) async {
   final dao = ref.watch(periodDaoProvider);
   final latest = await dao.getLatestPeriodEntry();
   if (latest == null) return null;
@@ -53,8 +55,7 @@ final _mapMarkersProvider = FutureProvider.autoDispose<List<MapMarker>>((ref) {
   return ref.watch(mapMarkersDaoProvider).getAll();
 });
 
-final _mapPhotosProvider =
-    FutureProvider.autoDispose<List<MarkerPhoto>>((ref) {
+final _mapPhotosProvider = FutureProvider.autoDispose<List<MarkerPhoto>>((ref) {
   return ref.watch(markerPhotosDaoProvider).getAll();
 });
 
@@ -427,7 +428,9 @@ class _AllCountersContent extends ConsumerWidget {
     final trackers = ref.watch(_abstinenceTrackersProvider).value;
     if (trackers == null || trackers.isEmpty) return const _EmptyDash();
     final sorted = [...trackers]
-      ..sort((a, b) => _daysSince(b.startDate).compareTo(_daysSince(a.startDate)));
+      ..sort(
+        (a, b) => _daysSince(b.startDate).compareTo(_daysSince(a.startDate)),
+      );
     return ListView.separated(
       padding: EdgeInsets.zero,
       itemCount: sorted.length,
@@ -651,8 +654,11 @@ class _LastPhotoContent extends ConsumerWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(Icons.photo_camera_rounded,
-            size: 30, color: TraumColors.coralOrange),
+        const Icon(
+          Icons.photo_camera_rounded,
+          size: 30,
+          color: TraumColors.coralOrange,
+        ),
         const SizedBox(height: 6),
         Text(
           label,

@@ -816,7 +816,12 @@ class _AppLauncherTileState extends ConsumerState<_AppLauncherTile> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(14),
                 child: icon != null
-                    ? Image.memory(icon, width: 48, height: 48, fit: BoxFit.cover)
+                    ? Image.memory(
+                        icon,
+                        width: 48,
+                        height: 48,
+                        fit: BoxFit.cover,
+                      )
                     : Container(
                         width: 48,
                         height: 48,

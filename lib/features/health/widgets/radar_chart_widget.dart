@@ -21,27 +21,15 @@ class ScoreRadarChart extends StatelessWidget {
             fontSize: 8,
             fontFamily: 'DMSans',
           ),
-          tickBorderData: const BorderSide(
-            color: Colors.white12,
-            width: 1,
-          ),
-          gridBorderData: const BorderSide(
-            color: Colors.white12,
-            width: 1,
-          ),
-          radarBorderData: const BorderSide(
-            color: Colors.white12,
-            width: 1,
-          ),
+          tickBorderData: const BorderSide(color: Colors.white12, width: 1),
+          gridBorderData: const BorderSide(color: Colors.white12, width: 1),
+          radarBorderData: const BorderSide(color: Colors.white12, width: 1),
           getTitle: (index, angle) {
             if (index < 0 || index >= faktoren.length) {
               return RadarChartTitle(text: '');
             }
             final f = faktoren[index];
-            return RadarChartTitle(
-              text: '${f.name}\n${f.score}',
-              angle: 0,
-            );
+            return RadarChartTitle(text: '${f.name}\n${f.score}', angle: 0);
           },
           titleTextStyle: const TextStyle(
             color: TraumColors.onBackgroundMuted,

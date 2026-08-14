@@ -33,7 +33,8 @@ class WikiLinkSyntax extends md.InlineSyntax {
     final el = md.Element.withTag('wikilink')
       ..attributes['target'] = inner
       ..attributes['embed'] = '$isEmbed'
-      ..attributes['display'] = alias ?? (anchor != null ? '$inner#$anchor' : inner);
+      ..attributes['display'] =
+          alias ?? (anchor != null ? '$inner#$anchor' : inner);
     if (anchor != null) el.attributes['anchor'] = anchor;
     parser.addNode(el);
     return true;
@@ -54,8 +55,7 @@ class HighlightSyntax extends md.InlineSyntax {
 /// Inline-Tag `#tag` / `#eltern/kind`. Nur am Zeilenanfang oder nach Whitespace.
 class TagSyntax extends md.InlineSyntax {
   TagSyntax()
-      : super(r'(^|\s)#([\p{L}][\p{L}\p{N}_/-]*)',
-            caseSensitive: false);
+    : super(r'(^|\s)#([\p{L}][\p{L}\p{N}_/-]*)', caseSensitive: false);
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
@@ -130,11 +130,14 @@ class WikiLinkBuilder extends MarkdownElementBuilder {
       // Verbleibende Embeds (z. B. Bilder) → Platzhalter.
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Text('⧉ $display',
-            style: const TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackgroundMuted,
-                fontStyle: FontStyle.italic)),
+        child: Text(
+          '⧉ $display',
+          style: const TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackgroundMuted,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
       );
     }
 
@@ -164,9 +167,13 @@ class HighlightBuilder extends MarkdownElementBuilder {
         color: TraumColors.amberGold.withValues(alpha: 0.28),
         borderRadius: BorderRadius.circular(3),
       ),
-      child: Text(element.textContent,
-          style: const TextStyle(
-              fontFamily: 'DMSans', color: TraumColors.onBackground)),
+      child: Text(
+        element.textContent,
+        style: const TextStyle(
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackground,
+        ),
+      ),
     );
   }
 }
@@ -186,12 +193,15 @@ class TagBuilder extends MarkdownElementBuilder {
           color: kNotesLinkColor.withValues(alpha: 0.16),
           borderRadius: BorderRadius.circular(TraumRadius.chip),
         ),
-        child: Text('#$tag',
-            style: const TextStyle(
-                fontFamily: 'DMSans',
-                color: kNotesLinkColor,
-                fontSize: 13,
-                fontWeight: FontWeight.w500)),
+        child: Text(
+          '#$tag',
+          style: const TextStyle(
+            fontFamily: 'DMSans',
+            color: kNotesLinkColor,
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
     );
   }
@@ -206,7 +216,10 @@ const Color kNotesLinkColor = TraumColors.cyanBlue;
     case 'tip':
     case 'success':
     case 'done':
-      return (color: TraumColors.mintGreen, icon: Icons.check_circle_outline_rounded);
+      return (
+        color: TraumColors.mintGreen,
+        icon: Icons.check_circle_outline_rounded,
+      );
     case 'warning':
     case 'caution':
     case 'attention':

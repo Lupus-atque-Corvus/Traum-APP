@@ -75,8 +75,9 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
   }
 
   Future<void> _loadExisting() async {
-    final list =
-        await ref.read(mapMarkersDaoProvider).getByCollection(widget.collection.id);
+    final list = await ref
+        .read(mapMarkersDaoProvider)
+        .getByCollection(widget.collection.id);
     if (mounted) setState(() => _existing = list);
   }
 
@@ -108,33 +109,37 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
     if (_attachToMarkerId != null) {
       markerId = _attachToMarkerId!;
     } else {
-      markerId = await db.mapMarkersDao.insert(MapMarkersCompanion.insert(
-        collectionId: widget.collection.id,
-        title: Value(_titleController.text.trim()),
-        latitude: Value(lat),
-        longitude: Value(lon),
-        locationName: Value(locName),
-        note: Value(_noteController.text.trim()),
-        hashtags: Value(_hashtags.join(', ')),
-        rating: Value(_hasRating && _rating > 0 ? _rating : null),
-        customFields: Value(jsonEncode(_values)),
-        isHidden: Value(_values['hidden'] == true),
-        createdAt: DateTime.now(),
-      ));
+      markerId = await db.mapMarkersDao.insert(
+        MapMarkersCompanion.insert(
+          collectionId: widget.collection.id,
+          title: Value(_titleController.text.trim()),
+          latitude: Value(lat),
+          longitude: Value(lon),
+          locationName: Value(locName),
+          note: Value(_noteController.text.trim()),
+          hashtags: Value(_hashtags.join(', ')),
+          rating: Value(_hasRating && _rating > 0 ? _rating : null),
+          customFields: Value(jsonEncode(_values)),
+          isHidden: Value(_values['hidden'] == true),
+          createdAt: DateTime.now(),
+        ),
+      );
     }
 
     if (r != null) {
       final dims = await readImageDimensions(r.photoPath);
-      await db.markerPhotosDao.insert(MarkerPhotosCompanion.insert(
-        markerId: markerId,
-        photoPath: r.photoPath,
-        widthPx: Value(dims?.width),
-        heightPx: Value(dims?.height),
-        latitude: Value(r.latitude),
-        longitude: Value(r.longitude),
-        takenAt: r.takenAt,
-        createdAt: DateTime.now(),
-      ));
+      await db.markerPhotosDao.insert(
+        MarkerPhotosCompanion.insert(
+          markerId: markerId,
+          photoPath: r.photoPath,
+          widthPx: Value(dims?.width),
+          heightPx: Value(dims?.height),
+          latitude: Value(r.latitude),
+          longitude: Value(r.longitude),
+          takenAt: r.takenAt,
+          createdAt: DateTime.now(),
+        ),
+      );
     }
 
     if (mounted) Navigator.pop(context);
@@ -186,7 +191,9 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                         width: double.infinity,
                         height: 200,
                         cacheWidth: decodePxFor(
-                            context, MediaQuery.sizeOf(context).width),
+                          context,
+                          MediaQuery.sizeOf(context).width,
+                        ),
                         fit: BoxFit.cover,
                       ),
                       Positioned(
@@ -201,15 +208,20 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
               ],
               Row(
                 children: [
-                  const Icon(Icons.place_outlined,
-                      size: 16, color: TraumColors.cyanBlue),
+                  const Icon(
+                    Icons.place_outlined,
+                    size: 16,
+                    color: TraumColors.cyanBlue,
+                  ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
                       locName ??
                           (lat != null
                               ? '${lat.toStringAsFixed(4)}, ${lon!.toStringAsFixed(4)}'
-                              : AppLocalizations.of(context)!.graffitiMapNoLocation),
+                              : AppLocalizations.of(
+                                  context,
+                                )!.graffitiMapNoLocation),
                       style: const TextStyle(
                         fontFamily: 'DMSans',
                         color: TraumColors.onBackgroundMuted,
@@ -239,22 +251,26 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                   dropdownColor: TraumColors.surfaceVariant,
                   decoration: mapInputDecoration(''),
                   style: const TextStyle(
-                      fontFamily: 'DMSans', color: TraumColors.onBackground),
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackground,
+                  ),
                   items: [
                     DropdownMenuItem<int?>(
                       value: null,
                       child: Text(AppLocalizations.of(context)!.mapNewEntry),
                     ),
-                    ..._existing.map((m) => DropdownMenuItem<int?>(
-                          value: m.id,
-                          child: Text(
-                            m.title.isNotEmpty
-                                ? m.title
-                                : (m.locationName ??
+                    ..._existing.map(
+                      (m) => DropdownMenuItem<int?>(
+                        value: m.id,
+                        child: Text(
+                          m.title.isNotEmpty
+                              ? m.title
+                              : (m.locationName ??
                                     '${AppLocalizations.of(context)!.mapUnnamedPoint} #${m.id}'),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        )),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
                   ],
                   onChanged: (v) => setState(() => _attachToMarkerId = v),
                 ),
@@ -268,9 +284,12 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                 TextField(
                   controller: _titleController,
                   style: const TextStyle(
-                      fontFamily: 'DMSans', color: TraumColors.onBackground),
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackground,
+                  ),
                   decoration: mapInputDecoration(
-                      AppLocalizations.of(context)!.mapNameFieldHint),
+                    AppLocalizations.of(context)!.mapNameFieldHint,
+                  ),
                 ),
                 const SizedBox(height: 14),
               ],
@@ -298,9 +317,12 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                   controller: _noteController,
                   maxLines: 3,
                   style: const TextStyle(
-                      fontFamily: 'DMSans', color: TraumColors.onBackground),
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackground,
+                  ),
                   decoration: mapInputDecoration(
-                      AppLocalizations.of(context)!.graffitiMapNote),
+                    AppLocalizations.of(context)!.graffitiMapNote,
+                  ),
                 ),
                 const SizedBox(height: 14),
 
@@ -312,27 +334,35 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                     spacing: 8,
                     runSpacing: 8,
                     children: _hashtags
-                        .map((t) => Chip(
-                              label: Text('#$t',
-                                  style: const TextStyle(
-                                      fontFamily: 'DMSans',
-                                      color: TraumColors.cyanBlue,
-                                      fontSize: 12)),
-                              backgroundColor: TraumColors.cyanDim,
-                              side: BorderSide.none,
-                              deleteIconColor: TraumColors.cyanBlue,
-                              onDeleted: () =>
-                                  setState(() => _hashtags.remove(t)),
-                            ))
+                        .map(
+                          (t) => Chip(
+                            label: Text(
+                              '#$t',
+                              style: const TextStyle(
+                                fontFamily: 'DMSans',
+                                color: TraumColors.cyanBlue,
+                                fontSize: 12,
+                              ),
+                            ),
+                            backgroundColor: TraumColors.cyanDim,
+                            side: BorderSide.none,
+                            deleteIconColor: TraumColors.cyanBlue,
+                            onDeleted: () =>
+                                setState(() => _hashtags.remove(t)),
+                          ),
+                        )
                         .toList(),
                   ),
                 if (_hashtags.isNotEmpty) const SizedBox(height: 8),
                 TextField(
                   controller: _hashtagController,
                   style: const TextStyle(
-                      fontFamily: 'DMSans', color: TraumColors.onBackground),
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackground,
+                  ),
                   decoration: mapInputDecoration(
-                      AppLocalizations.of(context)!.graffitiMapHashtag),
+                    AppLocalizations.of(context)!.graffitiMapHashtag,
+                  ),
                   onSubmitted: _addHashtag,
                 ),
                 const SizedBox(height: 20),
@@ -355,7 +385,9 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(
-                                strokeWidth: 2, color: Colors.white),
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
                           )
                         : Text(
                             AppLocalizations.of(context)!.graffitiMapSave,
@@ -377,15 +409,15 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
   }
 
   Widget _label(String text) => Text(
-        text.toUpperCase(),
-        style: const TextStyle(
-          fontFamily: 'DMSans',
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: TraumColors.onBackgroundMuted,
-          letterSpacing: 0.8,
-        ),
-      );
+    text.toUpperCase(),
+    style: const TextStyle(
+      fontFamily: 'DMSans',
+      fontSize: 12,
+      fontWeight: FontWeight.w600,
+      color: TraumColors.onBackgroundMuted,
+      letterSpacing: 0.8,
+    ),
+  );
 
   Widget _buildField(MapField field) {
     return Padding(
@@ -397,60 +429,67 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
           const SizedBox(height: 6),
           switch (field.type) {
             MapFieldType.select => Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: field.options.map((opt) {
-                  final sel = _values[field.key] == opt.value;
-                  final color = opt.colorHex != null
-                      ? Color(int.parse('0xFF${opt.colorHex}'))
-                      : TraumColors.cyanBlue;
-                  return GestureDetector(
-                    onTap: () => setState(() => _values[field.key] = opt.value),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: sel
-                            ? color.withValues(alpha: 0.2)
-                            : TraumColors.surfaceVariant,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                            color: sel ? color : Colors.transparent,
-                            width: 1.5),
-                      ),
-                      child: Text(
-                        localizedOptionValue(context, opt.value),
-                        style: TextStyle(
-                          fontFamily: 'DMSans',
-                          color: sel ? color : TraumColors.onBackgroundMuted,
-                          fontSize: 13,
-                          fontWeight:
-                              sel ? FontWeight.w600 : FontWeight.w400,
-                        ),
+              spacing: 8,
+              runSpacing: 8,
+              children: field.options.map((opt) {
+                final sel = _values[field.key] == opt.value;
+                final color = opt.colorHex != null
+                    ? Color(int.parse('0xFF${opt.colorHex}'))
+                    : TraumColors.cyanBlue;
+                return GestureDetector(
+                  onTap: () => setState(() => _values[field.key] = opt.value),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: sel
+                          ? color.withValues(alpha: 0.2)
+                          : TraumColors.surfaceVariant,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: sel ? color : Colors.transparent,
+                        width: 1.5,
                       ),
                     ),
-                  );
-                }).toList(),
-              ),
+                    child: Text(
+                      localizedOptionValue(context, opt.value),
+                      style: TextStyle(
+                        fontFamily: 'DMSans',
+                        color: sel ? color : TraumColors.onBackgroundMuted,
+                        fontSize: 13,
+                        fontWeight: sel ? FontWeight.w600 : FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
             MapFieldType.toggle => Switch(
-                value: _values[field.key] == true,
-                activeThumbColor: TraumColors.cyanBlue,
-                onChanged: (v) => setState(() => _values[field.key] = v),
-              ),
+              value: _values[field.key] == true,
+              activeThumbColor: TraumColors.cyanBlue,
+              onChanged: (v) => setState(() => _values[field.key] = v),
+            ),
             MapFieldType.text => TextField(
-                onChanged: (v) => _values[field.key] = v,
-                style: const TextStyle(
-                    fontFamily: 'DMSans', color: TraumColors.onBackground),
-                decoration: mapInputDecoration(
-                    AppLocalizations.of(context)!.mapEnterHint),
+              onChanged: (v) => _values[field.key] = v,
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
               ),
+              decoration: mapInputDecoration(
+                AppLocalizations.of(context)!.mapEnterHint,
+              ),
+            ),
             MapFieldType.number => TextField(
-                keyboardType: TextInputType.number,
-                onChanged: (v) => _values[field.key] = num.tryParse(v),
-                style: const TextStyle(
-                    fontFamily: 'DMSans', color: TraumColors.onBackground),
-                decoration: mapInputDecoration('0'),
+              keyboardType: TextInputType.number,
+              onChanged: (v) => _values[field.key] = num.tryParse(v),
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
               ),
+              decoration: mapInputDecoration('0'),
+            ),
           },
         ],
       ),
@@ -472,8 +511,7 @@ class _MegapixelFromFile extends StatelessWidget {
       future: readImageDimensions(path),
       builder: (context, snap) {
         final dims = snap.data;
-        return MegapixelBadge(
-            formatMegapixels(dims?.width, dims?.height));
+        return MegapixelBadge(formatMegapixels(dims?.width, dims?.height));
       },
     );
   }

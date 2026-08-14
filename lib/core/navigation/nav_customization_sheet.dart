@@ -36,9 +36,18 @@ class _NavCustomizationSheetState
   late List<String> _slots;
 
   static const _allModules = [
-    'training', 'health', 'nutrition', 'substances',
-    'planning', 'diary', 'graffitiMap', 'abstinence', 'budget',
-    'period', 'profile', 'settings',
+    'training',
+    'health',
+    'nutrition',
+    'substances',
+    'planning',
+    'diary',
+    'graffitiMap',
+    'abstinence',
+    'budget',
+    'period',
+    'profile',
+    'settings',
   ];
 
   @override
@@ -71,20 +80,34 @@ class _NavCustomizationSheetState
 
   static IconData _iconFor(String module) {
     switch (module) {
-      case 'home':        return Icons.home_rounded;
-      case 'training':    return Icons.fitness_center_rounded;
-      case 'health':      return Icons.favorite_rounded;
-      case 'nutrition':   return Icons.restaurant_rounded;
-      case 'substances':  return Icons.medication_liquid_rounded;
-      case 'planning':    return Icons.calendar_today_rounded;
-      case 'diary':       return Icons.auto_stories_rounded;
-      case 'graffitiMap': return Icons.location_on_outlined;
-      case 'abstinence':  return Icons.trending_up_rounded;
-      case 'budget':      return Icons.account_balance_wallet_rounded;
-      case 'period':      return Icons.water_drop_rounded;
-      case 'profile':     return Icons.person_rounded;
-      case 'settings':    return Icons.settings_rounded;
-      default:            return Icons.circle;
+      case 'home':
+        return Icons.home_rounded;
+      case 'training':
+        return Icons.fitness_center_rounded;
+      case 'health':
+        return Icons.favorite_rounded;
+      case 'nutrition':
+        return Icons.restaurant_rounded;
+      case 'substances':
+        return Icons.medication_liquid_rounded;
+      case 'planning':
+        return Icons.calendar_today_rounded;
+      case 'diary':
+        return Icons.auto_stories_rounded;
+      case 'graffitiMap':
+        return Icons.location_on_outlined;
+      case 'abstinence':
+        return Icons.trending_up_rounded;
+      case 'budget':
+        return Icons.account_balance_wallet_rounded;
+      case 'period':
+        return Icons.water_drop_rounded;
+      case 'profile':
+        return Icons.person_rounded;
+      case 'settings':
+        return Icons.settings_rounded;
+      default:
+        return Icons.circle;
     }
   }
 
@@ -113,8 +136,7 @@ class _NavCustomizationSheetState
             _PreviewIcon(module: 'home', isActive: true),
             ..._slots.map((m) => _PreviewIcon(module: m, icon: _iconFor(m))),
             // fill remaining empty slots as placeholders
-            for (int i = _slots.length; i < 4; i++)
-              _PreviewSlotEmpty(),
+            for (int i = _slots.length; i < 4; i++) _PreviewSlotEmpty(),
             Container(
               width: 32,
               height: 32,
@@ -254,9 +276,7 @@ class _NavCustomizationSheetState
                 children: [
                   Icon(
                     _iconFor(module),
-                    color: full
-                        ? TraumColors.onBackgroundSubtle
-                        : color,
+                    color: full ? TraumColors.onBackgroundSubtle : color,
                     size: 14,
                   ),
                   const SizedBox(width: 6),
@@ -323,8 +343,13 @@ class _NavCustomizationSheetState
                 TextButton(
                   onPressed: _save,
                   style: TextButton.styleFrom(
-                    backgroundColor: TraumColors.indigoBlue.withValues(alpha: 0.15),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    backgroundColor: TraumColors.indigoBlue.withValues(
+                      alpha: 0.15,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(TraumRadius.chip),
                     ),
@@ -450,26 +475,23 @@ class _PreviewIcon extends StatelessWidget {
   final IconData? icon;
   final bool isActive;
 
-  const _PreviewIcon({
-    required this.module,
-    this.icon,
-    this.isActive = false,
-  });
+  const _PreviewIcon({required this.module, this.icon, this.isActive = false});
 
   @override
   Widget build(BuildContext context) {
     final color = TraumColors.moduleColor(module);
-    final ic = icon ??
-        (module == 'home' ? Icons.home_rounded : Icons.circle);
+    final ic = icon ?? (module == 'home' ? Icons.home_rounded : Icons.circle);
 
     if (isActive) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            color.withValues(alpha: 0.25),
-            color.withValues(alpha: 0.10),
-          ]),
+          gradient: LinearGradient(
+            colors: [
+              color.withValues(alpha: 0.25),
+              color.withValues(alpha: 0.10),
+            ],
+          ),
           borderRadius: BorderRadius.circular(50),
         ),
         child: Icon(ic, color: color, size: 16),

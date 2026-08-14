@@ -21,11 +21,14 @@ class CycleHistoryScreen extends ConsumerWidget {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: Text(AppLocalizations.of(context)!.cycleHistory,
-            style: const TextStyle(
-                color: TraumColors.onBackground,
-                fontFamily: 'DMSans',
-                fontWeight: FontWeight.w700)),
+        title: Text(
+          AppLocalizations.of(context)!.cycleHistory,
+          style: const TextStyle(
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
         elevation: 0,
       ),
@@ -34,40 +37,57 @@ class CycleHistoryScreen extends ConsumerWidget {
           final l10n = AppLocalizations.of(context)!;
           if (entries.isEmpty) {
             return Center(
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.history_rounded,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.history_rounded,
                     size: 64,
-                    color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
-                const SizedBox(height: 16),
-                Text(AppLocalizations.of(context)!.noHistory,
+                    color: TraumColors.onBackgroundSubtle.withValues(
+                      alpha: 0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    AppLocalizations.of(context)!.noHistory,
                     style: const TextStyle(
-                        color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16)),
-                const SizedBox(height: 8),
-                Text(AppLocalizations.of(context)!.logPeriodsToSeeStats,
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    AppLocalizations.of(context)!.logPeriodsToSeeStats,
                     style: const TextStyle(
-                        color: TraumColors.onBackgroundSubtle,
-                        fontFamily: 'DMSans',
-                        fontSize: 13),
-                    textAlign: TextAlign.center),
-              ]),
+                      color: TraumColors.onBackgroundSubtle,
+                      fontFamily: 'DMSans',
+                      fontSize: 13,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             );
           }
 
-          final sorted = [...entries]..sort((a, b) => a.startDate.compareTo(b.startDate));
+          final sorted = [...entries]
+            ..sort((a, b) => a.startDate.compareTo(b.startDate));
 
           // Cycle lengths between consecutive periods (used for bar chart)
           final cycleLengths = <int>[];
           for (int i = 1; i < sorted.length; i++) {
-            cycleLengths.add(sorted[i].startDate.difference(sorted[i - 1].startDate).inDays);
+            cycleLengths.add(
+              sorted[i].startDate.difference(sorted[i - 1].startDate).inDays,
+            );
           }
 
           // Read stats from the engine so numbers match the dashboard
           final avgCycle = analysis.avgCycleLength?.round() ?? 28;
           final avgPeriod = analysis.avgPeriodLength?.round() ?? 5;
-          final isIrregular = analysis.regularity == CycleRegularity.irregular ||
+          final isIrregular =
+              analysis.regularity == CycleRegularity.irregular ||
               analysis.regularity == CycleRegularity.slightlyIrregular;
 
           return ListView(
@@ -87,29 +107,31 @@ class CycleHistoryScreen extends ConsumerWidget {
                 ),
                 child: Column(
                   children: [
-                    Row(children: [
-                      Expanded(
-                        child: _StatTile(
-                          label: l10n.cycle_length,
-                          value: l10n.avgCycleDays(avgCycle),
-                          color: TraumColors.periodRose,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _StatTile(
+                            label: l10n.cycle_length,
+                            value: l10n.avgCycleDays(avgCycle),
+                            color: TraumColors.periodRose,
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: _StatTile(
-                          label: l10n.period_length,
-                          value: l10n.avgDurationDays(avgPeriod),
-                          color: TraumColors.ovulationCyan,
+                        Expanded(
+                          child: _StatTile(
+                            label: l10n.period_length,
+                            value: l10n.avgDurationDays(avgPeriod),
+                            color: TraumColors.ovulationCyan,
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: _StatTile(
-                          label: l10n.entriesLabel,
-                          value: '${entries.length}',
-                          color: TraumColors.lavender,
+                        Expanded(
+                          child: _StatTile(
+                            label: l10n.entriesLabel,
+                            value: '${entries.length}',
+                            color: TraumColors.lavender,
+                          ),
                         ),
-                      ),
-                    ]),
+                      ],
+                    ),
                     if (isIrregular) ...[
                       const SizedBox(height: 12),
                       Container(
@@ -118,20 +140,26 @@ class CycleHistoryScreen extends ConsumerWidget {
                           color: TraumColors.amberGoldDim,
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Row(children: [
-                          const Icon(Icons.warning_rounded,
-                              color: TraumColors.amberGold, size: 16),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              l10n.irregularCycle,
-                              style: const TextStyle(
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.warning_rounded,
+                              color: TraumColors.amberGold,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                l10n.irregularCycle,
+                                style: const TextStyle(
                                   color: TraumColors.amberGold,
                                   fontFamily: 'DMSans',
-                                  fontSize: 12),
+                                  fontSize: 12,
+                                ),
+                              ),
                             ),
-                          ),
-                        ]),
+                          ],
+                        ),
                       ),
                     ],
                   ],
@@ -149,66 +177,85 @@ class CycleHistoryScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(l10n.cycleLengths,
-                          style: const TextStyle(
-                              color: TraumColors.onBackground,
-                              fontFamily: 'DMSans',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14)),
+                      Text(
+                        l10n.cycleLengths,
+                        style: const TextStyle(
+                          color: TraumColors.onBackground,
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
+                      ),
                       const SizedBox(height: 12),
-                      _CycleLengthChart(lengths: cycleLengths, avgLength: avgCycle),
+                      _CycleLengthChart(
+                        lengths: cycleLengths,
+                        avgLength: avgCycle,
+                      ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 16),
               ],
               // Period list
-              Text(l10n.periods,
-                  style: const TextStyle(
-                      color: TraumColors.onBackground,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15)),
+              Text(
+                l10n.periods,
+                style: const TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 15,
+                ),
+              ),
               const SizedBox(height: 8),
-              ...entries.map((e) => Dismissible(
-                    key: ValueKey(e.id),
-                    direction: DismissDirection.endToStart,
-                    background: Container(
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.only(right: 20),
-                      decoration: BoxDecoration(
-                        color: TraumColors.roseRed.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(TraumRadius.card),
-                      ),
-                      child: const Icon(Icons.delete_rounded,
-                          color: TraumColors.roseRed),
+              ...entries.map(
+                (e) => Dismissible(
+                  key: ValueKey(e.id),
+                  direction: DismissDirection.endToStart,
+                  background: Container(
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.only(right: 20),
+                    decoration: BoxDecoration(
+                      color: TraumColors.roseRed.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(TraumRadius.card),
                     ),
-                    onDismissed: (_) =>
-                        ref.read(periodDaoProvider).deletePeriodEntry(e.id),
-                    child: _PeriodHistoryTile(
-                      entry: e,
-                      cycleLength: _getCycleLength(e, entries),
-                      onEnd: e.endDate == null
-                          ? () => ref
+                    child: const Icon(
+                      Icons.delete_rounded,
+                      color: TraumColors.roseRed,
+                    ),
+                  ),
+                  onDismissed: (_) =>
+                      ref.read(periodDaoProvider).deletePeriodEntry(e.id),
+                  child: _PeriodHistoryTile(
+                    entry: e,
+                    cycleLength: _getCycleLength(e, entries),
+                    onEnd: e.endDate == null
+                        ? () => ref
                               .read(periodDaoProvider)
-                              .updatePeriodEntry(PeriodEntriesCompanion(
-                                id: Value(e.id),
-                                startDate: Value(e.startDate),
-                                endDate: Value(DateTime.now()),
-                                flowIntensity: Value(e.flowIntensity),
-                                note: Value(e.note),
-                              ))
-                          : null,
-                    ),
-                  )),
+                              .updatePeriodEntry(
+                                PeriodEntriesCompanion(
+                                  id: Value(e.id),
+                                  startDate: Value(e.startDate),
+                                  endDate: Value(DateTime.now()),
+                                  flowIntensity: Value(e.flowIntensity),
+                                  note: Value(e.note),
+                                ),
+                              )
+                        : null,
+                  ),
+                ),
+              ),
             ],
           );
         },
-        loading: () =>
-            const Center(child: CircularProgressIndicator(color: TraumColors.periodRose)),
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: TraumColors.periodRose),
+        ),
         error: (e, _) => Center(
-            child: Text('${AppLocalizations.of(context)!.error}: $e',
-                style: const TextStyle(color: TraumColors.roseRed))),
+          child: Text(
+            '${AppLocalizations.of(context)!.error}: $e',
+            style: const TextStyle(color: TraumColors.roseRed),
+          ),
+        ),
       ),
     );
   }
@@ -226,21 +273,35 @@ class _StatTile extends StatelessWidget {
   final String value;
   final Color color;
 
-  const _StatTile({required this.label, required this.value, required this.color});
+  const _StatTile({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Text(value,
+    return Column(
+      children: [
+        Text(
+          value,
           style: TextStyle(
-              color: color,
-              fontFamily: 'DMSans',
-              fontWeight: FontWeight.w700,
-              fontSize: 20)),
-      Text(label,
+            color: color,
+            fontFamily: 'DMSans',
+            fontWeight: FontWeight.w700,
+            fontSize: 20,
+          ),
+        ),
+        Text(
+          label,
           style: const TextStyle(
-              color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 11)),
-    ]);
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            fontSize: 11,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -274,11 +335,14 @@ class _CycleLengthChart extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text('$len',
-                    style: const TextStyle(
-                        color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans',
-                        fontSize: 9)),
+                Text(
+                  '$len',
+                  style: const TextStyle(
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                    fontSize: 9,
+                  ),
+                ),
               ],
             ),
           ),
@@ -293,15 +357,20 @@ class _PeriodHistoryTile extends StatelessWidget {
   final int? cycleLength;
   final VoidCallback? onEnd;
 
-  const _PeriodHistoryTile(
-      {required this.entry, this.cycleLength, this.onEnd});
+  const _PeriodHistoryTile({required this.entry, this.cycleLength, this.onEnd});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isActive = entry.endDate == null;
     final duration = entry.endDate?.difference(entry.startDate).inDays;
-    final flowLabels = ['', l10n.flowLight, l10n.flowMedium, l10n.flowStrong, l10n.flowVeryStrong];
+    final flowLabels = [
+      '',
+      l10n.flowLight,
+      l10n.flowMedium,
+      l10n.flowStrong,
+      l10n.flowVeryStrong,
+    ];
     final intensity = entry.flowIntensity.clamp(1, 4);
 
     return Container(
@@ -316,68 +385,88 @@ class _PeriodHistoryTile extends StatelessWidget {
               : TraumColors.surfaceVariant,
         ),
       ),
-      child: Row(children: [
-        Container(
-          width: 4,
-          height: 40,
-          decoration: BoxDecoration(
-            color: TraumColors.periodRose.withValues(alpha: 0.4 + intensity * 0.15),
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              '${entry.startDate.day.toString().padLeft(2, '0')}.${entry.startDate.month.toString().padLeft(2, '0')}.${entry.startDate.year}'
-              '${entry.endDate != null ? ' – ${entry.endDate!.day}.${entry.endDate!.month}.' : ' – ${l10n.today}'}',
-              style: const TextStyle(
-                  color: TraumColors.onBackground,
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w500),
-            ),
-            Text(
-              [
-                if (duration != null) '$duration ${l10n.daysShort}',
-                flowLabels[intensity],
-                if (cycleLength != null) '${l10n.cycle}: $cycleLength ${l10n.tDayUnit}',
-              ].join('  •  '),
-              style: const TextStyle(
-                  color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 11),
-            ),
-          ]),
-        ),
-        if (isActive) ...[
-          TextButton(
-            onPressed: onEnd,
-            style: TextButton.styleFrom(foregroundColor: TraumColors.periodRose),
-            child: Text(l10n.endPeriod,
-                style: const TextStyle(fontFamily: 'DMSans', fontSize: 12)),
-          ),
+      child: Row(
+        children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            width: 4,
+            height: 40,
             decoration: BoxDecoration(
-              color: TraumColors.periodRose.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(10),
+              color: TraumColors.periodRose.withValues(
+                alpha: 0.4 + intensity * 0.15,
+              ),
+              borderRadius: BorderRadius.circular(2),
             ),
-            child: Text(l10n.activeLabel,
-                style: const TextStyle(
-                    color: TraumColors.periodRose,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${entry.startDate.day.toString().padLeft(2, '0')}.${entry.startDate.month.toString().padLeft(2, '0')}.${entry.startDate.year}'
+                  '${entry.endDate != null ? ' – ${entry.endDate!.day}.${entry.endDate!.month}.' : ' – ${l10n.today}'}',
+                  style: const TextStyle(
+                    color: TraumColors.onBackground,
                     fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 10)),
-          ),
-        ] else if (duration != null)
-          SizedBox(
-            width: 60,
-            child: GradientProgressBar(
-              value: (duration / 7).clamp(0.0, 1.0),
-              height: 6,
-              gradient: const LinearGradient(
-                  colors: [TraumColors.periodRose, TraumColors.roseRed]),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  [
+                    if (duration != null) '$duration ${l10n.daysShort}',
+                    flowLabels[intensity],
+                    if (cycleLength != null)
+                      '${l10n.cycle}: $cycleLength ${l10n.tDayUnit}',
+                  ].join('  •  '),
+                  style: const TextStyle(
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                    fontSize: 11,
+                  ),
+                ),
+              ],
             ),
           ),
-      ]),
+          if (isActive) ...[
+            TextButton(
+              onPressed: onEnd,
+              style: TextButton.styleFrom(
+                foregroundColor: TraumColors.periodRose,
+              ),
+              child: Text(
+                l10n.endPeriod,
+                style: const TextStyle(fontFamily: 'DMSans', fontSize: 12),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: TraumColors.periodRose.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                l10n.activeLabel,
+                style: const TextStyle(
+                  color: TraumColors.periodRose,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 10,
+                ),
+              ),
+            ),
+          ] else if (duration != null)
+            SizedBox(
+              width: 60,
+              child: GradientProgressBar(
+                value: (duration / 7).clamp(0.0, 1.0),
+                height: 6,
+                gradient: const LinearGradient(
+                  colors: [TraumColors.periodRose, TraumColors.roseRed],
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

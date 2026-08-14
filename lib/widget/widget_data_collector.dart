@@ -300,50 +300,77 @@ class WidgetDataCollector {
     final stepsWeekAvgF = _safe(HealthService.stepsWeekAvg, 0);
     final stepsWeekF = _safe(HealthService.stepsWeek, null);
 
-    final sleepLogs2F =
-        _safe(() => read(healthDaoProvider).getRecentSleepLogs(2), null);
-    final sleepWeekLogsF =
-        _safe(() => read(healthDaoProvider).getRecentSleepLogs(7), null);
+    final sleepLogs2F = _safe(
+      () => read(healthDaoProvider).getRecentSleepLogs(2),
+      null,
+    );
+    final sleepWeekLogsF = _safe(
+      () => read(healthDaoProvider).getRecentSleepLogs(7),
+      null,
+    );
     final moodLogF = _safe(() => read(healthDaoProvider).getLatestMood(), null);
-    final weightLogsF =
-        _safe(() => read(healthDaoProvider).getAllWeightLogs(), null);
+    final weightLogsF = _safe(
+      () => read(healthDaoProvider).getAllWeightLogs(),
+      null,
+    );
     final moodCalendarLogsF = _safe(() {
       final now = DateTime.now();
-      return read(healthDaoProvider)
-          .getMoodLogsAfter(DateTime(now.year, now.month));
+      return read(
+        healthDaoProvider,
+      ).getMoodLogsAfter(DateTime(now.year, now.month));
     }, null);
     final moodWeekLogsF = _safe(() {
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day);
-      return read(healthDaoProvider)
-          .getMoodLogsAfter(today.subtract(const Duration(days: 6)));
+      return read(
+        healthDaoProvider,
+      ).getMoodLogsAfter(today.subtract(const Duration(days: 6)));
     }, null);
 
     final todaysTotalsF = _safe(() => read(todaysTotalsProvider.future), null);
-    final waterMlTodayF =
-        _safe(() => read(waterTodaySnapshotProvider.future), empty.waterMl);
+    final waterMlTodayF = _safe(
+      () => read(waterTodaySnapshotProvider.future),
+      empty.waterMl,
+    );
     final lastMealF = _safe(() => read(lastMealProvider.future), null);
-    final todaysMealEntriesF =
-        _safe(() => read(todaysMealEntriesProvider.future), null);
-    final supplementsTodayF =
-        _safe(() => read(supplementDaoProvider).getTakenCountToday(), 0);
+    final todaysMealEntriesF = _safe(
+      () => read(todaysMealEntriesProvider.future),
+      null,
+    );
+    final supplementsTodayF = _safe(
+      () => read(supplementDaoProvider).getTakenCountToday(),
+      0,
+    );
 
-    final allTodosF =
-        _safe(() => read(planningDaoProvider).getAllTodos(), null);
-    final nextAppointmentF =
-        _safe(() => read(planningDaoProvider).getNextAppointment(), null);
-    final allHabitsF =
-        _safe(() => read(planningDaoProvider).getAllHabits(), null);
+    final allTodosF = _safe(
+      () => read(planningDaoProvider).getAllTodos(),
+      null,
+    );
+    final nextAppointmentF = _safe(
+      () => read(planningDaoProvider).getNextAppointment(),
+      null,
+    );
+    final allHabitsF = _safe(
+      () => read(planningDaoProvider).getAllHabits(),
+      null,
+    );
     final habitLogsForDateF = _safe(
-        () => read(planningDaoProvider).getHabitLogsForDate(DateTime.now()),
-        null);
-    final recentHabitLogsF =
-        _safe(() => read(planningDaoProvider).getRecentHabitLogs(), null);
+      () => read(planningDaoProvider).getHabitLogsForDate(DateTime.now()),
+      null,
+    );
+    final recentHabitLogsF = _safe(
+      () => read(planningDaoProvider).getRecentHabitLogs(),
+      null,
+    );
 
-    final activeMedsF =
-        _safe(() => read(medicationDaoProvider).getActiveMedications(), null);
-    final medsTakenTodayF =
-        _safe(() => read(medicationDaoProvider).getTakenCountToday(), 0);
+    final activeMedsF = _safe(
+      () => read(medicationDaoProvider).getActiveMedications(),
+      null,
+    );
+    final medsTakenTodayF = _safe(
+      () => read(medicationDaoProvider).getTakenCountToday(),
+      0,
+    );
 
     final healthScoreF = _safe(() => read(healthScoreProvider.future), null);
 
@@ -355,18 +382,26 @@ class WidgetDataCollector {
       final today = DateTime.now().weekday;
       final ordered = [...days]
         ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
-      final day = ordered.firstWhere((d) => d.dayOfWeek == today,
-          orElse: () => ordered.first);
+      final day = ordered.firstWhere(
+        (d) => d.dayOfWeek == today,
+        orElse: () => ordered.first,
+      );
       return day.name;
     }, '');
-    final recentSets7F =
-        _safe(() => read(recentTrainingSetsProvider(7).future), null);
-    final recentSets365F =
-        _safe(() => read(recentTrainingSetsProvider(365).future), null);
+    final recentSets7F = _safe(
+      () => read(recentTrainingSetsProvider(7).future),
+      null,
+    );
+    final recentSets365F = _safe(
+      () => read(recentTrainingSetsProvider(365).future),
+      null,
+    );
     final sessionsAfter365F = _safe(
-        () => read(trainingDaoProvider).getSessionsAfter(
-            DateTime.now().subtract(const Duration(days: 365))),
-        null);
+      () => read(
+        trainingDaoProvider,
+      ).getSessionsAfter(DateTime.now().subtract(const Duration(days: 365))),
+      null,
+    );
     final muscleHeatmapF = _safe<int>(() async {
       final dao = read(trainingDaoProvider);
       final recentSets = await dao.getRecentSets(const Duration(days: 7));
@@ -383,8 +418,9 @@ class WidgetDataCollector {
 
     final monthTxsF = _safe(() {
       final now = DateTime.now();
-      return read(budgetDaoProvider)
-          .getTransactionsForMonth(now.year, now.month);
+      return read(
+        budgetDaoProvider,
+      ).getTransactionsForMonth(now.year, now.month);
     }, null);
     final categoryExpensesF = _safe(() {
       final now = DateTime.now();
@@ -392,53 +428,80 @@ class WidgetDataCollector {
     }, null);
     final accountsF = _safe(() => read(accountsDaoProvider).getAll(), null);
     final recentTransactionsF = _safe(
-        () => read(budgetDaoProvider).getRecentTransactions(limit: 1), null);
-    final savingsGoalsF =
-        _safe(() => read(budgetDaoProvider).getAllSavingsGoals(), null);
+      () => read(budgetDaoProvider).getRecentTransactions(limit: 1),
+      null,
+    );
+    final savingsGoalsF = _safe(
+      () => read(budgetDaoProvider).getAllSavingsGoals(),
+      null,
+    );
     final recurringF = _safe(
-        () => read(budgetDaoProvider).getRecurringTransactions(), null);
+      () => read(budgetDaoProvider).getRecurringTransactions(),
+      null,
+    );
     final trendBarsF = _safe(
-        () => read(trendDataProvider(TrendPeriod.sixMonths).future), null);
+      () => read(trendDataProvider(TrendPeriod.sixMonths).future),
+      null,
+    );
     final budgetLimitRawF = _safe(() async {
       return read(sharedPreferencesProvider).getDouble('monthly_budget') ?? 0.0;
     }, 0.0);
 
     final writeStreakF = _safe(() => read(diaryStreakProvider.future), 0);
     final lastDiaryEntryF = _safe(
-        () => read(diaryRepositoryProvider)
-            .getLastEntry(read(activeDiaryProvider)),
-        null);
+      () =>
+          read(diaryRepositoryProvider).getLastEntry(read(activeDiaryProvider)),
+      null,
+    );
     final entriesThisMonthF = _safe(() {
       final now = DateTime.now();
       return read(diaryEntriesForMonthProvider((now.year, now.month)).future);
     }, null);
-    final yearHeatmapF =
-        _safe(() => read(datesWithDiaryEntriesProvider.future), null);
+    final yearHeatmapF = _safe(
+      () => read(datesWithDiaryEntriesProvider.future),
+      null,
+    );
 
-    final allTrackersF =
-        _safe(() => read(abstinenceDaoProvider).getAllTrackers(), null);
+    final allTrackersF = _safe(
+      () => read(abstinenceDaoProvider).getAllTrackers(),
+      null,
+    );
 
-    final lastIntakeF =
-        _safe(() => read(substanceDaoProvider).getLastIntake(), null);
-    final takenTodayF =
-        _safe(() => read(substanceDaoProvider).getIntakeCountToday(), 0);
+    final lastIntakeF = _safe(
+      () => read(substanceDaoProvider).getLastIntake(),
+      null,
+    );
+    final takenTodayF = _safe(
+      () => read(substanceDaoProvider).getIntakeCountToday(),
+      0,
+    );
 
-    final latestPeriodEntryF =
-        _safe(() => read(periodDaoProvider).getLatestPeriodEntry(), null);
+    final latestPeriodEntryF = _safe(
+      () => read(periodDaoProvider).getLatestPeriodEntry(),
+      null,
+    );
 
-    final notesCountF =
-        _safe(() => read(notesDaoProvider).getActiveNotes(), null);
-    final lastNoteF =
-        _safe(() => read(notesDaoProvider).getRecentNotes(1), null);
-    final pinnedNoteF =
-        _safe(() => read(notesDaoProvider).getPinnedNotes(), null);
+    final notesCountF = _safe(
+      () => read(notesDaoProvider).getActiveNotes(),
+      null,
+    );
+    final lastNoteF = _safe(
+      () => read(notesDaoProvider).getRecentNotes(1),
+      null,
+    );
+    final pinnedNoteF = _safe(
+      () => read(notesDaoProvider).getPinnedNotes(),
+      null,
+    );
 
     // COUNT-Query statt getAll().length — die Türme-Collection allein hat
     // hunderttausende Marker, das komplette Laden würde jeden
     // Widget-Refresh-Zyklus spürbar verlangsamen.
     final placesCountF = _safe(() => read(mapMarkersDaoProvider).countAll(), 0);
-    final lastPhotoF =
-        _safe(() => read(markerPhotosDaoProvider).getAll(), null);
+    final lastPhotoF = _safe(
+      () => read(markerPhotosDaoProvider).getAll(),
+      null,
+    );
 
     // ── Sync reads (no I/O — cheap, order doesn't matter) ───────────────────
     int stepsGoal = empty.stepsGoal;
@@ -485,8 +548,9 @@ class WidgetDataCollector {
     try {
       final logs = _or(await sleepLogs2F);
       if (logs.isNotEmpty) {
-        final latest =
-            logs.reduce((a, b) => a.bedtime.isAfter(b.bedtime) ? a : b);
+        final latest = logs.reduce(
+          (a, b) => a.bedtime.isAfter(b.bedtime) ? a : b,
+        );
         final hours =
             latest.wakeTime.difference(latest.bedtime).inMinutes / 60.0;
         if (hours > 0) sleepHours = hours;
@@ -498,7 +562,8 @@ class WidgetDataCollector {
       final moodLog = await moodLogF;
       if (moodLog != null) {
         final now = DateTime.now();
-        final isToday = moodLog.logDate.year == now.year &&
+        final isToday =
+            moodLog.logDate.year == now.year &&
             moodLog.logDate.month == now.month &&
             moodLog.logDate.day == now.day;
         if (isToday) {
@@ -508,10 +573,12 @@ class WidgetDataCollector {
     } catch (_) {}
 
     final todaysTotals = await todaysTotalsF;
-    final int kcalToday =
-        todaysTotals != null ? todaysTotals.calories.round() : empty.kcal;
-    final int proteinToday =
-        todaysTotals != null ? todaysTotals.protein.round() : empty.protein;
+    final int kcalToday = todaysTotals != null
+        ? todaysTotals.calories.round()
+        : empty.kcal;
+    final int proteinToday = todaysTotals != null
+        ? todaysTotals.protein.round()
+        : empty.protein;
     final int carbs = todaysTotals != null ? todaysTotals.carbs.round() : 0;
     final int fat = todaysTotals != null ? todaysTotals.fat.round() : 0;
 
@@ -528,8 +595,9 @@ class WidgetDataCollector {
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day);
       return allTodos
-          .where((t) =>
-              !t.done && t.dueDate != null && t.dueDate!.isBefore(today))
+          .where(
+            (t) => !t.done && t.dueDate != null && t.dueDate!.isBefore(today),
+          )
           .length;
     }();
 
@@ -549,8 +617,12 @@ class WidgetDataCollector {
     String weightHistory = '';
     try {
       if (weightLogs.isNotEmpty) {
-        final last7 =
-            weightLogs.take(7).toList().reversed.map((l) => l.weightKg).toList();
+        final last7 = weightLogs
+            .take(7)
+            .toList()
+            .reversed
+            .map((l) => l.weightKg)
+            .toList();
         weightHistory = WidgetSnapshot.encodeSeries(last7);
       }
     } catch (_) {}
@@ -629,8 +701,10 @@ class WidgetDataCollector {
     try {
       final todayLogs = _or(await habitLogsForDateF);
       habitsTotal = allHabits.length;
-      final doneIds =
-          todayLogs.where((l) => l.done).map((l) => l.habitId).toSet();
+      final doneIds = todayLogs
+          .where((l) => l.done)
+          .map((l) => l.habitId)
+          .toSet();
       habitsDone = doneIds.length;
     } catch (_) {}
 
@@ -640,11 +714,16 @@ class WidgetDataCollector {
       for (final habit in allHabits) {
         final habitLogs = recentHabitLogs
             .where((l) => l.habitId == habit.id && l.done)
-            .map((l) => DateTime(l.logDate.year, l.logDate.month, l.logDate.day))
+            .map(
+              (l) => DateTime(l.logDate.year, l.logDate.month, l.logDate.day),
+            )
             .toSet();
         int streak = 0;
         var cursor = DateTime(
-            DateTime.now().year, DateTime.now().month, DateTime.now().day);
+          DateTime.now().year,
+          DateTime.now().month,
+          DateTime.now().day,
+        );
         while (habitLogs.contains(cursor)) {
           streak++;
           cursor = cursor.subtract(const Duration(days: 1));
@@ -659,13 +738,17 @@ class WidgetDataCollector {
       final perDay = <num>[];
       for (var i = 6; i >= 0; i--) {
         final day = today.subtract(Duration(days: i));
-        perDay.add(recentHabitLogs
-            .where((l) =>
-                l.done &&
-                l.logDate.year == day.year &&
-                l.logDate.month == day.month &&
-                l.logDate.day == day.day)
-            .length);
+        perDay.add(
+          recentHabitLogs
+              .where(
+                (l) =>
+                    l.done &&
+                    l.logDate.year == day.year &&
+                    l.logDate.month == day.month &&
+                    l.logDate.day == day.day,
+              )
+              .length,
+        );
       }
       if (perDay.any((v) => v > 0)) {
         habitWeekSeries = WidgetSnapshot.encodeSeries(perDay);
@@ -676,8 +759,7 @@ class WidgetDataCollector {
     try {
       final meds = _or(await activeMedsF);
       medsTotal = meds
-          .where(
-              (m) => m.timings.trim().isNotEmpty && m.timings.trim() != '[]')
+          .where((m) => m.timings.trim().isNotEmpty && m.timings.trim() != '[]')
           .length;
     } catch (_) {}
     int medsDone = 0;
@@ -690,8 +772,9 @@ class WidgetDataCollector {
     double expenseMonth = 0.0;
     try {
       final txs = _or(await monthTxsF);
-      incomeMonth =
-          txs.where((t) => t.type == 'income').fold(0.0, (s, t) => s + t.amount);
+      incomeMonth = txs
+          .where((t) => t.type == 'income')
+          .fold(0.0, (s, t) => s + t.amount);
       expenseMonth = txs
           .where((t) => t.type == 'expense')
           .fold(0.0, (s, t) => s + t.amount);
@@ -715,7 +798,8 @@ class WidgetDataCollector {
     try {
       if (categoryExpenses.isNotEmpty) {
         categorySplit = WidgetSnapshot.encodeSeries(
-            categoryExpenses.take(5).map((c) => c.amount).toList());
+          categoryExpenses.take(5).map((c) => c.amount).toList(),
+        );
       }
     } catch (_) {}
 
@@ -753,7 +837,8 @@ class WidgetDataCollector {
     try {
       if (trendBars.length >= 2) {
         final cur = trendBars.last.income - trendBars.last.expenses;
-        final prev = trendBars[trendBars.length - 2].income -
+        final prev =
+            trendBars[trendBars.length - 2].income -
             trendBars[trendBars.length - 2].expenses;
         final delta = cur - prev;
         final arrow = delta >= 0 ? '▲' : '▼';
@@ -765,7 +850,8 @@ class WidgetDataCollector {
     try {
       if (trendBars.isNotEmpty) {
         monthTrendSeries = WidgetSnapshot.encodeSeries(
-            trendBars.map((b) => (b.income - b.expenses).round()).toList());
+          trendBars.map((b) => (b.income - b.expenses).round()).toList(),
+        );
       }
     } catch (_) {}
 
@@ -807,8 +893,9 @@ class WidgetDataCollector {
     try {
       final active = allTrackers.where((t) => t.isActive).toList();
       if (active.isNotEmpty) {
-        final best = active.reduce((a, b) =>
-            _daysSince(a.startDate) >= _daysSince(b.startDate) ? a : b);
+        final best = active.reduce(
+          (a, b) => _daysSince(a.startDate) >= _daysSince(b.startDate) ? a : b,
+        );
         abstinenceTitle = best.name;
         final days = _daysSince(best.startDate);
         abstinenceDuration = '$days ${days == 1 ? 'Tag' : 'Tage'}';
@@ -873,8 +960,9 @@ class WidgetDataCollector {
     dynamic periodCalc;
     if (latestPeriodEntry != null) {
       try {
-        periodCalc = await read(periodDaoProvider)
-            .getCalculationForEntry(latestPeriodEntry.id);
+        periodCalc = await read(
+          periodDaoProvider,
+        ).getCalculationForEntry(latestPeriodEntry.id);
       } catch (_) {}
     }
 
@@ -883,10 +971,14 @@ class WidgetDataCollector {
       if (latestPeriodEntry != null) {
         final now = DateTime.now();
         final today = DateTime(now.year, now.month, now.day);
-        final start = DateTime(latestPeriodEntry.startDate.year,
-            latestPeriodEntry.startDate.month, latestPeriodEntry.startDate.day);
+        final start = DateTime(
+          latestPeriodEntry.startDate.year,
+          latestPeriodEntry.startDate.month,
+          latestPeriodEntry.startDate.day,
+        );
         final end = latestPeriodEntry.endDate;
-        final inPeriod = !today.isBefore(start) &&
+        final inPeriod =
+            !today.isBefore(start) &&
             (end == null
                 ? today.difference(start).inDays < 7
                 : !today.isAfter(DateTime(end.year, end.month, end.day)));
@@ -897,8 +989,7 @@ class WidgetDataCollector {
           final ov = calc?.ovulationDate;
           final fs = calc?.fertileStart;
           final fe = calc?.fertileEnd;
-          final ovDay =
-              ov == null ? null : DateTime(ov.year, ov.month, ov.day);
+          final ovDay = ov == null ? null : DateTime(ov.year, ov.month, ov.day);
           if (ovDay != null && today == ovDay) {
             periodPhase = 'Ovulation';
           } else if (fs != null &&
@@ -923,8 +1014,11 @@ class WidgetDataCollector {
         if (predicted != null) {
           final now = DateTime.now();
           final today = DateTime(now.year, now.month, now.day);
-          final target =
-              DateTime(predicted.year, predicted.month, predicted.day);
+          final target = DateTime(
+            predicted.year,
+            predicted.month,
+            predicted.day,
+          );
           final diff = target.difference(today).inDays;
           if (diff >= 0) nextPeriodDays = diff;
         }
@@ -992,7 +1086,8 @@ class WidgetDataCollector {
         // No BuildContext in this background/home-widget refresh path, so
         // AppLocalizations is resolved directly from the persisted locale
         // preference instead of via .of(context).
-        final localeCode = read(preferencesRepositoryProvider).appLocale ?? 'de';
+        final localeCode =
+            read(preferencesRepositoryProvider).appLocale ?? 'de';
         final l10n = lookupAppLocalizations(Locale(localeCode));
 
         String cond(int c) {
@@ -1052,10 +1147,12 @@ class WidgetDataCollector {
         final perDay = <num>[];
         for (var i = 6; i >= 0; i--) {
           final day = today.subtract(Duration(days: i));
-          final dayLogs = logs.where((l) =>
-              l.logDate.year == day.year &&
-              l.logDate.month == day.month &&
-              l.logDate.day == day.day);
+          final dayLogs = logs.where(
+            (l) =>
+                l.logDate.year == day.year &&
+                l.logDate.month == day.month &&
+                l.logDate.day == day.day,
+          );
           perDay.add(dayLogs.isEmpty ? 0 : dayLogs.last.moodScore);
         }
         moodWeekSeries = WidgetSnapshot.encodeSeries(perDay);
@@ -1071,10 +1168,12 @@ class WidgetDataCollector {
         final perDay = <num>[];
         for (var i = 6; i >= 0; i--) {
           final day = today.subtract(Duration(days: i));
-          final dayLogs = logs.where((l) =>
-              l.bedtime.year == day.year &&
-              l.bedtime.month == day.month &&
-              l.bedtime.day == day.day);
+          final dayLogs = logs.where(
+            (l) =>
+                l.bedtime.year == day.year &&
+                l.bedtime.month == day.month &&
+                l.bedtime.day == day.day,
+          );
           if (dayLogs.isEmpty) {
             perDay.add(0);
           } else {

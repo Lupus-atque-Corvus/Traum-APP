@@ -28,12 +28,25 @@ class GroceryPriceService {
   static String normalizeName(String raw) {
     var s = raw.toLowerCase().trim();
     const umlauts = {
-      'ä': 'ae', 'ö': 'oe', 'ü': 'ue', 'ß': 'ss',
-      'á': 'a', 'à': 'a', 'â': 'a',
-      'é': 'e', 'è': 'e', 'ê': 'e',
-      'í': 'i', 'ì': 'i', 'î': 'i',
-      'ó': 'o', 'ò': 'o', 'ô': 'o',
-      'ú': 'u', 'ù': 'u', 'û': 'u',
+      'ä': 'ae',
+      'ö': 'oe',
+      'ü': 'ue',
+      'ß': 'ss',
+      'á': 'a',
+      'à': 'a',
+      'â': 'a',
+      'é': 'e',
+      'è': 'e',
+      'ê': 'e',
+      'í': 'i',
+      'ì': 'i',
+      'î': 'i',
+      'ó': 'o',
+      'ò': 'o',
+      'ô': 'o',
+      'ú': 'u',
+      'ù': 'u',
+      'û': 'u',
     };
     final buffer = StringBuffer();
     for (final ch in s.split('')) {
@@ -68,7 +81,8 @@ class GroceryPriceService {
       final queryInEntry = p.normalized.contains(q);
       if (!entryInQuery && !queryInEntry) continue;
       final len = p.normalized.length;
-      final better = containBest == null ||
+      final better =
+          containBest == null ||
           (entryInQuery ? len > containBestLen : len < containBestLen);
       if (better) {
         containBest = p;
@@ -77,9 +91,10 @@ class GroceryPriceService {
     }
     if (containBest != null) {
       return PriceMatch(
-          name: containBest.name,
-          price: containBest.price,
-          unit: containBest.unit);
+        name: containBest.name,
+        price: containBest.price,
+        unit: containBest.unit,
+      );
     }
 
     // 3. Fuzzy — accept if edit distance ≤ 2 and ≤ 25% of length.
@@ -95,7 +110,10 @@ class GroceryPriceService {
     }
     if (fuzzyBest != null) {
       return PriceMatch(
-          name: fuzzyBest.name, price: fuzzyBest.price, unit: fuzzyBest.unit);
+        name: fuzzyBest.name,
+        price: fuzzyBest.price,
+        unit: fuzzyBest.unit,
+      );
     }
 
     return null;

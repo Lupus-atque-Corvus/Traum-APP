@@ -24,12 +24,10 @@ class MealTemplateSheet extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<MealTemplateSheet> createState() =>
-      _MealTemplateSheetState();
+  ConsumerState<MealTemplateSheet> createState() => _MealTemplateSheetState();
 }
 
-class _MealTemplateSheetState
-    extends ConsumerState<MealTemplateSheet> {
+class _MealTemplateSheetState extends ConsumerState<MealTemplateSheet> {
   final _searchCtrl = TextEditingController();
   Timer? _debounce;
 
@@ -101,7 +99,9 @@ class _MealTemplateSheetState
   /// Tap auf einen Multi-Source-Suchtreffer — gleiche Cache-Logik wie im
   /// Produkte-Tab (lokale Treffer per ID zurückholen statt neu anlegen).
   Future<void> _handleSearchResultTap(
-      BuildContext ctx, FoodSearchResult result) async {
+    BuildContext ctx,
+    FoodSearchResult result,
+  ) async {
     final dao = ref.read(foodProductsDaoProvider);
     FoodProduct? product;
     if (result.localId != null) {
@@ -118,8 +118,7 @@ class _MealTemplateSheetState
   Future<void> _openScanner(BuildContext ctx) async {
     final product = await Navigator.push<FoodProduct>(
       ctx,
-      MaterialPageRoute(
-          builder: (_) => const BarcodeScannerScreen()),
+      MaterialPageRoute(builder: (_) => const BarcodeScannerScreen()),
     );
     if (product != null && ctx.mounted) {
       _openAmount(ctx, product);
@@ -136,69 +135,76 @@ class _MealTemplateSheetState
       height: MediaQuery.of(context).size.height * 0.85,
       decoration: const BoxDecoration(
         color: TraumColors.surface,
-        borderRadius:
-            BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      child: Column(children: [
-        const SizedBox(height: 8),
-        Center(
-          child: Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: TraumColors.surfaceVariant,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 8, 8),
-          child: Row(children: [
-            Expanded(
-              child: TextField(
-                controller: _searchCtrl,
-                autofocus: true,
-                style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackground,
-                    fontSize: 14),
-                decoration: InputDecoration(
-                  hintText: l10n.searchFoodHint,
-                  hintStyle: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackgroundSubtle,
-                      fontSize: 14),
-                  prefixIcon: const Icon(Icons.search,
-                      color: TraumColors.onBackgroundMuted),
-                  filled: true,
-                  fillColor: TraumColors.surfaceVariant,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none),
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 12),
-                ),
+      child: Column(
+        children: [
+          const SizedBox(height: 8),
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: TraumColors.surfaceVariant,
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
-            IconButton(
-              tooltip: AppLocalizations.of(context)!.a11yScanBarcode,
-              onPressed: () => _openScanner(context),
-              icon: const Icon(Icons.qr_code_scanner,
-                  color: TraumColors.mintGreen),
-            ),
-          ]),
-        ),
-        Expanded(
-          child: searchActive
-              ? _MultiSourceResultsList(
-                  l10n: l10n,
-                  onTap: (r) => _handleSearchResultTap(context, r),
-                )
-              : _LocalBrowseList(
-                  onTap: (p) => _handleLocalTap(context, p),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 8, 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _searchCtrl,
+                    autofocus: true,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackground,
+                      fontSize: 14,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: l10n.searchFoodHint,
+                      hintStyle: const TextStyle(
+                        fontFamily: 'DMSans',
+                        color: TraumColors.onBackgroundSubtle,
+                        fontSize: 14,
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: TraumColors.onBackgroundMuted,
+                      ),
+                      filled: true,
+                      fillColor: TraumColors.surfaceVariant,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                  ),
                 ),
-        ),
-      ]),
+                IconButton(
+                  tooltip: AppLocalizations.of(context)!.a11yScanBarcode,
+                  onPressed: () => _openScanner(context),
+                  icon: const Icon(
+                    Icons.qr_code_scanner,
+                    color: TraumColors.mintGreen,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: searchActive
+                ? _MultiSourceResultsList(
+                    l10n: l10n,
+                    onTap: (r) => _handleSearchResultTap(context, r),
+                  )
+                : _LocalBrowseList(onTap: (p) => _handleLocalTap(context, p)),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -215,10 +221,13 @@ class _LocalBrowseList extends ConsumerWidget {
       data: (products) {
         if (products.isEmpty) {
           return Center(
-            child: Text(AppLocalizations.of(context)!.noProductsFound,
-                style: TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackgroundMuted)),
+            child: Text(
+              AppLocalizations.of(context)!.noProductsFound,
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackgroundMuted,
+              ),
+            ),
           );
         }
         return ListView.builder(
@@ -226,29 +235,37 @@ class _LocalBrowseList extends ConsumerWidget {
           itemBuilder: (_, i) {
             final p = products[i];
             return ListTile(
-              title: Text(p.name,
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackground,
-                      fontWeight: FontWeight.w500)),
+              title: Text(
+                p.name,
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               subtitle: Text(
-                  '${p.caloriesPer100g.toStringAsFixed(0)} kcal / 100g',
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackgroundMuted,
-                      fontSize: 12)),
+                '${p.caloriesPer100g.toStringAsFixed(0)} kcal / 100g',
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundMuted,
+                  fontSize: 12,
+                ),
+              ),
               trailing: const Icon(
-                  Icons.add_circle_outline,
-                  color: TraumColors.mintGreen),
+                Icons.add_circle_outline,
+                color: TraumColors.mintGreen,
+              ),
               onTap: () => onTap(p),
             );
           },
         );
       },
       loading: () => const Center(
-          child: CircularProgressIndicator(
-              color: TraumColors.mintGreen,
-              strokeWidth: 2)),
+        child: CircularProgressIndicator(
+          color: TraumColors.mintGreen,
+          strokeWidth: 2,
+        ),
+      ),
       error: (e, _) => InlineError(e),
     );
   }
@@ -268,10 +285,13 @@ class _MultiSourceResultsList extends ConsumerWidget {
       data: (results) {
         if (results.isEmpty) {
           return Center(
-            child: Text(l10n.noProductsFound,
-                style: TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackgroundMuted)),
+            child: Text(
+              l10n.noProductsFound,
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackgroundMuted,
+              ),
+            ),
           );
         }
         return ListView.builder(
@@ -279,35 +299,46 @@ class _MultiSourceResultsList extends ConsumerWidget {
           itemBuilder: (_, i) {
             final r = results[i];
             return ListTile(
-              title: Text(r.name,
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackground,
-                      fontWeight: FontWeight.w500)),
+              title: Text(
+                r.name,
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               subtitle: Text(
-                  '${r.kcalPer100g.toStringAsFixed(0)} kcal / 100g'
-                  '${r.brand != null ? ' · ${r.brand}' : ''}',
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackgroundMuted,
-                      fontSize: 12)),
+                '${r.kcalPer100g.toStringAsFixed(0)} kcal / 100g'
+                '${r.brand != null ? ' · ${r.brand}' : ''}',
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundMuted,
+                  fontSize: 12,
+                ),
+              ),
               trailing: const Icon(
-                  Icons.add_circle_outline,
-                  color: TraumColors.mintGreen),
+                Icons.add_circle_outline,
+                color: TraumColors.mintGreen,
+              ),
               onTap: () => onTap(r),
             );
           },
         );
       },
       loading: () => const Center(
-          child: CircularProgressIndicator(
-              color: TraumColors.mintGreen,
-              strokeWidth: 2)),
+        child: CircularProgressIndicator(
+          color: TraumColors.mintGreen,
+          strokeWidth: 2,
+        ),
+      ),
       error: (_, _) => Center(
-        child: Text(l10n.searchOffline,
-            style: TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackgroundMuted)),
+        child: Text(
+          l10n.searchOffline,
+          style: TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackgroundMuted,
+          ),
+        ),
       ),
     );
   }

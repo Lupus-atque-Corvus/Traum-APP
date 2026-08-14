@@ -22,9 +22,11 @@ class MealEntriesDao extends DatabaseAccessor<TraumDatabase>
     final fromStr = _dateStr(from);
     final toStr = _dateStr(to);
     return (select(mealEntries)
-          ..where((t) =>
-              t.date.isBiggerOrEqualValue(fromStr) &
-              t.date.isSmallerOrEqualValue(toStr))
+          ..where(
+            (t) =>
+                t.date.isBiggerOrEqualValue(fromStr) &
+                t.date.isSmallerOrEqualValue(toStr),
+          )
           ..orderBy([
             (t) => OrderingTerm.asc(t.date),
             (t) => OrderingTerm.asc(t.loggedAt),
@@ -41,15 +43,20 @@ class MealEntriesDao extends DatabaseAccessor<TraumDatabase>
   Future<int> deleteEntry(int id) =>
       (delete(mealEntries)..where((t) => t.id.equals(id))).go();
 
-  Future<void> updateAmount(int id, double newGrams, double calories,
-      double protein, double carbs, double fat) =>
-      (update(mealEntries)..where((t) => t.id.equals(id))).write(
-        MealEntriesCompanion(
-          amountGrams: Value(newGrams),
-          calories: Value(calories),
-          protein: Value(protein),
-          carbs: Value(carbs),
-          fat: Value(fat),
-        ),
-      );
+  Future<void> updateAmount(
+    int id,
+    double newGrams,
+    double calories,
+    double protein,
+    double carbs,
+    double fat,
+  ) => (update(mealEntries)..where((t) => t.id.equals(id))).write(
+    MealEntriesCompanion(
+      amountGrams: Value(newGrams),
+      calories: Value(calories),
+      protein: Value(protein),
+      carbs: Value(carbs),
+      fat: Value(fat),
+    ),
+  );
 }

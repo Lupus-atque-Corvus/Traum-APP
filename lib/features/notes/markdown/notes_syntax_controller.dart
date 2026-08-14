@@ -15,37 +15,42 @@ class NotesSyntaxController extends TextEditingController {
     _Rule(
       RegExp(r'```[\s\S]*?```', multiLine: true),
       const TextStyle(
-          fontFamily: 'monospace', color: TraumColors.cyanBlue, fontSize: 13.5),
+        fontFamily: 'monospace',
+        color: TraumColors.cyanBlue,
+        fontSize: 13.5,
+      ),
     ),
     // Callout-Marker am Zeilenanfang.
     _Rule(
       RegExp(r'^\s*>\s*\[![\w]+\][+-]?.*$', multiLine: true),
       const TextStyle(
-          fontFamily: 'DMSans',
-          color: TraumColors.indigoBlue,
-          fontWeight: FontWeight.w600),
+        fontFamily: 'DMSans',
+        color: TraumColors.indigoBlue,
+        fontWeight: FontWeight.w600,
+      ),
     ),
     // Überschriften.
     _Rule(
       RegExp(r'^#{1,6}\s.*$', multiLine: true),
       const TextStyle(
-          fontFamily: 'DMSans',
-          color: kNotesLinkColor,
-          fontWeight: FontWeight.w700),
+        fontFamily: 'DMSans',
+        color: kNotesLinkColor,
+        fontWeight: FontWeight.w700,
+      ),
     ),
     // Aufgaben-Checkboxen.
     _Rule(
       RegExp(r'^\s*[-*+]\s*\[[ xX]\]', multiLine: true),
-      const TextStyle(
-          fontFamily: 'monospace', color: TraumColors.mintGreen),
+      const TextStyle(fontFamily: 'monospace', color: TraumColors.mintGreen),
     ),
     // Embeds & Wikilinks.
     _Rule(
       RegExp(r'!?\[\[[^\]\[]+?\]\]'),
       const TextStyle(
-          fontFamily: 'DMSans',
-          color: kNotesLinkColor,
-          fontWeight: FontWeight.w500),
+        fontFamily: 'DMSans',
+        color: kNotesLinkColor,
+        fontWeight: FontWeight.w500,
+      ),
     ),
     // Inline-Code.
     _Rule(
@@ -56,9 +61,10 @@ class NotesSyntaxController extends TextEditingController {
     _Rule(
       RegExp(r'==[^=\n]+=='),
       const TextStyle(
-          fontFamily: 'DMSans',
-          color: TraumColors.amberGold,
-          fontWeight: FontWeight.w500),
+        fontFamily: 'DMSans',
+        color: TraumColors.amberGold,
+        fontWeight: FontWeight.w500,
+      ),
     ),
     // Fett.
     _Rule(
@@ -68,16 +74,16 @@ class NotesSyntaxController extends TextEditingController {
     // Kursiv.
     _Rule(
       RegExp(r'(?<!\*)\*[^*\n]+\*(?!\*)|(?<!_)_[^_\n]+_(?!_)'),
-      const TextStyle(
-          fontFamily: 'DMSans', fontStyle: FontStyle.italic),
+      const TextStyle(fontFamily: 'DMSans', fontStyle: FontStyle.italic),
     ),
     // Tags.
     _Rule(
       RegExp(r'(?<=^|\s)#[\p{L}][\p{L}\p{N}_/-]*', unicode: true),
       const TextStyle(
-          fontFamily: 'DMSans',
-          color: TraumColors.lavender,
-          fontWeight: FontWeight.w500),
+        fontFamily: 'DMSans',
+        color: TraumColors.lavender,
+        fontWeight: FontWeight.w500,
+      ),
     ),
   ];
 
@@ -120,11 +126,16 @@ class NotesSyntaxController extends TextEditingController {
     var cursor = 0;
     for (final s in spans) {
       if (s.start > cursor) {
-        children.add(TextSpan(text: src.substring(cursor, s.start), style: base));
+        children.add(
+          TextSpan(text: src.substring(cursor, s.start), style: base),
+        );
       }
-      children.add(TextSpan(
+      children.add(
+        TextSpan(
           text: src.substring(s.start, s.end),
-          style: base.merge(s.style)));
+          style: base.merge(s.style),
+        ),
+      );
       cursor = s.end;
     }
     if (cursor < src.length) {

@@ -13,9 +13,7 @@ class CircularScoreRing extends StatelessWidget {
     return SizedBox(
       width: size,
       height: size * 0.6,
-      child: CustomPaint(
-        painter: _RingPainter(score: score),
-      ),
+      child: CustomPaint(painter: _RingPainter(score: score)),
     );
   }
 }

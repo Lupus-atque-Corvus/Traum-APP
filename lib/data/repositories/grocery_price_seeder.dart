@@ -21,8 +21,9 @@ class GroceryPriceSeeder {
       // constraint, so re-inserting would double every row.
       final existing = await db.select(db.groceryPrices).get();
       if (existing.isEmpty) {
-        final raw =
-            await rootBundle.loadString('assets/data/grocery_prices.json');
+        final raw = await rootBundle.loadString(
+          'assets/data/grocery_prices.json',
+        );
         final List<dynamic> items = jsonDecode(raw) as List<dynamic>;
         await db.batch((b) {
           for (final item in items) {

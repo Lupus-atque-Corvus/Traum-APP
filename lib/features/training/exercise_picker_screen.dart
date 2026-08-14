@@ -18,13 +18,18 @@ import 'widgets/exercise_icon.dart';
 // normalization point (Task 8.1b, completes Audit 6.1 / Task 8.1).
 
 const _kPickerCats = [
-  _PickerCat('assets/exercises/icons/cardio.svg',    'Cardio',    ['cardio']),
-  _PickerCat('assets/exercises/icons/biceps.svg',    'Arms',      ['biceps', 'triceps']),
-  _PickerCat('assets/exercises/icons/shoulders.svg', 'Shoulders', ['shoulders']),
-  _PickerCat('assets/exercises/icons/chest.svg',     'Chest',     ['chest']),
-  _PickerCat('assets/exercises/icons/back.svg',      'Back',      ['back']),
-  _PickerCat('assets/exercises/icons/core.svg',      'Abs',       ['core']),
-  _PickerCat('assets/exercises/icons/legs.svg',      'Legs',      ['legs']),
+  _PickerCat('assets/exercises/icons/cardio.svg', 'Cardio', ['cardio']),
+  _PickerCat('assets/exercises/icons/biceps.svg', 'Arms', [
+    'biceps',
+    'triceps',
+  ]),
+  _PickerCat('assets/exercises/icons/shoulders.svg', 'Shoulders', [
+    'shoulders',
+  ]),
+  _PickerCat('assets/exercises/icons/chest.svg', 'Chest', ['chest']),
+  _PickerCat('assets/exercises/icons/back.svg', 'Back', ['back']),
+  _PickerCat('assets/exercises/icons/core.svg', 'Abs', ['core']),
+  _PickerCat('assets/exercises/icons/legs.svg', 'Legs', ['legs']),
 ];
 
 class _PickerCat {
@@ -49,7 +54,8 @@ class ExercisePickerScreen extends ConsumerStatefulWidget {
   const ExercisePickerScreen({super.key});
 
   @override
-  ConsumerState<ExercisePickerScreen> createState() => _ExercisePickerScreenState();
+  ConsumerState<ExercisePickerScreen> createState() =>
+      _ExercisePickerScreenState();
 }
 
 class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
@@ -138,28 +144,39 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                       children: [
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 160),
-                          width: 52, height: 52,
+                          width: 52,
+                          height: 52,
                           decoration: BoxDecoration(
-                            color: active ? TraumColors.coralOrange : TraumColors.surfaceVariant,
+                            color: active
+                                ? TraumColors.coralOrange
+                                : TraumColors.surfaceVariant,
                             borderRadius: BorderRadius.circular(14),
                           ),
                           padding: const EdgeInsets.all(10),
                           child: SvgPicture.asset(
                             cat.svg,
                             colorFilter: ColorFilter.mode(
-                              active ? Colors.white : TraumColors.onBackgroundMuted,
+                              active
+                                  ? Colors.white
+                                  : TraumColors.onBackgroundMuted,
                               BlendMode.srcIn,
                             ),
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text(cat.label,
-                            style: TextStyle(
-                              color: active ? TraumColors.coralOrange : TraumColors.onBackgroundMuted,
-                              fontFamily: 'DMSans',
-                              fontSize: 9,
-                              fontWeight: active ? FontWeight.w600 : FontWeight.w400,
-                            )),
+                        Text(
+                          cat.label,
+                          style: TextStyle(
+                            color: active
+                                ? TraumColors.coralOrange
+                                : TraumColors.onBackgroundMuted,
+                            fontFamily: 'DMSans',
+                            fontSize: 9,
+                            fontWeight: active
+                                ? FontWeight.w600
+                                : FontWeight.w400,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -174,14 +191,19 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
               final filtered = _applyFilters(all);
               return Padding(
                 padding: const EdgeInsets.fromLTRB(16, 2, 16, 4),
-                child: Row(children: [
-                  const Spacer(),
-                  Text('${filtered.length} / ${all.length}',
+                child: Row(
+                  children: [
+                    const Spacer(),
+                    Text(
+                      '${filtered.length} / ${all.length}',
                       style: const TextStyle(
                         color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans', fontSize: 12,
-                      )),
-                ]),
+                        fontFamily: 'DMSans',
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
               );
             },
             loading: () => const SizedBox(height: 20),
@@ -242,7 +264,10 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                 );
               },
               loading: () => const Center(
-                  child: CircularProgressIndicator(color: TraumColors.coralOrange)),
+                child: CircularProgressIndicator(
+                  color: TraumColors.coralOrange,
+                ),
+              ),
               error: (e, _) => Center(child: Text('$e')),
             ),
           ),
@@ -252,10 +277,16 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
             Container(
               decoration: BoxDecoration(
                 color: TraumColors.surfaceElevated,
-                border: Border(top: BorderSide(color: TraumColors.surfaceVariant)),
+                border: Border(
+                  top: BorderSide(color: TraumColors.surfaceVariant),
+                ),
               ),
               padding: EdgeInsets.fromLTRB(
-                  16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
+                16,
+                12,
+                16,
+                12 + MediaQuery.of(context).padding.bottom,
+              ),
               child: Row(
                 children: [
                   // Superset button
@@ -265,11 +296,18 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                           ? () => _addAll(asSuperset: true)
                           : null,
                       icon: const Icon(Icons.link_rounded, size: 18),
-                      label: Text(AppLocalizations.of(context)!.supersetLabel,
-                          style: TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
+                      label: Text(
+                        AppLocalizations.of(context)!.supersetLabel,
+                        style: TextStyle(
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: TraumColors.onBackground,
-                        side: const BorderSide(color: TraumColors.surfaceVariant),
+                        side: const BorderSide(
+                          color: TraumColors.surfaceVariant,
+                        ),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(TraumRadius.card),
@@ -286,7 +324,9 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                       label: Text(
                         'Add All (${_selected.length})',
                         style: const TextStyle(
-                          fontFamily: 'DMSans', fontWeight: FontWeight.w700),
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: TraumColors.coralOrange,
@@ -308,7 +348,9 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
   }
 
   void _addAll({bool asSuperset = false}) {
-    final result = _selected.map((ex) => PickedExercise(ex, asSuperset: asSuperset)).toList();
+    final result = _selected
+        .map((ex) => PickedExercise(ex, asSuperset: asSuperset))
+        .toList();
     Navigator.of(context).pop(result);
   }
 
@@ -319,7 +361,10 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
         elevation: 0,
         leading: IconButton(
           tooltip: AppLocalizations.of(context)!.back,
-          icon: const Icon(Icons.arrow_back_rounded, color: TraumColors.onBackground),
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: TraumColors.onBackground,
+          ),
           onPressed: () => setState(() {
             _searchActive = false;
             _searchCtrl.clear();
@@ -329,18 +374,27 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
         title: TextField(
           controller: _searchCtrl,
           autofocus: true,
-          style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
+          style: const TextStyle(
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+          ),
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: AppLocalizations.of(context)!.exerciseSearchHint,
-            hintStyle: TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
+            hintStyle: TextStyle(
+              color: TraumColors.onBackgroundSubtle,
+              fontFamily: 'DMSans',
+            ),
           ),
           onChanged: _onSearchChanged,
         ),
         actions: [
           IconButton(
             tooltip: AppLocalizations.of(context)!.close,
-            icon: const Icon(Icons.close_rounded, color: TraumColors.onBackground),
+            icon: const Icon(
+              Icons.close_rounded,
+              color: TraumColors.onBackground,
+            ),
             onPressed: () => setState(() {
               _searchActive = false;
               _searchCtrl.clear();
@@ -359,7 +413,10 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
       actions: [
         IconButton(
           tooltip: AppLocalizations.of(context)!.search,
-          icon: const Icon(Icons.search_rounded, color: TraumColors.onBackground),
+          icon: const Icon(
+            Icons.search_rounded,
+            color: TraumColors.onBackground,
+          ),
           onPressed: () => setState(() => _searchActive = true),
         ),
         const Icon(Icons.filter_list_rounded, color: TraumColors.onBackground),
@@ -385,16 +442,18 @@ class _SelectedThumb extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           Container(
-            width: 56, height: 56,
+            width: 56,
+            height: 56,
             decoration: BoxDecoration(
               color: const Color(0xFF1E2235),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Center(
               child: ExerciseIcon(
-                  muscleGroup: canonicalMuscleGroup(exercise.muscleGroup),
-                  exerciseName: exercise.name,
-                  size: 40),
+                muscleGroup: canonicalMuscleGroup(exercise.muscleGroup),
+                exerciseName: exercise.name,
+                size: 40,
+              ),
             ),
           ),
           Positioned(
@@ -403,21 +462,28 @@ class _SelectedThumb extends StatelessWidget {
             // a Stack only hit-tests Positioned children within its own
             // layout size, so a badge sticking out past the Stack's box via
             // Clip.none paints visibly but isn't actually tappable there.
-            top: 0, right: 0,
+            top: 0,
+            right: 0,
             child: GestureDetector(
               onTap: onRemove,
               behavior: HitTestBehavior.opaque,
               child: Container(
-                width: 44, height: 44,
+                width: 44,
+                height: 44,
                 alignment: Alignment.topRight,
                 padding: const EdgeInsets.only(top: 2, right: 2),
                 child: Container(
-                  width: 18, height: 18,
+                  width: 18,
+                  height: 18,
                   decoration: const BoxDecoration(
                     color: Colors.black54,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.close_rounded, size: 12, color: Colors.white),
+                  child: const Icon(
+                    Icons.close_rounded,
+                    size: 12,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -455,7 +521,8 @@ class _PickerTile extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 52, height: 52,
+              width: 52,
+              height: 52,
               decoration: BoxDecoration(
                 color: const Color(0xFF1E2235),
                 borderRadius: BorderRadius.circular(10),
@@ -465,9 +532,10 @@ class _PickerTile extends StatelessWidget {
               ),
               child: Center(
                 child: ExerciseIcon(
-                    muscleGroup: canonicalMuscleGroup(exercise.muscleGroup),
-                    exerciseName: exercise.name,
-                    size: 38),
+                  muscleGroup: canonicalMuscleGroup(exercise.muscleGroup),
+                  exerciseName: exercise.name,
+                  size: 38,
+                ),
               ),
             ),
             const SizedBox(width: 12),
@@ -475,25 +543,31 @@ class _PickerTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(exercise.name,
-                      style: TextStyle(
-                        color: selected ? TraumColors.coralOrange : TraumColors.onBackground,
-                        fontFamily: 'DMSans',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                      )),
+                  Text(
+                    exercise.name,
+                    style: TextStyle(
+                      color: selected
+                          ? TraumColors.coralOrange
+                          : TraumColors.onBackground,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
                   const SizedBox(height: 2),
                   Text(
-                      muscleGroupLabel(
-                              exercise.muscleGroup, AppLocalizations.of(context)!)
-                          .toUpperCase(),
-                      style: const TextStyle(
-                        color: TraumColors.coralOrange,
-                        fontFamily: 'DMSans',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 11,
-                        letterSpacing: 0.4,
-                      )),
+                    muscleGroupLabel(
+                      exercise.muscleGroup,
+                      AppLocalizations.of(context)!,
+                    ).toUpperCase(),
+                    style: const TextStyle(
+                      color: TraumColors.coralOrange,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 11,
+                      letterSpacing: 0.4,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -504,11 +578,15 @@ class _PickerTile extends StatelessWidget {
                   color: TraumColors.coralOrange,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Text('$usageCount',
-                    style: const TextStyle(
-                      color: Colors.white, fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w700, fontSize: 11,
-                    )),
+                child: Text(
+                  '$usageCount',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 11,
+                  ),
+                ),
               ),
           ],
         ),

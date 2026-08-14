@@ -23,80 +23,98 @@ class DiaryYearHeatmap extends ConsumerWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        datesAsync.when(
-          data: (dates) {
-            const totalDays = 365;
-            final withEntries = dates.length;
-            final pct = (withEntries / totalDays * 100).toStringAsFixed(0);
-            return Row(children: [
-              Text('${now.year}',
-                  style: const TextStyle(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          datesAsync.when(
+            data: (dates) {
+              const totalDays = 365;
+              final withEntries = dates.length;
+              final pct = (withEntries / totalDays * 100).toStringAsFixed(0);
+              return Row(
+                children: [
+                  Text(
+                    '${now.year}',
+                    style: const TextStyle(
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w600,
                       color: TraumColors.onBackground,
-                      fontSize: 16)),
-              const Spacer(),
-              Text(l10n.diaryHeatmapStats(withEntries, pct),
-                  style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    l10n.diaryHeatmapStats(withEntries, pct),
+                    style: const TextStyle(
                       fontFamily: 'DMSans',
                       fontSize: 12,
-                      color: TraumColors.onBackgroundMuted)),
-            ]);
-          },
-          loading: () => Text(l10n.diaryYearOverview,
+                      color: TraumColors.onBackgroundMuted,
+                    ),
+                  ),
+                ],
+              );
+            },
+            loading: () => Text(
+              l10n.diaryYearOverview,
               style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w600,
-                  color: TraumColors.onBackground,
-                  fontSize: 16)),
-          error: (e, _) => InlineError(e),
-        ),
-        const SizedBox(height: 12),
-        datesAsync.when(
-          data: (dates) {
-            final startDate = today.subtract(const Duration(days: 364));
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(53, (week) {
-                  return Column(
-                    children: List.generate(7, (dayOfWeek) {
-                      final date =
-                          startDate.add(Duration(days: week * 7 + dayOfWeek));
-                      if (date.isAfter(today)) {
-                        return const SizedBox(width: 10, height: 10);
-                      }
-                      final dateStr =
-                          '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-                      final hasEntry = dates.contains(dateStr);
-                      final isToday = date == today;
-                      return Container(
-                        width: 8,
-                        height: 8,
-                        margin: const EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(2),
-                          color: isToday
-                              ? TraumColors.coralOrange
-                              : hasEntry
-                                  ? TraumColors.lavender
-                                  : TraumColors.surfaceVariant,
-                        ),
-                      );
-                    }),
-                  );
-                }),
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w600,
+                color: TraumColors.onBackground,
+                fontSize: 16,
               ),
-            );
-          },
-          loading: () => const Center(
+            ),
+            error: (e, _) => InlineError(e),
+          ),
+          const SizedBox(height: 12),
+          datesAsync.when(
+            data: (dates) {
+              final startDate = today.subtract(const Duration(days: 364));
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: List.generate(53, (week) {
+                    return Column(
+                      children: List.generate(7, (dayOfWeek) {
+                        final date = startDate.add(
+                          Duration(days: week * 7 + dayOfWeek),
+                        );
+                        if (date.isAfter(today)) {
+                          return const SizedBox(width: 10, height: 10);
+                        }
+                        final dateStr =
+                            '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+                        final hasEntry = dates.contains(dateStr);
+                        final isToday = date == today;
+                        return Container(
+                          width: 8,
+                          height: 8,
+                          margin: const EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(2),
+                            color: isToday
+                                ? TraumColors.coralOrange
+                                : hasEntry
+                                ? TraumColors.lavender
+                                : TraumColors.surfaceVariant,
+                          ),
+                        );
+                      }),
+                    );
+                  }),
+                ),
+              );
+            },
+            loading: () => const Center(
               child: CircularProgressIndicator(
-                  color: TraumColors.lavender, strokeWidth: 2)),
-          error: (e, _) => InlineError(e),
-        ),
-      ]),
+                color: TraumColors.lavender,
+                strokeWidth: 2,
+              ),
+            ),
+            error: (e, _) => InlineError(e),
+          ),
+        ],
+      ),
     );
   }
 }

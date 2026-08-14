@@ -9,22 +9,26 @@ void main() {
     addTearDown(db.close);
 
     // New columns on shopping_list_items
-    final itemId = await db.into(db.shoppingListItems).insert(
+    final itemId = await db
+        .into(db.shoppingListItems)
+        .insert(
           ShoppingListItemsCompanion.insert(
             name: 'Milch',
             priceEstimated: const Value(1.20),
             isUrgent: const Value(true),
           ),
         );
-    final item =
-        await (db.select(db.shoppingListItems)..where((t) => t.id.equals(itemId)))
-            .getSingle();
+    final item = await (db.select(
+      db.shoppingListItems,
+    )..where((t) => t.id.equals(itemId))).getSingle();
     expect(item.priceEstimated, 1.20);
     expect(item.isUrgent, isTrue);
     expect(item.priceActual, equals(null));
 
     // New grocery_prices table
-    await db.into(db.groceryPrices).insert(
+    await db
+        .into(db.groceryPrices)
+        .insert(
           GroceryPricesCompanion.insert(
             name: 'Milch',
             nameNormalized: 'milch',
@@ -36,11 +40,16 @@ void main() {
     expect(prices.first.sampleCount, 1);
 
     // Template tables
-    final tplId = await db.into(db.shoppingTemplates).insert(
-          ShoppingTemplatesCompanion.insert(name: 'Wocheneinkauf'),
-        );
-    await db.into(db.shoppingTemplateItems).insert(
-          ShoppingTemplateItemsCompanion.insert(templateId: tplId, name: 'Brot'),
+    final tplId = await db
+        .into(db.shoppingTemplates)
+        .insert(ShoppingTemplatesCompanion.insert(name: 'Wocheneinkauf'));
+    await db
+        .into(db.shoppingTemplateItems)
+        .insert(
+          ShoppingTemplateItemsCompanion.insert(
+            templateId: tplId,
+            name: 'Brot',
+          ),
         );
     final tplItems = await db.select(db.shoppingTemplateItems).get();
     expect(tplItems.single.name, 'Brot');

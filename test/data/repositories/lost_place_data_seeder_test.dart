@@ -10,47 +10,54 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   test(
-      'seedIfNeeded fills the Lost-Places collection once and is idempotent',
-      () async {
-    SharedPreferences.setMockInitialValues({});
-    final prefs = await SharedPreferences.getInstance();
-    final db = TraumDatabase.forTesting(NativeDatabase.memory());
-    addTearDown(db.close);
+    'seedIfNeeded fills the Lost-Places collection once and is idempotent',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final db = TraumDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(db.close);
 
-    await MapCollectionSeeder.seedIfNeeded(db, prefs);
-    await LostPlaceDataSeeder.seedIfNeeded(db, prefs);
+      await MapCollectionSeeder.seedIfNeeded(db, prefs);
+      await LostPlaceDataSeeder.seedIfNeeded(db, prefs);
 
-    final collections = await db.mapCollectionsDao.getAll();
-    final lostPlaceCollection =
-        collections.firstWhere((c) => c.iconName == 'home_broken');
-    final markers = await db.mapMarkersDao.getByCollection(lostPlaceCollection.id);
+      final collections = await db.mapCollectionsDao.getAll();
+      final lostPlaceCollection = collections.firstWhere(
+        (c) => c.iconName == 'home_broken',
+      );
+      final markers = await db.mapMarkersDao.getByCollection(
+        lostPlaceCollection.id,
+      );
 
-    expect(markers.length, greaterThan(80000));
-    expect(markers.every((m) => m.externalId != null), isTrue);
-    expect(markers.any((m) => m.note.contains('Quelle:')), isTrue);
+      expect(markers.length, greaterThan(80000));
+      expect(markers.every((m) => m.externalId != null), isTrue);
+      expect(markers.any((m) => m.note.contains('Quelle:')), isTrue);
 
-    // Second run must not duplicate.
-    await LostPlaceDataSeeder.seedIfNeeded(db, prefs);
-    final afterSecond =
-        await db.mapMarkersDao.getByCollection(lostPlaceCollection.id);
-    expect(afterSecond.length, markers.length);
-  }, timeout: const Timeout(Duration(minutes: 3)));
+      // Second run must not duplicate.
+      await LostPlaceDataSeeder.seedIfNeeded(db, prefs);
+      final afterSecond = await db.mapMarkersDao.getByCollection(
+        lostPlaceCollection.id,
+      );
+      expect(afterSecond.length, markers.length);
+    },
+    timeout: const Timeout(Duration(minutes: 3)),
+  );
 
   test(
-      'does nothing (no flag) if the Lost-Places collection does not exist yet',
-      () async {
-    SharedPreferences.setMockInitialValues({});
-    final prefs = await SharedPreferences.getInstance();
-    final db = TraumDatabase.forTesting(NativeDatabase.memory());
-    addTearDown(db.close);
-    // MapCollectionSeeder deliberately not run first.
+    'does nothing (no flag) if the Lost-Places collection does not exist yet',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final db = TraumDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(db.close);
+      // MapCollectionSeeder deliberately not run first.
 
-    await LostPlaceDataSeeder.seedIfNeeded(db, prefs);
+      await LostPlaceDataSeeder.seedIfNeeded(db, prefs);
 
-    expect(prefs.getBool('lost_place_data_seeded_v1'), isNull);
-    final all = await db.mapMarkersDao.getAll();
-    expect(all, isEmpty);
-  });
+      expect(prefs.getBool('lost_place_data_seeded_v1'), isNull);
+      final all = await db.mapMarkersDao.getAll();
+      expect(all, isEmpty);
+    },
+  );
 
   test('does not set the flag when seeding fails', () async {
     SharedPreferences.setMockInitialValues({});
@@ -76,18 +83,23 @@ void main() {
 
     await MapCollectionSeeder.seedIfNeeded(db, prefs);
     final collections = await db.mapCollectionsDao.getAll();
-    final lostPlaceCollection =
-        collections.firstWhere((c) => c.iconName == 'home_broken');
-    await db.mapMarkersDao.insert(MapMarkersCompanion.insert(
-      collectionId: lostPlaceCollection.id,
-      externalId: const Value('lostfoundations:1'),
-      createdAt: DateTime.now(),
-    ));
+    final lostPlaceCollection = collections.firstWhere(
+      (c) => c.iconName == 'home_broken',
+    );
+    await db.mapMarkersDao.insert(
+      MapMarkersCompanion.insert(
+        collectionId: lostPlaceCollection.id,
+        externalId: const Value('lostfoundations:1'),
+        createdAt: DateTime.now(),
+      ),
+    );
 
     await LostPlaceDataSeeder.seedIfNeeded(db, prefs);
 
     expect(prefs.getBool('lost_place_data_seeded_v1'), isTrue);
-    final markers = await db.mapMarkersDao.getByCollection(lostPlaceCollection.id);
+    final markers = await db.mapMarkersDao.getByCollection(
+      lostPlaceCollection.id,
+    );
     expect(markers.length, 1); // did not bulk-insert the real dataset on top
   });
 }

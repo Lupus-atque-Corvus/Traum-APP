@@ -17,7 +17,8 @@ class NutritionRepository {
 
   Stream<List<WaterLog>> watchWaterForDate(DateTime date) =>
       _dao.watchWaterForDate(date);
-  Future<List<WaterLog>> getWaterLogsLast7Days() => _dao.getWaterLogsLast7Days();
+  Future<List<WaterLog>> getWaterLogsLast7Days() =>
+      _dao.getWaterLogsLast7Days();
   Future<int> addWaterLog(WaterLogsCompanion e) => _dao.insertWaterLog(e);
   Future<int> deleteWaterLog(int id) => _dao.deleteWaterLog(id);
 

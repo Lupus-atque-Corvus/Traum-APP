@@ -9,18 +9,30 @@ class ReportEntry {
   final String foodName;
   final double grams;
   final double kcal, protein, carbs, fat;
-  const ReportEntry({required this.day, required this.meal,
-      required this.foodName, required this.grams, required this.kcal,
-      required this.protein, required this.carbs, required this.fat});
+  const ReportEntry({
+    required this.day,
+    required this.meal,
+    required this.foodName,
+    required this.grams,
+    required this.kcal,
+    required this.protein,
+    required this.carbs,
+    required this.fat,
+  });
 }
 
 class DailySection {
   final DateTime day;
   final Map<String, List<ReportEntry>> meals;
   final double totalKcal, totalProtein, totalCarbs, totalFat;
-  const DailySection({required this.day, required this.meals,
-      required this.totalKcal, required this.totalProtein,
-      required this.totalCarbs, required this.totalFat});
+  const DailySection({
+    required this.day,
+    required this.meals,
+    required this.totalKcal,
+    required this.totalProtein,
+    required this.totalCarbs,
+    required this.totalFat,
+  });
 }
 
 List<DailySection> buildDailySections(List<ReportEntry> entries) {
@@ -39,9 +51,12 @@ List<DailySection> buildDailySections(List<ReportEntry> entries) {
     double sum(double Function(ReportEntry) f) =>
         list.fold(0.0, (a, e) => a + f(e));
     return DailySection(
-      day: day, meals: meals,
-      totalKcal: sum((e) => e.kcal), totalProtein: sum((e) => e.protein),
-      totalCarbs: sum((e) => e.carbs), totalFat: sum((e) => e.fat),
+      day: day,
+      meals: meals,
+      totalKcal: sum((e) => e.kcal),
+      totalProtein: sum((e) => e.protein),
+      totalCarbs: sum((e) => e.carbs),
+      totalFat: sum((e) => e.fat),
     );
   }).toList();
 }

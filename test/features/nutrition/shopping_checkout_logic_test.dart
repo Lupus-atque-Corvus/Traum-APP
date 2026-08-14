@@ -10,16 +10,27 @@ void main() {
   tearDown(() => db.close());
 
   test('finalizeShopping books one transaction and updates price DB', () async {
-    final catId = await db.into(db.budgetCategories).insert(
-        BudgetCategoriesCompanion.insert(name: 'Lebensmittel'));
-    await db.into(db.shoppingListItems).insert(ShoppingListItemsCompanion.insert(
-        name: 'Bananen',
-        checked: const Value(true),
-        priceActual: const Value(2.15)));
-    await db.into(db.shoppingListItems).insert(ShoppingListItemsCompanion.insert(
-        name: 'Milch',
-        checked: const Value(true),
-        priceActual: const Value(1.25)));
+    final catId = await db
+        .into(db.budgetCategories)
+        .insert(BudgetCategoriesCompanion.insert(name: 'Lebensmittel'));
+    await db
+        .into(db.shoppingListItems)
+        .insert(
+          ShoppingListItemsCompanion.insert(
+            name: 'Bananen',
+            checked: const Value(true),
+            priceActual: const Value(2.15),
+          ),
+        );
+    await db
+        .into(db.shoppingListItems)
+        .insert(
+          ShoppingListItemsCompanion.insert(
+            name: 'Milch',
+            checked: const Value(true),
+            priceActual: const Value(1.25),
+          ),
+        );
 
     final total = await finalizeShopping(
       db,
@@ -45,11 +56,18 @@ void main() {
   });
 
   test('finalizeShopping books nothing when cart is empty', () async {
-    await db.into(db.budgetCategories).insert(
-        BudgetCategoriesCompanion.insert(name: 'Lebensmittel'));
+    await db
+        .into(db.budgetCategories)
+        .insert(BudgetCategoriesCompanion.insert(name: 'Lebensmittel'));
     // An item that is checked but has no actual price → not in cart.
-    await db.into(db.shoppingListItems).insert(ShoppingListItemsCompanion.insert(
-        name: 'Brot', checked: const Value(true)));
+    await db
+        .into(db.shoppingListItems)
+        .insert(
+          ShoppingListItemsCompanion.insert(
+            name: 'Brot',
+            checked: const Value(true),
+          ),
+        );
 
     final total = await finalizeShopping(
       db,

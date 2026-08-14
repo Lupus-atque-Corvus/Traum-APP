@@ -59,7 +59,8 @@ double _ringProgress(CycleAnalysis analysis) {
 
 List<int> _cycleLengths(List<PeriodEntry> entries) {
   if (entries.length < 2) return const [];
-  final sorted = [...entries]..sort((a, b) => a.startDate.compareTo(b.startDate));
+  final sorted = [...entries]
+    ..sort((a, b) => a.startDate.compareTo(b.startDate));
   final lengths = <int>[];
   for (int i = 1; i < sorted.length; i++) {
     lengths.add(sorted[i].startDate.difference(sorted[i - 1].startDate).inDays);
@@ -68,17 +69,20 @@ List<int> _cycleLengths(List<PeriodEntry> entries) {
 }
 
 List<({DateTime date, double temp})> _bbtPoints(List<DailyLog> logs) {
-  final pts = logs
-      .where((l) => l.bbt != null)
-      .map((l) => (date: l.logDate, temp: l.bbt!))
-      .toList()
-    ..sort((a, b) => a.date.compareTo(b.date));
+  final pts =
+      logs
+          .where((l) => l.bbt != null)
+          .map((l) => (date: l.logDate, temp: l.bbt!))
+          .toList()
+        ..sort((a, b) => a.date.compareTo(b.date));
   return pts;
 }
 
 bool _isToday(DateTime date) {
   final now = DateTime.now();
-  return date.year == now.year && date.month == now.month && date.day == now.day;
+  return date.year == now.year &&
+      date.month == now.month &&
+      date.day == now.day;
 }
 
 // ---------------------------------------------------------------------------
@@ -103,11 +107,12 @@ class PeriodScreen extends ConsumerWidget {
 
     final todaySymptoms = symptoms.where((s) => _isToday(s.logDate)).toList();
     final todayLog = dailyLogs.cast<DailyLog?>().firstWhere(
-          (l) => l != null && _isToday(l.logDate),
-          orElse: () => null,
-        );
+      (l) => l != null && _isToday(l.logDate),
+      orElse: () => null,
+    );
 
-    final isLoading = entriesAsync.isLoading ||
+    final isLoading =
+        entriesAsync.isLoading ||
         symptomsAsync.isLoading ||
         dailyLogsAsync.isLoading;
 
@@ -131,29 +136,35 @@ class PeriodScreen extends ConsumerWidget {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.calendar_month_rounded,
-                color: TraumColors.periodRose),
+            icon: const Icon(
+              Icons.calendar_month_rounded,
+              color: TraumColors.periodRose,
+            ),
             tooltip: l10n.calendarTooltip,
             onPressed: () => context.go('/period/calendar'),
           ),
           IconButton(
-            icon: const Icon(Icons.history_rounded,
-                color: TraumColors.onBackgroundMuted),
+            icon: const Icon(
+              Icons.history_rounded,
+              color: TraumColors.onBackgroundMuted,
+            ),
             tooltip: l10n.historyTooltip,
             onPressed: () => context.go('/period/history'),
           ),
           IconButton(
-            icon: const Icon(Icons.tune_rounded,
-                color: TraumColors.onBackgroundMuted),
+            icon: const Icon(
+              Icons.tune_rounded,
+              color: TraumColors.onBackgroundMuted,
+            ),
             tooltip: l10n.cycleSettingsTitle,
-            onPressed: () =>
-                _showCycleSettingsSheet(context, ref, profile),
+            onPressed: () => _showCycleSettingsSheet(context, ref, profile),
           ),
         ],
       ),
       body: isLoading
           ? const Center(
-              child: CircularProgressIndicator(color: TraumColors.periodRose))
+              child: CircularProgressIndicator(color: TraumColors.periodRose),
+            )
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
@@ -162,7 +173,8 @@ class PeriodScreen extends ConsumerWidget {
                   analysis: analysis,
                   l10n: l10n,
                   onLogPeriod: () => _showLogPeriodSheet(context, ref),
-                  onLogDaily: () => _showDailyLogSheet(context, ref, todayLog, todaySymptoms),
+                  onLogDaily: () =>
+                      _showDailyLogSheet(context, ref, todayLog, todaySymptoms),
                 ),
                 const SizedBox(height: 12),
 
@@ -181,7 +193,8 @@ class PeriodScreen extends ConsumerWidget {
                   _TitledCard(
                     title: l10n.cycleLengthsTitle,
                     subtitle: l10n.cycleLengthsSubtitle(
-                        analysis.avgCycleLength?.round() ?? 28),
+                      analysis.avgCycleLength?.round() ?? 28,
+                    ),
                     child: CycleLengthChart(
                       lengths: cycleLengths,
                       avgLength: analysis.avgCycleLength?.round() ?? 28,
@@ -231,8 +244,9 @@ class PeriodScreen extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
       ),
       builder: (ctx) => _LogPeriodSheet(
         onAdd: (c) => ref.read(periodDaoProvider).insertPeriodEntry(c),
@@ -241,17 +255,19 @@ class PeriodScreen extends ConsumerWidget {
   }
 
   void _showDailyLogSheet(
-      BuildContext context,
-      WidgetRef ref,
-      DailyLog? existing,
-      List<PeriodSymptom> todaySymptoms) {
+    BuildContext context,
+    WidgetRef ref,
+    DailyLog? existing,
+    List<PeriodSymptom> todaySymptoms,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
       ),
       builder: (ctx) => DailyLogSheet(
         date: DateTime.now(),
@@ -259,29 +275,33 @@ class PeriodScreen extends ConsumerWidget {
         onSave: (companion) =>
             ref.read(periodDaoProvider).upsertDailyLog(companion),
         existingSymptoms: todaySymptoms,
-        onAddSymptom: (name, intensity) =>
-            ref.read(periodDaoProvider).insertSymptom(
+        onAddSymptom: (name, intensity) => ref
+            .read(periodDaoProvider)
+            .insertSymptom(
               PeriodSymptomsCompanion.insert(
                 logDate: DateTime.now(),
                 symptom: name,
                 intensity: Value(intensity),
               ),
             ),
-        onRemoveSymptom: (id) =>
-            ref.read(periodDaoProvider).deleteSymptom(id),
+        onRemoveSymptom: (id) => ref.read(periodDaoProvider).deleteSymptom(id),
       ),
     );
   }
 
   void _showCycleSettingsSheet(
-      BuildContext context, WidgetRef ref, CycleProfileData? profile) {
+    BuildContext context,
+    WidgetRef ref,
+    CycleProfileData? profile,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
       ),
       builder: (ctx) => CycleSettingsSheet(
         menarcheDate: profile?.menarcheDate,
@@ -314,8 +334,7 @@ class _HeroCard extends StatelessWidget {
     final phase = analysis.currentPhase;
     final phaseColor = _phaseColor(phase);
     final label = _phaseLabel(l10n, phase);
-    final subtitle =
-        phase == CyclePhase.ovulation ? l10n.phaseOvulation : null;
+    final subtitle = phase == CyclePhase.ovulation ? l10n.phaseOvulation : null;
 
     return Container(
       decoration: BoxDecoration(
@@ -336,8 +355,7 @@ class _HeroCard extends StatelessWidget {
 
           // Phase pill
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
             decoration: BoxDecoration(
               color: phaseColor.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(20),
@@ -437,11 +455,7 @@ class _TitledCard extends StatelessWidget {
   final String? subtitle;
   final Widget child;
 
-  const _TitledCard({
-    required this.title,
-    this.subtitle,
-    required this.child,
-  });
+  const _TitledCard({required this.title, this.subtitle, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -490,10 +504,7 @@ class _SymptomPatternCard extends StatelessWidget {
   final List<PeriodSymptom> symptoms;
   final AppLocalizations l10n;
 
-  const _SymptomPatternCard({
-    required this.symptoms,
-    required this.l10n,
-  });
+  const _SymptomPatternCard({required this.symptoms, required this.l10n});
 
   @override
   Widget build(BuildContext context) {
@@ -560,39 +571,48 @@ class _MehrCard extends StatelessWidget {
       child: Material(
         type: MaterialType.transparency,
         child: Column(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.calendar_month_rounded,
-                color: TraumColors.periodRose),
-            title: Text(
-              l10n.calendarTooltip,
-              style: const TextStyle(
-                color: TraumColors.onBackground,
-                fontFamily: 'DMSans',
+          children: [
+            ListTile(
+              leading: const Icon(
+                Icons.calendar_month_rounded,
+                color: TraumColors.periodRose,
               ),
+              title: Text(
+                l10n.calendarTooltip,
+                style: const TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+              trailing: const Icon(
+                Icons.chevron_right_rounded,
+                color: TraumColors.onBackgroundMuted,
+              ),
+              onTap: () => context.go('/period/calendar'),
             ),
-            trailing: const Icon(Icons.chevron_right_rounded,
-                color: TraumColors.onBackgroundMuted),
-            onTap: () => context.go('/period/calendar'),
-          ),
-          Divider(
+            Divider(
               height: 1,
-              color: TraumColors.surfaceVariant.withValues(alpha: 0.5)),
-          ListTile(
-            leading: const Icon(Icons.history_rounded,
-                color: TraumColors.onBackgroundMuted),
-            title: Text(
-              l10n.historyTooltip,
-              style: const TextStyle(
-                color: TraumColors.onBackground,
-                fontFamily: 'DMSans',
-              ),
+              color: TraumColors.surfaceVariant.withValues(alpha: 0.5),
             ),
-            trailing: const Icon(Icons.chevron_right_rounded,
-                color: TraumColors.onBackgroundMuted),
-            onTap: () => context.go('/period/history'),
-          ),
-        ],
+            ListTile(
+              leading: const Icon(
+                Icons.history_rounded,
+                color: TraumColors.onBackgroundMuted,
+              ),
+              title: Text(
+                l10n.historyTooltip,
+                style: const TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+              trailing: const Icon(
+                Icons.chevron_right_rounded,
+                color: TraumColors.onBackgroundMuted,
+              ),
+              onTap: () => context.go('/period/history'),
+            ),
+          ],
         ),
       ),
     );
@@ -686,7 +706,8 @@ class _LogPeriodSheetState extends State<_LogPeriodSheet> {
                   builder: (ctx, child) => Theme(
                     data: ThemeData.dark().copyWith(
                       colorScheme: const ColorScheme.dark(
-                          primary: TraumColors.periodRose),
+                        primary: TraumColors.periodRose,
+                      ),
                     ),
                     child: child!,
                   ),
@@ -779,8 +800,10 @@ class _LogPeriodSheetState extends State<_LogPeriodSheet> {
                   borderRadius: BorderRadius.circular(TraumRadius.card),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -797,12 +820,15 @@ class _LogPeriodSheetState extends State<_LogPeriodSheet> {
 
   Future<void> _save() async {
     setState(() => _saving = true);
-    await widget.onAdd(PeriodEntriesCompanion.insert(
-      startDate: _startDate,
-      flowIntensity: Value(_flowIntensity),
-      note: Value(
-          _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim()),
-    ));
+    await widget.onAdd(
+      PeriodEntriesCompanion.insert(
+        startDate: _startDate,
+        flowIntensity: Value(_flowIntensity),
+        note: Value(
+          _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim(),
+        ),
+      ),
+    );
     if (mounted) Navigator.pop(context);
   }
 }

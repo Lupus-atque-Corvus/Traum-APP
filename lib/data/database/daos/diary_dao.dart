@@ -14,21 +14,26 @@ class DiaryDao extends DatabaseAccessor<TraumDatabase> with _$DiaryDaoMixin {
           .getSingleOrNull();
 
   Future<List<DiaryEntry>> getEntriesForMonth(
-      int diaryId, int year, int month) {
-    final prefix = '${year.toString().padLeft(4, '0')}'
+    int diaryId,
+    int year,
+    int month,
+  ) {
+    final prefix =
+        '${year.toString().padLeft(4, '0')}'
         '-${month.toString().padLeft(2, '0')}';
-    return (select(diaryEntries)
-          ..where((t) =>
-              t.diaryId.equals(diaryId) & t.date.like('$prefix%')))
-        .get();
+    return (select(
+      diaryEntries,
+    )..where((t) => t.diaryId.equals(diaryId) & t.date.like('$prefix%'))).get();
   }
 
   Future<List<DiaryEntry>> getRecentEntries(int diaryId, int days) {
     final from = DateTime.now().subtract(Duration(days: days));
     return (select(diaryEntries)
-          ..where((t) =>
-              t.diaryId.equals(diaryId) &
-              t.createdAt.isBiggerOrEqualValue(from))
+          ..where(
+            (t) =>
+                t.diaryId.equals(diaryId) &
+                t.createdAt.isBiggerOrEqualValue(from),
+          )
           ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
         .get();
   }
@@ -45,8 +50,8 @@ class DiaryDao extends DatabaseAccessor<TraumDatabase> with _$DiaryDaoMixin {
   /// `(diary_id, date)` voraus (Migration v28); ohne ihn würde SQLite den
   /// `ON CONFLICT`-Zielkonflikt nicht auflösen können und stattdessen jedes
   /// Mal eine neue Zeile einfügen.
-  Future<void> upsertEntry(DiaryEntriesCompanion entry) => into(diaryEntries)
-      .insert(
+  Future<void> upsertEntry(DiaryEntriesCompanion entry) =>
+      into(diaryEntries).insert(
         entry,
         onConflict: DoUpdate(
           (_) => entry,
@@ -71,20 +76,21 @@ class DiaryDao extends DatabaseAccessor<TraumDatabase> with _$DiaryDaoMixin {
             ..limit(1))
           .getSingleOrNull();
 
-  Future<int> getTotalCount(int diaryId) => (selectOnly(diaryEntries)
-        ..addColumns([diaryEntries.id.count()])
-        ..where(diaryEntries.diaryId.equals(diaryId)))
-      .map((r) => r.read(diaryEntries.id.count())!)
-      .getSingle();
+  Future<int> getTotalCount(int diaryId) =>
+      (selectOnly(diaryEntries)
+            ..addColumns([diaryEntries.id.count()])
+            ..where(diaryEntries.diaryId.equals(diaryId)))
+          .map((r) => r.read(diaryEntries.id.count())!)
+          .getSingle();
 
   /// Video-Einträge über ALLE Tagebücher hinweg, denen noch ein
   /// Vorschaubild fehlt — genutzt vom einmaligen Backfill für Einträge, die
   /// vor v0.8.9 angelegt wurden (damals wurde `thumbnailPath` beim Speichern
   /// hart auf `null` gesetzt).
   Future<List<DiaryEntry>> getVideoEntriesMissingThumbnail() =>
-      (select(diaryEntries)
-            ..where((t) =>
-                t.mediaType.equals('video') & t.thumbnailPath.isNull()))
+      (select(diaryEntries)..where(
+            (t) => t.mediaType.equals('video') & t.thumbnailPath.isNull(),
+          ))
           .get();
 
   Future<void> updateThumbnail(int id, String thumbnailPath) =>
@@ -97,10 +103,14 @@ class DiaryDao extends DatabaseAccessor<TraumDatabase> with _$DiaryDaoMixin {
   /// Such-DAOs im Projekt, z.B. `MapMarkersDao.search()`).
   Future<List<DiaryEntry>> searchEntries(int diaryId, String query) =>
       (select(diaryEntries)
-            ..where((t) =>
-                t.diaryId.equals(diaryId) &
-                t.note.like('%${escapeLikePattern(query)}%',
-                    escapeChar: likeEscapeChar))
+            ..where(
+              (t) =>
+                  t.diaryId.equals(diaryId) &
+                  t.note.like(
+                    '%${escapeLikePattern(query)}%',
+                    escapeChar: likeEscapeChar,
+                  ),
+            )
             ..orderBy([(t) => OrderingTerm.desc(t.date)])
             ..limit(200))
           .get();
@@ -108,9 +118,11 @@ class DiaryDao extends DatabaseAccessor<TraumDatabase> with _$DiaryDaoMixin {
   Future<List<String>> getDatesLastYear(int diaryId) {
     final yearAgo = DateTime.now().subtract(const Duration(days: 365));
     return (select(diaryEntries)
-          ..where((t) =>
-              t.diaryId.equals(diaryId) &
-              t.createdAt.isBiggerOrEqualValue(yearAgo))
+          ..where(
+            (t) =>
+                t.diaryId.equals(diaryId) &
+                t.createdAt.isBiggerOrEqualValue(yearAgo),
+          )
           ..orderBy([(t) => OrderingTerm.desc(t.date)]))
         .map((e) => e.date)
         .get();

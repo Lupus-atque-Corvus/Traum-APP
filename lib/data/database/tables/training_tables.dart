@@ -6,6 +6,7 @@ class WorkoutPlans extends Table {
   TextColumn get description => text().nullable()();
   BoolColumn get isActive => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
   /// 'workout' | 'morning' | 'evening'
   TextColumn get planType => text().withDefault(const Constant('workout'))();
 }
@@ -23,16 +24,13 @@ class Exercises extends Table {
   TextColumn get name => text()();
   TextColumn get muscleGroup => text()();
   // New in v3:
-  TextColumn get primaryMuscles =>
-      text().withDefault(const Constant('[]'))();
-  TextColumn get secondaryMuscles =>
-      text().withDefault(const Constant('[]'))();
+  TextColumn get primaryMuscles => text().withDefault(const Constant('[]'))();
+  TextColumn get secondaryMuscles => text().withDefault(const Constant('[]'))();
   TextColumn get difficulty => text().nullable()();
   TextColumn get mechanic => text().nullable()();
   TextColumn get force => text().nullable()();
   TextColumn get imageUrl => text().nullable()();
-  BoolColumn get isBookmarked =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get isBookmarked => boolean().withDefault(const Constant(false))();
   // Existing:
   TextColumn get equipment => text().nullable()();
   TextColumn get instructions => text().nullable()();
@@ -57,8 +55,7 @@ class WorkoutSets extends Table {
   RealColumn get weightKg => real().nullable()();
   IntColumn get reps => integer().nullable()();
   IntColumn get durationSeconds => integer().nullable()();
-  TextColumn get setType =>
-      text().withDefault(const Constant('normal'))();
+  TextColumn get setType => text().withDefault(const Constant('normal'))();
   BoolColumn get isWarmup => boolean().withDefault(const Constant(false))();
 }
 

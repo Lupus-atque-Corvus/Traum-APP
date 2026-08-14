@@ -17,10 +17,10 @@ class LauncherApp {
   });
 
   factory LauncherApp.fromAppInfo(AppInfo info) => LauncherApp(
-        name: info.name,
-        packageName: info.packageName,
-        icon: info.icon,
-      );
+    name: info.name,
+    packageName: info.packageName,
+    icon: info.icon,
+  );
 }
 
 /// Kapselt das `installed_apps`-Plugin (Android) für das experimentelle
@@ -65,5 +65,6 @@ class AppLauncherService {
   }
 }
 
-final appLauncherServiceProvider =
-    Provider<AppLauncherService>((ref) => AppLauncherService());
+final appLauncherServiceProvider = Provider<AppLauncherService>(
+  (ref) => AppLauncherService(),
+);

@@ -21,8 +21,10 @@ class PinService {
     final overBy = failCount - 3;
     if (overBy <= 0) return 0;
     final index = overBy - 1;
-    return _lockoutSecondsByAttempt[
-        index.clamp(0, _lockoutSecondsByAttempt.length - 1)];
+    return _lockoutSecondsByAttempt[index.clamp(
+      0,
+      _lockoutSecondsByAttempt.length - 1,
+    )];
   }
 
   static Future<bool> isSet() async {
@@ -58,12 +60,11 @@ class PinService {
     } else {
       final failCount =
           (int.tryParse(await _storage.read(key: _failCountKey) ?? '') ?? 0) +
-              1;
+          1;
       await _storage.write(key: _failCountKey, value: failCount.toString());
       final lockoutSeconds = _lockoutSecondsFor(failCount);
       if (lockoutSeconds > 0) {
-        final until =
-            DateTime.now().add(Duration(seconds: lockoutSeconds));
+        final until = DateTime.now().add(Duration(seconds: lockoutSeconds));
         await _storage.write(
           key: _lockedUntilKey,
           value: until.millisecondsSinceEpoch.toString(),

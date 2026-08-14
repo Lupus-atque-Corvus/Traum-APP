@@ -26,8 +26,7 @@ class DiaryCaptureSheet extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<DiaryCaptureSheet> createState() =>
-      _DiaryCaptureSheetState();
+  ConsumerState<DiaryCaptureSheet> createState() => _DiaryCaptureSheetState();
 }
 
 class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
@@ -57,7 +56,9 @@ class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
       final thumbnail = _mediaType == 'video'
           ? await DiaryCameraService.generateVideoThumbnail(_mediaPath)
           : null;
-      await ref.read(diaryRepositoryProvider).upsertEntry(
+      await ref
+          .read(diaryRepositoryProvider)
+          .upsertEntry(
             DiaryEntriesCompanion(
               diaryId: Value(widget.diaryId),
               date: Value(widget.date),
@@ -87,8 +88,8 @@ class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
     final ghostImagePath = lastEntry == null
         ? null
         : (lastEntry.mediaType == 'video'
-            ? lastEntry.thumbnailPath
-            : lastEntry.mediaPath);
+              ? lastEntry.thumbnailPath
+              : lastEntry.mediaPath);
     if (!mounted) return;
     final newPath = _mediaType == 'photo'
         ? await DiaryCameraService.capturePhoto(
@@ -96,13 +97,15 @@ class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
             diaryId: widget.diaryId,
             dateStr: widget.date,
             ghostImagePath: ghostImagePath,
-            source: ImageSource.camera)
+            source: ImageSource.camera,
+          )
         : await DiaryCameraService.captureVideo(
             context: context,
             diaryId: widget.diaryId,
             dateStr: widget.date,
             ghostImagePath: ghostImagePath,
-            source: ImageSource.camera);
+            source: ImageSource.camera,
+          );
     if (newPath != null && mounted) {
       setState(() => _mediaPath = newPath);
     }
@@ -139,12 +142,16 @@ class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
             if (File(_mediaPath).existsSync() && isPhoto)
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.file(File(_mediaPath),
-                    height: 200,
-                    width: double.infinity,
-                    cacheWidth: decodePxFor(
-                        context, MediaQuery.sizeOf(context).width),
-                    fit: BoxFit.cover),
+                child: Image.file(
+                  File(_mediaPath),
+                  height: 200,
+                  width: double.infinity,
+                  cacheWidth: decodePxFor(
+                    context,
+                    MediaQuery.sizeOf(context).width,
+                  ),
+                  fit: BoxFit.cover,
+                ),
               )
             else
               Container(
@@ -154,8 +161,11 @@ class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Center(
-                  child: Icon(Icons.videocam_outlined,
-                      color: TraumColors.onBackgroundMuted, size: 40),
+                  child: Icon(
+                    Icons.videocam_outlined,
+                    color: TraumColors.onBackgroundMuted,
+                    size: 40,
+                  ),
                 ),
               ),
             const SizedBox(height: 14),
@@ -164,22 +174,27 @@ class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
               maxLines: 2,
               maxLength: 200,
               style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  color: TraumColors.onBackground,
-                  fontSize: 14),
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
+                fontSize: 14,
+              ),
               decoration: InputDecoration(
                 hintText: l10n.diaryNoteHint,
                 hintStyle: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackgroundSubtle,
-                    fontSize: 13),
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundSubtle,
+                  fontSize: 13,
+                ),
                 filled: true,
                 fillColor: TraumColors.surfaceVariant,
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none),
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
                 contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 14, vertical: 12),
+                  horizontal: 14,
+                  vertical: 12,
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -191,28 +206,38 @@ class _DiaryCaptureSheetState extends ConsumerState<DiaryCaptureSheet> {
                   backgroundColor: TraumColors.lavender,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50)),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
                 ),
                 child: _saving
                     ? const SizedBox(
                         height: 20,
                         width: 20,
                         child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white))
-                    : Text(l10n.save,
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(
+                        l10n.save,
                         style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16)),
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                        ),
+                      ),
               ),
             ),
             const SizedBox(height: 8),
             TextButton(
               onPressed: _retake,
-              child: Text(l10n.diaryRetake,
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackgroundMuted)),
+              child: Text(
+                l10n.diaryRetake,
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundMuted,
+                ),
+              ),
             ),
           ],
         ),

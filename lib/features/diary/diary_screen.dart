@@ -45,73 +45,94 @@ class DiaryScreen extends ConsumerWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 8, 16, 0),
-              child: Row(children: [
-                GestureDetector(
-                  onTap: () => _showDiarySwitcher(context, ref),
-                  child: _DiarySwitchAvatar(diaryAsync: activeDiaryAsync),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
+              child: Row(
+                children: [
+                  GestureDetector(
                     onTap: () => _showDiarySwitcher(context, ref),
-                    child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          activeDiaryAsync.maybeWhen(
+                    child: _DiarySwitchAvatar(diaryAsync: activeDiaryAsync),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => _showDiarySwitcher(context, ref),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            activeDiaryAsync.maybeWhen(
                               data: (d) => d?.name ?? l10n.diaryTitle,
-                              orElse: () => l10n.diaryTitle),
-                          style: const TextStyle(
+                              orElse: () => l10n.diaryTitle,
+                            ),
+                            style: const TextStyle(
                               fontFamily: 'DMSans',
                               fontWeight: FontWeight.w700,
                               color: TraumColors.onBackground,
-                              fontSize: 24)),
-                      Row(children: [
-                        totalAsync.when(
-                          data: (t) => Text(l10n.diaryTotalEntries(t),
-                              style: const TextStyle(
-                                  fontFamily: 'DMSans',
-                                  color: TraumColors.onBackgroundMuted,
-                                  fontSize: 13)),
-                          loading: () => const SizedBox.shrink(),
-                          error: (e, _) => InlineError(e),
-                        ),
-                        const Text(' · ',
-                            style: TextStyle(
-                                color: TraumColors.onBackgroundSubtle,
-                                fontSize: 13)),
-                        streakAsync.when(
-                          data: (s) => Text(l10n.diaryStreakDays(s),
-                              style: const TextStyle(
-                                  fontFamily: 'DMSans',
-                                  color: TraumColors.lavender,
+                              fontSize: 24,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              totalAsync.when(
+                                data: (t) => Text(
+                                  l10n.diaryTotalEntries(t),
+                                  style: const TextStyle(
+                                    fontFamily: 'DMSans',
+                                    color: TraumColors.onBackgroundMuted,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                loading: () => const SizedBox.shrink(),
+                                error: (e, _) => InlineError(e),
+                              ),
+                              const Text(
+                                ' · ',
+                                style: TextStyle(
+                                  color: TraumColors.onBackgroundSubtle,
                                   fontSize: 13,
-                                  fontWeight: FontWeight.w500)),
-                          loading: () => const SizedBox.shrink(),
-                          error: (e, _) => InlineError(e),
-                        ),
-                      ]),
-                    ],
+                                ),
+                              ),
+                              streakAsync.when(
+                                data: (s) => Text(
+                                  l10n.diaryStreakDays(s),
+                                  style: const TextStyle(
+                                    fontFamily: 'DMSans',
+                                    color: TraumColors.lavender,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                loading: () => const SizedBox.shrink(),
+                                error: (e, _) => InlineError(e),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                IconButton(
-                  tooltip: l10n.search,
-                  icon: const Icon(Icons.search_rounded,
-                      color: TraumColors.lavender),
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (_) => const DiarySearchScreen()),
+                  IconButton(
+                    tooltip: l10n.search,
+                    icon: const Icon(
+                      Icons.search_rounded,
+                      color: TraumColors.lavender,
+                    ),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const DiarySearchScreen(),
+                      ),
+                    ),
                   ),
-                ),
-                IconButton(
-                  tooltip: l10n.diarySlideshow,
-                  icon: const Icon(Icons.slideshow_outlined,
-                      color: TraumColors.lavender),
-                  onPressed: () => context.go('/diary/slideshow'),
-                ),
-              ]),
+                  IconButton(
+                    tooltip: l10n.diarySlideshow,
+                    icon: const Icon(
+                      Icons.slideshow_outlined,
+                      color: TraumColors.lavender,
+                    ),
+                    onPressed: () => context.go('/diary/slideshow'),
+                  ),
+                ],
+              ),
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 12)),
@@ -125,7 +146,12 @@ class DiaryScreen extends ConsumerWidget {
                       todayStr: todayStr,
                       ghostImagePath: ghostImagePath,
                       onCapture: (path, type) => _openCaptureSheet(
-                          context, diaryId, path, type, todayStr),
+                        context,
+                        diaryId,
+                        path,
+                        type,
+                        todayStr,
+                      ),
                     )
                   : _TodayFilledCard(entry: entry),
               loading: () => const SizedBox(height: 80),
@@ -144,12 +170,15 @@ class DiaryScreen extends ConsumerWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 16, 16, 8),
-              child: Text(l10n.diaryRecentEntries,
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600,
-                      color: TraumColors.onBackground,
-                      fontSize: 16)),
+              child: Text(
+                l10n.diaryRecentEntries,
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w600,
+                  color: TraumColors.onBackground,
+                  fontSize: 16,
+                ),
+              ),
             ),
           ),
           SliverToBoxAdapter(
@@ -174,15 +203,21 @@ class DiaryScreen extends ConsumerWidget {
 
           SliverPadding(
             padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).padding.bottom + 90),
+              bottom: MediaQuery.of(context).padding.bottom + 90,
+            ),
           ),
         ],
       ),
     );
   }
 
-  void _openCaptureSheet(BuildContext context, int diaryId, String path,
-      String type, String dateStr) {
+  void _openCaptureSheet(
+    BuildContext context,
+    int diaryId,
+    String path,
+    String type,
+    String dateStr,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -233,23 +268,25 @@ class DiaryScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  ...list.map((d) => _DiaryRow(
-                        diary: d,
-                        isActive: active == d.id,
-                        onTap: () {
-                          ref.read(activeDiaryProvider.notifier).set(d.id);
-                          Navigator.pop(ctx);
-                        },
-                        onEdit: () {
-                          Navigator.pop(ctx);
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            builder: (_) => DiaryEditSheet(diary: d),
-                          );
-                        },
-                      )),
+                  ...list.map(
+                    (d) => _DiaryRow(
+                      diary: d,
+                      isActive: active == d.id,
+                      onTap: () {
+                        ref.read(activeDiaryProvider.notifier).set(d.id);
+                        Navigator.pop(ctx);
+                      },
+                      onEdit: () {
+                        Navigator.pop(ctx);
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => DiaryEditSheet(diary: d),
+                        );
+                      },
+                    ),
+                  ),
                   ListTile(
                     onTap: () {
                       Navigator.pop(ctx);
@@ -267,14 +304,19 @@ class DiaryScreen extends ConsumerWidget {
                         color: TraumColors.surfaceVariant,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(Icons.add,
-                          color: TraumColors.onBackgroundMuted),
+                      child: const Icon(
+                        Icons.add,
+                        color: TraumColors.onBackgroundMuted,
+                      ),
                     ),
-                    title: Text(l10n.diaryNewDiary,
-                        style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            color: TraumColors.lavender,
-                            fontWeight: FontWeight.w600)),
+                    title: Text(
+                      l10n.diaryNewDiary,
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        color: TraumColors.lavender,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 8),
                 ],
@@ -283,11 +325,13 @@ class DiaryScreen extends ConsumerWidget {
             loading: () => const Padding(
               padding: EdgeInsets.all(32),
               child: Center(
-                  child: CircularProgressIndicator(
-                      color: TraumColors.lavender)),
+                child: CircularProgressIndicator(color: TraumColors.lavender),
+              ),
             ),
             error: (e, _) => Padding(
-                padding: const EdgeInsets.all(24), child: InlineError(e)),
+              padding: const EdgeInsets.all(24),
+              child: InlineError(e),
+            ),
           );
         },
       ),
@@ -324,17 +368,23 @@ class _DiaryRow extends ConsumerWidget {
         ),
         child: Icon(diaryIcon(diary.iconName), color: accent, size: 22),
       ),
-      title: Text(diary.name,
-          style: const TextStyle(
-              fontFamily: 'DMSans',
-              color: TraumColors.onBackground,
-              fontWeight: FontWeight.w600)),
+      title: Text(
+        diary.name,
+        style: const TextStyle(
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackground,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
       subtitle: countAsync.when(
-        data: (c) => Text(l10n.diaryTotalEntries(c),
-            style: const TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackgroundMuted,
-                fontSize: 12)),
+        data: (c) => Text(
+          l10n.diaryTotalEntries(c),
+          style: const TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackgroundMuted,
+            fontSize: 12,
+          ),
+        ),
         loading: () => const SizedBox.shrink(),
         error: (_, _) => const SizedBox.shrink(),
       ),
@@ -345,8 +395,10 @@ class _DiaryRow extends ConsumerWidget {
             const Icon(Icons.check_circle, color: TraumColors.mintGreen),
           IconButton(
             tooltip: l10n.edit,
-            icon: const Icon(Icons.edit_outlined,
-                color: TraumColors.onBackgroundMuted),
+            icon: const Icon(
+              Icons.edit_outlined,
+              color: TraumColors.onBackgroundMuted,
+            ),
             onPressed: onEdit,
           ),
         ],
@@ -369,34 +421,45 @@ class _DiarySwitchAvatar extends StatelessWidget {
     return SizedBox(
       width: 44,
       height: 44,
-      child: Stack(clipBehavior: Clip.none, children: [
-        Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: accent.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: accent.withValues(alpha: 0.4)),
-          ),
-          child: Icon(diary != null ? diaryIcon(diary.iconName) : Icons.menu_book_outlined,
-              color: accent, size: 21),
-        ),
-        Positioned(
-          right: -3,
-          bottom: -3,
-          child: Container(
-            width: 18,
-            height: 18,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
-              color: TraumColors.surfaceElevated,
-              shape: BoxShape.circle,
-              border: Border.all(color: TraumColors.background, width: 2),
+              color: accent.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: accent.withValues(alpha: 0.4)),
             ),
-            child: const Icon(Icons.swap_horiz,
-                color: TraumColors.onBackgroundMuted, size: 11),
+            child: Icon(
+              diary != null
+                  ? diaryIcon(diary.iconName)
+                  : Icons.menu_book_outlined,
+              color: accent,
+              size: 21,
+            ),
           ),
-        ),
-      ]),
+          Positioned(
+            right: -3,
+            bottom: -3,
+            child: Container(
+              width: 18,
+              height: 18,
+              decoration: BoxDecoration(
+                color: TraumColors.surfaceElevated,
+                shape: BoxShape.circle,
+                border: Border.all(color: TraumColors.background, width: 2),
+              ),
+              child: const Icon(
+                Icons.swap_horiz,
+                color: TraumColors.onBackgroundMuted,
+                size: 11,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -409,11 +472,12 @@ class _TodayEmptyCard extends StatefulWidget {
   final String? ghostImagePath;
   final void Function(String path, String type) onCapture;
 
-  const _TodayEmptyCard(
-      {required this.diaryId,
-      required this.todayStr,
-      required this.ghostImagePath,
-      required this.onCapture});
+  const _TodayEmptyCard({
+    required this.diaryId,
+    required this.todayStr,
+    required this.ghostImagePath,
+    required this.onCapture,
+  });
 
   @override
   State<_TodayEmptyCard> createState() => _TodayEmptyCardState();
@@ -425,8 +489,7 @@ class _TodayEmptyCardState extends State<_TodayEmptyCard> {
   // für denselben Tag anlegen könnten.
   bool _busy = false;
 
-  Future<void> _capture(
-      {required bool video}) async {
+  Future<void> _capture({required bool video}) async {
     if (_busy) return;
     setState(() => _busy = true);
     try {
@@ -435,12 +498,14 @@ class _TodayEmptyCardState extends State<_TodayEmptyCard> {
               context: context,
               diaryId: widget.diaryId,
               dateStr: widget.todayStr,
-              ghostImagePath: widget.ghostImagePath)
+              ghostImagePath: widget.ghostImagePath,
+            )
           : await DiaryCameraService.capturePhoto(
               context: context,
               diaryId: widget.diaryId,
               dateStr: widget.todayStr,
-              ghostImagePath: widget.ghostImagePath);
+              ghostImagePath: widget.ghostImagePath,
+            );
       if (path != null && mounted) {
         widget.onCapture(path, video ? 'video' : 'photo');
       }
@@ -460,59 +525,82 @@ class _TodayEmptyCardState extends State<_TodayEmptyCard> {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Icon(Icons.photo_camera_outlined,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.photo_camera_outlined,
             size: 64,
-            color: TraumColors.lavender.withValues(alpha: 0.4)),
-        const SizedBox(height: 8),
-        Text(_todayLabel(l10n),
+            color: TraumColors.lavender.withValues(alpha: 0.4),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _todayLabel(l10n),
             style: const TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackgroundMuted,
-                fontSize: 14)),
-        const SizedBox(height: 4),
-        Text(l10n.diaryCaptureMomentHint,
-            style: const TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackgroundSubtle,
-                fontSize: 13)),
-        const SizedBox(height: 16),
-        Row(children: [
-          Expanded(
-            child: ElevatedButton.icon(
-              onPressed: _busy ? null : () => _capture(video: false),
-              icon: const Icon(Icons.photo_camera_outlined, size: 18),
-              label: Text(l10n.diaryPhotoLabel,
-                  style: const TextStyle(
-                      fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: TraumColors.lavender,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50)),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
+              fontFamily: 'DMSans',
+              color: TraumColors.onBackgroundMuted,
+              fontSize: 14,
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: ElevatedButton.icon(
-              onPressed: _busy ? null : () => _capture(video: true),
-              icon: const Icon(Icons.videocam_outlined, size: 18),
-              label: Text(l10n.diaryVideoLabel,
-                  style: const TextStyle(
-                      fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: TraumColors.indigoBlue,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50)),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
+          const SizedBox(height: 4),
+          Text(
+            l10n.diaryCaptureMomentHint,
+            style: const TextStyle(
+              fontFamily: 'DMSans',
+              color: TraumColors.onBackgroundSubtle,
+              fontSize: 13,
             ),
           ),
-        ]),
-      ]),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: _busy ? null : () => _capture(video: false),
+                  icon: const Icon(Icons.photo_camera_outlined, size: 18),
+                  label: Text(
+                    l10n.diaryPhotoLabel,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: TraumColors.lavender,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: _busy ? null : () => _capture(video: true),
+                  icon: const Icon(Icons.videocam_outlined, size: 18),
+                  label: Text(
+                    l10n.diaryVideoLabel,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: TraumColors.indigoBlue,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -520,10 +608,18 @@ class _TodayEmptyCardState extends State<_TodayEmptyCard> {
     final d = DateTime.now();
     final weekdays = l10n.weekdaysFull.split(',');
     final months = [
-      l10n.monthJan, l10n.monthFeb, l10n.monthMar,
-      l10n.monthApr, l10n.monthMay, l10n.monthJun,
-      l10n.monthJul, l10n.monthAug, l10n.monthSep,
-      l10n.monthOct, l10n.monthNov, l10n.monthDec,
+      l10n.monthJan,
+      l10n.monthFeb,
+      l10n.monthMar,
+      l10n.monthApr,
+      l10n.monthMay,
+      l10n.monthJun,
+      l10n.monthJul,
+      l10n.monthAug,
+      l10n.monthSep,
+      l10n.monthOct,
+      l10n.monthNov,
+      l10n.monthDec,
     ];
     return '${weekdays[d.weekday - 1]}, ${d.day}. ${months[d.month - 1]} ${d.year}';
   }
@@ -538,8 +634,9 @@ class _TodayFilledCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final thumbPath =
-        entry.mediaType == 'video' ? entry.thumbnailPath : entry.mediaPath;
+    final thumbPath = entry.mediaType == 'video'
+        ? entry.thumbnailPath
+        : entry.mediaPath;
     final hasThumb = thumbPath != null && File(thumbPath).existsSync();
 
     return GestureDetector(
@@ -551,49 +648,66 @@ class _TodayFilledCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
         ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          if (hasThumb)
-            ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(20)),
-              child: Image.file(
-                File(thumbPath),
-                width: double.infinity,
-                height: 220,
-                cacheWidth:
-                    decodePxFor(context, MediaQuery.sizeOf(context).width - 32),
-                fit: BoxFit.cover,
-              ),
-            ),
-          Padding(
-            padding: const EdgeInsets.all(14),
-            child: Row(children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (entry.note.isNotEmpty)
-                      Text(entry.note,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                              fontFamily: 'DMSans',
-                              color: TraumColors.onBackground,
-                              fontSize: 14)),
-                    const SizedBox(height: 4),
-                    Text(_formatDate(entry.date, l10n),
-                        style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            color: TraumColors.onBackgroundMuted,
-                            fontSize: 12)),
-                  ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (hasThumb)
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(20),
+                ),
+                child: Image.file(
+                  File(thumbPath),
+                  width: double.infinity,
+                  height: 220,
+                  cacheWidth: decodePxFor(
+                    context,
+                    MediaQuery.sizeOf(context).width - 32,
+                  ),
+                  fit: BoxFit.cover,
                 ),
               ),
-              const Icon(Icons.edit_outlined,
-                  color: TraumColors.onBackgroundMuted, size: 18),
-            ]),
-          ),
-        ]),
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (entry.note.isNotEmpty)
+                          Text(
+                            entry.note,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontFamily: 'DMSans',
+                              color: TraumColors.onBackground,
+                              fontSize: 14,
+                            ),
+                          ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _formatDate(entry.date, l10n),
+                          style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            color: TraumColors.onBackgroundMuted,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(
+                    Icons.edit_outlined,
+                    color: TraumColors.onBackgroundMuted,
+                    size: 18,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -603,10 +717,18 @@ class _TodayFilledCard extends StatelessWidget {
     if (d == null) return dateStr;
     final weekdays = l10n.weekdaysShort.split(',');
     final months = [
-      l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
-      l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
-      l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
-      l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
+      l10n.monthShortJan,
+      l10n.monthShortFeb,
+      l10n.monthShortMar,
+      l10n.monthShortApr,
+      l10n.monthShortMay,
+      l10n.monthShortJun,
+      l10n.monthShortJul,
+      l10n.monthShortAug,
+      l10n.monthShortSep,
+      l10n.monthShortOct,
+      l10n.monthShortNov,
+      l10n.monthShortDec,
     ];
     return '${weekdays[d.weekday - 1]}, ${d.day}. ${months[d.month - 1]} ${d.year}';
   }

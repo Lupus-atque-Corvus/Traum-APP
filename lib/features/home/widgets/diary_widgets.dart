@@ -15,15 +15,13 @@ import '../home_widget_registry.dart';
 
 /// The most recent diary entry (by createdAt) of the active diary, or null
 /// when none exist.
-final _lastDiaryEntryProvider =
-    FutureProvider.autoDispose<DiaryEntry?>((ref) {
+final _lastDiaryEntryProvider = FutureProvider.autoDispose<DiaryEntry?>((ref) {
   final diaryId = ref.watch(activeDiaryProvider);
   return ref.watch(diaryRepositoryProvider).getLastEntry(diaryId);
 });
 
 /// Mood logs since the start of the current month, for the mood calendar.
-final _monthMoodLogsProvider =
-    FutureProvider.autoDispose<List<MoodLog>>((ref) {
+final _monthMoodLogsProvider = FutureProvider.autoDispose<List<MoodLog>>((ref) {
   final now = DateTime.now();
   final monthStart = DateTime(now.year, now.month);
   return ref.watch(healthDaoProvider).getMoodLogsAfter(monthStart);
@@ -118,7 +116,11 @@ class _BigValue extends StatelessWidget {
   final String value;
   final String unit;
   final Color color;
-  const _BigValue({required this.value, required this.unit, required this.color});
+  const _BigValue({
+    required this.value,
+    required this.unit,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -165,8 +167,18 @@ class _LastEntryContent extends ConsumerWidget {
   const _LastEntryContent();
 
   static const _months = [
-    'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez',
+    'Jan',
+    'Feb',
+    'Mär',
+    'Apr',
+    'Mai',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Okt',
+    'Nov',
+    'Dez',
   ];
 
   @override
@@ -186,8 +198,11 @@ class _LastEntryContent extends ConsumerWidget {
             color: TraumColors.cyanBlue.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: const Icon(Icons.menu_book_rounded,
-              color: TraumColors.cyanBlue, size: 18),
+          child: const Icon(
+            Icons.menu_book_rounded,
+            color: TraumColors.cyanBlue,
+            size: 18,
+          ),
         ),
         const SizedBox(width: 10),
         Expanded(
@@ -250,8 +265,9 @@ class _YearHeatmapContent extends ConsumerWidget {
               children: List.generate(52, (week) {
                 return Column(
                   children: List.generate(7, (dayOfWeek) {
-                    final date =
-                        startDate.add(Duration(days: week * 7 + dayOfWeek));
+                    final date = startDate.add(
+                      Duration(days: week * 7 + dayOfWeek),
+                    );
                     if (date.isAfter(today)) {
                       return const SizedBox(width: 9, height: 9);
                     }
@@ -268,8 +284,8 @@ class _YearHeatmapContent extends ConsumerWidget {
                         color: isToday
                             ? TraumColors.coralOrange
                             : hasEntry
-                                ? TraumColors.mintGreen
-                                : TraumColors.surfaceVariant,
+                            ? TraumColors.mintGreen
+                            : TraumColors.surfaceVariant,
                       ),
                     );
                   }),
@@ -366,8 +382,9 @@ class _EntriesThisMonthContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final now = DateTime.now();
-    final entries =
-        ref.watch(diaryEntriesForMonthProvider((now.year, now.month))).value;
+    final entries = ref
+        .watch(diaryEntriesForMonthProvider((now.year, now.month)))
+        .value;
     return _BigValue(
       value: entries == null ? '—' : '${entries.length}',
       unit: 'Einträge',

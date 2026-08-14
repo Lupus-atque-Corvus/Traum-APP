@@ -9,25 +9,36 @@ import 'package:traum/data/database/traum_database.dart';
 import 'package:traum/features/nutrition/shopping/shopping_mode_screen.dart';
 
 void main() {
-  testWidgets('checking an item and typing a price updates the real total',
-      (tester) async {
+  testWidgets('checking an item and typing a price updates the real total', (
+    tester,
+  ) async {
     final db = TraumDatabase.forTesting(NativeDatabase.memory());
-    final id = await db.into(db.shoppingListItems).insert(
-        ShoppingListItemsCompanion.insert(
-            name: 'Bananen', priceEstimated: const Value(1.99)));
+    final id = await db
+        .into(db.shoppingListItems)
+        .insert(
+          ShoppingListItemsCompanion.insert(
+            name: 'Bananen',
+            priceEstimated: const Value(1.99),
+          ),
+        );
 
-    await tester.pumpWidget(ProviderScope(
-      overrides: [databaseProvider.overrideWithValue(db)],
-      child: const MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: Locale('de'),home: ShoppingModeScreen()),
-    ));
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [databaseProvider.overrideWithValue(db)],
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: Locale('de'),
+          home: ShoppingModeScreen(),
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
 
     // Put in cart.
-    await db.nutritionDao.updateShoppingItem(ShoppingListItemsCompanion(
-        id: Value(id), checked: const Value(true)));
+    await db.nutritionDao.updateShoppingItem(
+      ShoppingListItemsCompanion(id: Value(id), checked: const Value(true)),
+    );
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byKey(Key('price_field_$id')), '2,15');

@@ -107,12 +107,7 @@ void main() {
         kcal: 100,
         source: 'local',
       );
-      final off = _r(
-        name: 'Riegel',
-        brand: 'Marke',
-        kcal: 130,
-        source: 'off',
-      );
+      final off = _r(name: 'Riegel', brand: 'Marke', kcal: 130, source: 'off');
 
       final result = aggregateAndRank('riegel', [
         [local],
@@ -121,8 +116,10 @@ void main() {
 
       expect(result.length, 2);
       expect(result.map((r) => r.source).toSet(), {'local', 'off'});
-      expect(result.every((r) => r.kcalPer100g == 100 || r.kcalPer100g == 130),
-          isTrue);
+      expect(
+        result.every((r) => r.kcalPer100g == 100 || r.kcalPer100g == 130),
+        isTrue,
+      );
     });
 
     test('merge boundary: exactly 10% relative deviation counts as conflict '
@@ -194,8 +191,12 @@ void main() {
         [none, word, prefix, exact],
       ]);
 
-      expect(result.map((r) => r.name).toList(),
-          ['Apfel', 'Apfelmus', 'Bio Apfel Saft', 'Birnensaft']);
+      expect(result.map((r) => r.name).toList(), [
+        'Apfel',
+        'Apfelmus',
+        'Bio Apfel Saft',
+        'Birnensaft',
+      ]);
     });
 
     test('completeness-tiebreak: equal name-match tier, higher completeness '
@@ -232,8 +233,7 @@ void main() {
       expect(result.last.brand, 'MarkeB');
     });
 
-    test('deterministic tiebreak by normalized name when scores are equal',
-        () {
+    test('deterministic tiebreak by normalized name when scores are equal', () {
       final banane = _r(name: 'Banane', kcal: 90, source: 'local');
       final apfel = _r(name: 'Apfel', kcal: 90, source: 'local');
 

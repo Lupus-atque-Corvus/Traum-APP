@@ -24,24 +24,28 @@ void main() {
     WidgetTester tester, {
     List<Supplement> supplements = const [],
   }) async {
-    await tester.pumpWidget(ProviderScope(
-      overrides: [
-        databaseProvider.overrideWithValue(db),
-        dailyMicrosProvider.overrideWith((ref, arg) => MicroNutrients.empty),
-        supplementsStreamProvider
-            .overrideWith((ref) => Stream.fromIterable([supplements])),
-        supplementLogsTodayProvider
-            .overrideWith((ref) => Stream.fromIterable([const <SupplementLog>[]])),
-      ],
-      child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('de'),
-        home: Scaffold(
-          body: MicroNutrientPanel(dateStr: formatDateStr(DateTime.now())),
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          dailyMicrosProvider.overrideWith((ref, arg) => MicroNutrients.empty),
+          supplementsStreamProvider.overrideWith(
+            (ref) => Stream.fromIterable([supplements]),
+          ),
+          supplementLogsTodayProvider.overrideWith(
+            (ref) => Stream.fromIterable([const <SupplementLog>[]]),
+          ),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('de'),
+          home: Scaffold(
+            body: MicroNutrientPanel(dateStr: formatDateStr(DateTime.now())),
+          ),
         ),
       ),
-    ));
+    );
     await tester.pumpAndSettle();
   }
 
@@ -56,14 +60,16 @@ void main() {
   });
 
   testWidgets('checking a supplement updates the bar', (tester) async {
-    await db.supplementDao.insertSupplement(SupplementsCompanion.insert(
-      id: const Value(1),
-      name: 'Vitamin C',
-      isActive: const Value(true),
-      nutrientKey: const Value('vitC'),
-      dosageAmount: const Value('500'),
-      dosageUnit: const Value('mg'),
-    ));
+    await db.supplementDao.insertSupplement(
+      SupplementsCompanion.insert(
+        id: const Value(1),
+        name: 'Vitamin C',
+        isActive: const Value(true),
+        nutrientKey: const Value('vitC'),
+        dosageAmount: const Value('500'),
+        dosageUnit: const Value('mg'),
+      ),
+    );
     final supp = Supplement(
       id: 1,
       name: 'Vitamin C',

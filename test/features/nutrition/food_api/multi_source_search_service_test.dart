@@ -35,29 +35,32 @@ void main() {
   tearDown(() => db.close());
 
   group('localToResults', () {
-    test('maps FoodProduct fields to FoodSearchResult with source local', () async {
-      final id = await db.foodProductsDao.insertProduct(
-        FoodProductsCompanion.insert(
-          name: 'Haferflocken',
-          brand: const Value('Marke'),
-          barcode: const Value('123456'),
-          caloriesPer100g: 370,
-          proteinPer100g: 13.5,
-          carbsPer100g: 58.7,
-          fatPer100g: 7.0,
-          createdAt: DateTime.now(),
-        ),
-      );
-      final product = (await db.foodProductsDao.getById(id))!;
+    test(
+      'maps FoodProduct fields to FoodSearchResult with source local',
+      () async {
+        final id = await db.foodProductsDao.insertProduct(
+          FoodProductsCompanion.insert(
+            name: 'Haferflocken',
+            brand: const Value('Marke'),
+            barcode: const Value('123456'),
+            caloriesPer100g: 370,
+            proteinPer100g: 13.5,
+            carbsPer100g: 58.7,
+            fatPer100g: 7.0,
+            createdAt: DateTime.now(),
+          ),
+        );
+        final product = (await db.foodProductsDao.getById(id))!;
 
-      final results = localToResults([product]);
-      expect(results, hasLength(1));
-      expect(results.single.source, 'local');
-      expect(results.single.sourceId, id.toString());
-      expect(results.single.name, 'Haferflocken');
-      expect(results.single.barcode, '123456');
-      expect(results.single.kcalPer100g, 370);
-    });
+        final results = localToResults([product]);
+        expect(results, hasLength(1));
+        expect(results.single.source, 'local');
+        expect(results.single.sourceId, id.toString());
+        expect(results.single.name, 'Haferflocken');
+        expect(results.single.barcode, '123456');
+        expect(results.single.kcalPer100g, 370);
+      },
+    );
   });
 
   group('MultiSourceSearchService.search', () {
@@ -93,31 +96,34 @@ void main() {
       expect(results.any((r) => r.source == 'off'), isTrue);
     });
 
-    test('a failing source is swallowed — other sources still return',
-        () async {
-      final ok = _FakeSource('usda', [
-        const FoodSearchResult(
-          name: 'Chicken breast',
-          kcalPer100g: 165,
-          proteinPer100g: 31,
-          carbsPer100g: 0,
-          fatPer100g: 3.6,
-          source: 'usda',
-          sourceId: 'usda-1',
-        ),
-      ]);
-      final failing = _FailingSource();
+    test(
+      'a failing source is swallowed — other sources still return',
+      () async {
+        final ok = _FakeSource('usda', [
+          const FoodSearchResult(
+            name: 'Chicken breast',
+            kcalPer100g: 165,
+            proteinPer100g: 31,
+            carbsPer100g: 0,
+            fatPer100g: 3.6,
+            source: 'usda',
+            sourceId: 'usda-1',
+          ),
+        ]);
+        final failing = _FailingSource();
 
-      final service =
-          MultiSourceSearchService([ok, failing], db.foodProductsDao);
-      final results = await service.search('chicken');
+        final service = MultiSourceSearchService([
+          ok,
+          failing,
+        ], db.foodProductsDao);
+        final results = await service.search('chicken');
 
-      expect(results, hasLength(1));
-      expect(results.single.source, 'usda');
-    });
+        expect(results, hasLength(1));
+        expect(results.single.source, 'usda');
+      },
+    );
 
-    test('empty query returns no results without querying sources',
-        () async {
+    test('empty query returns no results without querying sources', () async {
       final source = _FakeSource('off', [
         const FoodSearchResult(
           name: 'Should not appear',
@@ -154,75 +160,81 @@ void main() {
       expect(all, hasLength(1));
     });
 
-    test('matches existing row by barcode and updates instead of duplicating',
-        () async {
-      final firstId = await db.foodProductsDao.insertProduct(
-        FoodProductsCompanion.insert(
-          name: 'Alter Name',
+    test(
+      'matches existing row by barcode and updates instead of duplicating',
+      () async {
+        final firstId = await db.foodProductsDao.insertProduct(
+          FoodProductsCompanion.insert(
+            name: 'Alter Name',
+            barcode: const Value('4000'),
+            caloriesPer100g: 100,
+            proteinPer100g: 1,
+            carbsPer100g: 1,
+            fatPer100g: 1,
+            createdAt: DateTime.now(),
+          ),
+        );
+
+        final updateCompanion = FoodProductsCompanion.insert(
+          name: 'Neuer Name',
           barcode: const Value('4000'),
-          caloriesPer100g: 100,
-          proteinPer100g: 1,
-          carbsPer100g: 1,
-          fatPer100g: 1,
+          caloriesPer100g: 250,
+          proteinPer100g: 9,
+          carbsPer100g: 9,
+          fatPer100g: 9,
+          sourceApi: const Value('off'),
+          sourceId: const Value('4000'),
           createdAt: DateTime.now(),
-        ),
-      );
+        );
+        final product = await db.foodProductsDao.upsertFromSource(
+          updateCompanion,
+        );
 
-      final updateCompanion = FoodProductsCompanion.insert(
-        name: 'Neuer Name',
-        barcode: const Value('4000'),
-        caloriesPer100g: 250,
-        proteinPer100g: 9,
-        carbsPer100g: 9,
-        fatPer100g: 9,
-        sourceApi: const Value('off'),
-        sourceId: const Value('4000'),
-        createdAt: DateTime.now(),
-      );
-      final product =
-          await db.foodProductsDao.upsertFromSource(updateCompanion);
+        expect(product.id, firstId);
+        expect(product.name, 'Neuer Name');
+        expect(product.caloriesPer100g, 250);
 
-      expect(product.id, firstId);
-      expect(product.name, 'Neuer Name');
-      expect(product.caloriesPer100g, 250);
+        final all = await db.foodProductsDao.getAll();
+        expect(all, hasLength(1));
+      },
+    );
 
-      final all = await db.foodProductsDao.getAll();
-      expect(all, hasLength(1));
-    });
+    test(
+      'matches existing row by sourceApi+sourceId when no barcode',
+      () async {
+        final firstId = await db.foodProductsDao.insertProduct(
+          FoodProductsCompanion.insert(
+            name: 'USDA Cache',
+            caloriesPer100g: 100,
+            proteinPer100g: 1,
+            carbsPer100g: 1,
+            fatPer100g: 1,
+            sourceApi: const Value('usda'),
+            sourceId: const Value('42'),
+            createdAt: DateTime.now(),
+          ),
+        );
 
-    test('matches existing row by sourceApi+sourceId when no barcode',
-        () async {
-      final firstId = await db.foodProductsDao.insertProduct(
-        FoodProductsCompanion.insert(
-          name: 'USDA Cache',
-          caloriesPer100g: 100,
-          proteinPer100g: 1,
-          carbsPer100g: 1,
-          fatPer100g: 1,
+        final updateCompanion = FoodProductsCompanion.insert(
+          name: 'USDA Cache Refreshed',
+          caloriesPer100g: 120,
+          proteinPer100g: 2,
+          carbsPer100g: 2,
+          fatPer100g: 2,
           sourceApi: const Value('usda'),
           sourceId: const Value('42'),
           createdAt: DateTime.now(),
-        ),
-      );
+        );
+        final product = await db.foodProductsDao.upsertFromSource(
+          updateCompanion,
+        );
 
-      final updateCompanion = FoodProductsCompanion.insert(
-        name: 'USDA Cache Refreshed',
-        caloriesPer100g: 120,
-        proteinPer100g: 2,
-        carbsPer100g: 2,
-        fatPer100g: 2,
-        sourceApi: const Value('usda'),
-        sourceId: const Value('42'),
-        createdAt: DateTime.now(),
-      );
-      final product =
-          await db.foodProductsDao.upsertFromSource(updateCompanion);
+        expect(product.id, firstId);
+        expect(product.name, 'USDA Cache Refreshed');
 
-      expect(product.id, firstId);
-      expect(product.name, 'USDA Cache Refreshed');
-
-      final all = await db.foodProductsDao.getAll();
-      expect(all, hasLength(1));
-    });
+        final all = await db.foodProductsDao.getAll();
+        expect(all, hasLength(1));
+      },
+    );
   });
 }

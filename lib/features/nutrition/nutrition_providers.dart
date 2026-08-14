@@ -25,8 +25,7 @@ class MacroSummary {
     required this.fat,
   });
 
-  static const empty =
-      MacroSummary(calories: 0, protein: 0, carbs: 0, fat: 0);
+  static const empty = MacroSummary(calories: 0, protein: 0, carbs: 0, fat: 0);
 }
 
 class DailyCalories {
@@ -37,8 +36,9 @@ class DailyCalories {
 
 // ─── Selected Date ────────────────────────────────────────────────────────────
 
-final selectedNutritionDateProvider =
-    StateProvider<DateTime>((_) => DateTime.now());
+final selectedNutritionDateProvider = StateProvider<DateTime>(
+  (_) => DateTime.now(),
+);
 
 // ─── Water Today ──────────────────────────────────────────────────────────────
 
@@ -54,35 +54,36 @@ final waterTodayProvider = StreamProvider.autoDispose<int>((ref) {
 
 final todaysMealsProvider = FutureProvider.autoDispose
     .family<Map<String, List<MealEntry>>, String>((ref, dateStr) async {
-  final entries =
-      await ref.watch(mealEntriesDaoProvider).getForDate(dateStr);
-  return {
-    'breakfast':
-        entries.where((e) => e.mealType == 'breakfast').toList(),
-    'lunch': entries.where((e) => e.mealType == 'lunch').toList(),
-    'dinner': entries.where((e) => e.mealType == 'dinner').toList(),
-    'snack': entries.where((e) => e.mealType == 'snack').toList(),
-  };
-});
+      final entries = await ref
+          .watch(mealEntriesDaoProvider)
+          .getForDate(dateStr);
+      return {
+        'breakfast': entries.where((e) => e.mealType == 'breakfast').toList(),
+        'lunch': entries.where((e) => e.mealType == 'lunch').toList(),
+        'dinner': entries.where((e) => e.mealType == 'dinner').toList(),
+        'snack': entries.where((e) => e.mealType == 'snack').toList(),
+      };
+    });
 
 // ─── Today's Macros ──────────────────────────────────────────────────────────
 
 final todaysMacrosProvider = FutureProvider.autoDispose
     .family<MacroSummary, String>((ref, dateStr) async {
-  final meals = await ref.watch(todaysMealsProvider(dateStr).future);
-  final all = meals.values.expand((e) => e).toList();
-  return MacroSummary(
-    calories: all.fold(0.0, (s, e) => s + e.calories),
-    protein: all.fold(0.0, (s, e) => s + e.protein),
-    carbs: all.fold(0.0, (s, e) => s + e.carbs),
-    fat: all.fold(0.0, (s, e) => s + e.fat),
-  );
-});
+      final meals = await ref.watch(todaysMealsProvider(dateStr).future);
+      final all = meals.values.expand((e) => e).toList();
+      return MacroSummary(
+        calories: all.fold(0.0, (s, e) => s + e.calories),
+        protein: all.fold(0.0, (s, e) => s + e.protein),
+        carbs: all.fold(0.0, (s, e) => s + e.carbs),
+        fat: all.fold(0.0, (s, e) => s + e.fat),
+      );
+    });
 
 // ─── Weekly Calories ─────────────────────────────────────────────────────────
 
-final weeklyCaloriesProvider =
-    FutureProvider.autoDispose<List<DailyCalories>>((ref) async {
+final weeklyCaloriesProvider = FutureProvider.autoDispose<List<DailyCalories>>((
+  ref,
+) async {
   final dao = ref.watch(mealEntriesDaoProvider);
   final now = DateTime.now();
   final result = <DailyCalories>[];
@@ -101,8 +102,9 @@ final weeklyCaloriesProvider =
 
 final productSearchQueryProvider = StateProvider<String>((_) => '');
 
-final productSearchProvider =
-    FutureProvider.autoDispose<List<FoodProduct>>((ref) async {
+final productSearchProvider = FutureProvider.autoDispose<List<FoodProduct>>((
+  ref,
+) async {
   final query = ref.watch(productSearchQueryProvider);
   final dao = ref.watch(foodProductsDaoProvider);
   if (query.isEmpty) return dao.getRecent(limit: 20);
@@ -111,20 +113,20 @@ final productSearchProvider =
 
 // ─── Recent Products ──────────────────────────────────────────────────────────
 
-final recentProductsProvider =
-    FutureProvider.autoDispose<List<FoodProduct>>((ref) =>
-        ref.watch(foodProductsDaoProvider).getRecent(limit: 10));
+final recentProductsProvider = FutureProvider.autoDispose<List<FoodProduct>>(
+  (ref) => ref.watch(foodProductsDaoProvider).getRecent(limit: 10),
+);
 
 // ─── All Products ─────────────────────────────────────────────────────────────
 
-final allProductsProvider =
-    FutureProvider.autoDispose<List<FoodProduct>>((ref) async {
+final allProductsProvider = FutureProvider.autoDispose<List<FoodProduct>>((
+  ref,
+) async {
   final dao = ref.watch(foodProductsDaoProvider);
   final custom = await dao.getAllCustom();
   final recent = await dao.getRecent(limit: 50);
   final customIds = custom.map((p) => p.id).toSet();
-  final others =
-      recent.where((p) => !customIds.contains(p.id)).toList();
+  final others = recent.where((p) => !customIds.contains(p.id)).toList();
   return [...custom, ...others];
 });
 
@@ -132,25 +134,27 @@ final allProductsProvider =
 
 /// Service, der die lokale Produkt-DB + alle externen [FoodSource]s
 /// (OpenFoodFacts, USDA) zusammen abfragt und rankt (Task 6.4).
-final multiSourceSearchServiceProvider =
-    Provider<MultiSourceSearchService>((ref) {
+final multiSourceSearchServiceProvider = Provider<MultiSourceSearchService>((
+  ref,
+) {
   final prefs = ref.watch(preferencesRepositoryProvider);
-  return MultiSourceSearchService(
-    [OpenFoodFactsSource(), UsdaSource(prefs)],
-    ref.watch(foodProductsDaoProvider),
-  );
+  return MultiSourceSearchService([
+    OpenFoodFactsSource(),
+    UsdaSource(prefs),
+  ], ref.watch(foodProductsDaoProvider));
 });
 
 /// Debounced (400ms, siehe UI) Suchbegriff für die Multi-Source-Suche.
-final multiSourceSearchQueryProvider =
-    StateProvider.autoDispose<String>((_) => '');
+final multiSourceSearchQueryProvider = StateProvider.autoDispose<String>(
+  (_) => '',
+);
 
 final multiSourceSearchProvider =
     FutureProvider.autoDispose<List<FoodSearchResult>>((ref) async {
-  final query = ref.watch(multiSourceSearchQueryProvider);
-  if (query.trim().isEmpty) return [];
-  return ref.watch(multiSourceSearchServiceProvider).search(query);
-});
+      final query = ref.watch(multiSourceSearchQueryProvider);
+      if (query.trim().isEmpty) return [];
+      return ref.watch(multiSourceSearchServiceProvider).search(query);
+    });
 
 /// Live-Konnektivitätsstatus (true = offline). Erster Wert kommt aus einer
 /// einmaligen Prüfung, danach folgen Änderungen über den Connectivity-Stream.
@@ -166,15 +170,17 @@ bool _isOffline(List<ConnectivityResult> results) =>
 // ─── Home Widget Helpers ────────────────────────────────────────────────────
 
 /// Today's meal entries (one-shot query, ordered asc by loggedAt).
-final todaysMealEntriesProvider =
-    FutureProvider.autoDispose<List<MealEntry>>((ref) {
+final todaysMealEntriesProvider = FutureProvider.autoDispose<List<MealEntry>>((
+  ref,
+) {
   final dateStr = formatDateStr(DateTime.now());
   return ref.watch(mealEntriesDaoProvider).getForDate(dateStr);
 });
 
 /// Today's nutrition totals derived from today's meal entries.
-final todaysTotalsProvider =
-    FutureProvider.autoDispose<MacroSummary>((ref) async {
+final todaysTotalsProvider = FutureProvider.autoDispose<MacroSummary>((
+  ref,
+) async {
   final entries = await ref.watch(todaysMealEntriesProvider.future);
   if (entries.isEmpty) return MacroSummary.empty;
   return MacroSummary(
@@ -192,38 +198,31 @@ class LastMealInfo {
   const LastMealInfo({required this.name, required this.loggedAt});
 }
 
-final lastMealProvider =
-    FutureProvider.autoDispose<LastMealInfo?>((ref) async {
+final lastMealProvider = FutureProvider.autoDispose<LastMealInfo?>((ref) async {
   final entries = await ref.watch(todaysMealEntriesProvider.future);
   if (entries.isEmpty) return null;
   // Ordered asc by loggedAt → last element is most recent.
   final latest = entries.last;
-  final product =
-      await ref.watch(foodProductsDaoProvider).getById(latest.productId);
-  return LastMealInfo(
-    name: product?.name ?? '—',
-    loggedAt: latest.loggedAt,
-  );
+  final product = await ref
+      .watch(foodProductsDaoProvider)
+      .getById(latest.productId);
+  return LastMealInfo(name: product?.name ?? '—', loggedAt: latest.loggedAt);
 });
 
 /// Count of supplements taken today (one-shot query).
-final supplementsTakenTodayProvider =
-    FutureProvider.autoDispose<int>((ref) {
+final supplementsTakenTodayProvider = FutureProvider.autoDispose<int>((ref) {
   return ref.watch(supplementDaoProvider).getTakenCountToday();
 });
 
 /// Today's total water in ml as a one-shot query. Unlike [waterTodayProvider]
 /// (a live drift `.watch()` stream used on the nutrition screen), this avoids a
 /// lingering query-stream close timer — safe for home widgets and tests.
-final waterTodaySnapshotProvider =
-    FutureProvider.autoDispose<int>((ref) async {
+final waterTodaySnapshotProvider = FutureProvider.autoDispose<int>((ref) async {
   final logs = await ref
       .watch(nutritionDaoProvider)
-      .getWaterLogsAfter(DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
-      ));
+      .getWaterLogsAfter(
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+      );
   return logs.fold<int>(0, (sum, l) => sum + l.amountMl);
 });
 
@@ -243,47 +242,53 @@ MicroNutrients productMicrosPer100g(FoodProduct p) {
 
 final supplementLogsTodayProvider =
     StreamProvider.autoDispose<List<SupplementLog>>((ref) {
-  return ref.watch(supplementDaoProvider).watchLogsForDate(DateTime.now());
-});
+      return ref.watch(supplementDaoProvider).watchLogsForDate(DateTime.now());
+    });
 
 // ─── Tages-Mikronährstoffe ────────────────────────────────────────────────────
 
 /// Σ Mikros aller heutigen Meal-Einträge + Σ Beiträge heute abgehakter Supplements.
 final dailyMicrosProvider = FutureProvider.autoDispose
     .family<MicroNutrients, String>((ref, dateStr) async {
-  // Meal entries
-  final entries =
-      await ref.watch(mealEntriesDaoProvider).getForDate(dateStr);
-  var total = MicroNutrients.empty;
-  for (final e in entries) {
-    total = total + MicroNutrients.fromJson(e.microsJson);
-  }
+      // Meal entries
+      final entries = await ref
+          .watch(mealEntriesDaoProvider)
+          .getForDate(dateStr);
+      var total = MicroNutrients.empty;
+      for (final e in entries) {
+        total = total + MicroNutrients.fromJson(e.microsJson);
+      }
 
-  // Checked supplements (today)
-  final logs = await ref.watch(supplementLogsTodayProvider.future);
-  if (logs.isNotEmpty) {
-    final supps =
-        await ref.watch(supplementDaoProvider).watchAllSupplements().first;
-    final byId = {for (final s in supps) s.id: s};
-    final countedIds = <int>{};
-    for (final log in logs) {
-      if (!countedIds.add(log.supplementId)) continue; // pro Supplement 1×
-      final s = byId[log.supplementId];
-      if (s == null) continue;
-      total = total +
-          supplementContribution(
-            nutrientKey: s.nutrientKey,
-            dosageAmount: s.dosageAmount,
-            dosageUnit: s.dosageUnit,
-          );
-    }
-  }
-  return total;
-});
+      // Checked supplements (today)
+      final logs = await ref.watch(supplementLogsTodayProvider.future);
+      if (logs.isNotEmpty) {
+        final supps = await ref
+            .watch(supplementDaoProvider)
+            .watchAllSupplements()
+            .first;
+        final byId = {for (final s in supps) s.id: s};
+        final countedIds = <int>{};
+        for (final log in logs) {
+          if (!countedIds.add(log.supplementId)) continue; // pro Supplement 1×
+          final s = byId[log.supplementId];
+          if (s == null) continue;
+          total =
+              total +
+              supplementContribution(
+                nutrientKey: s.nutrientKey,
+                dosageAmount: s.dosageAmount,
+                dosageUnit: s.dosageUnit,
+              );
+        }
+      }
+      return total;
+    });
 
 /// Name eines Produkts per ID (für Meal-Eintragszeilen).
-final productNameProvider =
-    FutureProvider.autoDispose.family<String, int>((ref, productId) async {
+final productNameProvider = FutureProvider.autoDispose.family<String, int>((
+  ref,
+  productId,
+) async {
   final p = await ref.watch(foodProductsDaoProvider).getById(productId);
   return p?.name ?? 'Unbekannt';
 });

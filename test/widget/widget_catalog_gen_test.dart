@@ -13,14 +13,21 @@ void main() {
     final onDisk = File(
       'android/app/src/main/kotlin/de/traum/traum/widget/WidgetCatalog.kt',
     ).readAsStringSync();
-    expect(norm(onDisk), norm(generateKotlin()),
-        reason: 'dart run tools/gen_widget_catalog.dart erneut ausführen');
+    expect(
+      norm(onDisk),
+      norm(generateKotlin()),
+      reason: 'dart run tools/gen_widget_catalog.dart erneut ausführen',
+    );
   });
 
   test('WidgetCatalog.swift ist aktuell (kein Drift)', () {
-    final onDisk =
-        File('ios/TraumWidgets/WidgetCatalog.swift').readAsStringSync();
-    expect(norm(onDisk), norm(generateSwift()),
-        reason: 'dart run tools/gen_widget_catalog.dart erneut ausführen');
+    final onDisk = File(
+      'ios/TraumWidgets/WidgetCatalog.swift',
+    ).readAsStringSync();
+    expect(
+      norm(onDisk),
+      norm(generateSwift()),
+      reason: 'dart run tools/gen_widget_catalog.dart erneut ausführen',
+    );
   });
 }

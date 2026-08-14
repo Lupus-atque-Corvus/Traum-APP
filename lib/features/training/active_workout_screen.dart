@@ -21,21 +21,21 @@ enum _SetType { normal, warmup, drop, failure }
 
 extension _SetTypeExt on _SetType {
   String get key => switch (this) {
-    _SetType.normal  => 'normal',
-    _SetType.warmup  => 'warmup',
-    _SetType.drop    => 'drop',
+    _SetType.normal => 'normal',
+    _SetType.warmup => 'warmup',
+    _SetType.drop => 'drop',
     _SetType.failure => 'failure',
   };
   String get badge => switch (this) {
-    _SetType.normal  => '',   // will show set number
-    _SetType.warmup  => 'W',
-    _SetType.drop    => 'D',
+    _SetType.normal => '', // will show set number
+    _SetType.warmup => 'W',
+    _SetType.drop => 'D',
     _SetType.failure => 'F',
   };
   Color get color => switch (this) {
-    _SetType.normal  => TraumColors.coralOrange,
-    _SetType.warmup  => const Color(0xFFE8B84B),
-    _SetType.drop    => const Color(0xFF5BC4F5),
+    _SetType.normal => TraumColors.coralOrange,
+    _SetType.warmup => const Color(0xFFE8B84B),
+    _SetType.drop => const Color(0xFF5BC4F5),
     _SetType.failure => const Color(0xFFE85555),
   };
 }
@@ -47,14 +47,13 @@ class _SetRow {
   final TextEditingController weightCtrl;
   final TextEditingController repsCtrl;
 
-  _SetRow({
-    required this.setNumber,
-    double? weightKg,
-    int? reps,
-  })  : weightCtrl = TextEditingController(
-            text: weightKg != null ? weightKg.toStringAsFixed(1).replaceAll('.', ',') : ''),
-        repsCtrl = TextEditingController(
-            text: reps != null ? '$reps' : '');
+  _SetRow({required this.setNumber, double? weightKg, int? reps})
+    : weightCtrl = TextEditingController(
+        text: weightKg != null
+            ? weightKg.toStringAsFixed(1).replaceAll('.', ',')
+            : '',
+      ),
+      repsCtrl = TextEditingController(text: reps != null ? '$reps' : '');
 
   double? get weightKg => parseLocaleAmount(weightCtrl.text);
   int? get reps => int.tryParse(repsCtrl.text);
@@ -71,6 +70,7 @@ class _ExerciseBlock {
   String mode = 'Bilateral';
   String? note;
   bool supersetWithNext = false;
+
   /// Rest duration in seconds carried over from a prefilled plan/day
   /// (`WorkoutDayExercise.defaultRestSeconds`). Null for manually added
   /// exercises, in which case the global rest-duration setting applies.
@@ -82,8 +82,8 @@ class _ExerciseBlock {
     String? equipment,
     this.restSeconds,
     List<_SetRow>? sets,
-  })  : equipment = equipment ?? exercise.equipment ?? '',
-        sets = sets ?? [_SetRow(setNumber: 1)];
+  }) : equipment = equipment ?? exercise.equipment ?? '',
+       sets = sets ?? [_SetRow(setNumber: 1)];
 
   void dispose() {
     for (final s in sets) {
@@ -95,15 +95,24 @@ class _ExerciseBlock {
 // ── Muscle group key helper ───────────────────────────────────────────────────
 String _mgKey(String g) {
   switch (g.toLowerCase()) {
-    case 'chest':     return 'chest';
-    case 'back':      return 'back';
-    case 'shoulders': return 'shoulders';
-    case 'biceps':    return 'biceps';
-    case 'triceps':   return 'triceps';
-    case 'core':      return 'core';
-    case 'legs':      return 'legs';
-    case 'cardio':    return 'cardio';
-    default:          return 'full_body';
+    case 'chest':
+      return 'chest';
+    case 'back':
+      return 'back';
+    case 'shoulders':
+      return 'shoulders';
+    case 'biceps':
+      return 'biceps';
+    case 'triceps':
+      return 'triceps';
+    case 'core':
+      return 'core';
+    case 'legs':
+      return 'legs';
+    case 'cardio':
+      return 'cardio';
+    default:
+      return 'full_body';
   }
 }
 
@@ -121,7 +130,8 @@ class ActiveWorkoutScreen extends ConsumerStatefulWidget {
   const ActiveWorkoutScreen({super.key, this.dayId});
 
   @override
-  ConsumerState<ActiveWorkoutScreen> createState() => _ActiveWorkoutScreenState();
+  ConsumerState<ActiveWorkoutScreen> createState() =>
+      _ActiveWorkoutScreenState();
 }
 
 class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
@@ -150,9 +160,9 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
   }
 
   Future<void> _createSession() async {
-    final id = await ref.read(trainingDaoProvider).insertSession(
-          WorkoutSessionsCompanion.insert(startedAt: _startedAt),
-        );
+    final id = await ref
+        .read(trainingDaoProvider)
+        .insertSession(WorkoutSessionsCompanion.insert(startedAt: _startedAt));
     if (mounted) setState(() => _sessionId = id);
   }
 
@@ -193,11 +203,13 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
           }
         });
       }
-      newBlocks.add(_ExerciseBlock(
-        exercise: exercise,
-        restSeconds: de.defaultRestSeconds,
-        sets: sets,
-      ));
+      newBlocks.add(
+        _ExerciseBlock(
+          exercise: exercise,
+          restSeconds: de.defaultRestSeconds,
+          sets: sets,
+        ),
+      );
     }
     if (!mounted || newBlocks.isEmpty) return;
     setState(() {
@@ -249,14 +261,21 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
           IconButton(
             tooltip: AppLocalizations.of(context)!.a11yToggleFavorite,
             icon: Icon(
-              _isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-              color: _isFavorite ? TraumColors.coralOrange : TraumColors.onBackground,
+              _isFavorite
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_border_rounded,
+              color: _isFavorite
+                  ? TraumColors.coralOrange
+                  : TraumColors.onBackground,
             ),
             onPressed: _toggleFavorite,
           ),
           IconButton(
             tooltip: AppLocalizations.of(context)!.more,
-            icon: const Icon(Icons.more_vert_rounded, color: TraumColors.onBackground),
+            icon: const Icon(
+              Icons.more_vert_rounded,
+              color: TraumColors.onBackground,
+            ),
             onPressed: () => _showWorkoutOptions(context),
           ),
         ],
@@ -301,7 +320,10 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
                     backgroundColor: TraumColors.coralOrange,
                     foregroundColor: Colors.white,
                     elevation: 0,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -349,19 +371,23 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
                               key: _blockKeys[i],
                               block: _blocks[i],
                               canLink: i < _blocks.length - 1,
-                              onToggleLink: () => setState(() => _blocks[i]
-                                  .supersetWithNext = !_blocks[i].supersetWithNext),
+                              onToggleLink: () => setState(
+                                () => _blocks[i].supersetWithNext =
+                                    !_blocks[i].supersetWithNext,
+                              ),
                               onChanged: () => setState(() {}),
                               onRemove: () => setState(() {
                                 _blocks[i].dispose();
                                 _blocks.removeAt(i);
                                 _blockKeys.removeAt(i);
-                                if (_focusedBlock >= _blocks.length && _focusedBlock > 0) {
+                                if (_focusedBlock >= _blocks.length &&
+                                    _focusedBlock > 0) {
                                   _focusedBlock--;
                                 }
                               }),
-                              onNavigateToDetail: () =>
-                                  context.go('/training/exercise/${_blocks[i].exercise.id}/progress'),
+                              onNavigateToDetail: () => context.go(
+                                '/training/exercise/${_blocks[i].exercise.id}/progress',
+                              ),
                               onShowRestTimer: () => _showRestTimer(
                                 context,
                                 overrideSeconds: _blocks[i].restSeconds,
@@ -382,8 +408,11 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(Icons.add_circle_outline_rounded,
-            size: 64, color: TraumColors.coralOrange),
+        const Icon(
+          Icons.add_circle_outline_rounded,
+          size: 64,
+          color: TraumColors.coralOrange,
+        ),
         const SizedBox(height: 16),
         const Text(
           'Add your first exercise',
@@ -398,8 +427,10 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
         ElevatedButton.icon(
           onPressed: () => _openExercisePicker(context),
           icon: const Icon(Icons.add_rounded),
-          label: Text(AppLocalizations.of(context)!.workoutAddExercise,
-              style: TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
+          label: Text(
+            AppLocalizations.of(context)!.workoutAddExercise,
+            style: TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w700),
+          ),
           style: ElevatedButton.styleFrom(
             backgroundColor: TraumColors.coralOrange,
             foregroundColor: Colors.white,
@@ -419,8 +450,11 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
     if (_blockKeys.length > index) {
       final ctx = _blockKeys[index].currentContext;
       if (ctx != null) {
-        Scrollable.ensureVisible(ctx,
-            duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+        Scrollable.ensureVisible(
+          ctx,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
       }
     }
   }
@@ -448,7 +482,9 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
       context: context,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
       ),
       builder: (_) => RestTimerWidget(
         durationSeconds: restDuration,
@@ -461,7 +497,9 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
   Future<void> _toggleFavorite() async {
     if (_blocks.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.workoutNoExercisesYet)),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.workoutNoExercisesYet),
+        ),
       );
       return;
     }
@@ -474,9 +512,11 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
     setState(() => _isFavorite = next);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(next
-            ? 'Übungen zu Favoriten hinzugefügt'
-            : 'Übungen aus Favoriten entfernt'),
+        content: Text(
+          next
+              ? 'Übungen zu Favoriten hinzugefügt'
+              : 'Übungen aus Favoriten entfernt',
+        ),
       ),
     );
   }
@@ -489,17 +529,28 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (_) => SafeArea(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          ListTile(
-            leading: const Icon(Icons.cancel_outlined, color: TraumColors.coralOrange),
-            title: Text(AppLocalizations.of(context)!.workoutDiscard,
-                style: TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-          ),
-        ]),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(
+                Icons.cancel_outlined,
+                color: TraumColors.coralOrange,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.workoutDiscard,
+                style: TextStyle(
+                  color: TraumColors.coralOrange,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -508,24 +559,32 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
     if (_sessionId == null) return;
     setState(() => _finishing = true);
     final now = DateTime.now();
-    await ref.read(trainingDaoProvider).updateSession(WorkoutSessionsCompanion(
-      id: Value(_sessionId!),
-      startedAt: Value(_startedAt),
-      completedAt: Value(now),
-      durationSeconds: Value(now.difference(_startedAt).inSeconds),
-    ));
+    await ref
+        .read(trainingDaoProvider)
+        .updateSession(
+          WorkoutSessionsCompanion(
+            id: Value(_sessionId!),
+            startedAt: Value(_startedAt),
+            completedAt: Value(now),
+            durationSeconds: Value(now.difference(_startedAt).inSeconds),
+          ),
+        );
     int globalSetNum = 1;
     for (final block in _blocks) {
       for (final s in block.sets) {
-        await ref.read(trainingDaoProvider).insertSet(WorkoutSetsCompanion.insert(
-          sessionId: _sessionId!,
-          exerciseId: block.exercise.id,
-          setNumber: globalSetNum++,
-          weightKg: Value(s.weightKg),
-          reps: Value(s.reps),
-          isWarmup: Value(s.setType == _SetType.warmup),
-          setType: Value(s.setType.key),
-        ));
+        await ref
+            .read(trainingDaoProvider)
+            .insertSet(
+              WorkoutSetsCompanion.insert(
+                sessionId: _sessionId!,
+                exerciseId: block.exercise.id,
+                setNumber: globalSetNum++,
+                weightKg: Value(s.weightKg),
+                reps: Value(s.reps),
+                isWarmup: Value(s.setType == _SetType.warmup),
+                setType: Value(s.setType.key),
+              ),
+            );
         HapticFeedback.mediumImpact();
       }
     }
@@ -586,7 +645,11 @@ class _SidebarThumb extends StatelessWidget {
   final Exercise exercise;
   final bool active;
   final VoidCallback onTap;
-  const _SidebarThumb({required this.exercise, required this.active, required this.onTap});
+  const _SidebarThumb({
+    required this.exercise,
+    required this.active,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -594,17 +657,23 @@ class _SidebarThumb extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-        width: 52, height: 52,
+        width: 52,
+        height: 52,
         decoration: BoxDecoration(
-          color: active ? TraumColors.coralOrange.withValues(alpha: 0.15) : const Color(0xFF1E2235),
+          color: active
+              ? TraumColors.coralOrange.withValues(alpha: 0.15)
+              : const Color(0xFF1E2235),
           borderRadius: BorderRadius.circular(10),
-          border: active ? Border.all(color: TraumColors.coralOrange, width: 1.5) : null,
+          border: active
+              ? Border.all(color: TraumColors.coralOrange, width: 1.5)
+              : null,
         ),
         child: Center(
           child: ExerciseIcon(
-              muscleGroup: _mgKey(exercise.muscleGroup),
-              exerciseName: exercise.name,
-              size: 36),
+            muscleGroup: _mgKey(exercise.muscleGroup),
+            exerciseName: exercise.name,
+            size: 36,
+          ),
         ),
       ),
     );
@@ -644,11 +713,13 @@ class _ExerciseCardState extends State<_ExerciseCard> {
   void _addSet() {
     setState(() {
       final lastSet = block.sets.isNotEmpty ? block.sets.last : null;
-      block.sets.add(_SetRow(
-        setNumber: block.sets.length + 1,
-        weightKg: lastSet?.weightKg,
-        reps: lastSet?.reps,
-      ));
+      block.sets.add(
+        _SetRow(
+          setNumber: block.sets.length + 1,
+          weightKg: lastSet?.weightKg,
+          reps: lastSet?.reps,
+        ),
+      );
     });
     widget.onChanged();
     widget.onShowRestTimer();
@@ -664,16 +735,29 @@ class _ExerciseCardState extends State<_ExerciseCard> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (_) => SafeArea(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const SizedBox(height: 8),
-          ..._SetType.values.map((type) => ListTile(
-                leading: _SetTypeBadge(type: type, number: setIndex + 1, size: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            ..._SetType.values.map(
+              (type) => ListTile(
+                leading: _SetTypeBadge(
+                  type: type,
+                  number: setIndex + 1,
+                  size: 32,
+                ),
                 title: Text(
                   switch (type) {
-                    _SetType.normal  => AppLocalizations.of(context)!.setTypeNormal,
-                    _SetType.warmup  => AppLocalizations.of(context)!.setTypeWarmup,
-                    _SetType.drop    => AppLocalizations.of(context)!.setTypeDrop,
-                    _SetType.failure => AppLocalizations.of(context)!.setTypeFailure,
+                    _SetType.normal => AppLocalizations.of(
+                      context,
+                    )!.setTypeNormal,
+                    _SetType.warmup => AppLocalizations.of(
+                      context,
+                    )!.setTypeWarmup,
+                    _SetType.drop => AppLocalizations.of(context)!.setTypeDrop,
+                    _SetType.failure => AppLocalizations.of(
+                      context,
+                    )!.setTypeFailure,
                   },
                   style: TextStyle(
                     color: type == _SetType.normal
@@ -688,26 +772,36 @@ class _ExerciseCardState extends State<_ExerciseCard> {
                   widget.onChanged();
                   Navigator.pop(context);
                 },
-              )),
-          const Divider(color: TraumColors.surfaceVariant),
-          ListTile(
-            leading: const Icon(Icons.delete_rounded, color: TraumColors.coralOrange),
-            title: Text(AppLocalizations.of(context)!.workoutDeleteSet,
-                style: TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
-            onTap: () {
-              setState(() {
-                block.sets[setIndex].dispose();
-                block.sets.removeAt(setIndex);
-                for (int i = 0; i < block.sets.length; i++) {
-                  block.sets[i].setNumber = i + 1;
-                }
-              });
-              widget.onChanged();
-              Navigator.pop(context);
-            },
-          ),
-          const SizedBox(height: 8),
-        ]),
+              ),
+            ),
+            const Divider(color: TraumColors.surfaceVariant),
+            ListTile(
+              leading: const Icon(
+                Icons.delete_rounded,
+                color: TraumColors.coralOrange,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.workoutDeleteSet,
+                style: TextStyle(
+                  color: TraumColors.coralOrange,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+              onTap: () {
+                setState(() {
+                  block.sets[setIndex].dispose();
+                  block.sets.removeAt(setIndex);
+                  for (int i = 0; i < block.sets.length; i++) {
+                    block.sets[i].setNumber = i + 1;
+                  }
+                });
+                widget.onChanged();
+                Navigator.pop(context);
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
@@ -720,38 +814,65 @@ class _ExerciseCardState extends State<_ExerciseCard> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (_) => SafeArea(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const SizedBox(height: 8),
-          ListTile(
-            leading: const Icon(Icons.info_outline_rounded, color: TraumColors.onBackground),
-            title: Text(AppLocalizations.of(context)!.exerciseInfoTitle,
-                style: TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
-            onTap: () {
-              Navigator.pop(context);
-              widget.onNavigateToDetail();
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.note_add_outlined, color: TraumColors.coralOrange),
-            title: Text(AppLocalizations.of(context)!.workoutAddNote,
-                style: TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
-            onTap: () {
-              Navigator.pop(context);
-              _showAddNote(context);
-            },
-          ),
-          const Divider(color: TraumColors.surfaceVariant),
-          ListTile(
-            leading: const Icon(Icons.delete_rounded, color: TraumColors.coralOrange),
-            title: Text(AppLocalizations.of(context)!.workoutRemoveExercise,
-                style: TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans')),
-            onTap: () {
-              Navigator.pop(context);
-              widget.onRemove();
-            },
-          ),
-          const SizedBox(height: 8),
-        ]),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            ListTile(
+              leading: const Icon(
+                Icons.info_outline_rounded,
+                color: TraumColors.onBackground,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.exerciseInfoTitle,
+                style: TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                widget.onNavigateToDetail();
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.note_add_outlined,
+                color: TraumColors.coralOrange,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.workoutAddNote,
+                style: TextStyle(
+                  color: TraumColors.coralOrange,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                _showAddNote(context);
+              },
+            ),
+            const Divider(color: TraumColors.surfaceVariant),
+            ListTile(
+              leading: const Icon(
+                Icons.delete_rounded,
+                color: TraumColors.coralOrange,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.workoutRemoveExercise,
+                style: TextStyle(
+                  color: TraumColors.coralOrange,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                widget.onRemove();
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
@@ -766,51 +887,77 @@ class _ExerciseCardState extends State<_ExerciseCard> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (_) => Padding(
-        padding: EdgeInsets.fromLTRB(16, 16, 16,
-            MediaQuery.of(context).viewInsets.bottom + 16),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          TextField(
-            controller: ctrl,
-            autofocus: true,
-            maxLines: 3,
-            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
-            decoration: InputDecoration(
-              hintText: AppLocalizations.of(context)!.workoutAddNoteHint,
-              hintStyle: const TextStyle(
-                  color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
-              filled: true,
-              fillColor: TraumColors.surface,
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(TraumRadius.card),
-                  borderSide: BorderSide.none),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(children: [
-            Expanded(
-              child: TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(AppLocalizations.of(context)!.cancel,
-                    style: TextStyle(color: TraumColors.onBackgroundMuted)),
+        padding: EdgeInsets.fromLTRB(
+          16,
+          16,
+          16,
+          MediaQuery.of(context).viewInsets.bottom + 16,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: ctrl,
+              autofocus: true,
+              maxLines: 3,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
               ),
-            ),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() => block.note = ctrl.text.trim().isEmpty ? null : ctrl.text.trim());
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: TraumColors.coralOrange,
-                  foregroundColor: Colors.white,
-                  elevation: 0,
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.workoutAddNoteHint,
+                hintStyle: const TextStyle(
+                  color: TraumColors.onBackgroundSubtle,
+                  fontFamily: 'DMSans',
                 ),
-                child: Text(AppLocalizations.of(context)!.save,
-                    style: TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
+                filled: true,
+                fillColor: TraumColors.surface,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(TraumRadius.card),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
-          ]),
-        ]),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      AppLocalizations.of(context)!.cancel,
+                      style: TextStyle(color: TraumColors.onBackgroundMuted),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(
+                        () => block.note = ctrl.text.trim().isEmpty
+                            ? null
+                            : ctrl.text.trim(),
+                      );
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: TraumColors.coralOrange,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context)!.save,
+                      style: TextStyle(
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     ).whenComplete(ctrl.dispose);
   }
@@ -848,57 +995,69 @@ class _ExerciseCardState extends State<_ExerciseCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── Header: icon + name + link + menu ──────────────────────────
-          Row(children: [
-            ExerciseIcon(
+          Row(
+            children: [
+              ExerciseIcon(
                 muscleGroup: _mgKey(block.exercise.muscleGroup),
                 exerciseName: block.exercise.name,
-                size: 38),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                block.exercise.name,
-                style: const TextStyle(
-                  color: TraumColors.onBackground,
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
+                size: 38,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  block.exercise.name,
+                  style: const TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
                 ),
               ),
-            ),
-            if (widget.canLink)
+              if (widget.canLink)
+                IconButton(
+                  tooltip: block.supersetWithNext
+                      ? 'Superset mit nächster Übung aufheben'
+                      : 'Mit nächster Übung zum Superset verbinden',
+                  icon: Icon(
+                    block.supersetWithNext
+                        ? Icons.link_rounded
+                        : Icons.link_off_rounded,
+                    color: block.supersetWithNext
+                        ? TraumColors.coralOrange
+                        : TraumColors.onBackgroundMuted,
+                    size: 20,
+                  ),
+                  onPressed: widget.onToggleLink,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(
+                    minWidth: 36,
+                    minHeight: 36,
+                  ),
+                ),
               IconButton(
-                tooltip: block.supersetWithNext
-                    ? 'Superset mit nächster Übung aufheben'
-                    : 'Mit nächster Übung zum Superset verbinden',
-                icon: Icon(
-                  block.supersetWithNext
-                      ? Icons.link_rounded
-                      : Icons.link_off_rounded,
-                  color: block.supersetWithNext
-                      ? TraumColors.coralOrange
-                      : TraumColors.onBackgroundMuted,
+                tooltip: AppLocalizations.of(context)!.more,
+                icon: const Icon(
+                  Icons.more_vert_rounded,
+                  color: TraumColors.onBackgroundMuted,
                   size: 20,
                 ),
-                onPressed: widget.onToggleLink,
+                onPressed: () => _showExerciseOptions(context),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
               ),
-            IconButton(
-              tooltip: AppLocalizations.of(context)!.more,
-              icon: const Icon(Icons.more_vert_rounded,
-                  color: TraumColors.onBackgroundMuted, size: 20),
-              onPressed: () => _showExerciseOptions(context),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-            ),
-          ]),
+            ],
+          ),
           if (block.supersetWithNext)
             Padding(
               padding: const EdgeInsets.only(top: 2, bottom: 2),
               child: Row(
                 children: [
-                  const Icon(Icons.link_rounded,
-                      color: TraumColors.coralOrange, size: 14),
+                  const Icon(
+                    Icons.link_rounded,
+                    color: TraumColors.coralOrange,
+                    size: 14,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     'Superset mit nächster Übung',
@@ -915,30 +1074,41 @@ class _ExerciseCardState extends State<_ExerciseCard> {
           const SizedBox(height: 8),
 
           // ── Equipment + Mode pills ──────────────────────────────────────
-          Row(children: [
-            GestureDetector(
-              onTap: () => _showEquipmentPicker(context),
-              child: _EquipmentPill(label: block.equipment.isNotEmpty ? block.equipment : AppLocalizations.of(context)!.equipmentLabel),
-            ),
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: () => _showEquipmentPicker(context),
-              child: _ModePill(label: block.mode),
-            ),
-            const Spacer(),
-            Icon(Icons.bar_chart_rounded,
-                color: TraumColors.onBackgroundSubtle, size: 18),
-          ]),
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () => _showEquipmentPicker(context),
+                child: _EquipmentPill(
+                  label: block.equipment.isNotEmpty
+                      ? block.equipment
+                      : AppLocalizations.of(context)!.equipmentLabel,
+                ),
+              ),
+              const SizedBox(width: 8),
+              GestureDetector(
+                onTap: () => _showEquipmentPicker(context),
+                child: _ModePill(label: block.mode),
+              ),
+              const Spacer(),
+              Icon(
+                Icons.bar_chart_rounded,
+                color: TraumColors.onBackgroundSubtle,
+                size: 18,
+              ),
+            ],
+          ),
 
           if (block.note != null) ...[
             const SizedBox(height: 6),
-            Text(block.note!,
-                style: const TextStyle(
-                  color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans',
-                  fontSize: 12,
-                  fontStyle: FontStyle.italic,
-                )),
+            Text(
+              block.note!,
+              style: const TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
           ],
 
           const SizedBox(height: 12),
@@ -946,34 +1116,36 @@ class _ExerciseCardState extends State<_ExerciseCard> {
           // ── Set table header ────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Row(children: [
-              const SizedBox(width: 40),
-              Expanded(
-                child: Text(
-                  isCardio ? 'Time' : 'Reps',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: TraumColors.onBackgroundMuted,
-                    fontFamily: 'DMSans',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
+            child: Row(
+              children: [
+                const SizedBox(width: 40),
+                Expanded(
+                  child: Text(
+                    isCardio ? 'Time' : 'Reps',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Text(
-                  isCardio ? 'Dist. (km)' : 'Weight',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: TraumColors.onBackgroundMuted,
-                    fontFamily: 'DMSans',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
+                Expanded(
+                  child: Text(
+                    isCardio ? 'Dist. (km)' : 'Weight',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 36),
-            ]),
+                const SizedBox(width: 36),
+              ],
+            ),
           ),
           const SizedBox(height: 4),
 
@@ -983,49 +1155,61 @@ class _ExerciseCardState extends State<_ExerciseCard> {
             final set = entry.value;
             return Padding(
               padding: const EdgeInsets.only(bottom: 6),
-              child: Row(children: [
-                // Set type badge
-                GestureDetector(
-                  onTap: () => _showSetTypeMenu(context, i),
-                  child: _SetTypeBadge(type: set.setType, number: set.setNumber, size: 32),
-                ),
-                const SizedBox(width: 8),
-                // Reps / Time field
-                Expanded(
-                  child: _InlineValueCell(controller: set.repsCtrl),
-                ),
-                const SizedBox(width: 8),
-                // Weight / Distance field
-                Expanded(
-                  child: _InlineValueCell(
-                    controller: set.weightCtrl,
-                    decimal: true,
+              child: Row(
+                children: [
+                  // Set type badge
+                  GestureDetector(
+                    onTap: () => _showSetTypeMenu(context, i),
+                    child: _SetTypeBadge(
+                      type: set.setType,
+                      number: set.setNumber,
+                      size: 32,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 4),
-                // Empty spacer matching + button width
-                const SizedBox(width: 36),
-              ]),
+                  const SizedBox(width: 8),
+                  // Reps / Time field
+                  Expanded(child: _InlineValueCell(controller: set.repsCtrl)),
+                  const SizedBox(width: 8),
+                  // Weight / Distance field
+                  Expanded(
+                    child: _InlineValueCell(
+                      controller: set.weightCtrl,
+                      decimal: true,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  // Empty spacer matching + button width
+                  const SizedBox(width: 36),
+                ],
+              ),
             );
           }),
 
           // ── Add set row ─────────────────────────────────────────────────
-          Row(children: [
-            const SizedBox(width: 40),
-            Expanded(child: Container()),
-            Expanded(child: Container()),
-            SizedBox(
-              width: 36,
-              child: IconButton(
-                tooltip: AppLocalizations.of(context)!.a11yAddSet,
-                icon: const Icon(Icons.add_rounded,
-                    color: TraumColors.coralOrange, size: 22),
-                onPressed: _addSet,
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+          Row(
+            children: [
+              const SizedBox(width: 40),
+              Expanded(child: Container()),
+              Expanded(child: Container()),
+              SizedBox(
+                width: 36,
+                child: IconButton(
+                  tooltip: AppLocalizations.of(context)!.a11yAddSet,
+                  icon: const Icon(
+                    Icons.add_rounded,
+                    color: TraumColors.coralOrange,
+                    size: 22,
+                  ),
+                  onPressed: _addSet,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(
+                    minWidth: 36,
+                    minHeight: 36,
+                  ),
+                ),
               ),
-            ),
-          ]),
+            ],
+          ),
 
           Container(
             height: 1,
@@ -1045,13 +1229,18 @@ class _SetTypeBadge extends StatelessWidget {
   final _SetType type;
   final int number;
   final double size;
-  const _SetTypeBadge({required this.type, required this.number, this.size = 32});
+  const _SetTypeBadge({
+    required this.type,
+    required this.number,
+    this.size = 32,
+  });
 
   @override
   Widget build(BuildContext context) {
     final label = type == _SetType.normal ? '$number' : type.badge;
     return Container(
-      width: size, height: size,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         color: type.color.withValues(alpha: 0.15),
         shape: BoxShape.circle,
@@ -1127,19 +1316,26 @@ class _EquipmentPill extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: const Color(0xFF8B6914), width: 0.8),
       ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        const Icon(Icons.fitness_center_rounded, size: 12, color: Color(0xFFE8B84B)),
-        const SizedBox(width: 5),
-        Text(
-          label,
-          style: const TextStyle(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.fitness_center_rounded,
+            size: 12,
             color: Color(0xFFE8B84B),
-            fontFamily: 'DMSans',
-            fontWeight: FontWeight.w600,
-            fontSize: 12,
           ),
-        ),
-      ]),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Color(0xFFE8B84B),
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1197,21 +1393,25 @@ class _EquipmentModePickerState extends State<_EquipmentModePicker>
   late String _mode;
 
   static const _equipments = [
-    ('Dumbbells',            Icons.fitness_center_rounded,     Color(0xFFE8B84B)),
-    ('Kettlebell',           Icons.sports_handball_rounded,    Color(0xFF5BC4F5)),
-    ('Plate',                Icons.circle_outlined,            Color(0xFFBB86FC)),
-    ('Resistance Band',      Icons.compress_rounded,           Color(0xFF81C784)),
-    ('Cable Machine',        Icons.linear_scale_rounded,       Color(0xFFFF8A65)),
-    ('Stack Machine',        Icons.settings_rounded,           Color(0xFF4FC3F7)),
-    ('Plate Loaded Machine', Icons.precision_manufacturing_rounded, Color(0xFFA5D6A7)),
-    ('Bodyweight',           Icons.accessibility_new_rounded,  Color(0xFFFFD54F)),
-    ('Barbell',              Icons.remove_rounded,             Color(0xFFEF9A9A)),
-    ('Smith Machine',        Icons.grid_on_rounded,            Color(0xFFCE93D8)),
+    ('Dumbbells', Icons.fitness_center_rounded, Color(0xFFE8B84B)),
+    ('Kettlebell', Icons.sports_handball_rounded, Color(0xFF5BC4F5)),
+    ('Plate', Icons.circle_outlined, Color(0xFFBB86FC)),
+    ('Resistance Band', Icons.compress_rounded, Color(0xFF81C784)),
+    ('Cable Machine', Icons.linear_scale_rounded, Color(0xFFFF8A65)),
+    ('Stack Machine', Icons.settings_rounded, Color(0xFF4FC3F7)),
+    (
+      'Plate Loaded Machine',
+      Icons.precision_manufacturing_rounded,
+      Color(0xFFA5D6A7),
+    ),
+    ('Bodyweight', Icons.accessibility_new_rounded, Color(0xFFFFD54F)),
+    ('Barbell', Icons.remove_rounded, Color(0xFFEF9A9A)),
+    ('Smith Machine', Icons.grid_on_rounded, Color(0xFFCE93D8)),
   ];
 
   static const _modes = [
-    ('Bilateral',   Icons.swap_horiz_rounded),
-    ('Unilateral',  Icons.arrow_forward_rounded),
+    ('Bilateral', Icons.swap_horiz_rounded),
+    ('Unilateral', Icons.arrow_forward_rounded),
     ('Alternating', Icons.sync_alt_rounded),
   ];
 
@@ -1233,79 +1433,120 @@ class _EquipmentModePickerState extends State<_EquipmentModePicker>
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * 0.6),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        // Tabs
-        TabBar(
-          controller: _tabs,
-          labelColor: const Color(0xFFE8B84B),
-          unselectedLabelColor: TraumColors.onBackgroundMuted,
-          indicatorColor: const Color(0xFFE8B84B),
-          indicatorSize: TabBarIndicatorSize.tab,
-          labelStyle: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w700),
-          tabs: [
-            Tab(text: _equipment.isNotEmpty ? _equipment : AppLocalizations.of(context)!.equipmentLabel),
-            Tab(text: _mode),
-          ],
-        ),
-        Flexible(
-          child: TabBarView(
+        maxHeight: MediaQuery.of(context).size.height * 0.6,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Tabs
+          TabBar(
             controller: _tabs,
-            children: [
-              // Equipment list
-              ListView(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                children: _equipments.map((eq) {
-                  final selected = _equipment == eq.$1;
-                  return ListTile(
-                    leading: Icon(eq.$2, color: selected ? eq.$3 : TraumColors.onBackgroundSubtle, size: 20),
-                    title: Text(eq.$1,
-                        style: TextStyle(
-                          color: selected ? TraumColors.onBackground : TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans',
-                        )),
-                    trailing: selected
-                        ? const Icon(Icons.radio_button_checked_rounded,
-                            color: Color(0xFF4CAF50), size: 20)
-                        : const Icon(Icons.radio_button_unchecked_rounded,
-                            color: TraumColors.onBackgroundSubtle, size: 20),
-                    onTap: () {
-                      setState(() => _equipment = eq.$1);
-                      widget.onSave(_equipment, _mode);
-                    },
-                  );
-                }).toList(),
+            labelColor: const Color(0xFFE8B84B),
+            unselectedLabelColor: TraumColors.onBackgroundMuted,
+            indicatorColor: const Color(0xFFE8B84B),
+            indicatorSize: TabBarIndicatorSize.tab,
+            labelStyle: const TextStyle(
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w700,
+            ),
+            tabs: [
+              Tab(
+                text: _equipment.isNotEmpty
+                    ? _equipment
+                    : AppLocalizations.of(context)!.equipmentLabel,
               ),
-              // Mode list
-              ListView(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                children: _modes.map((m) {
-                  final selected = _mode == m.$1;
-                  return ListTile(
-                    leading: Icon(m.$2,
-                        color: selected ? TraumColors.onBackground : TraumColors.onBackgroundSubtle,
-                        size: 20),
-                    title: Text(m.$1,
-                        style: TextStyle(
-                          color: selected ? TraumColors.onBackground : TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans',
-                        )),
-                    trailing: selected
-                        ? const Icon(Icons.radio_button_checked_rounded,
-                            color: Color(0xFF4CAF50), size: 20)
-                        : const Icon(Icons.radio_button_unchecked_rounded,
-                            color: TraumColors.onBackgroundSubtle, size: 20),
-                    onTap: () {
-                      setState(() => _mode = m.$1);
-                      widget.onSave(_equipment, _mode);
-                    },
-                  );
-                }).toList(),
-              ),
+              Tab(text: _mode),
             ],
           ),
-        ),
-      ]),
+          Flexible(
+            child: TabBarView(
+              controller: _tabs,
+              children: [
+                // Equipment list
+                ListView(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  children: _equipments.map((eq) {
+                    final selected = _equipment == eq.$1;
+                    return ListTile(
+                      leading: Icon(
+                        eq.$2,
+                        color: selected
+                            ? eq.$3
+                            : TraumColors.onBackgroundSubtle,
+                        size: 20,
+                      ),
+                      title: Text(
+                        eq.$1,
+                        style: TextStyle(
+                          color: selected
+                              ? TraumColors.onBackground
+                              : TraumColors.onBackgroundMuted,
+                          fontFamily: 'DMSans',
+                        ),
+                      ),
+                      trailing: selected
+                          ? const Icon(
+                              Icons.radio_button_checked_rounded,
+                              color: Color(0xFF4CAF50),
+                              size: 20,
+                            )
+                          : const Icon(
+                              Icons.radio_button_unchecked_rounded,
+                              color: TraumColors.onBackgroundSubtle,
+                              size: 20,
+                            ),
+                      onTap: () {
+                        setState(() => _equipment = eq.$1);
+                        widget.onSave(_equipment, _mode);
+                      },
+                    );
+                  }).toList(),
+                ),
+                // Mode list
+                ListView(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  children: _modes.map((m) {
+                    final selected = _mode == m.$1;
+                    return ListTile(
+                      leading: Icon(
+                        m.$2,
+                        color: selected
+                            ? TraumColors.onBackground
+                            : TraumColors.onBackgroundSubtle,
+                        size: 20,
+                      ),
+                      title: Text(
+                        m.$1,
+                        style: TextStyle(
+                          color: selected
+                              ? TraumColors.onBackground
+                              : TraumColors.onBackgroundMuted,
+                          fontFamily: 'DMSans',
+                        ),
+                      ),
+                      trailing: selected
+                          ? const Icon(
+                              Icons.radio_button_checked_rounded,
+                              color: Color(0xFF4CAF50),
+                              size: 20,
+                            )
+                          : const Icon(
+                              Icons.radio_button_unchecked_rounded,
+                              color: TraumColors.onBackgroundSubtle,
+                              size: 20,
+                            ),
+                      onTap: () {
+                        setState(() => _mode = m.$1);
+                        widget.onSave(_equipment, _mode);
+                      },
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1321,18 +1562,29 @@ class _AddExerciseFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onTap,
-      style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 20)),
-      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Icon(Icons.add_rounded, color: TraumColors.onBackgroundMuted, size: 18),
-        SizedBox(width: 6),
-        Text(AppLocalizations.of(context)!.workoutAddExercise,
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.add_rounded,
+            color: TraumColors.onBackgroundMuted,
+            size: 18,
+          ),
+          SizedBox(width: 6),
+          Text(
+            AppLocalizations.of(context)!.workoutAddExercise,
             style: TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontSize: 14,
               fontWeight: FontWeight.w500,
-            )),
-      ]),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

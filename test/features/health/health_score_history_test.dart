@@ -18,10 +18,12 @@ void main() {
     db = TraumDatabase.forTesting(NativeDatabase.memory());
     SharedPreferences.setMockInitialValues({'workout_goal_per_week': 1});
     final prefs = await SharedPreferences.getInstance();
-    c = ProviderContainer(overrides: [
-      databaseProvider.overrideWithValue(db),
-      sharedPreferencesProvider.overrideWithValue(prefs),
-    ]);
+    c = ProviderContainer(
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        sharedPreferencesProvider.overrideWithValue(prefs),
+      ],
+    );
   });
 
   tearDown(() {
@@ -29,16 +31,17 @@ void main() {
     db.close();
   });
 
-  test(
-      'workoutsThisWeek is derived per calendar week, not per single day '
+  test('workoutsThisWeek is derived per calendar week, not per single day '
       '(regression: previously a single day\'s own session count was passed '
       'straight into a field compared against the weekly goal, making every '
       'day in the graph look like it under-achieved on training)', () async {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    await db.trainingDao.insertSession(WorkoutSessionsCompanion.insert(
-      startedAt: today.add(const Duration(hours: 9)),
-    ));
+    await db.trainingDao.insertSession(
+      WorkoutSessionsCompanion.insert(
+        startedAt: today.add(const Duration(hours: 9)),
+      ),
+    );
 
     c.listen(healthScoreHistoryProvider, (_, _) {});
     final scores = await c.read(healthScoreHistoryProvider.future);

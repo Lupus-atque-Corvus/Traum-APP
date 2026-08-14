@@ -6,7 +6,13 @@ import 'package:traum/features/budget/budget_category_colors.dart';
 
 void main() {
   BudgetCategory cat(int? color) => BudgetCategory(
-      id: 1, name: 'x', emoji: null, monthlyLimit: null, color: color, isExpense: true);
+    id: 1,
+    name: 'x',
+    emoji: null,
+    monthlyLimit: null,
+    color: color,
+    isExpense: true,
+  );
   test('stored colour wins, else palette by index', () {
     expect(colorForCategory(cat(0xFF112233), 0), const Color(0xFF112233));
     expect(colorForCategory(cat(null), 1), kBudgetCategoryColors[1]);

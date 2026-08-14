@@ -32,8 +32,8 @@ class CycleAnalyzer {
       ..sort((a, b) => a.startDate.compareTo(b.startDate));
 
     final cycleLengths = _cycleLengths(sorted);
-    final avgCycle = _weightedAverage(cycleLengths) ??
-        defaultCycleLength.toDouble();
+    final avgCycle =
+        _weightedAverage(cycleLengths) ?? defaultCycleLength.toDouble();
     final stdDev = _stdDev(cycleLengths, avgCycle);
     final avgPeriod = _avgPeriodLength(sorted);
 
@@ -54,8 +54,7 @@ class CycleAnalyzer {
     final confirmed = _detectThermalShift(dailyLogs, lastStart);
     final ovulationConfirmed = confirmed != null;
     final ovulationFinal = confirmed ?? ovulation;
-    final fertileStartFinal =
-        ovulationFinal.subtract(const Duration(days: 5));
+    final fertileStartFinal = ovulationFinal.subtract(const Duration(days: 5));
     final fertileEndFinal = ovulationFinal.add(const Duration(days: 1));
 
     final regularity = _classifyRegularity(cycleLengths);
@@ -113,7 +112,9 @@ class CycleAnalyzer {
   static List<int> _cycleLengths(List<PeriodEntry> sorted) {
     final lengths = <int>[];
     for (var i = 1; i < sorted.length; i++) {
-      lengths.add(sorted[i].startDate.difference(sorted[i - 1].startDate).inDays);
+      lengths.add(
+        sorted[i].startDate.difference(sorted[i - 1].startDate).inDays,
+      );
     }
     if (lengths.length > recentWindow) {
       return lengths.sublist(lengths.length - recentWindow);
@@ -139,7 +140,8 @@ class CycleAnalyzer {
   /// heuristic, not an inferential statistic. Returns 0 for fewer than 2 values.
   static double? _stdDev(List<int> lengths, double mean) {
     if (lengths.length < 2) return 0;
-    final variance = lengths
+    final variance =
+        lengths
             .map((l) => math.pow(l - mean, 2).toDouble())
             .reduce((a, b) => a + b) /
         lengths.length;
@@ -166,8 +168,9 @@ class CycleAnalyzer {
     final min = lengths.reduce(math.min);
     final max = lengths.reduce(math.max);
     final range = max - min;
-    final hasOutlier =
-        lengths.any((l) => l < minNormalCycle || l > maxNormalCycle);
+    final hasOutlier = lengths.any(
+      (l) => l < minNormalCycle || l > maxNormalCycle,
+    );
     if (range > 9 || hasOutlier) return CycleRegularity.irregular;
     if (range > 7) return CycleRegularity.slightlyIrregular;
     return CycleRegularity.regular;
@@ -184,8 +187,9 @@ class CycleAnalyzer {
     final earlyGynAge = gynAgeYears != null && gynAgeYears < 3;
     final flags = <HealthFlag>[];
 
-    final recent =
-        cycleLengths.length > 3 ? cycleLengths.sublist(cycleLengths.length - 3) : cycleLengths;
+    final recent = cycleLengths.length > 3
+        ? cycleLengths.sublist(cycleLengths.length - 3)
+        : cycleLengths;
     final hasThree = recent.length >= 3;
 
     if (!earlyGynAge && hasThree && recent.every((l) => l > maxNormalCycle)) {
@@ -229,11 +233,14 @@ class CycleAnalyzer {
   /// date (day before the first of the 3 high temps) or null. Only considers
   /// readings on/after [cycleStart].
   static DateTime? _detectThermalShift(
-      List<DailyLog> logs, DateTime cycleStart) {
-    final temps = logs
-        .where((l) => l.bbt != null && !l.logDate.isBefore(cycleStart))
-        .toList()
-      ..sort((a, b) => a.logDate.compareTo(b.logDate));
+    List<DailyLog> logs,
+    DateTime cycleStart,
+  ) {
+    final temps =
+        logs
+            .where((l) => l.bbt != null && !l.logDate.isBefore(cycleStart))
+            .toList()
+          ..sort((a, b) => a.logDate.compareTo(b.logDate));
     if (temps.length < 9) return null; // need 6 baseline + 3 high
     for (var i = 6; i <= temps.length - 3; i++) {
       final baseline = temps

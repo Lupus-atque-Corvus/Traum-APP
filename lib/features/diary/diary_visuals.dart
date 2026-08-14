@@ -4,18 +4,18 @@ import '../../data/database/traum_database.dart';
 
 /// Icon für ein Tagebuch anhand seines gespeicherten iconName.
 IconData diaryIcon(String name) => switch (name) {
-      'book' => Icons.menu_book_outlined,
-      'heart' => Icons.favorite_outline,
-      'leaf' => Icons.eco_outlined,
-      'sun' => Icons.wb_sunny_outlined,
-      'moon' => Icons.nightlight_outlined,
-      'star' => Icons.star_outline,
-      'pen' => Icons.edit_outlined,
-      'plane' => Icons.flight_outlined,
-      'music' => Icons.music_note_outlined,
-      'camera' => Icons.photo_camera_outlined,
-      _ => Icons.menu_book_outlined,
-    };
+  'book' => Icons.menu_book_outlined,
+  'heart' => Icons.favorite_outline,
+  'leaf' => Icons.eco_outlined,
+  'sun' => Icons.wb_sunny_outlined,
+  'moon' => Icons.nightlight_outlined,
+  'star' => Icons.star_outline,
+  'pen' => Icons.edit_outlined,
+  'plane' => Icons.flight_outlined,
+  'music' => Icons.music_note_outlined,
+  'camera' => Icons.photo_camera_outlined,
+  _ => Icons.menu_book_outlined,
+};
 
 /// Auswählbare Icons beim Anlegen eines eigenen Tagebuchs.
 const List<String> kSelectableDiaryIcons = [

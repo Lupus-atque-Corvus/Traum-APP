@@ -12,18 +12,22 @@ void main() {
 
     final debtId = await repo.addDebt(
       DebtsCompanion.insert(
-          creditor: 'Papa', originalAmount: 0, remainingAmount: 0),
+        creditor: 'Papa',
+        originalAmount: 0,
+        remainingAmount: 0,
+      ),
     );
     await repo.addDebtItem(
-        DebtItemsCompanion.insert(debtId: debtId, description: 'X', amount: 80));
+      DebtItemsCompanion.insert(debtId: debtId, description: 'X', amount: 80),
+    );
     await repo.payDebtRate(debtId, 30);
 
     final items = await repo.watchDebtItems(debtId).first;
     expect(items, hasLength(1));
 
-    final debt =
-        await (db.select(db.debts)..where((d) => d.id.equals(debtId)))
-            .getSingle();
+    final debt = await (db.select(
+      db.debts,
+    )..where((d) => d.id.equals(debtId))).getSingle();
     expect(debt.originalAmount, 80);
     expect(debt.remainingAmount, 50);
   });

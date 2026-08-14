@@ -77,8 +77,7 @@ void _seedV23Schema(sqlite3.Database raw) {
 }
 
 void main() {
-  test('v23 -> v24: normal upgrade merges tower fields without throwing',
-      () async {
+  test('v23 -> v24: normal upgrade merges tower fields without throwing', () async {
     final raw = sqlite3.sqlite3.openInMemory();
     _seedV23Schema(raw);
     raw.execute(
@@ -95,16 +94,17 @@ void main() {
         .get();
     expect(cols.map((r) => r.read<String>('name')), contains('osm_id'));
 
-    final cfg = await db.customSelect(
-      "SELECT field_config FROM map_collections WHERE icon_name = 'tower'",
-    ).getSingle();
+    final cfg = await db
+        .customSelect(
+          "SELECT field_config FROM map_collections WHERE icon_name = 'tower'",
+        )
+        .getSingle();
     expect(cfg.read<String>('field_config'), contains('towerType'));
 
     await db.close();
   });
 
-  test(
-      're-running the migration after a previously-added osm_id column does '
+  test('re-running the migration after a previously-added osm_id column does '
       'not crash with "duplicate column name"', () async {
     final raw = sqlite3.sqlite3.openInMemory();
     _seedV23Schema(raw);
@@ -126,30 +126,33 @@ void main() {
   });
 
   test(
-      'malformed field_config (missing fields key, invalid JSON) is tolerated',
-      () async {
-    final raw = sqlite3.sqlite3.openInMemory();
-    _seedV23Schema(raw);
-    raw.execute(
-      "INSERT INTO map_collections (name, icon_name, field_config, created_at) "
-      "VALUES ('Türme A', 'tower', '{}', 0)", // kein 'fields'-Key
-    );
-    raw.execute(
-      "INSERT INTO map_collections (name, icon_name, field_config, created_at) "
-      "VALUES ('Türme B', 'tower', 'not json at all', 0)", // kaputtes JSON
-    );
-    raw.execute('PRAGMA user_version = 23');
+    'malformed field_config (missing fields key, invalid JSON) is tolerated',
+    () async {
+      final raw = sqlite3.sqlite3.openInMemory();
+      _seedV23Schema(raw);
+      raw.execute(
+        "INSERT INTO map_collections (name, icon_name, field_config, created_at) "
+        "VALUES ('Türme A', 'tower', '{}', 0)", // kein 'fields'-Key
+      );
+      raw.execute(
+        "INSERT INTO map_collections (name, icon_name, field_config, created_at) "
+        "VALUES ('Türme B', 'tower', 'not json at all', 0)", // kaputtes JSON
+      );
+      raw.execute('PRAGMA user_version = 23');
 
-    final db = TraumDatabase.forTesting(NativeDatabase.opened(raw));
-    await db.customSelect('SELECT 1').get();
+      final db = TraumDatabase.forTesting(NativeDatabase.opened(raw));
+      await db.customSelect('SELECT 1').get();
 
-    final rows = await db.customSelect(
-      "SELECT field_config FROM map_collections WHERE icon_name = 'tower'",
-    ).get();
-    for (final r in rows) {
-      expect(r.read<String>('field_config'), contains('towerType'));
-    }
+      final rows = await db
+          .customSelect(
+            "SELECT field_config FROM map_collections WHERE icon_name = 'tower'",
+          )
+          .get();
+      for (final r in rows) {
+        expect(r.read<String>('field_config'), contains('towerType'));
+      }
 
-    await db.close();
-  });
+      await db.close();
+    },
+  );
 }

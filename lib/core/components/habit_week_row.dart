@@ -45,8 +45,8 @@ class HabitWeekRow extends StatelessWidget {
                 color: done
                     ? TraumColors.mintGreen
                     : isToday
-                        ? TraumColors.coralDim
-                        : TraumColors.surfaceVariant,
+                    ? TraumColors.coralDim
+                    : TraumColors.surfaceVariant,
                 borderRadius: BorderRadius.circular(8),
                 border: isToday
                     ? Border.all(color: TraumColors.coralOrange, width: 1)
@@ -58,9 +58,7 @@ class HabitWeekRow extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 9,
                     fontWeight: FontWeight.w600,
-                    color: done
-                        ? Colors.white
-                        : TraumColors.onBackgroundMuted,
+                    color: done ? Colors.white : TraumColors.onBackgroundMuted,
                     fontFamily: 'DMSans',
                   ),
                 ),

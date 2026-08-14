@@ -175,10 +175,12 @@ void main() {
     expect(plan.planType, 'workout'); // added at v22, defaulted
 
     // v23: legacy offline substance DB fully dropped.
-    final legacyTable = await db.customSelect(
-      "SELECT name FROM sqlite_master WHERE type='table' "
-      "AND name='substance_database_entries'",
-    ).get();
+    final legacyTable = await db
+        .customSelect(
+          "SELECT name FROM sqlite_master WHERE type='table' "
+          "AND name='substance_database_entries'",
+        )
+        .get();
     expect(legacyTable, isEmpty);
 
     // v27: multi-diary migration ran on an (empty, freshly-created-by-v7)
@@ -188,11 +190,13 @@ void main() {
     expect(diaries.single.name, 'Mein Tagebuch');
 
     // v28: the new unique + lookup indexes exist.
-    final indexes = await db.customSelect(
-      "SELECT name FROM sqlite_master WHERE type='index' "
-      "AND name IN ('idx_diary_entries_diary_date', "
-      "'idx_diary_entries_diary_created')",
-    ).get();
+    final indexes = await db
+        .customSelect(
+          "SELECT name FROM sqlite_master WHERE type='index' "
+          "AND name IN ('idx_diary_entries_diary_date', "
+          "'idx_diary_entries_diary_created')",
+        )
+        .get();
     expect(indexes, hasLength(2));
 
     await db.close();

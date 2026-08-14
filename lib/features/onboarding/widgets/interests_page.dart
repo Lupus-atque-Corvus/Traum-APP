@@ -46,25 +46,34 @@ class InterestsPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 8),
-          Text(l10n.obInterestsTitle,
-              style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
-                  color: TraumColors.onBackground,
-                  fontFamily: 'DMSans')),
+          Text(
+            l10n.obInterestsTitle,
+            style: const TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.w700,
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+            ),
+          ),
           const SizedBox(height: 8),
-          Text(l10n.obInterestsSubtitle,
-              style: const TextStyle(
-                  fontSize: 14,
-                  color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans',
-                  height: 1.5)),
+          Text(
+            l10n.obInterestsSubtitle,
+            style: const TextStyle(
+              fontSize: 14,
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              height: 1.5,
+            ),
+          ),
           const SizedBox(height: 6),
-          Text(l10n.obInterestsSelected(selected.length),
-              style: const TextStyle(
-                  fontSize: 12,
-                  color: TraumColors.onBackgroundSubtle,
-                  fontFamily: 'DMSans')),
+          Text(
+            l10n.obInterestsSelected(selected.length),
+            style: const TextStyle(
+              fontSize: 12,
+              color: TraumColors.onBackgroundSubtle,
+              fontFamily: 'DMSans',
+            ),
+          ),
           const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
@@ -80,37 +89,43 @@ class InterestsPage extends StatelessWidget {
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 180),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
                         color: isSel
                             ? color.withValues(alpha: 0.15)
                             : TraumColors.surface,
-                        borderRadius:
-                            BorderRadius.circular(TraumRadius.card),
+                        borderRadius: BorderRadius.circular(TraumRadius.card),
                         border: Border.all(
-                            color:
-                                isSel ? color : TraumColors.surfaceVariant,
-                            width: isSel ? 1.5 : 1),
+                          color: isSel ? color : TraumColors.surfaceVariant,
+                          width: isSel ? 1.5 : 1,
+                        ),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(e.$2,
-                              size: 20,
+                          Icon(
+                            e.$2,
+                            size: 20,
+                            color: isSel
+                                ? color
+                                : TraumColors.onBackgroundMuted,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            Routes.labelFor(module, l10n),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'DMSans',
+                              fontWeight: isSel
+                                  ? FontWeight.w600
+                                  : FontWeight.normal,
                               color: isSel
                                   ? color
-                                  : TraumColors.onBackgroundMuted),
-                          const SizedBox(width: 8),
-                          Text(Routes.labelFor(module, l10n),
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: 'DMSans',
-                                  fontWeight: isSel
-                                      ? FontWeight.w600
-                                      : FontWeight.normal,
-                                  color: isSel
-                                      ? color
-                                      : TraumColors.onBackgroundMuted)),
+                                  : TraumColors.onBackgroundMuted,
+                            ),
+                          ),
                         ],
                       ),
                     ),

@@ -395,13 +395,15 @@ final substanceReferenceDbReadyProvider = FutureProvider<bool>((ref) async {
 
 final substanceReferenceDbServiceProvider =
     FutureProvider<SubstanceReferenceDbService>((ref) async {
-  final path = await SubstanceReferenceDbCopier.targetPath();
-  final service = SubstanceReferenceDbService(path);
-  ref.onDispose(service.dispose);
-  return service;
-});
+      final path = await SubstanceReferenceDbCopier.targetPath();
+      final service = SubstanceReferenceDbService(path);
+      ref.onDispose(service.dispose);
+      return service;
+    });
 
-final substanceRepositoryProvider = FutureProvider<SubstanceRepository>((ref) async {
+final substanceRepositoryProvider = FutureProvider<SubstanceRepository>((
+  ref,
+) async {
   final service = await ref.watch(substanceReferenceDbServiceProvider.future);
   return SubstanceRepository(service);
 });
@@ -416,9 +418,9 @@ final substanceCategoriesProvider = FutureProvider<List<String>>((ref) async {
 /// (siehe database_tab.dart, Task 13) statt Teil des Family-Keys zu sein.
 final substanceSearchProvider = FutureProvider.autoDispose
     .family<List<SubstanceRecord>, String>((ref, query) async {
-  final repo = await ref.watch(substanceRepositoryProvider.future);
-  return repo.search(query);
-});
+      final repo = await ref.watch(substanceRepositoryProvider.future);
+      return repo.search(query);
+    });
 
 // ─── Accounts ─────────────────────────────────────────────────────────────────
 final accountsStreamProvider = StreamProvider.autoDispose<List<Account>>(

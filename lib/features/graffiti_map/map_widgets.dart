@@ -16,53 +16,52 @@ class StarRatingInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: List.generate(
-          5,
-          (i) => Semantics(
-            button: true,
-            label: AppLocalizations.of(context)!.a11yStarRating(i + 1),
-            child: GestureDetector(
-              onTap: () => onChanged((i + 1).toDouble()),
-              child: Icon(
-                rating >= i + 1
-                    ? Icons.star
-                    : rating >= i + 0.5
-                        ? Icons.star_half
-                        : Icons.star_border,
-                color: TraumColors.amberGold,
-                size: size,
-              ),
-            ),
+    mainAxisSize: MainAxisSize.min,
+    children: List.generate(
+      5,
+      (i) => Semantics(
+        button: true,
+        label: AppLocalizations.of(context)!.a11yStarRating(i + 1),
+        child: GestureDetector(
+          onTap: () => onChanged((i + 1).toDouble()),
+          child: Icon(
+            rating >= i + 1
+                ? Icons.star
+                : rating >= i + 0.5
+                ? Icons.star_half
+                : Icons.star_border,
+            color: TraumColors.amberGold,
+            size: size,
           ),
         ),
-      );
+      ),
+    ),
+  );
 }
 
 InputDecoration mapInputDecoration(String hint) => InputDecoration(
-      hintText: hint,
-      hintStyle: const TextStyle(
-        fontFamily: 'DMSans',
-        color: TraumColors.onBackgroundSubtle,
-        fontSize: 14,
-      ),
-      filled: true,
-      fillColor: TraumColors.surfaceVariant,
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide.none,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide.none,
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: TraumColors.cyanBlue, width: 1.5),
-      ),
-    );
+  hintText: hint,
+  hintStyle: const TextStyle(
+    fontFamily: 'DMSans',
+    color: TraumColors.onBackgroundSubtle,
+    fontSize: 14,
+  ),
+  filled: true,
+  fillColor: TraumColors.surfaceVariant,
+  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(12),
+    borderSide: BorderSide.none,
+  ),
+  enabledBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(12),
+    borderSide: BorderSide.none,
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(12),
+    borderSide: const BorderSide(color: TraumColors.cyanBlue, width: 1.5),
+  ),
+);
 
 /// Kleines Megapixel-Label (z. B. „12,2 MP") für Foto-Overlays.
 class MegapixelBadge extends StatelessWidget {
@@ -71,19 +70,19 @@ class MegapixelBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.6),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontFamily: 'DMSans',
-            color: Colors.white,
-            fontSize: 10,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+    decoration: BoxDecoration(
+      color: Colors.black.withValues(alpha: 0.6),
+      borderRadius: BorderRadius.circular(6),
+    ),
+    child: Text(
+      text,
+      style: const TextStyle(
+        fontFamily: 'DMSans',
+        color: Colors.white,
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+  );
 }

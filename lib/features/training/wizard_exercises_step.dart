@@ -26,8 +26,7 @@ class WizardExercisesStep extends ConsumerStatefulWidget {
       _WizardExercisesStepState();
 }
 
-class _WizardExercisesStepState
-    extends ConsumerState<WizardExercisesStep> {
+class _WizardExercisesStepState extends ConsumerState<WizardExercisesStep> {
   // dayOfWeek -> list of (exerciseName, sets, reps)
   late Map<int, List<_WizardExerciseEntry>> _entries;
 
@@ -36,14 +35,19 @@ class _WizardExercisesStepState
     super.initState();
     _entries = {};
     for (final dow in widget.selectedDays.keys) {
-      final templateDay = widget.template.days.cast<TemplateDay?>()
-          .firstWhere((d) => d?.dayOfWeek == dow, orElse: () => null);
-      _entries[dow] = templateDay?.exercises
-              .map((e) => _WizardExerciseEntry(
-                    exerciseName: e.exerciseName,
-                    sets: e.sets,
-                    reps: e.reps,
-                  ))
+      final templateDay = widget.template.days.cast<TemplateDay?>().firstWhere(
+        (d) => d?.dayOfWeek == dow,
+        orElse: () => null,
+      );
+      _entries[dow] =
+          templateDay?.exercises
+              .map(
+                (e) => _WizardExerciseEntry(
+                  exerciseName: e.exerciseName,
+                  sets: e.sets,
+                  reps: e.reps,
+                ),
+              )
               .toList() ??
           [];
     }
@@ -54,7 +58,10 @@ class _WizardExercisesStepState
   }
 
   Future<void> _showPicker(int dow) async {
-    final allExercises = await ref.read(trainingDaoProvider).watchAllExercises().first;
+    final allExercises = await ref
+        .read(trainingDaoProvider)
+        .watchAllExercises()
+        .first;
     if (!mounted) return;
 
     final picked = await showModalBottomSheet<Exercise>(
@@ -63,18 +70,17 @@ class _WizardExercisesStepState
       backgroundColor: TraumColors.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-            top: Radius.circular(TraumRadius.card)),
+          top: Radius.circular(TraumRadius.card),
+        ),
       ),
       builder: (_) => _ExercisePickerSheet(exercises: allExercises),
     );
 
     if (picked != null) {
       setState(() {
-        _entries[dow]!.add(_WizardExerciseEntry(
-          exerciseName: picked.name,
-          sets: 3,
-          reps: 10,
-        ));
+        _entries[dow]!.add(
+          _WizardExerciseEntry(exerciseName: picked.name, sets: 3, reps: 10),
+        );
       });
     }
   }
@@ -90,26 +96,30 @@ class _WizardExercisesStepState
         Text(
           l10n.exercisesReviewTitle,
           style: const TextStyle(
-              color: TraumColors.onBackground,
-              fontFamily: 'DMSans',
-              fontWeight: FontWeight.w700,
-              fontSize: 20),
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+            fontWeight: FontWeight.w700,
+            fontSize: 20,
+          ),
         ),
         const SizedBox(height: 6),
         Text(
           l10n.exercisesReviewSubtitle,
           style: const TextStyle(
-              color: TraumColors.onBackgroundMuted,
-              fontFamily: 'DMSans',
-              fontSize: 14),
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            fontSize: 14,
+          ),
         ),
         const SizedBox(height: 20),
-        ...sortedDays.map((dow) => _DayExerciseBlock(
-          dayName: widget.selectedDays[dow]!,
-          entries: _entries[dow]!,
-          onRemove: (i) => _removeExercise(dow, i),
-          onAdd: () => _showPicker(dow),
-        )),
+        ...sortedDays.map(
+          (dow) => _DayExerciseBlock(
+            dayName: widget.selectedDays[dow]!,
+            entries: _entries[dow]!,
+            onRemove: (i) => _removeExercise(dow, i),
+            onAdd: () => _showPicker(dow),
+          ),
+        ),
       ],
     );
   }
@@ -141,26 +151,35 @@ class _DayExerciseBlock extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(dayName,
-              style: const TextStyle(
-                  color: TraumColors.onBackground,
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14)),
+          Text(
+            dayName,
+            style: const TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+            ),
+          ),
           const SizedBox(height: 10),
-          ...entries.asMap().entries.map((e) => _ExerciseTile(
-            entry: e.value,
-            onRemove: () => onRemove(e.key),
-          )),
+          ...entries.asMap().entries.map(
+            (e) =>
+                _ExerciseTile(entry: e.value, onRemove: () => onRemove(e.key)),
+          ),
           TextButton.icon(
             onPressed: onAdd,
-            icon: const Icon(Icons.add_rounded,
-                color: TraumColors.coralOrange, size: 18),
-            label: Text(l10n.addExercise,
-                style: const TextStyle(
-                    color: TraumColors.coralOrange,
-                    fontFamily: 'DMSans',
-                    fontSize: 13)),
+            icon: const Icon(
+              Icons.add_rounded,
+              color: TraumColors.coralOrange,
+              size: 18,
+            ),
+            label: Text(
+              l10n.addExercise,
+              style: const TextStyle(
+                color: TraumColors.coralOrange,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+            ),
           ),
         ],
       ),
@@ -179,40 +198,54 @@ class _ExerciseTile extends ConsumerWidget {
     final exercisesAsync = ref.watch(allExercisesStreamProvider);
     return exercisesAsync.when(
       data: (exercises) {
-        final exercise = exercises.cast<Exercise?>()
-            .firstWhere((e) => e?.name == entry.exerciseName, orElse: () => null);
+        final exercise = exercises.cast<Exercise?>().firstWhere(
+          (e) => e?.name == entry.exerciseName,
+          orElse: () => null,
+        );
         final muscleGroup = exercise?.muscleGroup ?? 'full_body';
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
-          child: Row(children: [
-            ExerciseIcon(
+          child: Row(
+            children: [
+              ExerciseIcon(
                 muscleGroup: muscleGroup,
                 exerciseName: entry.exerciseName,
-                size: 36),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(entry.exerciseName,
-                  style: const TextStyle(
-                      color: TraumColors.onBackground,
-                      fontFamily: 'DMSans',
-                      fontSize: 13)),
-            ),
-            Text('${entry.sets}x${entry.reps}',
-                style: const TextStyle(
-                    color: TraumColors.onBackgroundMuted,
-                    fontFamily: 'DMSans',
-                    fontSize: 12)),
-            const SizedBox(width: 4),
-            Semantics(
-              button: true,
-              label: AppLocalizations.of(context)!.delete,
-              child: GestureDetector(
-                onTap: onRemove,
-                child: const Icon(Icons.close_rounded,
-                    color: TraumColors.onBackgroundMuted, size: 18),
+                size: 36,
               ),
-            ),
-          ]),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  entry.exerciseName,
+                  style: const TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+              Text(
+                '${entry.sets}x${entry.reps}',
+                style: const TextStyle(
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Semantics(
+                button: true,
+                label: AppLocalizations.of(context)!.delete,
+                child: GestureDetector(
+                  onTap: onRemove,
+                  child: const Icon(
+                    Icons.close_rounded,
+                    color: TraumColors.onBackgroundMuted,
+                    size: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
         );
       },
       loading: () => const SizedBox(height: 36),
@@ -255,63 +288,81 @@ class _ExercisePickerSheetState extends State<_ExercisePickerSheet> {
       maxChildSize: 0.95,
       minChildSize: 0.4,
       expand: false,
-      builder: (_, controller) => Column(children: [
-        const SizedBox(height: 12),
-        Container(
-            width: 36, height: 4,
+      builder: (_, controller) => Column(
+        children: [
+          const SizedBox(height: 12),
+          Container(
+            width: 36,
+            height: 4,
             decoration: BoxDecoration(
-                color: TraumColors.surfaceVariant,
-                borderRadius: BorderRadius.circular(2))),
-        const SizedBox(height: 14),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: TextField(
-            autofocus: true,
-            onChanged: _onSearchChanged,
-            style: const TextStyle(
-                color: TraumColors.onBackground, fontFamily: 'DMSans'),
-            decoration: InputDecoration(
-              hintText: l10n.searchExercise,
-              hintStyle: const TextStyle(color: TraumColors.onBackgroundMuted),
-              prefixIcon: const Icon(Icons.search_rounded,
-                  color: TraumColors.onBackgroundMuted),
-              filled: true,
-              fillColor: TraumColors.surfaceVariant,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(TraumRadius.input),
-                borderSide: BorderSide.none,
+              color: TraumColors.surfaceVariant,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 14),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: TextField(
+              autofocus: true,
+              onChanged: _onSearchChanged,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
+              decoration: InputDecoration(
+                hintText: l10n.searchExercise,
+                hintStyle: const TextStyle(
+                  color: TraumColors.onBackgroundMuted,
+                ),
+                prefixIcon: const Icon(
+                  Icons.search_rounded,
+                  color: TraumColors.onBackgroundMuted,
+                ),
+                filled: true,
+                fillColor: TraumColors.surfaceVariant,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(TraumRadius.input),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(height: 12),
-        Expanded(
-          child: ListView.builder(
-            controller: controller,
-            itemCount: filtered.length,
-            itemBuilder: (_, i) {
-              final ex = filtered[i];
-              return ListTile(
-                leading: ExerciseIcon(
+          const SizedBox(height: 12),
+          Expanded(
+            child: ListView.builder(
+              controller: controller,
+              itemCount: filtered.length,
+              itemBuilder: (_, i) {
+                final ex = filtered[i];
+                return ListTile(
+                  leading: ExerciseIcon(
                     muscleGroup: ex.muscleGroup,
                     exerciseName: ex.name,
-                    size: 40),
-                title: Text(ex.name,
+                    size: 40,
+                  ),
+                  title: Text(
+                    ex.name,
                     style: const TextStyle(
-                        color: TraumColors.onBackground,
-                        fontFamily: 'DMSans',
-                        fontSize: 14)),
-                subtitle: Text(ex.muscleGroup,
+                      color: TraumColors.onBackground,
+                      fontFamily: 'DMSans',
+                      fontSize: 14,
+                    ),
+                  ),
+                  subtitle: Text(
+                    ex.muscleGroup,
                     style: const TextStyle(
-                        color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans',
-                        fontSize: 12)),
-                onTap: () => Navigator.pop(context, ex),
-              );
-            },
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontSize: 12,
+                    ),
+                  ),
+                  onTap: () => Navigator.pop(context, ex),
+                );
+              },
+            ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }

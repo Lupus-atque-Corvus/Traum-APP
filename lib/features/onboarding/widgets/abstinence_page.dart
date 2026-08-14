@@ -31,7 +31,9 @@ class _AbstinencePageState extends ConsumerState<AbstinencePage> {
     final name = _nameCtrl.text.trim();
     if (name.isNotEmpty) {
       setState(() => _saving = true);
-      await ref.read(abstinenceDaoProvider).insertTracker(
+      await ref
+          .read(abstinenceDaoProvider)
+          .insertTracker(
             AbstinenceTrackersCompanion.insert(
               name: name,
               startDate: _start,
@@ -50,8 +52,8 @@ class _AbstinencePageState extends ConsumerState<AbstinencePage> {
       lastDate: DateTime.now(),
       builder: (ctx, child) => Theme(
         data: ThemeData.dark().copyWith(
-            colorScheme: const ColorScheme.dark(
-                primary: TraumColors.roseRed)),
+          colorScheme: const ColorScheme.dark(primary: TraumColors.roseRed),
+        ),
         child: child!,
       ),
     );
@@ -82,27 +84,36 @@ class _AbstinencePageState extends ConsumerState<AbstinencePage> {
                         gradient: TraumColors.gradientMedical,
                         borderRadius: BorderRadius.circular(26),
                       ),
-                      child: const Icon(Icons.shield_rounded,
-                          color: Colors.white, size: 44),
+                      child: const Icon(
+                        Icons.shield_rounded,
+                        color: Colors.white,
+                        size: 44,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
                   Center(
-                    child: Text(l10n.obAbstinenceTitle,
-                        style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
-                            color: TraumColors.onBackground,
-                            fontFamily: 'DMSans')),
+                    child: Text(
+                      l10n.obAbstinenceTitle,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Center(
-                    child: Text(l10n.obAbstinenceSubtitle,
-                        style: const TextStyle(
-                            fontSize: 14,
-                            color: TraumColors.onBackgroundMuted,
-                            fontFamily: 'DMSans'),
-                        textAlign: TextAlign.center),
+                    child: Text(
+                      l10n.obAbstinenceSubtitle,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   const SizedBox(height: 24),
                   for (final f in [
@@ -112,36 +123,47 @@ class _AbstinencePageState extends ConsumerState<AbstinencePage> {
                   ])
                     Padding(
                       padding: const EdgeInsets.only(bottom: 12),
-                      child: Row(children: [
-                        const Icon(Icons.check_circle_rounded,
-                            color: accent, size: 22),
-                        const SizedBox(width: 12),
-                        Expanded(
-                            child: Text(f,
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    color: TraumColors.onBackground,
-                                    fontFamily: 'DMSans'))),
-                      ]),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.check_circle_rounded,
+                            color: accent,
+                            size: 22,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              f,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: TraumColors.onBackground,
+                                fontFamily: 'DMSans',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _nameCtrl,
                     style: const TextStyle(
-                        color: TraumColors.onBackground,
-                        fontFamily: 'DMSans'),
+                      color: TraumColors.onBackground,
+                      fontFamily: 'DMSans',
+                    ),
                     decoration: InputDecoration(
                       labelText: l10n.obAbstinenceQuickAdd,
                       hintText: l10n.obAbstinenceHint,
                       labelStyle: const TextStyle(
-                          color: TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans'),
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                      ),
                       filled: true,
                       fillColor: TraumColors.surface,
                       border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(TraumRadius.card),
-                          borderSide: BorderSide.none),
+                        borderRadius: BorderRadius.circular(TraumRadius.card),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                     onChanged: (_) => setState(() {}),
                   ),
@@ -149,16 +171,24 @@ class _AbstinencePageState extends ConsumerState<AbstinencePage> {
                     const SizedBox(height: 12),
                     InkWell(
                       onTap: _pickDate,
-                      child: Row(children: [
-                        const Icon(Icons.event_rounded,
-                            color: accent, size: 18),
-                        const SizedBox(width: 8),
-                        Text('${l10n.obAbstinenceStart}: $dateStr',
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.event_rounded,
+                            color: accent,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '${l10n.obAbstinenceStart}: $dateStr',
                             style: const TextStyle(
-                                color: TraumColors.onBackground,
-                                fontFamily: 'DMSans',
-                                fontSize: 13)),
-                      ]),
+                              color: TraumColors.onBackground,
+                              fontFamily: 'DMSans',
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ],

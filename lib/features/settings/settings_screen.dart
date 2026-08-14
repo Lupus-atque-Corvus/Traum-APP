@@ -9,7 +9,8 @@ import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import 'package:permission_handler/permission_handler.dart' show openAppSettings;
+import 'package:permission_handler/permission_handler.dart'
+    show openAppSettings;
 import 'package:share_plus/share_plus.dart';
 import '../../core/navigation/nav_customization_sheet.dart';
 import '../../core/providers/database_provider.dart';
@@ -73,16 +74,25 @@ class SettingsScreen extends ConsumerWidget {
           _AccountSection(),
           const SizedBox(height: 16),
           ListTile(
-            leading: const Icon(Icons.medication_liquid_rounded,
-                color: TraumColors.onBackgroundMuted),
-            title: Text(l10n.settingsSubstanceDbInfo,
-                style: const TextStyle(
-                    color: TraumColors.onBackground, fontFamily: 'DMSans')),
-            subtitle: const Text('6.580 Einträge · Stand 24.07.2026',
-                style: TextStyle(
-                    color: TraumColors.onBackgroundSubtle,
-                    fontFamily: 'DMSans',
-                    fontSize: 12)),
+            leading: const Icon(
+              Icons.medication_liquid_rounded,
+              color: TraumColors.onBackgroundMuted,
+            ),
+            title: Text(
+              l10n.settingsSubstanceDbInfo,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
+            ),
+            subtitle: const Text(
+              '6.580 Einträge · Stand 24.07.2026',
+              style: TextStyle(
+                color: TraumColors.onBackgroundSubtle,
+                fontFamily: 'DMSans',
+                fontSize: 12,
+              ),
+            ),
           ),
           _VersionTile(),
         ],
@@ -285,8 +295,9 @@ class _CalendarSyncSectionState extends ConsumerState<_CalendarSyncSection> {
       // at this point — getAvailableCalendars() swallows the native-channel
       // failure silently. Ask explicitly so we can tell the two apart
       // instead of opening a picker with nothing to pick.
-      final granted =
-          await ref.read(calendarSyncServiceProvider).requestPermissions();
+      final granted = await ref
+          .read(calendarSyncServiceProvider)
+          .requestPermissions();
       if (granted) {
         await _loadCalendars();
         calendars = _availableCalendars;
@@ -445,8 +456,9 @@ class _UnitsSection extends ConsumerWidget {
 
 // ─── Notifications ───────────────────────────────────────────────────────────
 
-final _notificationPermissionStatusProvider =
-    FutureProvider.autoDispose<bool>((ref) => NotificationService.hasPermission());
+final _notificationPermissionStatusProvider = FutureProvider.autoDispose<bool>(
+  (ref) => NotificationService.hasPermission(),
+);
 
 class _NotificationsSection extends ConsumerWidget {
   @override
@@ -456,13 +468,11 @@ class _NotificationsSection extends ConsumerWidget {
     final habitTime = ref.watch(notifHabitTimeProvider);
     final todoTime = ref.watch(notifTodoTimeProvider);
     final medsAsync = ref.watch(allMedicationsStreamProvider);
-    final hasMedicationReminder = medsAsync.value
-            ?.any((m) => m.isActive && m.timings != '[]') ??
-        false;
+    final hasMedicationReminder =
+        medsAsync.value?.any((m) => m.isActive && m.timings != '[]') ?? false;
     final suppsAsync = ref.watch(supplementsStreamProvider);
-    final hasSupplementReminder = suppsAsync.value
-            ?.any((s) => s.isActive && s.timings != '[]') ??
-        false;
+    final hasSupplementReminder =
+        suppsAsync.value?.any((s) => s.isActive && s.timings != '[]') ?? false;
     final workout = ref.watch(notifWorkoutProvider);
     final water = ref.watch(notifWaterProvider);
     final habit = ref.watch(notifHabitProvider);
@@ -470,7 +480,8 @@ class _NotificationsSection extends ConsumerWidget {
     final period = ref.watch(notifPeriodProvider);
     final periodEnabled = ref.watch(isPeriodTrackingEnabledProvider);
     final permissionAsync = ref.watch(_notificationPermissionStatusProvider);
-    final anyReminderEnabled = hasMedicationReminder ||
+    final anyReminderEnabled =
+        hasMedicationReminder ||
         hasSupplementReminder ||
         workout ||
         water ||
@@ -512,12 +523,11 @@ class _NotificationsSection extends ConsumerWidget {
               if (!context.mounted) return;
               await _reschedule(context, ref);
             },
-            onTimeTap: () =>
-                _pickTime(context, ref, workoutTime, (t) async {
-                  await ref.read(notifWorkoutTimeProvider.notifier).set(t);
-                  if (!context.mounted) return;
-                  await _reschedule(context, ref);
-                }),
+            onTimeTap: () => _pickTime(context, ref, workoutTime, (t) async {
+              await ref.read(notifWorkoutTimeProvider.notifier).set(t);
+              if (!context.mounted) return;
+              await _reschedule(context, ref);
+            }),
           ),
           _NotifTile(
             title: l10n.notifWater,
@@ -539,12 +549,11 @@ class _NotificationsSection extends ConsumerWidget {
               if (!context.mounted) return;
               await _reschedule(context, ref);
             },
-            onTimeTap: () =>
-                _pickTime(context, ref, habitTime, (t) async {
-                  await ref.read(notifHabitTimeProvider.notifier).set(t);
-                  if (!context.mounted) return;
-                  await _reschedule(context, ref);
-                }),
+            onTimeTap: () => _pickTime(context, ref, habitTime, (t) async {
+              await ref.read(notifHabitTimeProvider.notifier).set(t);
+              if (!context.mounted) return;
+              await _reschedule(context, ref);
+            }),
           ),
           _NotifTile(
             title: l10n.notifTodos,
@@ -555,12 +564,11 @@ class _NotificationsSection extends ConsumerWidget {
               if (!context.mounted) return;
               await _reschedule(context, ref);
             },
-            onTimeTap: () =>
-                _pickTime(context, ref, todoTime, (t) async {
-                  await ref.read(notifTodoTimeProvider.notifier).set(t);
-                  if (!context.mounted) return;
-                  await _reschedule(context, ref);
-                }),
+            onTimeTap: () => _pickTime(context, ref, todoTime, (t) async {
+              await ref.read(notifTodoTimeProvider.notifier).set(t);
+              if (!context.mounted) return;
+              await _reschedule(context, ref);
+            }),
           ),
           if (periodEnabled)
             _NotifTile(
@@ -644,8 +652,11 @@ class _NotificationPermissionWarning extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.notifications_off_rounded,
-              color: TraumColors.roseRed, size: 20),
+          const Icon(
+            Icons.notifications_off_rounded,
+            color: TraumColors.roseRed,
+            size: 20,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -672,10 +683,7 @@ class _NotificationPermissionWarning extends StatelessWidget {
               ],
             ),
           ),
-          TextButton(
-            onPressed: onOpenSettings,
-            child: Text(l10n.openSettings),
-          ),
+          TextButton(onPressed: onOpenSettings, child: Text(l10n.openSettings)),
         ],
       ),
     );
@@ -888,7 +896,9 @@ class _GoalsSection extends ConsumerWidget {
     void Function(double) onSave,
   ) {
     final l10n = AppLocalizations.of(context)!;
-    final ctrl = TextEditingController(text: current.toStringAsFixed(1).replaceAll('.', ','));
+    final ctrl = TextEditingController(
+      text: current.toStringAsFixed(1).replaceAll('.', ','),
+    );
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -1424,18 +1434,25 @@ void _showBackupProgressDialog(
     barrierDismissible: false,
     builder: (_) => AlertDialog(
       backgroundColor: TraumColors.surface,
-      title: Text(title,
-          style: const TextStyle(
-              fontFamily: 'DMSans', color: TraumColors.onBackground)),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackground,
+        ),
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(body,
-              style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  color: TraumColors.onBackgroundMuted,
-                  fontSize: 13)),
+          Text(
+            body,
+            style: const TextStyle(
+              fontFamily: 'DMSans',
+              color: TraumColors.onBackgroundMuted,
+              fontSize: 13,
+            ),
+          ),
           const SizedBox(height: 18),
           if (progress != null)
             ValueListenableBuilder<_BackupProgress>(
@@ -1476,11 +1493,14 @@ class _BackupProgressBar extends StatelessWidget {
         ),
         if (label != null) ...[
           const SizedBox(height: 6),
-          Text(label!,
-              style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  color: TraumColors.onBackgroundSubtle,
-                  fontSize: 11)),
+          Text(
+            label!,
+            style: const TextStyle(
+              fontFamily: 'DMSans',
+              color: TraumColors.onBackgroundSubtle,
+              fontSize: 11,
+            ),
+          ),
         ],
       ],
     );
@@ -1742,7 +1762,10 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
     if (picked == null) return;
     if (!context.mounted) return;
     _showBackupProgressDialog(
-        context, l10n.importProgressTitle, l10n.importProgressBody);
+      context,
+      l10n.importProgressTitle,
+      l10n.importProgressBody,
+    );
     final result = await service.restoreFromBytes(picked);
     if (!context.mounted) return;
     _hideBackupProgressDialog(context);
@@ -1882,22 +1905,32 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
     final service = ref.read(backupServiceProvider);
     Navigator.pop(context);
     if (!context.mounted) return;
-    final progress =
-        ValueNotifier(_BackupProgress(l10n.backupProgressPhaseTables));
+    final progress = ValueNotifier(
+      _BackupProgress(l10n.backupProgressPhaseTables),
+    );
     _showBackupProgressDialog(
-        context, l10n.backupProgressTitle, l10n.backupProgressBody,
-        progress: progress);
+      context,
+      l10n.backupProgressTitle,
+      l10n.backupProgressBody,
+      progress: progress,
+    );
     try {
       // Only the build step (bounded, isolate-backed) sits under the
       // progress dialog. The share sheet that follows is native OS UI whose
       // completion we can't reliably await — see BackupService.shareFile.
       final built = await service.buildBackupFile(
-        onTableProgress: (done, total) => progress.value =
-            _BackupProgress(l10n.backupProgressPhaseTables, done, total),
-        onMediaProgress: (done, total) => progress.value =
-            _BackupProgress(l10n.backupProgressPhaseMedia, done, total),
-        onEncodingStart: () => progress.value =
-            _BackupProgress(l10n.backupProgressPhaseEncoding),
+        onTableProgress: (done, total) => progress.value = _BackupProgress(
+          l10n.backupProgressPhaseTables,
+          done,
+          total,
+        ),
+        onMediaProgress: (done, total) => progress.value = _BackupProgress(
+          l10n.backupProgressPhaseMedia,
+          done,
+          total,
+        ),
+        onEncodingStart: () =>
+            progress.value = _BackupProgress(l10n.backupProgressPhaseEncoding),
       );
       if (!context.mounted) return;
       _hideBackupProgressDialog(context);
@@ -1932,7 +1965,10 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
     Navigator.pop(context);
     if (!context.mounted) return;
     _showBackupProgressDialog(
-        context, l10n.backupProgressTitle, l10n.backupProgressBody);
+      context,
+      l10n.backupProgressTitle,
+      l10n.backupProgressBody,
+    );
     try {
       final built = await service.buildModulesFile(selected, format: format);
       if (!context.mounted) return;
@@ -1946,8 +1982,13 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
         );
         return;
       }
-      unawaited(service.shareFile(built.file,
-          subject: 'TRAUM Export', mimeType: built.mimeType));
+      unawaited(
+        service.shareFile(
+          built.file,
+          subject: 'TRAUM Export',
+          mimeType: built.mimeType,
+        ),
+      );
       messenger.showSnackBar(
         SnackBar(
           content: Text(l10n.backupCreated(built.rowCount, 0)),
@@ -1979,21 +2020,28 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
     try {
       final file = await service.generatePdf(from: from, to: to);
       messenger.hideCurrentSnackBar();
-      await SharePlus.instance.share(ShareParams(
-        files: [XFile(file.path, mimeType: 'application/pdf')],
-        subject: l10n.nutritionReport,
-      ));
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(file.path, mimeType: 'application/pdf')],
+          subject: l10n.nutritionReport,
+        ),
+      );
     } on EmptyReportException {
       messenger.hideCurrentSnackBar();
-      messenger.showSnackBar(SnackBar(
-        content: Text(l10n.nutritionReportEmpty),
-        backgroundColor: TraumColors.amberGold,
-      ));
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.nutritionReportEmpty),
+          backgroundColor: TraumColors.amberGold,
+        ),
+      );
     } catch (e) {
       messenger.hideCurrentSnackBar();
-      messenger.showSnackBar(SnackBar(
+      messenger.showSnackBar(
+        SnackBar(
           content: Text(l10n.backupFailed('$e')),
-          backgroundColor: TraumColors.roseRed));
+          backgroundColor: TraumColors.roseRed,
+        ),
+      );
     }
   }
 
@@ -2160,8 +2208,7 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            onPressed:
-                _anySelected ? () => _runSelectiveExport(context) : null,
+            onPressed: _anySelected ? () => _runSelectiveExport(context) : null,
           ),
           const SizedBox(height: 20),
           Text(
@@ -2604,10 +2651,7 @@ class _Section extends StatelessWidget {
           // ListTiles used throughout every settings section paint their
           // ink splashes nowhere, since this Container's own decoration
           // intercepts the paint layer they'd otherwise use.
-          child: Material(
-            type: MaterialType.transparency,
-            child: child,
-          ),
+          child: Material(type: MaterialType.transparency, child: child),
         ),
       ],
     );

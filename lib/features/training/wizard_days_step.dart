@@ -49,10 +49,12 @@ class _WizardDaysStepState extends State<WizardDaysStep> {
         _days.remove(dow);
         _controllers.remove(dow)?.dispose();
       } else {
-        final defaultName = widget.template.days
-            .cast<TemplateDay?>()
-            .firstWhere((d) => d?.dayOfWeek == dow, orElse: () => null)
-            ?.name ?? 'Training ${_weekLabels[dow - 1]}';
+        final defaultName =
+            widget.template.days
+                .cast<TemplateDay?>()
+                .firstWhere((d) => d?.dayOfWeek == dow, orElse: () => null)
+                ?.name ??
+            'Training ${_weekLabels[dow - 1]}';
         _days[dow] = defaultName;
         _controllers[dow] = TextEditingController(text: defaultName);
       }
@@ -69,18 +71,20 @@ class _WizardDaysStepState extends State<WizardDaysStep> {
         Text(
           l10n.daysSelectTitle,
           style: const TextStyle(
-              color: TraumColors.onBackground,
-              fontFamily: 'DMSans',
-              fontWeight: FontWeight.w700,
-              fontSize: 20),
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+            fontWeight: FontWeight.w700,
+            fontSize: 20,
+          ),
         ),
         const SizedBox(height: 6),
         Text(
           l10n.daysSelectSubtitle,
           style: const TextStyle(
-              color: TraumColors.onBackgroundMuted,
-              fontFamily: 'DMSans',
-              fontSize: 14),
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            fontSize: 14,
+          ),
         ),
         const SizedBox(height: 20),
         // Weekday chips
@@ -97,9 +101,7 @@ class _WizardDaysStepState extends State<WizardDaysStep> {
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color: active
-                      ? TraumColors.coralOrange
-                      : TraumColors.surface,
+                  color: active ? TraumColors.coralOrange : TraumColors.surface,
                   borderRadius: BorderRadius.circular(TraumRadius.chip),
                   border: Border.all(
                     color: active
@@ -111,10 +113,13 @@ class _WizardDaysStepState extends State<WizardDaysStep> {
                   child: Text(
                     _weekLabels[i],
                     style: TextStyle(
-                        color: active ? Colors.white : TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13),
+                      color: active
+                          ? Colors.white
+                          : TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
                   ),
                 ),
               ),
@@ -126,57 +131,70 @@ class _WizardDaysStepState extends State<WizardDaysStep> {
           Text(
             AppLocalizations.of(context)!.sessionNamesLabel,
             style: const TextStyle(
-                color: TraumColors.onBackgroundMuted,
-                fontFamily: 'DMSans',
-                fontSize: 12,
-                letterSpacing: 0.8),
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontSize: 12,
+              letterSpacing: 0.8,
+            ),
           ),
           const SizedBox(height: 10),
-          ...(_days.keys.toList()..sort()).map((dow) => Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Row(children: [
-              Container(
-                width: 36, height: 36,
-                decoration: const BoxDecoration(
-                    color: TraumColors.coralDim, shape: BoxShape.circle),
-                child: Center(
-                  child: Text(
-                    _weekLabels[dow - 1],
-                    style: const TextStyle(
-                        color: TraumColors.coralOrange,
-                        fontFamily: 'DMSans',
-                        fontWeight: FontWeight.w700,
-                        fontSize: 12),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TextField(
-                  controller: _controllers[dow],
-                  style: const TextStyle(
-                      color: TraumColors.onBackground,
-                      fontFamily: 'DMSans',
-                      fontSize: 14),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: TraumColors.surface,
-                    border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(TraumRadius.input),
-                      borderSide: BorderSide.none,
+          ...(_days.keys.toList()..sort()).map(
+            (dow) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: const BoxDecoration(
+                      color: TraumColors.coralDim,
+                      shape: BoxShape.circle,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 10),
+                    child: Center(
+                      child: Text(
+                        _weekLabels[dow - 1],
+                        style: const TextStyle(
+                          color: TraumColors.coralOrange,
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
                   ),
-                  onChanged: (v) {
-                    _days[dow] = v;
-                    widget.onChanged(Map.from(_days));
-                  },
-                ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextField(
+                      controller: _controllers[dow],
+                      style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontSize: 14,
+                      ),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: TraumColors.surface,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            TraumRadius.input,
+                          ),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                      ),
+                      onChanged: (v) {
+                        _days[dow] = v;
+                        widget.onChanged(Map.from(_days));
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ]),
-          )),
+            ),
+          ),
         ],
       ],
     );

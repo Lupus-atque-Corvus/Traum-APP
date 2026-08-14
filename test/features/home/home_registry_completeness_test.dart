@@ -18,37 +18,46 @@ void main() {
       final d = homeWidgetRegistry[t];
       expect(d, isNotNull, reason: 'missing registry entry: $t');
       expect(d!.sizes, isNotEmpty, reason: '$t has no sizes');
-      expect(d.sizes.contains(d.defaultSize), isTrue,
-          reason: '$t defaultSize not in sizes');
+      expect(
+        d.sizes.contains(d.defaultSize),
+        isTrue,
+        reason: '$t defaultSize not in sizes',
+      );
       expect(d.title.trim(), isNotEmpty, reason: '$t has empty title');
     }
     expect(homeWidgetRegistry.length, HomeWidgetType.values.length);
   });
 
-  testWidgets('every widget builds for each allowed size without throwing',
-      (tester) async {
+  testWidgets('every widget builds for each allowed size without throwing', (
+    tester,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     final db = TraumDatabase.forTesting(NativeDatabase.memory());
     addTearDown(db.close);
     for (final t in HomeWidgetType.values) {
       final d = homeWidgetRegistry[t]!;
       for (final size in HomeTileSize.values) {
-        await tester.pumpWidget(ProviderScope(
-          overrides: [
-            sharedPreferencesProvider.overrideWithValue(prefs),
-            databaseProvider.overrideWithValue(db),
-          ],
-          child: MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: Scaffold(
-              body: Consumer(
-                builder: (ctx, ref, _) => SizedBox(
-                    width: 180, height: 180, child: d.builder(ctx, ref, size)),
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              sharedPreferencesProvider.overrideWithValue(prefs),
+              databaseProvider.overrideWithValue(db),
+            ],
+            child: MaterialApp(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: Scaffold(
+                body: Consumer(
+                  builder: (ctx, ref, _) => SizedBox(
+                    width: 180,
+                    height: 180,
+                    child: d.builder(ctx, ref, size),
+                  ),
+                ),
               ),
             ),
           ),
-        ));
+        );
         // Let stream-backed providers deliver their first value before the
         // next iteration replaces the scope (StreamProvider.autoDispose reports
         // an error if disposed while still in its initial loading state).

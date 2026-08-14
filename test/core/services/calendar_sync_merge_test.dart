@@ -95,7 +95,12 @@ void main() {
   test('app-origin appointment differs from device event -> pushUpdate', () {
     final actions = computeSyncActions(
       appAppointments: [
-        apt(id: 2, externalEventId: 'dev-3', isAppOrigin: true, title: 'App-Titel'),
+        apt(
+          id: 2,
+          externalEventId: 'dev-3',
+          isAppOrigin: true,
+          title: 'App-Titel',
+        ),
       ],
       deviceEvents: [event(externalId: 'dev-3', title: 'Geraete-Titel')],
       windowStart: windowStart,
@@ -108,46 +113,48 @@ void main() {
   });
 
   test(
-      'app-origin appointment linked but missing on device (in window) -> deleteLocal',
-      () {
-    final actions = computeSyncActions(
-      appAppointments: [
-        apt(
-          id: 3,
-          externalEventId: 'dev-4',
-          isAppOrigin: true,
-          start: DateTime(2026, 6, 1),
-        ),
-      ],
-      deviceEvents: const [],
-      windowStart: windowStart,
-      windowEnd: windowEnd,
-    );
-    expect(actions, hasLength(1));
-    expect(actions.single.type, SyncActionType.deleteLocal);
-    expect(actions.single.appointmentId, 3);
-  });
+    'app-origin appointment linked but missing on device (in window) -> deleteLocal',
+    () {
+      final actions = computeSyncActions(
+        appAppointments: [
+          apt(
+            id: 3,
+            externalEventId: 'dev-4',
+            isAppOrigin: true,
+            start: DateTime(2026, 6, 1),
+          ),
+        ],
+        deviceEvents: const [],
+        windowStart: windowStart,
+        windowEnd: windowEnd,
+      );
+      expect(actions, hasLength(1));
+      expect(actions.single.type, SyncActionType.deleteLocal);
+      expect(actions.single.appointmentId, 3);
+    },
+  );
 
   test(
-      'device-origin app copy missing on device (in window) -> deleteLocal',
-      () {
-    final actions = computeSyncActions(
-      appAppointments: [
-        apt(
-          id: 4,
-          externalEventId: 'dev-5',
-          isAppOrigin: false,
-          start: DateTime(2026, 6, 1),
-        ),
-      ],
-      deviceEvents: const [],
-      windowStart: windowStart,
-      windowEnd: windowEnd,
-    );
-    expect(actions, hasLength(1));
-    expect(actions.single.type, SyncActionType.deleteLocal);
-    expect(actions.single.appointmentId, 4);
-  });
+    'device-origin app copy missing on device (in window) -> deleteLocal',
+    () {
+      final actions = computeSyncActions(
+        appAppointments: [
+          apt(
+            id: 4,
+            externalEventId: 'dev-5',
+            isAppOrigin: false,
+            start: DateTime(2026, 6, 1),
+          ),
+        ],
+        deviceEvents: const [],
+        windowStart: windowStart,
+        windowEnd: windowEnd,
+      );
+      expect(actions, hasLength(1));
+      expect(actions.single.type, SyncActionType.deleteLocal);
+      expect(actions.single.appointmentId, 4);
+    },
+  );
 
   test('identical both sides -> none', () {
     final actions = computeSyncActions(
@@ -187,7 +194,12 @@ void main() {
   test('null description on one side treated same as empty string -> none', () {
     final actions = computeSyncActions(
       appAppointments: [
-        apt(id: 8, externalEventId: 'dev-8', isAppOrigin: true, description: null),
+        apt(
+          id: 8,
+          externalEventId: 'dev-8',
+          isAppOrigin: true,
+          description: null,
+        ),
       ],
       deviceEvents: [event(externalId: 'dev-8', description: '')],
       windowStart: windowStart,
@@ -204,7 +216,10 @@ void main() {
         apt(id: 9, externalEventId: 'dev-9', isAppOrigin: true, start: start),
       ],
       deviceEvents: [
-        event(externalId: 'dev-9', start: start.add(const Duration(seconds: 30))),
+        event(
+          externalId: 'dev-9',
+          start: start.add(const Duration(seconds: 30)),
+        ),
       ],
       windowStart: windowStart,
       windowEnd: windowEnd,

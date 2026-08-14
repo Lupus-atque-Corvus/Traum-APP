@@ -61,8 +61,11 @@ IconData iconFromName(String? name) {
 ///
 /// Known icon names render as the mapped [Icon]; anything else (emoji) renders
 /// as [Text]. Falls back to a generic category icon when [value] is empty.
-Widget budgetCategoryGlyph(String? value,
-    {required Color color, double size = 20}) {
+Widget budgetCategoryGlyph(
+  String? value, {
+  required Color color,
+  double size = 20,
+}) {
   if (value == null || value.isEmpty) {
     return Icon(Icons.category_outlined, color: color, size: size);
   }

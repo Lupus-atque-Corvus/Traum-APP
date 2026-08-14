@@ -40,9 +40,18 @@ void main() {
   group('kNutrientCatalog', () {
     test('has the 12 expected keys in order', () {
       expect(kNutrientCatalog.map((n) => n.key).toList(), [
-        'sugar', 'fiber', 'satFat', 'salt',
-        'vitC', 'vitD', 'vitB12', 'calcium',
-        'iron', 'magnesium', 'zinc', 'potassium',
+        'sugar',
+        'fiber',
+        'satFat',
+        'salt',
+        'vitC',
+        'vitD',
+        'vitB12',
+        'calcium',
+        'iron',
+        'magnesium',
+        'zinc',
+        'potassium',
       ]);
     });
 
@@ -96,23 +105,41 @@ void main() {
   group('supplementContribution', () {
     test('builds single-key MicroNutrients from dose', () {
       final c = supplementContribution(
-          nutrientKey: 'vitD', dosageAmount: '1000', dosageUnit: 'IU');
+        nutrientKey: 'vitD',
+        dosageAmount: '1000',
+        dosageUnit: 'IU',
+      );
       expect(c.values, {'vitD': 25});
     });
 
     test('empty when no nutrientKey', () {
-      expect(supplementContribution(
-              nutrientKey: null, dosageAmount: '400', dosageUnit: 'mg')
-          .values, isEmpty);
+      expect(
+        supplementContribution(
+          nutrientKey: null,
+          dosageAmount: '400',
+          dosageUnit: 'mg',
+        ).values,
+        isEmpty,
+      );
     });
 
     test('empty when dose unparseable or non-convertible', () {
-      expect(supplementContribution(
-              nutrientKey: 'iron', dosageAmount: 'x', dosageUnit: 'mg')
-          .values, isEmpty);
-      expect(supplementContribution(
-              nutrientKey: 'iron', dosageAmount: '1', dosageUnit: 'Kapsel(n)')
-          .values, isEmpty);
+      expect(
+        supplementContribution(
+          nutrientKey: 'iron',
+          dosageAmount: 'x',
+          dosageUnit: 'mg',
+        ).values,
+        isEmpty,
+      );
+      expect(
+        supplementContribution(
+          nutrientKey: 'iron',
+          dosageAmount: '1',
+          dosageUnit: 'Kapsel(n)',
+        ).values,
+        isEmpty,
+      );
     });
   });
 
@@ -120,7 +147,7 @@ void main() {
     test('normalizes OFF gram values to canonical units', () {
       final m = offProductMicros({
         'vitamin-c_100g': 0.06, // 60 mg
-        'calcium_100g': 0.12,   // 120 mg
+        'calcium_100g': 0.12, // 120 mg
         'vitamin-d_100g': 0.00001, // 10 µg
       });
       expect(m.values['vitC'], closeTo(60, 0.001));

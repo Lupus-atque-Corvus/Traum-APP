@@ -94,10 +94,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const TrainingWizardScreen(),
       ),
       ShellRoute(
-        builder: (context, state, child) => TraumScaffold(
-          location: state.matchedLocation,
-          child: child,
-        ),
+        builder: (context, state, child) =>
+            TraumScaffold(location: state.matchedLocation, child: child),
         routes: [
           GoRoute(path: Routes.home, builder: (_, _) => const HomeScreen()),
           GoRoute(
@@ -112,7 +110,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: 'active',
                 builder: (_, state) {
                   final dayIdStr = state.uri.queryParameters['dayId'];
-                  final dayId = dayIdStr != null ? int.tryParse(dayIdStr) : null;
+                  final dayId = dayIdStr != null
+                      ? int.tryParse(dayIdStr)
+                      : null;
                   return ActiveWorkoutScreen(dayId: dayId);
                 },
               ),

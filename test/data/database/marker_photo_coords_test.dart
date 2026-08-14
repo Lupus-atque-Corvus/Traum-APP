@@ -11,10 +11,16 @@ void main() {
   test('marker photo stores and reads its own coordinates', () async {
     final collId = await db.mapCollectionsDao.insert(
       MapCollectionsCompanion.insert(
-          name: 'C', iconName: 'map', createdAt: DateTime.now()),
+        name: 'C',
+        iconName: 'map',
+        createdAt: DateTime.now(),
+      ),
     );
     final markerId = await db.mapMarkersDao.insert(
-      MapMarkersCompanion.insert(collectionId: collId, createdAt: DateTime.now()),
+      MapMarkersCompanion.insert(
+        collectionId: collId,
+        createdAt: DateTime.now(),
+      ),
     );
     final photoId = await db.markerPhotosDao.insert(
       MarkerPhotosCompanion.insert(

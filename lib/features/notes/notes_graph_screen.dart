@@ -89,29 +89,39 @@ class _NotesGraphScreenState extends ConsumerState<NotesGraphScreen> {
         backgroundColor: TraumColors.background,
         elevation: 0,
         leading: BackButton(
-            color: TraumColors.onBackground, onPressed: () => context.pop()),
-        title: Text(l10n.notes_graph,
-            style: const TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackground,
-                fontWeight: FontWeight.w700)),
+          color: TraumColors.onBackground,
+          onPressed: () => context.pop(),
+        ),
+        title: Text(
+          l10n.notes_graph,
+          style: const TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackground,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         actions: [
           TextButton.icon(
             onPressed: _focusId == null
                 ? null
                 : () => setState(() => _local = !_local),
-            icon: Icon(_local ? Icons.hub_rounded : Icons.scatter_plot_rounded,
-                size: 18,
+            icon: Icon(
+              _local ? Icons.hub_rounded : Icons.scatter_plot_rounded,
+              size: 18,
+              color: _focusId == null
+                  ? TraumColors.onBackgroundSubtle
+                  : kNotesAccent,
+            ),
+            label: Text(
+              _local ? l10n.notes_local_graph : l10n.notes_full_graph,
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                fontSize: 12,
                 color: _focusId == null
                     ? TraumColors.onBackgroundSubtle
-                    : kNotesAccent),
-            label: Text(_local ? l10n.notes_local_graph : l10n.notes_full_graph,
-                style: TextStyle(
-                    fontFamily: 'DMSans',
-                    fontSize: 12,
-                    color: _focusId == null
-                        ? TraumColors.onBackgroundSubtle
-                        : kNotesAccent)),
+                    : kNotesAccent,
+              ),
+            ),
           ),
         ],
       ),
@@ -123,7 +133,9 @@ class _NotesGraphScreenState extends ConsumerState<NotesGraphScreen> {
         data: (data) {
           if (data.nodes.isEmpty) {
             return NotesEmptyState(
-                icon: Icons.hub_outlined, message: l10n.notes_no_notes);
+              icon: Icons.hub_outlined,
+              message: l10n.notes_no_notes,
+            );
           }
           return Column(
             children: [
@@ -132,11 +144,14 @@ class _NotesGraphScreenState extends ConsumerState<NotesGraphScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
-                      Text('${l10n.notes_neighbor_depth}: $_depth',
-                          style: const TextStyle(
-                              fontFamily: 'DMSans',
-                              color: TraumColors.onBackgroundMuted,
-                              fontSize: 13)),
+                      Text(
+                        '${l10n.notes_neighbor_depth}: $_depth',
+                        style: const TextStyle(
+                          fontFamily: 'DMSans',
+                          color: TraumColors.onBackgroundMuted,
+                          fontSize: 13,
+                        ),
+                      ),
                       Expanded(
                         child: Slider(
                           value: _depth.toDouble(),
@@ -162,10 +177,14 @@ class _NotesGraphScreenState extends ConsumerState<NotesGraphScreen> {
     final visible = _visibleNodes(data);
     final notesById = {for (final n in data.nodes) n.id: n};
     final relevantEdges = data.edges
-        .where((e) => visible.contains(e.$1) && visible.contains(e.$2) && e.$1 != e.$2)
+        .where(
+          (e) =>
+              visible.contains(e.$1) && visible.contains(e.$2) && e.$1 != e.$2,
+        )
         .toList();
 
-    final structureChanged = _cachedGraph == null ||
+    final structureChanged =
+        _cachedGraph == null ||
         !setEquals(_lastVisibleNodes, visible) ||
         !listEquals(_lastEdges, relevantEdges);
 
@@ -178,10 +197,13 @@ class _NotesGraphScreenState extends ConsumerState<NotesGraphScreen> {
         graph.addNode(node);
       }
       for (final (s, t) in relevantEdges) {
-        graph.addEdge(nodeById[s]!, nodeById[t]!,
-            paint: Paint()
-              ..color = kNotesAccent.withValues(alpha: 0.35)
-              ..strokeWidth = 1);
+        graph.addEdge(
+          nodeById[s]!,
+          nodeById[t]!,
+          paint: Paint()
+            ..color = kNotesAccent.withValues(alpha: 0.35)
+            ..strokeWidth = 1,
+        );
       }
       _cachedGraph = graph;
       // Feste Iterationszahl → einmalige Stabilisierung statt Dauer-Repaint.
@@ -264,10 +286,12 @@ class _NodeWidget extends StatelessWidget {
             width: size,
             height: size,
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-                kNotesAccent.withValues(alpha: focused ? 1 : 0.85),
-                TraumColors.indigoBlue.withValues(alpha: focused ? 1 : 0.7),
-              ]),
+              gradient: LinearGradient(
+                colors: [
+                  kNotesAccent.withValues(alpha: focused ? 1 : 0.85),
+                  TraumColors.indigoBlue.withValues(alpha: focused ? 1 : 0.7),
+                ],
+              ),
               shape: BoxShape.circle,
               border: focused
                   ? Border.all(color: TraumColors.onBackground, width: 2)
@@ -295,9 +319,10 @@ class _NodeWidget extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackground,
-                    fontSize: 10),
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                  fontSize: 10,
+                ),
               ),
             ),
           ),

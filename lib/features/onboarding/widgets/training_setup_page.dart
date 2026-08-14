@@ -34,29 +34,38 @@ class TrainingSetupPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 8),
-          Text(l10n.obTrainingTitle,
-              style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
-                  color: TraumColors.onBackground,
-                  fontFamily: 'DMSans')),
+          Text(
+            l10n.obTrainingTitle,
+            style: const TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.w700,
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+            ),
+          ),
           const SizedBox(height: 8),
-          Text(l10n.obTrainingSubtitle,
-              style: const TextStyle(
-                  fontSize: 14,
-                  color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans')),
+          Text(
+            l10n.obTrainingSubtitle,
+            style: const TextStyle(
+              fontSize: 14,
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+            ),
+          ),
           const SizedBox(height: 20),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.obTrainingLevel,
-                      style: const TextStyle(
-                          fontSize: 13,
-                          color: TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans')),
+                  Text(
+                    l10n.obTrainingLevel,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   _ChipRow(
                     options: [
@@ -69,11 +78,14 @@ class TrainingSetupPage extends StatelessWidget {
                     onSelect: onLevelChanged,
                   ),
                   const SizedBox(height: 20),
-                  Text(l10n.obTrainingGoalLabel,
-                      style: const TextStyle(
-                          fontSize: 13,
-                          color: TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans')),
+                  Text(
+                    l10n.obTrainingGoalLabel,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   _ChipRow(
                     options: [
@@ -89,17 +101,23 @@ class TrainingSetupPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(l10n.obTrainingPerWeek,
-                          style: const TextStyle(
-                              fontSize: 14,
-                              color: TraumColors.onBackground,
-                              fontFamily: 'DMSans')),
-                      Text('$daysPerWeek',
-                          style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: accent,
-                              fontFamily: 'DMSans')),
+                      Text(
+                        l10n.obTrainingPerWeek,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: TraumColors.onBackground,
+                          fontFamily: 'DMSans',
+                        ),
+                      ),
+                      Text(
+                        '$daysPerWeek',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: accent,
+                          fontFamily: 'DMSans',
+                        ),
+                      ),
                     ],
                   ),
                   Slider(
@@ -145,25 +163,25 @@ class _ChipRow extends StatelessWidget {
         return GestureDetector(
           onTap: () => onSelect(o.$1),
           child: Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
               color: isSel
                   ? color.withValues(alpha: 0.15)
                   : TraumColors.surface,
               borderRadius: BorderRadius.circular(TraumRadius.chip),
               border: Border.all(
-                  color: isSel ? color : TraumColors.surfaceVariant),
+                color: isSel ? color : TraumColors.surfaceVariant,
+              ),
             ),
-            child: Text(o.$2,
-                style: TextStyle(
-                    fontSize: 13,
-                    fontFamily: 'DMSans',
-                    fontWeight:
-                        isSel ? FontWeight.w600 : FontWeight.normal,
-                    color: isSel
-                        ? color
-                        : TraumColors.onBackgroundMuted)),
+            child: Text(
+              o.$2,
+              style: TextStyle(
+                fontSize: 13,
+                fontFamily: 'DMSans',
+                fontWeight: isSel ? FontWeight.w600 : FontWeight.normal,
+                color: isSel ? color : TraumColors.onBackgroundMuted,
+              ),
+            ),
           ),
         );
       }).toList(),

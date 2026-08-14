@@ -66,7 +66,9 @@ class _TraumAppState extends ConsumerState<TraumApp> {
     // Navigate to the route that triggered the widget tap (cold start).
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkWidgetDeepLink());
     // iOS: handle widgetURL launches + taps via home_widget.
-    WidgetsBinding.instance.addPostFrameCallback((_) => _checkWidgetUriLaunch());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _checkWidgetUriLaunch(),
+    );
     _widgetClickSub = HomeWidget.widgetClicked.listen(_onWidgetUri);
   }
 

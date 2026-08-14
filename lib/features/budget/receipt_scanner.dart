@@ -18,7 +18,9 @@ class ReceiptScanResult {
 }
 
 class ReceiptScanner {
-  static final _recognizer = TextRecognizer(script: TextRecognitionScript.latin);
+  static final _recognizer = TextRecognizer(
+    script: TextRecognitionScript.latin,
+  );
 
   static Future<ReceiptScanResult?> scanFromCamera() async {
     final picked = await ImagePicker().pickImage(

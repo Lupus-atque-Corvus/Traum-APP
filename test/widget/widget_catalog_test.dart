@@ -5,11 +5,33 @@ import 'package:traum/widget/widget_catalog.dart';
 /// Native-only v2-Visual-Widgets: erscheinen im Funktions-Widget-Picker,
 /// haben aber bewusst KEINEN HomeWidgetType (kein In-App-Dashboard-Eintrag).
 const kNativeOnlyV2Keys = <String>[
-  'dailyGoals', 'stepsWeek', 'weightTrendChart', 'macroDonut', 'habitWeek', 'moodWeek',
-  'waterBottle', 'monthTrendChart', 'morningRoutine', 'quoteOfDay', 'celebrate', 'countdown',
-  'healthRings', 'sleepWeek', 'nutritionDash', 'mealsTodayList', 'trainingDash', 'volumeWeek',
-  'todayAgenda', 'budgetDash', 'categoryDonut', 'diaryDash', 'abstinenceDash', 'substancesDash',
-  'cycleRing', 'pinnedNoteCard', 'mapDash',
+  'dailyGoals',
+  'stepsWeek',
+  'weightTrendChart',
+  'macroDonut',
+  'habitWeek',
+  'moodWeek',
+  'waterBottle',
+  'monthTrendChart',
+  'morningRoutine',
+  'quoteOfDay',
+  'celebrate',
+  'countdown',
+  'healthRings',
+  'sleepWeek',
+  'nutritionDash',
+  'mealsTodayList',
+  'trainingDash',
+  'volumeWeek',
+  'todayAgenda',
+  'budgetDash',
+  'categoryDonut',
+  'diaryDash',
+  'abstinenceDash',
+  'substancesDash',
+  'cycleRing',
+  'pinnedNoteCard',
+  'mapDash',
 ];
 
 void main() {
@@ -22,8 +44,11 @@ void main() {
     for (final e in widgetCatalog) {
       expect(e.key, isNotEmpty, reason: 'key leer');
       expect(e.title, isNotEmpty, reason: '${e.key}: title leer');
-      expect(e.accentHex, matches(RegExp(r'^#[0-9A-Fa-f]{6}$')),
-          reason: '${e.key}: accentHex ungültig');
+      expect(
+        e.accentHex,
+        matches(RegExp(r'^#[0-9A-Fa-f]{6}$')),
+        reason: '${e.key}: accentHex ungültig',
+      );
       expect(e.slots, isNotEmpty, reason: '${e.key}: keine slots');
       expect(e.dataKeys, isNotEmpty, reason: '${e.key}: keine dataKeys');
     }
@@ -66,31 +91,50 @@ void main() {
     }
   });
 
-  test('functionCatalog = HomeWidgetType-Abdeckung + bekannte native-only Extras', () {
-    final enumNames = HomeWidgetType.values.map((e) => e.name).toSet();
-    final extra = functionCatalog
-        .map((e) => e.key)
-        .where((k) => !enumNames.contains(k))
-        .toSet();
-    expect(extra, equals(kNativeOnlyV2Keys.toSet()),
-        reason: 'native-only Einträge müssen exakt kNativeOnlyV2Keys sein');
-    expect(functionCatalog.length,
-        HomeWidgetType.values.length + kNativeOnlyV2Keys.length);
-  });
+  test(
+    'functionCatalog = HomeWidgetType-Abdeckung + bekannte native-only Extras',
+    () {
+      final enumNames = HomeWidgetType.values.map((e) => e.name).toSet();
+      final extra = functionCatalog
+          .map((e) => e.key)
+          .where((k) => !enumNames.contains(k))
+          .toSet();
+      expect(
+        extra,
+        equals(kNativeOnlyV2Keys.toSet()),
+        reason: 'native-only Einträge müssen exakt kNativeOnlyV2Keys sein',
+      );
+      expect(
+        functionCatalog.length,
+        HomeWidgetType.values.length + kNativeOnlyV2Keys.length,
+      );
+    },
+  );
 
-  test('functionCatalog enthält die v2-Widgets mit gültigem Template + Slots', () {
-    final byKey = {for (final e in functionCatalog) e.key: e};
-    const v2Templates = {
-      WidgetTemplate.ring, WidgetTemplate.ringTrio, WidgetTemplate.barChart,
-      WidgetTemplate.sparkline, WidgetTemplate.donut, WidgetTemplate.dashboard,
-      WidgetTemplate.motivation, WidgetTemplate.list,
-    };
-    for (final k in kNativeOnlyV2Keys) {
-      final e = byKey[k];
-      expect(e, isNotNull, reason: 'fehlt: $k');
-      expect(e!.slots, isNotEmpty, reason: '$k: keine Slots');
-      expect(v2Templates.contains(e.template), isTrue,
-          reason: '$k: ungültiges Template ${e.template}');
-    }
-  });
+  test(
+    'functionCatalog enthält die v2-Widgets mit gültigem Template + Slots',
+    () {
+      final byKey = {for (final e in functionCatalog) e.key: e};
+      const v2Templates = {
+        WidgetTemplate.ring,
+        WidgetTemplate.ringTrio,
+        WidgetTemplate.barChart,
+        WidgetTemplate.sparkline,
+        WidgetTemplate.donut,
+        WidgetTemplate.dashboard,
+        WidgetTemplate.motivation,
+        WidgetTemplate.list,
+      };
+      for (final k in kNativeOnlyV2Keys) {
+        final e = byKey[k];
+        expect(e, isNotNull, reason: 'fehlt: $k');
+        expect(e!.slots, isNotEmpty, reason: '$k: keine Slots');
+        expect(
+          v2Templates.contains(e.template),
+          isTrue,
+          reason: '$k: ungültiges Template ${e.template}',
+        );
+      }
+    },
+  );
 }

@@ -37,7 +37,9 @@ class _NotesTagsScreenState extends ConsumerState<NotesTagsScreen> {
       backgroundColor: TraumColors.surfaceElevated,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
       ),
       builder: (ctx) => DraggableScrollableSheet(
         initialChildSize: 0.6,
@@ -47,25 +49,30 @@ class _NotesTagsScreenState extends ConsumerState<NotesTagsScreen> {
         builder: (_, controller) => Column(
           children: [
             const SizedBox(height: 10),
-            Text('#$tag',
-                style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: kNotesAccent,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700)),
+            Text(
+              '#$tag',
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                color: kNotesAccent,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             const SizedBox(height: 8),
             Expanded(
               child: ListView(
                 controller: controller,
                 children: notes
-                    .map((n) => NoteListTile(
-                          note: n,
-                          onTap: () {
-                            Navigator.pop(ctx);
-                            context.push(Routes.noteDetailPath(n.id));
-                          },
-                          onLongPress: () => showNoteActions(context, ref, n),
-                        ))
+                    .map(
+                      (n) => NoteListTile(
+                        note: n,
+                        onTap: () {
+                          Navigator.pop(ctx);
+                          context.push(Routes.noteDetailPath(n.id));
+                        },
+                        onLongPress: () => showNoteActions(context, ref, n),
+                      ),
+                    )
                     .toList(),
               ),
             ),
@@ -101,12 +108,17 @@ class _NotesTagsScreenState extends ConsumerState<NotesTagsScreen> {
         backgroundColor: TraumColors.background,
         elevation: 0,
         leading: BackButton(
-            color: TraumColors.onBackground, onPressed: () => context.pop()),
-        title: Text(l10n.notes_tags,
-            style: const TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackground,
-                fontWeight: FontWeight.w700)),
+          color: TraumColors.onBackground,
+          onPressed: () => context.pop(),
+        ),
+        title: Text(
+          l10n.notes_tags,
+          style: const TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackground,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
       body: tags.when(
         loading: () =>
@@ -116,7 +128,9 @@ class _NotesTagsScreenState extends ConsumerState<NotesTagsScreen> {
         data: (list) {
           if (list.isEmpty) {
             return NotesEmptyState(
-                icon: Icons.tag_rounded, message: l10n.notes_no_tags);
+              icon: Icons.tag_rounded,
+              message: l10n.notes_no_tags,
+            );
           }
           final tree = _buildTree(list.map((t) => t.name).toList());
           final rows = <Widget>[];
@@ -128,68 +142,82 @@ class _NotesTagsScreenState extends ConsumerState<NotesTagsScreen> {
   }
 
   void _appendNodes(
-      List<Widget> rows, List<_TagNode> nodes, int depth, Map<String, int> counts) {
+    List<Widget> rows,
+    List<_TagNode> nodes,
+    int depth,
+    Map<String, int> counts,
+  ) {
     final sorted = [...nodes]..sort((a, b) => a.segment.compareTo(b.segment));
     for (final node in sorted) {
       final hasChildren = node.children.isNotEmpty;
       final isOpen = _expanded.contains(node.fullPath);
       final count = counts[node.fullPath];
-      rows.add(InkWell(
-        onTap: () {
-          if (hasChildren) {
-            setState(() {
-              if (isOpen) {
-                _expanded.remove(node.fullPath);
-              } else {
-                _expanded.add(node.fullPath);
-              }
-            });
-          } else {
-            _showTagNotes(node.fullPath);
-          }
-        },
-        onLongPress: () => _showTagNotes(node.fullPath),
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(16.0 + depth * 16, 12, 16, 12),
-          child: Row(
-            children: [
-              Icon(
-                hasChildren
-                    ? (isOpen
-                        ? Icons.expand_more_rounded
-                        : Icons.chevron_right_rounded)
-                    : Icons.tag_rounded,
-                size: 18,
-                color: hasChildren
-                    ? TraumColors.onBackgroundMuted
-                    : kNotesAccent,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(node.segment,
-                    style: const TextStyle(
-                        fontFamily: 'DMSans',
-                        color: TraumColors.onBackground,
-                        fontSize: 15)),
-              ),
-              if (count != null)
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: TraumColors.surfaceVariant,
-                    borderRadius: BorderRadius.circular(TraumRadius.chip),
-                  ),
-                  child: Text('$count',
-                      style: const TextStyle(
-                          fontFamily: 'DMSans',
-                          color: TraumColors.onBackgroundMuted,
-                          fontSize: 12)),
+      rows.add(
+        InkWell(
+          onTap: () {
+            if (hasChildren) {
+              setState(() {
+                if (isOpen) {
+                  _expanded.remove(node.fullPath);
+                } else {
+                  _expanded.add(node.fullPath);
+                }
+              });
+            } else {
+              _showTagNotes(node.fullPath);
+            }
+          },
+          onLongPress: () => _showTagNotes(node.fullPath),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16.0 + depth * 16, 12, 16, 12),
+            child: Row(
+              children: [
+                Icon(
+                  hasChildren
+                      ? (isOpen
+                            ? Icons.expand_more_rounded
+                            : Icons.chevron_right_rounded)
+                      : Icons.tag_rounded,
+                  size: 18,
+                  color: hasChildren
+                      ? TraumColors.onBackgroundMuted
+                      : kNotesAccent,
                 ),
-            ],
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    node.segment,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackground,
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+                if (count != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: TraumColors.surfaceVariant,
+                      borderRadius: BorderRadius.circular(TraumRadius.chip),
+                    ),
+                    child: Text(
+                      '$count',
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        color: TraumColors.onBackgroundMuted,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
-      ));
+      );
       if (hasChildren && isOpen) {
         _appendNodes(rows, node.children.values.toList(), depth + 1, counts);
       }

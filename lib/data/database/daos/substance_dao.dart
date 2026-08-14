@@ -8,14 +8,13 @@ class SubstanceDao extends DatabaseAccessor<TraumDatabase>
     with _$SubstanceDaoMixin {
   SubstanceDao(super.db);
 
-  Future<SubstanceCache?> findById(String id) =>
-      (select(substanceCaches)..where((t) => t.substanceId.equals(id)))
-          .getSingleOrNull();
+  Future<SubstanceCache?> findById(String id) => (select(
+    substanceCaches,
+  )..where((t) => t.substanceId.equals(id))).getSingleOrNull();
 
-  Future<List<SubstanceCache>> searchByName(String query) =>
-      (select(substanceCaches)
-            ..where((t) => t.name.lower().contains(query.toLowerCase())))
-          .get();
+  Future<List<SubstanceCache>> searchByName(String query) => (select(
+    substanceCaches,
+  )..where((t) => t.name.lower().contains(query.toLowerCase()))).get();
 
   Future<void> upsert(SubstanceCachesCompanion entry) =>
       into(substanceCaches).insertOnConflictUpdate(entry);
@@ -28,10 +27,9 @@ class SubstanceDao extends DatabaseAccessor<TraumDatabase>
   Future<int> deleteIntake(int id) =>
       (delete(substanceIntakeLogs)..where((t) => t.id.equals(id))).go();
 
-  Stream<List<SubstanceIntakeLog>> watchAllIntakes() =>
-      (select(substanceIntakeLogs)
-            ..orderBy([(t) => OrderingTerm.desc(t.takenAt)]))
-          .watch();
+  Stream<List<SubstanceIntakeLog>> watchAllIntakes() => (select(
+    substanceIntakeLogs,
+  )..orderBy([(t) => OrderingTerm.desc(t.takenAt)])).watch();
 
   Future<SubstanceIntakeLog?> getLastIntake() =>
       (select(substanceIntakeLogs)
@@ -43,9 +41,9 @@ class SubstanceDao extends DatabaseAccessor<TraumDatabase>
     final now = DateTime.now();
     final start = DateTime(now.year, now.month, now.day);
     final end = start.add(const Duration(days: 1));
-    final rows = await (select(substanceIntakeLogs)
-          ..where((t) => t.takenAt.isBetweenValues(start, end)))
-        .get();
+    final rows = await (select(
+      substanceIntakeLogs,
+    )..where((t) => t.takenAt.isBetweenValues(start, end))).get();
     return rows.length;
   }
 }

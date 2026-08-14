@@ -21,7 +21,8 @@ void main() {
 
   test('decode skips unknown types', () {
     final decoded = decodeHomeLayout(
-        '[{"type":"water","size":"small"},{"type":"___gone___","size":"small"}]');
+      '[{"type":"water","size":"small"},{"type":"___gone___","size":"small"}]',
+    );
     expect(decoded.length, 1);
     expect(decoded.single.type, HomeWidgetType.water);
   });

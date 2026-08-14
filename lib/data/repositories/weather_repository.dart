@@ -47,11 +47,17 @@ class WeatherRepository {
             backgroundColor: TraumColors.surface,
             title: Text(
               AppLocalizations.of(context)!.weatherLocationNeededTitle,
-              style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
             ),
             content: Text(
               AppLocalizations.of(context)!.weatherLocationNeededContent,
-              style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+              style: const TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+              ),
             ),
             actions: [
               TextButton(
@@ -115,7 +121,9 @@ class WeatherRepository {
         if (response.statusCode == 200) {
           await prefs.setString('weather_cache', response.body);
           await prefs.setInt(
-              'weather_cache_ts', DateTime.now().millisecondsSinceEpoch);
+            'weather_cache_ts',
+            DateTime.now().millisecondsSinceEpoch,
+          );
           return;
         }
         break;

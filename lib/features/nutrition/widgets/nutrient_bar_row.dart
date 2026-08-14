@@ -42,16 +42,22 @@ class NutrientBarRow extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(label,
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackground,
-                      fontSize: 12)),
-              Text('$currentText / ${_fmt(goal)} $unit',
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackgroundMuted,
-                      fontSize: 12)),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                  fontSize: 12,
+                ),
+              ),
+              Text(
+                '$currentText / ${_fmt(goal)} $unit',
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundMuted,
+                  fontSize: 12,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 3),
@@ -62,7 +68,8 @@ class NutrientBarRow extends StatelessWidget {
               minHeight: 5,
               backgroundColor: TraumColors.surfaceVariant,
               valueColor: AlwaysStoppedAnimation(
-                  tracked ? _barColor(ratio) : TraumColors.surfaceVariant),
+                tracked ? _barColor(ratio) : TraumColors.surfaceVariant,
+              ),
             ),
           ),
         ],

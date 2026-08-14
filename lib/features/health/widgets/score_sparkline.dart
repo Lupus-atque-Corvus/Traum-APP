@@ -21,10 +21,12 @@ class ScoreSparkline extends StatelessWidget {
     final lineColor = currentScore >= 70
         ? TraumColors.mintGreen
         : currentScore >= 55
-            ? TraumColors.amberGold
-            : TraumColors.roseRed;
+        ? TraumColors.amberGold
+        : TraumColors.roseRed;
 
-    final spots = scores.asMap().entries
+    final spots = scores
+        .asMap()
+        .entries
         .map((e) => FlSpot(e.key.toDouble(), e.value.toDouble()))
         .toList();
 
@@ -44,15 +46,23 @@ class ScoreSparkline extends StatelessWidget {
           gridData: const FlGridData(show: false),
           borderData: FlBorderData(show: false),
           titlesData: FlTitlesData(
-            leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            leftTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
                 getTitlesWidget: (value, meta) {
                   final i = value.toInt();
-                  if (i < 0 || i >= labels.length) return const SizedBox.shrink();
+                  if (i < 0 || i >= labels.length) {
+                    return const SizedBox.shrink();
+                  }
                   return Text(
                     labels[i],
                     style: const TextStyle(

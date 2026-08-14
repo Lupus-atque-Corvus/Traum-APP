@@ -13,7 +13,8 @@ class FeedbackBottomSheet extends ConsumerStatefulWidget {
   const FeedbackBottomSheet({super.key});
 
   @override
-  ConsumerState<FeedbackBottomSheet> createState() => _FeedbackBottomSheetState();
+  ConsumerState<FeedbackBottomSheet> createState() =>
+      _FeedbackBottomSheetState();
 }
 
 class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
@@ -110,7 +111,9 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
                         children: [
                           Icon(
                             type.icon,
-                            color: isSelected ? type.color : TraumColors.onBackgroundMuted,
+                            color: isSelected
+                                ? type.color
+                                : TraumColors.onBackgroundMuted,
                             size: 20,
                           ),
                           const SizedBox(height: 4),
@@ -120,7 +123,9 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
                               fontFamily: 'DMSans',
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: isSelected ? type.color : TraumColors.onBackgroundMuted,
+                              color: isSelected
+                                  ? type.color
+                                  : TraumColors.onBackgroundMuted,
                             ),
                           ),
                         ],
@@ -145,15 +150,20 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
             TextField(
               controller: _titleController,
               onChanged: (_) => setState(() {}),
-              style: const TextStyle(fontFamily: 'DMSans', color: TraumColors.onBackground),
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
+              ),
               decoration: InputDecoration(
                 hintText: _type == FeedbackType.bug
                     ? l10n.feedbackTitleHintBug
                     : _type == FeedbackType.feature
-                        ? l10n.feedbackTitleHintFeature
-                        : l10n.feedbackTitleHintImprovement,
+                    ? l10n.feedbackTitleHintFeature
+                    : l10n.feedbackTitleHintImprovement,
                 hintStyle: const TextStyle(
-                    color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
+                  color: TraumColors.onBackgroundSubtle,
+                  fontFamily: 'DMSans',
+                ),
                 filled: true,
                 fillColor: TraumColors.surfaceVariant,
                 border: OutlineInputBorder(
@@ -162,7 +172,10 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: TraumColors.coralOrange, width: 1.5),
+                  borderSide: const BorderSide(
+                    color: TraumColors.coralOrange,
+                    width: 1.5,
+                  ),
                 ),
               ),
             ),
@@ -181,13 +194,18 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
             TextField(
               controller: _controller,
               maxLines: 4,
-              style: const TextStyle(fontFamily: 'DMSans', color: TraumColors.onBackground),
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
+              ),
               decoration: InputDecoration(
                 hintText: _type == FeedbackType.bug
                     ? l10n.feedbackDescHintBug
                     : l10n.feedbackDescHintOther,
                 hintStyle: const TextStyle(
-                    color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
+                  color: TraumColors.onBackgroundSubtle,
+                  fontFamily: 'DMSans',
+                ),
                 filled: true,
                 fillColor: TraumColors.surfaceVariant,
                 border: OutlineInputBorder(
@@ -196,7 +214,10 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: TraumColors.coralOrange, width: 1.5),
+                  borderSide: const BorderSide(
+                    color: TraumColors.coralOrange,
+                    width: 1.5,
+                  ),
                 ),
                 contentPadding: const EdgeInsets.all(16),
               ),
@@ -204,7 +225,11 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
             const SizedBox(height: 8),
             Row(
               children: [
-                const Icon(Icons.info_outline, size: 14, color: TraumColors.onBackgroundSubtle),
+                const Icon(
+                  Icons.info_outline,
+                  size: 14,
+                  color: TraumColors.onBackgroundSubtle,
+                ),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
@@ -235,7 +260,11 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
                   onPressed: _titleController.text.trim().isEmpty
                       ? null
                       : () => _submit(context),
-                  icon: const Icon(Icons.open_in_browser, color: Colors.white, size: 18),
+                  icon: const Icon(
+                    Icons.open_in_browser,
+                    color: Colors.white,
+                    size: 18,
+                  ),
                   label: Text(
                     l10n.openGitHubAndSubmit,
                     style: const TextStyle(
@@ -279,11 +308,13 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
     String deviceInfo = '';
     if (Platform.isAndroid) {
       final info = await DeviceInfoPlugin().androidInfo;
-      deviceInfo = '- **Gerät:** ${info.manufacturer} ${info.model}\n'
+      deviceInfo =
+          '- **Gerät:** ${info.manufacturer} ${info.model}\n'
           '- **Android:** ${info.version.release} (API ${info.version.sdkInt})\n';
     } else if (Platform.isIOS) {
       final info = await DeviceInfoPlugin().iosInfo;
-      deviceInfo = '- **Gerät:** ${info.model}\n'
+      deviceInfo =
+          '- **Gerät:** ${info.model}\n'
           '- **iOS:** ${info.systemVersion}\n';
     }
 

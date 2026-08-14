@@ -23,15 +23,26 @@ import 'widgets/exercise_icon.dart';
 IconData _equipIcon(String? eq) {
   if (eq == null) return Icons.accessibility_new_rounded;
   final l = eq.toLowerCase();
-  if (l.contains('hantel') || l.contains('dumbbell') || l.contains('barbell') ||
-      l.contains('stange') || l.contains('langhantel')) {
+  if (l.contains('hantel') ||
+      l.contains('dumbbell') ||
+      l.contains('barbell') ||
+      l.contains('stange') ||
+      l.contains('langhantel')) {
     return Icons.fitness_center_rounded;
   }
-  if (l.contains('maschine') || l.contains('machine')) return Icons.settings_rounded;
-  if (l.contains('kabel') || l.contains('cable')) return Icons.linear_scale_rounded;
+  if (l.contains('maschine') || l.contains('machine')) {
+    return Icons.settings_rounded;
+  }
+  if (l.contains('kabel') || l.contains('cable')) {
+    return Icons.linear_scale_rounded;
+  }
   if (l.contains('kettlebell')) return Icons.sports_handball_rounded;
-  if (l.contains('band') || l.contains('theraband')) return Icons.compress_rounded;
-  if (l.contains('bank') || l.contains('bench')) return Icons.airline_seat_flat_rounded;
+  if (l.contains('band') || l.contains('theraband')) {
+    return Icons.compress_rounded;
+  }
+  if (l.contains('bank') || l.contains('bench')) {
+    return Icons.airline_seat_flat_rounded;
+  }
   return Icons.fitness_center_rounded;
 }
 
@@ -44,13 +55,13 @@ class _Cat {
 }
 
 const _kCats = [
-  _Cat('assets/exercises/icons/cardio.svg',    'Cardio',    ['cardio']),
-  _Cat('assets/exercises/icons/biceps.svg',    'Arms',      ['biceps', 'triceps']),
+  _Cat('assets/exercises/icons/cardio.svg', 'Cardio', ['cardio']),
+  _Cat('assets/exercises/icons/biceps.svg', 'Arms', ['biceps', 'triceps']),
   _Cat('assets/exercises/icons/shoulders.svg', 'Shoulders', ['shoulders']),
-  _Cat('assets/exercises/icons/chest.svg',     'Chest',     ['chest']),
-  _Cat('assets/exercises/icons/back.svg',      'Back',      ['back']),
-  _Cat('assets/exercises/icons/core.svg',      'Abs',       ['core']),
-  _Cat('assets/exercises/icons/legs.svg',      'Legs',      ['legs']),
+  _Cat('assets/exercises/icons/chest.svg', 'Chest', ['chest']),
+  _Cat('assets/exercises/icons/back.svg', 'Back', ['back']),
+  _Cat('assets/exercises/icons/core.svg', 'Abs', ['core']),
+  _Cat('assets/exercises/icons/legs.svg', 'Legs', ['legs']),
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -59,7 +70,8 @@ class ExerciseLibraryScreen extends ConsumerStatefulWidget {
   const ExerciseLibraryScreen({super.key});
 
   @override
-  ConsumerState<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
+  ConsumerState<ExerciseLibraryScreen> createState() =>
+      _ExerciseLibraryScreenState();
 }
 
 class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
@@ -131,16 +143,21 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
                       children: [
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 160),
-                          width: 52, height: 52,
+                          width: 52,
+                          height: 52,
                           decoration: BoxDecoration(
-                            color: active ? TraumColors.coralOrange : TraumColors.surfaceVariant,
+                            color: active
+                                ? TraumColors.coralOrange
+                                : TraumColors.surfaceVariant,
                             borderRadius: BorderRadius.circular(14),
                           ),
                           padding: const EdgeInsets.all(10),
                           child: SvgPicture.asset(
                             cat.svg,
                             colorFilter: ColorFilter.mode(
-                              active ? Colors.white : TraumColors.onBackgroundMuted,
+                              active
+                                  ? Colors.white
+                                  : TraumColors.onBackgroundMuted,
                               BlendMode.srcIn,
                             ),
                           ),
@@ -149,10 +166,14 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
                         Text(
                           cat.label,
                           style: TextStyle(
-                            color: active ? TraumColors.coralOrange : TraumColors.onBackgroundMuted,
+                            color: active
+                                ? TraumColors.coralOrange
+                                : TraumColors.onBackgroundMuted,
                             fontFamily: 'DMSans',
                             fontSize: 9,
-                            fontWeight: active ? FontWeight.w600 : FontWeight.w400,
+                            fontWeight: active
+                                ? FontWeight.w600
+                                : FontWeight.w400,
                           ),
                         ),
                       ],
@@ -174,19 +195,25 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
                     if (_selectedCats.isNotEmpty)
                       GestureDetector(
                         onTap: () => setState(() => _selectedCats.clear()),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          const Icon(Icons.close_rounded,
-                              size: 13, color: TraumColors.onBackgroundMuted),
-                          const SizedBox(width: 4),
-                          Text(
-                            'Clear filters (${_selectedCats.length})',
-                            style: const TextStyle(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.close_rounded,
+                              size: 13,
                               color: TraumColors.onBackgroundMuted,
-                              fontFamily: 'DMSans',
-                              fontSize: 12,
                             ),
-                          ),
-                        ]),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Clear filters (${_selectedCats.length})',
+                              style: const TextStyle(
+                                color: TraumColors.onBackgroundMuted,
+                                fontFamily: 'DMSans',
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     const Spacer(),
                     Text(
@@ -222,19 +249,25 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
 
                 if (exercises.isEmpty) {
                   return Center(
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      const Icon(Icons.fitness_center_rounded,
-                          size: 48, color: TraumColors.onBackgroundSubtle),
-                      const SizedBox(height: 12),
-                      Text(
-                        all.isEmpty ? l10n.noExercisesYet : l10n.noResults,
-                        style: const TextStyle(
-                          color: TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w600,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.fitness_center_rounded,
+                          size: 48,
+                          color: TraumColors.onBackgroundSubtle,
                         ),
-                      ),
-                    ]),
+                        const SizedBox(height: 12),
+                        Text(
+                          all.isEmpty ? l10n.noExercisesYet : l10n.noResults,
+                          style: const TextStyle(
+                            color: TraumColors.onBackgroundMuted,
+                            fontFamily: 'DMSans',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 }
 
@@ -251,16 +284,22 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
                     return _ExerciseTile(
                       exercise: ex,
                       usageCount: counts[ex.id] ?? 0,
-                      onTap: () => context.go('/training/exercise/${ex.id}/progress'),
+                      onTap: () =>
+                          context.go('/training/exercise/${ex.id}/progress'),
                       onDelete: ex.isCustom
-                          ? () => ref.read(trainingDaoProvider).deleteExercise(ex.id)
+                          ? () => ref
+                                .read(trainingDaoProvider)
+                                .deleteExercise(ex.id)
                           : null,
                     );
                   },
                 );
               },
               loading: () => const Center(
-                  child: CircularProgressIndicator(color: TraumColors.coralOrange)),
+                child: CircularProgressIndicator(
+                  color: TraumColors.coralOrange,
+                ),
+              ),
               error: (e, _) => Center(child: Text('$e')),
             ),
           ),
@@ -276,7 +315,10 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
         elevation: 0,
         leading: IconButton(
           tooltip: AppLocalizations.of(context)!.back,
-          icon: const Icon(Icons.arrow_back_rounded, color: TraumColors.onBackground),
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: TraumColors.onBackground,
+          ),
           onPressed: () => setState(() {
             _searchActive = false;
             _searchCtrl.clear();
@@ -286,18 +328,28 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
         title: TextField(
           controller: _searchCtrl,
           autofocus: true,
-          style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontSize: 16),
+          style: const TextStyle(
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+            fontSize: 16,
+          ),
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: AppLocalizations.of(context)!.exerciseSearchHint,
-            hintStyle: TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
+            hintStyle: TextStyle(
+              color: TraumColors.onBackgroundSubtle,
+              fontFamily: 'DMSans',
+            ),
           ),
           onChanged: _onSearchChanged,
         ),
         actions: [
           IconButton(
             tooltip: AppLocalizations.of(context)!.close,
-            icon: const Icon(Icons.close_rounded, color: TraumColors.onBackground),
+            icon: const Icon(
+              Icons.close_rounded,
+              color: TraumColors.onBackground,
+            ),
             onPressed: () => setState(() {
               _searchActive = false;
               _searchCtrl.clear();
@@ -317,7 +369,10 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
       actions: [
         IconButton(
           tooltip: AppLocalizations.of(context)!.search,
-          icon: const Icon(Icons.search_rounded, color: TraumColors.onBackground),
+          icon: const Icon(
+            Icons.search_rounded,
+            color: TraumColors.onBackground,
+          ),
           onPressed: () => setState(() => _searchActive = true),
         ),
         _FilterBadgeButton(count: _selectedCats.length),
@@ -332,7 +387,9 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
       isScrollControlled: true,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
       ),
       builder: (_) => _AddExerciseSheet(
         onAdd: (c) => ref.read(trainingDaoProvider).insertExercise(c),
@@ -351,16 +408,23 @@ class _FilterBadgeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 44, height: 44,
+      width: 44,
+      height: 44,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          const Icon(Icons.filter_list_rounded, color: TraumColors.onBackground, size: 24),
+          const Icon(
+            Icons.filter_list_rounded,
+            color: TraumColors.onBackground,
+            size: 24,
+          ),
           if (count > 0)
             Positioned(
-              top: 4, right: 4,
+              top: 4,
+              right: 4,
               child: Container(
-                width: 16, height: 16,
+                width: 16,
+                height: 16,
                 decoration: const BoxDecoration(
                   color: TraumColors.coralOrange,
                   shape: BoxShape.circle,
@@ -411,16 +475,18 @@ class _ExerciseTile extends StatelessWidget {
           children: [
             // ── Icon ──────────────────────────────────────────────────────
             Container(
-              width: 56, height: 56,
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
                 color: const Color(0xFF1E2235),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
                 child: ExerciseIcon(
-                    muscleGroup: canonicalMuscleGroup(exercise.muscleGroup),
-                    exerciseName: exercise.name,
-                    size: 42),
+                  muscleGroup: canonicalMuscleGroup(exercise.muscleGroup),
+                  exerciseName: exercise.name,
+                  size: 42,
+                ),
               ),
             ),
             const SizedBox(width: 14),
@@ -440,9 +506,10 @@ class _ExerciseTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    muscleGroupLabel(exercise.muscleGroup,
-                            AppLocalizations.of(context)!)
-                        .toUpperCase(),
+                    muscleGroupLabel(
+                      exercise.muscleGroup,
+                      AppLocalizations.of(context)!,
+                    ).toUpperCase(),
                     style: const TextStyle(
                       color: TraumColors.coralOrange,
                       fontFamily: 'DMSans',
@@ -455,8 +522,11 @@ class _ExerciseTile extends StatelessWidget {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(_equipIcon(exercise.equipment),
-                            size: 13, color: TraumColors.onBackgroundSubtle),
+                        Icon(
+                          _equipIcon(exercise.equipment),
+                          size: 13,
+                          color: TraumColors.onBackgroundSubtle,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           exercise.equipment!,
@@ -504,19 +574,28 @@ class _ExerciseTile extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (_) => SafeArea(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          ListTile(
-            leading: const Icon(Icons.delete_rounded, color: TraumColors.coralOrange),
-            title: Text(
-              AppLocalizations.of(context)!.deleteExercise,
-              style: const TextStyle(color: TraumColors.coralOrange, fontFamily: 'DMSans'),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(
+                Icons.delete_rounded,
+                color: TraumColors.coralOrange,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.deleteExercise,
+                style: const TextStyle(
+                  color: TraumColors.coralOrange,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                onDelete?.call();
+              },
             ),
-            onTap: () {
-              Navigator.pop(context);
-              onDelete?.call();
-            },
-          ),
-        ]),
+          ],
+        ),
       ),
     );
   }
@@ -539,7 +618,11 @@ class _CreateExerciseButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.add_rounded, color: TraumColors.onBackgroundMuted, size: 18),
+          const Icon(
+            Icons.add_rounded,
+            color: TraumColors.onBackgroundMuted,
+            size: 18,
+          ),
           const SizedBox(width: 6),
           Text(
             AppLocalizations.of(context)!.createExercise,
@@ -575,8 +658,15 @@ class _AddExerciseSheetState extends State<_AddExerciseSheet> {
   bool _saving = false;
 
   static const _muscleGroups = [
-    'chest', 'back', 'shoulders', 'biceps', 'triceps',
-    'core', 'legs', 'cardio', 'full_body',
+    'chest',
+    'back',
+    'shoulders',
+    'biceps',
+    'triceps',
+    'core',
+    'legs',
+    'cardio',
+    'full_body',
   ];
 
   @override
@@ -592,7 +682,9 @@ class _AddExerciseSheetState extends State<_AddExerciseSheet> {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.only(
-        left: 20, right: 20, top: 16,
+        left: 20,
+        right: 20,
+        top: 16,
         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
       ),
       child: SingleChildScrollView(
@@ -602,7 +694,8 @@ class _AddExerciseSheetState extends State<_AddExerciseSheet> {
           children: [
             Center(
               child: Container(
-                width: 40, height: 4,
+                width: 40,
+                height: 4,
                 decoration: BoxDecoration(
                   color: TraumColors.onBackgroundSubtle,
                   borderRadius: BorderRadius.circular(2),
@@ -635,19 +728,37 @@ class _AddExerciseSheetState extends State<_AddExerciseSheet> {
               value: _muscleGroup,
               dropdownColor: TraumColors.surfaceElevated,
               isExpanded: true,
-              style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
-              underline: Container(height: 1, color: TraumColors.surfaceVariant),
-              items: _muscleGroups.map((m) => DropdownMenuItem(
-                value: m,
-                child: Text(muscleGroupLabel(m, l10n).toUpperCase()),
-              )).toList(),
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
+              underline: Container(
+                height: 1,
+                color: TraumColors.surfaceVariant,
+              ),
+              items: _muscleGroups
+                  .map(
+                    (m) => DropdownMenuItem(
+                      value: m,
+                      child: Text(muscleGroupLabel(m, l10n).toUpperCase()),
+                    ),
+                  )
+                  .toList(),
               onChanged: (v) => setState(() => _muscleGroup = v!),
             ),
             const SizedBox(height: 12),
-            _buildField(l10n.equipmentOptional, _equipCtrl, hint: l10n.equipmentHint),
+            _buildField(
+              l10n.equipmentOptional,
+              _equipCtrl,
+              hint: l10n.equipmentHint,
+            ),
             const SizedBox(height: 12),
-            _buildField(l10n.instructionsOptional, _instrCtrl,
-                hint: l10n.instructionExecution, lines: 3),
+            _buildField(
+              l10n.instructionsOptional,
+              _instrCtrl,
+              hint: l10n.instructionExecution,
+              lines: 3,
+            ),
             const SizedBox(height: 20),
             GradientButton(
               label: _saving ? l10n.saving : l10n.createExercise,
@@ -660,48 +771,75 @@ class _AddExerciseSheetState extends State<_AddExerciseSheet> {
     );
   }
 
-  Widget _buildField(String label, TextEditingController ctrl,
-      {String? hint, int lines = 1}) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label,
+  Widget _buildField(
+    String label,
+    TextEditingController ctrl, {
+    String? hint,
+    int lines = 1,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
           style: const TextStyle(
-              color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
-      const SizedBox(height: 6),
-      TextField(
-        controller: ctrl,
-        maxLines: lines,
-        style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: const TextStyle(
-              color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
-          filled: true,
-          fillColor: TraumColors.surface,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(TraumRadius.card),
-            borderSide: BorderSide.none,
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            fontSize: 13,
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
-      ),
-    ]);
+        const SizedBox(height: 6),
+        TextField(
+          controller: ctrl,
+          maxLines: lines,
+          style: const TextStyle(
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+          ),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(
+              color: TraumColors.onBackgroundSubtle,
+              fontFamily: 'DMSans',
+            ),
+            filled: true,
+            fillColor: TraumColors.surface,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(TraumRadius.card),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Future<void> _save() async {
     final l10n = AppLocalizations.of(context)!;
     if (_nameCtrl.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(l10n.nameRequired)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.nameRequired)));
       return;
     }
     setState(() => _saving = true);
-    await widget.onAdd(ExercisesCompanion.insert(
-      name: _nameCtrl.text.trim(),
-      muscleGroup: _muscleGroup,
-      equipment: Value(_equipCtrl.text.trim().isEmpty ? null : _equipCtrl.text.trim()),
-      instructions: Value(_instrCtrl.text.trim().isEmpty ? null : _instrCtrl.text.trim()),
-      isCustom: const Value(true),
-    ));
+    await widget.onAdd(
+      ExercisesCompanion.insert(
+        name: _nameCtrl.text.trim(),
+        muscleGroup: _muscleGroup,
+        equipment: Value(
+          _equipCtrl.text.trim().isEmpty ? null : _equipCtrl.text.trim(),
+        ),
+        instructions: Value(
+          _instrCtrl.text.trim().isEmpty ? null : _instrCtrl.text.trim(),
+        ),
+        isCustom: const Value(true),
+      ),
+    );
     if (mounted) Navigator.pop(context);
   }
 }

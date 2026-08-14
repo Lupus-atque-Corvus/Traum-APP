@@ -47,12 +47,15 @@ void main() {
     }
   });
 
-  test('muscleGroupLabel returns a non-empty label for every canonical group (de+en)', () {
-    final de = AppLocalizationsDe();
-    final en = AppLocalizationsEn();
-    for (final g in kAllMuscleGroups) {
-      expect(muscleGroupLabel(g, de), isNotEmpty, reason: 'de:$g');
-      expect(muscleGroupLabel(g, en), isNotEmpty, reason: 'en:$g');
-    }
-  });
+  test(
+    'muscleGroupLabel returns a non-empty label for every canonical group (de+en)',
+    () {
+      final de = AppLocalizationsDe();
+      final en = AppLocalizationsEn();
+      for (final g in kAllMuscleGroups) {
+        expect(muscleGroupLabel(g, de), isNotEmpty, reason: 'de:$g');
+        expect(muscleGroupLabel(g, en), isNotEmpty, reason: 'en:$g');
+      }
+    },
+  );
 }

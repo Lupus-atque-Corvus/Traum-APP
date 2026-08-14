@@ -11,7 +11,10 @@ void main() {
 
   test('routeFromWidgetUri bildet iOS widgetURL auf bekannte Route ab', () {
     expect(routeFromWidgetUri(Uri.parse('traum:///budget')), '/budget');
-    expect(routeFromWidgetUri(Uri.parse('traum:///graffitimap')), '/graffitimap');
+    expect(
+      routeFromWidgetUri(Uri.parse('traum:///graffitimap')),
+      '/graffitimap',
+    );
     expect(routeFromWidgetUri(Uri.parse('traum://budget')), '/budget');
     expect(routeFromWidgetUri(Uri.parse('traum:///unbekannt')), isNull);
     expect(routeFromWidgetUri(null), isNull);

@@ -59,30 +59,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         title: Text(
           l10n.missingPermissions,
           style: const TextStyle(
-              color: TraumColors.onBackground,
-              fontFamily: 'DMSans',
-              fontWeight: FontWeight.w700),
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+            fontWeight: FontWeight.w700,
+          ),
         ),
         content: Text(
           l10n.permissionsContent(missing.join('\n• ')),
           style: const TextStyle(
-              color: TraumColors.onBackgroundMuted,
-              fontFamily: 'DMSans',
-              height: 1.5),
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            height: 1.5,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text(l10n.later,
-                style: const TextStyle(color: TraumColors.onBackgroundMuted)),
+            child: Text(
+              l10n.later,
+              style: const TextStyle(color: TraumColors.onBackgroundMuted),
+            ),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
               openAppSettings();
             },
-            child: Text(l10n.openSettings,
-                style: const TextStyle(color: TraumColors.coralOrange)),
+            child: Text(
+              l10n.openSettings,
+              style: const TextStyle(color: TraumColors.coralOrange),
+            ),
           ),
         ],
       ),
@@ -115,15 +121,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             actions: [
               IconButton(
                 tooltip: l10n.notifications,
-                icon: const Icon(Icons.notifications_outlined,
-                    color: TraumColors.onBackground),
+                icon: const Icon(
+                  Icons.notifications_outlined,
+                  color: TraumColors.onBackground,
+                ),
                 onPressed: () => context.push(Routes.notifications),
               ),
               IconButton(
                 tooltip: _editMode ? l10n.done : l10n.edit,
                 icon: Icon(
-                    _editMode ? Icons.check_rounded : Icons.edit_outlined,
-                    color: TraumColors.onBackground),
+                  _editMode ? Icons.check_rounded : Icons.edit_outlined,
+                  color: TraumColors.onBackground,
+                ),
                 onPressed: () => setState(() => _editMode = !_editMode),
               ),
             ],
@@ -247,10 +256,7 @@ class _DashedBorderPainter extends CustomPainter {
     for (final metric in path.computeMetrics()) {
       var distance = 0.0;
       while (distance < metric.length) {
-        canvas.drawPath(
-          metric.extractPath(distance, distance + dash),
-          paint,
-        );
+        canvas.drawPath(metric.extractPath(distance, distance + dash), paint);
         distance += dash + gap;
       }
     }

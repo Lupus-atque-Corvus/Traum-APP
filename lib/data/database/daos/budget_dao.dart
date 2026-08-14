@@ -3,7 +3,16 @@ import '../traum_database.dart';
 
 part 'budget_dao.g.dart';
 
-@DriftAccessor(tables: [Transactions, BudgetCategories, SavingsGoals, Debts, QuickTemplates, DebtItems])
+@DriftAccessor(
+  tables: [
+    Transactions,
+    BudgetCategories,
+    SavingsGoals,
+    Debts,
+    QuickTemplates,
+    DebtItems,
+  ],
+)
 class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
   BudgetDao(super.db);
 
@@ -18,10 +27,12 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
     final start = DateTime(year, month, 1);
     final end = DateTime(year, month + 1, 1);
     return (select(transactions)
-          ..where((t) =>
-              t.date.isBiggerOrEqualValue(start) &
-              t.date.isSmallerThanValue(end) &
-              t.isRecurring.equals(false))
+          ..where(
+            (t) =>
+                t.date.isBiggerOrEqualValue(start) &
+                t.date.isSmallerThanValue(end) &
+                t.isRecurring.equals(false),
+          )
           ..orderBy([(t) => OrderingTerm.desc(t.date)]))
         .watch();
   }
@@ -50,8 +61,7 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
       select(savingsGoals).watch();
 
   /// One-shot read of all savings goals (no query stream — safe for home tiles).
-  Future<List<SavingsGoal>> getAllSavingsGoals() =>
-      select(savingsGoals).get();
+  Future<List<SavingsGoal>> getAllSavingsGoals() => select(savingsGoals).get();
 
   Future<int> insertSavingsGoal(SavingsGoalsCompanion entry) =>
       into(savingsGoals).insert(entry);
@@ -67,8 +77,7 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
 
   Future<int> insertDebt(DebtsCompanion entry) => into(debts).insert(entry);
 
-  Future<bool> updateDebt(DebtsCompanion entry) =>
-      update(debts).replace(entry);
+  Future<bool> updateDebt(DebtsCompanion entry) => update(debts).replace(entry);
 
   Future<int> deleteDebt(int id) async {
     return transaction(() async {
@@ -94,12 +103,12 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
 
   Future<bool> updateDebtItem(DebtItemsCompanion entry) async {
     return transaction(() async {
-      final rows = await (update(debtItems)
-            ..where((i) => i.id.equals(entry.id.value)))
-          .write(entry);
-      final row = await (select(debtItems)
-            ..where((i) => i.id.equals(entry.id.value)))
-          .getSingleOrNull();
+      final rows = await (update(
+        debtItems,
+      )..where((i) => i.id.equals(entry.id.value))).write(entry);
+      final row = await (select(
+        debtItems,
+      )..where((i) => i.id.equals(entry.id.value))).getSingleOrNull();
       if (row != null) await _recomputeDebtTotals(row.debtId);
       return rows > 0;
     });
@@ -107,10 +116,12 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
 
   Future<int> deleteDebtItem(int itemId) async {
     return transaction(() async {
-      final item = await (select(debtItems)..where((i) => i.id.equals(itemId)))
-          .getSingleOrNull();
-      final rows =
-          await (delete(debtItems)..where((i) => i.id.equals(itemId))).go();
+      final item = await (select(
+        debtItems,
+      )..where((i) => i.id.equals(itemId))).getSingleOrNull();
+      final rows = await (delete(
+        debtItems,
+      )..where((i) => i.id.equals(itemId))).go();
       if (item != null) await _recomputeDebtTotals(item.debtId);
       return rows;
     });
@@ -118,11 +129,13 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
 
   Future<void> payDebtRate(int debtId, double amount) async {
     return transaction(() async {
-      final debt = await (select(debts)..where((d) => d.id.equals(debtId)))
-          .getSingleOrNull();
+      final debt = await (select(
+        debts,
+      )..where((d) => d.id.equals(debtId))).getSingleOrNull();
       if (debt == null) return;
-      await (update(debts)..where((d) => d.id.equals(debtId)))
-          .write(DebtsCompanion(paidAmount: Value(debt.paidAmount + amount)));
+      await (update(debts)..where((d) => d.id.equals(debtId))).write(
+        DebtsCompanion(paidAmount: Value(debt.paidAmount + amount)),
+      );
       await _recomputeDebtTotals(debtId);
     });
   }
@@ -130,11 +143,13 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
   /// Hält originalAmount/remainingAmount/isPaidOff einer Schuld konsistent:
   /// original = Summe der Positionen, remaining = clamp(original - paidAmount).
   Future<void> _recomputeDebtTotals(int debtId) async {
-    final items =
-        await (select(debtItems)..where((i) => i.debtId.equals(debtId))).get();
+    final items = await (select(
+      debtItems,
+    )..where((i) => i.debtId.equals(debtId))).get();
     final total = items.fold<double>(0.0, (s, i) => s + i.amount);
-    final debt = await (select(debts)..where((d) => d.id.equals(debtId)))
-        .getSingleOrNull();
+    final debt = await (select(
+      debts,
+    )..where((d) => d.id.equals(debtId))).getSingleOrNull();
     if (debt == null) return;
     final remaining = (total - debt.paidAmount).clamp(0.0, total);
     await (update(debts)..where((d) => d.id.equals(debtId))).write(
@@ -152,10 +167,12 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
     final start = DateTime(year, month, 1);
     final end = DateTime(year, month + 1, 1);
     return (select(transactions)
-          ..where((t) =>
-              t.date.isBiggerOrEqualValue(start) &
-              t.date.isSmallerThanValue(end) &
-              t.isRecurring.equals(false))
+          ..where(
+            (t) =>
+                t.date.isBiggerOrEqualValue(start) &
+                t.date.isSmallerThanValue(end) &
+                t.isRecurring.equals(false),
+          )
           ..orderBy([(t) => OrderingTerm.desc(t.date)]))
         .get();
   }
@@ -178,10 +195,9 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
 
   // --- QuickTemplates ---
 
-  Stream<List<QuickTemplate>> watchQuickTemplates() =>
-      (select(quickTemplates)
-            ..orderBy([(t) => OrderingTerm.desc(t.useCount)]))
-          .watch();
+  Stream<List<QuickTemplate>> watchQuickTemplates() => (select(
+    quickTemplates,
+  )..orderBy([(t) => OrderingTerm.desc(t.useCount)])).watch();
 
   Future<List<QuickTemplate>> getTopTemplates({int limit = 8}) =>
       (select(quickTemplates)
@@ -196,9 +212,9 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
       (delete(quickTemplates)..where((t) => t.id.equals(id))).go();
 
   Future<void> incrementTemplateUsage(int id, double amount) async {
-    final template = await (select(quickTemplates)
-          ..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    final template = await (select(
+      quickTemplates,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
     if (template == null) return;
     await (update(quickTemplates)..where((t) => t.id.equals(id))).write(
       QuickTemplatesCompanion(
@@ -228,6 +244,7 @@ class BudgetDao extends DatabaseAccessor<TraumDatabase> with _$BudgetDaoMixin {
   }
 
   Future<void> setLastPostedMonth(int id, String? month) =>
-      (update(transactions)..where((t) => t.id.equals(id)))
-          .write(TransactionsCompanion(lastPostedMonth: Value(month)));
+      (update(transactions)..where((t) => t.id.equals(id))).write(
+        TransactionsCompanion(lastPostedMonth: Value(month)),
+      );
 }

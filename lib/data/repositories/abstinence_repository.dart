@@ -5,8 +5,7 @@ class AbstinenceRepository {
   final AbstinenceDao _dao;
   AbstinenceRepository(this._dao);
 
-  Stream<List<AbstinenceTracker>> watchAllTrackers() =>
-      _dao.watchAllTrackers();
+  Stream<List<AbstinenceTracker>> watchAllTrackers() => _dao.watchAllTrackers();
   Stream<List<AbstinenceTracker>> watchActiveTrackers() =>
       _dao.watchActiveTrackers();
   Future<int> addTracker(AbstinenceTrackersCompanion e) =>
@@ -21,14 +20,20 @@ class AbstinenceRepository {
   Future<int> deleteEvent(int id) => _dao.deleteEvent(id);
 
   Future<int> recordRelapse(int trackerId, DateTime newStart) async {
-    await _dao.insertEvent(AbstinenceEventsCompanion(
-      trackerId: Value(trackerId),
-      type: const Value('relapse'),
-      eventDate: Value(DateTime.now()),
-    ));
-    return _dao.updateTracker(AbstinenceTrackersCompanion(
-      id: Value(trackerId),
-      startDate: Value(newStart),
-    )).then((_) => 0);
+    await _dao.insertEvent(
+      AbstinenceEventsCompanion(
+        trackerId: Value(trackerId),
+        type: const Value('relapse'),
+        eventDate: Value(DateTime.now()),
+      ),
+    );
+    return _dao
+        .updateTracker(
+          AbstinenceTrackersCompanion(
+            id: Value(trackerId),
+            startDate: Value(newStart),
+          ),
+        )
+        .then((_) => 0);
   }
 }

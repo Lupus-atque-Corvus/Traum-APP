@@ -59,8 +59,12 @@ bool _kcalWithinMergeThreshold(double a, double b) {
 /// die in der Praxis erwarteten Gruppengrößen (2-3 Quellen) verhält sich
 /// das wie das paarweise Merge/Conflict aus der Aufgabenstellung.
 List<List<FoodSearchResult>> _clusterByKcal(List<FoodSearchResult> items) {
-  final sorted = [...items]..sort((a, b) =>
-      (_sourcePriority[b.source] ?? 0).compareTo(_sourcePriority[a.source] ?? 0));
+  final sorted = [...items]
+    ..sort(
+      (a, b) => (_sourcePriority[b.source] ?? 0).compareTo(
+        _sourcePriority[a.source] ?? 0,
+      ),
+    );
 
   final clusters = <List<FoodSearchResult>>[];
   for (final item in sorted) {
@@ -68,7 +72,7 @@ List<List<FoodSearchResult>> _clusterByKcal(List<FoodSearchResult> items) {
     for (final cluster in clusters) {
       final avgKcal =
           cluster.map((e) => e.kcalPer100g).reduce((a, b) => a + b) /
-              cluster.length;
+          cluster.length;
       if (_kcalWithinMergeThreshold(avgKcal, item.kcalPer100g)) {
         target = cluster;
         break;
@@ -96,8 +100,12 @@ typedef _Resolved = ({FoodSearchResult result, double sourceBonus});
 /// [FoodSearchResult] ein Pflichtfeld — hier ebenfalls der Wert der
 /// höchstpriorisierten Quelle.
 _Resolved _mergeCluster(List<FoodSearchResult> cluster) {
-  final byPriority = [...cluster]..sort((a, b) =>
-      (_sourcePriority[b.source] ?? 0).compareTo(_sourcePriority[a.source] ?? 0));
+  final byPriority = [...cluster]
+    ..sort(
+      (a, b) => (_sourcePriority[b.source] ?? 0).compareTo(
+        _sourcePriority[a.source] ?? 0,
+      ),
+    );
 
   String? firstNonNullString(String? Function(FoodSearchResult) f) {
     for (final r in byPriority) {
@@ -107,7 +115,8 @@ _Resolved _mergeCluster(List<FoodSearchResult> cluster) {
     return null;
   }
 
-  double avg(Iterable<double> vals) => vals.reduce((a, b) => a + b) / vals.length;
+  double avg(Iterable<double> vals) =>
+      vals.reduce((a, b) => a + b) / vals.length;
 
   double? avgOptional(Iterable<double?> vals) {
     final nonNull = vals.whereType<double>().toList();
@@ -206,7 +215,8 @@ List<FoodSearchResult> aggregateAndRank(
   final normQuery = normalize(query);
   final scored = resolved.map((entry) {
     final normName = normalize(entry.result.name);
-    final score = _nameMatchScore(normQuery, normName) +
+    final score =
+        _nameMatchScore(normQuery, normName) +
         entry.result.completeness +
         entry.sourceBonus;
     return (result: entry.result, score: score, normName: normName);

@@ -5,13 +5,16 @@ import '../../data/database/traum_database.dart';
 
 // ─── DAO-Provider ───────────────────────────────────────────────────────────
 final mapCollectionsDaoProvider = Provider<MapCollectionsDao>(
-    (ref) => ref.watch(databaseProvider).mapCollectionsDao);
+  (ref) => ref.watch(databaseProvider).mapCollectionsDao,
+);
 
 final mapMarkersDaoProvider = Provider<MapMarkersDao>(
-    (ref) => ref.watch(databaseProvider).mapMarkersDao);
+  (ref) => ref.watch(databaseProvider).mapMarkersDao,
+);
 
 final markerPhotosDaoProvider = Provider<MarkerPhotosDao>(
-    (ref) => ref.watch(databaseProvider).markerPhotosDao);
+  (ref) => ref.watch(databaseProvider).markerPhotosDao,
+);
 
 // ─── Modelle ────────────────────────────────────────────────────────────────
 class MarkerWithPhotos {
@@ -29,32 +32,38 @@ final activeCollectionProvider = StateProvider<int>((ref) => 1);
 final activeHashtagFilterProvider = StateProvider<String?>((ref) => null);
 
 // ─── Daten-Provider ─────────────────────────────────────────────────────────
-final mapCollectionsProvider =
-    FutureProvider<List<MapCollection>>((ref) =>
-        ref.watch(mapCollectionsDaoProvider).getAll());
+final mapCollectionsProvider = FutureProvider<List<MapCollection>>(
+  (ref) => ref.watch(mapCollectionsDaoProvider).getAll(),
+);
 
-final activeCollectionInfoProvider =
-    FutureProvider<MapCollection?>((ref) {
+final activeCollectionInfoProvider = FutureProvider<MapCollection?>((ref) {
   final id = ref.watch(activeCollectionProvider);
   return ref.watch(mapCollectionsDaoProvider).getById(id);
 });
 
-final collectionByIdProvider =
-    FutureProvider.family<MapCollection?, int>((ref, id) =>
-        ref.watch(mapCollectionsDaoProvider).getById(id));
+final collectionByIdProvider = FutureProvider.family<MapCollection?, int>(
+  (ref, id) => ref.watch(mapCollectionsDaoProvider).getById(id),
+);
 
 /// Lädt Fotos für alle übergebenen Marker in einer einzigen Query (statt
 /// einer Query pro Marker) — bei sehr großen Collections (z.B. hundert-
 /// tausende importierte Türme) macht eine Query pro Marker die Kartenansicht
 /// praktisch unbenutzbar.
 Future<List<MarkerWithPhotos>> _withPhotos(
-    Ref ref, List<MapMarker> markers) async {
+  Ref ref,
+  List<MapMarker> markers,
+) async {
   final photosDao = ref.watch(markerPhotosDaoProvider);
-  final photosByMarker =
-      await photosDao.getByMarkerIds(markers.map((m) => m.id).toList());
+  final photosByMarker = await photosDao.getByMarkerIds(
+    markers.map((m) => m.id).toList(),
+  );
   return markers
-      .map((m) => MarkerWithPhotos(
-          marker: m, photos: photosByMarker[m.id] ?? const []))
+      .map(
+        (m) => MarkerWithPhotos(
+          marker: m,
+          photos: photosByMarker[m.id] ?? const [],
+        ),
+      )
       .toList();
 }
 
@@ -109,12 +118,15 @@ final mapViewportBoundsProvider = StateProvider<MapBounds?>((ref) => null);
 /// den Cluster-Layer der Karte übergeben werden darf — `activeMarkersProvider`
 /// lädt die komplette Collection unbegrenzt und ist bei sehr großen
 /// Collections (Türme: hunderttausende Marker) dafür ungeeignet.
-final markersInViewportProvider =
-    FutureProvider<List<MarkerWithPhotos>>((ref) async {
+final markersInViewportProvider = FutureProvider<List<MarkerWithPhotos>>((
+  ref,
+) async {
   final id = ref.watch(activeCollectionProvider);
   final bounds = ref.watch(mapViewportBoundsProvider);
   if (bounds == null) return const [];
-  final markers = await ref.watch(mapMarkersDaoProvider).getByCollectionInBounds(
+  final markers = await ref
+      .watch(mapMarkersDaoProvider)
+      .getByCollectionInBounds(
         id,
         minLat: bounds.minLat,
         maxLat: bounds.maxLat,
@@ -138,15 +150,15 @@ final mostRecentMarkerProvider = FutureProvider<MapMarker?>((ref) {
 // the lifetime of the app, growing unbounded with every keystroke.
 final markerSearchProvider = FutureProvider.autoDispose
     .family<List<MarkerWithPhotos>, String>((ref, query) async {
-  final id = ref.watch(activeCollectionProvider);
-  final dao = ref.watch(mapMarkersDaoProvider);
-  // Beide Zweige begrenzt: bei leerer Suche würde sonst die komplette
-  // Collection geladen, bei kurzen Suchbegriffen zehntausende Treffer.
-  final markers = query.isEmpty
-      ? await dao.getRecentByCollection(id)
-      : await dao.search(id, query);
-  return _withPhotos(ref, markers);
-});
+      final id = ref.watch(activeCollectionProvider);
+      final dao = ref.watch(mapMarkersDaoProvider);
+      // Beide Zweige begrenzt: bei leerer Suche würde sonst die komplette
+      // Collection geladen, bei kurzen Suchbegriffen zehntausende Treffer.
+      final markers = query.isEmpty
+          ? await dao.getRecentByCollection(id)
+          : await dao.search(id, query);
+      return _withPhotos(ref, markers);
+    });
 
 // autoDispose: wie markerSearchProvider — jeder angeklickte Hashtag erzeugt
 // eine eigene Provider-Instanz, sonst würden diese über die App-Laufzeit
@@ -158,31 +170,39 @@ final markerSearchProvider = FutureProvider.autoDispose
 /// automatisch dorthin zoomte noch einen Hinweis darauf zeigte.
 final hashtagFilteredMarkersProvider = FutureProvider.autoDispose
     .family<List<MarkerWithPhotos>, String>((ref, tag) async {
-  final id = ref.watch(activeCollectionProvider);
-  final dao = ref.watch(mapMarkersDaoProvider);
-  final candidates = await dao.byHashtagSubstring(id, tag);
-  final needle = tag.toLowerCase();
-  final markers = candidates.where((m) => m.hashtags
-      .split(',')
-      .map((t) => t.trim().toLowerCase())
-      .contains(needle)).toList();
-  return _withPhotos(ref, markers);
-});
+      final id = ref.watch(activeCollectionProvider);
+      final dao = ref.watch(mapMarkersDaoProvider);
+      final candidates = await dao.byHashtagSubstring(id, tag);
+      final needle = tag.toLowerCase();
+      final markers = candidates
+          .where(
+            (m) => m.hashtags
+                .split(',')
+                .map((t) => t.trim().toLowerCase())
+                .contains(needle),
+          )
+          .toList();
+      return _withPhotos(ref, markers);
+    });
 
 /// Marker für die Galerie-Ansicht — begrenzte, nach Datum absteigende Liste.
 /// Bewusst NICHT [activeMarkersProvider]: der lädt die komplette Collection
 /// (bei den importierten Karten hunderttausende Zeilen samt Foto-Abfrage),
 /// bevor überhaupt die erste Kachel erscheinen kann.
-final galleryMarkersProvider =
-    FutureProvider<List<MarkerWithPhotos>>((ref) async {
+final galleryMarkersProvider = FutureProvider<List<MarkerWithPhotos>>((
+  ref,
+) async {
   final id = ref.watch(activeCollectionProvider);
-  final markers =
-      await ref.watch(mapMarkersDaoProvider).getRecentByCollection(id);
+  final markers = await ref
+      .watch(mapMarkersDaoProvider)
+      .getRecentByCollection(id);
   return _withPhotos(ref, markers);
 });
 
-final markerByIdProvider =
-    FutureProvider.family<MarkerWithPhotos?, int>((ref, id) async {
+final markerByIdProvider = FutureProvider.family<MarkerWithPhotos?, int>((
+  ref,
+  id,
+) async {
   final marker = await ref.watch(mapMarkersDaoProvider).getById(id);
   if (marker == null) return null;
   final photos = await ref.watch(markerPhotosDaoProvider).getByMarker(id);
@@ -195,12 +215,12 @@ final allHashtagsProvider = FutureProvider<List<String>>((ref) async {
   // aller Spalten — bei den importierten Collections (413k Türme, 82k Lost
   // Places, alle ohne Hashtags) ist das der Unterschied zwischen „lädt
   // hunderttausende Zeilen" und „liefert praktisch sofort nichts zurück".
-  final raw =
-      await ref.watch(mapMarkersDaoProvider).hashtagStringsForCollection(id);
+  final raw = await ref
+      .watch(mapMarkersDaoProvider)
+      .hashtagStringsForCollection(id);
   final tags = <String>{};
   for (final h in raw) {
-    tags.addAll(
-        h.split(',').map((t) => t.trim()).where((t) => t.isNotEmpty));
+    tags.addAll(h.split(',').map((t) => t.trim()).where((t) => t.isNotEmpty));
   }
   return tags.toList()..sort();
 });

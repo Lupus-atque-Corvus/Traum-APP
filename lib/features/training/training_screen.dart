@@ -836,7 +836,8 @@ class _StatsRow extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     String volLabel;
     if (volumeKg >= 1000) {
-      volLabel = '${(volumeKg / 1000).toStringAsFixed(1).replaceAll('.', ',')}t';
+      volLabel =
+          '${(volumeKg / 1000).toStringAsFixed(1).replaceAll('.', ',')}t';
     } else {
       volLabel = '${volumeKg.toInt()} kg';
     }

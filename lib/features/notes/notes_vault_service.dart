@@ -61,11 +61,16 @@ class NotesVaultService {
     final zipped = ZipEncoder().encode(archive);
     if (zipped == null) return;
     final dir = await getTemporaryDirectory();
-    final file = File(p.join(dir.path,
-        'traum-notes-${DateTime.now().millisecondsSinceEpoch}.zip'));
+    final file = File(
+      p.join(
+        dir.path,
+        'traum-notes-${DateTime.now().millisecondsSinceEpoch}.zip',
+      ),
+    );
     await file.writeAsBytes(zipped);
     await SharePlus.instance.share(
-        ShareParams(files: [XFile(file.path)], text: 'TRAUM Notes Vault'));
+      ShareParams(files: [XFile(file.path)], text: 'TRAUM Notes Vault'),
+    );
   }
 
   // ─── Import ────────────────────────────────────────────────────────────────
@@ -101,14 +106,13 @@ class NotesVaultService {
       if (!file.name.toLowerCase().endsWith('.md')) continue;
       final content = String.fromCharCodes(file.content as List<int>);
       final dirPath = p.dirname(file.name);
-      final normalizedDir = (dirPath == '.' ? '' : dirPath).replaceAll('\\', '/');
+      final normalizedDir = (dirPath == '.' ? '' : dirPath).replaceAll(
+        '\\',
+        '/',
+      );
       final folderId = await ensureFolderPath(normalizedDir);
       final title = p.basenameWithoutExtension(file.name);
-      await repo.createNote(
-        title: title,
-        content: content,
-        folderId: folderId,
-      );
+      await repo.createNote(title: title, content: content, folderId: folderId);
       imported++;
     }
     return imported;

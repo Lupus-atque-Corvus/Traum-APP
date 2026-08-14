@@ -53,9 +53,9 @@ class HabitHeatmapRow {
     this.iconKey,
     required this.dayValues,
   }) : assert(
-          dayValues.length == 7,
-          'dayValues must have exactly 7 entries (Mon..Sun)',
-        );
+         dayValues.length == 7,
+         'dayValues must have exactly 7 entries (Mon..Sun)',
+       );
 }
 
 const List<String> _kWeekdayLabels = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];

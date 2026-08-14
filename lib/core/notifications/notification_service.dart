@@ -25,21 +25,29 @@ Future<void> markMedicationsTakenFromNotification() async {
     for (final med in meds) {
       final times = parseReminderTimes(med.timings);
       if (times.isEmpty) continue;
-      final takenCount =
-          logs.where((l) => l.medicationId == med.id && l.taken).length;
+      final takenCount = logs
+          .where((l) => l.medicationId == med.id && l.taken)
+          .length;
       if (takenCount >= times.length) continue;
       final parts = times[takenCount].time.split(':');
       var sched = DateTime(now.year, now.month, now.day);
       if (parts.length == 2) {
-        sched = DateTime(now.year, now.month, now.day,
-            int.tryParse(parts[0]) ?? 0, int.tryParse(parts[1]) ?? 0);
+        sched = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          int.tryParse(parts[0]) ?? 0,
+          int.tryParse(parts[1]) ?? 0,
+        );
       }
-      await db.medicationDao.insertLog(MedicationLogsCompanion.insert(
-        medicationId: med.id,
-        scheduledAt: sched,
-        takenAt: Value(now),
-        taken: const Value(true),
-      ));
+      await db.medicationDao.insertLog(
+        MedicationLogsCompanion.insert(
+          medicationId: med.id,
+          scheduledAt: sched,
+          takenAt: Value(now),
+          taken: const Value(true),
+        ),
+      );
     }
   } catch (_) {
     // Never let a notification action crash the isolate.
@@ -89,16 +97,20 @@ class NotificationService {
   /// ids per medication (10 per time slot, `timeIndex` realistically never
   /// exceeds a handful of daily doses) starting well above the fixed ids
   /// above.
-  static int medicationReminderId(int medicationId, int timeIndex,
-          [int weekday = 0]) =>
-      10000 + medicationId * 1000 + timeIndex * 10 + weekday;
+  static int medicationReminderId(
+    int medicationId,
+    int timeIndex, [
+    int weekday = 0,
+  ]) => 10000 + medicationId * 1000 + timeIndex * 10 + weekday;
 
   /// Same scheme as [medicationReminderId], for supplements. A large,
   /// disjoint base offset keeps the two id ranges from ever colliding
   /// without needing to track both counters against each other.
-  static int supplementReminderId(int supplementId, int timeIndex,
-          [int weekday = 0]) =>
-      10000000 + supplementId * 1000 + timeIndex * 10 + weekday;
+  static int supplementReminderId(
+    int supplementId,
+    int timeIndex, [
+    int weekday = 0,
+  ]) => 10000000 + supplementId * 1000 + timeIndex * 10 + weekday;
 
   /// Whether the OS currently grants notification permission. Reminders
   /// scheduled while this is false are silently dropped by the platform —
@@ -114,8 +126,9 @@ class NotificationService {
     final localTimezone = await FlutterTimezone.getLocalTimezone();
     tz.setLocalLocation(tz.getLocation(localTimezone));
 
-    const androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const darwinSettings = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
@@ -135,9 +148,10 @@ class NotificationService {
   }
 
   static Future<void> _createChannels() async {
-    final androidPlugin =
-        _plugin.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+    final androidPlugin = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
 
     final channels = [
       const AndroidNotificationChannel(

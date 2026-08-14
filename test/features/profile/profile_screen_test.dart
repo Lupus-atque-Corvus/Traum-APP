@@ -10,17 +10,17 @@ import 'package:traum/features/profile/profile_screen.dart';
 import 'package:traum/l10n/app_localizations.dart';
 
 Widget _wrap(SharedPreferences prefs, TraumDatabase db) => ProviderScope(
-      overrides: [
-        sharedPreferencesProvider.overrideWithValue(prefs),
-        databaseProvider.overrideWithValue(db),
-      ],
-      child: MaterialApp(
-        locale: const Locale('de'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const ProfileScreen(),
-      ),
-    );
+  overrides: [
+    sharedPreferencesProvider.overrideWithValue(prefs),
+    databaseProvider.overrideWithValue(db),
+  ],
+  child: MaterialApp(
+    locale: const Locale('de'),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: const ProfileScreen(),
+  ),
+);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -42,21 +42,22 @@ void main() {
   });
 
   testWidgets(
-      'derives the correct BMI category from height (default 175cm) and '
-      'the latest weight log', (tester) async {
-    SharedPreferences.setMockInitialValues({});
-    final prefs = await SharedPreferences.getInstance();
-    // 70kg at the default 175cm height -> BMI ~22.9 -> normal weight.
-    await db.healthDao.insertWeightLog(WeightLogsCompanion.insert(
-      weightKg: 70,
-      logDate: DateTime.now(),
-    ));
+    'derives the correct BMI category from height (default 175cm) and '
+    'the latest weight log',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      // 70kg at the default 175cm height -> BMI ~22.9 -> normal weight.
+      await db.healthDao.insertWeightLog(
+        WeightLogsCompanion.insert(weightKg: 70, logDate: DateTime.now()),
+      );
 
-    await tester.pumpWidget(_wrap(prefs, db));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 50));
+      await tester.pumpWidget(_wrap(prefs, db));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
 
-    expect(find.textContaining('Normalgewicht'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
+      expect(find.textContaining('Normalgewicht'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

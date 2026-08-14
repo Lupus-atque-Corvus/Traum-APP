@@ -26,10 +26,10 @@ class PredictionCard extends StatelessWidget {
     if (analysis.nextPeriodPredicted == null) return const SizedBox.shrink();
 
     final l10n = AppLocalizations.of(context)!;
-    final todayNorm =
-        DateTime(today.year, today.month, today.day);
-    final daysUntil =
-        analysis.nextPeriodPredicted!.difference(todayNorm).inDays;
+    final todayNorm = DateTime(today.year, today.month, today.day);
+    final daysUntil = analysis.nextPeriodPredicted!
+        .difference(todayNorm)
+        .inDays;
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -37,7 +37,8 @@ class PredictionCard extends StatelessWidget {
         color: TraumColors.surface,
         borderRadius: BorderRadius.circular(TraumRadius.card),
         border: Border.all(
-            color: TraumColors.periodRose.withValues(alpha: 0.3)),
+          color: TraumColors.periodRose.withValues(alpha: 0.3),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,11 +106,7 @@ class TodayCard extends StatelessWidget {
   final List<PeriodSymptom> todaySymptoms;
   final DailyLog? log;
 
-  const TodayCard({
-    super.key,
-    required this.todaySymptoms,
-    required this.log,
-  });
+  const TodayCard({super.key, required this.todaySymptoms, required this.log});
 
   @override
   Widget build(BuildContext context) {
@@ -153,8 +150,7 @@ class TodayCard extends StatelessWidget {
               children: [
                 ...todaySymptoms.map((s) => _Chip(label: s.symptom)),
                 if (hasMood) _Chip(label: '🙂 ${log!.mood}'),
-                if (hasBbt)
-                  _Chip(label: '🌡 ${log!.bbt!.toStringAsFixed(2)}°'),
+                if (hasBbt) _Chip(label: '🌡 ${log!.bbt!.toStringAsFixed(2)}°'),
               ],
             ),
         ],
@@ -216,8 +212,10 @@ class CycleAnalysisCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 3,
+                ),
                 decoration: BoxDecoration(
                   color: regularityColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
@@ -238,8 +236,7 @@ class CycleAnalysisCard extends StatelessWidget {
 
           // Variability
           Text(
-            l10n.variabilityDays(
-                analysis.cycleLengthStdDev?.round() ?? 0),
+            l10n.variabilityDays(analysis.cycleLengthStdDev?.round() ?? 0),
             style: const TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
@@ -283,8 +280,7 @@ class HealthFlagsCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: TraumColors.surface,
         borderRadius: BorderRadius.circular(TraumRadius.card),
-        border: Border.all(
-            color: TraumColors.amberGold.withValues(alpha: 0.3)),
+        border: Border.all(color: TraumColors.amberGold.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -292,8 +288,11 @@ class HealthFlagsCard extends StatelessWidget {
           if (flags.isEmpty)
             Row(
               children: [
-                const Icon(Icons.check_circle_outline_rounded,
-                    color: TraumColors.ovulationCyan, size: 16),
+                const Icon(
+                  Icons.check_circle_outline_rounded,
+                  color: TraumColors.ovulationCyan,
+                  size: 16,
+                ),
                 const SizedBox(width: 6),
                 Text(
                   l10n.healthAllNormal,
@@ -323,8 +322,11 @@ class HealthFlagsCard extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.warning_amber_rounded,
-                        color: TraumColors.amberGold, size: 16),
+                    const Icon(
+                      Icons.warning_amber_rounded,
+                      color: TraumColors.amberGold,
+                      size: 16,
+                    ),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
@@ -415,7 +417,8 @@ class _Chip extends StatelessWidget {
         color: TraumColors.periodRose.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-            color: TraumColors.periodRose.withValues(alpha: 0.3)),
+          color: TraumColors.periodRose.withValues(alpha: 0.3),
+        ),
       ),
       child: Text(
         label,

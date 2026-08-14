@@ -49,8 +49,9 @@ class _DiaryEditSheetState extends ConsumerState<DiaryEditSheet> {
     final l10n = AppLocalizations.of(context)!;
     final name = _nameCtrl.text.trim();
     if (name.isEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(l10n.diaryEnterName)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.diaryEnterName)));
       return;
     }
     setState(() => _saving = true);
@@ -58,19 +59,23 @@ class _DiaryEditSheetState extends ConsumerState<DiaryEditSheet> {
       final repo = ref.read(diaryRepositoryProvider);
       final existing = widget.diary;
       if (existing != null) {
-        await repo.updateDiary(existing.copyWith(
-          name: name,
-          iconName: _selectedIcon,
-          colorHex: Value(_selectedColor),
-        ));
+        await repo.updateDiary(
+          existing.copyWith(
+            name: name,
+            iconName: _selectedIcon,
+            colorHex: Value(_selectedColor),
+          ),
+        );
       } else {
-        final newId = await repo.createDiary(DiariesCompanion.insert(
-          name: name,
-          iconName: _selectedIcon,
-          colorHex: Value(_selectedColor),
-          sortOrder: Value(await repo.nextDiarySortOrder()),
-          createdAt: DateTime.now(),
-        ));
+        final newId = await repo.createDiary(
+          DiariesCompanion.insert(
+            name: name,
+            iconName: _selectedIcon,
+            colorHex: Value(_selectedColor),
+            sortOrder: Value(await repo.nextDiarySortOrder()),
+            createdAt: DateTime.now(),
+          ),
+        );
         await ref.read(activeDiaryProvider.notifier).set(newId);
       }
       ref.invalidate(diariesProvider);
@@ -89,8 +94,9 @@ class _DiaryEditSheetState extends ConsumerState<DiaryEditSheet> {
     final all = await ref.read(diaryRepositoryProvider).getAllDiaries();
     if (!mounted) return;
     if (all.length <= 1) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(l10n.diaryCannotDeleteLast)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.diaryCannotDeleteLast)));
       return;
     }
 
@@ -98,22 +104,34 @@ class _DiaryEditSheetState extends ConsumerState<DiaryEditSheet> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surface,
-        title: Text(l10n.diaryDeleteDiaryTitle,
-            style: const TextStyle(
-                fontFamily: 'DMSans', color: TraumColors.onBackground)),
-        content: Text(l10n.diaryDeleteDiaryMessage,
-            style: const TextStyle(
-                fontFamily: 'DMSans', color: TraumColors.onBackgroundMuted)),
+        title: Text(
+          l10n.diaryDeleteDiaryTitle,
+          style: const TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackground,
+          ),
+        ),
+        content: Text(
+          l10n.diaryDeleteDiaryMessage,
+          style: const TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackgroundMuted,
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.cancel,
-                style: const TextStyle(color: TraumColors.onBackgroundMuted)),
+            child: Text(
+              l10n.cancel,
+              style: const TextStyle(color: TraumColors.onBackgroundMuted),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child:
-                Text(l10n.delete, style: const TextStyle(color: TraumColors.roseRed)),
+            child: Text(
+              l10n.delete,
+              style: const TextStyle(color: TraumColors.roseRed),
+            ),
           ),
         ],
       ),
@@ -140,8 +158,7 @@ class _DiaryEditSheetState extends ConsumerState<DiaryEditSheet> {
       await repo.deleteDiaryWithEntries(existing.id);
 
       if (ref.read(activeDiaryProvider) == existing.id) {
-        final remaining =
-            all.where((d) => d.id != existing.id).toList();
+        final remaining = all.where((d) => d.id != existing.id).toList();
         if (remaining.isNotEmpty) {
           await ref.read(activeDiaryProvider.notifier).set(remaining.first.id);
         }
@@ -185,14 +202,14 @@ class _DiaryEditSheetState extends ConsumerState<DiaryEditSheet> {
               ),
             ),
             Text(
-                _isEditing
-                    ? l10n.diaryEditEditTitle
-                    : l10n.diaryEditCreateTitle,
-                style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w700,
-                    color: TraumColors.onBackground,
-                    fontSize: 16)),
+              _isEditing ? l10n.diaryEditEditTitle : l10n.diaryEditCreateTitle,
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+                color: TraumColors.onBackground,
+                fontSize: 16,
+              ),
+            ),
             const SizedBox(height: 18),
             _sectionLabel(l10n.diaryNameLabel),
             const SizedBox(height: 8),
@@ -200,20 +217,26 @@ class _DiaryEditSheetState extends ConsumerState<DiaryEditSheet> {
               controller: _nameCtrl,
               autofocus: !_isEditing,
               style: const TextStyle(
-                  fontFamily: 'DMSans', color: TraumColors.onBackground),
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
+              ),
               decoration: InputDecoration(
                 hintText: l10n.diaryNameHint,
                 hintStyle: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackgroundSubtle,
-                    fontSize: 14),
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundSubtle,
+                  fontSize: 14,
+                ),
                 filled: true,
                 fillColor: TraumColors.surfaceVariant,
                 contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 14, vertical: 12),
+                  horizontal: 14,
+                  vertical: 12,
+                ),
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none),
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
             const SizedBox(height: 18),
@@ -235,12 +258,15 @@ class _DiaryEditSheetState extends ConsumerState<DiaryEditSheet> {
                           : TraumColors.surfaceVariant,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                          color: sel ? accent : Colors.transparent,
-                          width: 1.5),
+                        color: sel ? accent : Colors.transparent,
+                        width: 1.5,
+                      ),
                     ),
-                    child: Icon(diaryIcon(ic),
-                        color: sel ? accent : TraumColors.onBackgroundMuted,
-                        size: 21),
+                    child: Icon(
+                      diaryIcon(ic),
+                      color: sel ? accent : TraumColors.onBackgroundMuted,
+                      size: 21,
+                    ),
                   ),
                 );
               }).toList(),
@@ -263,13 +289,12 @@ class _DiaryEditSheetState extends ConsumerState<DiaryEditSheet> {
                       color: c,
                       shape: BoxShape.circle,
                       border: Border.all(
-                          color:
-                              sel ? Colors.white : Colors.transparent,
-                          width: 2.5),
+                        color: sel ? Colors.white : Colors.transparent,
+                        width: 2.5,
+                      ),
                     ),
                     child: sel
-                        ? const Icon(Icons.check,
-                            color: Colors.white, size: 18)
+                        ? const Icon(Icons.check, color: Colors.white, size: 18)
                         : null,
                   ),
                 );
@@ -284,28 +309,39 @@ class _DiaryEditSheetState extends ConsumerState<DiaryEditSheet> {
                   backgroundColor: TraumColors.lavender,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50)),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
                 ),
                 child: _saving
                     ? const SizedBox(
                         height: 20,
                         width: 20,
                         child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white))
-                    : Text(l10n.save,
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(
+                        l10n.save,
                         style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16)),
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                        ),
+                      ),
               ),
             ),
             if (_isEditing) ...[
               const SizedBox(height: 8),
               TextButton(
                 onPressed: _saving ? null : _delete,
-                child: Text(l10n.diaryDeleteDiaryButton,
-                    style: const TextStyle(
-                        fontFamily: 'DMSans', color: TraumColors.roseRed)),
+                child: Text(
+                  l10n.diaryDeleteDiaryButton,
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.roseRed,
+                  ),
+                ),
               ),
             ],
           ],
@@ -315,13 +351,13 @@ class _DiaryEditSheetState extends ConsumerState<DiaryEditSheet> {
   }
 
   Widget _sectionLabel(String text) => Text(
-        text.toUpperCase(),
-        style: const TextStyle(
-          fontFamily: 'DMSans',
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          color: TraumColors.onBackgroundMuted,
-          letterSpacing: 0.6,
-        ),
-      );
+    text.toUpperCase(),
+    style: const TextStyle(
+      fontFamily: 'DMSans',
+      fontSize: 11,
+      fontWeight: FontWeight.w600,
+      color: TraumColors.onBackgroundMuted,
+      letterSpacing: 0.6,
+    ),
+  );
 }

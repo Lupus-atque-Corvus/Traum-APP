@@ -2,7 +2,8 @@ import 'dart:async';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:permission_handler/permission_handler.dart' show openAppSettings;
+import 'package:permission_handler/permission_handler.dart'
+    show openAppSettings;
 import '../../core/components/components.dart';
 import '../../core/notifications/notification_scheduler.dart';
 import '../../core/notifications/reminder_time.dart';
@@ -43,85 +44,116 @@ class _ReminderTimesEditor extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(children: [
-          Text(l10n.reminderTimes,
-              style: TextStyle(color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans', fontSize: 13)),
-          const Spacer(),
-          TextButton.icon(
-            onPressed: () => _addTime(context),
-            icon: Icon(Icons.add, size: 16, color: accentColor),
-            label: Text(l10n.add,
+        Row(
+          children: [
+            Text(
+              l10n.reminderTimes,
+              style: TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+            ),
+            const Spacer(),
+            TextButton.icon(
+              onPressed: () => _addTime(context),
+              icon: Icon(Icons.add, size: 16, color: accentColor),
+              label: Text(
+                l10n.add,
                 style: TextStyle(
-                    color: accentColor, fontFamily: 'DMSans', fontSize: 12)),
-          ),
-        ]),
-        ...times.asMap().entries.map((e) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(children: [
+                  color: accentColor,
+                  fontFamily: 'DMSans',
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ],
+        ),
+        ...times.asMap().entries.map(
+          (e) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
                     GestureDetector(
                       onTap: () => _editTime(context, e.key),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color: TraumColors.surface,
                           borderRadius: BorderRadius.circular(TraumRadius.chip),
                           border: Border.all(
-                              color: accentColor.withValues(alpha: 0.3)),
+                            color: accentColor.withValues(alpha: 0.3),
+                          ),
                         ),
-                        child: Text(e.value.time,
-                            style: TextStyle(
-                                color: accentColor,
-                                fontFamily: 'DMSans',
-                                fontWeight: FontWeight.w600)),
+                        child: Text(
+                          e.value.time,
+                          style: TextStyle(
+                            color: accentColor,
+                            fontFamily: 'DMSans',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
                     if (times.length > minEntries)
                       IconButton(
                         tooltip: AppLocalizations.of(context)!.delete,
-                        icon: const Icon(Icons.close,
-                            size: 16, color: TraumColors.onBackgroundSubtle),
+                        icon: const Icon(
+                          Icons.close,
+                          size: 16,
+                          color: TraumColors.onBackgroundSubtle,
+                        ),
                         onPressed: () {
-                          final next = List<ReminderTime>.of(times)..removeAt(e.key);
+                          final next = List<ReminderTime>.of(times)
+                            ..removeAt(e.key);
                           onChanged(next);
                         },
                       ),
-                  ]),
-                  Wrap(
-                    spacing: 4,
-                    children: List.generate(7, (i) {
-                      final isoWeekday = i + 1;
-                      final selected = e.value.days.contains(isoWeekday);
-                      return GestureDetector(
-                        onTap: () => _toggleDay(e.key, isoWeekday),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: selected
-                                ? accentColor.withValues(alpha: 0.2)
-                                : TraumColors.surfaceVariant,
-                            borderRadius: BorderRadius.circular(TraumRadius.chip),
-                          ),
-                          child: Text(weekdayLabels[i],
-                              style: TextStyle(
-                                  color: selected
-                                      ? accentColor
-                                      : TraumColors.onBackgroundSubtle,
-                                  fontFamily: 'DMSans',
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600)),
+                  ],
+                ),
+                Wrap(
+                  spacing: 4,
+                  children: List.generate(7, (i) {
+                    final isoWeekday = i + 1;
+                    final selected = e.value.days.contains(isoWeekday);
+                    return GestureDetector(
+                      onTap: () => _toggleDay(e.key, isoWeekday),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
                         ),
-                      );
-                    }),
-                  ),
-                ],
-              ),
-            )),
+                        decoration: BoxDecoration(
+                          color: selected
+                              ? accentColor.withValues(alpha: 0.2)
+                              : TraumColors.surfaceVariant,
+                          borderRadius: BorderRadius.circular(TraumRadius.chip),
+                        ),
+                        child: Text(
+                          weekdayLabels[i],
+                          style: TextStyle(
+                            color: selected
+                                ? accentColor
+                                : TraumColors.onBackgroundSubtle,
+                            fontFamily: 'DMSans',
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -145,8 +177,9 @@ class _ReminderTimesEditor extends StatelessWidget {
       context: context,
       initialTime: TimeOfDay.now(),
       builder: (ctx, child) => Theme(
-        data: ThemeData.dark()
-            .copyWith(colorScheme: ColorScheme.dark(primary: accentColor)),
+        data: ThemeData.dark().copyWith(
+          colorScheme: ColorScheme.dark(primary: accentColor),
+        ),
         child: child!,
       ),
     );
@@ -160,11 +193,14 @@ class _ReminderTimesEditor extends StatelessWidget {
     final parts = times[index].time.split(':');
     final picked = await showTimePicker(
       context: context,
-      initialTime:
-          TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1])),
+      initialTime: TimeOfDay(
+        hour: int.parse(parts[0]),
+        minute: int.parse(parts[1]),
+      ),
       builder: (ctx, child) => Theme(
-        data: ThemeData.dark()
-            .copyWith(colorScheme: ColorScheme.dark(primary: accentColor)),
+        data: ThemeData.dark().copyWith(
+          colorScheme: ColorScheme.dark(primary: accentColor),
+        ),
         child: child!,
       ),
     );
@@ -182,12 +218,16 @@ class _ReminderTimesEditor extends StatelessWidget {
 /// "08:00 (Mo, Mi, Fr), 20:00" once a time is restricted to specific days.
 String _formatReminderTimes(BuildContext context, List<ReminderTime> times) {
   final weekdayLabels = AppLocalizations.of(context)!.weekdaysShort.split(',');
-  return times.map((t) {
-    if (t.isEveryDay) return t.time;
-    final sortedDays = t.days.toList()..sort();
-    final dayLabels = sortedDays.map((d) => weekdayLabels[d - 1]).join(', ');
-    return '${t.time} ($dayLabels)';
-  }).join(', ');
+  return times
+      .map((t) {
+        if (t.isEveryDay) return t.time;
+        final sortedDays = t.days.toList()..sort();
+        final dayLabels = sortedDays
+            .map((d) => weekdayLabels[d - 1])
+            .join(', ');
+        return '${t.time} ($dayLabels)';
+      })
+      .join(', ');
 }
 
 /// Re-derives every scheduled reminder (medication/supplement + all
@@ -239,10 +279,12 @@ class MySubstancesTab extends ConsumerWidget {
           medsAsync.when(
             data: (meds) => logsAsync.when(
               data: (logs) => _TodayStatusCard(meds: meds, logs: logs),
-              loading: () => const ShimmerLoader(width: double.infinity, height: 80),
+              loading: () =>
+                  const ShimmerLoader(width: double.infinity, height: 80),
               error: (e, _) => InlineError(e),
             ),
-            loading: () => const ShimmerLoader(width: double.infinity, height: 80),
+            loading: () =>
+                const ShimmerLoader(width: double.infinity, height: 80),
             error: (e, _) => InlineError(e),
           ),
           const SizedBox(height: 16),
@@ -256,57 +298,75 @@ class MySubstancesTab extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (meds.isNotEmpty) ...[
-                      SectionHeader(title: AppLocalizations.of(context)!.substanceMedications),
+                      SectionHeader(
+                        title: AppLocalizations.of(
+                          context,
+                        )!.substanceMedications,
+                      ),
                       const SizedBox(height: 8),
-                      ...meds.map((med) => _MedCard(
-                            med: med,
-                            onEdit: () => _showEditMedSheet(context, ref, med),
-                            onDelete: () async {
-                              await ref
-                                  .read(medicationDaoProvider)
-                                  .deleteMedication(med.id);
-                              if (!context.mounted) return;
-                              await _syncReminders(context);
-                            },
-                            onToggle: (active) async {
-                              await ref
-                                  .read(medicationDaoProvider)
-                                  .setMedicationActive(med.id, active);
-                              if (!context.mounted) return;
-                              await _syncReminders(context);
-                            },
-                          )),
+                      ...meds.map(
+                        (med) => _MedCard(
+                          med: med,
+                          onEdit: () => _showEditMedSheet(context, ref, med),
+                          onDelete: () async {
+                            await ref
+                                .read(medicationDaoProvider)
+                                .deleteMedication(med.id);
+                            if (!context.mounted) return;
+                            await _syncReminders(context);
+                          },
+                          onToggle: (active) async {
+                            await ref
+                                .read(medicationDaoProvider)
+                                .setMedicationActive(med.id, active);
+                            if (!context.mounted) return;
+                            await _syncReminders(context);
+                          },
+                        ),
+                      ),
                       const SizedBox(height: 16),
                     ],
                     if (supps.isNotEmpty) ...[
-                      SectionHeader(title: AppLocalizations.of(context)!.substanceSupplements),
+                      SectionHeader(
+                        title: AppLocalizations.of(
+                          context,
+                        )!.substanceSupplements,
+                      ),
                       const SizedBox(height: 8),
-                      ...supps.map((s) => _SuppCard(
-                            supp: s,
-                            onEdit: () => _showEditSuppSheet(context, ref, s),
-                            onDelete: () async {
-                              await ref
-                                  .read(supplementDaoProvider)
-                                  .deleteSupplement(s.id);
-                              if (!context.mounted) return;
-                              await _syncReminders(context);
-                            },
-                            onToggle: (active) async {
-                              await ref.read(supplementDaoProvider).updateSupplement(
-                                    s.toCompanion(true).copyWith(isActive: Value(active)),
-                                  );
-                              if (!context.mounted) return;
-                              await _syncReminders(context);
-                            },
-                          )),
+                      ...supps.map(
+                        (s) => _SuppCard(
+                          supp: s,
+                          onEdit: () => _showEditSuppSheet(context, ref, s),
+                          onDelete: () async {
+                            await ref
+                                .read(supplementDaoProvider)
+                                .deleteSupplement(s.id);
+                            if (!context.mounted) return;
+                            await _syncReminders(context);
+                          },
+                          onToggle: (active) async {
+                            await ref
+                                .read(supplementDaoProvider)
+                                .updateSupplement(
+                                  s
+                                      .toCompanion(true)
+                                      .copyWith(isActive: Value(active)),
+                                );
+                            if (!context.mounted) return;
+                            await _syncReminders(context);
+                          },
+                        ),
+                      ),
                     ],
                   ],
                 );
               },
-              loading: () => const ShimmerLoader(width: double.infinity, height: 200),
+              loading: () =>
+                  const ShimmerLoader(width: double.infinity, height: 200),
               error: (e, _) => Text('$e'),
             ),
-            loading: () => const ShimmerLoader(width: double.infinity, height: 200),
+            loading: () =>
+                const ShimmerLoader(width: double.infinity, height: 200),
             error: (e, _) => Text('$e'),
           ),
         ],
@@ -319,65 +379,82 @@ class MySubstancesTab extends ConsumerWidget {
       context: context,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
       ),
       builder: (_) => Padding(
         padding: const EdgeInsets.all(24),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Center(
-            child: Container(width: 40, height: 4,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
                 decoration: BoxDecoration(
-                    color: TraumColors.onBackgroundSubtle,
-                    borderRadius: BorderRadius.circular(2))),
-          ),
-          const SizedBox(height: 20),
-          Text(AppLocalizations.of(context)!.whatToAdd,
-              style: TextStyle(color: TraumColors.onBackground,
-                  fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 16)),
-          const SizedBox(height: 20),
-          Row(children: [
-            Expanded(
+                  color: TraumColors.onBackgroundSubtle,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              AppLocalizations.of(context)!.whatToAdd,
+              style: TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: _TypeButton(
+                    icon: Icons.medication_rounded,
+                    label: AppLocalizations.of(context)!.substanceTypeMed,
+                    color: TraumColors.roseRed,
+                    dimColor: TraumColors.roseRedDim,
+                    onTap: () {
+                      Navigator.pop(context);
+                      _showAddMedSheet(context, ref);
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _TypeButton(
+                    icon: Icons.science_rounded,
+                    label: AppLocalizations.of(context)!.substanceTypeSupp,
+                    color: TraumColors.indigoBlue,
+                    dimColor: TraumColors.indigoBlueDim,
+                    onTap: () {
+                      Navigator.pop(context);
+                      _showAddSuppSheet(context, ref);
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
               child: _TypeButton(
-                icon: Icons.medication_rounded,
-                label: AppLocalizations.of(context)!.substanceTypeMed,
-                color: TraumColors.roseRed,
-                dimColor: TraumColors.roseRedDim,
+                icon: Icons.event_available_rounded,
+                label: AppLocalizations.of(context)!.substanceLogIntake,
+                color: TraumColors.coralOrange,
+                dimColor: TraumColors.coralDim,
                 onTap: () {
                   Navigator.pop(context);
-                  _showAddMedSheet(context, ref);
+                  _showAddIntakeSheet(context, ref);
                 },
               ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _TypeButton(
-                icon: Icons.science_rounded,
-                label: AppLocalizations.of(context)!.substanceTypeSupp,
-                color: TraumColors.indigoBlue,
-                dimColor: TraumColors.indigoBlueDim,
-                onTap: () {
-                  Navigator.pop(context);
-                  _showAddSuppSheet(context, ref);
-                },
-              ),
-            ),
-          ]),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: _TypeButton(
-              icon: Icons.event_available_rounded,
-              label: AppLocalizations.of(context)!.substanceLogIntake,
-              color: TraumColors.coralOrange,
-              dimColor: TraumColors.coralDim,
-              onTap: () {
-                Navigator.pop(context);
-                _showAddIntakeSheet(context, ref);
-              },
-            ),
-          ),
-          const SizedBox(height: 8),
-        ]),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
@@ -388,7 +465,10 @@ class MySubstancesTab extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
+      ),
       builder: (_) => _AddIntakeSheet(
         onAdd: (c) => ref.read(substanceDaoProvider).insertIntake(c),
       ),
@@ -401,13 +481,20 @@ class MySubstancesTab extends ConsumerWidget {
   void _showEditMedSheet(BuildContext context, WidgetRef ref, Medication med) =>
       _showMedSheet(context, ref, existing: med);
 
-  void _showMedSheet(BuildContext context, WidgetRef ref, {Medication? existing}) {
+  void _showMedSheet(
+    BuildContext context,
+    WidgetRef ref, {
+    Medication? existing,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
+      ),
       builder: (ctx) => _AddMedSheet(
         existing: existing,
         onAdd: (companion) async {
@@ -426,16 +513,26 @@ class MySubstancesTab extends ConsumerWidget {
   void _showAddSuppSheet(BuildContext context, WidgetRef ref) =>
       _showSuppSheet(context, ref);
 
-  void _showEditSuppSheet(BuildContext context, WidgetRef ref, Supplement supp) =>
-      _showSuppSheet(context, ref, existing: supp);
+  void _showEditSuppSheet(
+    BuildContext context,
+    WidgetRef ref,
+    Supplement supp,
+  ) => _showSuppSheet(context, ref, existing: supp);
 
-  void _showSuppSheet(BuildContext context, WidgetRef ref, {Supplement? existing}) {
+  void _showSuppSheet(
+    BuildContext context,
+    WidgetRef ref, {
+    Supplement? existing,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
+      ),
       builder: (ctx) => _AddSuppSheet(
         existing: existing,
         onAdd: (companion) async {
@@ -468,7 +565,10 @@ void showAddMedSheetFor(
     isScrollControlled: true,
     backgroundColor: TraumColors.surfaceElevated,
     shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(TraumRadius.card),
+      ),
+    ),
     builder: (ctx) => _AddMedSheet(
       initialName: initialName,
       initialDosage: initialDosage,
@@ -504,7 +604,10 @@ void showAddSuppSheetFor(
     isScrollControlled: true,
     backgroundColor: TraumColors.surfaceElevated,
     shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(TraumRadius.card),
+      ),
+    ),
     builder: (ctx) => _AddSuppSheet(
       initialName: initialName,
       initialCategory: initialCategory,
@@ -514,9 +617,10 @@ void showAddSuppSheetFor(
         // Uses ctx's own ProviderScope, not the caller's `ref` — the caller
         // (substance_detail_sheet.dart) pops itself before opening this
         // sheet, so its `ref` is unmounted by the time the user hits Save.
-        await ProviderScope.containerOf(ctx, listen: false)
-            .read(supplementDaoProvider)
-            .insertSupplement(c);
+        await ProviderScope.containerOf(
+          ctx,
+          listen: false,
+        ).read(supplementDaoProvider).insertSupplement(c);
         // Pass the sheet's own (still-mounted) ctx — the caller's context
         // was already popped before this sheet opened.
         if (ctx.mounted) onAdded?.call(ctx);
@@ -535,41 +639,60 @@ class _TodayStatusCard extends ConsumerWidget {
     final activeMeds = meds.where((m) => m.isActive).toList();
     if (activeMeds.isEmpty) return const SizedBox.shrink();
     return TraumCard(
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(AppLocalizations.of(context)!.today,
-            style: TextStyle(color: TraumColors.onBackground,
-                fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 16)),
-        const SizedBox(height: 12),
-        ...activeMeds.map((med) {
-          final todayWeekday = DateTime.now().weekday;
-          final times = parseReminderTimes(med.timings)
-              .where((t) => t.days.contains(todayWeekday))
-              .toList();
-          final takenCount = logs.where((l) => l.medicationId == med.id && l.taken).length;
-          final takenList = List.generate(times.length, (i) => i < takenCount);
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: MedicationDotRow(
-              name: med.name,
-              times: times.map((t) => t.time).toList(),
-              taken: takenList,
-              onTapDot: (i) {
-                // Tap empty dot → fill up to i+1; tap filled dot → reduce to i.
-                final target = i < takenCount ? i : i + 1;
-                _setTakenCount(ref, med, times, target);
-              },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            AppLocalizations.of(context)!.today,
+            style: TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
             ),
-          );
-        }),
-      ]),
+          ),
+          const SizedBox(height: 12),
+          ...activeMeds.map((med) {
+            final todayWeekday = DateTime.now().weekday;
+            final times = parseReminderTimes(
+              med.timings,
+            ).where((t) => t.days.contains(todayWeekday)).toList();
+            final takenCount = logs
+                .where((l) => l.medicationId == med.id && l.taken)
+                .length;
+            final takenList = List.generate(
+              times.length,
+              (i) => i < takenCount,
+            );
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: MedicationDotRow(
+                name: med.name,
+                times: times.map((t) => t.time).toList(),
+                taken: takenList,
+                onTapDot: (i) {
+                  // Tap empty dot → fill up to i+1; tap filled dot → reduce to i.
+                  final target = i < takenCount ? i : i + 1;
+                  _setTakenCount(ref, med, times, target);
+                },
+              ),
+            );
+          }),
+        ],
+      ),
     );
   }
 
   Future<void> _setTakenCount(
-      WidgetRef ref, Medication med, List<ReminderTime> times, int target) async {
+    WidgetRef ref,
+    Medication med,
+    List<ReminderTime> times,
+    int target,
+  ) async {
     final dao = ref.read(medicationDaoProvider);
-    final takenLogs =
-        logs.where((l) => l.medicationId == med.id && l.taken).toList();
+    final takenLogs = logs
+        .where((l) => l.medicationId == med.id && l.taken)
+        .toList();
     var count = takenLogs.length;
     final now = DateTime.now();
     while (count < target) {
@@ -577,15 +700,22 @@ class _TodayStatusCard extends ConsumerWidget {
       var sched = DateTime(now.year, now.month, now.day);
       final parts = timeStr.split(':');
       if (parts.length == 2) {
-        sched = DateTime(now.year, now.month, now.day,
-            int.tryParse(parts[0]) ?? 0, int.tryParse(parts[1]) ?? 0);
+        sched = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          int.tryParse(parts[0]) ?? 0,
+          int.tryParse(parts[1]) ?? 0,
+        );
       }
-      await dao.insertLog(MedicationLogsCompanion.insert(
-        medicationId: med.id,
-        scheduledAt: sched,
-        takenAt: Value(now),
-        taken: Value(true),
-      ));
+      await dao.insertLog(
+        MedicationLogsCompanion.insert(
+          medicationId: med.id,
+          scheduledAt: sched,
+          takenAt: Value(now),
+          taken: Value(true),
+        ),
+      );
       count++;
     }
     while (count > target && takenLogs.isNotEmpty) {
@@ -624,21 +754,44 @@ class _SuppCard extends StatelessWidget {
           ),
         ),
         child: ListTile(
-          leading: _icon(Icons.science_rounded, TraumColors.indigoBlueDim, TraumColors.indigoBlue),
-          title: Text(supp.name,
-              style: const TextStyle(color: TraumColors.onBackground,
-                  fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
-          subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              '${supp.dosageAmount ?? '?'} ${supp.dosageUnit ?? ''}'.trim(),
-              style: const TextStyle(color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans', fontSize: 12),
+          leading: _icon(
+            Icons.science_rounded,
+            TraumColors.indigoBlueDim,
+            TraumColors.indigoBlue,
+          ),
+          title: Text(
+            supp.name,
+            style: const TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w600,
             ),
-            if (parseReminderTimes(supp.timings).isNotEmpty)
-              Text(_formatReminderTimes(context, parseReminderTimes(supp.timings)),
-                  style: const TextStyle(color: TraumColors.onBackgroundSubtle,
-                      fontFamily: 'DMSans', fontSize: 11)),
-          ]),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${supp.dosageAmount ?? '?'} ${supp.dosageUnit ?? ''}'.trim(),
+                style: const TextStyle(
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                  fontSize: 12,
+                ),
+              ),
+              if (parseReminderTimes(supp.timings).isNotEmpty)
+                Text(
+                  _formatReminderTimes(
+                    context,
+                    parseReminderTimes(supp.timings),
+                  ),
+                  style: const TextStyle(
+                    color: TraumColors.onBackgroundSubtle,
+                    fontFamily: 'DMSans',
+                    fontSize: 11,
+                  ),
+                ),
+            ],
+          ),
           trailing: Switch(
             value: supp.isActive,
             activeThumbColor: TraumColors.indigoBlue,
@@ -654,54 +807,100 @@ class _SuppCard extends StatelessWidget {
       context: context,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
+      ),
       builder: (_) => SafeArea(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const SizedBox(height: 12),
-          ListTile(
-            leading: const Icon(Icons.edit_rounded, color: TraumColors.indigoBlue),
-            title: Text(AppLocalizations.of(context)!.edit,
-                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
-            onTap: () {
-              Navigator.pop(context);
-              onEdit();
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.pause_circle_outline_rounded, color: TraumColors.amberGold),
-            title: Text(AppLocalizations.of(context)!.substanceDeactivate,
-                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
-            onTap: () {
-              Navigator.pop(context);
-              onToggle?.call(!supp.isActive);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
-            title: Text(AppLocalizations.of(context)!.substanceDelete,
-                style: const TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
-            onTap: () async {
-              final l10n = AppLocalizations.of(context)!;
-              Navigator.pop(context);
-              final confirmed = await showDialog<bool>(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  backgroundColor: TraumColors.surfaceElevated,
-                  title: Text(l10n.substanceConfirmDeleteTitle,
-                      style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
-                  content: Text(l10n.substanceConfirmDeleteBody(supp.name),
-                      style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
-                  actions: [
-                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.cancel)),
-                    TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l10n.substanceDelete)),
-                  ],
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 12),
+            ListTile(
+              leading: const Icon(
+                Icons.edit_rounded,
+                color: TraumColors.indigoBlue,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.edit,
+                style: const TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
                 ),
-              );
-              if (confirmed == true) onDelete();
-            },
-          ),
-          const SizedBox(height: 8),
-        ]),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                onEdit();
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.pause_circle_outline_rounded,
+                color: TraumColors.amberGold,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.substanceDeactivate,
+                style: const TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                onToggle?.call(!supp.isActive);
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.delete_rounded,
+                color: TraumColors.roseRed,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.substanceDelete,
+                style: const TextStyle(
+                  color: TraumColors.roseRed,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+              onTap: () async {
+                final l10n = AppLocalizations.of(context)!;
+                Navigator.pop(context);
+                final confirmed = await showDialog<bool>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    backgroundColor: TraumColors.surfaceElevated,
+                    title: Text(
+                      l10n.substanceConfirmDeleteTitle,
+                      style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                      ),
+                    ),
+                    content: Text(
+                      l10n.substanceConfirmDeleteBody(supp.name),
+                      style: const TextStyle(
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx, false),
+                        child: Text(l10n.cancel),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx, true),
+                        child: Text(l10n.substanceDelete),
+                      ),
+                    ],
+                  ),
+                );
+                if (confirmed == true) onDelete();
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
@@ -736,31 +935,60 @@ class _MedCard extends StatelessWidget {
           ),
         ),
         child: ListTile(
-          leading: _icon(Icons.medication_rounded, TraumColors.roseRedDim, TraumColors.roseRed),
-          title: Text(med.name,
-              style: const TextStyle(color: TraumColors.onBackground,
-                  fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
-          subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            if (med.dosage != null || med.form != null)
-              Text('${med.dosage ?? ''} ${med.form != null ? '· ${med.form}' : ''}'.trim(),
-                  style: const TextStyle(color: TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans', fontSize: 12)),
-            if (times.isNotEmpty)
-              Text(_formatReminderTimes(context, times),
-                  style: const TextStyle(color: TraumColors.onBackgroundSubtle,
-                      fontFamily: 'DMSans', fontSize: 11)),
-          ]),
+          leading: _icon(
+            Icons.medication_rounded,
+            TraumColors.roseRedDim,
+            TraumColors.roseRed,
+          ),
+          title: Text(
+            med.name,
+            style: const TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (med.dosage != null || med.form != null)
+                Text(
+                  '${med.dosage ?? ''} ${med.form != null ? '· ${med.form}' : ''}'
+                      .trim(),
+                  style: const TextStyle(
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                    fontSize: 12,
+                  ),
+                ),
+              if (times.isNotEmpty)
+                Text(
+                  _formatReminderTimes(context, times),
+                  style: const TextStyle(
+                    color: TraumColors.onBackgroundSubtle,
+                    fontFamily: 'DMSans',
+                    fontSize: 11,
+                  ),
+                ),
+            ],
+          ),
           trailing: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: med.isActive ? TraumColors.mintGreenDim : TraumColors.surfaceVariant,
+              color: med.isActive
+                  ? TraumColors.mintGreenDim
+                  : TraumColors.surfaceVariant,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               med.isActive ? 'Aktiv' : 'Inaktiv',
               style: TextStyle(
-                color: med.isActive ? TraumColors.mintGreen : TraumColors.onBackgroundMuted,
-                fontFamily: 'DMSans', fontSize: 11, fontWeight: FontWeight.w600,
+                color: med.isActive
+                    ? TraumColors.mintGreen
+                    : TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -774,64 +1002,111 @@ class _MedCard extends StatelessWidget {
       context: context,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card))),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
+      ),
       builder: (_) => SafeArea(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const SizedBox(height: 12),
-          ListTile(
-            leading: const Icon(Icons.edit_rounded, color: TraumColors.roseRed),
-            title: Text(AppLocalizations.of(context)!.edit,
-                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
-            onTap: () {
-              Navigator.pop(context);
-              onEdit();
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.pause_circle_outline_rounded, color: TraumColors.amberGold),
-            title: Text(AppLocalizations.of(context)!.substanceDeactivate,
-                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
-            onTap: () {
-              Navigator.pop(context);
-              onToggle?.call(!med.isActive);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
-            title: Text(AppLocalizations.of(context)!.substanceDelete,
-                style: const TextStyle(color: TraumColors.roseRed, fontFamily: 'DMSans')),
-            onTap: () async {
-              final l10n = AppLocalizations.of(context)!;
-              Navigator.pop(context);
-              final confirmed = await showDialog<bool>(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  backgroundColor: TraumColors.surfaceElevated,
-                  title: Text(l10n.substanceConfirmDeleteTitle,
-                      style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
-                  content: Text(l10n.substanceConfirmDeleteBody(med.name),
-                      style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
-                  actions: [
-                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.cancel)),
-                    TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l10n.substanceDelete)),
-                  ],
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 12),
+            ListTile(
+              leading: const Icon(
+                Icons.edit_rounded,
+                color: TraumColors.roseRed,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.edit,
+                style: const TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
                 ),
-              );
-              if (confirmed == true) onDelete();
-            },
-          ),
-          const SizedBox(height: 8),
-        ]),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                onEdit();
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.pause_circle_outline_rounded,
+                color: TraumColors.amberGold,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.substanceDeactivate,
+                style: const TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                onToggle?.call(!med.isActive);
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.delete_rounded,
+                color: TraumColors.roseRed,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.substanceDelete,
+                style: const TextStyle(
+                  color: TraumColors.roseRed,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+              onTap: () async {
+                final l10n = AppLocalizations.of(context)!;
+                Navigator.pop(context);
+                final confirmed = await showDialog<bool>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    backgroundColor: TraumColors.surfaceElevated,
+                    title: Text(
+                      l10n.substanceConfirmDeleteTitle,
+                      style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                      ),
+                    ),
+                    content: Text(
+                      l10n.substanceConfirmDeleteBody(med.name),
+                      style: const TextStyle(
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx, false),
+                        child: Text(l10n.cancel),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx, true),
+                        child: Text(l10n.substanceDelete),
+                      ),
+                    ],
+                  ),
+                );
+                if (confirmed == true) onDelete();
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
 }
 
 Widget _icon(IconData icon, Color bg, Color fg) => Container(
-      width: 40, height: 40,
-      decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
-      child: Icon(icon, color: fg, size: 20),
-    );
+  width: 40,
+  height: 40,
+  decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
+  child: Icon(icon, color: fg, size: 20),
+);
 
 class _TypeButton extends StatelessWidget {
   final IconData icon;
@@ -839,27 +1114,42 @@ class _TypeButton extends StatelessWidget {
   final Color color;
   final Color dimColor;
   final VoidCallback onTap;
-  const _TypeButton({required this.icon, required this.label,
-      required this.color, required this.dimColor, required this.onTap});
+  const _TypeButton({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.dimColor,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          decoration: BoxDecoration(
-            color: dimColor,
-            borderRadius: BorderRadius.circular(TraumRadius.card),
-            border: Border.all(color: color.withValues(alpha: 0.3)),
+    onTap: onTap,
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      decoration: BoxDecoration(
+        color: dimColor,
+        borderRadius: BorderRadius.circular(TraumRadius.card),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: color, size: 32),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+            ),
           ),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(icon, color: color, size: 32),
-            const SizedBox(height: 8),
-            Text(label, style: TextStyle(color: color,
-                fontFamily: 'DMSans', fontWeight: FontWeight.w600, fontSize: 13)),
-          ]),
-        ),
-      );
+        ],
+      ),
+    ),
+  );
 }
 
 class _EmptyState extends StatelessWidget {
@@ -867,23 +1157,40 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 60),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(Icons.medication_liquid_rounded, size: 64,
-                color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
-            const SizedBox(height: 16),
-            Text(AppLocalizations.of(context)!.noSubstancesYet,
-                style: TextStyle(color: TraumColors.onBackgroundMuted,
-                    fontFamily: 'DMSans', fontWeight: FontWeight.w600, fontSize: 16)),
-            const SizedBox(height: 8),
-            Text(AppLocalizations.of(context)!.addSubstanceHint,
-                style: TextStyle(color: TraumColors.onBackgroundSubtle,
-                    fontFamily: 'DMSans', fontSize: 13),
-                textAlign: TextAlign.center),
-          ]),
-        ),
-      );
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 60),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.medication_liquid_rounded,
+            size: 64,
+            color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            AppLocalizations.of(context)!.noSubstancesYet,
+            style: TextStyle(
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            AppLocalizations.of(context)!.addSubstanceHint,
+            style: TextStyle(
+              color: TraumColors.onBackgroundSubtle,
+              fontFamily: 'DMSans',
+              fontSize: 13,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 // ─── Add sheets (copied + adapted from existing screens) ───────────────────
@@ -908,16 +1215,27 @@ class _AddSuppSheet extends StatefulWidget {
 }
 
 class _AddSuppSheetState extends State<_AddSuppSheet> {
-  late final _nameCtrl =
-      TextEditingController(text: widget.existing?.name ?? widget.initialName ?? '');
+  late final _nameCtrl = TextEditingController(
+    text: widget.existing?.name ?? widget.initialName ?? '',
+  );
   late final _amountCtrl = TextEditingController(
-      text: widget.existing?.dosageAmount ?? widget.initialAmount ?? '');
+    text: widget.existing?.dosageAmount ?? widget.initialAmount ?? '',
+  );
   late String _category = _initialFrom(
-      widget.existing?.category ?? widget.initialCategory, _categories, 'Vitamine');
-  late String _unit =
-      _initialFrom(widget.existing?.dosageUnit ?? widget.initialUnit, _units, 'mg');
-  late String? _nutrientKey = widget.existing?.nutrientKey ??
-      (widget.initialName != null ? suggestNutrientKey(widget.initialName!) : null);
+    widget.existing?.category ?? widget.initialCategory,
+    _categories,
+    'Vitamine',
+  );
+  late String _unit = _initialFrom(
+    widget.existing?.dosageUnit ?? widget.initialUnit,
+    _units,
+    'mg',
+  );
+  late String? _nutrientKey =
+      widget.existing?.nutrientKey ??
+      (widget.initialName != null
+          ? suggestNutrientKey(widget.initialName!)
+          : null);
   late final List<ReminderTime> _times = widget.existing != null
       ? parseReminderTimes(widget.existing!.timings)
       : <ReminderTime>[];
@@ -926,14 +1244,34 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
   List<SubstanceRecord> _suggestions = [];
   Timer? _debounce;
 
-  static String _initialFrom(String? value, List<String> options, String fallback) =>
-      value != null && options.contains(value) ? value : fallback;
+  static String _initialFrom(
+    String? value,
+    List<String> options,
+    String fallback,
+  ) => value != null && options.contains(value) ? value : fallback;
 
   static const _categories = [
-    'Vitamine', 'Mineralien', 'Aminosäuren', 'Protein', 'Omega-3',
-    'Adaptogene', 'Pre-Workout', 'Darmgesundheit', 'Kreatin', 'Sonstige'
+    'Vitamine',
+    'Mineralien',
+    'Aminosäuren',
+    'Protein',
+    'Omega-3',
+    'Adaptogene',
+    'Pre-Workout',
+    'Darmgesundheit',
+    'Kreatin',
+    'Sonstige',
   ];
-  static const _units = ['mg', 'g', 'µg', 'IU', 'ml', 'Kapsel(n)', 'Tablette(n)', 'Messbecher'];
+  static const _units = [
+    'mg',
+    'g',
+    'µg',
+    'IU',
+    'ml',
+    'Kapsel(n)',
+    'Tablette(n)',
+    'Messbecher',
+  ];
 
   @override
   void initState() {
@@ -957,9 +1295,14 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
     }
     _debounce = Timer(const Duration(milliseconds: 300), () async {
       if (!mounted || _nameCtrl.text.trim() != q) return;
-      final repo = await ProviderScope.containerOf(context, listen: false)
-          .read(substanceRepositoryProvider.future);
-      final results = await repo.search(q, klasseFilter: SubstanceKlasse.supplement);
+      final repo = await ProviderScope.containerOf(
+        context,
+        listen: false,
+      ).read(substanceRepositoryProvider.future);
+      final results = await repo.search(
+        q,
+        klasseFilter: SubstanceKlasse.supplement,
+      );
       if (mounted && _nameCtrl.text.trim() == q) {
         setState(() => _suggestions = results.take(5).toList());
       }
@@ -977,170 +1320,297 @@ class _AddSuppSheetState extends State<_AddSuppSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 20, right: 20, top: 16,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
       child: SingleChildScrollView(
-        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Center(child: Container(width: 40, height: 4,
-              decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle,
-                  borderRadius: BorderRadius.circular(2)))),
-          const SizedBox(height: 16),
-          Text(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: TraumColors.onBackgroundSubtle,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
               widget.existing != null
                   ? AppLocalizations.of(context)!.editSupplement
                   : AppLocalizations.of(context)!.addSupplement,
-              style: TextStyle(color: TraumColors.onBackground,
-                  fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
-          const SizedBox(height: 16),
-          _field('Name', _nameCtrl, hint: AppLocalizations.of(context)!.substanceHintVitaminD3),
-          if (_suggestions.isNotEmpty)
-            Container(
-              margin: const EdgeInsets.only(top: 4),
-              decoration: BoxDecoration(
-                color: TraumColors.surface,
-                borderRadius: BorderRadius.circular(TraumRadius.card),
-              ),
-              child: Column(
-                children: _suggestions.map((s) => ListTile(
-                      dense: true,
-                      title: Text(s.substance,
-                          style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
-                      onTap: () {
-                        _nameCtrl.text = s.substance;
-                        if (s.kategorie != null && _categories.contains(s.kategorie)) {
-                          setState(() => _category = s.kategorie!);
-                        }
-                        setState(() => _suggestions = []);
-                      },
-                    )).toList(),
+              style: TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
               ),
             ),
-          const SizedBox(height: 12),
-          Text(AppLocalizations.of(context)!.category, style: TextStyle(color: TraumColors.onBackgroundMuted,
-              fontFamily: 'DMSans', fontSize: 13)),
-          const SizedBox(height: 6),
-          DropdownButton<String>(
-            value: _category,
-            dropdownColor: TraumColors.surfaceElevated,
-            isExpanded: true,
-            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
-            underline: Container(height: 1, color: TraumColors.surfaceVariant),
-            items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
-            onChanged: (v) => setState(() => _category = v!),
-          ),
-          const SizedBox(height: 12),
-          Row(children: [
-            Expanded(child: _field('Menge', _amountCtrl, hint: '1000', keyboardType: TextInputType.number)),
-            const SizedBox(width: 12),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(AppLocalizations.of(context)!.unitLabel, style: TextStyle(color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans', fontSize: 13)),
-              const SizedBox(height: 6),
-              DropdownButton<String>(
-                value: _unit,
-                dropdownColor: TraumColors.surfaceElevated,
-                style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
-                underline: Container(height: 1, color: TraumColors.surfaceVariant),
-                items: _units.map((u) => DropdownMenuItem(value: u, child: Text(u))).toList(),
-                onChanged: (v) => setState(() => _unit = v!),
+            const SizedBox(height: 16),
+            _field(
+              'Name',
+              _nameCtrl,
+              hint: AppLocalizations.of(context)!.substanceHintVitaminD3,
+            ),
+            if (_suggestions.isNotEmpty)
+              Container(
+                margin: const EdgeInsets.only(top: 4),
+                decoration: BoxDecoration(
+                  color: TraumColors.surface,
+                  borderRadius: BorderRadius.circular(TraumRadius.card),
+                ),
+                child: Column(
+                  children: _suggestions
+                      .map(
+                        (s) => ListTile(
+                          dense: true,
+                          title: Text(
+                            s.substance,
+                            style: const TextStyle(
+                              color: TraumColors.onBackground,
+                              fontFamily: 'DMSans',
+                            ),
+                          ),
+                          onTap: () {
+                            _nameCtrl.text = s.substance;
+                            if (s.kategorie != null &&
+                                _categories.contains(s.kategorie)) {
+                              setState(() => _category = s.kategorie!);
+                            }
+                            setState(() => _suggestions = []);
+                          },
+                        ),
+                      )
+                      .toList(),
+                ),
               ),
-            ]),
-          ]),
-          const SizedBox(height: 12),
-          Text(AppLocalizations.of(context)!.nutrientForNutrition,
-              style: TextStyle(color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans', fontSize: 13)),
-          const SizedBox(height: 6),
-          DropdownButton<String?>(
-            value: _nutrientKey,
-            dropdownColor: TraumColors.surfaceElevated,
-            isExpanded: true,
-            style: const TextStyle(
-                color: TraumColors.onBackground, fontFamily: 'DMSans'),
-            underline: Container(height: 1, color: TraumColors.surfaceVariant),
-            hint: Text(AppLocalizations.of(context)!.none,
+            const SizedBox(height: 12),
+            Text(
+              AppLocalizations.of(context)!.category,
+              style: TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+            ),
+            const SizedBox(height: 6),
+            DropdownButton<String>(
+              value: _category,
+              dropdownColor: TraumColors.surfaceElevated,
+              isExpanded: true,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
+              underline: Container(
+                height: 1,
+                color: TraumColors.surfaceVariant,
+              ),
+              items: _categories
+                  .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                  .toList(),
+              onChanged: (v) => setState(() => _category = v!),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: _field(
+                    'Menge',
+                    _amountCtrl,
+                    hint: '1000',
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.unitLabel,
+                      style: TextStyle(
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    DropdownButton<String>(
+                      value: _unit,
+                      dropdownColor: TraumColors.surfaceElevated,
+                      style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                      ),
+                      underline: Container(
+                        height: 1,
+                        color: TraumColors.surfaceVariant,
+                      ),
+                      items: _units
+                          .map(
+                            (u) => DropdownMenuItem(value: u, child: Text(u)),
+                          )
+                          .toList(),
+                      onChanged: (v) => setState(() => _unit = v!),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              AppLocalizations.of(context)!.nutrientForNutrition,
+              style: TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+            ),
+            const SizedBox(height: 6),
+            DropdownButton<String?>(
+              value: _nutrientKey,
+              dropdownColor: TraumColors.surfaceElevated,
+              isExpanded: true,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
+              underline: Container(
+                height: 1,
+                color: TraumColors.surfaceVariant,
+              ),
+              hint: Text(
+                AppLocalizations.of(context)!.none,
                 style: TextStyle(
-                    color: TraumColors.onBackgroundSubtle,
-                    fontFamily: 'DMSans')),
-            items: [
-              DropdownMenuItem<String?>(value: null, child: Text(AppLocalizations.of(context)!.none)),
-              ...kNutrientCatalog.map((n) =>
-                  DropdownMenuItem<String?>(value: n.key, child: Text(n.label))),
-            ],
-            onChanged: (v) => setState(() {
-              _nutrientKey = v;
-              _nutrientTouched = true;
-            }),
-          ),
-          const SizedBox(height: 12),
-          _ReminderTimesEditor(
-            times: _times,
-            accentColor: TraumColors.indigoBlue,
-            onChanged: (next) => setState(() {
-              _times
-                ..clear()
-                ..addAll(next);
-            }),
-          ),
-          const SizedBox(height: 20),
-          GradientButton(
-            label: _saving
-                ? AppLocalizations.of(context)!.substanceSaving
-                : AppLocalizations.of(context)!.save,
-            onPressed: _saving ? null : _save,
-          ),
-          const SizedBox(height: 8),
-        ]),
+                  color: TraumColors.onBackgroundSubtle,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+              items: [
+                DropdownMenuItem<String?>(
+                  value: null,
+                  child: Text(AppLocalizations.of(context)!.none),
+                ),
+                ...kNutrientCatalog.map(
+                  (n) => DropdownMenuItem<String?>(
+                    value: n.key,
+                    child: Text(n.label),
+                  ),
+                ),
+              ],
+              onChanged: (v) => setState(() {
+                _nutrientKey = v;
+                _nutrientTouched = true;
+              }),
+            ),
+            const SizedBox(height: 12),
+            _ReminderTimesEditor(
+              times: _times,
+              accentColor: TraumColors.indigoBlue,
+              onChanged: (next) => setState(() {
+                _times
+                  ..clear()
+                  ..addAll(next);
+              }),
+            ),
+            const SizedBox(height: 20),
+            GradientButton(
+              label: _saving
+                  ? AppLocalizations.of(context)!.substanceSaving
+                  : AppLocalizations.of(context)!.save,
+              onPressed: _saving ? null : _save,
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _field(String label, TextEditingController ctrl,
-      {String? hint, TextInputType? keyboardType}) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label, style: const TextStyle(color: TraumColors.onBackgroundMuted,
-          fontFamily: 'DMSans', fontSize: 13)),
-      const SizedBox(height: 6),
-      TextField(
-        controller: ctrl,
-        keyboardType: keyboardType,
-        style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: const TextStyle(color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
-          filled: true, fillColor: TraumColors.surface,
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(TraumRadius.card),
-              borderSide: BorderSide.none),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  Widget _field(
+    String label,
+    TextEditingController ctrl, {
+    String? hint,
+    TextInputType? keyboardType,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            fontSize: 13,
+          ),
         ),
-      ),
-    ]);
+        const SizedBox(height: 6),
+        TextField(
+          controller: ctrl,
+          keyboardType: keyboardType,
+          style: const TextStyle(
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+          ),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(
+              color: TraumColors.onBackgroundSubtle,
+              fontFamily: 'DMSans',
+            ),
+            filled: true,
+            fillColor: TraumColors.surface,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(TraumRadius.card),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
+        SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)),
+      );
       return;
     }
     setState(() => _saving = true);
     final existing = widget.existing;
     final companion = existing != null
-        ? existing.toCompanion(true).copyWith(
-            name: Value(_nameCtrl.text.trim()),
-            category: Value(_category),
-            dosageAmount:
-                Value(_amountCtrl.text.trim().isEmpty ? null : _amountCtrl.text.trim()),
-            dosageUnit: Value(_unit),
-            nutrientKey: Value(_nutrientKey),
-            timings: Value(encodeReminderTimes(_times)),
-          )
+        ? existing
+              .toCompanion(true)
+              .copyWith(
+                name: Value(_nameCtrl.text.trim()),
+                category: Value(_category),
+                dosageAmount: Value(
+                  _amountCtrl.text.trim().isEmpty
+                      ? null
+                      : _amountCtrl.text.trim(),
+                ),
+                dosageUnit: Value(_unit),
+                nutrientKey: Value(_nutrientKey),
+                timings: Value(encodeReminderTimes(_times)),
+              )
         : SupplementsCompanion.insert(
             name: _nameCtrl.text.trim(),
             category: Value(_category),
-            dosageAmount:
-                Value(_amountCtrl.text.trim().isEmpty ? null : _amountCtrl.text.trim()),
+            dosageAmount: Value(
+              _amountCtrl.text.trim().isEmpty ? null : _amountCtrl.text.trim(),
+            ),
             dosageUnit: Value(_unit),
             nutrientKey: Value(_nutrientKey),
             timings: Value(encodeReminderTimes(_times)),
@@ -1166,11 +1636,14 @@ class _AddMedSheet extends StatefulWidget {
 }
 
 class _AddMedSheetState extends State<_AddMedSheet> {
-  late final _nameCtrl =
-      TextEditingController(text: widget.existing?.name ?? widget.initialName ?? '');
+  late final _nameCtrl = TextEditingController(
+    text: widget.existing?.name ?? widget.initialName ?? '',
+  );
   late final _dosageCtrl = TextEditingController(
-      text: widget.existing?.dosage ?? widget.initialDosage ?? '');
-  late String _form = widget.existing != null && _forms.contains(widget.existing!.form)
+    text: widget.existing?.dosage ?? widget.initialDosage ?? '',
+  );
+  late String _form =
+      widget.existing != null && _forms.contains(widget.existing!.form)
       ? widget.existing!.form!
       : 'Tablette';
   late final List<ReminderTime> _times = widget.existing != null
@@ -1180,7 +1653,15 @@ class _AddMedSheetState extends State<_AddMedSheet> {
   List<SubstanceRecord> _suggestions = [];
   Timer? _debounce;
 
-  static const _forms = ['Tablette', 'Kapsel', 'Tropfen', 'Injektion', 'Salbe', 'Spray', 'Sonstige'];
+  static const _forms = [
+    'Tablette',
+    'Kapsel',
+    'Tropfen',
+    'Injektion',
+    'Salbe',
+    'Spray',
+    'Sonstige',
+  ];
 
   @override
   void initState() {
@@ -1197,9 +1678,14 @@ class _AddMedSheetState extends State<_AddMedSheet> {
     }
     _debounce = Timer(const Duration(milliseconds: 300), () async {
       if (!mounted || _nameCtrl.text.trim() != q) return;
-      final repo = await ProviderScope.containerOf(context, listen: false)
-          .read(substanceRepositoryProvider.future);
-      final results = await repo.search(q, klasseFilter: SubstanceKlasse.medikament);
+      final repo = await ProviderScope.containerOf(
+        context,
+        listen: false,
+      ).read(substanceRepositoryProvider.future);
+      final results = await repo.search(
+        q,
+        klasseFilter: SubstanceKlasse.medikament,
+      );
       if (mounted && _nameCtrl.text.trim() == q) {
         setState(() => _suggestions = results.take(5).toList());
       }
@@ -1217,133 +1703,221 @@ class _AddMedSheetState extends State<_AddMedSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 20, right: 20, top: 16,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
       child: SingleChildScrollView(
-        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Center(child: Container(width: 40, height: 4,
-              decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle,
-                  borderRadius: BorderRadius.circular(2)))),
-          const SizedBox(height: 16),
-          Text(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: TraumColors.onBackgroundSubtle,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
               widget.existing != null
                   ? AppLocalizations.of(context)!.editMedication
                   : AppLocalizations.of(context)!.addMedication,
-              style: TextStyle(color: TraumColors.onBackground,
-                  fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
-          const SizedBox(height: 16),
-          _field('Name', _nameCtrl, hint: AppLocalizations.of(context)!.substanceHintIbuprofen),
-          if (_suggestions.isNotEmpty)
-            Container(
-              margin: const EdgeInsets.only(top: 4),
-              decoration: BoxDecoration(
-                color: TraumColors.surface,
-                borderRadius: BorderRadius.circular(TraumRadius.card),
-              ),
-              child: Column(
-                children: _suggestions.map((s) => ListTile(
-                      dense: true,
-                      title: Text(s.substance,
-                          style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
-                      onTap: () {
-                        _nameCtrl.text = s.substance;
-                        final lang = Localizations.localeOf(context).languageCode;
-                        final dosage = s.dosierung.erwachsene(lang);
-                        if (dosage != null) _dosageCtrl.text = dosage;
-                        setState(() => _suggestions = []);
-                      },
-                    )).toList(),
+              style: TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
               ),
             ),
-          const SizedBox(height: 12),
-          _field('Dosierung', _dosageCtrl, hint: AppLocalizations.of(context)!.substanceHintDosageExample),
-          const SizedBox(height: 12),
-          Text(AppLocalizations.of(context)!.form, style: TextStyle(color: TraumColors.onBackgroundMuted,
-              fontFamily: 'DMSans', fontSize: 13)),
-          const SizedBox(height: 6),
-          Wrap(
-            spacing: 8, runSpacing: 8,
-            children: _forms.map((f) {
-              final sel = f == _form;
-              return GestureDetector(
-                onTap: () => setState(() => _form = f),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: sel ? TraumColors.roseRedDim : TraumColors.surfaceVariant,
-                    borderRadius: BorderRadius.circular(TraumRadius.chip),
-                    border: Border.all(color: sel ? TraumColors.roseRed : Colors.transparent),
-                  ),
-                  child: Text(f, style: TextStyle(
-                      color: sel ? TraumColors.roseRed : TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans', fontSize: 13)),
+            const SizedBox(height: 16),
+            _field(
+              'Name',
+              _nameCtrl,
+              hint: AppLocalizations.of(context)!.substanceHintIbuprofen,
+            ),
+            if (_suggestions.isNotEmpty)
+              Container(
+                margin: const EdgeInsets.only(top: 4),
+                decoration: BoxDecoration(
+                  color: TraumColors.surface,
+                  borderRadius: BorderRadius.circular(TraumRadius.card),
                 ),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 12),
-          _ReminderTimesEditor(
-            times: _times,
-            accentColor: TraumColors.roseRed,
-            minEntries: 1,
-            onChanged: (next) => setState(() {
-              _times
-                ..clear()
-                ..addAll(next);
-            }),
-          ),
-          const SizedBox(height: 20),
-          GradientButton(
-            label: _saving
-                ? AppLocalizations.of(context)!.substanceSaving
-                : AppLocalizations.of(context)!.save,
-            onPressed: _saving ? null : _save,
-          ),
-          const SizedBox(height: 8),
-        ]),
+                child: Column(
+                  children: _suggestions
+                      .map(
+                        (s) => ListTile(
+                          dense: true,
+                          title: Text(
+                            s.substance,
+                            style: const TextStyle(
+                              color: TraumColors.onBackground,
+                              fontFamily: 'DMSans',
+                            ),
+                          ),
+                          onTap: () {
+                            _nameCtrl.text = s.substance;
+                            final lang = Localizations.localeOf(
+                              context,
+                            ).languageCode;
+                            final dosage = s.dosierung.erwachsene(lang);
+                            if (dosage != null) _dosageCtrl.text = dosage;
+                            setState(() => _suggestions = []);
+                          },
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+            const SizedBox(height: 12),
+            _field(
+              'Dosierung',
+              _dosageCtrl,
+              hint: AppLocalizations.of(context)!.substanceHintDosageExample,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              AppLocalizations.of(context)!.form,
+              style: TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _forms.map((f) {
+                final sel = f == _form;
+                return GestureDetector(
+                  onTap: () => setState(() => _form = f),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: sel
+                          ? TraumColors.roseRedDim
+                          : TraumColors.surfaceVariant,
+                      borderRadius: BorderRadius.circular(TraumRadius.chip),
+                      border: Border.all(
+                        color: sel ? TraumColors.roseRed : Colors.transparent,
+                      ),
+                    ),
+                    child: Text(
+                      f,
+                      style: TextStyle(
+                        color: sel
+                            ? TraumColors.roseRed
+                            : TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 12),
+            _ReminderTimesEditor(
+              times: _times,
+              accentColor: TraumColors.roseRed,
+              minEntries: 1,
+              onChanged: (next) => setState(() {
+                _times
+                  ..clear()
+                  ..addAll(next);
+              }),
+            ),
+            const SizedBox(height: 20),
+            GradientButton(
+              label: _saving
+                  ? AppLocalizations.of(context)!.substanceSaving
+                  : AppLocalizations.of(context)!.save,
+              onPressed: _saving ? null : _save,
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
 
   Widget _field(String label, TextEditingController ctrl, {String? hint}) =>
-      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label, style: const TextStyle(color: TraumColors.onBackgroundMuted,
-            fontFamily: 'DMSans', fontSize: 13)),
-        const SizedBox(height: 6),
-        TextField(
-          controller: ctrl,
-          style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: const TextStyle(color: TraumColors.onBackgroundSubtle,
-                fontFamily: 'DMSans'),
-            filled: true, fillColor: TraumColors.surface,
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(TraumRadius.card),
-                borderSide: BorderSide.none),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontSize: 13,
+            ),
           ),
-        ),
-      ]);
+          const SizedBox(height: 6),
+          TextField(
+            controller: ctrl,
+            style: const TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+            ),
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: const TextStyle(
+                color: TraumColors.onBackgroundSubtle,
+                fontFamily: 'DMSans',
+              ),
+              filled: true,
+              fillColor: TraumColors.surface,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(TraumRadius.card),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+            ),
+          ),
+        ],
+      );
 
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
+        SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)),
+      );
       return;
     }
     setState(() => _saving = true);
     final existing = widget.existing;
     final companion = existing != null
-        ? existing.toCompanion(true).copyWith(
-            name: Value(_nameCtrl.text.trim()),
-            dosage: Value(_dosageCtrl.text.trim().isEmpty ? null : _dosageCtrl.text.trim()),
-            form: Value(_form),
-            timings: Value(encodeReminderTimes(_times)),
-          )
+        ? existing
+              .toCompanion(true)
+              .copyWith(
+                name: Value(_nameCtrl.text.trim()),
+                dosage: Value(
+                  _dosageCtrl.text.trim().isEmpty
+                      ? null
+                      : _dosageCtrl.text.trim(),
+                ),
+                form: Value(_form),
+                timings: Value(encodeReminderTimes(_times)),
+              )
         : MedicationsCompanion.insert(
             name: _nameCtrl.text.trim(),
-            dosage: Value(_dosageCtrl.text.trim().isEmpty ? null : _dosageCtrl.text.trim()),
+            dosage: Value(
+              _dosageCtrl.text.trim().isEmpty ? null : _dosageCtrl.text.trim(),
+            ),
             form: Value(_form),
             timings: Value(encodeReminderTimes(_times)),
           );
@@ -1377,17 +1951,19 @@ class _AddIntakeSheetState extends State<_AddIntakeSheet> {
   }
 
   InputDecoration _dec(String label) => InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(
-            color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
-        filled: true,
-        fillColor: TraumColors.surface,
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(TraumRadius.card),
-            borderSide: BorderSide.none),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      );
+    labelText: label,
+    labelStyle: const TextStyle(
+      color: TraumColors.onBackgroundMuted,
+      fontFamily: 'DMSans',
+    ),
+    filled: true,
+    fillColor: TraumColors.surface,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(TraumRadius.card),
+      borderSide: BorderSide.none,
+    ),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -1403,63 +1979,92 @@ class _AddIntakeSheetState extends State<_AddIntakeSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(
-            child: Container(width: 40, height: 4,
-                decoration: BoxDecoration(
-                    color: TraumColors.onBackgroundSubtle,
-                    borderRadius: BorderRadius.circular(2))),
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: TraumColors.onBackgroundSubtle,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
           ),
           const SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.logConsumption,
-              style: TextStyle(color: TraumColors.onBackground,
-                  fontFamily: 'DMSans', fontWeight: FontWeight.w700, fontSize: 18)),
+          Text(
+            AppLocalizations.of(context)!.logConsumption,
+            style: TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w700,
+              fontSize: 18,
+            ),
+          ),
           const SizedBox(height: 16),
           TextField(
             controller: _nameCtrl,
             style: const TextStyle(
-                color: TraumColors.onBackground, fontFamily: 'DMSans'),
-            decoration: _dec(AppLocalizations.of(context)!.substanceLabelSubstance),
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+            ),
+            decoration: _dec(
+              AppLocalizations.of(context)!.substanceLabelSubstance,
+            ),
           ),
           const SizedBox(height: 12),
-          Row(children: [
-            Expanded(
-              child: TextField(
-                controller: _dosageCtrl,
-                style: const TextStyle(
-                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
-                decoration: _dec(AppLocalizations.of(context)!.substanceLabelDosis),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _dosageCtrl,
+                  style: const TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                  ),
+                  decoration: _dec(
+                    AppLocalizations.of(context)!.substanceLabelDosis,
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: TextField(
-                controller: _unitCtrl,
-                style: const TextStyle(
-                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
-                decoration: _dec(AppLocalizations.of(context)!.unitLabel),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextField(
+                  controller: _unitCtrl,
+                  style: const TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                  ),
+                  decoration: _dec(AppLocalizations.of(context)!.unitLabel),
+                ),
               ),
-            ),
-          ]),
+            ],
+          ),
           const SizedBox(height: 12),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text(AppLocalizations.of(context)!.timePoint,
-                style: TextStyle(
-                    color: TraumColors.onBackgroundMuted,
-                    fontFamily: 'DMSans', fontSize: 13)),
+            title: Text(
+              AppLocalizations.of(context)!.timePoint,
+              style: TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+            ),
             trailing: Text(
               '${_takenAt.day.toString().padLeft(2, '0')}.${_takenAt.month.toString().padLeft(2, '0')} ${_takenAt.hour.toString().padLeft(2, '0')}:${_takenAt.minute.toString().padLeft(2, '0')}',
               style: const TextStyle(
-                  color: TraumColors.coralOrange,
-                  fontFamily: 'DMSans', fontWeight: FontWeight.w600),
+                color: TraumColors.coralOrange,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w600,
+              ),
             ),
             onTap: _pickTime,
           ),
           const SizedBox(height: 12),
           GradientButton(
-              label: _saving
-                  ? AppLocalizations.of(context)!.substanceSaving
-                  : AppLocalizations.of(context)!.substanceLogIntakeAction,
-              onPressed: _saving ? null : _save),
+            label: _saving
+                ? AppLocalizations.of(context)!.substanceSaving
+                : AppLocalizations.of(context)!.substanceLogIntakeAction,
+            onPressed: _saving ? null : _save,
+          ),
           const SizedBox(height: 8),
         ],
       ),
@@ -1474,8 +2079,8 @@ class _AddIntakeSheetState extends State<_AddIntakeSheet> {
       lastDate: DateTime.now(),
       builder: (ctx, child) => Theme(
         data: ThemeData.dark().copyWith(
-            colorScheme:
-                const ColorScheme.dark(primary: TraumColors.coralOrange)),
+          colorScheme: const ColorScheme.dark(primary: TraumColors.coralOrange),
+        ),
         child: child!,
       ),
     );
@@ -1485,24 +2090,39 @@ class _AddIntakeSheetState extends State<_AddIntakeSheet> {
       context: context,
       initialTime: TimeOfDay.fromDateTime(_takenAt),
     );
-    setState(() => _takenAt = DateTime(
-        date.year, date.month, date.day, time?.hour ?? 0, time?.minute ?? 0));
+    setState(
+      () => _takenAt = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        time?.hour ?? 0,
+        time?.minute ?? 0,
+      ),
+    );
   }
 
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.pleaseEnterSubstance)));
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseEnterSubstance),
+        ),
+      );
       return;
     }
     setState(() => _saving = true);
-    await widget.onAdd(SubstanceIntakeLogsCompanion.insert(
-      substanceName: _nameCtrl.text.trim(),
-      dosage: Value(
-          _dosageCtrl.text.trim().isEmpty ? null : _dosageCtrl.text.trim()),
-      unit: Value(_unitCtrl.text.trim().isEmpty ? null : _unitCtrl.text.trim()),
-      takenAt: _takenAt,
-    ));
+    await widget.onAdd(
+      SubstanceIntakeLogsCompanion.insert(
+        substanceName: _nameCtrl.text.trim(),
+        dosage: Value(
+          _dosageCtrl.text.trim().isEmpty ? null : _dosageCtrl.text.trim(),
+        ),
+        unit: Value(
+          _unitCtrl.text.trim().isEmpty ? null : _unitCtrl.text.trim(),
+        ),
+        takenAt: _takenAt,
+      ),
+    );
     if (mounted) Navigator.pop(context);
   }
 }

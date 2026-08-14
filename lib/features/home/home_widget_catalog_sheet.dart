@@ -32,12 +32,12 @@ class _HomeWidgetCatalogState extends ConsumerState<_HomeWidgetCatalog> {
   String _query = '';
 
   String _sizeHint(HomeTileSize size) => switch (size) {
-        HomeTileSize.small => '1×1',
-        HomeTileSize.tall => '1×2',
-        HomeTileSize.wide => '2×1',
-        HomeTileSize.large => '2×2',
-        HomeTileSize.xlarge => '2×3',
-      };
+    HomeTileSize.small => '1×1',
+    HomeTileSize.tall => '1×2',
+    HomeTileSize.wide => '2×1',
+    HomeTileSize.large => '2×2',
+    HomeTileSize.xlarge => '2×3',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -83,18 +83,25 @@ class _HomeWidgetCatalogState extends ConsumerState<_HomeWidgetCatalog> {
               child: TextField(
                 autofocus: false,
                 style: const TextStyle(
-                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                ),
                 onChanged: (v) => setState(() => _query = v),
                 decoration: InputDecoration(
                   hintText: AppLocalizations.of(context)!.searchHint,
-                  hintStyle:
-                      const TextStyle(color: TraumColors.onBackgroundMuted),
-                  prefixIcon: const Icon(Icons.search,
-                      color: TraumColors.onBackgroundMuted),
+                  hintStyle: const TextStyle(
+                    color: TraumColors.onBackgroundMuted,
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    color: TraumColors.onBackgroundMuted,
+                  ),
                   filled: true,
                   fillColor: TraumColors.surface,
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 0,
+                    horizontal: 12,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
                     borderSide: BorderSide.none,
@@ -119,15 +126,19 @@ class _HomeWidgetCatalogState extends ConsumerState<_HomeWidgetCatalog> {
   }
 
   List<Widget> _buildGroup(
-      HomeWidgetGroup group, String query, bool periodEnabled) {
+    HomeWidgetGroup group,
+    String query,
+    bool periodEnabled,
+  ) {
     if (group == HomeWidgetGroup.period && !periodEnabled) {
       return const [];
     }
 
     final entries = homeWidgetRegistry.entries
         .where((e) => e.value.group == group)
-        .where((e) =>
-            query.isEmpty || e.value.title.toLowerCase().contains(query))
+        .where(
+          (e) => query.isEmpty || e.value.title.toLowerCase().contains(query),
+        )
         .toList();
 
     if (entries.isEmpty) return const [];

@@ -39,8 +39,11 @@ class _NotesDailyScreenState extends ConsumerState<NotesDailyScreen> {
     final daily = templates.where((t) => t.name.toLowerCase() == 'daily');
     final title = _isoDate(date);
     final content = daily.isNotEmpty
-        ? NotesTemplateService.apply(daily.first.content,
-            title: title, now: date)
+        ? NotesTemplateService.apply(
+            daily.first.content,
+            title: title,
+            now: date,
+          )
         : '';
     final id = await repo.createNote(
       title: title,
@@ -68,12 +71,17 @@ class _NotesDailyScreenState extends ConsumerState<NotesDailyScreen> {
         backgroundColor: TraumColors.background,
         elevation: 0,
         leading: BackButton(
-            color: TraumColors.onBackground, onPressed: () => context.pop()),
-        title: Text(l10n.notes_daily,
-            style: const TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackground,
-                fontWeight: FontWeight.w700)),
+          color: TraumColors.onBackground,
+          onPressed: () => context.pop(),
+        ),
+        title: Text(
+          l10n.notes_daily,
+          style: const TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackground,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
       body: Column(
         children: [
@@ -103,11 +111,17 @@ class _NotesDailyScreenState extends ConsumerState<NotesDailyScreen> {
               },
               calendarStyle: CalendarStyle(
                 defaultTextStyle: const TextStyle(
-                    fontFamily: 'DMSans', color: TraumColors.onBackground),
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                ),
                 weekendTextStyle: const TextStyle(
-                    fontFamily: 'DMSans', color: TraumColors.onBackgroundMuted),
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundMuted,
+                ),
                 outsideTextStyle: const TextStyle(
-                    fontFamily: 'DMSans', color: TraumColors.onBackgroundSubtle),
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundSubtle,
+                ),
                 todayDecoration: BoxDecoration(
                   color: kNotesAccent.withValues(alpha: 0.25),
                   shape: BoxShape.circle,
@@ -125,37 +139,52 @@ class _NotesDailyScreenState extends ConsumerState<NotesDailyScreen> {
                 formatButtonVisible: false,
                 titleCentered: true,
                 titleTextStyle: TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackground,
-                    fontWeight: FontWeight.w700),
-                leftChevronIcon: Icon(Icons.chevron_left_rounded,
-                    color: TraumColors.onBackgroundMuted),
-                rightChevronIcon: Icon(Icons.chevron_right_rounded,
-                    color: TraumColors.onBackgroundMuted),
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                  fontWeight: FontWeight.w700,
+                ),
+                leftChevronIcon: Icon(
+                  Icons.chevron_left_rounded,
+                  color: TraumColors.onBackgroundMuted,
+                ),
+                rightChevronIcon: Icon(
+                  Icons.chevron_right_rounded,
+                  color: TraumColors.onBackgroundMuted,
+                ),
               ),
               daysOfWeekStyle: const DaysOfWeekStyle(
                 weekdayStyle: TextStyle(
-                    fontFamily: 'DMSans', color: TraumColors.onBackgroundMuted),
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundMuted,
+                ),
                 weekendStyle: TextStyle(
-                    fontFamily: 'DMSans', color: TraumColors.onBackgroundSubtle),
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundSubtle,
+                ),
               ),
             ),
           ),
           Expanded(
             child: dailyNotes.isEmpty
                 ? NotesEmptyState(
-                    icon: Icons.today_rounded, message: l10n.notes_no_daily)
+                    icon: Icons.today_rounded,
+                    message: l10n.notes_no_daily,
+                  )
                 : ListView(
-                    children: ([...dailyNotes]
-                          ..sort((a, b) =>
-                              (b.dailyDate ?? b.createdAt)
-                                  .compareTo(a.dailyDate ?? a.createdAt)))
-                        .map((n) => NoteListTile(
-                              note: n,
-                              onTap: () =>
-                                  context.push(Routes.noteDetailPath(n.id)),
+                    children:
+                        ([...dailyNotes]..sort(
+                              (a, b) => (b.dailyDate ?? b.createdAt).compareTo(
+                                a.dailyDate ?? a.createdAt,
+                              ),
                             ))
-                        .toList(),
+                            .map(
+                              (n) => NoteListTile(
+                                note: n,
+                                onTap: () =>
+                                    context.push(Routes.noteDetailPath(n.id)),
+                              ),
+                            )
+                            .toList(),
                   ),
           ),
         ],

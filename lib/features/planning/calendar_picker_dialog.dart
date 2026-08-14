@@ -12,17 +12,18 @@ Future<List<String>?> showCalendarPickerDialog(
 ) {
   return showDialog<List<String>>(
     context: context,
-    builder: (ctx) => _CalendarPickerDialog(
-      calendars: calendars,
-      initialIds: currentIds,
-    ),
+    builder: (ctx) =>
+        _CalendarPickerDialog(calendars: calendars, initialIds: currentIds),
   );
 }
 
 class _CalendarPickerDialog extends StatefulWidget {
   final List<NativeCalendar> calendars;
   final List<String> initialIds;
-  const _CalendarPickerDialog({required this.calendars, required this.initialIds});
+  const _CalendarPickerDialog({
+    required this.calendars,
+    required this.initialIds,
+  });
 
   @override
   State<_CalendarPickerDialog> createState() => _CalendarPickerDialogState();
@@ -73,8 +74,8 @@ class _CalendarPickerDialogState extends State<_CalendarPickerDialog> {
                   final isChecked = _selected.contains(cal.id);
                   final subtitle =
                       cal.accountName != null && cal.accountName != cal.name
-                          ? cal.accountName!
-                          : '';
+                      ? cal.accountName!
+                      : '';
                   return CheckboxListTile(
                     activeColor: TraumColors.lavender,
                     checkColor: Colors.white,

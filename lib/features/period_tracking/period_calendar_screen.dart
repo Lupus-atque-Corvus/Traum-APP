@@ -13,7 +13,10 @@ import 'daily_log_sheet.dart';
 /// Priority: active period day (within any entry's start..end) → ovulation →
 /// fertile window → predicted next-period range (lower opacity) → null.
 Color? phaseColorForDay(
-    DateTime day, CycleAnalysis analysis, List<PeriodEntry> entries) {
+  DateTime day,
+  CycleAnalysis analysis,
+  List<PeriodEntry> entries,
+) {
   final d = DateTime(day.year, day.month, day.day);
   bool inRange(DateTime? a, DateTime? b) {
     if (a == null || b == null) return false;
@@ -29,7 +32,9 @@ Color? phaseColorForDay(
   }
   if (analysis.ovulationDate != null) {
     final ov = analysis.ovulationDate!;
-    if (DateTime(ov.year, ov.month, ov.day) == d) return TraumColors.ovulationCyan;
+    if (DateTime(ov.year, ov.month, ov.day) == d) {
+      return TraumColors.ovulationCyan;
+    }
   }
   if (inRange(analysis.fertileWindowStart, analysis.fertileWindowEnd)) {
     return TraumColors.fertileCyan;
@@ -44,7 +49,8 @@ class PeriodCalendarScreen extends ConsumerStatefulWidget {
   const PeriodCalendarScreen({super.key});
 
   @override
-  ConsumerState<PeriodCalendarScreen> createState() => _PeriodCalendarScreenState();
+  ConsumerState<PeriodCalendarScreen> createState() =>
+      _PeriodCalendarScreenState();
 }
 
 class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
@@ -61,11 +67,14 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: Text(AppLocalizations.of(context)!.periodCalendar,
-            style: const TextStyle(
-                color: TraumColors.onBackground,
-                fontFamily: 'DMSans',
-                fontWeight: FontWeight.w700)),
+        title: Text(
+          AppLocalizations.of(context)!.periodCalendar,
+          style: const TextStyle(
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
         elevation: 0,
       ),
@@ -75,7 +84,11 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
           final periodDays = <DateTime>{};
           for (final entry in entries) {
             final end = entry.endDate ?? DateTime.now();
-            var d = DateTime(entry.startDate.year, entry.startDate.month, entry.startDate.day);
+            var d = DateTime(
+              entry.startDate.year,
+              entry.startDate.month,
+              entry.startDate.day,
+            );
             final endDay = DateTime(end.year, end.month, end.day);
             while (!d.isAfter(endDay)) {
               periodDays.add(d);
@@ -85,11 +98,18 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
 
           // Fertile window days derived from the engine (CycleAnalysis)
           final fertileDays = <DateTime>{};
-          if (analysis.fertileWindowStart != null && analysis.fertileWindowEnd != null) {
-            var d = DateTime(analysis.fertileWindowStart!.year,
-                analysis.fertileWindowStart!.month, analysis.fertileWindowStart!.day);
-            final end = DateTime(analysis.fertileWindowEnd!.year,
-                analysis.fertileWindowEnd!.month, analysis.fertileWindowEnd!.day);
+          if (analysis.fertileWindowStart != null &&
+              analysis.fertileWindowEnd != null) {
+            var d = DateTime(
+              analysis.fertileWindowStart!.year,
+              analysis.fertileWindowStart!.month,
+              analysis.fertileWindowStart!.day,
+            );
+            final end = DateTime(
+              analysis.fertileWindowEnd!.year,
+              analysis.fertileWindowEnd!.month,
+              analysis.fertileWindowEnd!.day,
+            );
             while (!d.isAfter(end)) {
               fertileDays.add(d);
               d = d.add(const Duration(days: 1));
@@ -97,8 +117,11 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
           }
 
           final ovulationDay = analysis.ovulationDate != null
-              ? DateTime(analysis.ovulationDate!.year, analysis.ovulationDate!.month,
-                  analysis.ovulationDate!.day)
+              ? DateTime(
+                  analysis.ovulationDate!.year,
+                  analysis.ovulationDate!.month,
+                  analysis.ovulationDate!.day,
+                )
               : null;
 
           return Column(
@@ -123,7 +146,9 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
                     isScrollControlled: true,
                     backgroundColor: TraumColors.surface,
                     shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
                     ),
                     builder: (_) => DailyLogSheet(
                       date: selected,
@@ -133,31 +158,48 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
                     ),
                   );
                 },
-                onPageChanged: (focused) => setState(() => _focusedDay = focused),
+                onPageChanged: (focused) =>
+                    setState(() => _focusedDay = focused),
                 calendarStyle: CalendarStyle(
                   defaultTextStyle: const TextStyle(
-                      color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                  ),
                   weekendTextStyle: const TextStyle(
-                      color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                  ),
                   outsideTextStyle: const TextStyle(
-                      color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
+                    color: TraumColors.onBackgroundSubtle,
+                    fontFamily: 'DMSans',
+                  ),
                   selectedDecoration: const BoxDecoration(
-                      color: TraumColors.periodRose, shape: BoxShape.circle),
+                    color: TraumColors.periodRose,
+                    shape: BoxShape.circle,
+                  ),
                   todayDecoration: BoxDecoration(
-                      color: TraumColors.periodRose.withValues(alpha: 0.3),
-                      shape: BoxShape.circle),
+                    color: TraumColors.periodRose.withValues(alpha: 0.3),
+                    shape: BoxShape.circle,
+                  ),
                   todayTextStyle: const TextStyle(
-                      color: TraumColors.periodRose, fontFamily: 'DMSans'),
+                    color: TraumColors.periodRose,
+                    fontFamily: 'DMSans',
+                  ),
                 ),
                 headerStyle: const HeaderStyle(
                   titleTextStyle: TextStyle(
-                      color: TraumColors.onBackground,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600),
-                  leftChevronIcon:
-                      Icon(Icons.chevron_left_rounded, color: TraumColors.onBackgroundMuted),
-                  rightChevronIcon:
-                      Icon(Icons.chevron_right_rounded, color: TraumColors.onBackgroundMuted),
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w600,
+                  ),
+                  leftChevronIcon: Icon(
+                    Icons.chevron_left_rounded,
+                    color: TraumColors.onBackgroundMuted,
+                  ),
+                  rightChevronIcon: Icon(
+                    Icons.chevron_right_rounded,
+                    color: TraumColors.onBackgroundMuted,
+                  ),
                   formatButtonVisible: false,
                 ),
                 calendarBuilders: CalendarBuilders(
@@ -172,7 +214,9 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
                       bgColor = TraumColors.periodRose.withValues(alpha: 0.35);
                       textColor = TraumColors.periodRose;
                     } else if (phaseColor == TraumColors.ovulationCyan) {
-                      bgColor = TraumColors.ovulationCyan.withValues(alpha: 0.35);
+                      bgColor = TraumColors.ovulationCyan.withValues(
+                        alpha: 0.35,
+                      );
                       textColor = TraumColors.ovulationCyan;
                     } else if (phaseColor == TraumColors.fertileCyan) {
                       bgColor = TraumColors.fertileCyan.withValues(alpha: 0.25);
@@ -185,11 +229,19 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
 
                     return Container(
                       margin: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+                      decoration: BoxDecoration(
+                        color: bgColor,
+                        shape: BoxShape.circle,
+                      ),
                       child: Center(
-                        child: Text('${day.day}',
-                            style: TextStyle(
-                                color: textColor, fontFamily: 'DMSans', fontSize: 13)),
+                        child: Text(
+                          '${day.day}',
+                          style: TextStyle(
+                            color: textColor,
+                            fontFamily: 'DMSans',
+                            fontSize: 13,
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -197,15 +249,27 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
               ),
               // Legend
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _LegendDot(color: TraumColors.periodRose, label: AppLocalizations.of(context)!.periodLegend),
+                    _LegendDot(
+                      color: TraumColors.periodRose,
+                      label: AppLocalizations.of(context)!.periodLegend,
+                    ),
                     const SizedBox(width: 20),
-                    _LegendDot(color: TraumColors.fertileCyan, label: AppLocalizations.of(context)!.fertileLegend),
+                    _LegendDot(
+                      color: TraumColors.fertileCyan,
+                      label: AppLocalizations.of(context)!.fertileLegend,
+                    ),
                     const SizedBox(width: 20),
-                    _LegendDot(color: TraumColors.ovulationCyan, label: AppLocalizations.of(context)!.ovulationLegend),
+                    _LegendDot(
+                      color: TraumColors.ovulationCyan,
+                      label: AppLocalizations.of(context)!.ovulationLegend,
+                    ),
                   ],
                 ),
               ),
@@ -222,11 +286,15 @@ class _PeriodCalendarScreenState extends ConsumerState<PeriodCalendarScreen> {
             ],
           );
         },
-        loading: () =>
-            const Center(child: CircularProgressIndicator(color: TraumColors.periodRose)),
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: TraumColors.periodRose),
+        ),
         error: (e, _) => Center(
-            child: Text('${AppLocalizations.of(context)!.error}: $e',
-                style: const TextStyle(color: TraumColors.roseRed))),
+          child: Text(
+            '${AppLocalizations.of(context)!.error}: $e',
+            style: const TextStyle(color: TraumColors.roseRed),
+          ),
+        ),
       ),
     );
   }
@@ -239,15 +307,24 @@ class _LegendDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      Container(
-          width: 10, height: 10,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-      const SizedBox(width: 6),
-      Text(label,
+    return Row(
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          label,
           style: const TextStyle(
-              color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12)),
-    ]);
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            fontSize: 12,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -272,7 +349,8 @@ class _DayDetail extends StatelessWidget {
     final isPeriod = periodDays.contains(d);
     final isFertile = fertileDays.contains(d);
     final isOvul = ovulationDay != null && d == ovulationDay;
-    final isNextPeriod = nextPeriod != null &&
+    final isNextPeriod =
+        nextPeriod != null &&
         DateTime(nextPeriod!.year, nextPeriod!.month, nextPeriod!.day) == d;
 
     final l10n = AppLocalizations.of(context)!;
@@ -291,10 +369,11 @@ class _DayDetail extends StatelessWidget {
           Text(
             '${day.day.toString().padLeft(2, '0')}.${day.month.toString().padLeft(2, '0')}.${day.year}',
             style: const TextStyle(
-                color: TraumColors.onBackground,
-                fontFamily: 'DMSans',
-                fontWeight: FontWeight.w700,
-                fontSize: 15),
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w700,
+              fontSize: 15,
+            ),
           ),
           const SizedBox(height: 8),
           Container(
@@ -307,11 +386,16 @@ class _DayDetail extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: info
-                  .map((i) => Text(i,
+                  .map(
+                    (i) => Text(
+                      i,
                       style: const TextStyle(
-                          color: TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans',
-                          fontSize: 13)))
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                        fontSize: 13,
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           ),

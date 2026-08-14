@@ -22,8 +22,7 @@ class TrainingWizardScreen extends ConsumerStatefulWidget {
       _TrainingWizardScreenState();
 }
 
-class _TrainingWizardScreenState
-    extends ConsumerState<TrainingWizardScreen> {
+class _TrainingWizardScreenState extends ConsumerState<TrainingWizardScreen> {
   int _step = 0;
   PlanTemplate? _selectedTemplate;
   // dayOfWeek (1-7) -> day name
@@ -66,7 +65,9 @@ class _TrainingWizardScreenState
       // Deactivate all existing plans
       final existing = await dao.watchAllPlans().first;
       for (final p in existing) {
-        await dao.updatePlan(p.toCompanion(true).copyWith(isActive: const Value(false)));
+        await dao.updatePlan(
+          p.toCompanion(true).copyWith(isActive: const Value(false)),
+        );
       }
 
       // Create new plan
@@ -91,11 +92,9 @@ class _TrainingWizardScreenState
           ),
         );
 
-        final templateDay = _selectedTemplate!.days.cast<TemplateDay?>()
-            .firstWhere(
-              (d) => d?.dayOfWeek == entry.key,
-              orElse: () => null,
-            );
+        final templateDay = _selectedTemplate!.days
+            .cast<TemplateDay?>()
+            .firstWhere((d) => d?.dayOfWeek == entry.key, orElse: () => null);
 
         if (templateDay != null) {
           for (var i = 0; i < templateDay.exercises.length; i++) {
@@ -138,74 +137,87 @@ class _TrainingWizardScreenState
         leading: _step > 0
             ? IconButton(
                 tooltip: AppLocalizations.of(context)!.back,
-                icon: const Icon(Icons.arrow_back_rounded,
-                    color: TraumColors.onBackground),
+                icon: const Icon(
+                  Icons.arrow_back_rounded,
+                  color: TraumColors.onBackground,
+                ),
                 onPressed: _back,
               )
             : null,
         title: Text(
           l10n.wizardStepOf(_step + 1, 3),
           style: const TextStyle(
-              color: TraumColors.onBackgroundMuted,
-              fontFamily: 'DMSans',
-              fontSize: 14),
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            fontSize: 14,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: _skip,
-            child: Text(l10n.wizardSkip,
-                style: const TextStyle(
-                    color: TraumColors.onBackgroundMuted,
-                    fontFamily: 'DMSans',
-                    fontSize: 13)),
+            child: Text(
+              l10n.wizardSkip,
+              style: const TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+            ),
           ),
         ],
       ),
-      body: Column(children: [
-        // Progress bar
-        LinearProgressIndicator(
-          value: (_step + 1) / 3,
-          backgroundColor: TraumColors.surfaceVariant,
-          color: TraumColors.coralOrange,
-          minHeight: 3,
-        ),
-        Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: _buildStep(),
+      body: Column(
+        children: [
+          // Progress bar
+          LinearProgressIndicator(
+            value: (_step + 1) / 3,
+            backgroundColor: TraumColors.surfaceVariant,
+            color: TraumColors.coralOrange,
+            minHeight: 3,
           ),
-        ),
-        // Bottom button
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
-          child: SizedBox(
-            width: double.infinity,
-            height: 52,
-            child: FilledButton(
-              onPressed: _canAdvance && !_saving ? _advance : null,
-              style: FilledButton.styleFrom(
-                backgroundColor: TraumColors.coralOrange,
-                disabledBackgroundColor: TraumColors.surfaceVariant,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(TraumRadius.button)),
-              ),
-              child: _saving
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                          strokeWidth: 2, color: Colors.white))
-                  : Text(
-                      _step < 2 ? l10n.wizardNext : l10n.wizardFinish,
-                      style: const TextStyle(
-                          fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16),
-                    ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: _buildStep(),
             ),
           ),
-        ),
-      ]),
+          // Bottom button
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+            child: SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: FilledButton(
+                onPressed: _canAdvance && !_saving ? _advance : null,
+                style: FilledButton.styleFrom(
+                  backgroundColor: TraumColors.coralOrange,
+                  disabledBackgroundColor: TraumColors.surfaceVariant,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(TraumRadius.button),
+                  ),
+                ),
+                child: _saving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(
+                        _step < 2 ? l10n.wizardNext : l10n.wizardFinish,
+                        style: const TextStyle(
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                        ),
+                      ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

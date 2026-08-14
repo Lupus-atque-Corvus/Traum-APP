@@ -12,8 +12,9 @@ class DiaryEntryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final thumbPath =
-        entry.mediaType == 'video' ? entry.thumbnailPath : entry.mediaPath;
+    final thumbPath = entry.mediaType == 'video'
+        ? entry.thumbnailPath
+        : entry.mediaPath;
     return GestureDetector(
       onTap: () => context.go('/diary/entry/${entry.date}'),
       child: Container(
@@ -33,13 +34,19 @@ class DiaryEntryCard extends StatelessWidget {
           children: [
             if (thumbPath == null || !File(thumbPath).existsSync())
               Center(
-                child: Icon(Icons.photo_outlined,
-                    color: TraumColors.onBackgroundSubtle, size: 28),
+                child: Icon(
+                  Icons.photo_outlined,
+                  color: TraumColors.onBackgroundSubtle,
+                  size: 28,
+                ),
               ),
             if (entry.mediaType == 'video')
               const Center(
-                child: Icon(Icons.play_circle_outline,
-                    color: Colors.white, size: 28),
+                child: Icon(
+                  Icons.play_circle_outline,
+                  color: Colors.white,
+                  size: 28,
+                ),
               ),
             Positioned(
               bottom: 6,
@@ -65,10 +72,18 @@ class DiaryEntryCard extends StatelessWidget {
     final d = DateTime.tryParse(dateStr);
     if (d == null) return dateStr;
     final months = [
-      l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
-      l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
-      l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
-      l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
+      l10n.monthShortJan,
+      l10n.monthShortFeb,
+      l10n.monthShortMar,
+      l10n.monthShortApr,
+      l10n.monthShortMay,
+      l10n.monthShortJun,
+      l10n.monthShortJul,
+      l10n.monthShortAug,
+      l10n.monthShortSep,
+      l10n.monthShortOct,
+      l10n.monthShortNov,
+      l10n.monthShortDec,
     ];
     return '${d.day}. ${months[d.month - 1]}';
   }

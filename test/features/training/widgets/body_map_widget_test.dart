@@ -5,24 +5,31 @@ import 'package:traum/features/training/widgets/body_map_widget.dart';
 
 void main() {
   testWidgets('renders SvgPicture for front view', (tester) async {
-    await tester.pumpWidget(const MaterialApp(
-      home: Scaffold(
-        body: BodyMapWidget(primaryMuscles: ['pectorals'], secondaryMuscles: []),
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: BodyMapWidget(
+            primaryMuscles: ['pectorals'],
+            secondaryMuscles: [],
+          ),
+        ),
       ),
-    ));
+    );
     expect(find.byType(SvgPicture), findsOneWidget);
   });
 
   testWidgets('renders back view when showBack is true', (tester) async {
-    await tester.pumpWidget(const MaterialApp(
-      home: Scaffold(
-        body: BodyMapWidget(
-          primaryMuscles: ['lats'],
-          secondaryMuscles: [],
-          showBack: true,
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: BodyMapWidget(
+            primaryMuscles: ['lats'],
+            secondaryMuscles: [],
+            showBack: true,
+          ),
         ),
       ),
-    ));
+    );
     expect(find.byType(SvgPicture), findsOneWidget);
   });
 

@@ -16,8 +16,7 @@ class MicroNutrientPanel extends ConsumerStatefulWidget {
   const MicroNutrientPanel({super.key, required this.dateStr});
 
   @override
-  ConsumerState<MicroNutrientPanel> createState() =>
-      _MicroNutrientPanelState();
+  ConsumerState<MicroNutrientPanel> createState() => _MicroNutrientPanelState();
 }
 
 class _MicroNutrientPanelState extends ConsumerState<MicroNutrientPanel> {
@@ -32,21 +31,27 @@ class _MicroNutrientPanelState extends ConsumerState<MicroNutrientPanel> {
           onTap: () => setState(() => _expanded = !_expanded),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(children: [
-              Icon(
+            child: Row(
+              children: [
+                Icon(
                   _expanded
                       ? Icons.keyboard_arrow_down_rounded
                       : Icons.keyboard_arrow_right_rounded,
                   size: 18,
-                  color: TraumColors.mintGreen),
-              const SizedBox(width: 4),
-              Text(AppLocalizations.of(context)!.microNutrientsSupplements,
+                  color: TraumColors.mintGreen,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  AppLocalizations.of(context)!.microNutrientsSupplements,
                   style: TextStyle(
-                      fontFamily: 'DMSans',
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: TraumColors.mintGreen)),
-            ]),
+                    fontFamily: 'DMSans',
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: TraumColors.mintGreen,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         if (_expanded) _buildExpanded(),
@@ -74,8 +79,11 @@ class _MicroNutrientPanelState extends ConsumerState<MicroNutrientPanel> {
       loading: () => const Padding(
         padding: EdgeInsets.all(12),
         child: Center(
-            child: CircularProgressIndicator(
-                color: TraumColors.mintGreen, strokeWidth: 2)),
+          child: CircularProgressIndicator(
+            color: TraumColors.mintGreen,
+            strokeWidth: 2,
+          ),
+        ),
       ),
       error: (e, _) => InlineError(e),
     );
@@ -101,36 +109,45 @@ class _SupplementsToday extends ConsumerWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(AppLocalizations.of(context)!.supplementsToday,
-                style: TextStyle(
-                    fontFamily: 'DMSans',
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: TraumColors.indigoBlue,
-                    letterSpacing: 0.6)),
+            Text(
+              AppLocalizations.of(context)!.supplementsToday,
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: TraumColors.indigoBlue,
+                letterSpacing: 0.6,
+              ),
+            ),
             const SizedBox(height: 4),
             ...active.map((s) {
               final taken = takenIds.contains(s.id);
-              final dose =
-                  '${s.dosageAmount ?? ''} ${s.dosageUnit ?? ''}'.trim();
+              final dose = '${s.dosageAmount ?? ''} ${s.dosageUnit ?? ''}'
+                  .trim();
               return CheckboxListTile(
                 contentPadding: EdgeInsets.zero,
                 dense: true,
                 controlAffinity: ListTileControlAffinity.leading,
                 activeColor: TraumColors.indigoBlue,
                 value: taken,
-                title: Text(s.name,
-                    style: const TextStyle(
-                        fontFamily: 'DMSans',
-                        fontSize: 13,
-                        color: TraumColors.onBackground)),
+                title: Text(
+                  s.name,
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    fontSize: 13,
+                    color: TraumColors.onBackground,
+                  ),
+                ),
                 subtitle: dose.isEmpty
                     ? null
-                    : Text(dose,
+                    : Text(
+                        dose,
                         style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            fontSize: 11,
-                            color: TraumColors.onBackgroundMuted)),
+                          fontFamily: 'DMSans',
+                          fontSize: 11,
+                          color: TraumColors.onBackgroundMuted,
+                        ),
+                      ),
                 onChanged: (_) => _toggle(ref, s, taken, logs),
               );
             }),
@@ -143,17 +160,23 @@ class _SupplementsToday extends ConsumerWidget {
   }
 
   Future<void> _toggle(
-      WidgetRef ref, Supplement s, bool taken, List<SupplementLog> logs) async {
+    WidgetRef ref,
+    Supplement s,
+    bool taken,
+    List<SupplementLog> logs,
+  ) async {
     final dao = ref.read(supplementDaoProvider);
     if (taken) {
       for (final l in logs.where((l) => l.supplementId == s.id)) {
         await dao.deleteLog(l.id);
       }
     } else {
-      await dao.insertLog(SupplementLogsCompanion.insert(
-        supplementId: s.id,
-        takenAt: DateTime.now(),
-      ));
+      await dao.insertLog(
+        SupplementLogsCompanion.insert(
+          supplementId: s.id,
+          takenAt: DateTime.now(),
+        ),
+      );
     }
     ref.invalidate(supplementLogsTodayProvider);
     ref.invalidate(dailyMicrosProvider(dateStr));

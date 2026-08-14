@@ -29,10 +29,7 @@ class FaktorDetailCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: TraumColors.surface,
         borderRadius: BorderRadius.circular(TraumRadius.card),
-        border: Border.all(
-          color: color.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,11 +80,7 @@ class FaktorDetailCard extends StatelessWidget {
           ),
           Text(
             bewertung,
-            style: TextStyle(
-              color: farbe,
-              fontFamily: 'DMSans',
-              fontSize: 11,
-            ),
+            style: TextStyle(color: farbe, fontFamily: 'DMSans', fontSize: 11),
           ),
           const SizedBox(height: 10),
           if (history.isNotEmpty) _MiniBarChart(history: history),
@@ -125,8 +118,8 @@ class _MiniBarChart extends StatelessWidget {
           final color = e.value >= 85
               ? TraumColors.mintGreen
               : e.value >= 70
-                  ? TraumColors.amberGold
-                  : TraumColors.coralOrange;
+              ? TraumColors.amberGold
+              : TraumColors.coralOrange;
           return Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 1),

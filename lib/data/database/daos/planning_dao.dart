@@ -3,7 +3,9 @@ import '../traum_database.dart';
 
 part 'planning_dao.g.dart';
 
-@DriftAccessor(tables: [Appointments, Todos, Goals, SubTasks, Habits, HabitLogs])
+@DriftAccessor(
+  tables: [Appointments, Todos, Goals, SubTasks, Habits, HabitLogs],
+)
 class PlanningDao extends DatabaseAccessor<TraumDatabase>
     with _$PlanningDaoMixin {
   PlanningDao(super.db);
@@ -15,10 +17,11 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
   Stream<List<Appointment>> watchAppointmentsForDate(DateTime date) {
     final start = DateTime(date.year, date.month, date.day);
     final end = start.add(const Duration(days: 1));
-    return (select(appointments)
-          ..where((t) =>
+    return (select(appointments)..where(
+          (t) =>
               t.startTime.isBiggerOrEqualValue(start) &
-              t.startTime.isSmallerThanValue(end)))
+              t.startTime.isSmallerThanValue(end),
+        ))
         .watch();
   }
 
@@ -29,9 +32,11 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
     final start = DateTime(date.year, date.month, date.day);
     final end = start.add(const Duration(days: 1));
     return (select(appointments)
-          ..where((t) =>
-              t.startTime.isBiggerOrEqualValue(start) &
-              t.startTime.isSmallerThanValue(end))
+          ..where(
+            (t) =>
+                t.startTime.isBiggerOrEqualValue(start) &
+                t.startTime.isSmallerThanValue(end),
+          )
           ..orderBy([(t) => OrderingTerm.asc(t.startTime)]))
         .get();
   }
@@ -52,10 +57,9 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
   Future<int> insertAppointment(AppointmentsCompanion entry) =>
       into(appointments).insert(entry);
 
-  Future<bool> updateAppointment(AppointmentsCompanion entry) =>
-      update(appointments).replace(
-        entry.copyWith(updatedAt: Value(DateTime.now())),
-      );
+  Future<bool> updateAppointment(AppointmentsCompanion entry) => update(
+    appointments,
+  ).replace(entry.copyWith(updatedAt: Value(DateTime.now())));
 
   Future<void> updateExternalEventId(int id, String? externalEventId) =>
       (update(appointments)..where((t) => t.id.equals(id))).write(
@@ -82,24 +86,24 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
     required DateTime updatedAt,
     String? sourceCalendarId,
     DateTime? lastSyncedAt,
-  }) =>
-      (update(appointments)..where((t) => t.id.equals(id))).write(
-        AppointmentsCompanion(
-          title: Value(title),
-          description: Value(description),
-          location: Value(location),
-          startTime: Value(startTime),
-          endTime: Value(endTime),
-          allDay: Value(allDay),
-          updatedAt: Value(updatedAt),
-          isAppOrigin: const Value(false),
-          sourceCalendarId: sourceCalendarId != null
-              ? Value(sourceCalendarId)
-              : const Value.absent(),
-          lastSyncedAt:
-              lastSyncedAt != null ? Value(lastSyncedAt) : const Value.absent(),
-        ),
-      );
+  }) => (update(appointments)..where((t) => t.id.equals(id))).write(
+    AppointmentsCompanion(
+      title: Value(title),
+      description: Value(description),
+      location: Value(location),
+      startTime: Value(startTime),
+      endTime: Value(endTime),
+      allDay: Value(allDay),
+      updatedAt: Value(updatedAt),
+      isAppOrigin: const Value(false),
+      sourceCalendarId: sourceCalendarId != null
+          ? Value(sourceCalendarId)
+          : const Value.absent(),
+      lastSyncedAt: lastSyncedAt != null
+          ? Value(lastSyncedAt)
+          : const Value.absent(),
+    ),
+  );
 
   /// Persists sync metadata (external id, source calendar, last-synced
   /// timestamp) after successfully pushing an app appointment to the
@@ -109,15 +113,14 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
     required String externalEventId,
     required String sourceCalendarId,
     required DateTime lastSyncedAt,
-  }) =>
-      (update(appointments)..where((t) => t.id.equals(id))).write(
-        AppointmentsCompanion(
-          externalEventId: Value(externalEventId),
-          sourceCalendarId: Value(sourceCalendarId),
-          lastSyncedAt: Value(lastSyncedAt),
-          updatedAt: Value(lastSyncedAt),
-        ),
-      );
+  }) => (update(appointments)..where((t) => t.id.equals(id))).write(
+    AppointmentsCompanion(
+      externalEventId: Value(externalEventId),
+      sourceCalendarId: Value(sourceCalendarId),
+      lastSyncedAt: Value(lastSyncedAt),
+      updatedAt: Value(lastSyncedAt),
+    ),
+  );
 
   // Todos
   Stream<List<Todo>> watchAllTodos() =>
@@ -129,8 +132,7 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
 
   Future<int> insertTodo(TodosCompanion entry) => into(todos).insert(entry);
 
-  Future<bool> updateTodo(TodosCompanion entry) =>
-      update(todos).replace(entry);
+  Future<bool> updateTodo(TodosCompanion entry) => update(todos).replace(entry);
 
   Future<int> deleteTodo(int id) =>
       (delete(todos)..where((t) => t.id.equals(id))).go();
@@ -140,8 +142,7 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
 
   Future<int> insertGoal(GoalsCompanion entry) => into(goals).insert(entry);
 
-  Future<bool> updateGoal(GoalsCompanion entry) =>
-      update(goals).replace(entry);
+  Future<bool> updateGoal(GoalsCompanion entry) => update(goals).replace(entry);
 
   Future<int> deleteGoal(int id) =>
       (delete(goals)..where((t) => t.id.equals(id))).go();
@@ -180,10 +181,11 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
   Stream<List<HabitLog>> watchHabitLogsForDate(DateTime date) {
     final start = DateTime(date.year, date.month, date.day);
     final end = start.add(const Duration(days: 1));
-    return (select(habitLogs)
-          ..where((t) =>
+    return (select(habitLogs)..where(
+          (t) =>
               t.logDate.isBiggerOrEqualValue(start) &
-              t.logDate.isSmallerThanValue(end)))
+              t.logDate.isSmallerThanValue(end),
+        ))
         .watch();
   }
 
@@ -191,10 +193,11 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
   Future<List<HabitLog>> getHabitLogsForDate(DateTime date) {
     final start = DateTime(date.year, date.month, date.day);
     final end = start.add(const Duration(days: 1));
-    return (select(habitLogs)
-          ..where((t) =>
+    return (select(habitLogs)..where(
+          (t) =>
               t.logDate.isBiggerOrEqualValue(start) &
-              t.logDate.isSmallerThanValue(end)))
+              t.logDate.isSmallerThanValue(end),
+        ))
         .get();
   }
 
@@ -203,8 +206,9 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
   Future<List<HabitLog>> getRecentHabitLogs({int days = 60}) {
     final cutoff = DateTime.now().subtract(Duration(days: days));
     final start = DateTime(cutoff.year, cutoff.month, cutoff.day);
-    return (select(habitLogs)..where((t) => t.logDate.isBiggerOrEqualValue(start)))
-        .get();
+    return (select(
+      habitLogs,
+    )..where((t) => t.logDate.isBiggerOrEqualValue(start))).get();
   }
 
   Future<int> insertHabitLog(HabitLogsCompanion entry) =>
@@ -213,20 +217,22 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
   Future<int> deleteHabitLog(int habitId, DateTime date) {
     final start = DateTime(date.year, date.month, date.day);
     final end = start.add(const Duration(days: 1));
-    return (delete(habitLogs)
-          ..where((t) =>
+    return (delete(habitLogs)..where(
+          (t) =>
               t.habitId.equals(habitId) &
               t.logDate.isBiggerOrEqualValue(start) &
-              t.logDate.isSmallerThanValue(end)))
+              t.logDate.isSmallerThanValue(end),
+        ))
         .go();
   }
 
   Future<List<HabitLog>> getHabitLogsForLast7Days(int habitId) {
     final cutoff = DateTime.now().subtract(const Duration(days: 7));
-    return (select(habitLogs)
-          ..where((t) =>
+    return (select(habitLogs)..where(
+          (t) =>
               t.habitId.equals(habitId) &
-              t.logDate.isBiggerOrEqualValue(cutoff)))
+              t.logDate.isBiggerOrEqualValue(cutoff),
+        ))
         .get();
   }
 
@@ -237,8 +243,8 @@ class PlanningDao extends DatabaseAccessor<TraumDatabase>
   Stream<List<HabitLog>> watchRecentHabitLogs({int days = 60}) {
     final cutoff = DateTime.now().subtract(Duration(days: days));
     final start = DateTime(cutoff.year, cutoff.month, cutoff.day);
-    return (select(habitLogs)
-          ..where((t) => t.logDate.isBiggerOrEqualValue(start)))
-        .watch();
+    return (select(
+      habitLogs,
+    )..where((t) => t.logDate.isBiggerOrEqualValue(start))).watch();
   }
 }

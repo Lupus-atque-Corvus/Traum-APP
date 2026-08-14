@@ -120,9 +120,7 @@ class NoteListTile extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              note.isDaily
-                  ? Icons.today_rounded
-                  : Icons.description_outlined,
+              note.isDaily ? Icons.today_rounded : Icons.description_outlined,
               color: kNotesAccent.withValues(alpha: 0.9),
               size: 20,
             ),
@@ -162,14 +160,20 @@ class NoteListTile extends StatelessWidget {
             if (note.isPinned)
               const Padding(
                 padding: EdgeInsets.only(left: 8),
-                child: Icon(Icons.push_pin_rounded,
-                    size: 15, color: TraumColors.onBackgroundMuted),
+                child: Icon(
+                  Icons.push_pin_rounded,
+                  size: 15,
+                  color: TraumColors.onBackgroundMuted,
+                ),
               ),
             if (note.isBookmarked)
               const Padding(
                 padding: EdgeInsets.only(left: 8),
-                child: Icon(Icons.bookmark_rounded,
-                    size: 15, color: kNotesAccent),
+                child: Icon(
+                  Icons.bookmark_rounded,
+                  size: 15,
+                  color: kNotesAccent,
+                ),
               ),
           ],
         ),
@@ -214,9 +218,11 @@ class NotesPillButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon,
-                size: 16,
-                color: filled ? kNotesAccent : TraumColors.onBackgroundMuted),
+            Icon(
+              icon,
+              size: 16,
+              color: filled ? kNotesAccent : TraumColors.onBackgroundMuted,
+            ),
             const SizedBox(width: 6),
             Text(
               label,
@@ -296,7 +302,9 @@ Future<String?> showNotesTextDialog(
         controller: controller,
         autofocus: true,
         style: const TextStyle(
-            fontFamily: 'DMSans', color: TraumColors.onBackground),
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackground,
+        ),
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: const TextStyle(color: TraumColors.onBackgroundSubtle),
@@ -312,17 +320,24 @@ Future<String?> showNotesTextDialog(
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(ctx),
-          child: Text(cancelLabel,
-              style: const TextStyle(
-                  fontFamily: 'DMSans', color: TraumColors.onBackgroundMuted)),
+          child: Text(
+            cancelLabel,
+            style: const TextStyle(
+              fontFamily: 'DMSans',
+              color: TraumColors.onBackgroundMuted,
+            ),
+          ),
         ),
         TextButton(
           onPressed: () => Navigator.pop(ctx, controller.text.trim()),
-          child: Text(confirmLabel,
-              style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  color: kNotesAccent,
-                  fontWeight: FontWeight.w600)),
+          child: Text(
+            confirmLabel,
+            style: const TextStyle(
+              fontFamily: 'DMSans',
+              color: kNotesAccent,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
       ],
     ),

@@ -41,8 +41,9 @@ Future<bool> rescheduleAllNotifications(ProviderContainer container) async {
       try {
         final latestEntry = await db.periodDao.getLatestPeriodEntry();
         if (latestEntry != null) {
-          final calc =
-              await db.periodDao.getCalculationForEntry(latestEntry.id);
+          final calc = await db.periodDao.getCalculationForEntry(
+            latestEntry.id,
+          );
           nextPeriodPredicted = calc?.nextPeriodPredicted;
         }
       } catch (_) {
@@ -51,33 +52,35 @@ Future<bool> rescheduleAllNotifications(ProviderContainer container) async {
       }
     }
 
-    await NotificationService.rescheduleAll(
-      {
-        'notif_workout': repo.notifWorkout,
-        'notif_workout_time': repo.notifWorkoutTime,
-        'notif_habit': repo.notifHabit,
-        'notif_habit_time': repo.notifHabitTime,
-        'notif_todo': repo.notifTodo,
-        'notif_todo_time': repo.notifTodoTime,
-        'notif_water': repo.notifWater,
-        'notif_water_interval': repo.notifWaterInterval,
-        'notif_period': repo.notifPeriod,
-        'notif_period_days': repo.notifPeriodDays,
-        'notif_period_next_date': nextPeriodPredicted,
-      },
-      db: db,
-    );
+    await NotificationService.rescheduleAll({
+      'notif_workout': repo.notifWorkout,
+      'notif_workout_time': repo.notifWorkoutTime,
+      'notif_habit': repo.notifHabit,
+      'notif_habit_time': repo.notifHabitTime,
+      'notif_todo': repo.notifTodo,
+      'notif_todo_time': repo.notifTodoTime,
+      'notif_water': repo.notifWater,
+      'notif_water_interval': repo.notifWaterInterval,
+      'notif_period': repo.notifPeriod,
+      'notif_period_days': repo.notifPeriodDays,
+      'notif_period_next_date': nextPeriodPredicted,
+    }, db: db);
 
     // Medications/supplements don't have a category toggle (see
     // preferences_provider.dart) — any active one with at least one
     // configured time counts on its own toward whether the permission
     // check below is relevant.
-    final hasMedicationReminder = (await db.medicationDao.getActiveMedications())
-        .any((m) => m.timings != '[]');
-    final hasSupplementReminder = (await db.supplementDao.getActiveSupplements())
-        .any((s) => s.timings != '[]');
+    final hasMedicationReminder =
+        (await db.medicationDao.getActiveMedications()).any(
+          (m) => m.timings != '[]',
+        );
+    final hasSupplementReminder =
+        (await db.supplementDao.getActiveSupplements()).any(
+          (s) => s.timings != '[]',
+        );
 
-    final anyEnabled = hasMedicationReminder ||
+    final anyEnabled =
+        hasMedicationReminder ||
         hasSupplementReminder ||
         repo.notifWorkout ||
         repo.notifHabit ||

@@ -55,8 +55,10 @@ void main() {
       await notifier.add('com.instagram');
       await notifier.add('com.whatsapp'); // duplicate ignored
 
-      expect(container.read(appLauncherFavoritesProvider),
-          ['com.whatsapp', 'com.instagram']);
+      expect(container.read(appLauncherFavoritesProvider), [
+        'com.whatsapp',
+        'com.instagram',
+      ]);
     });
 
     test('remove drops the package', () async {
@@ -87,8 +89,11 @@ void main() {
       await notifier.add('com.b');
       await notifier.add('com.c');
       await notifier.reorder(0, 3); // move 'a' to end
-      expect(container.read(appLauncherFavoritesProvider),
-          ['com.b', 'com.c', 'com.a']);
+      expect(container.read(appLauncherFavoritesProvider), [
+        'com.b',
+        'com.c',
+        'com.a',
+      ]);
     });
   });
 }

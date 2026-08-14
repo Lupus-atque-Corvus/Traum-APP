@@ -60,7 +60,9 @@ class BudgetCategoriesScreen extends ConsumerWidget {
               child: catsAsync.when(
                 data: (cats) => _buildBody(context, ref, cats, currency, l10n),
                 loading: () => const Center(
-                  child: CircularProgressIndicator(color: TraumColors.amberGold),
+                  child: CircularProgressIndicator(
+                    color: TraumColors.amberGold,
+                  ),
                 ),
                 error: (e, _) => InlineError(e),
               ),
@@ -112,9 +114,7 @@ class BudgetCategoriesScreen extends ConsumerWidget {
             decoration: BoxDecoration(
               color: TraumColors.surface,
               borderRadius: BorderRadius.circular(bs(14)),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.07),
-              ),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
             ),
             clipBehavior: Clip.hardEdge,
             child: Column(
@@ -129,9 +129,8 @@ class BudgetCategoriesScreen extends ConsumerWidget {
                     cat: cats[i],
                     currency: currency,
                     onTap: () => _openSheet(context, category: cats[i]),
-                    onDelete: () => ref
-                        .read(budgetDaoProvider)
-                        .deleteCategory(cats[i].id),
+                    onDelete: () =>
+                        ref.read(budgetDaoProvider).deleteCategory(cats[i].id),
                     onConfirmDelete: () =>
                         _confirmDelete(context, cats[i].name),
                   ),
@@ -217,8 +216,9 @@ class _CategoryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final catColor =
-        cat.color != null ? Color(cat.color!) : TraumColors.amberGold;
+    final catColor = cat.color != null
+        ? Color(cat.color!)
+        : TraumColors.amberGold;
 
     return Dismissible(
       key: ValueKey(cat.id),
@@ -247,8 +247,11 @@ class _CategoryRow extends StatelessWidget {
                   borderRadius: BorderRadius.circular(bs(10)),
                 ),
                 child: Center(
-                  child: budgetCategoryGlyph(cat.emoji,
-                      color: catColor, size: bs(16)),
+                  child: budgetCategoryGlyph(
+                    cat.emoji,
+                    color: catColor,
+                    size: bs(16),
+                  ),
                 ),
               ),
               SizedBox(width: bs(10)),
@@ -298,7 +301,8 @@ class _CategoryRow extends StatelessWidget {
                           SizedBox(width: bs(5)),
                           Text(
                             l10n.budgetCategoryLimitLabel(
-                                '${cat.monthlyLimit!.toStringAsFixed(0)} $currency'),
+                              '${cat.monthlyLimit!.toStringAsFixed(0)} $currency',
+                            ),
                             style: const TextStyle(
                               fontFamily: 'DMSans',
                               fontSize: 9,
@@ -406,9 +410,15 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
     if (name.isEmpty) return;
     final limit = parseLocaleAmount(_limitCtrl.text);
     if (limit != null && limit > kMaxAmount) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context)!
-              .amountExceedsMax(fmtAmount(kMaxAmount)))));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(
+              context,
+            )!.amountExceedsMax(fmtAmount(kMaxAmount)),
+          ),
+        ),
+      );
       return;
     }
     setState(() => _saving = true);
@@ -471,28 +481,43 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
               ),
             ),
             const SizedBox(height: 16),
-            _field(_nameCtrl, l10n.budgetCategoryNameLabel,
-                l10n.budgetCategoryNameHint),
+            _field(
+              _nameCtrl,
+              l10n.budgetCategoryNameLabel,
+              l10n.budgetCategoryNameHint,
+            ),
             const SizedBox(height: 8),
-            _field(_limitCtrl, l10n.budgetMonthlyLimitLabel, '0',
-                type: TextInputType.number),
+            _field(
+              _limitCtrl,
+              l10n.budgetMonthlyLimitLabel,
+              '0',
+              type: TextInputType.number,
+            ),
             const SizedBox(height: 12),
-            Row(children: [
-              Text(
-                l10n.budgetTypeLabel,
-                style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  color: TraumColors.onBackground,
-                  fontSize: 14,
+            Row(
+              children: [
+                Text(
+                  l10n.budgetTypeLabel,
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackground,
+                    fontSize: 14,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              _chip(l10n.budgetTypeExpense, _isExpense,
-                  () => setState(() => _isExpense = true)),
-              const SizedBox(width: 8),
-              _chip(l10n.budgetTypeIncome, !_isExpense,
-                  () => setState(() => _isExpense = false)),
-            ]),
+                const SizedBox(width: 12),
+                _chip(
+                  l10n.budgetTypeExpense,
+                  _isExpense,
+                  () => setState(() => _isExpense = true),
+                ),
+                const SizedBox(width: 8),
+                _chip(
+                  l10n.budgetTypeIncome,
+                  !_isExpense,
+                  () => setState(() => _isExpense = false),
+                ),
+              ],
+            ),
             const SizedBox(height: 12),
             IconPickerGrid(
               selectedIconName: _selectedIconName,
@@ -589,8 +614,10 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide.none,
         ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 10,
+        ),
       ),
     );
   }
@@ -605,9 +632,7 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
                 ? TraumColors.amberGold.withValues(alpha: 0.2)
                 : TraumColors.surfaceVariant,
             borderRadius: BorderRadius.circular(20),
-            border: selected
-                ? Border.all(color: TraumColors.amberGold)
-                : null,
+            border: selected ? Border.all(color: TraumColors.amberGold) : null,
           ),
           child: Text(
             label,

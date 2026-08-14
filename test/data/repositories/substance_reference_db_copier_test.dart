@@ -25,17 +25,20 @@ void main() {
 
   tearDown(() => tempDir.deleteSync(recursive: true));
 
-  test('copies the bundled fixture asset to app storage and sets the flag', () async {
-    SharedPreferences.setMockInitialValues({});
-    final prefs = await SharedPreferences.getInstance();
+  test(
+    'copies the bundled fixture asset to app storage and sets the flag',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
 
-    await SubstanceReferenceDbCopier.copyIfNeeded(prefs);
+      await SubstanceReferenceDbCopier.copyIfNeeded(prefs);
 
-    final target = File(await SubstanceReferenceDbCopier.targetPath());
-    expect(target.existsSync(), isTrue);
-    expect(target.lengthSync(), greaterThan(0));
-    expect(prefs.getBool('substance_reference_db_copied_v2'), isTrue);
-  });
+      final target = File(await SubstanceReferenceDbCopier.targetPath());
+      expect(target.existsSync(), isTrue);
+      expect(target.lengthSync(), greaterThan(0));
+      expect(prefs.getBool('substance_reference_db_copied_v2'), isTrue);
+    },
+  );
 
   // NOTE: this test is currently VACUOUS. The real asset
   // (assets/substances_reference.sqlite3) is not bundled yet — both

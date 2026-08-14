@@ -23,8 +23,10 @@ class ReminderTime {
   ReminderTime copyWith({String? time, Set<int>? days}) =>
       ReminderTime(time: time ?? this.time, days: days ?? this.days);
 
-  Map<String, dynamic> toJson() =>
-      {'time': time, 'days': days.toList()..sort()};
+  Map<String, dynamic> toJson() => {
+    'time': time,
+    'days': days.toList()..sort(),
+  };
 
   static ReminderTime fromJson(dynamic json) {
     // Legacy format: a bare "HH:mm" string meant "every day" — the only

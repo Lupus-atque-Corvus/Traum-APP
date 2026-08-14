@@ -80,10 +80,23 @@ String canonicalMuscleGroup(String raw) {
 /// `BodyMapWidget.allMuscles`. Duplicated here (rather than imported) to
 /// avoid a dependency from this pure-logic module onto the widget layer.
 const List<String> _allBodyMapMuscles = [
-  'pectorals', 'lower_back', 'rhomboids', 'lats', 'trapezes',
-  'deltoids', 'triceps', 'biceps', 'forearms', 'abdominals',
-  'obliques', 'glutes', 'quadriceps', 'hip_adductors',
-  'hip_abductors', 'hamstrings', 'calves',
+  'pectorals',
+  'lower_back',
+  'rhomboids',
+  'lats',
+  'trapezes',
+  'deltoids',
+  'triceps',
+  'biceps',
+  'forearms',
+  'abdominals',
+  'obliques',
+  'glutes',
+  'quadriceps',
+  'hip_adductors',
+  'hip_abductors',
+  'hamstrings',
+  'calves',
 ];
 
 /// Canonical muscle-group key → body-map SVG muscle names to highlight.
@@ -120,17 +133,30 @@ List<String> bodyMapMusclesFor(String canonical) {
 String muscleGroupLabel(String canonical, AppLocalizations l10n) {
   final key = canonicalMuscleGroup(canonical);
   switch (key) {
-    case 'chest': return l10n.muscleBrust;
-    case 'back': return l10n.muscleRuecken;
-    case 'shoulders': return l10n.muscleSchulter;
-    case 'biceps': return l10n.muscleBizeps;
-    case 'triceps': return l10n.muscleTrizeps;
-    case 'core': return l10n.muscleBauch;
-    case 'legs': return l10n.muscleBeine;
-    case 'glutes': return l10n.muscleGesaess;
-    case 'calves': return l10n.muscleWaden;
-    case 'forearms': return l10n.muscleForearms;
-    case 'cardio': return l10n.muscleCardio;
-    case 'full_body': default: return l10n.muscleGanzkoerper;
+    case 'chest':
+      return l10n.muscleBrust;
+    case 'back':
+      return l10n.muscleRuecken;
+    case 'shoulders':
+      return l10n.muscleSchulter;
+    case 'biceps':
+      return l10n.muscleBizeps;
+    case 'triceps':
+      return l10n.muscleTrizeps;
+    case 'core':
+      return l10n.muscleBauch;
+    case 'legs':
+      return l10n.muscleBeine;
+    case 'glutes':
+      return l10n.muscleGesaess;
+    case 'calves':
+      return l10n.muscleWaden;
+    case 'forearms':
+      return l10n.muscleForearms;
+    case 'cardio':
+      return l10n.muscleCardio;
+    case 'full_body':
+    default:
+      return l10n.muscleGanzkoerper;
   }
 }

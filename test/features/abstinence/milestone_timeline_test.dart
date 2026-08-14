@@ -19,7 +19,9 @@ void main() {
     });
 
     test('a milestone just missed (1 second short) is not reached', () {
-      final now = start.add(const Duration(hours: 24) - const Duration(seconds: 1));
+      final now = start.add(
+        const Duration(hours: 24) - const Duration(seconds: 1),
+      );
       final result = computeMilestones(start, milestones, now);
       final first = result.firstWhere((s) => s.milestone.label == '24 Stunden');
       expect(first.reached, isFalse);
@@ -57,27 +59,36 @@ void main() {
       expect(result.every((s) => s.remaining == null), isTrue);
     });
 
-    test('at the very start (elapsed = 0), the smallest milestone is current', () {
-      final result = computeMilestones(start, milestones, start);
-      expect(result.first.isCurrent, isTrue);
-      expect(result.first.reached, isFalse);
-    });
+    test(
+      'at the very start (elapsed = 0), the smallest milestone is current',
+      () {
+        final result = computeMilestones(start, milestones, start);
+        expect(result.first.isCurrent, isTrue);
+        expect(result.first.reached, isFalse);
+      },
+    );
 
-    test('returns milestones sorted ascending by duration regardless of input order', () {
-      final unsorted = [milestones[2], milestones[0], milestones[1]];
-      final result = computeMilestones(start, unsorted, start);
-      expect(result.map((s) => s.milestone.duration).toList(), [
-        milestones[0].duration,
-        milestones[1].duration,
-        milestones[2].duration,
-      ]);
-    });
+    test(
+      'returns milestones sorted ascending by duration regardless of input order',
+      () {
+        final unsorted = [milestones[2], milestones[0], milestones[1]];
+        final result = computeMilestones(start, unsorted, start);
+        expect(result.map((s) => s.milestone.duration).toList(), [
+          milestones[0].duration,
+          milestones[1].duration,
+          milestones[2].duration,
+        ]);
+      },
+    );
   });
 
   group('formatMilestoneRemaining', () {
     test('formats >= 1 day remaining as "in N T"', () {
       expect(formatMilestoneRemaining(const Duration(days: 4)), 'in 4 T');
-      expect(formatMilestoneRemaining(const Duration(days: 1, hours: 5)), 'in 1 T');
+      expect(
+        formatMilestoneRemaining(const Duration(days: 1, hours: 5)),
+        'in 1 T',
+      );
     });
 
     test('formats < 1 day but >= 1 hour remaining as hours', () {

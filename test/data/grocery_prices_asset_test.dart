@@ -6,8 +6,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   test('grocery_prices.json is valid and well-formed', () async {
-    final raw =
-        await rootBundle.loadString('assets/data/grocery_prices.json');
+    final raw = await rootBundle.loadString('assets/data/grocery_prices.json');
     final list = jsonDecode(raw) as List<dynamic>;
     expect(list.length, greaterThan(750));
 

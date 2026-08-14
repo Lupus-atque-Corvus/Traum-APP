@@ -15,10 +15,11 @@ import '../home_widget_registry.dart';
 
 /// One-shot weight log list for the home widgets. Uses a plain query (not the
 /// drift `.watch()` stream) so no query-stream close timer lingers in tests.
-final _weightLogsSnapshotProvider =
-    FutureProvider.autoDispose<List<WeightLog>>((ref) {
-  return ref.watch(healthDaoProvider).getAllWeightLogs();
-});
+final _weightLogsSnapshotProvider = FutureProvider.autoDispose<List<WeightLog>>(
+  (ref) {
+    return ref.watch(healthDaoProvider).getAllWeightLogs();
+  },
+);
 
 final Map<HomeWidgetType, HomeWidgetDescriptor> healthHomeWidgets = {
   HomeWidgetType.steps: HomeWidgetDescriptor(
@@ -309,15 +310,13 @@ class _SleepContent extends ConsumerWidget {
     final logs = ref.watch(recentSleepLogsProvider(2)).value;
     String value = '—';
     if (logs != null && logs.isNotEmpty) {
-      final latest = logs.reduce((a, b) => a.bedtime.isAfter(b.bedtime) ? a : b);
+      final latest = logs.reduce(
+        (a, b) => a.bedtime.isAfter(b.bedtime) ? a : b,
+      );
       final hours = latest.wakeTime.difference(latest.bedtime).inMinutes / 60.0;
       if (hours > 0) value = hours.toStringAsFixed(1);
     }
-    return _MetricValue(
-      value: value,
-      unit: 'h',
-      color: TraumColors.lavender,
-    );
+    return _MetricValue(value: value, unit: 'h', color: TraumColors.lavender);
   }
 }
 
@@ -337,7 +336,8 @@ class _MoodContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final mood = ref.watch(latestMoodProvider).value;
     final now = DateTime.now();
-    final isToday = mood != null &&
+    final isToday =
+        mood != null &&
         mood.logDate.year == now.year &&
         mood.logDate.month == now.month &&
         mood.logDate.day == now.day;
@@ -422,10 +422,7 @@ class _WeightTrendContent extends ConsumerWidget {
             fontFamily: 'DMSans',
           ),
         ),
-        if (trend != null) ...[
-          const SizedBox(height: 4),
-          trend,
-        ],
+        if (trend != null) ...[const SizedBox(height: 4), trend],
       ],
     );
   }
@@ -488,14 +485,16 @@ class _HealthSnapshotContent extends ConsumerWidget {
 
     String sleepValue = '—';
     if (sleepLogs != null && sleepLogs.isNotEmpty) {
-      final latest =
-          sleepLogs.reduce((a, b) => a.bedtime.isAfter(b.bedtime) ? a : b);
+      final latest = sleepLogs.reduce(
+        (a, b) => a.bedtime.isAfter(b.bedtime) ? a : b,
+      );
       final hours = latest.wakeTime.difference(latest.bedtime).inMinutes / 60.0;
       if (hours > 0) sleepValue = hours.toStringAsFixed(1);
     }
 
     final now = DateTime.now();
-    final moodToday = mood != null &&
+    final moodToday =
+        mood != null &&
         mood.logDate.year == now.year &&
         mood.logDate.month == now.month &&
         mood.logDate.day == now.day;

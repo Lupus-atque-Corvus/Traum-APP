@@ -37,13 +37,15 @@ class WidgetDataService {
   /// `HomeWidget.updateWidget(iOSName:)` lädt nur eine Timeline `ofKind:` neu —
   /// es gibt kein Reload-All, daher muss jeder kind einzeln getriggert werden.
   static List<String> get iosWidgetKinds => [
-        for (final n in androidWidgetNames) n.replaceAll('Provider', ''),
-        'TraumFunctionWidget',
-      ];
+    for (final n in androidWidgetNames) n.replaceAll('Provider', ''),
+    'TraumFunctionWidget',
+  ];
 
   /// Reine Aufbereitung der zu schreibenden Map (testbar).
-  static Map<String, String> buildWriteMap(WidgetSnapshot snap,
-      {DateTime? now}) {
+  static Map<String, String> buildWriteMap(
+    WidgetSnapshot snap, {
+    DateTime? now,
+  }) {
     return {
       ...snap.toStringMap(),
       WidgetKeys.updatedAt: (now ?? DateTime.now().toUtc()).toIso8601String(),

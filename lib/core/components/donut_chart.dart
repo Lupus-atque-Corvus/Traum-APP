@@ -40,12 +40,14 @@ class DonutChart extends StatelessWidget {
       child: PieChart(
         PieChartData(
           sections: sections
-              .map((s) => PieChartSectionData(
-                    value: s.value,
-                    color: s.color,
-                    radius: size / 2 * (1 - centerHoleRadius),
-                    showTitle: false,
-                  ))
+              .map(
+                (s) => PieChartSectionData(
+                  value: s.value,
+                  color: s.color,
+                  radius: size / 2 * (1 - centerHoleRadius),
+                  showTitle: false,
+                ),
+              )
               .toList(),
           centerSpaceRadius: size / 2 * centerHoleRadius,
           sectionsSpace: 2,

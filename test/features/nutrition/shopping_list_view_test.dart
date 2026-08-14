@@ -11,21 +11,35 @@ import 'package:traum/features/nutrition/shopping/shopping_list_view.dart';
 void main() {
   testWidgets('hero shows estimated total of open items', (tester) async {
     final db = TraumDatabase.forTesting(NativeDatabase.memory());
-    await db.into(db.shoppingListItems).insert(ShoppingListItemsCompanion.insert(
-        name: 'Bananen',
-        category: const Value('Obst & Gemüse'),
-        priceEstimated: const Value(1.99)));
-    await db.into(db.shoppingListItems).insert(ShoppingListItemsCompanion.insert(
-        name: 'Milch', priceEstimated: const Value(1.20)));
+    await db
+        .into(db.shoppingListItems)
+        .insert(
+          ShoppingListItemsCompanion.insert(
+            name: 'Bananen',
+            category: const Value('Obst & Gemüse'),
+            priceEstimated: const Value(1.99),
+          ),
+        );
+    await db
+        .into(db.shoppingListItems)
+        .insert(
+          ShoppingListItemsCompanion.insert(
+            name: 'Milch',
+            priceEstimated: const Value(1.20),
+          ),
+        );
 
-    await tester.pumpWidget(ProviderScope(
-      overrides: [databaseProvider.overrideWithValue(db)],
-      child: const MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: Locale('de'),
-          home: Scaffold(body: ShoppingListView())),
-    ));
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [databaseProvider.overrideWithValue(db)],
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: Locale('de'),
+          home: Scaffold(body: ShoppingListView()),
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('3,19 €'), findsOneWidget);

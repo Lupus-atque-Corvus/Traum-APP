@@ -15,13 +15,12 @@ class SubstanceRepository {
     SubstanceKlasse? klasseFilter,
     String? kategorieFilter,
     bool? pflanzlichOnly,
-  }) =>
-      _service.search(
-        query,
-        klasseFilter: klasseFilter,
-        kategorieFilter: kategorieFilter,
-        pflanzlichOnly: pflanzlichOnly,
-      );
+  }) => _service.search(
+    query,
+    klasseFilter: klasseFilter,
+    kategorieFilter: kategorieFilter,
+    pflanzlichOnly: pflanzlichOnly,
+  );
 
   Future<SubstanceRecord?> findById(int id) => _service.findById(id);
 

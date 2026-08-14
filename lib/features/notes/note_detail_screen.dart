@@ -67,7 +67,9 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
 
   void _flush() {
     final title = _titleCtrl.text.trim();
-    ref.read(notesRepositoryProvider).saveNoteContent(
+    ref
+        .read(notesRepositoryProvider)
+        .saveNoteContent(
           widget.noteId,
           _contentCtrl.text,
           title: title.isEmpty ? _untitled : title,
@@ -82,40 +84,54 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
 
   Future<void> _insertTemplate() async {
     final l10n = AppLocalizations.of(context)!;
-    final templates = await ref.read(notesRepositoryProvider).watchTemplates().first;
+    final templates = await ref
+        .read(notesRepositoryProvider)
+        .watchTemplates()
+        .first;
     if (!mounted) return;
     if (templates.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.notes_no_templates)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.notes_no_templates)));
       return;
     }
     final chosen = await showModalBottomSheet<NoteTemplate>(
       context: context,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
       ),
       builder: (ctx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: templates
-              .map((t) => ListTile(
-                    leading: const Icon(Icons.dashboard_customize_outlined,
-                        color: kNotesAccent),
-                    title: Text(t.name,
-                        style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            color: TraumColors.onBackground)),
-                    onTap: () => Navigator.pop(ctx, t),
-                  ))
+              .map(
+                (t) => ListTile(
+                  leading: const Icon(
+                    Icons.dashboard_customize_outlined,
+                    color: kNotesAccent,
+                  ),
+                  title: Text(
+                    t.name,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackground,
+                    ),
+                  ),
+                  onTap: () => Navigator.pop(ctx, t),
+                ),
+              )
               .toList(),
         ),
       ),
     );
     if (chosen == null) return;
-    final applied = NotesTemplateService.apply(chosen.content,
-        title: _titleCtrl.text.trim());
+    final applied = NotesTemplateService.apply(
+      chosen.content,
+      title: _titleCtrl.text.trim(),
+    );
     final sel = _contentCtrl.selection;
     final text = _contentCtrl.text;
     final at = sel.isValid ? sel.start : text.length;
@@ -150,8 +166,11 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
       error: (e, _) => Scaffold(
         backgroundColor: TraumColors.background,
         body: Center(
-            child: Text('$e',
-                style: const TextStyle(color: TraumColors.onBackground))),
+          child: Text(
+            '$e',
+            style: const TextStyle(color: TraumColors.onBackground),
+          ),
+        ),
       ),
       data: (note) {
         if (note == null) {
@@ -159,7 +178,9 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
             backgroundColor: TraumColors.background,
             appBar: _bareAppBar(),
             body: NotesEmptyState(
-                icon: Icons.delete_outline_rounded, message: l10n.notes_no_notes),
+              icon: Icons.delete_outline_rounded,
+              message: l10n.notes_no_notes,
+            ),
           );
         }
         if (!_loaded) {
@@ -173,12 +194,13 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
   }
 
   AppBar _bareAppBar() => AppBar(
-        backgroundColor: TraumColors.background,
-        elevation: 0,
-        leading: BackButton(
-            color: TraumColors.onBackground,
-            onPressed: () => context.pop()),
-      );
+    backgroundColor: TraumColors.background,
+    elevation: 0,
+    leading: BackButton(
+      color: TraumColors.onBackground,
+      onPressed: () => context.pop(),
+    ),
+  );
 
   Widget _buildLoaded(BuildContext context, AppLocalizations l10n, Note note) {
     return Scaffold(
@@ -187,7 +209,9 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
         backgroundColor: TraumColors.background,
         elevation: 0,
         leading: BackButton(
-            color: TraumColors.onBackground, onPressed: () => context.pop()),
+          color: TraumColors.onBackground,
+          onPressed: () => context.pop(),
+        ),
         title: _ModeToggle(
           editing: _editing,
           onChanged: (v) {
@@ -200,20 +224,23 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
           IconButton(
             tooltip: l10n.notes_toggle_bookmark,
             icon: Icon(
-                note.isBookmarked
-                    ? Icons.bookmark_rounded
-                    : Icons.bookmark_border_rounded,
-                color: note.isBookmarked
-                    ? kNotesAccent
-                    : TraumColors.onBackgroundMuted),
+              note.isBookmarked
+                  ? Icons.bookmark_rounded
+                  : Icons.bookmark_border_rounded,
+              color: note.isBookmarked
+                  ? kNotesAccent
+                  : TraumColors.onBackgroundMuted,
+            ),
             onPressed: () => ref
                 .read(notesRepositoryProvider)
                 .setBookmarked(note.id, !note.isBookmarked),
           ),
           PopupMenuButton<String>(
             color: TraumColors.surfaceElevated,
-            icon: const Icon(Icons.more_vert_rounded,
-                color: TraumColors.onBackgroundMuted),
+            icon: const Icon(
+              Icons.more_vert_rounded,
+              color: TraumColors.onBackgroundMuted,
+            ),
             onSelected: (v) async {
               switch (v) {
                 case 'pin':
@@ -237,14 +264,33 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
               }
             },
             itemBuilder: (_) => [
-              _menuItem('pin',
-                  note.isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
-                  note.isPinned ? l10n.notes_unpin : l10n.notes_pin),
-              _menuItem('move', Icons.folder_open_rounded, l10n.notes_move_to_folder),
-              _menuItem('template', Icons.dashboard_customize_outlined,
-                  l10n.notes_insert_template),
-              _menuItem('export', Icons.ios_share_rounded, l10n.notes_export_md),
-              _menuItem('delete', Icons.delete_outline_rounded, l10n.notes_delete),
+              _menuItem(
+                'pin',
+                note.isPinned
+                    ? Icons.push_pin_rounded
+                    : Icons.push_pin_outlined,
+                note.isPinned ? l10n.notes_unpin : l10n.notes_pin,
+              ),
+              _menuItem(
+                'move',
+                Icons.folder_open_rounded,
+                l10n.notes_move_to_folder,
+              ),
+              _menuItem(
+                'template',
+                Icons.dashboard_customize_outlined,
+                l10n.notes_insert_template,
+              ),
+              _menuItem(
+                'export',
+                Icons.ios_share_rounded,
+                l10n.notes_export_md,
+              ),
+              _menuItem(
+                'delete',
+                Icons.delete_outline_rounded,
+                l10n.notes_delete,
+              ),
             ],
           ),
         ],
@@ -258,15 +304,18 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
               controller: _titleCtrl,
               onChanged: (_) => _onChanged(),
               style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  color: TraumColors.onBackground,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700),
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+              ),
               decoration: InputDecoration(
                 isDense: true,
                 border: InputBorder.none,
                 hintText: l10n.notes_note_title,
-                hintStyle: const TextStyle(color: TraumColors.onBackgroundSubtle),
+                hintStyle: const TextStyle(
+                  color: TraumColors.onBackgroundSubtle,
+                ),
               ),
             ),
           ),
@@ -301,7 +350,10 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
       keyboardType: TextInputType.multiline,
       cursorColor: kNotesAccent,
       style: const TextStyle(
-          fontFamily: 'DMSans', color: TraumColors.onBackground, fontSize: 15.5),
+        fontFamily: 'DMSans',
+        color: TraumColors.onBackground,
+        fontSize: 15.5,
+      ),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
         border: InputBorder.none,
@@ -329,29 +381,30 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
               const Spacer(),
               Padding(
                 padding: const EdgeInsets.only(right: 8),
-                child: Text('${note.wordCount} ${l10n.notes_word_count}',
-                    style: const TextStyle(
-                        fontFamily: 'DMSans',
-                        color: TraumColors.onBackgroundSubtle,
-                        fontSize: 12)),
+                child: Text(
+                  '${note.wordCount} ${l10n.notes_word_count}',
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackgroundSubtle,
+                    fontSize: 12,
+                  ),
+                ),
               ),
               IconButton(
                 visualDensity: VisualDensity.compact,
                 tooltip: l10n.notes_toggle_panel,
                 icon: Icon(
-                    _panelOpen
-                        ? Icons.keyboard_arrow_down_rounded
-                        : Icons.keyboard_arrow_up_rounded,
-                    color: TraumColors.onBackgroundMuted),
+                  _panelOpen
+                      ? Icons.keyboard_arrow_down_rounded
+                      : Icons.keyboard_arrow_up_rounded,
+                  color: TraumColors.onBackgroundMuted,
+                ),
                 onPressed: () => setState(() => _panelOpen = !_panelOpen),
               ),
             ],
           ),
           if (_panelOpen)
-            SizedBox(
-              height: 180,
-              child: _panelContent(l10n, note),
-            ),
+            SizedBox(height: 180, child: _panelContent(l10n, note)),
         ],
       ),
     );
@@ -389,14 +442,22 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
           error: (e, _) => Center(child: Text('$e')),
           data: (refs) => refs.isEmpty
               ? Center(
-                  child: Text(l10n.notes_no_backlinks,
-                      style: const TextStyle(
-                          color: TraumColors.onBackgroundSubtle,
-                          fontFamily: 'DMSans')))
+                  child: Text(
+                    l10n.notes_no_backlinks,
+                    style: const TextStyle(
+                      color: TraumColors.onBackgroundSubtle,
+                      fontFamily: 'DMSans',
+                    ),
+                  ),
+                )
               : ListView(
                   children: refs
-                      .map((r) => _linkRow(r.note.title, () =>
-                          context.push(Routes.noteDetailPath(r.note.id))))
+                      .map(
+                        (r) => _linkRow(
+                          r.note.title,
+                          () => context.push(Routes.noteDetailPath(r.note.id)),
+                        ),
+                      )
                       .toList(),
                 ),
         );
@@ -408,30 +469,43 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
           data: (data) {
             if (data.resolved.isEmpty && data.unresolved.isEmpty) {
               return Center(
-                  child: Text(l10n.notes_no_outgoing_links,
-                      style: const TextStyle(
-                          color: TraumColors.onBackgroundSubtle,
-                          fontFamily: 'DMSans')));
+                child: Text(
+                  l10n.notes_no_outgoing_links,
+                  style: const TextStyle(
+                    color: TraumColors.onBackgroundSubtle,
+                    fontFamily: 'DMSans',
+                  ),
+                ),
+              );
             }
             return ListView(
               children: [
-                ...data.resolved.map((r) => _linkRow(r.note.title,
-                    () => context.push(Routes.noteDetailPath(r.note.id)))),
+                ...data.resolved.map(
+                  (r) => _linkRow(
+                    r.note.title,
+                    () => context.push(Routes.noteDetailPath(r.note.id)),
+                  ),
+                ),
                 if (data.unresolved.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-                    child: Text(l10n.notes_unresolved_links,
-                        style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            color: TraumColors.onBackgroundSubtle,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600)),
+                    child: Text(
+                      l10n.notes_unresolved_links,
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        color: TraumColors.onBackgroundSubtle,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
-                ...data.unresolved.map((l) => _linkRow(
-                      l.targetTitleRaw,
-                      () => _openWikilink(l.targetTitleRaw, null),
-                      unresolved: true,
-                    )),
+                ...data.unresolved.map(
+                  (l) => _linkRow(
+                    l.targetTitleRaw,
+                    () => _openWikilink(l.targetTitleRaw, null),
+                    unresolved: true,
+                  ),
+                ),
               ],
             );
           },
@@ -440,23 +514,38 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
         final outline = NotesMarkdownParser.extractOutline(_contentCtrl.text);
         if (outline.isEmpty) {
           return Center(
-              child: Text(l10n.notes_no_outline,
-                  style: const TextStyle(
-                      color: TraumColors.onBackgroundSubtle,
-                      fontFamily: 'DMSans')));
+            child: Text(
+              l10n.notes_no_outline,
+              style: const TextStyle(
+                color: TraumColors.onBackgroundSubtle,
+                fontFamily: 'DMSans',
+              ),
+            ),
+          );
         }
         return ListView(
           children: outline
-              .map((h) => Padding(
-                    padding: EdgeInsets.fromLTRB(16.0 + (h.level - 1) * 14, 6, 16, 6),
-                    child: Text(h.text,
-                        style: TextStyle(
-                            fontFamily: 'DMSans',
-                            color: TraumColors.onBackground,
-                            fontSize: 14 - (h.level - 1) * 0.5,
-                            fontWeight:
-                                h.level <= 2 ? FontWeight.w600 : FontWeight.w400)),
-                  ))
+              .map(
+                (h) => Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    16.0 + (h.level - 1) * 14,
+                    6,
+                    16,
+                    6,
+                  ),
+                  child: Text(
+                    h.text,
+                    style: TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackground,
+                      fontSize: 14 - (h.level - 1) * 0.5,
+                      fontWeight: h.level <= 2
+                          ? FontWeight.w600
+                          : FontWeight.w400,
+                    ),
+                  ),
+                ),
+              )
               .toList(),
         );
     }
@@ -469,18 +558,23 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           children: [
-            Icon(unresolved ? Icons.link_off_rounded : Icons.north_east_rounded,
-                size: 15,
-                color: unresolved ? TraumColors.error : kNotesAccent),
+            Icon(
+              unresolved ? Icons.link_off_rounded : Icons.north_east_rounded,
+              size: 15,
+              color: unresolved ? TraumColors.error : kNotesAccent,
+            ),
             const SizedBox(width: 8),
             Expanded(
-              child: Text(title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackground,
-                      fontSize: 13.5)),
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                  fontSize: 13.5,
+                ),
+              ),
             ),
           ],
         ),
@@ -495,9 +589,13 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
         children: [
           Icon(icon, size: 18, color: TraumColors.onBackgroundMuted),
           const SizedBox(width: 10),
-          Text(label,
-              style: const TextStyle(
-                  fontFamily: 'DMSans', color: TraumColors.onBackground)),
+          Text(
+            label,
+            style: const TextStyle(
+              fontFamily: 'DMSans',
+              color: TraumColors.onBackground,
+            ),
+          ),
         ],
       ),
     );
@@ -523,10 +621,18 @@ class _ModeToggle extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _seg(l10n.notes_edit_mode, Icons.edit_outlined, editing,
-              () => onChanged(true)),
-          _seg(l10n.notes_reading_mode, Icons.menu_book_outlined, !editing,
-              () => onChanged(false)),
+          _seg(
+            l10n.notes_edit_mode,
+            Icons.edit_outlined,
+            editing,
+            () => onChanged(true),
+          ),
+          _seg(
+            l10n.notes_reading_mode,
+            Icons.menu_book_outlined,
+            !editing,
+            () => onChanged(false),
+          ),
         ],
       ),
     );
@@ -540,22 +646,29 @@ class _ModeToggle extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: active ? kNotesAccent.withValues(alpha: 0.22) : Colors.transparent,
+          color: active
+              ? kNotesAccent.withValues(alpha: 0.22)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(TraumRadius.chip),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon,
-                size: 15,
-                color: active ? kNotesAccent : TraumColors.onBackgroundMuted),
+            Icon(
+              icon,
+              size: 15,
+              color: active ? kNotesAccent : TraumColors.onBackgroundMuted,
+            ),
             const SizedBox(width: 5),
-            Text(label,
-                style: TextStyle(
-                    fontFamily: 'DMSans',
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w600,
-                    color: active ? kNotesAccent : TraumColors.onBackgroundMuted)),
+            Text(
+              label,
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                fontSize: 12.5,
+                fontWeight: FontWeight.w600,
+                color: active ? kNotesAccent : TraumColors.onBackgroundMuted,
+              ),
+            ),
           ],
         ),
       ),
@@ -595,17 +708,23 @@ class _PropertiesBar extends StatelessWidget {
           return Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('${e.key}: ',
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackgroundMuted,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600)),
-              Text(value,
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackground,
-                      fontSize: 12)),
+              Text(
+                '${e.key}: ',
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundMuted,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                  fontSize: 12,
+                ),
+              ),
             ],
           );
         }).toList(),

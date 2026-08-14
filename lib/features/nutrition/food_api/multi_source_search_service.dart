@@ -22,14 +22,18 @@ class MultiSourceSearchService {
     if (trimmed.isEmpty) return [];
 
     final local = await _localDao.search(trimmed);
-    final remote = await Future.wait(_sources.map((source) async {
-      try {
-        return await source.search(trimmed).timeout(const Duration(seconds: 8));
-      } catch (_) {
-        // Quelle down/Timeout/Parse-Fehler → Rest der Suche läuft weiter.
-        return <FoodSearchResult>[];
-      }
-    }));
+    final remote = await Future.wait(
+      _sources.map((source) async {
+        try {
+          return await source
+              .search(trimmed)
+              .timeout(const Duration(seconds: 8));
+        } catch (_) {
+          // Quelle down/Timeout/Parse-Fehler → Rest der Suche läuft weiter.
+          return <FoodSearchResult>[];
+        }
+      }),
+    );
 
     return aggregateAndRank(trimmed, [localToResults(local), ...remote]);
   }
@@ -41,20 +45,22 @@ class MultiSourceSearchService {
 /// [FoodProductsDao.getById] zum vollständigen Produkt zurückfinden, ohne
 /// einen erneuten Cache-Write auszulösen.
 List<FoodSearchResult> localToResults(List<FoodProduct> products) => products
-    .map((p) => FoodSearchResult(
-          name: p.name,
-          brand: p.brand,
-          kcalPer100g: p.caloriesPer100g,
-          proteinPer100g: p.proteinPer100g,
-          carbsPer100g: p.carbsPer100g,
-          fatPer100g: p.fatPer100g,
-          sugarPer100g: p.sugarPer100g,
-          fiberPer100g: p.fiberPer100g,
-          saltPer100g: p.saltPer100g,
-          source: 'local',
-          sourceId: p.id.toString(),
-          barcode: p.barcode,
-          imageUrl: p.imageUrl,
-          localId: p.id,
-        ))
+    .map(
+      (p) => FoodSearchResult(
+        name: p.name,
+        brand: p.brand,
+        kcalPer100g: p.caloriesPer100g,
+        proteinPer100g: p.proteinPer100g,
+        carbsPer100g: p.carbsPer100g,
+        fatPer100g: p.fatPer100g,
+        sugarPer100g: p.sugarPer100g,
+        fiberPer100g: p.fiberPer100g,
+        saltPer100g: p.saltPer100g,
+        source: 'local',
+        sourceId: p.id.toString(),
+        barcode: p.barcode,
+        imageUrl: p.imageUrl,
+        localId: p.id,
+      ),
+    )
     .toList();

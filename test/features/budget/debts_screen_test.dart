@@ -11,33 +11,42 @@ import 'package:traum/features/budget/debts_screen.dart';
 import 'package:traum/l10n/app_localizations.dart';
 
 Widget _wrap(TraumDatabase db, SharedPreferences prefs) => ProviderScope(
-      overrides: [
-        databaseProvider.overrideWithValue(db),
-        sharedPreferencesProvider.overrideWithValue(prefs),
-      ],
-      child: const MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: Locale('de'),
-        home: DebtsScreen(),
-      ),
-    );
+  overrides: [
+    databaseProvider.overrideWithValue(db),
+    sharedPreferencesProvider.overrideWithValue(prefs),
+  ],
+  child: const MaterialApp(
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    locale: Locale('de'),
+    home: DebtsScreen(),
+  ),
+);
 
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
-  testWidgets('tapping a debt card expands it and shows its positions',
-      (tester) async {
+  testWidgets('tapping a debt card expands it and shows its positions', (
+    tester,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     final db = TraumDatabase.forTesting(NativeDatabase.memory());
     addTearDown(db.close);
 
     final debtId = await db.budgetDao.insertDebt(
       DebtsCompanion.insert(
-          creditor: 'Mama', originalAmount: 0, remainingAmount: 0),
+        creditor: 'Mama',
+        originalAmount: 0,
+        remainingAmount: 0,
+      ),
     );
-    await db.budgetDao.insertDebtItem(DebtItemsCompanion.insert(
-        debtId: debtId, description: 'Tankfüllung', amount: 60));
+    await db.budgetDao.insertDebtItem(
+      DebtItemsCompanion.insert(
+        debtId: debtId,
+        description: 'Tankfüllung',
+        amount: 60,
+      ),
+    );
 
     await tester.pumpWidget(_wrap(db, prefs));
     // Let stream-backed providers deliver their first value.
@@ -59,18 +68,27 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
   });
 
-  testWidgets('tapping a position opens the edit sheet with the edit title',
-      (tester) async {
+  testWidgets('tapping a position opens the edit sheet with the edit title', (
+    tester,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     final db = TraumDatabase.forTesting(NativeDatabase.memory());
     addTearDown(db.close);
 
     final debtId = await db.budgetDao.insertDebt(
       DebtsCompanion.insert(
-          creditor: 'Mama', originalAmount: 0, remainingAmount: 0),
+        creditor: 'Mama',
+        originalAmount: 0,
+        remainingAmount: 0,
+      ),
     );
-    await db.budgetDao.insertDebtItem(DebtItemsCompanion.insert(
-        debtId: debtId, description: 'Tankfüllung', amount: 60));
+    await db.budgetDao.insertDebtItem(
+      DebtItemsCompanion.insert(
+        debtId: debtId,
+        description: 'Tankfüllung',
+        amount: 60,
+      ),
+    );
 
     await tester.pumpWidget(_wrap(db, prefs));
     await tester.pump(const Duration(milliseconds: 100));

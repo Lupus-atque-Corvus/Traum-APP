@@ -27,10 +27,7 @@ class InsightCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: TraumColors.surface,
         borderRadius: BorderRadius.circular(TraumRadius.card),
-        border: Border.all(
-          color: color.withValues(alpha: 0.25),
-          width: 1,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.25), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

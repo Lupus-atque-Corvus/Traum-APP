@@ -69,10 +69,13 @@ class NotificationCenterScreen extends ConsumerWidget {
       ),
       body: dataAsync.when(
         loading: () => const Center(
-            child: CircularProgressIndicator(color: TraumColors.coralOrange)),
+          child: CircularProgressIndicator(color: TraumColors.coralOrange),
+        ),
         error: (e, _) => Center(
-          child: Text('$e',
-              style: const TextStyle(color: TraumColors.onBackgroundMuted)),
+          child: Text(
+            '$e',
+            style: const TextStyle(color: TraumColors.onBackgroundMuted),
+          ),
         ),
         data: (data) {
           if (data.isEmpty) {
@@ -80,7 +83,9 @@ class NotificationCenterScreen extends ConsumerWidget {
               child: Text(
                 l10n.notificationCenterEmpty,
                 style: const TextStyle(
-                    color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                ),
               ),
             );
           }
@@ -91,7 +96,9 @@ class NotificationCenterScreen extends ConsumerWidget {
                 _Section(
                   title: l10n.notificationCenterMedsToday,
                   subtitle: l10n.notificationCenterMedsStatus(
-                      data.medsTaken, data.dueMeds.length),
+                    data.medsTaken,
+                    data.dueMeds.length,
+                  ),
                   icon: Icons.medication_rounded,
                   color: TraumColors.roseRed,
                   onTap: () => context.push(Routes.substances),
@@ -108,7 +115,9 @@ class NotificationCenterScreen extends ConsumerWidget {
                 _Section(
                   title: l10n.notificationCenterOpenTodos,
                   subtitle: l10n.notificationCenterTodosStatus(
-                      data.openTodos.length, data.openTodos.first.title),
+                    data.openTodos.length,
+                    data.openTodos.first.title,
+                  ),
                   icon: Icons.check_circle_outline_rounded,
                   color: TraumColors.coralOrange,
                   onTap: () => context.push(Routes.planning),
@@ -141,25 +150,36 @@ class _Section extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: TraumCard(
         child: ListTile(
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 4,
+          ),
           leading: Icon(icon, color: color),
-          title: Text(title,
-              style: const TextStyle(
-                  color: TraumColors.onBackground,
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w600)),
-          subtitle: Text(subtitle,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                  color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans',
-                  fontSize: 12)),
-          trailing: const Icon(Icons.chevron_right_rounded,
-              color: TraumColors.onBackgroundSubtle),
+          title: Text(
+            title,
+            style: const TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          subtitle: Text(
+            subtitle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontSize: 12,
+            ),
+          ),
+          trailing: const Icon(
+            Icons.chevron_right_rounded,
+            color: TraumColors.onBackgroundSubtle,
+          ),
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(TraumRadius.card)),
+            borderRadius: BorderRadius.circular(TraumRadius.card),
+          ),
           onTap: onTap,
         ),
       ),

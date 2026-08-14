@@ -14,7 +14,11 @@ import 'widgets/budget_sub_header.dart';
 import '../../core/components/inline_error.dart';
 
 void _showEditSheet(
-    BuildContext context, WidgetRef ref, Transaction d, String currency) {
+  BuildContext context,
+  WidgetRef ref,
+  Transaction d,
+  String currency,
+) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -23,8 +27,12 @@ void _showEditSheet(
       transaction: d,
       currency: currency,
       onSave: (description, amount, day) {
-        ref.read(budgetDaoProvider).updateTransaction(
-              d.toCompanion(true).copyWith(
+        ref
+            .read(budgetDaoProvider)
+            .updateTransaction(
+              d
+                  .toCompanion(true)
+                  .copyWith(
                     description: Value(description),
                     amount: Value(amount),
                     recurringDay: Value(day),
@@ -49,7 +57,8 @@ class RecurringScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             BudgetSubHeader(
-                title: AppLocalizations.of(context)!.recurringScreenTitle),
+              title: AppLocalizations.of(context)!.recurringScreenTitle,
+            ),
             Expanded(
               child: defs.when(
                 data: (list) {
@@ -102,7 +111,11 @@ class RecurringScreen extends ConsumerWidget {
                                   d: list[i],
                                   currency: currency,
                                   onEdit: () => _showEditSheet(
-                                      context, ref, list[i], currency),
+                                    context,
+                                    ref,
+                                    list[i],
+                                    currency,
+                                  ),
                                   onDelete: () => ref
                                       .read(budgetDaoProvider)
                                       .deleteTransaction(list[i].id),
@@ -117,7 +130,8 @@ class RecurringScreen extends ConsumerWidget {
                 },
                 loading: () => const Center(
                   child: CircularProgressIndicator(
-                      color: TraumColors.amberGold),
+                    color: TraumColors.amberGold,
+                  ),
                 ),
                 error: (e, _) => InlineError(e),
               ),
@@ -148,9 +162,7 @@ class _SummaryBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: TraumColors.surface,
         borderRadius: BorderRadius.circular(bs(12)),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.07),
-        ),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
       ),
       child: Row(
         children: [
@@ -247,11 +259,7 @@ class _RecurringRow extends StatelessWidget {
               color: accentColor.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(bs(9)),
             ),
-            child: Icon(
-              iconData,
-              size: bs(14),
-              color: accentColor,
-            ),
+            child: Icon(iconData, size: bs(14), color: accentColor),
           ),
           SizedBox(width: bs(10)),
           // Name 11/w600 + interval 9/muted
@@ -272,8 +280,9 @@ class _RecurringRow extends StatelessWidget {
                 ),
                 SizedBox(height: bs(2)),
                 Text(
-                  AppLocalizations.of(context)!
-                      .recurringDayOfMonth(d.recurringDay ?? d.date.day),
+                  AppLocalizations.of(
+                    context,
+                  )!.recurringDayOfMonth(d.recurringDay ?? d.date.day),
                   style: const TextStyle(
                     fontSize: 9,
                     color: TraumColors.onBackgroundMuted,
@@ -363,7 +372,8 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
     super.initState();
     _descCtrl = TextEditingController(text: widget.transaction.description);
     _amountCtrl = TextEditingController(
-        text: widget.transaction.amount.toStringAsFixed(2).replaceAll('.', ','));
+      text: widget.transaction.amount.toStringAsFixed(2).replaceAll('.', ','),
+    );
     _day = (widget.transaction.recurringDay ?? widget.transaction.date.day)
         .clamp(1, 28);
   }
@@ -380,9 +390,15 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
     final amount = parseLocaleAmount(_amountCtrl.text) ?? 0;
     if (desc.isEmpty || amount <= 0) return;
     if (amount > kMaxAmount) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context)!
-              .amountExceedsMax(fmtAmount(kMaxAmount)))));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(
+              context,
+            )!.amountExceedsMax(fmtAmount(kMaxAmount)),
+          ),
+        ),
+      );
       return;
     }
     widget.onSave(desc, amount, _day);
@@ -392,8 +408,9 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: Container(
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
         decoration: const BoxDecoration(
@@ -428,10 +445,12 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
             _field(_descCtrl, AppLocalizations.of(context)!.descriptionLabel),
             const SizedBox(height: 8),
             _field(
-                _amountCtrl,
-                AppLocalizations.of(context)!
-                    .budgetAmountWithCurrencyLabel(widget.currency),
-                number: true),
+              _amountCtrl,
+              AppLocalizations.of(
+                context,
+              )!.budgetAmountWithCurrencyLabel(widget.currency),
+              number: true,
+            ),
             const SizedBox(height: 12),
             Row(
               children: [
@@ -448,7 +467,9 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                   value: _day,
                   dropdownColor: TraumColors.surfaceVariant,
                   style: const TextStyle(
-                      fontFamily: 'DMSans', color: TraumColors.onBackground),
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackground,
+                  ),
                   items: [
                     for (var d = 1; d <= 28; d++)
                       DropdownMenuItem(value: d, child: Text('$d.')),
@@ -466,13 +487,16 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 onPressed: _save,
                 child: Text(
                   AppLocalizations.of(context)!.save,
                   style: const TextStyle(
-                      fontFamily: 'DMSans', fontWeight: FontWeight.w600),
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
@@ -482,30 +506,34 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
     );
   }
 
-  Widget _field(TextEditingController c, String label,
-          {bool number = false}) =>
+  Widget _field(TextEditingController c, String label, {bool number = false}) =>
       TextField(
         controller: c,
         keyboardType: number
             ? const TextInputType.numberWithOptions(decimal: true)
             : TextInputType.text,
         style: const TextStyle(
-            fontFamily: 'DMSans',
-            color: TraumColors.onBackground,
-            fontSize: 14),
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackground,
+          fontSize: 14,
+        ),
         decoration: InputDecoration(
           labelText: label,
           labelStyle: const TextStyle(
-              fontFamily: 'DMSans',
-              color: TraumColors.onBackgroundMuted,
-              fontSize: 13),
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackgroundMuted,
+            fontSize: 13,
+          ),
           filled: true,
           fillColor: TraumColors.surfaceVariant,
           border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide.none),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 10,
+          ),
         ),
       );
 }

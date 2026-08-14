@@ -29,19 +29,25 @@ class TabsPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 8),
-          Text(l10n.obTabsTitle,
-              style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
-                  color: TraumColors.onBackground,
-                  fontFamily: 'DMSans')),
+          Text(
+            l10n.obTabsTitle,
+            style: const TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.w700,
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+            ),
+          ),
           const SizedBox(height: 8),
-          Text(l10n.obTabsSubtitle,
-              style: const TextStyle(
-                  fontSize: 14,
-                  color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans',
-                  height: 1.5)),
+          Text(
+            l10n.obTabsSubtitle,
+            style: const TextStyle(
+              fontSize: 14,
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              height: 1.5,
+            ),
+          ),
           const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
@@ -59,31 +65,34 @@ class TabsPage extends StatelessWidget {
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 180),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
                         color: isSel
                             ? color.withValues(alpha: 0.15)
                             : TraumColors.surface,
-                        borderRadius:
-                            BorderRadius.circular(TraumRadius.card),
+                        borderRadius: BorderRadius.circular(TraumRadius.card),
                         border: Border.all(
-                            color: isSel
-                                ? color
-                                : TraumColors.surfaceVariant,
-                            width: isSel ? 1.5 : 1),
+                          color: isSel ? color : TraumColors.surfaceVariant,
+                          width: isSel ? 1.5 : 1,
+                        ),
                       ),
-                      child: Text(Routes.labelFor(module, l10n),
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'DMSans',
-                              fontWeight: isSel
-                                  ? FontWeight.w600
-                                  : FontWeight.normal,
-                              color: isSel
-                                  ? color
-                                  : canAdd
-                                      ? TraumColors.onBackgroundMuted
-                                      : TraumColors.onBackgroundSubtle)),
+                      child: Text(
+                        Routes.labelFor(module, l10n),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontFamily: 'DMSans',
+                          fontWeight: isSel
+                              ? FontWeight.w600
+                              : FontWeight.normal,
+                          color: isSel
+                              ? color
+                              : canAdd
+                              ? TraumColors.onBackgroundMuted
+                              : TraumColors.onBackgroundSubtle,
+                        ),
+                      ),
                     ),
                   );
                 }).toList(),
@@ -96,11 +105,14 @@ class TabsPage extends StatelessWidget {
               color: TraumColors.surfaceVariant.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Text(l10n.obTabsHint,
-                style: const TextStyle(
-                    color: TraumColors.onBackgroundSubtle,
-                    fontFamily: 'DMSans',
-                    fontSize: 12)),
+            child: Text(
+              l10n.obTabsHint,
+              style: const TextStyle(
+                color: TraumColors.onBackgroundSubtle,
+                fontFamily: 'DMSans',
+                fontSize: 12,
+              ),
+            ),
           ),
           const SizedBox(height: 12),
           GradientButton(label: l10n.next, onPressed: onNext),

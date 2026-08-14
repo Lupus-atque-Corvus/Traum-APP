@@ -28,17 +28,19 @@ class NotesDao extends DatabaseAccessor<TraumDatabase> with _$NotesDaoMixin {
 
   /// One-shot read of active notes ordered by most-recently-updated — used by
   /// home widgets (no stream timer).
-  Future<List<Note>> getRecentNotes(int limit) => (select(notes)
-        ..where((t) => t.deletedAt.isNull())
-        ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])
-        ..limit(limit))
-      .get();
+  Future<List<Note>> getRecentNotes(int limit) =>
+      (select(notes)
+            ..where((t) => t.deletedAt.isNull())
+            ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])
+            ..limit(limit))
+          .get();
 
   /// One-shot read of pinned active notes — used by home widgets.
-  Future<List<Note>> getPinnedNotes() => (select(notes)
-        ..where((t) => t.deletedAt.isNull() & t.isPinned.equals(true))
-        ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]))
-      .get();
+  Future<List<Note>> getPinnedNotes() =>
+      (select(notes)
+            ..where((t) => t.deletedAt.isNull() & t.isPinned.equals(true))
+            ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]))
+          .get();
 
   Stream<List<Note>> watchNotesInFolder(int? folderId) {
     final q = select(notes)..where((t) => t.deletedAt.isNull());
@@ -59,42 +61,52 @@ class NotesDao extends DatabaseAccessor<TraumDatabase> with _$NotesDaoMixin {
 
   /// Findet eine Notiz anhand des exakten Titels (case-insensitive),
   /// nur unter den aktiven Notizen. Für Wikilink-Auflösung.
-  Future<Note?> getNoteByTitle(String title) => (select(notes)
-        ..where((t) => t.deletedAt.isNull() & t.title.lower().equals(title.toLowerCase()))
-        ..limit(1))
-      .getSingleOrNull();
+  Future<Note?> getNoteByTitle(String title) =>
+      (select(notes)
+            ..where(
+              (t) =>
+                  t.deletedAt.isNull() &
+                  t.title.lower().equals(title.toLowerCase()),
+            )
+            ..limit(1))
+          .getSingleOrNull();
 
-  Stream<List<Note>> watchRecentNotes(int limit) => (select(notes)
-        ..where((t) => t.deletedAt.isNull())
-        ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])
-        ..limit(limit))
-      .watch();
+  Stream<List<Note>> watchRecentNotes(int limit) =>
+      (select(notes)
+            ..where((t) => t.deletedAt.isNull())
+            ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])
+            ..limit(limit))
+          .watch();
 
-  Stream<List<Note>> watchBookmarkedNotes() => (select(notes)
-        ..where((t) => t.deletedAt.isNull() & t.isBookmarked.equals(true))
-        ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]))
-      .watch();
+  Stream<List<Note>> watchBookmarkedNotes() =>
+      (select(notes)
+            ..where((t) => t.deletedAt.isNull() & t.isBookmarked.equals(true))
+            ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]))
+          .watch();
 
-  Stream<List<Note>> watchTrashedNotes() => (select(notes)
-        ..where((t) => t.deletedAt.isNotNull())
-        ..orderBy([(t) => OrderingTerm.desc(t.deletedAt)]))
-      .watch();
+  Stream<List<Note>> watchTrashedNotes() =>
+      (select(notes)
+            ..where((t) => t.deletedAt.isNotNull())
+            ..orderBy([(t) => OrderingTerm.desc(t.deletedAt)]))
+          .watch();
 
   Future<int> insertNote(NotesCompanion entry) => into(notes).insert(entry);
 
-  Future<bool> updateNote(NotesCompanion entry) =>
-      update(notes).replace(entry);
+  Future<bool> updateNote(NotesCompanion entry) => update(notes).replace(entry);
 
   Future<int> updateNoteFields(int id, NotesCompanion entry) =>
       (update(notes)..where((t) => t.id.equals(id))).write(entry);
 
   /// Soft-Delete: in den Papierkorb verschieben.
-  Future<int> softDeleteNote(int id) => (update(notes)
-        ..where((t) => t.id.equals(id)))
-      .write(NotesCompanion(deletedAt: Value(DateTime.now())));
+  Future<int> softDeleteNote(int id) =>
+      (update(notes)..where((t) => t.id.equals(id))).write(
+        NotesCompanion(deletedAt: Value(DateTime.now())),
+      );
 
-  Future<int> restoreNote(int id) => (update(notes)..where((t) => t.id.equals(id)))
-      .write(const NotesCompanion(deletedAt: Value(null)));
+  Future<int> restoreNote(int id) =>
+      (update(notes)..where((t) => t.id.equals(id))).write(
+        const NotesCompanion(deletedAt: Value(null)),
+      );
 
   /// Endgültig löschen inkl. abhängiger Index-Zeilen.
   Future<void> hardDeleteNote(int id) async {
@@ -108,27 +120,30 @@ class NotesDao extends DatabaseAccessor<TraumDatabase> with _$NotesDaoMixin {
   Future<Note?> getDailyNote(DateTime date) {
     final day = DateTime(date.year, date.month, date.day);
     return (select(notes)
-          ..where((t) =>
-              t.deletedAt.isNull() &
-              t.isDaily.equals(true) &
-              t.dailyDate.equals(day))
+          ..where(
+            (t) =>
+                t.deletedAt.isNull() &
+                t.isDaily.equals(true) &
+                t.dailyDate.equals(day),
+          )
           ..limit(1))
         .getSingleOrNull();
   }
 
-  Stream<List<Note>> watchDailyNotes() => (select(notes)
-        ..where((t) => t.deletedAt.isNull() & t.isDaily.equals(true))
-        ..orderBy([(t) => OrderingTerm.desc(t.dailyDate)]))
-      .watch();
+  Stream<List<Note>> watchDailyNotes() =>
+      (select(notes)
+            ..where((t) => t.deletedAt.isNull() & t.isDaily.equals(true))
+            ..orderBy([(t) => OrderingTerm.desc(t.dailyDate)]))
+          .watch();
 
   // ─── Ordner ─────────────────────────────────────────────────────────────
 
-  Stream<List<NoteFolder>> watchFolders() => (select(noteFolders)
-        ..orderBy([
-          (t) => OrderingTerm(expression: t.sortOrder),
-          (t) => OrderingTerm(expression: t.name),
-        ]))
-      .watch();
+  Stream<List<NoteFolder>> watchFolders() =>
+      (select(noteFolders)..orderBy([
+            (t) => OrderingTerm(expression: t.sortOrder),
+            (t) => OrderingTerm(expression: t.name),
+          ]))
+          .watch();
 
   Future<List<NoteFolder>> getFolders() => select(noteFolders).get();
 
@@ -136,31 +151,40 @@ class NotesDao extends DatabaseAccessor<TraumDatabase> with _$NotesDaoMixin {
       into(noteFolders).insert(entry);
 
   Future<int> renameFolder(int id, String name) =>
-      (update(noteFolders)..where((t) => t.id.equals(id)))
-          .write(NoteFoldersCompanion(name: Value(name)));
+      (update(noteFolders)..where((t) => t.id.equals(id))).write(
+        NoteFoldersCompanion(name: Value(name)),
+      );
 
   /// Löscht einen Ordner; enthaltene Notizen wandern zur Wurzel,
   /// Unterordner wandern eine Ebene hoch zum parent.
   Future<void> deleteFolder(int id) async {
-    final folder =
-        await (select(noteFolders)..where((t) => t.id.equals(id))).getSingleOrNull();
-    await (update(notes)..where((t) => t.folderId.equals(id)))
-        .write(const NotesCompanion(folderId: Value(null)));
-    await (update(noteFolders)..where((t) => t.parentId.equals(id)))
-        .write(NoteFoldersCompanion(parentId: Value(folder?.parentId)));
+    final folder = await (select(
+      noteFolders,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
+    await (update(notes)..where((t) => t.folderId.equals(id))).write(
+      const NotesCompanion(folderId: Value(null)),
+    );
+    await (update(noteFolders)..where((t) => t.parentId.equals(id))).write(
+      NoteFoldersCompanion(parentId: Value(folder?.parentId)),
+    );
     await (delete(noteFolders)..where((t) => t.id.equals(id))).go();
   }
 
   Future<int> moveNoteToFolder(int noteId, int? folderId) =>
-      (update(notes)..where((t) => t.id.equals(noteId)))
-          .write(NotesCompanion(folderId: Value(folderId)));
+      (update(notes)..where((t) => t.id.equals(noteId))).write(
+        NotesCompanion(folderId: Value(folderId)),
+      );
 
   // ─── Links ──────────────────────────────────────────────────────────────
 
   /// Ersetzt alle ausgehenden Links der Quellnotiz durch [links].
-  Future<void> replaceLinks(int sourceNoteId, List<NoteLinksCompanion> links) async {
-    await (delete(noteLinks)..where((t) => t.sourceNoteId.equals(sourceNoteId)))
-        .go();
+  Future<void> replaceLinks(
+    int sourceNoteId,
+    List<NoteLinksCompanion> links,
+  ) async {
+    await (delete(
+      noteLinks,
+    )..where((t) => t.sourceNoteId.equals(sourceNoteId))).go();
     if (links.isNotEmpty) {
       await batch((b) => b.insertAll(noteLinks, links));
     }
@@ -174,10 +198,11 @@ class NotesDao extends DatabaseAccessor<TraumDatabase> with _$NotesDaoMixin {
 
   /// Versucht, bislang unaufgelöste Links auf [title] mit [noteId] zu verbinden.
   Future<void> resolveLinksForTitle(String title, int noteId) async {
-    await (update(noteLinks)
-          ..where((t) =>
+    await (update(noteLinks)..where(
+          (t) =>
               t.targetNoteId.isNull() &
-              t.targetTitleRaw.lower().equals(title.toLowerCase())))
+              t.targetTitleRaw.lower().equals(title.toLowerCase()),
+        ))
         .write(NoteLinksCompanion(targetNoteId: Value(noteId)));
   }
 
@@ -194,12 +219,13 @@ class NotesDao extends DatabaseAccessor<TraumDatabase> with _$NotesDaoMixin {
   // ─── Tags ─────────────────────────────────────────────────────────────────
 
   Future<Tag> ensureTag(String name) async {
-    final existing =
-        await (select(tags)..where((t) => t.name.equals(name))).getSingleOrNull();
+    final existing = await (select(
+      tags,
+    )..where((t) => t.name.equals(name))).getSingleOrNull();
     if (existing != null) return existing;
-    final id = await into(tags).insert(
-      TagsCompanion.insert(name: name, createdAt: DateTime.now()),
-    );
+    final id = await into(
+      tags,
+    ).insert(TagsCompanion.insert(name: name, createdAt: DateTime.now()));
     return (select(tags)..where((t) => t.id.equals(id))).getSingle();
   }
 
@@ -217,8 +243,9 @@ class NotesDao extends DatabaseAccessor<TraumDatabase> with _$NotesDaoMixin {
   Future<List<Tag>> getAllTags() =>
       (select(tags)..orderBy([(t) => OrderingTerm(expression: t.name)])).get();
 
-  Stream<List<Tag>> watchAllTags() =>
-      (select(tags)..orderBy([(t) => OrderingTerm(expression: t.name)])).watch();
+  Stream<List<Tag>> watchAllTags() => (select(
+    tags,
+  )..orderBy([(t) => OrderingTerm(expression: t.name)])).watch();
 
   /// Liefert (tagName -> Anzahl aktiver Notizen).
   Future<Map<String, int>> getTagCounts() async {
@@ -231,9 +258,7 @@ class NotesDao extends DatabaseAccessor<TraumDatabase> with _$NotesDaoMixin {
       'GROUP BY t.id',
       readsFrom: {tags, noteTags, notes},
     ).get();
-    return {
-      for (final r in rows) r.read<String>('name'): r.read<int>('cnt'),
-    };
+    return {for (final r in rows) r.read<String>('name'): r.read<int>('cnt')};
   }
 
   Future<List<Note>> getNotesForTag(String tagName) async {
@@ -251,9 +276,9 @@ class NotesDao extends DatabaseAccessor<TraumDatabase> with _$NotesDaoMixin {
 
   // ─── Vorlagen ───────────────────────────────────────────────────────────
 
-  Stream<List<NoteTemplate>> watchTemplates() =>
-      (select(noteTemplates)..orderBy([(t) => OrderingTerm(expression: t.name)]))
-          .watch();
+  Stream<List<NoteTemplate>> watchTemplates() => (select(
+    noteTemplates,
+  )..orderBy([(t) => OrderingTerm(expression: t.name)])).watch();
 
   Future<NoteTemplate?> getTemplate(int id) =>
       (select(noteTemplates)..where((t) => t.id.equals(id))).getSingleOrNull();
@@ -303,10 +328,14 @@ class NotesDao extends DatabaseAccessor<TraumDatabase> with _$NotesDaoMixin {
           .get();
     }
     return (select(notes)
-          ..where((t) =>
-              t.deletedAt.isNull() &
-              t.title.lower().like('%${escapeLikePattern(q)}%',
-                  escapeChar: likeEscapeChar))
+          ..where(
+            (t) =>
+                t.deletedAt.isNull() &
+                t.title.lower().like(
+                  '%${escapeLikePattern(q)}%',
+                  escapeChar: likeEscapeChar,
+                ),
+          )
           ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])
           ..limit(30))
         .get();

@@ -109,8 +109,8 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     final markersAsync = _query.isNotEmpty
         ? ref.watch(markerSearchProvider(_query))
         : hashtagFilter != null
-            ? ref.watch(hashtagFilteredMarkersProvider(hashtagFilter))
-            : ref.watch(markersInViewportProvider);
+        ? ref.watch(hashtagFilteredMarkersProvider(hashtagFilter))
+        : ref.watch(markersInViewportProvider);
     final hasRating = collectionInfo.value?.hasRating ?? false;
     final mostRecentMarker = ref.watch(mostRecentMarkerProvider).value;
 
@@ -173,9 +173,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
               ),
               CurrentLocationLayer(
                 style: const LocationMarkerStyle(
-                  marker: DefaultLocationMarker(
-                    color: TraumColors.cyanBlue,
-                  ),
+                  marker: DefaultLocationMarker(color: TraumColors.cyanBlue),
                   markerSize: Size(20, 20),
                   accuracyCircleColor: Color(0x2600D4D4), // cyanBlue ~15%
                   headingSectorColor: Color(0x8000D4D4), // cyanBlue ~50%
@@ -330,10 +328,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                   ),
                   const SizedBox(height: 10),
                 ],
-                _circleButton(
-                  icon: Icons.my_location,
-                  onTap: _goToMyLocation,
-                ),
+                _circleButton(icon: Icons.my_location, onTap: _goToMyLocation),
               ],
             ),
           ),
@@ -378,7 +373,9 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.mapLocationUnavailable)),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.mapLocationUnavailable),
+          ),
         );
       }
     }
@@ -541,36 +538,44 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
       // hinzu. Großzügig aufgerundet, die exakte Distanzprüfung macht
       // anschließend `nearestMarkerWithin`.
       final latDelta = radiusM / 111320.0;
-      final lonDelta = radiusM /
-          (111320.0 * math.max(0.01, math.cos(result.latitude! * math.pi / 180)));
-      final markers =
-          await ref.read(mapMarkersDaoProvider).getByCollectionInBounds(
-                id,
-                minLat: result.latitude! - latDelta,
-                maxLat: result.latitude! + latDelta,
-                minLon: result.longitude! - lonDelta,
-                maxLon: result.longitude! + lonDelta,
-              );
+      final lonDelta =
+          radiusM /
+          (111320.0 *
+              math.max(0.01, math.cos(result.latitude! * math.pi / 180)));
+      final markers = await ref
+          .read(mapMarkersDaoProvider)
+          .getByCollectionInBounds(
+            id,
+            minLat: result.latitude! - latDelta,
+            maxLat: result.latitude! + latDelta,
+            minLon: result.longitude! - lonDelta,
+            maxLon: result.longitude! + lonDelta,
+          );
       final pts = markers
           .where((m) => m.latitude != null)
           .map((m) => (m.id, m.latitude!, m.longitude!))
           .toList();
       final attachId = nearestMarkerWithin(
-          pts, result.latitude!, result.longitude!, radiusM);
+        pts,
+        result.latitude!,
+        result.longitude!,
+        radiusM,
+      );
       if (attachId != null) {
         final db = ref.read(databaseProvider);
         final dims = await readImageDimensions(result.photoPath);
-        final photoId =
-            await db.markerPhotosDao.insert(MarkerPhotosCompanion.insert(
-          markerId: attachId,
-          photoPath: result.photoPath,
-          widthPx: Value(dims?.width),
-          heightPx: Value(dims?.height),
-          latitude: Value(result.latitude),
-          longitude: Value(result.longitude),
-          takenAt: result.takenAt,
-          createdAt: DateTime.now(),
-        ));
+        final photoId = await db.markerPhotosDao.insert(
+          MarkerPhotosCompanion.insert(
+            markerId: attachId,
+            photoPath: result.photoPath,
+            widthPx: Value(dims?.width),
+            heightPx: Value(dims?.height),
+            latitude: Value(result.latitude),
+            longitude: Value(result.longitude),
+            takenAt: result.takenAt,
+            createdAt: DateTime.now(),
+          ),
+        );
         invalidateMarkerViews(ref);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -598,8 +603,8 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => DynamicMarkerSheet(
-          captureResult: result, collection: collection),
+      builder: (_) =>
+          DynamicMarkerSheet(captureResult: result, collection: collection),
     );
     invalidateMarkerViews(ref);
   }
@@ -616,12 +621,12 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     );
     String? locationName;
     try {
-      final p =
-          await placemarkFromCoordinates(point.latitude, point.longitude);
+      final p = await placemarkFromCoordinates(point.latitude, point.longitude);
       if (p.isNotEmpty) {
-        locationName = [p.first.locality, p.first.country]
-            .where((s) => s != null && s.isNotEmpty)
-            .join(', ');
+        locationName = [
+          p.first.locality,
+          p.first.country,
+        ].where((s) => s != null && s.isNotEmpty).join(', ');
       }
     } catch (_) {}
     if (!mounted) return;
@@ -712,12 +717,18 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (active == c.id)
-                            const Icon(Icons.check_circle,
-                                color: TraumColors.cyanBlue),
+                            const Icon(
+                              Icons.check_circle,
+                              color: TraumColors.cyanBlue,
+                            ),
                           IconButton(
-                            icon: const Icon(Icons.edit_outlined,
-                                color: TraumColors.onBackgroundMuted),
-                            tooltip: AppLocalizations.of(ctx)!.mapEditCollectionTitle,
+                            icon: const Icon(
+                              Icons.edit_outlined,
+                              color: TraumColors.onBackgroundMuted,
+                            ),
+                            tooltip: AppLocalizations.of(
+                              ctx,
+                            )!.mapEditCollectionTitle,
                             onPressed: () {
                               Navigator.pop(ctx);
                               context.go('/graffitimap/edit/${c.id}');

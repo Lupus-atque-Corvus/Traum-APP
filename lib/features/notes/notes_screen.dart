@@ -26,7 +26,10 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
   Future<void> _createNote({int? folderId}) async {
     final l10n = AppLocalizations.of(context)!;
     final repo = ref.read(notesRepositoryProvider);
-    final id = await repo.createNote(title: l10n.notes_untitled, folderId: folderId);
+    final id = await repo.createNote(
+      title: l10n.notes_untitled,
+      folderId: folderId,
+    );
     if (mounted) context.push(Routes.noteDetailPath(id));
   }
 
@@ -40,7 +43,9 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
       cancelLabel: l10n.notes_cancel,
     );
     if (name != null && name.isNotEmpty) {
-      await ref.read(notesRepositoryProvider).createFolder(name, parentId: parentId);
+      await ref
+          .read(notesRepositoryProvider)
+          .createFolder(name, parentId: parentId);
     }
   }
 
@@ -57,12 +62,13 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
     );
     final bytes = result?.files.single.bytes;
     if (bytes == null) return;
-    final count =
-        await ref.read(notesVaultServiceProvider).importVaultZip(bytes);
+    final count = await ref
+        .read(notesVaultServiceProvider)
+        .importVaultZip(bytes);
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.notes_import_done(count))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.notes_import_done(count))));
     }
   }
 
@@ -100,15 +106,19 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                     onPressed: () => context.push(Routes.notesDaily),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.delete_outline_rounded,
-                        color: TraumColors.onBackgroundMuted),
+                    icon: const Icon(
+                      Icons.delete_outline_rounded,
+                      color: TraumColors.onBackgroundMuted,
+                    ),
                     tooltip: l10n.notes_trash,
                     onPressed: () => context.push(Routes.notesTrash),
                   ),
                   PopupMenuButton<String>(
                     color: TraumColors.surfaceElevated,
-                    icon: const Icon(Icons.more_vert_rounded,
-                        color: TraumColors.onBackgroundMuted),
+                    icon: const Icon(
+                      Icons.more_vert_rounded,
+                      color: TraumColors.onBackgroundMuted,
+                    ),
                     onSelected: (v) {
                       if (v == 'export') _exportVault();
                       if (v == 'import') _importVault();
@@ -116,27 +126,43 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                     itemBuilder: (_) => [
                       PopupMenuItem(
                         value: 'export',
-                        child: Row(children: [
-                          const Icon(Icons.upload_file_rounded,
-                              size: 18, color: TraumColors.onBackgroundMuted),
-                          const SizedBox(width: 10),
-                          Text(l10n.notes_export_vault,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.upload_file_rounded,
+                              size: 18,
+                              color: TraumColors.onBackgroundMuted,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              l10n.notes_export_vault,
                               style: const TextStyle(
-                                  fontFamily: 'DMSans',
-                                  color: TraumColors.onBackground)),
-                        ]),
+                                fontFamily: 'DMSans',
+                                color: TraumColors.onBackground,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       PopupMenuItem(
                         value: 'import',
-                        child: Row(children: [
-                          const Icon(Icons.download_rounded,
-                              size: 18, color: TraumColors.onBackgroundMuted),
-                          const SizedBox(width: 10),
-                          Text(l10n.notes_import_vault,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.download_rounded,
+                              size: 18,
+                              color: TraumColors.onBackgroundMuted,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              l10n.notes_import_vault,
                               style: const TextStyle(
-                                  fontFamily: 'DMSans',
-                                  color: TraumColors.onBackground)),
-                        ]),
+                                fontFamily: 'DMSans',
+                                color: TraumColors.onBackground,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -188,8 +214,10 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                 ? const []
                 : [
                     SliverToBoxAdapter(
-                      child: NotesSectionLabel(l10n.notes_bookmarks,
-                          icon: Icons.bookmark_rounded),
+                      child: NotesSectionLabel(
+                        l10n.notes_bookmarks,
+                        icon: Icons.bookmark_rounded,
+                      ),
                     ),
                     SliverList.builder(
                       itemCount: list.length,
@@ -201,26 +229,34 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
 
           // ── Zuletzt bearbeitet ──────────────────────────────────────────
           SliverToBoxAdapter(
-            child: NotesSectionLabel(l10n.notes_recent,
-                icon: Icons.history_rounded),
+            child: NotesSectionLabel(
+              l10n.notes_recent,
+              icon: Icons.history_rounded,
+            ),
           ),
           recent.when(
             data: (list) => list.isEmpty
                 ? SliverToBoxAdapter(
                     child: NotesEmptyState(
-                        icon: Icons.notes_rounded, message: l10n.notes_no_notes))
+                      icon: Icons.notes_rounded,
+                      message: l10n.notes_no_notes,
+                    ),
+                  )
                 : SliverList.builder(
                     itemCount: list.length > 5 ? 5 : list.length,
                     itemBuilder: (_, i) => _tile(list[i]),
                   ),
             loading: () => const SliverToBoxAdapter(
-                child: Padding(
-                    padding: EdgeInsets.all(24),
-                    child: Center(
-                        child: CircularProgressIndicator(color: kNotesAccent)))),
+              child: Padding(
+                padding: EdgeInsets.all(24),
+                child: Center(
+                  child: CircularProgressIndicator(color: kNotesAccent),
+                ),
+              ),
+            ),
             error: (e, _) => SliverToBoxAdapter(
-                child: NotesEmptyState(
-                    icon: Icons.error_outline, message: '$e')),
+              child: NotesEmptyState(icon: Icons.error_outline, message: '$e'),
+            ),
           ),
 
           // ── File Explorer ───────────────────────────────────────────────
@@ -229,8 +265,11 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
               padding: const EdgeInsets.fromLTRB(20, 18, 16, 8),
               child: Row(
                 children: [
-                  const Icon(Icons.folder_outlined,
-                      size: 16, color: kNotesAccent),
+                  const Icon(
+                    Icons.folder_outlined,
+                    size: 16,
+                    color: kNotesAccent,
+                  ),
                   const SizedBox(width: 6),
                   Text(
                     'Explorer',
@@ -246,8 +285,11 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                   IconButton(
                     visualDensity: VisualDensity.compact,
                     tooltip: l10n.notes_new_folder,
-                    icon: const Icon(Icons.create_new_folder_outlined,
-                        size: 20, color: TraumColors.onBackgroundMuted),
+                    icon: const Icon(
+                      Icons.create_new_folder_outlined,
+                      size: 20,
+                      color: TraumColors.onBackgroundMuted,
+                    ),
                     onPressed: () => _createFolder(),
                   ),
                 ],
@@ -274,7 +316,9 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
     if (rows.isEmpty) {
       return SliverToBoxAdapter(
         child: NotesEmptyState(
-            icon: Icons.folder_open_outlined, message: l10n.notes_no_notes),
+          icon: Icons.folder_open_outlined,
+          message: l10n.notes_no_notes,
+        ),
       );
     }
     return SliverList(delegate: SliverChildListDelegate(rows));
@@ -288,15 +332,15 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
     List<Note> notes,
     AppLocalizations l10n,
   ) {
-    final childFolders =
-        folders.where((f) => f.parentId == parentId).toList();
+    final childFolders = folders.where((f) => f.parentId == parentId).toList();
     for (final folder in childFolders) {
       final isOpen = _expanded.contains(folder.id);
       rows.add(_folderRow(folder, depth, isOpen, l10n));
       if (isOpen) {
         _appendFolderLevel(rows, folder.id, depth + 1, folders, notes, l10n);
-        final folderNotes =
-            notes.where((n) => n.folderId == folder.id).toList();
+        final folderNotes = notes
+            .where((n) => n.folderId == folder.id)
+            .toList();
         for (final note in folderNotes) {
           rows.add(_noteRow(note, depth + 1));
         }
@@ -312,7 +356,11 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
   }
 
   Widget _folderRow(
-      NoteFolder folder, int depth, bool isOpen, AppLocalizations l10n) {
+    NoteFolder folder,
+    int depth,
+    bool isOpen,
+    AppLocalizations l10n,
+  ) {
     return InkWell(
       onTap: () => setState(() {
         if (isOpen) {
@@ -326,11 +374,17 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
         padding: EdgeInsets.fromLTRB(20.0 + depth * 16, 8, 16, 8),
         child: Row(
           children: [
-            Icon(isOpen ? Icons.expand_more_rounded : Icons.chevron_right_rounded,
-                size: 18, color: TraumColors.onBackgroundMuted),
+            Icon(
+              isOpen ? Icons.expand_more_rounded : Icons.chevron_right_rounded,
+              size: 18,
+              color: TraumColors.onBackgroundMuted,
+            ),
             const SizedBox(width: 4),
-            Icon(isOpen ? Icons.folder_open_rounded : Icons.folder_rounded,
-                size: 18, color: kNotesAccent.withValues(alpha: 0.85)),
+            Icon(
+              isOpen ? Icons.folder_open_rounded : Icons.folder_rounded,
+              size: 18,
+              color: kNotesAccent.withValues(alpha: 0.85),
+            ),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -338,17 +392,21 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackground,
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.w600),
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             IconButton(
               visualDensity: VisualDensity.compact,
               tooltip: l10n.notes_new_note,
-              icon: const Icon(Icons.add_rounded,
-                  size: 18, color: TraumColors.onBackgroundSubtle),
+              icon: const Icon(
+                Icons.add_rounded,
+                size: 18,
+                color: TraumColors.onBackgroundSubtle,
+              ),
               onPressed: () => _createNote(folderId: folder.id),
             ),
           ],
@@ -365,8 +423,11 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
         padding: EdgeInsets.fromLTRB(20.0 + depth * 16 + 18, 7, 16, 7),
         child: Row(
           children: [
-            Icon(note.isDaily ? Icons.today_outlined : Icons.description_outlined,
-                size: 16, color: TraumColors.onBackgroundMuted),
+            Icon(
+              note.isDaily ? Icons.today_outlined : Icons.description_outlined,
+              size: 16,
+              color: TraumColors.onBackgroundMuted,
+            ),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -374,18 +435,26 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackground,
-                    fontSize: 14),
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                  fontSize: 14,
+                ),
               ),
             ),
             if (note.isPinned)
-              const Icon(Icons.push_pin_rounded,
-                  size: 13, color: TraumColors.onBackgroundSubtle),
+              const Icon(
+                Icons.push_pin_rounded,
+                size: 13,
+                color: TraumColors.onBackgroundSubtle,
+              ),
             if (note.isBookmarked)
               const Padding(
                 padding: EdgeInsets.only(left: 6),
-                child: Icon(Icons.bookmark_rounded, size: 13, color: kNotesAccent),
+                child: Icon(
+                  Icons.bookmark_rounded,
+                  size: 13,
+                  color: kNotesAccent,
+                ),
               ),
           ],
         ),
@@ -394,16 +463,16 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
   }
 
   Widget _tile(Note note) => Padding(
-        padding: const EdgeInsets.only(bottom: 2),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(TraumRadius.card),
-          ),
-          child: NoteListTile(
-            note: note,
-            onTap: () => context.push(Routes.noteDetailPath(note.id)),
-            onLongPress: () => showNoteActions(context, ref, note),
-          ),
-        ),
-      );
+    padding: const EdgeInsets.only(bottom: 2),
+    child: Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(TraumRadius.card),
+      ),
+      child: NoteListTile(
+        note: note,
+        onTap: () => context.push(Routes.noteDetailPath(note.id)),
+        onLongPress: () => showNoteActions(context, ref, note),
+      ),
+    ),
+  );
 }

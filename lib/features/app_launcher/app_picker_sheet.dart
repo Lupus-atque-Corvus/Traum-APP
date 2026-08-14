@@ -14,7 +14,9 @@ Future<void> showAppPickerSheet(BuildContext context) {
     isScrollControlled: true,
     backgroundColor: TraumColors.surfaceElevated,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(TraumRadius.card),
+      ),
     ),
     builder: (_) => const _AppPickerSheet(),
   );
@@ -62,8 +64,8 @@ class _AppPickerSheetState extends ConsumerState<_AppPickerSheet> {
     final filtered = apps == null
         ? const <LauncherApp>[]
         : apps
-            .where((a) => a.name.toLowerCase().contains(_query.toLowerCase()))
-            .toList();
+              .where((a) => a.name.toLowerCase().contains(_query.toLowerCase()))
+              .toList();
 
     return DraggableScrollableSheet(
       initialChildSize: 0.85,
@@ -105,12 +107,18 @@ class _AppPickerSheetState extends ConsumerState<_AppPickerSheet> {
             child: TextField(
               onChanged: (v) => setState(() => _query = v),
               style: const TextStyle(
-                  color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
               decoration: InputDecoration(
                 hintText: l10n.searchApps,
-                hintStyle: const TextStyle(color: TraumColors.onBackgroundSubtle),
-                prefixIcon: const Icon(Icons.search_rounded,
-                    color: TraumColors.onBackgroundMuted),
+                hintStyle: const TextStyle(
+                  color: TraumColors.onBackgroundSubtle,
+                ),
+                prefixIcon: const Icon(
+                  Icons.search_rounded,
+                  color: TraumColors.onBackgroundMuted,
+                ),
                 filled: true,
                 fillColor: TraumColors.surface,
                 border: OutlineInputBorder(
@@ -126,50 +134,51 @@ class _AppPickerSheetState extends ConsumerState<_AppPickerSheet> {
             child: apps == null
                 ? const Center(
                     child: CircularProgressIndicator(
-                        color: TraumColors.coralOrange))
+                      color: TraumColors.coralOrange,
+                    ),
+                  )
                 : filtered.isEmpty
-                    ? Center(
-                        child: Text(
-                          l10n.noAppsInstalled,
-                          style: const TextStyle(
-                            color: TraumColors.onBackgroundSubtle,
-                            fontFamily: 'DMSans',
-                            fontSize: 14,
-                          ),
-                        ),
-                      )
-                    : ListView.builder(
-                        controller: controller,
-                        itemCount: filtered.length,
-                        itemBuilder: (_, i) {
-                          final app = filtered[i];
-                          final selected =
-                              favorites.contains(app.packageName);
-                          return ListTile(
-                            leading: _AppIcon(icon: app.icon, size: 36),
-                            title: Text(
-                              app.name,
-                              style: const TextStyle(
-                                color: TraumColors.onBackground,
-                                fontFamily: 'DMSans',
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            trailing: Icon(
-                              selected
-                                  ? Icons.check_circle_rounded
-                                  : Icons.add_circle_outline_rounded,
-                              color: selected
-                                  ? TraumColors.coralOrange
-                                  : TraumColors.onBackgroundSubtle,
-                            ),
-                            onTap: () => ref
-                                .read(appLauncherFavoritesProvider.notifier)
-                                .toggle(app.packageName),
-                          );
-                        },
+                ? Center(
+                    child: Text(
+                      l10n.noAppsInstalled,
+                      style: const TextStyle(
+                        color: TraumColors.onBackgroundSubtle,
+                        fontFamily: 'DMSans',
+                        fontSize: 14,
                       ),
+                    ),
+                  )
+                : ListView.builder(
+                    controller: controller,
+                    itemCount: filtered.length,
+                    itemBuilder: (_, i) {
+                      final app = filtered[i];
+                      final selected = favorites.contains(app.packageName);
+                      return ListTile(
+                        leading: _AppIcon(icon: app.icon, size: 36),
+                        title: Text(
+                          app.name,
+                          style: const TextStyle(
+                            color: TraumColors.onBackground,
+                            fontFamily: 'DMSans',
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        trailing: Icon(
+                          selected
+                              ? Icons.check_circle_rounded
+                              : Icons.add_circle_outline_rounded,
+                          color: selected
+                              ? TraumColors.coralOrange
+                              : TraumColors.onBackgroundSubtle,
+                        ),
+                        onTap: () => ref
+                            .read(appLauncherFavoritesProvider.notifier)
+                            .toggle(app.packageName),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -198,8 +207,11 @@ class _AppIcon extends StatelessWidget {
         color: TraumColors.surfaceVariant,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: const Icon(Icons.apps_rounded,
-          color: TraumColors.onBackgroundMuted, size: 20),
+      child: const Icon(
+        Icons.apps_rounded,
+        color: TraumColors.onBackgroundMuted,
+        size: 20,
+      ),
     );
   }
 }

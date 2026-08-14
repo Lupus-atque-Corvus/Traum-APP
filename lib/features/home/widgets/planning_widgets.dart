@@ -11,40 +11,44 @@ import '../home_widget_frame.dart';
 import '../home_widget_registry.dart';
 
 // ─── One-shot providers (plain queries, no .watch() stream) ─────────────────
-final _todosSnapshotProvider =
-    FutureProvider.autoDispose<List<Todo>>((ref) {
+final _todosSnapshotProvider = FutureProvider.autoDispose<List<Todo>>((ref) {
   return ref.watch(planningDaoProvider).getAllTodos();
 });
 
 final _todayAppointmentsProvider =
     FutureProvider.autoDispose<List<Appointment>>((ref) {
-  return ref.watch(planningDaoProvider).getAppointmentsForDate(DateTime.now());
-});
+      return ref
+          .watch(planningDaoProvider)
+          .getAppointmentsForDate(DateTime.now());
+    });
 
-final _nextAppointmentProvider =
-    FutureProvider.autoDispose<Appointment?>((ref) {
+final _nextAppointmentProvider = FutureProvider.autoDispose<Appointment?>((
+  ref,
+) {
   return ref.watch(planningDaoProvider).getNextAppointment();
 });
 
-final _habitsSnapshotProvider =
-    FutureProvider.autoDispose<List<Habit>>((ref) {
+final _habitsSnapshotProvider = FutureProvider.autoDispose<List<Habit>>((ref) {
   return ref.watch(planningDaoProvider).getAllHabits();
 });
 
-final _habitLogsTodayProvider =
-    FutureProvider.autoDispose<List<HabitLog>>((ref) {
+final _habitLogsTodayProvider = FutureProvider.autoDispose<List<HabitLog>>((
+  ref,
+) {
   return ref.watch(planningDaoProvider).getHabitLogsForDate(DateTime.now());
 });
 
-final _recentHabitLogsProvider =
-    FutureProvider.autoDispose<List<HabitLog>>((ref) {
+final _recentHabitLogsProvider = FutureProvider.autoDispose<List<HabitLog>>((
+  ref,
+) {
   return ref.watch(planningDaoProvider).getRecentHabitLogs();
 });
 
-final _activeMedicationsProvider =
-    FutureProvider.autoDispose<List<Medication>>((ref) {
-  return ref.watch(medicationDaoProvider).getActiveMedications();
-});
+final _activeMedicationsProvider = FutureProvider.autoDispose<List<Medication>>(
+  (ref) {
+    return ref.watch(medicationDaoProvider).getActiveMedications();
+  },
+);
 
 final Map<HomeWidgetType, HomeWidgetDescriptor> planningHomeWidgets = {
   HomeWidgetType.openTodos: HomeWidgetDescriptor(
@@ -528,8 +532,7 @@ class _OverdueTodosContent extends ConsumerWidget {
     final todos = ref.watch(_todosSnapshotProvider).value;
     final now = DateTime.now();
     final overdue = (todos ?? [])
-        .where((t) =>
-            !t.done && t.dueDate != null && t.dueDate!.isBefore(now))
+        .where((t) => !t.done && t.dueDate != null && t.dueDate!.isBefore(now))
         .length;
 
     return _BigCount(
@@ -559,15 +562,20 @@ class _BestHabitStreakContent extends ConsumerWidget {
     for (final l in logs) {
       if (!l.done) continue;
       final d = l.logDate;
-      final dayKey = DateTime(d.year, d.month, d.day)
-          .difference(DateTime(2000))
-          .inDays;
+      final dayKey = DateTime(
+        d.year,
+        d.month,
+        d.day,
+      ).difference(DateTime(2000)).inDays;
       (byHabit[l.habitId] ??= {}).add(dayKey);
     }
 
     final now = DateTime.now();
-    final todayKey =
-        DateTime(now.year, now.month, now.day).difference(DateTime(2000)).inDays;
+    final todayKey = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).difference(DateTime(2000)).inDays;
 
     var best = 0;
     for (final days in byHabit.values) {
@@ -586,11 +594,7 @@ class _BestHabitStreakContent extends ConsumerWidget {
     }
 
     if (best == 0) {
-      return _BigCount(
-        value: '0',
-        unit: 'Tage',
-        color: TraumColors.amberGold,
-      );
+      return _BigCount(value: '0', unit: 'Tage', color: TraumColors.amberGold);
     }
     return _BigCount(
       value: '$best',

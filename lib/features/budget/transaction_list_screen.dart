@@ -18,7 +18,8 @@ class TransactionListScreen extends ConsumerStatefulWidget {
   const TransactionListScreen({super.key});
 
   @override
-  ConsumerState<TransactionListScreen> createState() => _TransactionListScreenState();
+  ConsumerState<TransactionListScreen> createState() =>
+      _TransactionListScreenState();
 }
 
 class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
@@ -41,7 +42,9 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
   }
 
   List<Transaction> _applySearch(
-      List<Transaction> list, List<BudgetCategory> categories) {
+    List<Transaction> list,
+    List<BudgetCategory> categories,
+  ) {
     final q = _search.trim().toLowerCase();
     if (q.isEmpty) return list;
     return list.where((t) {
@@ -50,7 +53,8 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
       final cat = t.categoryId != null
           ? categories.cast<BudgetCategory?>().firstWhere(
               (c) => c?.id == t.categoryId,
-              orElse: () => null)
+              orElse: () => null,
+            )
           : null;
       return cat?.name.toLowerCase().contains(q) ?? false;
     }).toList();
@@ -67,7 +71,9 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
           label: AppLocalizations.of(context)!.undo,
           textColor: TraumColors.amberGold,
           onPressed: () {
-            ref.read(budgetDaoProvider).insertTransaction(
+            ref
+                .read(budgetDaoProvider)
+                .insertTransaction(
                   TransactionsCompanion.insert(
                     amount: t.amount,
                     description: t.description,
@@ -126,17 +132,22 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
               controller: _searchCtrl,
               onChanged: _onSearchChanged,
               style: const TextStyle(
-                  color: TraumColors.onBackground,
-                  fontFamily: 'DMSans',
-                  fontSize: 13),
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
               decoration: InputDecoration(
                 isDense: true,
                 hintText: AppLocalizations.of(context)!.searchHint,
                 hintStyle: const TextStyle(
-                    color: TraumColors.onBackgroundSubtle,
-                    fontFamily: 'DMSans'),
-                prefixIcon: const Icon(Icons.search_rounded,
-                    color: TraumColors.onBackgroundSubtle, size: 18),
+                  color: TraumColors.onBackgroundSubtle,
+                  fontFamily: 'DMSans',
+                ),
+                prefixIcon: const Icon(
+                  Icons.search_rounded,
+                  color: TraumColors.onBackgroundSubtle,
+                  size: 18,
+                ),
                 filled: true,
                 fillColor: TraumColors.surfaceVariant,
                 contentPadding: EdgeInsets.symmetric(vertical: bs(10)),
@@ -199,8 +210,9 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                             Text(
                               _search.trim().isEmpty
                                   ? AppLocalizations.of(context)!.noTransactions
-                                  : AppLocalizations.of(context)!
-                                      .noResultsForQuery(_search.trim()),
+                                  : AppLocalizations.of(
+                                      context,
+                                    )!.noResultsForQuery(_search.trim()),
                               style: const TextStyle(
                                 color: TraumColors.onBackgroundMuted,
                                 fontFamily: 'DMSans',
@@ -229,10 +241,18 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                     final groups = grouped.entries.toList();
                     final l10n = AppLocalizations.of(context)!;
                     final monthNames = [
-                      l10n.monthJan, l10n.monthFeb, l10n.monthMar,
-                      l10n.monthApr, l10n.monthMay, l10n.monthJun,
-                      l10n.monthJul, l10n.monthAug, l10n.monthSep,
-                      l10n.monthOct, l10n.monthNov, l10n.monthDec,
+                      l10n.monthJan,
+                      l10n.monthFeb,
+                      l10n.monthMar,
+                      l10n.monthApr,
+                      l10n.monthMay,
+                      l10n.monthJun,
+                      l10n.monthJul,
+                      l10n.monthAug,
+                      l10n.monthSep,
+                      l10n.monthOct,
+                      l10n.monthNov,
+                      l10n.monthDec,
                     ];
                     return ListView.builder(
                       padding: EdgeInsets.fromLTRB(bs(16), 0, bs(16), bs(80)),
@@ -250,12 +270,17 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(top: bs(16), bottom: bs(8)),
+                              padding: EdgeInsets.only(
+                                top: bs(16),
+                                bottom: bs(8),
+                              ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    '${monthNames[month - 1]} $year'.toUpperCase(),
+                                    '${monthNames[month - 1]} $year'
+                                        .toUpperCase(),
                                     style: const TextStyle(
                                       color: TraumColors.amberGold,
                                       fontFamily: 'DMSans',
@@ -288,20 +313,28 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                               clipBehavior: Clip.hardEdge,
                               child: Column(
                                 children: [
-                                  for (int i = 0; i < entry.value.length; i++) ...[
+                                  for (
+                                    int i = 0;
+                                    i < entry.value.length;
+                                    i++
+                                  ) ...[
                                     if (i > 0)
                                       Divider(
                                         height: bs(1),
                                         thickness: bs(1),
-                                        color: Colors.white.withValues(alpha: 0.05),
+                                        color: Colors.white.withValues(
+                                          alpha: 0.05,
+                                        ),
                                       ),
                                     _TxTile(
                                       transaction: entry.value[i],
                                       categories: categories,
                                       currency: currency,
-                                      onTap: () => context
-                                          .push('/budget/transaction/${entry.value[i].id}'),
-                                      onDelete: () => _deleteWithUndo(entry.value[i]),
+                                      onTap: () => context.push(
+                                        '/budget/transaction/${entry.value[i].id}',
+                                      ),
+                                      onDelete: () =>
+                                          _deleteWithUndo(entry.value[i]),
                                     ),
                                   ],
                                 ],
@@ -313,7 +346,9 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                     );
                   },
                   loading: () => const Center(
-                    child: CircularProgressIndicator(color: TraumColors.amberGold),
+                    child: CircularProgressIndicator(
+                      color: TraumColors.amberGold,
+                    ),
                   ),
                   error: (e, _) => Center(child: Text('$e')),
                 );
@@ -367,7 +402,9 @@ class _FilterChip extends StatelessWidget {
         child: Text(
           label,
           style: TextStyle(
-            color: selected ? TraumColors.amberGold : TraumColors.onBackgroundMuted,
+            color: selected
+                ? TraumColors.amberGold
+                : TraumColors.onBackgroundMuted,
             fontFamily: 'DMSans',
             fontWeight: FontWeight.w600,
             fontSize: 10,
@@ -400,7 +437,8 @@ class _TxTile extends StatelessWidget {
     final cat = transaction.categoryId != null
         ? categories.cast<BudgetCategory?>().firstWhere(
             (c) => c?.id == transaction.categoryId,
-            orElse: () => null)
+            orElse: () => null,
+          )
         : null;
 
     final dateStr =
@@ -410,8 +448,8 @@ class _TxTile extends StatelessWidget {
     final Color accentColor = isTransfer
         ? TraumColors.cyanBlue
         : isIncome
-            ? TraumColors.mintGreen
-            : TraumColors.amberGold;
+        ? TraumColors.mintGreen
+        : TraumColors.amberGold;
 
     final Color iconColor = accentColor;
 
@@ -447,16 +485,18 @@ class _TxTile extends StatelessWidget {
                           size: bs(13),
                         )
                       : (cat?.emoji != null
-                          ? budgetCategoryGlyph(
-                              cat!.emoji,
-                              color: iconColor,
-                              size: bs(13),
-                            )
-                          : Icon(
-                              isIncome ? Icons.add_rounded : Icons.remove_rounded,
-                              color: iconColor,
-                              size: bs(13),
-                            )),
+                            ? budgetCategoryGlyph(
+                                cat!.emoji,
+                                color: iconColor,
+                                size: bs(13),
+                              )
+                            : Icon(
+                                isIncome
+                                    ? Icons.add_rounded
+                                    : Icons.remove_rounded,
+                                color: iconColor,
+                                size: bs(13),
+                              )),
                 ),
               ),
               SizedBox(width: bs(10)),
@@ -503,8 +543,8 @@ class _TxTile extends StatelessWidget {
                   color: isTransfer
                       ? TraumColors.onBackgroundMuted
                       : isIncome
-                          ? TraumColors.mintGreen
-                          : TraumColors.roseRed,
+                      ? TraumColors.mintGreen
+                      : TraumColors.roseRed,
                   fontFamily: 'DMSans',
                   fontWeight: FontWeight.w700,
                   fontSize: 11,

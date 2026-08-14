@@ -22,8 +22,9 @@ class TowerDataSeeder {
 
     try {
       final collections = await db.mapCollectionsDao.getAll();
-      final towerCollection =
-          collections.where((c) => c.iconName == 'tower').firstOrNull;
+      final towerCollection = collections
+          .where((c) => c.iconName == 'tower')
+          .firstOrNull;
       if (towerCollection == null) {
         // Türme-Collection noch nicht angelegt (Seeder-Reihenfolge verletzt) —
         // kein Flag setzen, nächster Start versucht es erneut.
@@ -61,15 +62,17 @@ class TowerDataSeeder {
           if (operatorName.isNotEmpty) 'towerOperator': operatorName,
         };
 
-        buffer.add(MapMarkersCompanion.insert(
-          collectionId: towerCollection.id,
-          title: Value(name),
-          latitude: Value(lat),
-          longitude: Value(lon),
-          customFields: Value(jsonEncode(customFields)),
-          osmId: Value(osmId),
-          createdAt: now,
-        ));
+        buffer.add(
+          MapMarkersCompanion.insert(
+            collectionId: towerCollection.id,
+            title: Value(name),
+            latitude: Value(lat),
+            longitude: Value(lon),
+            customFields: Value(jsonEncode(customFields)),
+            osmId: Value(osmId),
+            createdAt: now,
+          ),
+        );
 
         if (buffer.length >= _chunkSize) {
           await db.mapMarkersDao.bulkInsertNew(buffer);
@@ -99,8 +102,8 @@ class TowerDataSeeder {
   /// ableitbare Ausprägung ("Funkmast") — alles andere landet in "Sonstige",
   /// ein fehlender Tag bleibt unausgefüllt statt falscher Präzision.
   static String? _mapTowerType(String osmValue) => switch (osmValue) {
-        '' => null,
-        'communication' => 'Funkmast',
-        _ => 'Sonstige',
-      };
+    '' => null,
+    'communication' => 'Funkmast',
+    _ => 'Sonstige',
+  };
 }

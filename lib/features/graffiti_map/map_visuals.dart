@@ -4,15 +4,15 @@ import '../../data/database/traum_database.dart';
 
 /// Icon für eine Karten-Collection anhand ihres gespeicherten iconName.
 IconData mapCollectionIcon(String name) => switch (name) {
-      'spray' => Icons.format_paint_outlined,
-      'tower' => Icons.cell_tower_outlined,
-      'home_broken' => Icons.foundation_outlined,
-      'building' => Icons.apartment_outlined,
-      'nature' => Icons.park_outlined,
-      'food' => Icons.restaurant_outlined,
-      'map' => Icons.map_outlined,
-      _ => Icons.location_on_outlined,
-    };
+  'spray' => Icons.format_paint_outlined,
+  'tower' => Icons.cell_tower_outlined,
+  'home_broken' => Icons.foundation_outlined,
+  'building' => Icons.apartment_outlined,
+  'nature' => Icons.park_outlined,
+  'food' => Icons.restaurant_outlined,
+  'map' => Icons.map_outlined,
+  _ => Icons.location_on_outlined,
+};
 
 /// Auswählbare Icons beim Erstellen einer eigenen Karte.
 const List<String> kSelectableMapIcons = [
@@ -36,16 +36,16 @@ Color colorFromHex(String? hex, [Color fallback = TraumColors.cyanBlue]) =>
 
 /// Icon für ein dynamisches Feld.
 IconData mapFieldIcon(String? name) => switch (name) {
-      'construction' => Icons.construction_outlined,
-      'lock' => Icons.lock_outline,
-      'flag' => Icons.flag_outlined,
-      'warning' => Icons.warning_amber_rounded,
-      'visibility_off' => Icons.visibility_off_outlined,
-      'cell_tower' => Icons.cell_tower_outlined,
-      'height' => Icons.height,
-      'business' => Icons.business_outlined,
-      _ => Icons.label_outline,
-    };
+  'construction' => Icons.construction_outlined,
+  'lock' => Icons.lock_outline,
+  'flag' => Icons.flag_outlined,
+  'warning' => Icons.warning_amber_rounded,
+  'visibility_off' => Icons.visibility_off_outlined,
+  'cell_tower' => Icons.cell_tower_outlined,
+  'height' => Icons.height,
+  'business' => Icons.business_outlined,
+  _ => Icons.label_outline,
+};
 
 /// Auswählbare Akzentfarben beim Erstellen einer Karte.
 const List<String> kSelectableMapColors = [

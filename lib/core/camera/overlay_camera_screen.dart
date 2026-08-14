@@ -55,14 +55,16 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
   Timer? _autoStopTimer;
 
   bool get _hasGhost =>
-      widget.ghostImagePath != null && File(widget.ghostImagePath!).existsSync();
+      widget.ghostImagePath != null &&
+      File(widget.ghostImagePath!).existsSync();
 
   @override
   void initState() {
     super.initState();
     _isVideoMode = widget.initialVideoMode;
-    _refMode =
-        _hasGhost ? ReferenceOverlayMode.lastPhoto : ReferenceOverlayMode.off;
+    _refMode = _hasGhost
+        ? ReferenceOverlayMode.lastPhoto
+        : ReferenceOverlayMode.off;
     WidgetsBinding.instance.addObserver(this);
     _setup();
   }
@@ -98,9 +100,11 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
     if (!camStatus.isGranted) {
       final r = await Permission.camera.request();
       if (!r.isGranted) {
-        setState(() => _status = r.isPermanentlyDenied
-            ? _CamStatus.permanentlyDenied
-            : _CamStatus.denied);
+        setState(
+          () => _status = r.isPermanentlyDenied
+              ? _CamStatus.permanentlyDenied
+              : _CamStatus.denied,
+        );
         return;
       }
     }
@@ -120,7 +124,8 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
       return;
     }
     _cameraIndex = _cameras.indexWhere(
-        (c) => c.lensDirection == CameraLensDirection.back);
+      (c) => c.lensDirection == CameraLensDirection.back,
+    );
     if (_cameraIndex < 0) _cameraIndex = 0;
     await _initController();
   }
@@ -157,13 +162,17 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
       final file = await controller.takePicture();
       if (mounted) {
         Navigator.pop(
-            context, CameraCaptureResult(path: file.path, isVideo: false));
+          context,
+          CameraCaptureResult(path: file.path, isVideo: false),
+        );
       }
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-                AppLocalizations.of(context)!.cameraCaptureFailed)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.cameraCaptureFailed),
+          ),
+        );
       }
     }
   }
@@ -177,7 +186,9 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
         final file = await controller.stopVideoRecording();
         if (mounted) {
           Navigator.pop(
-              context, CameraCaptureResult(path: file.path, isVideo: true));
+            context,
+            CameraCaptureResult(path: file.path, isVideo: true),
+          );
         }
       } catch (_) {
         if (mounted) setState(() => _isRecording = false);
@@ -192,9 +203,11 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
       });
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-                AppLocalizations.of(context)!.cameraRecordingFailed)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.cameraRecordingFailed),
+          ),
+        );
       }
     }
   }
@@ -259,72 +272,78 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
       ReferenceOverlayMode.food,
     ];
 
-    return Stack(fit: StackFit.expand, children: [
-      Center(child: CameraPreview(controller)),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Center(child: CameraPreview(controller)),
 
-      // Drittel-Raster als Ausrichtungshilfe.
-      const _GridOverlay(),
+        // Drittel-Raster als Ausrichtungshilfe.
+        const _GridOverlay(),
 
-      // Geist-Foto oder eine der festen Umriss-Vorlagen.
-      ReferenceOverlayLayer(
+        // Geist-Foto oder eine der festen Umriss-Vorlagen.
+        ReferenceOverlayLayer(
           mode: _refMode,
           ghostImagePath: widget.ghostImagePath,
-          opacity: _refOpacity),
+          opacity: _refOpacity,
+        ),
 
-      if (_refMode != ReferenceOverlayMode.off)
-        Positioned(
-          top: 8,
-          left: 0,
-          right: 0,
-          child: Center(
-            child: Text(
+        if (_refMode != ReferenceOverlayMode.off)
+          Positioned(
+            top: 8,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Text(
                 _refMode == ReferenceOverlayMode.lastPhoto
                     ? l10n.cameraOverlayAlignHint
                     : l10n.cameraOverlayRefGenericHint,
                 style: TextStyle(
-                    fontFamily: 'DMSans',
-                    fontSize: 11,
-                    color: Colors.white.withValues(alpha: 0.6))),
+                  fontFamily: 'DMSans',
+                  fontSize: 11,
+                  color: Colors.white.withValues(alpha: 0.6),
+                ),
+              ),
+            ),
+          ),
+
+        // Oberer Rand: Schließen, Kamera wechseln.
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _RoundIconButton(
+                  icon: Icons.close,
+                  label: AppLocalizations.of(context)!.close,
+                  onTap: () => Navigator.pop(context),
+                ),
+                _RoundIconButton(
+                  icon: Icons.cameraswitch_outlined,
+                  label: AppLocalizations.of(context)!.a11ySwitchCamera,
+                  onTap: _cameras.length > 1 ? _flipCamera : null,
+                ),
+              ],
+            ),
           ),
         ),
 
-      // Oberer Rand: Schließen, Kamera wechseln.
-      Positioned(
-        top: 0,
-        left: 0,
-        right: 0,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _RoundIconButton(
-                icon: Icons.close,
-                label: AppLocalizations.of(context)!.close,
-                onTap: () => Navigator.pop(context),
-              ),
-              _RoundIconButton(
-                icon: Icons.cameraswitch_outlined,
-                label: AppLocalizations.of(context)!.a11ySwitchCamera,
-                onTap: _cameras.length > 1 ? _flipCamera : null,
-              ),
-            ],
-          ),
-        ),
-      ),
-
-      // Vorlagen-Auswahl: alle Optionen als Icon-Leiste direkt sichtbar,
-      // statt hinter einem Menü versteckt.
-      Positioned(
-        top: 52,
-        left: 0,
-        right: 0,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Row(
-            children: availableModes
-                .map((m) => Padding(
+        // Vorlagen-Auswahl: alle Optionen als Icon-Leiste direkt sichtbar,
+        // statt hinter einem Menü versteckt.
+        Positioned(
+          top: 52,
+          left: 0,
+          right: 0,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Row(
+              children: availableModes
+                  .map(
+                    (m) => Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: _TemplateChip(
                         mode: m,
@@ -332,116 +351,128 @@ class _OverlayCameraScreenState extends State<OverlayCameraScreen>
                         selected: _refMode == m,
                         onTap: () => setState(() => _refMode = m),
                       ),
-                    ))
-                .toList(),
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
         ),
-      ),
 
-      // Deckkraft-Regler für die Referenz.
-      if (_refMode != ReferenceOverlayMode.off)
+        // Deckkraft-Regler für die Referenz.
+        if (_refMode != ReferenceOverlayMode.off)
+          Positioned(
+            top: 92,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Container(
+                width: 210,
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                decoration: BoxDecoration(
+                  color: Colors.black38,
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.opacity, color: Colors.white70, size: 14),
+                    Expanded(
+                      child: SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                          trackHeight: 2,
+                          thumbShape: const RoundSliderThumbShape(
+                            enabledThumbRadius: 6,
+                          ),
+                          overlayShape: const RoundSliderOverlayShape(
+                            overlayRadius: 12,
+                          ),
+                          activeTrackColor: TraumColors.lavender,
+                          inactiveTrackColor: Colors.white24,
+                          thumbColor: Colors.white,
+                        ),
+                        child: Slider(
+                          value: _refOpacity,
+                          min: 0.1,
+                          max: 0.9,
+                          onChanged: (v) => setState(() => _refOpacity = v),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 30,
+                      child: Text(
+                        '${(_refOpacity * 100).round()}%',
+                        textAlign: TextAlign.end,
+                        style: const TextStyle(
+                          fontFamily: 'DMSans',
+                          color: Colors.white70,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+        // Unterer Rand: Modus-Umschalter + Auslöser.
         Positioned(
-          top: 92,
           left: 0,
           right: 0,
-          child: Center(
-            child: Container(
-              width: 210,
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              decoration: BoxDecoration(
-                color: Colors.black38,
-                borderRadius: BorderRadius.circular(50),
-              ),
-              child: Row(children: [
-                const Icon(Icons.opacity, color: Colors.white70, size: 14),
-                Expanded(
-                  child: SliderTheme(
-                    data: SliderTheme.of(context).copyWith(
-                      trackHeight: 2,
-                      thumbShape:
-                          const RoundSliderThumbShape(enabledThumbRadius: 6),
-                      overlayShape:
-                          const RoundSliderOverlayShape(overlayRadius: 12),
-                      activeTrackColor: TraumColors.lavender,
-                      inactiveTrackColor: Colors.white24,
-                      thumbColor: Colors.white,
+          bottom: 16,
+          child: Column(
+            children: [
+              if (!_isRecording)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _ModeLabel(
+                      label: l10n.cameraOverlayModePhoto,
+                      selected: !_isVideoMode,
+                      onTap: () => setState(() => _isVideoMode = false),
                     ),
-                    child: Slider(
-                      value: _refOpacity,
-                      min: 0.1,
-                      max: 0.9,
-                      onChanged: (v) => setState(() => _refOpacity = v),
+                    const SizedBox(width: 26),
+                    _ModeLabel(
+                      label: l10n.cameraOverlayModeVideo,
+                      selected: _isVideoMode,
+                      onTap: () => setState(() => _isVideoMode = true),
+                    ),
+                  ],
+                ),
+              const SizedBox(height: 16),
+              GestureDetector(
+                onTap: _isVideoMode ? _toggleVideoRecording : _capturePhoto,
+                child: Container(
+                  width: 68,
+                  height: 68,
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: _isVideoMode && _isRecording
+                          ? BoxShape.rectangle
+                          : BoxShape.circle,
+                      borderRadius: _isVideoMode && _isRecording
+                          ? BorderRadius.circular(6)
+                          : null,
+                      color: _isVideoMode ? TraumColors.roseRed : Colors.white,
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: 30,
-                  child: Text('${(_refOpacity * 100).round()}%',
-                      textAlign: TextAlign.end,
-                      style: const TextStyle(
-                          fontFamily: 'DMSans',
-                          color: Colors.white70,
-                          fontSize: 10)),
-                ),
-              ]),
-            ),
+              ),
+            ],
           ),
         ),
-
-      // Unterer Rand: Modus-Umschalter + Auslöser.
-      Positioned(
-        left: 0,
-        right: 0,
-        bottom: 16,
-        child: Column(children: [
-          if (!_isRecording)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _ModeLabel(
-                  label: l10n.cameraOverlayModePhoto,
-                  selected: !_isVideoMode,
-                  onTap: () => setState(() => _isVideoMode = false),
-                ),
-                const SizedBox(width: 26),
-                _ModeLabel(
-                  label: l10n.cameraOverlayModeVideo,
-                  selected: _isVideoMode,
-                  onTap: () => setState(() => _isVideoMode = true),
-                ),
-              ],
-            ),
-          const SizedBox(height: 16),
-          GestureDetector(
-            onTap: _isVideoMode ? _toggleVideoRecording : _capturePhoto,
-            child: Container(
-              width: 68,
-              height: 68,
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 3),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: _isVideoMode && _isRecording
-                      ? BoxShape.rectangle
-                      : BoxShape.circle,
-                  borderRadius: _isVideoMode && _isRecording
-                      ? BorderRadius.circular(6)
-                      : null,
-                  color: _isVideoMode ? TraumColors.roseRed : Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ]),
-      ),
-    ]);
+      ],
+    );
   }
 }
 
-String _refModeLabel(ReferenceOverlayMode m, AppLocalizations l10n) => switch (m) {
+String _refModeLabel(ReferenceOverlayMode m, AppLocalizations l10n) =>
+    switch (m) {
       ReferenceOverlayMode.off => l10n.cameraOverlayRefOff,
       ReferenceOverlayMode.lastPhoto => l10n.cameraOverlayRefLastPhoto,
       ReferenceOverlayMode.bodyFull => l10n.cameraOverlayRefBodyFull,
@@ -478,10 +509,15 @@ class _TemplateChip extends StatelessWidget {
                 : Colors.black38,
             shape: BoxShape.circle,
             border: Border.all(
-                color: selected ? Colors.white : Colors.white24, width: 1),
+              color: selected ? Colors.white : Colors.white24,
+              width: 1,
+            ),
           ),
-          child: Icon(referenceOverlayModeIcon(mode),
-              color: Colors.white, size: 17),
+          child: Icon(
+            referenceOverlayModeIcon(mode),
+            color: Colors.white,
+            size: 17,
+          ),
         ),
       ),
     );
@@ -496,22 +532,28 @@ class _GridOverlay extends StatelessWidget {
     return IgnorePointer(
       child: Opacity(
         opacity: 0.16,
-        child: Stack(children: [
-          Column(children: [
-            const Spacer(),
-            Container(height: 1, color: Colors.white),
-            const Spacer(),
-            Container(height: 1, color: Colors.white),
-            const Spacer(),
-          ]),
-          Row(children: [
-            const Spacer(),
-            Container(width: 1, color: Colors.white),
-            const Spacer(),
-            Container(width: 1, color: Colors.white),
-            const Spacer(),
-          ]),
-        ]),
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                const Spacer(),
+                Container(height: 1, color: Colors.white),
+                const Spacer(),
+                Container(height: 1, color: Colors.white),
+                const Spacer(),
+              ],
+            ),
+            Row(
+              children: [
+                const Spacer(),
+                Container(width: 1, color: Colors.white),
+                const Spacer(),
+                Container(width: 1, color: Colors.white),
+                const Spacer(),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -521,8 +563,11 @@ class _RoundIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onTap;
   final String label;
-  const _RoundIconButton(
-      {required this.icon, required this.onTap, required this.label});
+  const _RoundIconButton({
+    required this.icon,
+    required this.onTap,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -538,8 +583,11 @@ class _RoundIconButton extends StatelessWidget {
             color: Colors.black38,
             shape: BoxShape.circle,
           ),
-          child: Icon(icon,
-              color: onTap == null ? Colors.white38 : Colors.white, size: 19),
+          child: Icon(
+            icon,
+            color: onTap == null ? Colors.white38 : Colors.white,
+            size: 19,
+          ),
         ),
       ),
     );
@@ -550,22 +598,26 @@ class _ModeLabel extends StatelessWidget {
   final String label;
   final bool selected;
   final VoidCallback onTap;
-  const _ModeLabel(
-      {required this.label, required this.selected, required this.onTap});
+  const _ModeLabel({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Text(label,
-          style: TextStyle(
-              fontFamily: 'DMSans',
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.4,
-              color: selected
-                  ? Colors.white
-                  : Colors.white.withValues(alpha: 0.45))),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontFamily: 'DMSans',
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.4,
+          color: selected ? Colors.white : Colors.white.withValues(alpha: 0.45),
+        ),
+      ),
     );
   }
 }
@@ -587,57 +639,76 @@ class _MessageState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(icon, color: Colors.white38, size: 48),
-            const SizedBox(height: 16),
-            Text(title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
+    return Stack(
+      children: [
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, color: Colors.white38, size: 48),
+                const SizedBox(height: 16),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
                     fontFamily: 'DMSans',
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
-                    fontSize: 16)),
-            if (message.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Text(message,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                if (message.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
                       fontFamily: 'DMSans',
                       color: Colors.white70,
-                      fontSize: 13)),
-            ],
-            if (actionLabel != null) ...[
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: onAction,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: TraumColors.lavender,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50)),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 24, vertical: 12),
-                ),
-                child: Text(actionLabel!,
-                    style: const TextStyle(
-                        fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
-              ),
-            ],
-          ]),
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+                if (actionLabel != null) ...[
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: onAction,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: TraumColors.lavender,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                    ),
+                    child: Text(
+                      actionLabel!,
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
         ),
-      ),
-      Positioned(
-        top: 8,
-        left: 8,
-        child: _RoundIconButton(
+        Positioned(
+          top: 8,
+          left: 8,
+          child: _RoundIconButton(
             icon: Icons.close,
             label: AppLocalizations.of(context)!.close,
-            onTap: () => Navigator.pop(context)),
-      ),
-    ]);
+            onTap: () => Navigator.pop(context),
+          ),
+        ),
+      ],
+    );
   }
 }

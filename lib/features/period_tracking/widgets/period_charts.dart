@@ -31,8 +31,7 @@ class CycleLengthChart extends StatelessWidget {
         ? lengths.sublist(lengths.length - 12)
         : lengths;
 
-    final maxVal =
-        recent.fold<int>(0, (a, b) => a > b ? a : b).toDouble();
+    final maxVal = recent.fold<int>(0, (a, b) => a > b ? a : b).toDouble();
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -156,8 +155,9 @@ class _BbtPainter extends CustomPainter {
 
     // Cover line: horizontal at the max temp of the first ≤6 readings.
     final preOvulation = sorted.take(6).toList();
-    final coverTemp =
-        preOvulation.map((p) => p.temp).fold<double>(preOvulation.first.temp, math.max);
+    final coverTemp = preOvulation
+        .map((p) => p.temp)
+        .fold<double>(preOvulation.first.temp, math.max);
     final coverY = yFor(coverTemp);
 
     final coverPaint = Paint()

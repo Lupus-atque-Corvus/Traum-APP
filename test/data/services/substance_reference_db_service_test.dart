@@ -21,20 +21,35 @@ void main() {
   });
 
   test('search respects klasseFilter (positive: medikament)', () async {
-    final results = await service.search('e', klasseFilter: SubstanceKlasse.medikament);
+    final results = await service.search(
+      'e',
+      klasseFilter: SubstanceKlasse.medikament,
+    );
     expect(results, isNotEmpty);
-    expect(results.every((r) => r.klasse == SubstanceKlasse.medikament), isTrue);
+    expect(
+      results.every((r) => r.klasse == SubstanceKlasse.medikament),
+      isTrue,
+    );
   });
 
-  test('search respects klasseFilter (negative: supplement, none in fixture)', () async {
-    final results = await service.search('e', klasseFilter: SubstanceKlasse.supplement);
-    expect(results, isEmpty);
-  });
+  test(
+    'search respects klasseFilter (negative: supplement, none in fixture)',
+    () async {
+      final results = await service.search(
+        'e',
+        klasseFilter: SubstanceKlasse.supplement,
+      );
+      expect(results, isEmpty);
+    },
+  );
 
-  test('search respects pflanzlichOnly filter (none in fixture, must return empty)', () async {
-    final results = await service.search('e', pflanzlichOnly: true);
-    expect(results, isEmpty);
-  });
+  test(
+    'search respects pflanzlichOnly filter (none in fixture, must return empty)',
+    () async {
+      final results = await service.search('e', pflanzlichOnly: true);
+      expect(results, isEmpty);
+    },
+  );
 
   test('findById returns the matching record', () async {
     final all = await service.search('ibuprofen');

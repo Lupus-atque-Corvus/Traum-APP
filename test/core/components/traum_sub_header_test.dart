@@ -4,14 +4,15 @@ import 'package:traum/core/components/traum_sub_header.dart';
 import 'package:traum/l10n/app_localizations.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(body: child),
-    );
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
+  home: Scaffold(body: child),
+);
 
 void main() {
-  testWidgets('scale multiplies layout dimensions but never the font size',
-      (tester) async {
+  testWidgets('scale multiplies layout dimensions but never the font size', (
+    tester,
+  ) async {
     // Regression test for a subtlety found while extracting this from
     // Budget's original BudgetSubHeader: Budget applies its 1.12x
     // kBudgetScale to structural measures via a raw multiplier, but relies
@@ -28,14 +29,16 @@ void main() {
     final container = tester.widget<Container>(find.byType(Container).first);
     final decoration = container.decoration! as BoxDecoration;
     expect(container.constraints!.maxWidth, 48); // 24 * 2.0
-    expect((decoration.borderRadius! as BorderRadius).topLeft.x, 24); // 12 * 2.0
+    expect(
+      (decoration.borderRadius! as BorderRadius).topLeft.x,
+      24,
+    ); // 12 * 2.0
   });
 
-  testWidgets('default scale of 1.0 matches the original unscaled spec',
-      (tester) async {
-    await tester.pumpWidget(
-      _wrap(const TraumSubHeader(title: 'Test')),
-    );
+  testWidgets('default scale of 1.0 matches the original unscaled spec', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_wrap(const TraumSubHeader(title: 'Test')));
 
     final container = tester.widget<Container>(find.byType(Container).first);
     expect(container.constraints!.maxWidth, 24);
@@ -43,26 +46,27 @@ void main() {
   });
 
   testWidgets('tapping back pops the route', (tester) async {
-    await tester.pumpWidget(MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: Builder(
-        builder: (context) => Scaffold(
-          body: Center(
-            child: ElevatedButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const Scaffold(
-                    body: TraumSubHeader(title: 'Detail'),
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: Center(
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        const Scaffold(body: TraumSubHeader(title: 'Detail')),
                   ),
                 ),
+                child: const Text('open'),
               ),
-              child: const Text('open'),
             ),
           ),
         ),
       ),
-    ));
+    );
 
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();

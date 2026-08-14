@@ -106,9 +106,11 @@ void main() {
     // Touch the DB to force Drift to run its migration/beforeOpen sequence.
     await db.customSelect('SELECT 1').get();
 
-    final tables = await db.customSelect(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name='substance_database_entries'",
-    ).get();
+    final tables = await db
+        .customSelect(
+          "SELECT name FROM sqlite_master WHERE type='table' AND name='substance_database_entries'",
+        )
+        .get();
     expect(tables, isEmpty);
 
     await db.close();

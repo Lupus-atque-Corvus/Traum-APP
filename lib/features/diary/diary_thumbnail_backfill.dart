@@ -15,8 +15,9 @@ class DiaryThumbnailBackfill {
 
     final missing = await db.diaryDao.getVideoEntriesMissingThumbnail();
     for (final entry in missing) {
-      final thumbnail =
-          await DiaryCameraService.generateVideoThumbnail(entry.mediaPath);
+      final thumbnail = await DiaryCameraService.generateVideoThumbnail(
+        entry.mediaPath,
+      );
       if (thumbnail != null) {
         await db.diaryDao.updateThumbnail(entry.id, thumbnail);
       }

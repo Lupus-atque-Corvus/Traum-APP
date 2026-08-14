@@ -24,23 +24,22 @@ void main() {
     int medicationsTakenToday = 0,
     int medicationsTotal = 0,
     List<int> moodScoresLast7Days = const [],
-  }) =>
-      HealthScoreCalculator.calculate(
-        workoutsThisWeek: workoutsThisWeek,
-        workoutGoalPerWeek: workoutGoalPerWeek,
-        avgCaloriesLast7Days: avgCaloriesLast7Days,
-        calorieGoal: calorieGoal,
-        avgProteinLast7Days: avgProteinLast7Days,
-        proteinGoal: proteinGoal,
-        avgWaterLast7Days: avgWaterLast7Days,
-        waterGoalMl: waterGoalMl,
-        avgSleepHoursLast7Days: avgSleepHoursLast7Days,
-        supplementsTakenToday: supplementsTakenToday,
-        supplementsTotal: supplementsTotal,
-        medicationsTakenToday: medicationsTakenToday,
-        medicationsTotal: medicationsTotal,
-        moodScoresLast7Days: moodScoresLast7Days,
-      );
+  }) => HealthScoreCalculator.calculate(
+    workoutsThisWeek: workoutsThisWeek,
+    workoutGoalPerWeek: workoutGoalPerWeek,
+    avgCaloriesLast7Days: avgCaloriesLast7Days,
+    calorieGoal: calorieGoal,
+    avgProteinLast7Days: avgProteinLast7Days,
+    proteinGoal: proteinGoal,
+    avgWaterLast7Days: avgWaterLast7Days,
+    waterGoalMl: waterGoalMl,
+    avgSleepHoursLast7Days: avgSleepHoursLast7Days,
+    supplementsTakenToday: supplementsTakenToday,
+    supplementsTotal: supplementsTotal,
+    medicationsTakenToday: medicationsTakenToday,
+    medicationsTotal: medicationsTotal,
+    moodScoresLast7Days: moodScoresLast7Days,
+  );
 
   int factor(HealthScoreResult r, String name) =>
       r.faktoren.firstWhere((f) => f.name == name).score;
@@ -80,14 +79,20 @@ void main() {
       expect(factor(calc(workoutGoalPerWeek: 0), 'Training'), 50);
     });
     test('proportional to goal', () {
-      expect(factor(calc(workoutsThisWeek: 2, workoutGoalPerWeek: 4), 'Training'),
-          50);
-      expect(factor(calc(workoutsThisWeek: 1, workoutGoalPerWeek: 4), 'Training'),
-          25);
+      expect(
+        factor(calc(workoutsThisWeek: 2, workoutGoalPerWeek: 4), 'Training'),
+        50,
+      );
+      expect(
+        factor(calc(workoutsThisWeek: 1, workoutGoalPerWeek: 4), 'Training'),
+        25,
+      );
     });
     test('clamps at 100 when goal exceeded', () {
-      expect(factor(calc(workoutsThisWeek: 5, workoutGoalPerWeek: 4), 'Training'),
-          100);
+      expect(
+        factor(calc(workoutsThisWeek: 5, workoutGoalPerWeek: 4), 'Training'),
+        100,
+      );
     });
   });
 
@@ -143,7 +148,8 @@ void main() {
   });
 
   group('Sleep (Regeneration) bands', () {
-    int regen(double h) => factor(calc(avgSleepHoursLast7Days: h), 'Regeneration');
+    int regen(double h) =>
+        factor(calc(avgSleepHoursLast7Days: h), 'Regeneration');
     test('7–9h → 100', () => expect(regen(8), 100));
     test('6–9.5h → 75', () => expect(regen(6.5), 75));
     test('5–10h → 50', () => expect(regen(5.5), 50));
@@ -158,37 +164,55 @@ void main() {
     });
     test('all taken → 100', () {
       expect(
-          factor(calc(supplementsTakenToday: 2, supplementsTotal: 2),
-              'Supplemente'),
-          100);
+        factor(
+          calc(supplementsTakenToday: 2, supplementsTotal: 2),
+          'Supplemente',
+        ),
+        100,
+      );
       expect(
-          factor(calc(medicationsTakenToday: 4, medicationsTotal: 4),
-              'Medikamente'),
-          100);
+        factor(
+          calc(medicationsTakenToday: 4, medicationsTotal: 4),
+          'Medikamente',
+        ),
+        100,
+      );
     });
     test('partial is proportional', () {
       expect(
-          factor(calc(medicationsTakenToday: 1, medicationsTotal: 4),
-              'Medikamente'),
-          25);
+        factor(
+          calc(medicationsTakenToday: 1, medicationsTotal: 4),
+          'Medikamente',
+        ),
+        25,
+      );
     });
   });
 
   group('Mood factor (avg × 20)', () {
     test('empty → neutral 50', () {
-      expect(factor(calc(moodScoresLast7Days: const []), 'Stress & Mental'), 50);
+      expect(
+        factor(calc(moodScoresLast7Days: const []), 'Stress & Mental'),
+        50,
+      );
     });
     test('average 5 → 100', () {
       expect(
-          factor(calc(moodScoresLast7Days: const [5, 5, 5]), 'Stress & Mental'),
-          100);
+        factor(calc(moodScoresLast7Days: const [5, 5, 5]), 'Stress & Mental'),
+        100,
+      );
     });
     test('average 1 → 20', () {
       expect(
-          factor(calc(moodScoresLast7Days: const [1, 1]), 'Stress & Mental'), 20);
+        factor(calc(moodScoresLast7Days: const [1, 1]), 'Stress & Mental'),
+        20,
+      );
     });
     test('single 3 → 60', () {
-      expect(factor(calc(moodScoresLast7Days: const [3]), 'Stress & Mental'), 60);
+      expect(
+        factor(calc(moodScoresLast7Days: const [3]), 'Stress & Mental'),
+        60,
+      );
     });
   });
 
@@ -200,7 +224,10 @@ void main() {
     });
 
     test('strongest and weakest factors', () {
-      final r = calc(workoutsThisWeek: 4, workoutGoalPerWeek: 4); // Training 100
+      final r = calc(
+        workoutsThisWeek: 4,
+        workoutGoalPerWeek: 4,
+      ); // Training 100
       expect(r.strongestFactor.name, 'Training');
       expect(r.weakestFactor.score, 50);
     });

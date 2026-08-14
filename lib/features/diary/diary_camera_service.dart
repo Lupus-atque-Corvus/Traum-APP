@@ -43,11 +43,13 @@ class DiaryCameraService {
     ImageSource source = ImageSource.camera,
   }) async {
     if (source == ImageSource.camera) {
-      return _openOverlayCamera(context,
-          diaryId: diaryId,
-          dateStr: dateStr,
-          ghostImagePath: ghostImagePath,
-          initialVideoMode: false);
+      return _openOverlayCamera(
+        context,
+        diaryId: diaryId,
+        dateStr: dateStr,
+        ghostImagePath: ghostImagePath,
+        initialVideoMode: false,
+      );
     }
     final picked = await _picker.pickImage(
       source: source,
@@ -67,11 +69,13 @@ class DiaryCameraService {
     ImageSource source = ImageSource.camera,
   }) async {
     if (source == ImageSource.camera) {
-      return _openOverlayCamera(context,
-          diaryId: diaryId,
-          dateStr: dateStr,
-          ghostImagePath: ghostImagePath,
-          initialVideoMode: true);
+      return _openOverlayCamera(
+        context,
+        diaryId: diaryId,
+        dateStr: dateStr,
+        ghostImagePath: ghostImagePath,
+        initialVideoMode: true,
+      );
     }
     final picked = await _picker.pickVideo(
       source: source,
@@ -98,7 +102,11 @@ class DiaryCameraService {
     );
     if (result == null) return null;
     return _saveToAppStorage(
-        result.path, diaryId, dateStr, result.isVideo ? 'mp4' : 'jpg');
+      result.path,
+      diaryId,
+      dateStr,
+      result.isVideo ? 'mp4' : 'jpg',
+    );
   }
 
   static Future<String> _saveToAppStorage(

@@ -17,8 +17,7 @@ Future<void> _flushAndUnmount(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets(
-      'a weekly habit shows a week-based streak, not a day-based one '
+  testWidgets('a weekly habit shows a week-based streak, not a day-based one '
       '(regression: previously every habit used a consecutive-DAY streak '
       'regardless of its stored frequency, so a weekly habit logged '
       'faithfully every week still showed a streak of 0 or 1 because most '
@@ -26,35 +25,37 @@ void main() {
     final db = TraumDatabase.forTesting(NativeDatabase.memory());
     addTearDown(db.close);
 
-    final habitId = await db.planningDao.insertHabit(HabitsCompanion.insert(
-      name: 'Yoga',
-      frequency: const Value('weekly'),
-    ));
+    final habitId = await db.planningDao.insertHabit(
+      HabitsCompanion.insert(name: 'Yoga', frequency: const Value('weekly')),
+    );
 
     // One log this week, one log last week — a real 2-week streak for a
     // weekly habit, but only 2 out of the last 14 days for a daily one.
     final now = DateTime.now();
-    final thisWeekMonday = DateTime(now.year, now.month, now.day)
-        .subtract(Duration(days: now.weekday - 1));
+    final thisWeekMonday = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(Duration(days: now.weekday - 1));
     final lastWeekMonday = thisWeekMonday.subtract(const Duration(days: 7));
-    await db.planningDao.insertHabitLog(HabitLogsCompanion.insert(
-      habitId: habitId,
-      logDate: thisWeekMonday,
-    ));
-    await db.planningDao.insertHabitLog(HabitLogsCompanion.insert(
-      habitId: habitId,
-      logDate: lastWeekMonday,
-    ));
+    await db.planningDao.insertHabitLog(
+      HabitLogsCompanion.insert(habitId: habitId, logDate: thisWeekMonday),
+    );
+    await db.planningDao.insertHabitLog(
+      HabitLogsCompanion.insert(habitId: habitId, logDate: lastWeekMonday),
+    );
 
-    await tester.pumpWidget(ProviderScope(
-      overrides: [databaseProvider.overrideWithValue(db)],
-      child: MaterialApp(
-        locale: const Locale('de'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const AbstinenceScreen(),
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [databaseProvider.overrideWithValue(db)],
+        child: MaterialApp(
+          locale: const Locale('de'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const AbstinenceScreen(),
+        ),
       ),
-    ));
+    );
     // Bounded pumps, not pumpAndSettle: AbstinenceScreen's TabBarView
     // pre-builds neighbouring tabs, and something in that tree never
     // settles in the test harness (same established gotcha as the

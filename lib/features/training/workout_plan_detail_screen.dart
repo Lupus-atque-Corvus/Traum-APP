@@ -26,23 +26,36 @@ class WorkoutPlanDetailScreen extends ConsumerWidget {
         title: plansAsync.when(
           data: (plans) {
             final plan = plans.cast<WorkoutPlan?>().firstWhere(
-                (p) => p?.id == planId, orElse: () => null);
-            return Text(plan?.name ?? AppLocalizations.of(context)!.trainingPlan,
-                style: const TextStyle(
-                    color: TraumColors.onBackground,
-                    fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w700));
-          },
-          loading: () => Text(AppLocalizations.of(context)!.trainingPlan,
+              (p) => p?.id == planId,
+              orElse: () => null,
+            );
+            return Text(
+              plan?.name ?? AppLocalizations.of(context)!.trainingPlan,
               style: const TextStyle(
-                  color: TraumColors.onBackground, fontFamily: 'DMSans')),
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+              ),
+            );
+          },
+          loading: () => Text(
+            AppLocalizations.of(context)!.trainingPlan,
+            style: const TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+            ),
+          ),
           error: (_, _) => Text(AppLocalizations.of(context)!.trainingPlan),
         ),
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.play_arrow_rounded, color: TraumColors.coralOrange, size: 28),
+            icon: const Icon(
+              Icons.play_arrow_rounded,
+              color: TraumColors.coralOrange,
+              size: 28,
+            ),
             tooltip: AppLocalizations.of(context)!.startWorkout,
             onPressed: () => context.go('/training/active'),
           ),
@@ -52,9 +65,13 @@ class WorkoutPlanDetailScreen extends ConsumerWidget {
         data: (days) {
           if (days.isEmpty) {
             return Center(
-              child: Text(AppLocalizations.of(context)!.noTrainingDays,
-                  style: const TextStyle(
-                      color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
+              child: Text(
+                AppLocalizations.of(context)!.noTrainingDays,
+                style: const TextStyle(
+                  color: TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                ),
+              ),
             );
           }
           return ListView.builder(
@@ -67,11 +84,15 @@ class WorkoutPlanDetailScreen extends ConsumerWidget {
             ),
           );
         },
-        loading: () =>
-            const Center(child: CircularProgressIndicator(color: TraumColors.coralOrange)),
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: TraumColors.coralOrange),
+        ),
         error: (e, _) => Center(
-            child: Text('${AppLocalizations.of(context)!.error}: $e',
-                style: const TextStyle(color: TraumColors.roseRed))),
+          child: Text(
+            '${AppLocalizations.of(context)!.error}: $e',
+            style: const TextStyle(color: TraumColors.roseRed),
+          ),
+        ),
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
@@ -112,40 +133,52 @@ class _DayCard extends ConsumerWidget {
           // Day header row
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 14, 8, 10),
-            child: Row(children: [
-              Container(
-                width: 44, height: 44,
-                decoration: const BoxDecoration(
-                    color: TraumColors.coralDim, shape: BoxShape.circle),
-                child: Center(
-                  child: Text(
-                    day.dayOfWeek != null
-                        ? weekDays[(day.dayOfWeek! - 1).clamp(0, 6)]
-                        : '$dayNumber',
-                    style: const TextStyle(
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: const BoxDecoration(
+                    color: TraumColors.coralDim,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      day.dayOfWeek != null
+                          ? weekDays[(day.dayOfWeek! - 1).clamp(0, 6)]
+                          : '$dayNumber',
+                      style: const TextStyle(
                         color: TraumColors.coralOrange,
                         fontFamily: 'DMSans',
                         fontWeight: FontWeight.w700,
-                        fontSize: 14),
+                        fontSize: 14,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Text(day.name,
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    day.name,
                     style: const TextStyle(
-                        color: TraumColors.onBackground,
-                        fontFamily: 'DMSans',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15)),
-              ),
-              IconButton(
-                tooltip: AppLocalizations.of(context)!.startWorkout,
-                icon: const Icon(Icons.play_circle_outline_rounded,
-                    color: TraumColors.coralOrange, size: 28),
-                onPressed: onStartWorkout,
-              ),
-            ]),
+                      color: TraumColors.onBackground,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  tooltip: AppLocalizations.of(context)!.startWorkout,
+                  icon: const Icon(
+                    Icons.play_circle_outline_rounded,
+                    color: TraumColors.coralOrange,
+                    size: 28,
+                  ),
+                  onPressed: onStartWorkout,
+                ),
+              ],
+            ),
           ),
           // Exercise rows
           exercisesAsync.when(
@@ -156,22 +189,28 @@ class _DayCard extends ConsumerWidget {
                   child: Text(
                     AppLocalizations.of(context)!.noExercises,
                     style: const TextStyle(
-                        color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans',
-                        fontSize: 13),
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontSize: 13,
+                    ),
                   ),
                 );
               }
               return Column(
-                children: entries.map((entry) =>
-                  _ExerciseRow(dayExercise: entry)
-                ).toList(),
+                children: entries
+                    .map((entry) => _ExerciseRow(dayExercise: entry))
+                    .toList(),
               );
             },
             loading: () => const SizedBox(
-                height: 32,
-                child: Center(child: CircularProgressIndicator(
-                    strokeWidth: 2, color: TraumColors.coralOrange))),
+              height: 32,
+              child: Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: TraumColors.coralOrange,
+                ),
+              ),
+            ),
             error: (e, _) => InlineError(e),
           ),
           const SizedBox(height: 6),
@@ -197,27 +236,34 @@ class _ExerciseRow extends ConsumerWidget {
         if (exercise == null) return const SizedBox.shrink();
         return Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-          child: Row(children: [
-            ExerciseIcon(
+          child: Row(
+            children: [
+              ExerciseIcon(
                 muscleGroup: canonicalMuscleGroup(exercise.muscleGroup),
                 exerciseName: exercise.name,
-                size: 36),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(exercise.name,
+                size: 36,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  exercise.name,
                   style: const TextStyle(
-                      color: TraumColors.onBackground,
-                      fontFamily: 'DMSans',
-                      fontSize: 13)),
-            ),
-            Text(
-              '${dayExercise.defaultSets}x${dayExercise.defaultReps}',
-              style: const TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+              Text(
+                '${dayExercise.defaultSets}x${dayExercise.defaultReps}',
+                style: const TextStyle(
                   color: TraumColors.onBackgroundMuted,
                   fontFamily: 'DMSans',
-                  fontSize: 12),
-            ),
-          ]),
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
         );
       },
       loading: () => const SizedBox.shrink(),

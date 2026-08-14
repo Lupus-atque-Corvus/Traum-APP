@@ -25,8 +25,9 @@ class PreferencesRepository {
   String get appTheme => _prefs.getString('app_theme') ?? 'dark';
 
   String? get appLocale => _prefs.getString('app_locale');
-  Future<void> setAppLocale(String? v) =>
-      v != null ? _prefs.setString('app_locale', v) : _prefs.remove('app_locale');
+  Future<void> setAppLocale(String? v) => v != null
+      ? _prefs.setString('app_locale', v)
+      : _prefs.remove('app_locale');
 
   String get navSlots =>
       _prefs.getString('nav_slots') ??
@@ -59,8 +60,7 @@ class PreferencesRepository {
   Future<void> setPlanningCalendarFormat(String v) =>
       _prefs.setString('planning_calendar_format', v);
 
-  bool get onboardingComplete =>
-      _prefs.getBool('onboarding_complete') ?? false;
+  bool get onboardingComplete => _prefs.getBool('onboarding_complete') ?? false;
   Future<void> setOnboardingComplete(bool v) =>
       _prefs.setBool('onboarding_complete', v);
 
@@ -93,7 +93,8 @@ class PreferencesRepository {
   Future<void> setActiveDiaryId(int v) => _prefs.setInt('active_diary_id', v);
 
   int get workoutGoalPerWeek => _prefs.getInt('workout_goal_per_week') ?? 3;
-  Future<void> setWorkoutGoalPerWeek(int v) => _prefs.setInt('workout_goal_per_week', v);
+  Future<void> setWorkoutGoalPerWeek(int v) =>
+      _prefs.setInt('workout_goal_per_week', v);
 
   // Training-Profil (Onboarding)
   String get trainingLevel => _prefs.getString('training_level') ?? 'beginner';
@@ -183,18 +184,15 @@ class PreferencesRepository {
   Future<void> setNotifWorkoutTime(String v) =>
       _prefs.setString('notif_workout_time', v);
 
-  int get notifWaterInterval =>
-      _prefs.getInt('notif_water_interval') ?? 90;
+  int get notifWaterInterval => _prefs.getInt('notif_water_interval') ?? 90;
   Future<void> setNotifWaterInterval(int v) =>
       _prefs.setInt('notif_water_interval', v);
 
-  String get notifHabitTime =>
-      _prefs.getString('notif_habit_time') ?? '20:00';
+  String get notifHabitTime => _prefs.getString('notif_habit_time') ?? '20:00';
   Future<void> setNotifHabitTime(String v) =>
       _prefs.setString('notif_habit_time', v);
 
-  String get notifTodoTime =>
-      _prefs.getString('notif_todo_time') ?? '07:00';
+  String get notifTodoTime => _prefs.getString('notif_todo_time') ?? '07:00';
   Future<void> setNotifTodoTime(String v) =>
       _prefs.setString('notif_todo_time', v);
 

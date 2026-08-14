@@ -37,36 +37,40 @@ void main() {
     if (await tempDir.exists()) await tempDir.delete(recursive: true);
   });
 
-  test('export → import round-trips table rows into a fresh database', () async {
-    final source = TraumDatabase.forTesting(NativeDatabase.memory());
-    final pid = await source.foodProductsDao.insertProduct(
-      FoodProductsCompanion.insert(
-        name: 'Apfel',
-        caloriesPer100g: 52,
-        proteinPer100g: 0.3,
-        carbsPer100g: 14,
-        fatPer100g: 0.2,
-        createdAt: DateTime.now(),
-      ),
-    );
+  test(
+    'export → import round-trips table rows into a fresh database',
+    () async {
+      final source = TraumDatabase.forTesting(NativeDatabase.memory());
+      final pid = await source.foodProductsDao.insertProduct(
+        FoodProductsCompanion.insert(
+          name: 'Apfel',
+          caloriesPer100g: 52,
+          proteinPer100g: 0.3,
+          carbsPer100g: 14,
+          fatPer100g: 0.2,
+          createdAt: DateTime.now(),
+        ),
+      );
 
-    final built = await BackupService(source).buildBackupZip();
-    expect(built.rowCount, greaterThanOrEqualTo(1));
-    await source.close();
+      final built = await BackupService(source).buildBackupZip();
+      expect(built.rowCount, greaterThanOrEqualTo(1));
+      await source.close();
 
-    final target = TraumDatabase.forTesting(NativeDatabase.memory());
-    final result =
-        await BackupService(target).restoreFromBytes(built.zipBytes);
+      final target = TraumDatabase.forTesting(NativeDatabase.memory());
+      final result = await BackupService(
+        target,
+      ).restoreFromBytes(built.zipBytes);
 
-    expect(result.success, isTrue, reason: result.error);
-    expect(result.rowCount, greaterThanOrEqualTo(1));
+      expect(result.success, isTrue, reason: result.error);
+      expect(result.rowCount, greaterThanOrEqualTo(1));
 
-    final restored = await target.foodProductsDao.getById(pid);
-    expect(restored, isNotNull);
-    expect(restored!.name, 'Apfel');
-    expect(restored.caloriesPer100g, 52);
-    await target.close();
-  });
+      final restored = await target.foodProductsDao.getById(pid);
+      expect(restored, isNotNull);
+      expect(restored!.name, 'Apfel');
+      expect(restored.caloriesPer100g, 52);
+      await target.close();
+    },
+  );
 
   test('import merges by primary key (insert-or-replace)', () async {
     final source = TraumDatabase.forTesting(NativeDatabase.memory());
@@ -97,8 +101,7 @@ void main() {
     );
     expect(existingId, pid); // both autoincrement to 1
 
-    final result =
-        await BackupService(target).restoreFromBytes(built.zipBytes);
+    final result = await BackupService(target).restoreFromBytes(built.zipBytes);
     expect(result.success, isTrue, reason: result.error);
 
     final merged = await target.foodProductsDao.getById(pid);
@@ -119,8 +122,9 @@ void main() {
         createdAt: DateTime.now(),
       ),
     );
-    final jsonBytes =
-        await BackupService(source).buildModulesJson(['nutrition']);
+    final jsonBytes = await BackupService(
+      source,
+    ).buildModulesJson(['nutrition']);
     await source.close();
 
     final target = TraumDatabase.forTesting(NativeDatabase.memory());
@@ -139,61 +143,60 @@ void main() {
     // Real export carries the current schema; a genuine round-trip is covered
     // above. Here we just assert the guard rejects an impossible schema by
     // feeding garbage bytes.
-    final result = await BackupService(db).restoreFromBytes(
-      const [0, 1, 2, 3],
-    );
+    final result = await BackupService(db).restoreFromBytes(const [0, 1, 2, 3]);
     expect(result.success, isFalse);
     expect(bogus.zipBytes, isNotEmpty);
     await db.close();
   });
 
-  test('bundles and restores health photo-log and budget receipt images',
-      () async {
-    final photo = File(p.join(tempDir.path, 'progress.jpg'))
-      ..writeAsBytesSync([1, 2, 3, 4]);
-    final receipt = File(p.join(tempDir.path, 'receipt.jpg'))
-      ..writeAsBytesSync([5, 6, 7, 8]);
-
-    final source = TraumDatabase.forTesting(NativeDatabase.memory());
-    await source.healthDao.insertPhotoLog(
-      PhotoLogsCompanion.insert(
-        logDate: DateTime(2026, 1, 1),
-        imagePath: photo.path,
-      ),
-    );
-    await source.budgetDao.insertTransaction(
-      TransactionsCompanion.insert(
-        amount: 12.5,
-        description: 'Kaffee',
-        date: DateTime(2026, 1, 1),
-        receiptImagePath: Value(receipt.path),
-      ),
-    );
-
-    final built = await BackupService(source).buildBackupZip();
-    expect(built.mediaCount, 2);
-    await source.close();
-
-    final target = TraumDatabase.forTesting(NativeDatabase.memory());
-    final result = await BackupService(target).restoreFromBytes(
-      built.zipBytes,
-    );
-    expect(result.success, isTrue, reason: result.error);
-    expect(result.mediaCount, 2);
-
-    final restoredPhoto = (await target.healthDao.watchAllPhotoLogs().first)
-        .single;
-    expect(File(restoredPhoto.imagePath).existsSync(), isTrue);
-    expect(File(restoredPhoto.imagePath).path, isNot(photo.path));
-
-    final restoredTx = (await target.budgetDao.watchAllTransactions().first)
-        .single;
-    expect(File(restoredTx.receiptImagePath!).existsSync(), isTrue);
-    await target.close();
-  });
-
   test(
-      'buildBackupZip keeps custom and user-touched markers, '
+    'bundles and restores health photo-log and budget receipt images',
+    () async {
+      final photo = File(p.join(tempDir.path, 'progress.jpg'))
+        ..writeAsBytesSync([1, 2, 3, 4]);
+      final receipt = File(p.join(tempDir.path, 'receipt.jpg'))
+        ..writeAsBytesSync([5, 6, 7, 8]);
+
+      final source = TraumDatabase.forTesting(NativeDatabase.memory());
+      await source.healthDao.insertPhotoLog(
+        PhotoLogsCompanion.insert(
+          logDate: DateTime(2026, 1, 1),
+          imagePath: photo.path,
+        ),
+      );
+      await source.budgetDao.insertTransaction(
+        TransactionsCompanion.insert(
+          amount: 12.5,
+          description: 'Kaffee',
+          date: DateTime(2026, 1, 1),
+          receiptImagePath: Value(receipt.path),
+        ),
+      );
+
+      final built = await BackupService(source).buildBackupZip();
+      expect(built.mediaCount, 2);
+      await source.close();
+
+      final target = TraumDatabase.forTesting(NativeDatabase.memory());
+      final result = await BackupService(
+        target,
+      ).restoreFromBytes(built.zipBytes);
+      expect(result.success, isTrue, reason: result.error);
+      expect(result.mediaCount, 2);
+
+      final restoredPhoto =
+          (await target.healthDao.watchAllPhotoLogs().first).single;
+      expect(File(restoredPhoto.imagePath).existsSync(), isTrue);
+      expect(File(restoredPhoto.imagePath).path, isNot(photo.path));
+
+      final restoredTx =
+          (await target.budgetDao.watchAllTransactions().first).single;
+      expect(File(restoredTx.receiptImagePath!).existsSync(), isTrue);
+      await target.close();
+    },
+  );
+
+  test('buildBackupZip keeps custom and user-touched markers, '
       'drops untouched bulk-imported ones', () async {
     final db = TraumDatabase.forTesting(NativeDatabase.memory());
     final collectionId = await db.mapCollectionsDao.insert(
@@ -247,9 +250,9 @@ void main() {
       ),
     );
 
-    final built = await db.customSelect(
-      'SELECT COUNT(*) AS c FROM map_markers',
-    ).getSingle();
+    final built = await db
+        .customSelect('SELECT COUNT(*) AS c FROM map_markers')
+        .getSingle();
     expect(built.read<int>('c'), 4); // sanity: all 4 rows actually exist
 
     final backup = BackupService(db);
@@ -258,11 +261,10 @@ void main() {
 
     final target = TraumDatabase.forTesting(NativeDatabase.memory());
     await BackupService(target).restoreFromBytes(result.zipBytes);
-    final restoredIds = (await target.customSelect(
-      'SELECT id FROM map_markers',
-    ).get())
-        .map((r) => r.read<int>('id'))
-        .toSet();
+    final restoredIds =
+        (await target.customSelect('SELECT id FROM map_markers').get())
+            .map((r) => r.read<int>('id'))
+            .toSet();
     await target.close();
 
     expect(restoredIds, {ratedId, photographedId, customId});
@@ -279,8 +281,10 @@ void main() {
     final archive = ZipDecoder().decodeBytes(built.zipBytes);
     final crashLogFile = archive.findFile('crash_log.txt');
     expect(crashLogFile, isNotNull);
-    expect(utf8.decode(crashLogFile!.content as List<int>),
-        contains('a real diagnosed crash'));
+    expect(
+      utf8.decode(crashLogFile!.content as List<int>),
+      contains('a real diagnosed crash'),
+    );
   });
 
   test('backup omits the crash log entry when none exists', () async {

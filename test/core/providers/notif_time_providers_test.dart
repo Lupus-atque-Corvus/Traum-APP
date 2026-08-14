@@ -18,34 +18,38 @@ void main() {
     );
   }
 
-  test('notifWorkoutTimeProvider defaults, persists, and notifies listeners',
-      () async {
-    final container = await makeContainer();
-    addTearDown(container.dispose);
+  test(
+    'notifWorkoutTimeProvider defaults, persists, and notifies listeners',
+    () async {
+      final container = await makeContainer();
+      addTearDown(container.dispose);
 
-    expect(container.read(notifWorkoutTimeProvider), '18:00');
+      expect(container.read(notifWorkoutTimeProvider), '18:00');
 
-    var notifyCount = 0;
-    container.listen(notifWorkoutTimeProvider, (_, _) => notifyCount++);
+      var notifyCount = 0;
+      container.listen(notifWorkoutTimeProvider, (_, _) => notifyCount++);
 
-    await container.read(notifWorkoutTimeProvider.notifier).set('07:30');
-    expect(container.read(notifWorkoutTimeProvider), '07:30');
-    expect(notifyCount, 1);
+      await container.read(notifWorkoutTimeProvider.notifier).set('07:30');
+      expect(container.read(notifWorkoutTimeProvider), '07:30');
+      expect(notifyCount, 1);
 
-    // Persisted through the repository, not just in-memory notifier state.
-    final repo = container.read(preferencesRepositoryProvider);
-    expect(repo.notifWorkoutTime, '07:30');
-  });
+      // Persisted through the repository, not just in-memory notifier state.
+      final repo = container.read(preferencesRepositoryProvider);
+      expect(repo.notifWorkoutTime, '07:30');
+    },
+  );
 
-  test('notifHabitTimeProvider and notifTodoTimeProvider are independent',
-      () async {
-    final container = await makeContainer();
-    addTearDown(container.dispose);
+  test(
+    'notifHabitTimeProvider and notifTodoTimeProvider are independent',
+    () async {
+      final container = await makeContainer();
+      addTearDown(container.dispose);
 
-    await container.read(notifHabitTimeProvider.notifier).set('21:00');
-    await container.read(notifTodoTimeProvider.notifier).set('06:15');
+      await container.read(notifHabitTimeProvider.notifier).set('21:00');
+      await container.read(notifTodoTimeProvider.notifier).set('06:15');
 
-    expect(container.read(notifHabitTimeProvider), '21:00');
-    expect(container.read(notifTodoTimeProvider), '06:15');
-  });
+      expect(container.read(notifHabitTimeProvider), '21:00');
+      expect(container.read(notifTodoTimeProvider), '06:15');
+    },
+  );
 }

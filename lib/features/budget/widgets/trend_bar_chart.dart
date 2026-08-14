@@ -21,9 +21,7 @@ class _LocalCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: TraumColors.surface,
         borderRadius: BorderRadius.circular(bs(16)),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.08),
-        ),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: child,
     );
@@ -94,7 +92,9 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                             p,
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                          horizontal: bs(8), vertical: bs(3)),
+                        horizontal: bs(8),
+                        vertical: bs(3),
+                      ),
                       decoration: BoxDecoration(
                         color: isSelected
                             ? TraumColors.amberGold
@@ -135,9 +135,9 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                   ),
                 );
               }
-              final maxY = bars
-                      .map((b) =>
-                          b.income > b.expenses ? b.income : b.expenses)
+              final maxY =
+                  bars
+                      .map((b) => b.income > b.expenses ? b.income : b.expenses)
                       .fold(0.0, (a, b) => a > b ? a : b) *
                   1.2;
               return SizedBox(
@@ -148,8 +148,7 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                     maxY: maxY > 0 ? maxY : 1,
                     barTouchData: BarTouchData(
                       touchCallback: (event, response) {
-                        final groupIndex =
-                            response?.spot?.touchedBarGroupIndex;
+                        final groupIndex = response?.spot?.touchedBarGroupIndex;
                         setState(() {
                           _touchedGroupIndex = groupIndex;
                         });
@@ -158,8 +157,7 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                         }
                       },
                       touchTooltipData: BarTouchTooltipData(
-                        getTooltipItem:
-                            (group, groupIndex, rod, rodIndex) {
+                        getTooltipItem: (group, groupIndex, rod, rodIndex) {
                           final bar = bars[groupIndex];
                           final isIncome = rodIndex == 0;
                           return BarTooltipItem(
@@ -221,19 +219,23 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
                         barRods: [
                           BarChartRodData(
                             toY: bar.income,
-                            color: TraumColors.mintGreen
-                                .withValues(alpha: isTouched ? 1.0 : 0.7),
+                            color: TraumColors.mintGreen.withValues(
+                              alpha: isTouched ? 1.0 : 0.7,
+                            ),
                             width: bs(9),
                             borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(bs(2))),
+                              top: Radius.circular(bs(2)),
+                            ),
                           ),
                           BarChartRodData(
                             toY: bar.expenses,
-                            color: TraumColors.roseRed
-                                .withValues(alpha: isTouched ? 1.0 : 0.7),
+                            color: TraumColors.roseRed.withValues(
+                              alpha: isTouched ? 1.0 : 0.7,
+                            ),
                             width: bs(9),
                             borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(bs(2))),
+                              top: Radius.circular(bs(2)),
+                            ),
                           ),
                         ],
                       );
@@ -245,15 +247,13 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
             loading: () => const Center(
               child: Padding(
                 padding: EdgeInsets.all(24),
-                child: CircularProgressIndicator(
-                    color: TraumColors.amberGold),
+                child: CircularProgressIndicator(color: TraumColors.amberGold),
               ),
             ),
             error: (e, _) => Center(
               child: Text(
                 '$e',
-                style:
-                    const TextStyle(color: TraumColors.roseRed),
+                style: const TextStyle(color: TraumColors.roseRed),
               ),
             ),
           ),
@@ -263,12 +263,14 @@ class _TrendBarChartState extends ConsumerState<TrendBarChart> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _LegendDot(
-                  color: TraumColors.mintGreen,
-                  label: AppLocalizations.of(context)!.budgetIncome),
+                color: TraumColors.mintGreen,
+                label: AppLocalizations.of(context)!.budgetIncome,
+              ),
               SizedBox(width: bs(12)),
               _LegendDot(
-                  color: TraumColors.roseRed,
-                  label: AppLocalizations.of(context)!.budgetExpenses),
+                color: TraumColors.roseRed,
+                label: AppLocalizations.of(context)!.budgetExpenses,
+              ),
             ],
           ),
         ],
@@ -285,21 +287,23 @@ class _LegendDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      Container(
-        width: bs(6),
-        height: bs(6),
-        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-      ),
-      SizedBox(width: bs(4)),
-      Text(
-        label,
-        style: const TextStyle(
-          color: TraumColors.onBackgroundMuted,
-          fontFamily: 'DMSans',
-          fontSize: 8,
+    return Row(
+      children: [
+        Container(
+          width: bs(6),
+          height: bs(6),
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
-      ),
-    ]);
+        SizedBox(width: bs(4)),
+        Text(
+          label,
+          style: const TextStyle(
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+            fontSize: 8,
+          ),
+        ),
+      ],
+    );
   }
 }

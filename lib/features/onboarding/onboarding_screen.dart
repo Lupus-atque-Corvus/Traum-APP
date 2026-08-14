@@ -88,17 +88,25 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       // Phase 1 · Basis
       _WelcomePage(onNext: _next),
       _ConsentPage(
-        consentPrivacy: _consentPrivacy, consentHealth: _consentHealth,
-        consentTerms: _consentTerms, consentDisclaimer: _consentDisclaimer,
+        consentPrivacy: _consentPrivacy,
+        consentHealth: _consentHealth,
+        consentTerms: _consentTerms,
+        consentDisclaimer: _consentDisclaimer,
         consentAge: _consentAge,
         onChanged: (p, h, t, d, a) => setState(() {
-          _consentPrivacy = p; _consentHealth = h; _consentTerms = t;
-          _consentDisclaimer = d; _consentAge = a;
+          _consentPrivacy = p;
+          _consentHealth = h;
+          _consentTerms = t;
+          _consentDisclaimer = d;
+          _consentAge = a;
         }),
-        canContinue: _allConsented, onNext: _next,
+        canContinue: _allConsented,
+        onNext: _next,
       ),
       _ProfilePage(
-        nameController: _nameController, sex: _sex, birthDate: _birthDate,
+        nameController: _nameController,
+        sex: _sex,
+        birthDate: _birthDate,
         unitSystem: _unitSystem,
         onSexChanged: (v) => setState(() => _sex = v),
         onUnitChanged: (v) => setState(() => _unitSystem = v),
@@ -106,9 +114,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         onNext: _next,
       ),
       _BodyPage(
-        heightCm: _heightCm, weightKg: _weightKg, weightGoalKg: _weightGoalKg,
-        stepsGoal: _stepsGoal, unitSystem: _unitSystem ?? 'metric',
-        sex: _sex ?? 'male', birthDate: _birthDate,
+        heightCm: _heightCm,
+        weightKg: _weightKg,
+        weightGoalKg: _weightGoalKg,
+        stepsGoal: _stepsGoal,
+        unitSystem: _unitSystem ?? 'metric',
+        sex: _sex ?? 'male',
+        birthDate: _birthDate,
         onHeightChanged: (v) => setState(() => _heightCm = v),
         onWeightChanged: (v) => setState(() => _weightKg = v),
         onGoalWeightChanged: (v) => setState(() => _weightGoalKg = v),
@@ -132,42 +144,56 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       ),
       if (_has('nutrition'))
         _NutritionPage(
-          kcalGoal: _kcalGoal, proteinGoal: _proteinGoal,
+          kcalGoal: _kcalGoal,
+          proteinGoal: _proteinGoal,
           onKcalChanged: (v) => setState(() => _kcalGoal = v),
           onProteinChanged: (v) => setState(() => _proteinGoal = v),
           onNext: _next,
         ),
       if (_has('training'))
         TrainingSetupPage(
-          level: _trainingLevel, goal: _trainingGoal, daysPerWeek: _trainingDays,
+          level: _trainingLevel,
+          goal: _trainingGoal,
+          daysPerWeek: _trainingDays,
           onLevelChanged: (v) => setState(() => _trainingLevel = v),
           onGoalChanged: (v) => setState(() => _trainingGoal = v),
           onDaysChanged: (v) => setState(() => _trainingDays = v),
           onNext: _next,
         ),
-      if (_has('substances')) ShowcasePage(moduleKey: 'substances', onNext: _next),
+      if (_has('substances'))
+        ShowcasePage(moduleKey: 'substances', onNext: _next),
       if (_has('abstinence')) AbstinencePage(onNext: _next),
       if (_sex == 'female' && _has('period'))
         _CyclePage(
-          avgCycleLength: _avgCycleLength, avgPeriodLength: _avgPeriodLength,
+          avgCycleLength: _avgCycleLength,
+          avgPeriodLength: _avgPeriodLength,
           lastPeriodStart: _lastPeriodStart,
           onCycleLengthChanged: (v) => setState(() => _avgCycleLength = v),
           onPeriodLengthChanged: (v) => setState(() => _avgPeriodLength = v),
           onLastPeriodChanged: (v) => setState(() => _lastPeriodStart = v),
-          onNext: () { setState(() => _periodTrackingEnabled = true); _next(); },
-          onSkip: () { setState(() => _periodTrackingEnabled = false); _next(); },
+          onNext: () {
+            setState(() => _periodTrackingEnabled = true);
+            _next();
+          },
+          onSkip: () {
+            setState(() => _periodTrackingEnabled = false);
+            _next();
+          },
         ),
       if (_has('budget'))
         _BudgetPage(
-          currencySymbol: _currencySymbol, monthlyBudget: _monthlyBudget,
+          currencySymbol: _currencySymbol,
+          monthlyBudget: _monthlyBudget,
           onCurrencyChanged: (v) => setState(() => _currencySymbol = v),
           onBudgetChanged: (v) => setState(() => _monthlyBudget = v),
-          onNext: _next, onSkip: _next,
+          onNext: _next,
+          onSkip: _next,
         ),
       if (_has('planning')) ShowcasePage(moduleKey: 'planning', onNext: _next),
       if (_has('diary')) ShowcasePage(moduleKey: 'diary', onNext: _next),
       if (_has('notes')) ShowcasePage(moduleKey: 'notes', onNext: _next),
-      if (_has('graffitiMap')) ShowcasePage(moduleKey: 'graffitiMap', onNext: _next),
+      if (_has('graffitiMap'))
+        ShowcasePage(moduleKey: 'graffitiMap', onNext: _next),
       if (_has('health')) ShowcasePage(moduleKey: 'healthScore', onNext: _next),
       TabsPage(
         candidates: _tabCandidates(),
@@ -187,8 +213,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       _SecurityPage(onNext: _next),
       DashboardTeaserPage(onNext: _next),
       _DonePage(
-        name: _nameController.text, kcalGoal: _kcalGoal,
-        waterGoal: _computeWaterGoal(), onFinish: _finish,
+        name: _nameController.text,
+        kcalGoal: _kcalGoal,
+        waterGoal: _computeWaterGoal(),
+        onFinish: _finish,
       ),
     ];
     return pages;
@@ -198,17 +226,27 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   List<String> _tabCandidates() {
     final base = [
       ..._selectedModules,
-      'training', 'health', 'nutrition', 'budget', 'planning', 'profile', 'settings',
+      'training',
+      'health',
+      'nutrition',
+      'budget',
+      'planning',
+      'profile',
+      'settings',
     ];
     final seen = <String>{};
-    return base.where((m) => m != 'period' || _sex == 'female')
-        .where(seen.add).toList();
+    return base
+        .where((m) => m != 'period' || _sex == 'female')
+        .where(seen.add)
+        .toList();
   }
 
   OnboardingPhase _phaseForIndex(int i, int total) {
     if (i <= 3) return OnboardingPhase.basis;
     if (i >= total - 6) {
-      return i >= total - 3 ? OnboardingPhase.security : OnboardingPhase.permissions;
+      return i >= total - 3
+          ? OnboardingPhase.security
+          : OnboardingPhase.permissions;
     }
     return OnboardingPhase.interests;
   }
@@ -278,7 +316,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       prefs.setMonthlyBudget(_monthlyBudget),
       prefs.setAvgCycleLength(_avgCycleLength),
       prefs.setAvgPeriodLength(_avgPeriodLength),
-      prefs.setPeriodTrackingEnabled(sex == 'female' && _has('period') && _periodTrackingEnabled),
+      prefs.setPeriodTrackingEnabled(
+        sex == 'female' && _has('period') && _periodTrackingEnabled,
+      ),
       prefs.setOnboardingComplete(true),
     ]);
     // Geburtsdatum ist jetzt Pflicht
@@ -294,7 +334,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       await prefs.setWorkoutGoalPerWeek(_trainingDays);
     }
     // Bottom-Bar-Tabs
-    final slots = _tabSlots.isEmpty ? _tabCandidates().take(4).toList() : _tabSlots;
+    final slots = _tabSlots.isEmpty
+        ? _tabCandidates().take(4).toList()
+        : _tabSlots;
     await ref.read(navSlotsProvider.notifier).setSlots(slots);
     // Home-Layout an Interessen anpassen
     ref.read(homeLayoutProvider.notifier).seedFromModules(_selectedModules);
@@ -397,9 +439,7 @@ class _OnboardingPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Expanded(
-            child: SingleChildScrollView(child: content),
-          ),
+          Expanded(child: SingleChildScrollView(child: content)),
           if (buttonLabel != null) ...[
             const SizedBox(height: 12),
             GradientButton(
@@ -437,7 +477,11 @@ class _WelcomePage extends StatelessWidget {
               gradient: TraumColors.gradientWarm,
               borderRadius: BorderRadius.circular(30),
             ),
-            child: const Icon(Icons.auto_awesome, color: Colors.white, size: 50),
+            child: const Icon(
+              Icons.auto_awesome,
+              color: Colors.white,
+              size: 50,
+            ),
           ),
           const SizedBox(height: 24),
           Text(
@@ -469,7 +513,11 @@ class _WelcomePage extends StatelessWidget {
 // ── Consent ───────────────────────────────────────────────────────────────────
 
 class _ConsentPage extends StatelessWidget {
-  final bool consentPrivacy, consentHealth, consentTerms, consentDisclaimer, consentAge;
+  final bool consentPrivacy,
+      consentHealth,
+      consentTerms,
+      consentDisclaimer,
+      consentAge;
   final void Function(bool, bool, bool, bool, bool) onChanged;
   final bool canContinue;
   final VoidCallback onNext;
@@ -507,7 +555,12 @@ class _ConsentPage extends StatelessWidget {
           _LinkedConsentTile(
             value: consentPrivacy,
             onChanged: (v) => onChanged(
-                v ?? false, consentHealth, consentTerms, consentDisclaimer, consentAge),
+              v ?? false,
+              consentHealth,
+              consentTerms,
+              consentDisclaimer,
+              consentAge,
+            ),
             leading: l10n.consentReadLeading,
             linkText: l10n.privacy_policy,
             trailing: l10n.consentReadTrailing,
@@ -521,12 +574,22 @@ class _ConsentPage extends StatelessWidget {
             label: l10n.healthDataConsent,
             value: consentHealth,
             onChanged: (v) => onChanged(
-                consentPrivacy, v ?? false, consentTerms, consentDisclaimer, consentAge),
+              consentPrivacy,
+              v ?? false,
+              consentTerms,
+              consentDisclaimer,
+              consentAge,
+            ),
           ),
           _LinkedConsentTile(
             value: consentTerms,
             onChanged: (v) => onChanged(
-                consentPrivacy, consentHealth, v ?? false, consentDisclaimer, consentAge),
+              consentPrivacy,
+              consentHealth,
+              v ?? false,
+              consentDisclaimer,
+              consentAge,
+            ),
             leading: l10n.consentAcceptLeading,
             linkText: l10n.terms_of_service,
             trailing: l10n.consentDot,
@@ -539,7 +602,12 @@ class _ConsentPage extends StatelessWidget {
           _LinkedConsentTile(
             value: consentDisclaimer,
             onChanged: (v) => onChanged(
-                consentPrivacy, consentHealth, consentTerms, v ?? false, consentAge),
+              consentPrivacy,
+              consentHealth,
+              consentTerms,
+              v ?? false,
+              consentAge,
+            ),
             leading: l10n.consentConfirmLeading,
             linkText: l10n.medical_disclaimer,
             trailing: l10n.consentDot,
@@ -553,7 +621,12 @@ class _ConsentPage extends StatelessWidget {
             label: l10n.ageConsent,
             value: consentAge,
             onChanged: (v) => onChanged(
-                consentPrivacy, consentHealth, consentTerms, consentDisclaimer, v ?? false),
+              consentPrivacy,
+              consentHealth,
+              consentTerms,
+              consentDisclaimer,
+              v ?? false,
+            ),
           ),
         ],
       ),
@@ -580,9 +653,10 @@ class _ConsentTile extends StatelessWidget {
         color: TraumColors.surface,
         borderRadius: BorderRadius.circular(TraumRadius.card),
         border: Border.all(
-            color: value
-                ? TraumColors.coralOrange.withValues(alpha: 0.4)
-                : TraumColors.surfaceVariant),
+          color: value
+              ? TraumColors.coralOrange.withValues(alpha: 0.4)
+              : TraumColors.surfaceVariant,
+        ),
       ),
       child: CheckboxListTile(
         value: value,
@@ -628,9 +702,10 @@ class _LinkedConsentTile extends StatelessWidget {
         color: TraumColors.surface,
         borderRadius: BorderRadius.circular(TraumRadius.card),
         border: Border.all(
-            color: value
-                ? TraumColors.coralOrange.withValues(alpha: 0.4)
-                : TraumColors.surfaceVariant),
+          color: value
+              ? TraumColors.coralOrange.withValues(alpha: 0.4)
+              : TraumColors.surfaceVariant,
+        ),
       ),
       child: CheckboxListTile(
         value: value,
@@ -776,8 +851,10 @@ class _ProfilePage extends StatelessWidget {
                 lastDate: now,
                 builder: (ctx, child) => Theme(
                   data: ThemeData.dark().copyWith(
-                      colorScheme: const ColorScheme.dark(
-                          primary: TraumColors.coralOrange)),
+                    colorScheme: const ColorScheme.dark(
+                      primary: TraumColors.coralOrange,
+                    ),
+                  ),
                   child: child!,
                 ),
               );
@@ -792,17 +869,21 @@ class _ProfilePage extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.cake_rounded,
-                      color: TraumColors.coralOrange, size: 18),
+                  const Icon(
+                    Icons.cake_rounded,
+                    color: TraumColors.coralOrange,
+                    size: 18,
+                  ),
                   const SizedBox(width: 10),
                   Text(
                     birthDate == null
                         ? l10n.obBirthDatePick
                         : '${birthDate!.day.toString().padLeft(2, '0')}.${birthDate!.month.toString().padLeft(2, '0')}.${birthDate!.year}',
                     style: const TextStyle(
-                        color: TraumColors.onBackground,
-                        fontFamily: 'DMSans',
-                        fontSize: 14),
+                      color: TraumColors.onBackground,
+                      fontFamily: 'DMSans',
+                      fontSize: 14,
+                    ),
                   ),
                 ],
               ),
@@ -832,7 +913,9 @@ class _BodyPage extends StatelessWidget {
   final int stepsGoal;
   final String unitSystem, sex;
   final DateTime? birthDate;
-  final ValueChanged<double> onHeightChanged, onWeightChanged, onGoalWeightChanged;
+  final ValueChanged<double> onHeightChanged,
+      onWeightChanged,
+      onGoalWeightChanged;
   final ValueChanged<int> onStepsChanged;
   final VoidCallback onNext;
 
@@ -1219,8 +1302,9 @@ class _WeatherPageState extends State<_WeatherPage> {
           ),
           const SizedBox(height: 8),
           TextButton(
-              onPressed: _requesting ? null : widget.onNext,
-              child: Text(l10n.skip)),
+            onPressed: _requesting ? null : widget.onNext,
+            child: Text(l10n.skip),
+          ),
         ],
       ),
     );
@@ -1278,7 +1362,10 @@ class _NotificationsPageState extends State<_NotificationsPage> {
             onPressed: _requesting ? null : _requestNotification,
           ),
           const SizedBox(height: 8),
-          TextButton(onPressed: _requesting ? null : widget.onNext, child: Text(l10n.notNow)),
+          TextButton(
+            onPressed: _requesting ? null : widget.onNext,
+            child: Text(l10n.notNow),
+          ),
         ],
       ),
     );
@@ -1342,8 +1429,9 @@ class _HealthPageState extends State<_HealthPage> {
           ),
           const SizedBox(height: 8),
           TextButton(
-              onPressed: _requesting ? null : widget.onNext,
-              child: Text(l10n.skip)),
+            onPressed: _requesting ? null : widget.onNext,
+            child: Text(l10n.skip),
+          ),
         ],
       ),
     );
@@ -1462,15 +1550,14 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
     } catch (_) {}
   }
 
-  IconData get _biometricIcon =>
-      _biometricTypes.contains(BiometricType.face)
-          ? Icons.face_rounded
-          : Icons.fingerprint_rounded;
+  IconData get _biometricIcon => _biometricTypes.contains(BiometricType.face)
+      ? Icons.face_rounded
+      : Icons.fingerprint_rounded;
 
   String _getBiometricLabel(AppLocalizations l10n) =>
       _biometricTypes.contains(BiometricType.face)
-          ? l10n.faceIdActivate
-          : l10n.fingerprintActivate;
+      ? l10n.faceIdActivate
+      : l10n.fingerprintActivate;
 
   Future<void> _enableBiometric() async {
     setState(() {
@@ -1502,7 +1589,9 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
       }
     } catch (_) {
       if (mounted) {
-        setState(() => _error = AppLocalizations.of(context)!.biometricCouldNotSet);
+        setState(
+          () => _error = AppLocalizations.of(context)!.biometricCouldNotSet,
+        );
       }
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -1531,8 +1620,12 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
     if (_mode == _SecurityMode.enterPin && _pin.isNotEmpty) {
       setState(() => _pin = _pin.substring(0, _pin.length - 1));
     } else if (_mode == _SecurityMode.confirmPin && _pinToConfirm.isNotEmpty) {
-      setState(() =>
-          _pinToConfirm = _pinToConfirm.substring(0, _pinToConfirm.length - 1));
+      setState(
+        () => _pinToConfirm = _pinToConfirm.substring(
+          0,
+          _pinToConfirm.length - 1,
+        ),
+      );
     }
   }
 
@@ -1554,9 +1647,7 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _mode == _SecurityMode.choose
-        ? _buildChoosePage()
-        : _buildPinPage();
+    return _mode == _SecurityMode.choose ? _buildChoosePage() : _buildPinPage();
   }
 
   Widget _buildChoosePage() {
@@ -1596,10 +1687,10 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
             onTap: _loading
                 ? null
                 : () => setState(() {
-                      _mode = _SecurityMode.enterPin;
-                      _pin = '';
-                      _error = null;
-                    }),
+                    _mode = _SecurityMode.enterPin;
+                    _pin = '';
+                    _error = null;
+                  }),
           ),
           if (_error != null) ...[
             const SizedBox(height: 12),
@@ -1629,8 +1720,7 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
 
   Widget _buildPinPage() {
     final l10n = AppLocalizations.of(context)!;
-    final current =
-        _mode == _SecurityMode.enterPin ? _pin : _pinToConfirm;
+    final current = _mode == _SecurityMode.enterPin ? _pin : _pinToConfirm;
     final title = _mode == _SecurityMode.enterPin
         ? l10n.pinSetTitle
         : l10n.pinConfirmTitle;
@@ -1703,9 +1793,10 @@ class _SecurityPageState extends ConsumerState<_SecurityPage> {
             child: Text(
               AppLocalizations.of(context)!.backToSelection,
               style: const TextStyle(
-                  color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans',
-                  fontSize: 13),
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
             ),
           ),
         ],
@@ -1908,4 +1999,3 @@ class _DelKey extends StatelessWidget {
     );
   }
 }
-

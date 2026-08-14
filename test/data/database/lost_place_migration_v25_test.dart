@@ -82,8 +82,7 @@ void _seedV24Schema(sqlite3.Database raw) {
 }
 
 void main() {
-  test('v24 -> v25: adds external_id column and unique partial index',
-      () async {
+  test('v24 -> v25: adds external_id column and unique partial index', () async {
     final raw = sqlite3.sqlite3.openInMemory();
     _seedV24Schema(raw);
     raw.execute(
@@ -123,8 +122,7 @@ void main() {
     await db.close();
   });
 
-  test(
-      're-running the migration after a previously-added external_id column '
+  test('re-running the migration after a previously-added external_id column '
       'does not crash with "duplicate column name"', () async {
     final raw = sqlite3.sqlite3.openInMemory();
     _seedV24Schema(raw);

@@ -95,72 +95,82 @@ void main() {
     final db = TraumDatabase.forTesting(NativeDatabase.opened(raw));
     await db.customSelect('SELECT 1').get();
 
-    expect(await _indexNames(db, 'map_markers'),
-        contains('idx_map_markers_collection_pos'));
-    expect(await _indexNames(db, 'marker_photos'),
-        contains('idx_marker_photos_marker'));
-
-    await db.close();
-  });
-
-  test('der Index wird für die Kartenausschnitt-Abfrage tatsächlich genutzt',
-      () async {
-    final raw = sqlite3.sqlite3.openInMemory();
-    _seedV25Schema(raw);
-    raw.execute('PRAGMA user_version = 25');
-
-    final db = TraumDatabase.forTesting(NativeDatabase.opened(raw));
-    await db.customSelect('SELECT 1').get();
-
-    // Ohne Zeilen entscheidet sich SQLite ggf. gegen den Index — genug Zeilen
-    // einfügen, damit der Query-Planer ihn realistisch bewertet.
-    raw.execute(
-      "INSERT INTO map_collections (name, icon_name, created_at) "
-      "VALUES ('Türme', 'tower', 0)",
+    expect(
+      await _indexNames(db, 'map_markers'),
+      contains('idx_map_markers_collection_pos'),
     );
-    final stmt = raw.prepare(
-      'INSERT INTO map_markers (collection_id, latitude, longitude, created_at) '
-      'VALUES (1, ?, ?, 0)',
+    expect(
+      await _indexNames(db, 'marker_photos'),
+      contains('idx_marker_photos_marker'),
     );
-    for (var i = 0; i < 2000; i++) {
-      stmt.execute([40.0 + i / 1000.0, 8.0 + i / 1000.0]);
-    }
-    stmt.dispose();
-    raw.execute('ANALYZE');
-
-    final plan = await db
-        .customSelect(
-          'EXPLAIN QUERY PLAN SELECT * FROM map_markers '
-          'WHERE collection_id = 1 AND latitude BETWEEN 40.5 AND 40.6 '
-          'AND longitude BETWEEN 8.5 AND 8.6',
-        )
-        .get();
-    final detail = plan.map((r) => r.read<String>('detail')).join(' | ');
-
-    // Entscheidend: kein vollständiger Tabellenscan mehr.
-    expect(detail, contains('idx_map_markers_collection_pos'));
-    expect(detail, isNot(contains('SCAN map_markers')));
 
     await db.close();
   });
 
-  test('createMapPerformanceIndexes ist idempotent (Neuinstallations-Pfad)',
-      () async {
-    final raw = sqlite3.sqlite3.openInMemory();
-    _seedV25Schema(raw);
-    raw.execute('PRAGMA user_version = 25');
+  test(
+    'der Index wird für die Kartenausschnitt-Abfrage tatsächlich genutzt',
+    () async {
+      final raw = sqlite3.sqlite3.openInMemory();
+      _seedV25Schema(raw);
+      raw.execute('PRAGMA user_version = 25');
 
-    final db = TraumDatabase.forTesting(NativeDatabase.opened(raw));
-    await db.customSelect('SELECT 1').get();
+      final db = TraumDatabase.forTesting(NativeDatabase.opened(raw));
+      await db.customSelect('SELECT 1').get();
 
-    // Migration hat die Indizes bereits angelegt — der zusätzliche Aufruf aus
-    // main.dart darf deshalb nicht werfen.
-    await db.createMapPerformanceIndexes();
-    await db.createMapPerformanceIndexes();
+      // Ohne Zeilen entscheidet sich SQLite ggf. gegen den Index — genug Zeilen
+      // einfügen, damit der Query-Planer ihn realistisch bewertet.
+      raw.execute(
+        "INSERT INTO map_collections (name, icon_name, created_at) "
+        "VALUES ('Türme', 'tower', 0)",
+      );
+      final stmt = raw.prepare(
+        'INSERT INTO map_markers (collection_id, latitude, longitude, created_at) '
+        'VALUES (1, ?, ?, 0)',
+      );
+      for (var i = 0; i < 2000; i++) {
+        stmt.execute([40.0 + i / 1000.0, 8.0 + i / 1000.0]);
+      }
+      stmt.dispose();
+      raw.execute('ANALYZE');
 
-    expect(await _indexNames(db, 'map_markers'),
-        contains('idx_map_markers_collection_pos'));
+      final plan = await db
+          .customSelect(
+            'EXPLAIN QUERY PLAN SELECT * FROM map_markers '
+            'WHERE collection_id = 1 AND latitude BETWEEN 40.5 AND 40.6 '
+            'AND longitude BETWEEN 8.5 AND 8.6',
+          )
+          .get();
+      final detail = plan.map((r) => r.read<String>('detail')).join(' | ');
 
-    await db.close();
-  });
+      // Entscheidend: kein vollständiger Tabellenscan mehr.
+      expect(detail, contains('idx_map_markers_collection_pos'));
+      expect(detail, isNot(contains('SCAN map_markers')));
+
+      await db.close();
+    },
+  );
+
+  test(
+    'createMapPerformanceIndexes ist idempotent (Neuinstallations-Pfad)',
+    () async {
+      final raw = sqlite3.sqlite3.openInMemory();
+      _seedV25Schema(raw);
+      raw.execute('PRAGMA user_version = 25');
+
+      final db = TraumDatabase.forTesting(NativeDatabase.opened(raw));
+      await db.customSelect('SELECT 1').get();
+
+      // Migration hat die Indizes bereits angelegt — der zusätzliche Aufruf aus
+      // main.dart darf deshalb nicht werfen.
+      await db.createMapPerformanceIndexes();
+      await db.createMapPerformanceIndexes();
+
+      expect(
+        await _indexNames(db, 'map_markers'),
+        contains('idx_map_markers_collection_pos'),
+      );
+
+      await db.close();
+    },
+  );
 }

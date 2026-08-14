@@ -8,29 +8,57 @@ import 'package:traum/data/database/traum_database.dart';
 import 'package:traum/features/budget/budget_providers.dart';
 
 void main() {
-  test('cashflow line anchors at opening + prior net, excludes transfers', () async {
-    final db = TraumDatabase.forTesting(NativeDatabase.memory());
-    addTearDown(db.close);
-    final c = ProviderContainer(overrides: [databaseProvider.overrideWithValue(db)]);
-    addTearDown(c.dispose);
-    final accountId = await db.accountsDao.into(db.accounts).insert(AccountsCompanion.insert(
-        name: 'A', type: 'checking', balance: 1000, updatedAt: DateTime.now()));
-    // Assigned to the account, like every real transaction is — an
-    // unassigned transaction (accountId null) never touches any account's
-    // balance (see deriveAccountBalances/totalAccountBalanceProvider) and
-    // dailyBalanceSpotsProvider now excludes those the same way, so it
-    // wouldn't exercise the "excludes transfers" intent of this test.
-    Future<void> tx(double a, String t, DateTime d, {int? to}) =>
-        db.budgetDao.insertTransaction(TransactionsCompanion.insert(
-          amount: a, description: 't', date: d, type: Value(t),
-          accountId: Value(accountId), toAccountId: Value(to)));
-    await tx(200, 'income', DateTime(2026, 5, 10));     // prior month
-    await tx(50, 'expense', DateTime(2026, 6, 2));      // day 2
-    await tx(999, 'transfer', DateTime(2026, 6, 3), to: accountId); // net zero
+  test(
+    'cashflow line anchors at opening + prior net, excludes transfers',
+    () async {
+      final db = TraumDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(db.close);
+      final c = ProviderContainer(
+        overrides: [databaseProvider.overrideWithValue(db)],
+      );
+      addTearDown(c.dispose);
+      final accountId = await db.accountsDao
+          .into(db.accounts)
+          .insert(
+            AccountsCompanion.insert(
+              name: 'A',
+              type: 'checking',
+              balance: 1000,
+              updatedAt: DateTime.now(),
+            ),
+          );
+      // Assigned to the account, like every real transaction is — an
+      // unassigned transaction (accountId null) never touches any account's
+      // balance (see deriveAccountBalances/totalAccountBalanceProvider) and
+      // dailyBalanceSpotsProvider now excludes those the same way, so it
+      // wouldn't exercise the "excludes transfers" intent of this test.
+      Future<void> tx(double a, String t, DateTime d, {int? to}) =>
+          db.budgetDao.insertTransaction(
+            TransactionsCompanion.insert(
+              amount: a,
+              description: 't',
+              date: d,
+              type: Value(t),
+              accountId: Value(accountId),
+              toAccountId: Value(to),
+            ),
+          );
+      await tx(200, 'income', DateTime(2026, 5, 10)); // prior month
+      await tx(50, 'expense', DateTime(2026, 6, 2)); // day 2
+      await tx(
+        999,
+        'transfer',
+        DateTime(2026, 6, 3),
+        to: accountId,
+      ); // net zero
 
-    c.listen(dailyBalanceSpotsProvider((2026, 6)), (_, _) {});
-    final spots = await c.read(dailyBalanceSpotsProvider((2026, 6)).future);
-    expect(spots.first.y, 1200); // anchor = 1000 opening + 200 prior income; day-1 has no booking
-    expect(spots[1].y, 1150);   // after day-2 expense: 1200 − 50
-  });
+      c.listen(dailyBalanceSpotsProvider((2026, 6)), (_, _) {});
+      final spots = await c.read(dailyBalanceSpotsProvider((2026, 6)).future);
+      expect(
+        spots.first.y,
+        1200,
+      ); // anchor = 1000 opening + 200 prior income; day-1 has no booking
+      expect(spots[1].y, 1150); // after day-2 expense: 1200 − 50
+    },
+  );
 }

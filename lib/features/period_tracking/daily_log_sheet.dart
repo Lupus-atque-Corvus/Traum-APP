@@ -50,7 +50,9 @@ class _DailyLogSheetState extends State<DailyLogSheet> {
     if (e != null) {
       _mood = e.mood;
       _energy = e.energy;
-      _mucus = e.cervicalMucus == null ? null : CervicalMucus.values[e.cervicalMucus!];
+      _mucus = e.cervicalMucus == null
+          ? null
+          : CervicalMucus.values[e.cervicalMucus!];
       _sex = e.sexEvent == null ? SexEvent.none : SexEvent.values[e.sexEvent!];
       if (e.bbt != null) _bbtCtrl.text = e.bbt!.toStringAsFixed(2);
       if (e.note != null) _noteCtrl.text = e.note!;
@@ -68,15 +70,21 @@ class _DailyLogSheetState extends State<DailyLogSheet> {
   Future<void> _save() async {
     setState(() => _saving = true);
     final bbt = parseLocaleAmount(_bbtCtrl.text);
-    await widget.onSave(DailyLogsCompanion(
-      logDate: Value(DateTime(widget.date.year, widget.date.month, widget.date.day)),
-      mood: Value(_mood),
-      energy: Value(_energy),
-      bbt: Value(bbt),
-      cervicalMucus: Value(_mucus?.index),
-      sexEvent: Value(_sex == SexEvent.none ? null : _sex.index),
-      note: Value(_noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim()),
-    ));
+    await widget.onSave(
+      DailyLogsCompanion(
+        logDate: Value(
+          DateTime(widget.date.year, widget.date.month, widget.date.day),
+        ),
+        mood: Value(_mood),
+        energy: Value(_energy),
+        bbt: Value(bbt),
+        cervicalMucus: Value(_mucus?.index),
+        sexEvent: Value(_sex == SexEvent.none ? null : _sex.index),
+        note: Value(
+          _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim(),
+        ),
+      ),
+    );
     if (mounted) Navigator.pop(context);
   }
 
@@ -133,10 +141,15 @@ class _DailyLogSheetState extends State<DailyLogSheet> {
                     return GestureDetector(
                       onTap: () async {
                         await widget.onRemoveSymptom?.call(s.id);
-                        setState(() => _symptoms.removeWhere((x) => x.id == s.id));
+                        setState(
+                          () => _symptoms.removeWhere((x) => x.id == s.id),
+                        );
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: TraumColors.periodRose.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(20),
@@ -154,8 +167,11 @@ class _DailyLogSheetState extends State<DailyLogSheet> {
                               ),
                             ),
                             const SizedBox(width: 4),
-                            const Icon(Icons.close_rounded,
-                                color: TraumColors.periodRose, size: 14),
+                            const Icon(
+                              Icons.close_rounded,
+                              color: TraumColors.periodRose,
+                              size: 14,
+                            ),
                           ],
                         ),
                       ),
@@ -167,50 +183,58 @@ class _DailyLogSheetState extends State<DailyLogSheet> {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: [
-                  l10n.symptomCramps,
-                  l10n.symptomHeadache,
-                  l10n.symptomBackPain,
-                  l10n.symptomBreastTension,
-                  l10n.symptomBloating,
-                  l10n.symptomNausea,
-                  l10n.symptomMoodSwings,
-                  l10n.symptomTiredness,
-                  l10n.symptomAcne,
-                  l10n.symptomSleepIssues,
-                ].map((preset) {
-                  return _Chip(
-                    label: preset,
-                    selected: false,
-                    onTap: () async {
-                      await widget.onAddSymptom!(preset, _intensity);
-                    },
-                  );
-                }).toList(),
+                children:
+                    [
+                      l10n.symptomCramps,
+                      l10n.symptomHeadache,
+                      l10n.symptomBackPain,
+                      l10n.symptomBreastTension,
+                      l10n.symptomBloating,
+                      l10n.symptomNausea,
+                      l10n.symptomMoodSwings,
+                      l10n.symptomTiredness,
+                      l10n.symptomAcne,
+                      l10n.symptomSleepIssues,
+                    ].map((preset) {
+                      return _Chip(
+                        label: preset,
+                        selected: false,
+                        onTap: () async {
+                          await widget.onAddSymptom!(preset, _intensity);
+                        },
+                      );
+                    }).toList(),
               ),
               const SizedBox(height: 8),
               // Custom symptom text field
               TextField(
                 controller: _customSymptomCtrl,
                 style: const TextStyle(
-                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                ),
                 decoration: InputDecoration(
                   labelText: l10n.orCustomSymptom,
                   labelStyle: const TextStyle(
-                      color: TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans'),
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                  ),
                   filled: true,
                   fillColor: TraumColors.surface,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(TraumRadius.card),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   suffixIcon: IconButton(
                     tooltip: AppLocalizations.of(context)!.add,
-                    icon: const Icon(Icons.add_rounded,
-                        color: TraumColors.periodRose),
+                    icon: const Icon(
+                      Icons.add_rounded,
+                      color: TraumColors.periodRose,
+                    ),
                     onPressed: () async {
                       final text = _customSymptomCtrl.text.trim();
                       if (text.isEmpty) return;
@@ -270,8 +294,13 @@ class _DailyLogSheetState extends State<DailyLogSheet> {
             // BBT
             TextField(
               controller: _bbtCtrl,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
               decoration: InputDecoration(
                 labelText: l10n.bbtInputLabel,
                 labelStyle: const TextStyle(
@@ -284,7 +313,10 @@ class _DailyLogSheetState extends State<DailyLogSheet> {
                   borderRadius: BorderRadius.circular(TraumRadius.card),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -327,7 +359,10 @@ class _DailyLogSheetState extends State<DailyLogSheet> {
             TextField(
               controller: _noteCtrl,
               maxLines: 2,
-              style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
               decoration: InputDecoration(
                 labelStyle: const TextStyle(
                   color: TraumColors.onBackgroundMuted,
@@ -339,7 +374,10 @@ class _DailyLogSheetState extends State<DailyLogSheet> {
                   borderRadius: BorderRadius.circular(TraumRadius.card),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -414,7 +452,9 @@ class _DotRow extends StatelessWidget {
               child: Text(
                 '$i',
                 style: TextStyle(
-                  color: isSelected ? TraumColors.periodRose : TraumColors.onBackgroundMuted,
+                  color: isSelected
+                      ? TraumColors.periodRose
+                      : TraumColors.onBackgroundMuted,
                   fontFamily: 'DMSans',
                   fontWeight: FontWeight.w700,
                   fontSize: 14,
@@ -457,7 +497,9 @@ class _Chip extends StatelessWidget {
         child: Text(
           label,
           style: TextStyle(
-            color: selected ? TraumColors.periodRose : TraumColors.onBackgroundMuted,
+            color: selected
+                ? TraumColors.periodRose
+                : TraumColors.onBackgroundMuted,
             fontFamily: 'DMSans',
             fontSize: 12,
           ),

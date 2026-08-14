@@ -11,15 +11,14 @@ class AbstinenceDao extends DatabaseAccessor<TraumDatabase>
   Stream<List<AbstinenceTracker>> watchAllTrackers() =>
       select(abstinenceTrackers).watch();
 
-  Stream<List<AbstinenceTracker>> watchActiveTrackers() =>
-      (select(abstinenceTrackers)..where((t) => t.isActive.equals(true)))
-          .watch();
+  Stream<List<AbstinenceTracker>> watchActiveTrackers() => (select(
+    abstinenceTrackers,
+  )..where((t) => t.isActive.equals(true))).watch();
 
   /// One-shot read of all trackers (no stream timer) — used by home widgets.
-  Future<List<AbstinenceTracker>> getAllTrackers() =>
-      (select(abstinenceTrackers)
-            ..orderBy([(t) => OrderingTerm.asc(t.startDate)]))
-          .get();
+  Future<List<AbstinenceTracker>> getAllTrackers() => (select(
+    abstinenceTrackers,
+  )..orderBy([(t) => OrderingTerm.asc(t.startDate)])).get();
 
   Future<int> insertTracker(AbstinenceTrackersCompanion entry) =>
       into(abstinenceTrackers).insert(entry);

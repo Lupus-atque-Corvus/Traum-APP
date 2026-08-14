@@ -16,8 +16,8 @@ void main() {
             'carbohydrates_100g': 58.7,
             'fat_100g': 7.0,
           },
-        }
-      ]
+        },
+      ],
     };
     final results = parseOffSearch(json);
     expect(results.single.name, 'Haferflocken');
@@ -37,8 +37,8 @@ void main() {
             {'nutrientId': 1005, 'value': 0.0}, // carbs
             {'nutrientId': 1004, 'value': 3.6}, // fat
           ],
-        }
-      ]
+        },
+      ],
     };
     final results = parseUsdaSearch(json);
     expect(results.single.proteinPer100g, 31.0);
@@ -62,8 +62,8 @@ void main() {
             'fiber_100g': 5,
             'salt_100g': 0.6,
           },
-        }
-      ]
+        },
+      ],
     };
     final results = parseOffSearch(json);
     final r = results.single;
@@ -83,7 +83,7 @@ void main() {
         {'product_name': 'Ohne Nährwerte', 'code': '1'},
         {'code': '2'}, // no product_name -> should be skipped
         null, // malformed entry -> should be skipped
-      ]
+      ],
     };
     final results = parseOffSearch(json);
     expect(results.length, 1);
@@ -108,8 +108,8 @@ void main() {
             {'nutrientId': 1079, 'value': 2.4},
             {'nutrientId': 1093, 'value': 1.0}, // sodium mg -> salt g
           ],
-        }
-      ]
+        },
+      ],
     };
     final results = parseUsdaSearch(json);
     final r = results.single;
@@ -126,7 +126,7 @@ void main() {
       'foods': [
         {'description': 'Mystery food', 'fdcId': 1},
         {'fdcId': 2}, // no description -> should be skipped
-      ]
+      ],
     };
     final results = parseUsdaSearch(json);
     expect(results.length, 1);
@@ -139,39 +139,42 @@ void main() {
     expect(parseUsdaSearch({'foods': 'not a list'}), isEmpty);
   });
 
-  test('completeness reflects fraction of populated optional nutrient fields', () {
-    final full = {
-      'foods': [
-        {
-          'description': 'Complete food',
-          'fdcId': 1,
-          'foodNutrients': [
-            {'nutrientId': 1008, 'value': 100.0},
-            {'nutrientId': 1003, 'value': 1.0},
-            {'nutrientId': 1005, 'value': 1.0},
-            {'nutrientId': 1004, 'value': 1.0},
-            {'nutrientId': 2000, 'value': 1.0},
-            {'nutrientId': 1079, 'value': 1.0},
-            {'nutrientId': 1093, 'value': 1.0},
-          ],
-        }
-      ]
-    };
-    final sparse = {
-      'foods': [
-        {
-          'description': 'Sparse food',
-          'fdcId': 2,
-          'foodNutrients': [
-            {'nutrientId': 1008, 'value': 100.0},
-          ],
-        }
-      ]
-    };
-    final fullResult = parseUsdaSearch(full).single;
-    final sparseResult = parseUsdaSearch(sparse).single;
-    expect(fullResult.completeness, 1.0);
-    expect(sparseResult.completeness, lessThan(fullResult.completeness));
-    expect(sparseResult.completeness, greaterThanOrEqualTo(0.0));
-  });
+  test(
+    'completeness reflects fraction of populated optional nutrient fields',
+    () {
+      final full = {
+        'foods': [
+          {
+            'description': 'Complete food',
+            'fdcId': 1,
+            'foodNutrients': [
+              {'nutrientId': 1008, 'value': 100.0},
+              {'nutrientId': 1003, 'value': 1.0},
+              {'nutrientId': 1005, 'value': 1.0},
+              {'nutrientId': 1004, 'value': 1.0},
+              {'nutrientId': 2000, 'value': 1.0},
+              {'nutrientId': 1079, 'value': 1.0},
+              {'nutrientId': 1093, 'value': 1.0},
+            ],
+          },
+        ],
+      };
+      final sparse = {
+        'foods': [
+          {
+            'description': 'Sparse food',
+            'fdcId': 2,
+            'foodNutrients': [
+              {'nutrientId': 1008, 'value': 100.0},
+            ],
+          },
+        ],
+      };
+      final fullResult = parseUsdaSearch(full).single;
+      final sparseResult = parseUsdaSearch(sparse).single;
+      expect(fullResult.completeness, 1.0);
+      expect(sparseResult.completeness, lessThan(fullResult.completeness));
+      expect(sparseResult.completeness, greaterThanOrEqualTo(0.0));
+    },
+  );
 }

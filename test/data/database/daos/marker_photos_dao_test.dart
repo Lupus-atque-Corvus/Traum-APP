@@ -20,19 +20,20 @@ void main() {
   tearDown(() => db.close());
 
   Future<int> addMarker() => db.mapMarkersDao.insert(
-        MapMarkersCompanion.insert(
-          collectionId: collectionId,
-          createdAt: DateTime.now(),
-        ),
-      );
+    MapMarkersCompanion.insert(
+      collectionId: collectionId,
+      createdAt: DateTime.now(),
+    ),
+  );
 
-  Future<void> addPhoto(int markerId, String path) =>
-      db.markerPhotosDao.insert(MarkerPhotosCompanion.insert(
-        markerId: markerId,
-        photoPath: path,
-        takenAt: DateTime.now(),
-        createdAt: DateTime.now(),
-      ));
+  Future<void> addPhoto(int markerId, String path) => db.markerPhotosDao.insert(
+    MarkerPhotosCompanion.insert(
+      markerId: markerId,
+      photoPath: path,
+      takenAt: DateTime.now(),
+      createdAt: DateTime.now(),
+    ),
+  );
 
   group('getByMarkerIds', () {
     test('returns an empty map for an empty id list', () async {
@@ -49,22 +50,23 @@ void main() {
 
       final result = await db.markerPhotosDao.getByMarkerIds([m1, m2, m3]);
 
-      expect(result[m1]?.map((p) => p.photoPath).toSet(),
-          {'/a.jpg', '/b.jpg'});
+      expect(result[m1]?.map((p) => p.photoPath).toSet(), {'/a.jpg', '/b.jpg'});
       expect(result[m2]?.map((p) => p.photoPath).toList(), ['/c.jpg']);
       expect(result.containsKey(m3), isFalse);
     });
 
-    test('does not return photos belonging to markers outside the id list',
-        () async {
-      final m1 = await addMarker();
-      final m2 = await addMarker();
-      await addPhoto(m1, '/a.jpg');
-      await addPhoto(m2, '/b.jpg');
+    test(
+      'does not return photos belonging to markers outside the id list',
+      () async {
+        final m1 = await addMarker();
+        final m2 = await addMarker();
+        await addPhoto(m1, '/a.jpg');
+        await addPhoto(m2, '/b.jpg');
 
-      final result = await db.markerPhotosDao.getByMarkerIds([m1]);
+        final result = await db.markerPhotosDao.getByMarkerIds([m1]);
 
-      expect(result.keys, [m1]);
-    });
+        expect(result.keys, [m1]);
+      },
+    );
   });
 }

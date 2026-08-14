@@ -27,8 +27,7 @@ class DashboardTeaserPage extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: TraumColors.surface,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                            color: TraumColors.surfaceVariant),
+                        border: Border.all(color: TraumColors.surfaceVariant),
                       ),
                       child: Column(
                         children: [
@@ -42,18 +41,24 @@ class DashboardTeaserPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  Text(l10n.obDashboardTitle,
-                      style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          color: TraumColors.onBackground,
-                          fontFamily: 'DMSans')),
+                  Text(
+                    l10n.obDashboardTitle,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      color: TraumColors.onBackground,
+                      fontFamily: 'DMSans',
+                    ),
+                  ),
                   const SizedBox(height: 8),
-                  Text(l10n.obDashboardSubtitle,
-                      style: const TextStyle(
-                          fontSize: 14,
-                          color: TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans')),
+                  Text(
+                    l10n.obDashboardSubtitle,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   for (final f in [
                     l10n.obDashboardFeature1,
@@ -62,17 +67,26 @@ class DashboardTeaserPage extends StatelessWidget {
                   ])
                     Padding(
                       padding: const EdgeInsets.only(bottom: 12),
-                      child: Row(children: [
-                        const Icon(Icons.check_circle_rounded,
-                            color: accent, size: 22),
-                        const SizedBox(width: 12),
-                        Expanded(
-                            child: Text(f,
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    color: TraumColors.onBackground,
-                                    fontFamily: 'DMSans'))),
-                      ]),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.check_circle_rounded,
+                            color: accent,
+                            size: 22,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              f,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: TraumColors.onBackground,
+                                fontFamily: 'DMSans',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   const SizedBox(height: 8),
                   Container(
@@ -81,11 +95,14 @@ class DashboardTeaserPage extends StatelessWidget {
                       color: TraumColors.coralDim,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(l10n.obDashboardSeeded,
-                        style: const TextStyle(
-                            color: TraumColors.peachOrange,
-                            fontFamily: 'DMSans',
-                            fontSize: 12)),
+                    child: Text(
+                      l10n.obDashboardSeeded,
+                      style: const TextStyle(
+                        color: TraumColors.peachOrange,
+                        fontFamily: 'DMSans',
+                        fontSize: 12,
+                      ),
+                    ),
                   ),
                 ],
               ),

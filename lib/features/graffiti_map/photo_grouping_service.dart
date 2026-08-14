@@ -8,7 +8,10 @@ import 'photo_grouping.dart';
 /// gelöscht; beim Verkleinern entstehende Cluster werden zu neuen Punkten.
 /// Bewusst fotolose Punkte (nie ein Foto gehabt) bleiben unberührt.
 Future<void> regroupCollection(
-    TraumDatabase db, int collectionId, double radiusMeters) async {
+  TraumDatabase db,
+  int collectionId,
+  double radiusMeters,
+) async {
   final markers = await db.mapMarkersDao.getByCollection(collectionId);
   final photos = await db.markerPhotosDao.getByCollection(collectionId);
   if (photos.isEmpty) return;
@@ -19,13 +22,15 @@ Future<void> regroupCollection(
     final lat = p.latitude ?? markerById[p.markerId]?.latitude;
     final lon = p.longitude ?? markerById[p.markerId]?.longitude;
     if (lat == null || lon == null) continue;
-    points.add(PhotoPoint(
-      id: p.id,
-      markerId: p.markerId,
-      lat: lat,
-      lon: lon,
-      createdAt: p.createdAt,
-    ));
+    points.add(
+      PhotoPoint(
+        id: p.id,
+        markerId: p.markerId,
+        lat: lat,
+        lon: lon,
+        createdAt: p.createdAt,
+      ),
+    );
   }
   if (points.isEmpty) return;
 
@@ -38,17 +43,21 @@ Future<void> regroupCollection(
       if (c.hostMarkerId != null) {
         hostId = c.hostMarkerId!;
         final host = markerById[hostId]!;
-        await db.mapMarkersDao.updateMarker(host.copyWith(
-          latitude: Value(c.centerLat),
-          longitude: Value(c.centerLon),
-        ));
+        await db.mapMarkersDao.updateMarker(
+          host.copyWith(
+            latitude: Value(c.centerLat),
+            longitude: Value(c.centerLon),
+          ),
+        );
       } else {
-        hostId = await db.mapMarkersDao.insert(MapMarkersCompanion.insert(
-          collectionId: collectionId,
-          latitude: Value(c.centerLat),
-          longitude: Value(c.centerLon),
-          createdAt: DateTime.now(),
-        ));
+        hostId = await db.mapMarkersDao.insert(
+          MapMarkersCompanion.insert(
+            collectionId: collectionId,
+            latitude: Value(c.centerLat),
+            longitude: Value(c.centerLon),
+            createdAt: DateTime.now(),
+          ),
+        );
       }
       keptHosts.add(hostId);
       for (final p in c.photos) {

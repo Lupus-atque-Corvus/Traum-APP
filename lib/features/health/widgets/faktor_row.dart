@@ -69,8 +69,11 @@ class FaktorRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 6),
-            Icon(Icons.chevron_right_rounded,
-                color: TraumColors.onBackgroundSubtle, size: 18),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: TraumColors.onBackgroundSubtle,
+              size: 18,
+            ),
           ],
         ),
       ),

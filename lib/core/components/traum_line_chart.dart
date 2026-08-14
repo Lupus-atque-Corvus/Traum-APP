@@ -50,12 +50,15 @@ class TraumLineChart extends StatelessWidget {
           gridData: const FlGridData(show: false),
           borderData: FlBorderData(show: false),
           titlesData: FlTitlesData(
-            leftTitles:
-                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles:
-                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles:
-                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            leftTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
@@ -85,11 +88,7 @@ class TraumLineChart extends StatelessWidget {
               barWidth: 2,
               dotData: FlDotData(
                 getDotPainter: (spot, percent, barData, index) =>
-                    FlDotCirclePainter(
-                  radius: 3,
-                  color: color,
-                  strokeWidth: 0,
-                ),
+                    FlDotCirclePainter(radius: 3, color: color, strokeWidth: 0),
               ),
               belowBarData: BarAreaData(
                 show: true,

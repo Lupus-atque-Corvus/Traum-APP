@@ -10,7 +10,10 @@ void main() {
     test('precise gear: 1 tab per base px below threshold', () {
       expect(switcherIndexFor(dx: 24, startIndex: 0, count: 20), 1);
       expect(switcherIndexFor(dx: 48, startIndex: 0, count: 20), 2);
-      expect(switcherIndexFor(dx: 96, startIndex: 0, count: 20), 4); // at threshold
+      expect(
+        switcherIndexFor(dx: 96, startIndex: 0, count: 20),
+        4,
+      ); // at threshold
     });
 
     test('fast gear accelerates beyond threshold', () {

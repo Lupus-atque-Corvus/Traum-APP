@@ -9,45 +9,55 @@ import 'package:traum/data/repositories/tower_data_seeder.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  test('seedIfNeeded fills the Türme collection once and is idempotent',
-      () async {
-    SharedPreferences.setMockInitialValues({});
-    final prefs = await SharedPreferences.getInstance();
-    final db = TraumDatabase.forTesting(NativeDatabase.memory());
-    addTearDown(db.close);
+  test(
+    'seedIfNeeded fills the Türme collection once and is idempotent',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final db = TraumDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(db.close);
 
-    await MapCollectionSeeder.seedIfNeeded(db, prefs);
-    await TowerDataSeeder.seedIfNeeded(db, prefs);
+      await MapCollectionSeeder.seedIfNeeded(db, prefs);
+      await TowerDataSeeder.seedIfNeeded(db, prefs);
 
-    final collections = await db.mapCollectionsDao.getAll();
-    final towerCollection = collections.firstWhere((c) => c.iconName == 'tower');
-    final markers = await db.mapMarkersDao.getByCollection(towerCollection.id);
+      final collections = await db.mapCollectionsDao.getAll();
+      final towerCollection = collections.firstWhere(
+        (c) => c.iconName == 'tower',
+      );
+      final markers = await db.mapMarkersDao.getByCollection(
+        towerCollection.id,
+      );
 
-    expect(markers.length, greaterThan(300000));
-    expect(markers.every((m) => m.osmId != null), isTrue);
-    expect(markers.any((m) => m.customFields.contains('Funkmast')), isTrue);
+      expect(markers.length, greaterThan(300000));
+      expect(markers.every((m) => m.osmId != null), isTrue);
+      expect(markers.any((m) => m.customFields.contains('Funkmast')), isTrue);
 
-    // Second run must not duplicate.
-    await TowerDataSeeder.seedIfNeeded(db, prefs);
-    final afterSecond =
-        await db.mapMarkersDao.getByCollection(towerCollection.id);
-    expect(afterSecond.length, markers.length);
-  }, timeout: const Timeout(Duration(minutes: 3)));
+      // Second run must not duplicate.
+      await TowerDataSeeder.seedIfNeeded(db, prefs);
+      final afterSecond = await db.mapMarkersDao.getByCollection(
+        towerCollection.id,
+      );
+      expect(afterSecond.length, markers.length);
+    },
+    timeout: const Timeout(Duration(minutes: 3)),
+  );
 
-  test('does nothing (no flag) if the Türme collection does not exist yet',
-      () async {
-    SharedPreferences.setMockInitialValues({});
-    final prefs = await SharedPreferences.getInstance();
-    final db = TraumDatabase.forTesting(NativeDatabase.memory());
-    addTearDown(db.close);
-    // MapCollectionSeeder deliberately not run first.
+  test(
+    'does nothing (no flag) if the Türme collection does not exist yet',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final db = TraumDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(db.close);
+      // MapCollectionSeeder deliberately not run first.
 
-    await TowerDataSeeder.seedIfNeeded(db, prefs);
+      await TowerDataSeeder.seedIfNeeded(db, prefs);
 
-    expect(prefs.getBool('tower_data_seeded_v1'), isNull);
-    final all = await db.mapMarkersDao.getAll();
-    expect(all, isEmpty);
-  });
+      expect(prefs.getBool('tower_data_seeded_v1'), isNull);
+      final all = await db.mapMarkersDao.getAll();
+      expect(all, isEmpty);
+    },
+  );
 
   test('does not set the flag when seeding fails', () async {
     SharedPreferences.setMockInitialValues({});
@@ -73,12 +83,16 @@ void main() {
 
     await MapCollectionSeeder.seedIfNeeded(db, prefs);
     final collections = await db.mapCollectionsDao.getAll();
-    final towerCollection = collections.firstWhere((c) => c.iconName == 'tower');
-    await db.mapMarkersDao.insert(MapMarkersCompanion.insert(
-      collectionId: towerCollection.id,
-      osmId: const Value('node/1'),
-      createdAt: DateTime.now(),
-    ));
+    final towerCollection = collections.firstWhere(
+      (c) => c.iconName == 'tower',
+    );
+    await db.mapMarkersDao.insert(
+      MapMarkersCompanion.insert(
+        collectionId: towerCollection.id,
+        osmId: const Value('node/1'),
+        createdAt: DateTime.now(),
+      ),
+    );
 
     await TowerDataSeeder.seedIfNeeded(db, prefs);
 

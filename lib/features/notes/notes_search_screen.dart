@@ -50,12 +50,17 @@ class _NotesSearchScreenState extends ConsumerState<NotesSearchScreen> {
         backgroundColor: TraumColors.background,
         elevation: 0,
         leading: BackButton(
-            color: TraumColors.onBackground, onPressed: () => context.pop()),
-        title: Text(l10n.notes_search,
-            style: const TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackground,
-                fontWeight: FontWeight.w700)),
+          color: TraumColors.onBackground,
+          onPressed: () => context.pop(),
+        ),
+        title: Text(
+          l10n.notes_search,
+          style: const TextStyle(
+            fontFamily: 'DMSans',
+            color: TraumColors.onBackground,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
       body: Column(
         children: [
@@ -66,12 +71,18 @@ class _NotesSearchScreenState extends ConsumerState<NotesSearchScreen> {
               autofocus: true,
               cursorColor: kNotesAccent,
               style: const TextStyle(
-                  fontFamily: 'DMSans', color: TraumColors.onBackground),
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
+              ),
               decoration: InputDecoration(
-                prefixIcon:
-                    const Icon(Icons.search_rounded, color: kNotesAccent),
+                prefixIcon: const Icon(
+                  Icons.search_rounded,
+                  color: kNotesAccent,
+                ),
                 hintText: l10n.notes_quick_switcher_hint,
-                hintStyle: const TextStyle(color: TraumColors.onBackgroundSubtle),
+                hintStyle: const TextStyle(
+                  color: TraumColors.onBackgroundSubtle,
+                ),
                 filled: true,
                 fillColor: TraumColors.surface,
                 border: OutlineInputBorder(
@@ -85,31 +96,41 @@ class _NotesSearchScreenState extends ConsumerState<NotesSearchScreen> {
           Expanded(
             child: _query.trim().isEmpty
                 ? NotesEmptyState(
-                    icon: Icons.search_rounded, message: l10n.notes_search_hint)
+                    icon: Icons.search_rounded,
+                    message: l10n.notes_search_hint,
+                  )
                 : ListView(
                     children: [
                       // Quick-Switcher (Titel)
-                      ...?titles.value?.map((n) => NoteListTile(
-                            note: n,
-                            onTap: () => context
-                                .pushReplacement(Routes.noteDetailPath(n.id)),
-                          )),
+                      ...?titles.value?.map(
+                        (n) => NoteListTile(
+                          note: n,
+                          onTap: () => context.pushReplacement(
+                            Routes.noteDetailPath(n.id),
+                          ),
+                        ),
+                      ),
                       _createRow(l10n, titles.value ?? const []),
                       // Volltext
-                      ...?fts.value?.where((h) =>
-                          !(titles.value ?? const [])
-                              .any((t) => t.id == h.note.id)).map(
-                            (h) => _snippetTile(h),
-                          ),
+                      ...?fts.value
+                          ?.where(
+                            (h) => !(titles.value ?? const []).any(
+                              (t) => t.id == h.note.id,
+                            ),
+                          )
+                          .map((h) => _snippetTile(h)),
                       if ((fts.value ?? const []).isEmpty &&
                           (titles.value ?? const []).isEmpty)
                         Padding(
                           padding: const EdgeInsets.all(24),
                           child: Center(
-                            child: Text(l10n.notes_no_results,
-                                style: const TextStyle(
-                                    fontFamily: 'DMSans',
-                                    color: TraumColors.onBackgroundSubtle)),
+                            child: Text(
+                              l10n.notes_no_results,
+                              style: const TextStyle(
+                                fontFamily: 'DMSans',
+                                color: TraumColors.onBackgroundSubtle,
+                              ),
+                            ),
                           ),
                         ),
                     ],
@@ -140,11 +161,14 @@ class _NotesSearchScreenState extends ConsumerState<NotesSearchScreen> {
             const Icon(Icons.add_rounded, color: kNotesAccent, size: 20),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(l10n.notes_create_note_named(q),
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: kNotesAccent,
-                      fontWeight: FontWeight.w600)),
+              child: Text(
+                l10n.notes_create_note_named(q),
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: kNotesAccent,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ],
         ),
@@ -166,12 +190,15 @@ class _NotesSearchScreenState extends ConsumerState<NotesSearchScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(hit.note.title,
-                style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackground,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600)),
+            Text(
+              hit.note.title,
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackground,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             const SizedBox(height: 4),
             _HighlightedSnippet(snippet: hit.snippet),
           ],
@@ -195,10 +222,15 @@ class _HighlightedSnippet extends StatelessWidget {
       if (m.start > last) {
         spans.add(TextSpan(text: snippet.substring(last, m.start)));
       }
-      spans.add(TextSpan(
+      spans.add(
+        TextSpan(
           text: m.group(1),
           style: const TextStyle(
-              color: kNotesAccent, fontWeight: FontWeight.w700)));
+            color: kNotesAccent,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      );
       last = m.end;
     }
     if (last < snippet.length) {
@@ -207,9 +239,10 @@ class _HighlightedSnippet extends StatelessWidget {
     return Text.rich(
       TextSpan(
         style: const TextStyle(
-            fontFamily: 'DMSans',
-            color: TraumColors.onBackgroundMuted,
-            fontSize: 13),
+          fontFamily: 'DMSans',
+          color: TraumColors.onBackgroundMuted,
+          fontSize: 13,
+        ),
         children: spans,
       ),
       maxLines: 3,

@@ -137,18 +137,27 @@ class _ClockDateContent extends StatefulWidget {
 }
 
 class _ClockDateContentState extends State<_ClockDateContent> {
-  late final Stream<void> _ticker =
-      Stream<void>.periodic(const Duration(seconds: 1));
+  late final Stream<void> _ticker = Stream<void>.periodic(
+    const Duration(seconds: 1),
+  );
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final weekdays = l10n.weekdaysShort.split(',');
     final months = [
-      l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
-      l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
-      l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
-      l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
+      l10n.monthShortJan,
+      l10n.monthShortFeb,
+      l10n.monthShortMar,
+      l10n.monthShortApr,
+      l10n.monthShortMay,
+      l10n.monthShortJun,
+      l10n.monthShortJul,
+      l10n.monthShortAug,
+      l10n.monthShortSep,
+      l10n.monthShortOct,
+      l10n.monthShortNov,
+      l10n.monthShortDec,
     ];
     return StreamBuilder<void>(
       stream: _ticker,
@@ -287,16 +296,19 @@ class _WeatherContent extends ConsumerWidget {
 /// "music", "com.facebook.katana" → "katana") instead of the real name.
 /// Falls back to that same last-segment heuristic only if an app can no
 /// longer be resolved (e.g. uninstalled since being favorited).
-final _favoriteAppNamesProvider =
-    FutureProvider.autoDispose<List<String>>((ref) async {
+final _favoriteAppNamesProvider = FutureProvider.autoDispose<List<String>>((
+  ref,
+) async {
   final favorites = ref.watch(appLauncherFavoritesProvider).take(3).toList();
   final service = ref.watch(appLauncherServiceProvider);
-  return Future.wait(favorites.map((packageName) async {
-    final app = await service.getApp(packageName);
-    if (app != null) return app.name;
-    final parts = packageName.split('.');
-    return parts.isEmpty ? packageName : parts.last;
-  }));
+  return Future.wait(
+    favorites.map((packageName) async {
+      final app = await service.getApp(packageName);
+      if (app != null) return app.name;
+      final parts = packageName.split('.');
+      return parts.isEmpty ? packageName : parts.last;
+    }),
+  );
 });
 
 class _AppFavoritesContent extends ConsumerWidget {
@@ -355,7 +367,9 @@ class _QuickActionsContent extends ConsumerWidget {
 
   Future<void> _addWater(BuildContext context, WidgetRef ref, int ml) async {
     try {
-      await ref.read(nutritionRepositoryProvider).addWaterLog(
+      await ref
+          .read(nutritionRepositoryProvider)
+          .addWaterLog(
             WaterLogsCompanion(
               logDate: Value(DateTime.now()),
               amountMl: Value(ml),
@@ -363,8 +377,9 @@ class _QuickActionsContent extends ConsumerWidget {
           );
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(AppLocalizations.of(context)!.waterLogFailed)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.waterLogFailed)),
+        );
       }
     }
   }
@@ -536,29 +551,30 @@ class _MiniCalendarContent extends StatelessWidget {
     }
     for (int day = 1; day <= daysInMonth; day++) {
       final isToday = day == now.day;
-      cells.add(Center(
-        child: Container(
-          width: 20,
-          height: 20,
-          alignment: Alignment.center,
-          decoration: isToday
-              ? const BoxDecoration(
-                  color: TraumColors.cyanBlue,
-                  shape: BoxShape.circle,
-                )
-              : null,
-          child: Text(
-            '$day',
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: isToday ? FontWeight.w700 : FontWeight.w400,
-              color:
-                  isToday ? TraumColors.surface : TraumColors.onBackground,
-              fontFamily: 'DMSans',
+      cells.add(
+        Center(
+          child: Container(
+            width: 20,
+            height: 20,
+            alignment: Alignment.center,
+            decoration: isToday
+                ? const BoxDecoration(
+                    color: TraumColors.cyanBlue,
+                    shape: BoxShape.circle,
+                  )
+                : null,
+            child: Text(
+              '$day',
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: isToday ? FontWeight.w700 : FontWeight.w400,
+                color: isToday ? TraumColors.surface : TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
             ),
           ),
         ),
-      ));
+      );
     }
 
     return Column(
@@ -566,19 +582,21 @@ class _MiniCalendarContent extends StatelessWidget {
       children: [
         Row(
           children: _weekdayHeaders
-              .map((h) => Expanded(
-                    child: Center(
-                      child: Text(
-                        h,
-                        style: const TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w700,
-                          color: TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans',
-                        ),
+              .map(
+                (h) => Expanded(
+                  child: Center(
+                    child: Text(
+                      h,
+                      style: const TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w700,
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
                       ),
                     ),
-                  ))
+                  ),
+                ),
+              )
               .toList(),
         ),
         const SizedBox(height: 4),

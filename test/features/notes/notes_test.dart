@@ -15,8 +15,13 @@ void main() {
         'See [[Alpha]] and [[Beta|the beta]] and [[Gamma#Heading]] '
         'and [[Delta#^block1]] and ![[Embed]]',
       );
-      expect(links.map((l) => l.target),
-          ['Alpha', 'Beta', 'Gamma', 'Delta', 'Embed']);
+      expect(links.map((l) => l.target), [
+        'Alpha',
+        'Beta',
+        'Gamma',
+        'Delta',
+        'Embed',
+      ]);
 
       expect(links[1].alias, 'the beta');
       expect(links[2].anchor, 'Heading');
@@ -36,7 +41,8 @@ void main() {
 
     test('ignores links inside code, comments and frontmatter', () {
       // Must start exactly with '---' so the frontmatter anchor matches.
-      const content = '---\n'
+      const content =
+          '---\n'
           'title: Note\n'
           'link: [[InFrontmatter]]\n'
           '---\n'
@@ -46,8 +52,9 @@ void main() {
           '[[FencedCode]]\n'
           '```\n'
           '%% [[InComment]] %%\n';
-      final targets =
-          NotesMarkdownParser.extractLinks(content).map((l) => l.target);
+      final targets = NotesMarkdownParser.extractLinks(
+        content,
+      ).map((l) => l.target);
       expect(targets, ['Visible']);
     });
   });
@@ -55,13 +62,15 @@ void main() {
   group('NotesMarkdownParser.extractTags', () {
     test('inline and nested tags, deduplicated', () {
       final tags = NotesMarkdownParser.extractTags(
-          'A #project and #project/traum plus #project again');
+        'A #project and #project/traum plus #project again',
+      );
       expect(tags.toSet(), {'project', 'project/traum'});
     });
 
     test('requires a boundary and a leading letter', () {
       final tags = NotesMarkdownParser.extractTags(
-          'no#inline here #123 numeric but #valid yes');
+        'no#inline here #123 numeric but #valid yes',
+      );
       expect(tags, ['valid']);
     });
 
@@ -79,8 +88,10 @@ void main() {
     });
 
     test('extractFrontmatterRaw returns the yaml body', () {
-      expect(NotesMarkdownParser.extractFrontmatterRaw(withFm),
-          'title: Hi\ntags: [a, b]');
+      expect(
+        NotesMarkdownParser.extractFrontmatterRaw(withFm),
+        'title: Hi\ntags: [a, b]',
+      );
     });
 
     test('no frontmatter → null and unchanged body', () {
@@ -100,8 +111,7 @@ void main() {
     test('counts visible words, stripping wikilink and markdown syntax', () {
       expect(NotesMarkdownParser.wordCount('one two three'), 3);
       expect(NotesMarkdownParser.wordCount('click [[Target]] now'), 2);
-      expect(
-          NotesMarkdownParser.wordCount('# Title\n\nHello **world**'), 3);
+      expect(NotesMarkdownParser.wordCount('# Title\n\nHello **world**'), 3);
     });
 
     test('extractOutline returns ATX headings with levels, skipping code', () {
@@ -118,13 +128,18 @@ void main() {
     setUp(() => db = TraumDatabase.forTesting(NativeDatabase.memory()));
     tearDown(() => db.close());
 
-    Future<int> addNote(String title, {DateTime? deletedAt, DateTime? updatedAt}) =>
-        db.notesDao.insertNote(NotesCompanion.insert(
-          title: title,
-          createdAt: DateTime(2026, 6, 1),
-          updatedAt: updatedAt ?? DateTime(2026, 6, 1),
-          deletedAt: Value(deletedAt),
-        ));
+    Future<int> addNote(
+      String title, {
+      DateTime? deletedAt,
+      DateTime? updatedAt,
+    }) => db.notesDao.insertNote(
+      NotesCompanion.insert(
+        title: title,
+        createdAt: DateTime(2026, 6, 1),
+        updatedAt: updatedAt ?? DateTime(2026, 6, 1),
+        deletedAt: Value(deletedAt),
+      ),
+    );
 
     test('replaceLinks overwrites previous outgoing links', () async {
       await db.notesDao.replaceLinks(1, [
@@ -143,32 +158,44 @@ void main() {
     test('getBacklinks finds links pointing at a note', () async {
       await db.notesDao.replaceLinks(1, [
         NoteLinksCompanion.insert(
-            sourceNoteId: 1, targetTitleRaw: 'Target', targetNoteId: const Value(2)),
+          sourceNoteId: 1,
+          targetTitleRaw: 'Target',
+          targetNoteId: const Value(2),
+        ),
       ]);
       final back = await db.notesDao.getBacklinks(2);
       expect(back.single.sourceNoteId, 1);
     });
 
-    test('resolveLinksForTitle links unresolved links case-insensitively', () async {
-      final targetId = await addNote('My Note');
-      await db.notesDao.replaceLinks(1, [
-        NoteLinksCompanion.insert(sourceNoteId: 1, targetTitleRaw: 'My Note'),
-      ]);
-      expect(await db.notesDao.getAllResolvedLinks(), isEmpty);
+    test(
+      'resolveLinksForTitle links unresolved links case-insensitively',
+      () async {
+        final targetId = await addNote('My Note');
+        await db.notesDao.replaceLinks(1, [
+          NoteLinksCompanion.insert(sourceNoteId: 1, targetTitleRaw: 'My Note'),
+        ]);
+        expect(await db.notesDao.getAllResolvedLinks(), isEmpty);
 
-      await db.notesDao.resolveLinksForTitle('my note', targetId);
-      final resolved = await db.notesDao.getAllResolvedLinks();
-      expect(resolved.single.targetNoteId, targetId);
-    });
+        await db.notesDao.resolveLinksForTitle('my note', targetId);
+        final resolved = await db.notesDao.getAllResolvedLinks();
+        expect(resolved.single.targetNoteId, targetId);
+      },
+    );
 
     test('unresolveLinksTo resets resolved links back to null', () async {
       await db.notesDao.replaceLinks(1, [
         NoteLinksCompanion.insert(
-            sourceNoteId: 1, targetTitleRaw: 'X', targetNoteId: const Value(5)),
+          sourceNoteId: 1,
+          targetTitleRaw: 'X',
+          targetNoteId: const Value(5),
+        ),
       ]);
       await db.notesDao.unresolveLinksTo(5);
       expect(await db.notesDao.getAllResolvedLinks(), isEmpty);
-      expect((await db.notesDao.getOutgoingLinks(1)).single.targetNoteId, isNull);
+      expect(
+        (await db.notesDao.getOutgoingLinks(1)).single.targetNoteId,
+        isNull,
+      );
     });
   });
 
@@ -178,12 +205,14 @@ void main() {
     tearDown(() => db.close());
 
     Future<int> addNote(String title, {DateTime? deletedAt}) =>
-        db.notesDao.insertNote(NotesCompanion.insert(
-          title: title,
-          createdAt: DateTime(2026, 6, 1),
-          updatedAt: DateTime(2026, 6, 1),
-          deletedAt: Value(deletedAt),
-        ));
+        db.notesDao.insertNote(
+          NotesCompanion.insert(
+            title: title,
+            createdAt: DateTime(2026, 6, 1),
+            updatedAt: DateTime(2026, 6, 1),
+            deletedAt: Value(deletedAt),
+          ),
+        );
 
     test('ensureTag is idempotent', () async {
       final a = await db.notesDao.ensureTag('focus');

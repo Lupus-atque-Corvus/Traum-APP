@@ -7,8 +7,10 @@ class MapFieldOption {
 
   Map<String, dynamic> toJson() => {'value': value, 'colorHex': colorHex};
 
-  factory MapFieldOption.fromJson(Map<String, dynamic> j) =>
-      MapFieldOption(value: j['value'] as String, colorHex: j['colorHex'] as String?);
+  factory MapFieldOption.fromJson(Map<String, dynamic> j) => MapFieldOption(
+    value: j['value'] as String,
+    colorHex: j['colorHex'] as String?,
+  );
 }
 
 class MapField {
@@ -26,20 +28,20 @@ class MapField {
   });
 
   Map<String, dynamic> toJson() => {
-        'key': key,
-        'label': label,
-        'type': type.name,
-        'options': options.map((o) => o.toJson()).toList(),
-        'iconName': iconName,
-      };
+    'key': key,
+    'label': label,
+    'type': type.name,
+    'options': options.map((o) => o.toJson()).toList(),
+    'iconName': iconName,
+  };
 
   factory MapField.fromJson(Map<String, dynamic> j) => MapField(
-        key: j['key'] as String,
-        label: j['label'] as String,
-        type: MapFieldType.values.byName(j['type'] as String),
-        options: (j['options'] as List? ?? [])
-            .map((o) => MapFieldOption.fromJson(o as Map<String, dynamic>))
-            .toList(),
-        iconName: j['iconName'] as String?,
-      );
+    key: j['key'] as String,
+    label: j['label'] as String,
+    type: MapFieldType.values.byName(j['type'] as String),
+    options: (j['options'] as List? ?? [])
+        .map((o) => MapFieldOption.fromJson(o as Map<String, dynamic>))
+        .toList(),
+    iconName: j['iconName'] as String?,
+  );
 }

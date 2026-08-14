@@ -12,8 +12,7 @@ class NotesTemplateService {
     final date = now ?? DateTime.now();
     var out = template;
     out = out.replaceAll('{{title}}', title);
-    out = out.replaceAll('{{time}}',
-        '${_two(date.hour)}:${_two(date.minute)}');
+    out = out.replaceAll('{{time}}', '${_two(date.hour)}:${_two(date.minute)}');
     // {{date:FORMAT}}
     out = out.replaceAllMapped(
       RegExp(r'\{\{date:([^}]+)\}\}'),

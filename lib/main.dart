@@ -38,15 +38,15 @@ Future<void> _runApp() async {
   // visible error banner instead of a silent blank/black area — otherwise
   // such bugs are invisible during manual testing until logcat is checked.
   ErrorWidget.builder = (FlutterErrorDetails details) => Container(
-        color: const Color(0xFF0D0D1A),
-        alignment: Alignment.center,
-        padding: const EdgeInsets.all(16),
-        child: Text(
-          'UI-Fehler: ${details.exceptionAsString()}',
-          style: const TextStyle(color: Colors.redAccent, fontSize: 12),
-          textAlign: TextAlign.center,
-        ),
-      );
+    color: const Color(0xFF0D0D1A),
+    alignment: Alignment.center,
+    padding: const EdgeInsets.all(16),
+    child: Text(
+      'UI-Fehler: ${details.exceptionAsString()}',
+      style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+      textAlign: TextAlign.center,
+    ),
+  );
 
   final prefs = await SharedPreferences.getInstance();
   final db = TraumDatabase();
@@ -64,10 +64,7 @@ Future<void> _runApp() async {
   );
 
   runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const TraumApp(),
-    ),
+    UncontrolledProviderScope(container: container, child: const TraumApp()),
   );
 
   // Widget/notification init, WorkManager registration and seeders all run
@@ -80,10 +77,7 @@ Future<void> _runApp() async {
   // launch except the very first this was pure overhead before the first
   // frame could even be drawn.
   WidgetsBinding.instance.addPostFrameCallback((_) async {
-    await Future.wait([
-      WidgetDataService.init(),
-      NotificationService.init(),
-    ]);
+    await Future.wait([WidgetDataService.init(), NotificationService.init()]);
     // Rebuild every scheduled notification from current DB/prefs state on
     // every cold start — not just when a Settings toggle or medication is
     // touched. Without this, reminders configured in a previous app version

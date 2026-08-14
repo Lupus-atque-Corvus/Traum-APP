@@ -16,20 +16,21 @@ import '../home_widget_registry.dart';
 
 // ─── One-shot snapshot providers (no drift query streams) ────────────────────
 
-final _accountsSnapshotProvider =
-    FutureProvider.autoDispose<List<Account>>((ref) {
+final _accountsSnapshotProvider = FutureProvider.autoDispose<List<Account>>((
+  ref,
+) {
   return ref.watch(accountsDaoProvider).getAll();
 });
 
 final _savingsGoalsSnapshotProvider =
     FutureProvider.autoDispose<List<SavingsGoal>>((ref) {
-  return ref.watch(budgetDaoProvider).getAllSavingsGoals();
-});
+      return ref.watch(budgetDaoProvider).getAllSavingsGoals();
+    });
 
 final _recurringSnapshotProvider =
     FutureProvider.autoDispose<List<Transaction>>((ref) {
-  return ref.watch(budgetDaoProvider).getRecurringTransactions();
-});
+      return ref.watch(budgetDaoProvider).getRecurringTransactions();
+    });
 
 (int, int) _nowYm() {
   final now = DateTime.now();

@@ -35,11 +35,13 @@ class _CycleSettingsSheetState extends State<CycleSettingsSheet> {
 
   Future<void> _save() async {
     setState(() => _saving = true);
-    await widget.onSave(CycleProfileCompanion(
-      id: const Value(0),
-      menarcheDate: Value(_menarche),
-      lutealPhaseOverride: Value(_luteal),
-    ));
+    await widget.onSave(
+      CycleProfileCompanion(
+        id: const Value(0),
+        menarcheDate: Value(_menarche),
+        lutealPhaseOverride: Value(_luteal),
+      ),
+    );
     if (mounted) Navigator.pop(context);
   }
 
@@ -114,7 +116,8 @@ class _CycleSettingsSheetState extends State<CycleSettingsSheet> {
                   builder: (ctx, child) => Theme(
                     data: ThemeData.dark().copyWith(
                       colorScheme: const ColorScheme.dark(
-                          primary: TraumColors.periodRose),
+                        primary: TraumColors.periodRose,
+                      ),
                     ),
                     child: child!,
                   ),

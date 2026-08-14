@@ -36,7 +36,8 @@ class GroupCluster {
 /// höchstens ein Cluster — sonst neuer Punkt).
 List<GroupCluster> groupPhotos(List<PhotoPoint> photos, double radiusMeters) {
   if (photos.isEmpty) return const [];
-  final sorted = [...photos]..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+  final sorted = [...photos]
+    ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
   final clusters = <List<PhotoPoint>>[];
   final cLat = <double>[];

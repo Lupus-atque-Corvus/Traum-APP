@@ -34,6 +34,6 @@ class DiaryEntries extends Table {
   // installationen nachträgt.
   @override
   List<Set<Column>> get uniqueKeys => [
-        {diaryId, date}
-      ];
+    {diaryId, date},
+  ];
 }

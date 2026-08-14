@@ -15,15 +15,18 @@ void main() {
       entry(4, DateTime(2026, 3, 26)),
     ];
     final a = CycleAnalyzer.analyze(
-        entries: entries, today: DateTime(2026, 4, 1));
+      entries: entries,
+      today: DateTime(2026, 4, 1),
+    );
     expect(a.avgCycleLength, closeTo(28, 0.01));
     expect(a.cycleLengthStdDev, closeTo(0, 0.01));
   });
 
   test('sparse data: zero/one cycle falls back to 28-day default', () {
     final a = CycleAnalyzer.analyze(
-        entries: [entry(1, DateTime(2026, 1, 1))],
-        today: DateTime(2026, 1, 10));
+      entries: [entry(1, DateTime(2026, 1, 1))],
+      today: DateTime(2026, 1, 10),
+    );
     expect(a.avgCycleLength, 28);
   });
 
@@ -34,7 +37,9 @@ void main() {
       entry(3, DateTime(2026, 2, 26)),
     ];
     final a = CycleAnalyzer.analyze(
-        entries: regular, today: DateTime(2026, 3, 1));
+      entries: regular,
+      today: DateTime(2026, 3, 1),
+    );
     expect(a.nextPeriodPredicted, DateTime(2026, 3, 26));
     final span = a.nextPeriodRangeEnd!
         .difference(a.nextPeriodRangeStart!)
@@ -47,7 +52,9 @@ void main() {
       entry(3, DateTime(2026, 2, 26)), // 34
     ];
     final b = CycleAnalyzer.analyze(
-        entries: variable, today: DateTime(2026, 3, 1));
+      entries: variable,
+      today: DateTime(2026, 3, 1),
+    );
     final spanB = b.nextPeriodRangeEnd!
         .difference(b.nextPeriodRangeStart!)
         .inDays;
@@ -61,7 +68,9 @@ void main() {
       entry(3, DateTime(2026, 2, 26)),
     ];
     final a = CycleAnalyzer.analyze(
-        entries: entries, today: DateTime(2026, 3, 1));
+      entries: entries,
+      today: DateTime(2026, 3, 1),
+    );
     expect(a.ovulationDate, DateTime(2026, 3, 12));
     expect(a.ovulationConfirmed, isFalse);
     expect(a.fertileWindowStart, DateTime(2026, 3, 7));
@@ -74,9 +83,10 @@ void main() {
       entry(2, DateTime(2026, 1, 29)),
     ];
     final a = CycleAnalyzer.analyze(
-        entries: entries,
-        lutealPhaseOverride: 12,
-        today: DateTime(2026, 2, 1));
+      entries: entries,
+      lutealPhaseOverride: 12,
+      today: DateTime(2026, 2, 1),
+    );
     expect(a.ovulationDate, DateTime(2026, 2, 14));
   });
 
@@ -96,7 +106,10 @@ void main() {
       tlog(DateTime(2026, 3, 13), 36.71), // shift day 3 → confirmed
     ];
     final a = CycleAnalyzer.analyze(
-        entries: entries, dailyLogs: logs, today: DateTime(2026, 3, 14));
+      entries: entries,
+      dailyLogs: logs,
+      today: DateTime(2026, 3, 14),
+    );
     expect(a.ovulationConfirmed, isTrue);
     expect(a.ovulationDate, DateTime(2026, 3, 10));
   });
@@ -110,7 +123,10 @@ void main() {
       tlog(DateTime(2026, 3, 8), 36.70), // single spike only
     ];
     final a = CycleAnalyzer.analyze(
-        entries: entries, dailyLogs: logs, today: DateTime(2026, 3, 14));
+      entries: entries,
+      dailyLogs: logs,
+      today: DateTime(2026, 3, 14),
+    );
     expect(a.ovulationConfirmed, isFalse);
   });
 
@@ -121,19 +137,23 @@ void main() {
       entry(3, DateTime(2026, 2, 26)),
     ];
     expect(
-      CycleAnalyzer.analyze(entries: regular, today: DateTime(2026, 3, 1))
-          .regularity,
+      CycleAnalyzer.analyze(
+        entries: regular,
+        today: DateTime(2026, 3, 1),
+      ).regularity,
       CycleRegularity.regular,
     );
 
     final irregular = [
       entry(1, DateTime(2026, 1, 1)),
       entry(2, DateTime(2026, 1, 21)), // 20
-      entry(3, DateTime(2026, 3, 5)),  // 43
+      entry(3, DateTime(2026, 3, 5)), // 43
     ];
     expect(
-      CycleAnalyzer.analyze(entries: irregular, today: DateTime(2026, 3, 6))
-          .regularity,
+      CycleAnalyzer.analyze(
+        entries: irregular,
+        today: DateTime(2026, 3, 6),
+      ).regularity,
       CycleRegularity.irregular,
     );
   });
@@ -150,12 +170,14 @@ void main() {
   test('flags consistently long cycles, softened in early gyn age', () {
     final longCycles = [
       entry(1, DateTime(2026, 1, 1)),
-      entry(2, DateTime(2026, 2, 9)),  // 39
+      entry(2, DateTime(2026, 2, 9)), // 39
       entry(3, DateTime(2026, 3, 21)), // 40
       entry(4, DateTime(2026, 4, 30)), // 40
     ];
     final flagged = CycleAnalyzer.analyze(
-        entries: longCycles, today: DateTime(2026, 5, 1));
+      entries: longCycles,
+      today: DateTime(2026, 5, 1),
+    );
     expect(
       flagged.healthFlags.map((f) => f.type),
       contains(HealthFlagType.consistentlyLong),
@@ -178,9 +200,13 @@ void main() {
       entry(2, DateTime(2026, 3, 1)),
     ];
     final a = CycleAnalyzer.analyze(
-        entries: entries, today: DateTime(2026, 3, 2));
-    expect(a.healthFlags.map((f) => f.type),
-        contains(HealthFlagType.longPeriod));
+      entries: entries,
+      today: DateTime(2026, 3, 2),
+    );
+    expect(
+      a.healthFlags.map((f) => f.type),
+      contains(HealthFlagType.longPeriod),
+    );
   });
 
   test('computes current cycle day and phase', () {
@@ -190,35 +216,48 @@ void main() {
       entry(3, DateTime(2026, 2, 26), end: DateTime(2026, 3, 2)),
     ];
     final a = CycleAnalyzer.analyze(
-        entries: entries, today: DateTime(2026, 3, 12));
+      entries: entries,
+      today: DateTime(2026, 3, 12),
+    );
     expect(a.currentCycleDay, 15);
     expect(a.currentPhase, CyclePhase.ovulation);
 
     final b = CycleAnalyzer.analyze(
-        entries: entries, today: DateTime(2026, 2, 27));
+      entries: entries,
+      today: DateTime(2026, 2, 27),
+    );
     expect(b.currentCycleDay, 2);
     expect(b.currentPhase, CyclePhase.menstrual);
   });
 
-  test('pregnancyProbabilityToday: 30 on ovulation, 25 in window, 0 outside', () {
-    final entries = [
-      entry(1, DateTime(2026, 1, 1)),
-      entry(2, DateTime(2026, 1, 29)),
-      entry(3, DateTime(2026, 2, 26)),
-    ];
-    // ovulation = 26 Feb + (28-14) = 12 Mar; fertile window 7 Mar..13 Mar.
-    final onOvulation = CycleAnalyzer.analyze(
-        entries: entries, today: DateTime(2026, 3, 12));
-    expect(onOvulation.pregnancyProbabilityToday, 30);
+  test(
+    'pregnancyProbabilityToday: 30 on ovulation, 25 in window, 0 outside',
+    () {
+      final entries = [
+        entry(1, DateTime(2026, 1, 1)),
+        entry(2, DateTime(2026, 1, 29)),
+        entry(3, DateTime(2026, 2, 26)),
+      ];
+      // ovulation = 26 Feb + (28-14) = 12 Mar; fertile window 7 Mar..13 Mar.
+      final onOvulation = CycleAnalyzer.analyze(
+        entries: entries,
+        today: DateTime(2026, 3, 12),
+      );
+      expect(onOvulation.pregnancyProbabilityToday, 30);
 
-    final inWindow = CycleAnalyzer.analyze(
-        entries: entries, today: DateTime(2026, 3, 8));
-    expect(inWindow.pregnancyProbabilityToday, 25);
+      final inWindow = CycleAnalyzer.analyze(
+        entries: entries,
+        today: DateTime(2026, 3, 8),
+      );
+      expect(inWindow.pregnancyProbabilityToday, 25);
 
-    final outside = CycleAnalyzer.analyze(
-        entries: entries, today: DateTime(2026, 3, 1));
-    expect(outside.pregnancyProbabilityToday, 0);
-  });
+      final outside = CycleAnalyzer.analyze(
+        entries: entries,
+        today: DateTime(2026, 3, 1),
+      );
+      expect(outside.pregnancyProbabilityToday, 0);
+    },
+  );
 
   test('longPeriod flag survives early gynecological-age softening', () {
     // Average period length 10 days, menarche <3y ago.
@@ -231,8 +270,10 @@ void main() {
       menarcheDate: DateTime(2024, 6, 1), // <3 years before today
       today: DateTime(2026, 3, 2),
     );
-    expect(a.healthFlags.map((f) => f.type),
-        contains(HealthFlagType.longPeriod));
+    expect(
+      a.healthFlags.map((f) => f.type),
+      contains(HealthFlagType.longPeriod),
+    );
   });
 
   test('highVariability flag for large cycle-length spread', () {
@@ -240,13 +281,17 @@ void main() {
     final entries = [
       entry(1, DateTime(2026, 1, 1)),
       entry(2, DateTime(2026, 1, 21)), // 20
-      entry(3, DateTime(2026, 3, 7)),  // 45
+      entry(3, DateTime(2026, 3, 7)), // 45
       entry(4, DateTime(2026, 3, 31)), // 24
     ];
     final a = CycleAnalyzer.analyze(
-        entries: entries, today: DateTime(2026, 4, 1));
-    expect(a.healthFlags.map((f) => f.type),
-        contains(HealthFlagType.highVariability));
+      entries: entries,
+      today: DateTime(2026, 4, 1),
+    );
+    expect(
+      a.healthFlags.map((f) => f.type),
+      contains(HealthFlagType.highVariability),
+    );
   });
 
   test('slightlyIrregular for a moderate spread within normal range', () {
@@ -254,10 +299,12 @@ void main() {
     final entries = [
       entry(1, DateTime(2026, 1, 1)),
       entry(2, DateTime(2026, 1, 27)), // 26
-      entry(3, DateTime(2026, 3, 2)),  // 34
+      entry(3, DateTime(2026, 3, 2)), // 34
     ];
     final a = CycleAnalyzer.analyze(
-        entries: entries, today: DateTime(2026, 3, 3));
+      entries: entries,
+      today: DateTime(2026, 3, 3),
+    );
     expect(a.regularity, CycleRegularity.slightlyIrregular);
   });
 }

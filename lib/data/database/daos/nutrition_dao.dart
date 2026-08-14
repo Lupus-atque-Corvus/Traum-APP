@@ -5,15 +5,17 @@ import '../../../core/utils/sql_like.dart';
 
 part 'nutrition_dao.g.dart';
 
-@DriftAccessor(tables: [
-  NutritionLogs,
-  MealTemplates,
-  WaterLogs,
-  ShoppingListItems,
-  GroceryPrices,
-  ShoppingTemplates,
-  ShoppingTemplateItems,
-])
+@DriftAccessor(
+  tables: [
+    NutritionLogs,
+    MealTemplates,
+    WaterLogs,
+    ShoppingListItems,
+    GroceryPrices,
+    ShoppingTemplates,
+    ShoppingTemplateItems,
+  ],
+)
 class NutritionDao extends DatabaseAccessor<TraumDatabase>
     with _$NutritionDaoMixin {
   NutritionDao(super.db);
@@ -22,10 +24,11 @@ class NutritionDao extends DatabaseAccessor<TraumDatabase>
   Stream<List<NutritionLog>> watchLogsForDate(DateTime date) {
     final start = DateTime(date.year, date.month, date.day);
     final end = start.add(const Duration(days: 1));
-    return (select(nutritionLogs)
-          ..where((t) =>
+    return (select(nutritionLogs)..where(
+          (t) =>
               t.logDate.isBiggerOrEqualValue(start) &
-              t.logDate.isSmallerThanValue(end)))
+              t.logDate.isSmallerThanValue(end),
+        ))
         .watch();
   }
 
@@ -35,22 +38,25 @@ class NutritionDao extends DatabaseAccessor<TraumDatabase>
   Future<int> deleteLog(int id) =>
       (delete(nutritionLogs)..where((t) => t.id.equals(id))).go();
 
-  Future<List<NutritionLog>> getNutritionLogsAfter(DateTime date) =>
-      (select(nutritionLogs)..where((t) => t.logDate.isBiggerOrEqualValue(date)))
-          .get();
+  Future<List<NutritionLog>> getNutritionLogsAfter(DateTime date) => (select(
+    nutritionLogs,
+  )..where((t) => t.logDate.isBiggerOrEqualValue(date))).get();
 
-  Future<List<WaterLog>> getWaterLogsAfter(DateTime date) =>
-      (select(waterLogs)..where((t) => t.logDate.isBiggerOrEqualValue(date)))
-          .get();
+  Future<List<WaterLog>> getWaterLogsAfter(DateTime date) => (select(
+    waterLogs,
+  )..where((t) => t.logDate.isBiggerOrEqualValue(date))).get();
 
   // MealTemplates
   Stream<List<MealTemplate>> watchAllTemplates() =>
       select(mealTemplates).watch();
 
   Future<List<MealTemplate>> searchTemplates(String query) =>
-      (select(mealTemplates)
-            ..where((t) => t.name.like('%${escapeLikePattern(query)}%',
-                escapeChar: likeEscapeChar)))
+      (select(mealTemplates)..where(
+            (t) => t.name.like(
+              '%${escapeLikePattern(query)}%',
+              escapeChar: likeEscapeChar,
+            ),
+          ))
           .get();
 
   Future<int> insertTemplate(MealTemplatesCompanion entry) =>
@@ -63,18 +69,19 @@ class NutritionDao extends DatabaseAccessor<TraumDatabase>
   Stream<List<WaterLog>> watchWaterForDate(DateTime date) {
     final start = DateTime(date.year, date.month, date.day);
     final end = start.add(const Duration(days: 1));
-    return (select(waterLogs)
-          ..where((t) =>
+    return (select(waterLogs)..where(
+          (t) =>
               t.logDate.isBiggerOrEqualValue(start) &
-              t.logDate.isSmallerThanValue(end)))
+              t.logDate.isSmallerThanValue(end),
+        ))
         .watch();
   }
 
   Future<List<WaterLog>> getWaterLogsLast7Days() {
     final cutoff = DateTime.now().subtract(const Duration(days: 7));
-    return (select(waterLogs)
-          ..where((t) => t.logDate.isBiggerOrEqualValue(cutoff)))
-        .get();
+    return (select(
+      waterLogs,
+    )..where((t) => t.logDate.isBiggerOrEqualValue(cutoff))).get();
   }
 
   Future<int> insertWaterLog(WaterLogsCompanion entry) =>
@@ -90,9 +97,9 @@ class NutritionDao extends DatabaseAccessor<TraumDatabase>
   Future<int> insertShoppingItem(ShoppingListItemsCompanion entry) =>
       into(shoppingListItems).insert(entry);
 
-  Future<int> updateShoppingItem(ShoppingListItemsCompanion entry) =>
-      (update(shoppingListItems)..where((t) => t.id.equals(entry.id.value)))
-          .write(entry);
+  Future<int> updateShoppingItem(ShoppingListItemsCompanion entry) => (update(
+    shoppingListItems,
+  )..where((t) => t.id.equals(entry.id.value))).write(entry);
 
   Future<int> deleteShoppingItem(int id) =>
       (delete(shoppingListItems)..where((t) => t.id.equals(id))).go();
@@ -108,19 +115,23 @@ class NutritionDao extends DatabaseAccessor<TraumDatabase>
   Future<List<PriceEntry>> getAllPriceEntries() async {
     final prices = await getAllGroceryPrices();
     return prices
-        .map((p) => PriceEntry(
+        .map(
+          (p) => PriceEntry(
             name: p.name,
             normalized: p.nameNormalized,
             price: p.avgPrice,
-            unit: p.unit))
+            unit: p.unit,
+          ),
+        )
         .toList();
   }
 
   Future<GroceryPrice?> findGroceryPriceByNormalized(String normalized) async {
-    final rows = await (select(groceryPrices)
-          ..where((t) => t.nameNormalized.equals(normalized))
-          ..limit(1))
-        .get();
+    final rows =
+        await (select(groceryPrices)
+              ..where((t) => t.nameNormalized.equals(normalized))
+              ..limit(1))
+            .get();
     return rows.isEmpty ? null : rows.first;
   }
 
@@ -137,25 +148,30 @@ class NutritionDao extends DatabaseAccessor<TraumDatabase>
     return transaction(() async {
       final existing = await findGroceryPriceByNormalized(normalized);
       if (existing == null) {
-        await into(groceryPrices).insert(GroceryPricesCompanion.insert(
-          name: name,
-          nameNormalized: normalized,
-          category: Value(category),
-          avgPrice: actual,
-          unit: Value(unit),
-          isUserAdjusted: const Value(true),
-        ));
+        await into(groceryPrices).insert(
+          GroceryPricesCompanion.insert(
+            name: name,
+            nameNormalized: normalized,
+            category: Value(category),
+            avgPrice: actual,
+            unit: Value(unit),
+            isUserAdjusted: const Value(true),
+          ),
+        );
         return;
       }
       final newCount = existing.sampleCount + 1;
       final newAvg =
           (existing.avgPrice * existing.sampleCount + actual) / newCount;
-      await (update(groceryPrices)..where((t) => t.id.equals(existing.id)))
-          .write(GroceryPricesCompanion(
-        avgPrice: Value(newAvg),
-        sampleCount: Value(newCount),
-        isUserAdjusted: const Value(true),
-      ));
+      await (update(
+        groceryPrices,
+      )..where((t) => t.id.equals(existing.id))).write(
+        GroceryPricesCompanion(
+          avgPrice: Value(newAvg),
+          sampleCount: Value(newCount),
+          isUserAdjusted: const Value(true),
+        ),
+      );
     });
   }
 
@@ -164,15 +180,18 @@ class NutritionDao extends DatabaseAccessor<TraumDatabase>
       select(shoppingTemplates).watch();
 
   Future<List<ShoppingTemplateItem>> getTemplateItems(int templateId) =>
-      (select(shoppingTemplateItems)
-            ..where((t) => t.templateId.equals(templateId)))
-          .get();
+      (select(
+        shoppingTemplateItems,
+      )..where((t) => t.templateId.equals(templateId))).get();
 
   Future<int> saveTemplateFromItems(
-      String name, List<ShoppingTemplateDraft> items) {
+    String name,
+    List<ShoppingTemplateDraft> items,
+  ) {
     return transaction(() async {
-      final tplId = await into(shoppingTemplates)
-          .insert(ShoppingTemplatesCompanion.insert(name: name));
+      final tplId = await into(
+        shoppingTemplates,
+      ).insert(ShoppingTemplatesCompanion.insert(name: name));
       await batch((b) {
         for (final it in items) {
           b.insert(
@@ -213,9 +232,9 @@ class NutritionDao extends DatabaseAccessor<TraumDatabase>
 
   Future<int> deleteShoppingTemplate(int id) {
     return transaction(() async {
-      await (delete(shoppingTemplateItems)
-            ..where((t) => t.templateId.equals(id)))
-          .go();
+      await (delete(
+        shoppingTemplateItems,
+      )..where((t) => t.templateId.equals(id))).go();
       return (delete(shoppingTemplates)..where((t) => t.id.equals(id))).go();
     });
   }

@@ -3,10 +3,12 @@ import 'package:traum/features/budget/budget_helpers.dart';
 
 void main() {
   group('fmtAmount', () {
-    test('formats a typical amount with German thousands/decimal separators',
-        () {
-      expect(fmtAmount(1234.5), '1.234,50');
-    });
+    test(
+      'formats a typical amount with German thousands/decimal separators',
+      () {
+        expect(fmtAmount(1234.5), '1.234,50');
+      },
+    );
 
     test('formats a small amount without a thousands separator', () {
       expect(fmtAmount(9.99), '9,99');

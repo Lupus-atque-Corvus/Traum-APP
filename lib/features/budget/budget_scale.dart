@@ -29,9 +29,7 @@ class BudgetTextScale extends StatelessWidget {
     // mq.textScaler.scale(1) ≈ aktueller System-Linearfaktor.
     final system = mq.textScaler.scale(1);
     return MediaQuery(
-      data: mq.copyWith(
-        textScaler: TextScaler.linear(kBudgetScale * system),
-      ),
+      data: mq.copyWith(textScaler: TextScaler.linear(kBudgetScale * system)),
       child: child,
     );
   }

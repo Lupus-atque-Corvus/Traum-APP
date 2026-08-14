@@ -71,10 +71,13 @@ class _DiaryEntryBody extends ConsumerWidget {
               elevation: 0,
             ),
             body: Center(
-              child: Text(l10n.diaryEntryNotFound,
-                  style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackgroundMuted)),
+              child: Text(
+                l10n.diaryEntryNotFound,
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackgroundMuted,
+                ),
+              ),
             ),
           );
         }
@@ -106,26 +109,38 @@ class _DiaryEntryBody extends ConsumerWidget {
                       context: context,
                       builder: (dialogCtx) => AlertDialog(
                         backgroundColor: TraumColors.surface,
-                        title: Text(l10n.diaryDeleteTitle,
-                            style: const TextStyle(
-                                fontFamily: 'DMSans',
-                                color: TraumColors.onBackground)),
+                        title: Text(
+                          l10n.diaryDeleteTitle,
+                          style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            color: TraumColors.onBackground,
+                          ),
+                        ),
                         content: Text(
-                            l10n.diaryDeleteMessage,
-                            style: const TextStyle(
-                                fontFamily: 'DMSans',
-                                color: TraumColors.onBackgroundMuted)),
+                          l10n.diaryDeleteMessage,
+                          style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            color: TraumColors.onBackgroundMuted,
+                          ),
+                        ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(dialogCtx, false),
-                            child: Text(l10n.cancel,
-                                style: const TextStyle(
-                                    color: TraumColors.onBackgroundMuted)),
+                            child: Text(
+                              l10n.cancel,
+                              style: const TextStyle(
+                                color: TraumColors.onBackgroundMuted,
+                              ),
+                            ),
                           ),
                           TextButton(
                             onPressed: () => Navigator.pop(dialogCtx, true),
-                            child: Text(l10n.delete,
-                                style: const TextStyle(color: TraumColors.roseRed)),
+                            child: Text(
+                              l10n.delete,
+                              style: const TextStyle(
+                                color: TraumColors.roseRed,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -148,68 +163,89 @@ class _DiaryEntryBody extends ConsumerWidget {
                 itemBuilder: (_) => [
                   PopupMenuItem(
                     value: 'share',
-                    child: Text(l10n.diaryShareLabel,
-                        style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            color: TraumColors.onBackground)),
+                    child: Text(
+                      l10n.diaryShareLabel,
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        color: TraumColors.onBackground,
+                      ),
+                    ),
                   ),
                   PopupMenuItem(
                     value: 'delete',
-                    child: Text(l10n.delete,
-                        style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            color: TraumColors.roseRed)),
+                    child: Text(
+                      l10n.delete,
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        color: TraumColors.roseRed,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ],
           ),
-          body: Column(children: [
-            Expanded(
-              flex: 7,
-              child: fileExists
-                  ? Image.file(File(mediaPath),
-                      width: double.infinity,
-                      height: double.infinity,
-                      cacheWidth: decodePxFor(
-                          context, MediaQuery.sizeOf(context).width),
-                      fit: BoxFit.cover)
-                  : Container(
-                      color: TraumColors.surfaceVariant,
-                      child: const Center(
-                        child: Icon(Icons.broken_image_outlined,
-                            color: TraumColors.onBackgroundSubtle, size: 60),
+          body: Column(
+            children: [
+              Expanded(
+                flex: 7,
+                child: fileExists
+                    ? Image.file(
+                        File(mediaPath),
+                        width: double.infinity,
+                        height: double.infinity,
+                        cacheWidth: decodePxFor(
+                          context,
+                          MediaQuery.sizeOf(context).width,
+                        ),
+                        fit: BoxFit.cover,
+                      )
+                    : Container(
+                        color: TraumColors.surfaceVariant,
+                        child: const Center(
+                          child: Icon(
+                            Icons.broken_image_outlined,
+                            color: TraumColors.onBackgroundSubtle,
+                            size: 60,
+                          ),
+                        ),
                       ),
-                    ),
-            ),
-            Expanded(
-              flex: 3,
-              child: Container(
-                width: double.infinity,
-                color: TraumColors.surface,
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(_formatDate(entry.date, l10n),
+              ),
+              Expanded(
+                flex: 3,
+                child: Container(
+                  width: double.infinity,
+                  color: TraumColors.surface,
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _formatDate(entry.date, l10n),
                         style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w700,
-                            color: TraumColors.onBackground,
-                            fontSize: 16)),
-                    if (entry.note.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Text(entry.note,
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w700,
+                          color: TraumColors.onBackground,
+                          fontSize: 16,
+                        ),
+                      ),
+                      if (entry.note.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          entry.note,
                           style: const TextStyle(
-                              fontFamily: 'DMSans',
-                              color: TraumColors.onBackground,
-                              fontSize: 14)),
+                            fontFamily: 'DMSans',
+                            color: TraumColors.onBackground,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ]),
+            ],
+          ),
         );
       },
     );
@@ -220,10 +256,18 @@ class _DiaryEntryBody extends ConsumerWidget {
     if (d == null) return dateStr;
     final weekdays = l10n.weekdaysShort.split(',');
     final months = [
-      l10n.monthJan, l10n.monthFeb, l10n.monthMar,
-      l10n.monthApr, l10n.monthMay, l10n.monthJun,
-      l10n.monthJul, l10n.monthAug, l10n.monthSep,
-      l10n.monthOct, l10n.monthNov, l10n.monthDec,
+      l10n.monthJan,
+      l10n.monthFeb,
+      l10n.monthMar,
+      l10n.monthApr,
+      l10n.monthMay,
+      l10n.monthJun,
+      l10n.monthJul,
+      l10n.monthAug,
+      l10n.monthSep,
+      l10n.monthOct,
+      l10n.monthNov,
+      l10n.monthDec,
     ];
     return '${weekdays[d.weekday - 1]}, ${d.day}. ${months[d.month - 1]} ${d.year}';
   }

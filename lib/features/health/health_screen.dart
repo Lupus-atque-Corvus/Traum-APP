@@ -19,11 +19,11 @@ import 'widgets/faktor_row.dart';
 import 'widgets/insight_card.dart';
 import 'widgets/score_sparkline.dart';
 
-final _todayNutritionProvider = StreamProvider.autoDispose<List<NutritionLog>>((ref) {
+final _todayNutritionProvider = StreamProvider.autoDispose<List<NutritionLog>>((
+  ref,
+) {
   final today = DateTime.now();
-  return ref
-      .watch(nutritionDaoProvider)
-      .watchLogsForDate(today);
+  return ref.watch(nutritionDaoProvider).watchLogsForDate(today);
 });
 
 class HealthScreen extends ConsumerStatefulWidget {
@@ -56,8 +56,14 @@ class _HealthScreenState extends ConsumerState<HealthScreen>
       backgroundColor: TraumColors.background,
       appBar: AppBar(
         backgroundColor: TraumColors.background,
-        title: Text(l10n.health,
-            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w700)),
+        title: Text(
+          l10n.health,
+          style: const TextStyle(
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
         elevation: 0,
         bottom: TabBar(
@@ -65,7 +71,11 @@ class _HealthScreenState extends ConsumerState<HealthScreen>
           indicatorColor: TraumColors.cyanBlue,
           labelColor: TraumColors.cyanBlue,
           unselectedLabelColor: TraumColors.onBackgroundMuted,
-          labelStyle: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600, fontSize: 13),
+          labelStyle: const TextStyle(
+            fontFamily: 'DMSans',
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+          ),
           tabs: [
             Tab(text: l10n.score),
             Tab(text: l10n.overview),
@@ -109,16 +119,17 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
 
     return scoreAsync.when(
       loading: () => const Center(
-          child: CircularProgressIndicator(color: TraumColors.coralOrange)),
+        child: CircularProgressIndicator(color: TraumColors.coralOrange),
+      ),
       error: (e, _) => Center(
-          child:
-              Text('$e', style: const TextStyle(color: TraumColors.roseRed))),
+        child: Text('$e', style: const TextStyle(color: TraumColors.roseRed)),
+      ),
       data: (result) {
         final history = historyAsync.value ?? [];
-        final yesterday =
-            history.length >= 2 ? history[history.length - 2] : null;
-        final diff =
-            yesterday != null ? result.gesamtScore - yesterday : null;
+        final yesterday = history.length >= 2
+            ? history[history.length - 2]
+            : null;
+        final diff = yesterday != null ? result.gesamtScore - yesterday : null;
 
         final weakest = result.weakestFactor;
         final strongest = result.strongestFactor;
@@ -177,7 +188,9 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                               alignment: Alignment.bottomCenter,
                               children: [
                                 CircularScoreRing(
-                                    score: result.gesamtScore, size: 160),
+                                  score: result.gesamtScore,
+                                  size: 160,
+                                ),
                                 Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -196,7 +209,8 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                                         const Text(
                                           '/100',
                                           style: TextStyle(
-                                            color: TraumColors.onBackgroundMuted,
+                                            color:
+                                                TraumColors.onBackgroundMuted,
                                             fontFamily: 'DMSans',
                                             fontSize: 14,
                                           ),
@@ -205,12 +219,16 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                                           const SizedBox(width: 8),
                                           Container(
                                             padding: const EdgeInsets.symmetric(
-                                                horizontal: 6, vertical: 2),
+                                              horizontal: 6,
+                                              vertical: 2,
+                                            ),
                                             decoration: BoxDecoration(
-                                              color: (diff >= 0
-                                                      ? TraumColors.mintGreen
-                                                      : TraumColors.roseRed)
-                                                  .withValues(alpha: 0.15),
+                                              color:
+                                                  (diff >= 0
+                                                          ? TraumColors
+                                                                .mintGreen
+                                                          : TraumColors.roseRed)
+                                                      .withValues(alpha: 0.15),
                                               borderRadius:
                                                   BorderRadius.circular(12),
                                             ),
@@ -308,16 +326,14 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                           ),
                           const SizedBox(height: 8),
                           ...result.faktoren.asMap().entries.map((e) {
-                            final isLast =
-                                e.key == result.faktoren.length - 1;
+                            final isLast = e.key == result.faktoren.length - 1;
                             return Column(
                               children: [
                                 FaktorRow(faktor: e.value),
                                 if (!isLast)
                                   Divider(
                                     height: 1,
-                                    color: Colors.white
-                                        .withValues(alpha: 0.06),
+                                    color: Colors.white.withValues(alpha: 0.06),
                                   ),
                               ],
                             );
@@ -348,13 +364,15 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Icon(Icons.flash_on_rounded,
-                                  color: TraumColors.amberGold, size: 22),
+                              const Icon(
+                                Icons.flash_on_rounded,
+                                color: TraumColors.amberGold,
+                                size: 22,
+                              ),
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       weakest.name,
@@ -377,9 +395,11 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                                   ],
                                 ),
                               ),
-                              const Icon(Icons.chevron_right_rounded,
-                                  color: TraumColors.onBackgroundSubtle,
-                                  size: 20),
+                              const Icon(
+                                Icons.chevron_right_rounded,
+                                color: TraumColors.onBackgroundSubtle,
+                                size: 20,
+                              ),
                             ],
                           ),
                         ],
@@ -457,11 +477,11 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                           physics: const NeverScrollableScrollPhysics(),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 0.9,
-                          ),
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 0.9,
+                              ),
                           children: [
                             InsightCard(
                               icon: Icons.star_rounded,
@@ -470,8 +490,7 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                               text:
                                   '${strongest.name}: ${faktorBewertung(strongest.score)} (${strongest.score}/100)',
                               buttonLabel: l10n.details,
-                              onTap: () =>
-                                  context.push('/health/score-detail'),
+                              onTap: () => context.push('/health/score-detail'),
                             ),
                             InsightCard(
                               icon: Icons.trending_up_rounded,
@@ -480,8 +499,7 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                               text:
                                   '${weakest.name}: ${faktorBewertung(weakest.score, l10n)} (${weakest.score}/100). ${faktorHinweis(weakest.name, l10n)}',
                               buttonLabel: l10n.improve,
-                              onTap: () =>
-                                  context.push('/health/score-detail'),
+                              onTap: () => context.push('/health/score-detail'),
                             ),
                             InsightCard(
                               icon: Icons.show_chart_rounded,
@@ -490,23 +508,22 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                               text: diff == null
                                   ? l10n.noTrendData
                                   : diff >= 0
-                                      ? l10n.trendBetter(diff)
-                                      : l10n.trendWorse(diff.abs()),
+                                  ? l10n.trendBetter(diff)
+                                  : l10n.trendWorse(diff.abs()),
                               buttonLabel: l10n.trendLabel,
-                              onTap: () =>
-                                  context.push('/health/score-detail'),
+                              onTap: () => context.push('/health/score-detail'),
                             ),
                             InsightCard(
                               icon: Icons.balance_rounded,
                               color: TraumColors.lavender,
                               title: l10n.healthScoreBalance,
                               text: l10n.balanceDiff(
-                                  strongest.score - weakest.score,
-                                  strongest.name,
-                                  weakest.name),
+                                strongest.score - weakest.score,
+                                strongest.name,
+                                weakest.name,
+                              ),
                               buttonLabel: l10n.analyze,
-                              onTap: () =>
-                                  context.push('/health/score-detail'),
+                              onTap: () => context.push('/health/score-detail'),
                             ),
                           ],
                         ),
@@ -581,8 +598,8 @@ class _DaySelector extends StatelessWidget {
                       color: isSelected
                           ? Colors.white
                           : isToday
-                              ? TraumColors.coralOrange
-                              : TraumColors.onBackground,
+                          ? TraumColors.coralOrange
+                          : TraumColors.onBackground,
                       fontFamily: 'DMSans',
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
@@ -609,11 +626,8 @@ class _DailySummaryCard extends ConsumerWidget {
     final nutritionAsync = ref.watch(_todayNutritionProvider);
     final kcalGoal = ref.watch(kcalGoalNotifierProvider);
 
-    final totalKcal = nutritionAsync.value?.fold<double>(
-          0,
-          (sum, l) => sum + l.kcal,
-        ) ??
-        0;
+    final totalKcal =
+        nutritionAsync.value?.fold<double>(0, (sum, l) => sum + l.kcal) ?? 0;
 
     return TraumCard(
       child: Column(
@@ -730,33 +744,80 @@ class _OverviewTab extends ConsumerWidget {
           data: (logs) {
             if (logs.isEmpty) {
               return TraumCard(
-                child: _EmptyCardContent(icon: Icons.bedtime_rounded, label: l10n.noSleepData),
+                child: _EmptyCardContent(
+                  icon: Icons.bedtime_rounded,
+                  label: l10n.noSleepData,
+                ),
               );
             }
-            final avgHours = logs.map((l) => l.wakeTime.difference(l.bedtime).inMinutes / 60.0).reduce((a, b) => a + b) / logs.length;
+            final avgHours =
+                logs
+                    .map(
+                      (l) => l.wakeTime.difference(l.bedtime).inMinutes / 60.0,
+                    )
+                    .reduce((a, b) => a + b) /
+                logs.length;
             return TraumCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(children: [
-                    const Icon(Icons.bedtime_rounded, color: TraumColors.cyanBlue, size: 20),
-                    const SizedBox(width: 8),
-                    Text(l10n.sleepLast7Nights,
-                        style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w700, fontSize: 14)),
-                  ]),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.bedtime_rounded,
+                        color: TraumColors.cyanBlue,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        l10n.sleepLast7Nights,
+                        style: const TextStyle(
+                          color: TraumColors.onBackground,
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 12),
-                  Text(l10n.avgHours(avgHours.toStringAsFixed(1).replaceAll('.', ',')),
-                      style: const TextStyle(color: TraumColors.cyanBlue, fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w700, fontSize: 28)),
-                  Text(l10n.entriesRecorded(logs.length),
-                      style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12)),
+                  Text(
+                    l10n.avgHours(
+                      avgHours.toStringAsFixed(1).replaceAll('.', ','),
+                    ),
+                    style: const TextStyle(
+                      color: TraumColors.cyanBlue,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 28,
+                    ),
+                  ),
+                  Text(
+                    l10n.entriesRecorded(logs.length),
+                    style: const TextStyle(
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontSize: 12,
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   TraumLineChart(
-                    spots: logs.asMap().entries.map((e) =>
-                        FlSpot(e.key.toDouble(),
-                            e.value.wakeTime.difference(e.value.bedtime).inMinutes / 60.0)).toList(),
-                    xLabels: logs.map((l) => '${l.bedtime.day}.${l.bedtime.month}').toList(),
+                    spots: logs
+                        .asMap()
+                        .entries
+                        .map(
+                          (e) => FlSpot(
+                            e.key.toDouble(),
+                            e.value.wakeTime
+                                    .difference(e.value.bedtime)
+                                    .inMinutes /
+                                60.0,
+                          ),
+                        )
+                        .toList(),
+                    xLabels: logs
+                        .map((l) => '${l.bedtime.day}.${l.bedtime.month}')
+                        .toList(),
                     color: TraumColors.cyanBlue,
                     height: 80,
                   ),
@@ -764,58 +825,107 @@ class _OverviewTab extends ConsumerWidget {
               ),
             );
           },
-          loading: () => const ShimmerLoader(width: double.infinity, height: 120),
+          loading: () =>
+              const ShimmerLoader(width: double.infinity, height: 120),
           error: (e, _) => InlineError(e),
         ),
         const SizedBox(height: 12),
         // Latest weight
         weightAsync.when(
           data: (w) => TraumCard(
-            child: Row(children: [
-              Container(
-                width: 48, height: 48,
-                decoration: BoxDecoration(color: TraumColors.cyanDim, shape: BoxShape.circle),
-                child: const Icon(Icons.monitor_weight_rounded, color: TraumColors.cyanBlue, size: 24),
-              ),
-              const SizedBox(width: 12),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(l10n.currentWeight,
-                    style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
-                Text(
-                  w != null ? '${w.weightKg.toStringAsFixed(1).replaceAll('.', ',')} kg' : l10n.noEntry,
-                  style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w700, fontSize: 20),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: TraumColors.cyanDim,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.monitor_weight_rounded,
+                    color: TraumColors.cyanBlue,
+                    size: 24,
+                  ),
                 ),
-              ]),
-            ]),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.currentWeight,
+                      style: const TextStyle(
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                        fontSize: 13,
+                      ),
+                    ),
+                    Text(
+                      w != null
+                          ? '${w.weightKg.toStringAsFixed(1).replaceAll('.', ',')} kg'
+                          : l10n.noEntry,
+                      style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          loading: () => const ShimmerLoader(width: double.infinity, height: 80),
+          loading: () =>
+              const ShimmerLoader(width: double.infinity, height: 80),
           error: (e, _) => InlineError(e),
         ),
         const SizedBox(height: 12),
         // Latest mood
         moodAsync.when(
           data: (m) => TraumCard(
-            child: Row(children: [
-              Container(
-                width: 48, height: 48,
-                decoration: BoxDecoration(color: TraumColors.mintGreenDim, shape: BoxShape.circle),
-                child: Text(m != null ? _moodEmoji(m.moodScore) : '😐',
-                    style: const TextStyle(fontSize: 24)),
-              ),
-              const SizedBox(width: 12),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(l10n.moodLastEntry,
-                    style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
-                Text(
-                  m != null ? _moodLabel(l10n, m.moodScore) : l10n.noEntry,
-                  style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600, fontSize: 16),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: TraumColors.mintGreenDim,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    m != null ? _moodEmoji(m.moodScore) : '😐',
+                    style: const TextStyle(fontSize: 24),
+                  ),
                 ),
-              ]),
-            ]),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.moodLastEntry,
+                      style: const TextStyle(
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                        fontSize: 13,
+                      ),
+                    ),
+                    Text(
+                      m != null ? _moodLabel(l10n, m.moodScore) : l10n.noEntry,
+                      style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          loading: () => const ShimmerLoader(width: double.infinity, height: 80),
+          loading: () =>
+              const ShimmerLoader(width: double.infinity, height: 80),
           error: (e, _) => InlineError(e),
         ),
       ],
@@ -824,23 +934,35 @@ class _OverviewTab extends ConsumerWidget {
 
   String _moodEmoji(int score) {
     switch (score) {
-      case 1: return '😢';
-      case 2: return '😕';
-      case 3: return '😐';
-      case 4: return '😊';
-      case 5: return '😄';
-      default: return '😐';
+      case 1:
+        return '😢';
+      case 2:
+        return '😕';
+      case 3:
+        return '😐';
+      case 4:
+        return '😊';
+      case 5:
+        return '😄';
+      default:
+        return '😐';
     }
   }
 
   String _moodLabel(AppLocalizations l10n, int score) {
     switch (score) {
-      case 1: return l10n.moodVeryBad;
-      case 2: return l10n.moodBad;
-      case 3: return l10n.moodNeutral;
-      case 4: return l10n.moodGood;
-      case 5: return l10n.moodExcellent;
-      default: return l10n.moodNeutral;
+      case 1:
+        return l10n.moodVeryBad;
+      case 2:
+        return l10n.moodBad;
+      case 3:
+        return l10n.moodNeutral;
+      case 4:
+        return l10n.moodGood;
+      case 5:
+        return l10n.moodExcellent;
+      default:
+        return l10n.moodNeutral;
     }
   }
 }
@@ -867,7 +989,10 @@ class _SleepTab extends ConsumerWidget {
         data: (logs) {
           if (logs.isEmpty) {
             return Center(
-              child: _EmptyCardContent(icon: Icons.bedtime_rounded, label: l10n.noSleepData),
+              child: _EmptyCardContent(
+                icon: Icons.bedtime_rounded,
+                label: l10n.noSleepData,
+              ),
             );
           }
           return ListView.builder(
@@ -888,9 +1013,13 @@ class _SleepTab extends ConsumerWidget {
                     color: TraumColors.roseRed.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(TraumRadius.card),
                   ),
-                  child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
+                  child: const Icon(
+                    Icons.delete_rounded,
+                    color: TraumColors.roseRed,
+                  ),
                 ),
-                onDismissed: (_) => ref.read(healthDaoProvider).deleteSleepLog(log.id),
+                onDismissed: (_) =>
+                    ref.read(healthDaoProvider).deleteSleepLog(log.id),
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
@@ -899,21 +1028,48 @@ class _SleepTab extends ConsumerWidget {
                   ),
                   child: ListTile(
                     leading: Container(
-                      width: 40, height: 40,
-                      decoration: BoxDecoration(color: TraumColors.cyanDim, shape: BoxShape.circle),
-                      child: const Icon(Icons.bedtime_rounded, color: TraumColors.cyanBlue, size: 20),
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: TraumColors.cyanDim,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.bedtime_rounded,
+                        color: TraumColors.cyanBlue,
+                        size: 20,
+                      ),
                     ),
-                    title: Text('$hours h $mins min',
-                        style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w600)),
+                    title: Text(
+                      '$hours h $mins min',
+                      style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     subtitle: Text(
                       '${log.bedtime.day}.${log.bedtime.month} — ${_fmt(log.bedtime)} bis ${_fmt(log.wakeTime)}',
-                      style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12),
+                      style: const TextStyle(
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                        fontSize: 12,
+                      ),
                     ),
                     trailing: log.qualityStars != null
-                        ? Row(mainAxisSize: MainAxisSize.min, children: List.generate(5, (i) =>
-                            Icon(i < log.qualityStars! ? Icons.star_rounded : Icons.star_outline_rounded,
-                                color: TraumColors.amberGold, size: 14)))
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: List.generate(
+                              5,
+                              (i) => Icon(
+                                i < log.qualityStars!
+                                    ? Icons.star_rounded
+                                    : Icons.star_outline_rounded,
+                                color: TraumColors.amberGold,
+                                size: 14,
+                              ),
+                            ),
+                          )
                         : null,
                   ),
                 ),
@@ -921,13 +1077,18 @@ class _SleepTab extends ConsumerWidget {
             },
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator(color: TraumColors.cyanBlue)),
-        error: (e, _) => Center(child: Text('$e', style: const TextStyle(color: TraumColors.roseRed))),
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: TraumColors.cyanBlue),
+        ),
+        error: (e, _) => Center(
+          child: Text('$e', style: const TextStyle(color: TraumColors.roseRed)),
+        ),
       ),
     );
   }
 
-  String _fmt(DateTime dt) => '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+  String _fmt(DateTime dt) =>
+      '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
 
   void _showAddSleepDialog(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
@@ -935,7 +1096,9 @@ class _SleepTab extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
       ),
       builder: (ctx) => _AddSleepSheet(
         onAdd: (c) => ref.read(healthDaoProvider).insertSleepLog(c),
@@ -961,48 +1124,104 @@ class _AddSleepSheetState extends State<_AddSleepSheet> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
-      padding: EdgeInsets.only(left: 20, right: 20, top: 16,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(child: Container(width: 40, height: 4,
-              decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle, borderRadius: BorderRadius.circular(2)))),
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: TraumColors.onBackgroundSubtle,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
           const SizedBox(height: 16),
-          Text(l10n.logSleep, style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
-              fontWeight: FontWeight.w700, fontSize: 18)),
+          Text(
+            l10n.logSleep,
+            style: const TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w700,
+              fontSize: 18,
+            ),
+          ),
           const SizedBox(height: 16),
           _TimePickerTile(
             label: l10n.fallingAsleep,
             time: TimeOfDay.fromDateTime(_bedtime),
-            onChanged: (t) => setState(() => _bedtime = DateTime(_bedtime.year, _bedtime.month, _bedtime.day, t.hour, t.minute)),
+            onChanged: (t) => setState(
+              () => _bedtime = DateTime(
+                _bedtime.year,
+                _bedtime.month,
+                _bedtime.day,
+                t.hour,
+                t.minute,
+              ),
+            ),
           ),
           _TimePickerTile(
             label: l10n.wakingUp,
             time: TimeOfDay.fromDateTime(_wakeTime),
-            onChanged: (t) => setState(() => _wakeTime = DateTime(_wakeTime.year, _wakeTime.month, _wakeTime.day, t.hour, t.minute)),
+            onChanged: (t) => setState(
+              () => _wakeTime = DateTime(
+                _wakeTime.year,
+                _wakeTime.month,
+                _wakeTime.day,
+                t.hour,
+                t.minute,
+              ),
+            ),
           ),
           const SizedBox(height: 8),
-          Text(l10n.sleepQuality, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
+          Text(
+            l10n.sleepQuality,
+            style: const TextStyle(
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontSize: 13,
+            ),
+          ),
           const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            children: List.generate(5, (i) => Semantics(
-              button: true,
-              label: l10n.a11yStarRating(i + 1),
-              child: GestureDetector(
-                onTap: () => setState(() => _quality = i + 1),
-                child: Icon(i < _quality ? Icons.star_rounded : Icons.star_outline_rounded,
-                    color: TraumColors.amberGold, size: 32),
+            children: List.generate(
+              5,
+              (i) => Semantics(
+                button: true,
+                label: l10n.a11yStarRating(i + 1),
+                child: GestureDetector(
+                  onTap: () => setState(() => _quality = i + 1),
+                  child: Icon(
+                    i < _quality
+                        ? Icons.star_rounded
+                        : Icons.star_outline_rounded,
+                    color: TraumColors.amberGold,
+                    size: 32,
+                  ),
+                ),
               ),
-            )),
+            ),
           ),
           const SizedBox(height: 20),
           GradientButton(
             label: l10n.save,
             onPressed: () async {
-              await widget.onAdd(SleepLogsCompanion.insert(bedtime: _bedtime, wakeTime: _wakeTime, qualityStars: Value(_quality)));
+              await widget.onAdd(
+                SleepLogsCompanion.insert(
+                  bedtime: _bedtime,
+                  wakeTime: _wakeTime,
+                  qualityStars: Value(_quality),
+                ),
+              );
               if (context.mounted) Navigator.pop(context);
             },
           ),
@@ -1018,19 +1237,35 @@ class _TimePickerTile extends StatelessWidget {
   final TimeOfDay time;
   final void Function(TimeOfDay) onChanged;
 
-  const _TimePickerTile({required this.label, required this.time, required this.onChanged});
+  const _TimePickerTile({
+    required this.label,
+    required this.time,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text(label, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13)),
+      title: Text(
+        label,
+        style: const TextStyle(
+          color: TraumColors.onBackgroundMuted,
+          fontFamily: 'DMSans',
+          fontSize: 13,
+        ),
+      ),
       trailing: GestureDetector(
         onTap: () async {
           final picked = await showTimePicker(
-            context: context, initialTime: time,
+            context: context,
+            initialTime: time,
             builder: (ctx, child) => Theme(
-              data: ThemeData.dark().copyWith(colorScheme: const ColorScheme.dark(primary: TraumColors.cyanBlue)),
+              data: ThemeData.dark().copyWith(
+                colorScheme: const ColorScheme.dark(
+                  primary: TraumColors.cyanBlue,
+                ),
+              ),
               child: child!,
             ),
           );
@@ -1041,10 +1276,18 @@ class _TimePickerTile extends StatelessWidget {
           decoration: BoxDecoration(
             color: TraumColors.surface,
             borderRadius: BorderRadius.circular(TraumRadius.chip),
-            border: Border.all(color: TraumColors.cyanBlue.withValues(alpha: 0.3)),
+            border: Border.all(
+              color: TraumColors.cyanBlue.withValues(alpha: 0.3),
+            ),
           ),
-          child: Text('${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
-              style: const TextStyle(color: TraumColors.cyanBlue, fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
+          child: Text(
+            '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
+            style: const TextStyle(
+              color: TraumColors.cyanBlue,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
       ),
     );
@@ -1079,16 +1322,33 @@ class _WeightTab extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(l10n.weightHistory,
-                        style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w700, fontSize: 14)),
+                    Text(
+                      l10n.weightHistory,
+                      style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     TraumLineChart(
-                      spots: logs.reversed.toList().asMap().entries.map((e) =>
-                          FlSpot(e.key.toDouble(), unitSystem == 'imperial'
-                              ? e.value.weightKg * 2.20462
-                              : e.value.weightKg)).toList(),
-                      xLabels: logs.reversed.map((l) => '${l.logDate.day}.${l.logDate.month}').toList(),
+                      spots: logs.reversed
+                          .toList()
+                          .asMap()
+                          .entries
+                          .map(
+                            (e) => FlSpot(
+                              e.key.toDouble(),
+                              unitSystem == 'imperial'
+                                  ? e.value.weightKg * 2.20462
+                                  : e.value.weightKg,
+                            ),
+                          )
+                          .toList(),
+                      xLabels: logs.reversed
+                          .map((l) => '${l.logDate.day}.${l.logDate.month}')
+                          .toList(),
                       color: TraumColors.cyanBlue,
                       height: 100,
                     ),
@@ -1099,39 +1359,65 @@ class _WeightTab extends ConsumerWidget {
             SectionHeader(title: l10n.entries),
             const SizedBox(height: 8),
             if (logs.isEmpty)
-              _EmptyCardContent(icon: Icons.monitor_weight_rounded, label: l10n.noWeightEntries),
-            ...logs.map((log) => Dismissible(
-              key: ValueKey(log.id),
-              direction: DismissDirection.endToStart,
-              background: Container(
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.only(right: 20),
-                decoration: BoxDecoration(
-                  color: TraumColors.roseRed.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(TraumRadius.card),
-                ),
-                child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
+              _EmptyCardContent(
+                icon: Icons.monitor_weight_rounded,
+                label: l10n.noWeightEntries,
               ),
-              onDismissed: (_) => ref.read(healthDaoProvider).deleteWeightLog(log.id),
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 8),
-                decoration: BoxDecoration(color: TraumColors.surface, borderRadius: BorderRadius.circular(TraumRadius.card)),
-                child: ListTile(
-                  title: Text(
-                    unitSystem == 'imperial'
-                        ? '${(log.weightKg * 2.20462).toStringAsFixed(1).replaceAll('.', ',')} lb'
-                        : '${log.weightKg.toStringAsFixed(1).replaceAll('.', ',')} kg',
-                    style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w600),
+            ...logs.map(
+              (log) => Dismissible(
+                key: ValueKey(log.id),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 20),
+                  decoration: BoxDecoration(
+                    color: TraumColors.roseRed.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(TraumRadius.card),
                   ),
-                  trailing: Text('${log.logDate.day}.${log.logDate.month}.${log.logDate.year}',
-                      style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 12)),
+                  child: const Icon(
+                    Icons.delete_rounded,
+                    color: TraumColors.roseRed,
+                  ),
+                ),
+                onDismissed: (_) =>
+                    ref.read(healthDaoProvider).deleteWeightLog(log.id),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    color: TraumColors.surface,
+                    borderRadius: BorderRadius.circular(TraumRadius.card),
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      unitSystem == 'imperial'
+                          ? '${(log.weightKg * 2.20462).toStringAsFixed(1).replaceAll('.', ',')} lb'
+                          : '${log.weightKg.toStringAsFixed(1).replaceAll('.', ',')} kg',
+                      style: const TextStyle(
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    trailing: Text(
+                      '${log.logDate.day}.${log.logDate.month}.${log.logDate.year}',
+                      style: const TextStyle(
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            )),
+            ),
           ],
         ),
-        loading: () => const Center(child: CircularProgressIndicator(color: TraumColors.cyanBlue)),
-        error: (e, _) => Center(child: Text('$e', style: const TextStyle(color: TraumColors.roseRed))),
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: TraumColors.cyanBlue),
+        ),
+        error: (e, _) => Center(
+          child: Text('$e', style: const TextStyle(color: TraumColors.roseRed)),
+        ),
       ),
     );
   }
@@ -1142,29 +1428,50 @@ class _WeightTab extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: TraumColors.surfaceElevated,
-        title: Text(AppLocalizations.of(ctx)!.logWeight,
-            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans')),
+        title: Text(
+          AppLocalizations.of(ctx)!.logWeight,
+          style: const TextStyle(
+            color: TraumColors.onBackground,
+            fontFamily: 'DMSans',
+          ),
+        ),
         content: TextField(
           controller: ctrl,
           autofocus: true,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           style: const TextStyle(color: TraumColors.onBackground),
-          decoration: const InputDecoration(suffixText: 'kg', suffixStyle: TextStyle(color: TraumColors.onBackgroundMuted)),
+          decoration: const InputDecoration(
+            suffixText: 'kg',
+            suffixStyle: TextStyle(color: TraumColors.onBackgroundMuted),
+          ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx),
-              child: Text(AppLocalizations.of(ctx)!.cancel, style: const TextStyle(color: TraumColors.onBackgroundMuted))),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              AppLocalizations.of(ctx)!.cancel,
+              style: const TextStyle(color: TraumColors.onBackgroundMuted),
+            ),
+          ),
           TextButton(
             onPressed: () async {
               final v = parseLocaleAmount(ctrl.text);
               if (v != null && v > 0) {
-                await ref.read(healthDaoProvider).insertWeightLog(
-                  WeightLogsCompanion.insert(weightKg: v, logDate: DateTime.now()),
-                );
+                await ref
+                    .read(healthDaoProvider)
+                    .insertWeightLog(
+                      WeightLogsCompanion.insert(
+                        weightKg: v,
+                        logDate: DateTime.now(),
+                      ),
+                    );
               }
               if (ctx.mounted) Navigator.pop(ctx);
             },
-            child: Text(AppLocalizations.of(ctx)!.save, style: const TextStyle(color: TraumColors.coralOrange)),
+            child: Text(
+              AppLocalizations.of(ctx)!.save,
+              style: const TextStyle(color: TraumColors.coralOrange),
+            ),
           ),
         ],
       ),
@@ -1197,15 +1504,24 @@ class _MeasurementsTab extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             children: [
               if (latest == null)
-                _EmptyCardContent(icon: Icons.straighten_rounded, label: l10n.noBodyMeasurements),
+                _EmptyCardContent(
+                  icon: Icons.straighten_rounded,
+                  label: l10n.noBodyMeasurements,
+                ),
               if (latest != null) ...[
                 TraumCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(l10n.currentMeasurements,
-                          style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
-                              fontWeight: FontWeight.w700, fontSize: 14)),
+                      Text(
+                        l10n.currentMeasurements,
+                        style: const TextStyle(
+                          color: TraumColors.onBackground,
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
+                      ),
                       const SizedBox(height: 12),
                       _MeasurementRow(l10n.chest, latest.chestCm),
                       _MeasurementRow(l10n.waist, latest.waistCm),
@@ -1216,7 +1532,11 @@ class _MeasurementsTab extends ConsumerWidget {
                       _MeasurementRow(l10n.calf, latest.calfCm),
                       _MeasurementRow(l10n.neck, latest.neckCm),
                       if (latest.bodyFatPct != null)
-                        _MeasurementRow(l10n.bodyFat, latest.bodyFatPct, suffix: '%'),
+                        _MeasurementRow(
+                          l10n.bodyFat,
+                          latest.bodyFatPct,
+                          suffix: '%',
+                        ),
                     ],
                   ),
                 ),
@@ -1225,18 +1545,28 @@ class _MeasurementsTab extends ConsumerWidget {
           ),
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator(color: TraumColors.cyanBlue)),
-      error: (e, _) => Center(child: Text('$e', style: const TextStyle(color: TraumColors.roseRed))),
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: TraumColors.cyanBlue),
+      ),
+      error: (e, _) => Center(
+        child: Text('$e', style: const TextStyle(color: TraumColors.roseRed)),
+      ),
     );
   }
 
-  void _showAddDialog(BuildContext context, WidgetRef ref, BodyMeasurement? existing) {
+  void _showAddDialog(
+    BuildContext context,
+    WidgetRef ref,
+    BodyMeasurement? existing,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: TraumColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(TraumRadius.card)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(TraumRadius.card),
+        ),
       ),
       builder: (ctx) => _AddMeasurementSheet(
         existing: existing,
@@ -1258,11 +1588,28 @@ class _MeasurementRow extends StatelessWidget {
     if (value == null) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: Row(children: [
-        Expanded(child: Text(label, style: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans', fontSize: 13))),
-        Text('${value!.toStringAsFixed(1).replaceAll('.', ',')} $suffix',
-            style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans', fontWeight: FontWeight.w600)),
-      ]),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+            ),
+          ),
+          Text(
+            '${value!.toStringAsFixed(1).replaceAll('.', ',')} $suffix',
+            style: const TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1284,21 +1631,41 @@ class _AddMeasurementSheetState extends State<_AddMeasurementSheet> {
     super.initState();
     final e = widget.existing;
     _controllers = {
-      'chest': TextEditingController(text: e?.chestCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
-      'waist': TextEditingController(text: e?.waistCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
-      'hips': TextEditingController(text: e?.hipsCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
-      'thigh': TextEditingController(text: e?.thighCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
-      'bicep': TextEditingController(text: e?.bicepCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
-      'shoulder': TextEditingController(text: e?.shoulderCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
-      'calf': TextEditingController(text: e?.calfCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
-      'neck': TextEditingController(text: e?.neckCm?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
-      'bodyfat': TextEditingController(text: e?.bodyFatPct?.toStringAsFixed(1).replaceAll('.', ',') ?? ''),
+      'chest': TextEditingController(
+        text: e?.chestCm?.toStringAsFixed(1).replaceAll('.', ',') ?? '',
+      ),
+      'waist': TextEditingController(
+        text: e?.waistCm?.toStringAsFixed(1).replaceAll('.', ',') ?? '',
+      ),
+      'hips': TextEditingController(
+        text: e?.hipsCm?.toStringAsFixed(1).replaceAll('.', ',') ?? '',
+      ),
+      'thigh': TextEditingController(
+        text: e?.thighCm?.toStringAsFixed(1).replaceAll('.', ',') ?? '',
+      ),
+      'bicep': TextEditingController(
+        text: e?.bicepCm?.toStringAsFixed(1).replaceAll('.', ',') ?? '',
+      ),
+      'shoulder': TextEditingController(
+        text: e?.shoulderCm?.toStringAsFixed(1).replaceAll('.', ',') ?? '',
+      ),
+      'calf': TextEditingController(
+        text: e?.calfCm?.toStringAsFixed(1).replaceAll('.', ',') ?? '',
+      ),
+      'neck': TextEditingController(
+        text: e?.neckCm?.toStringAsFixed(1).replaceAll('.', ',') ?? '',
+      ),
+      'bodyfat': TextEditingController(
+        text: e?.bodyFatPct?.toStringAsFixed(1).replaceAll('.', ',') ?? '',
+      ),
     };
   }
 
   @override
   void dispose() {
-    for (final c in _controllers.values) { c.dispose(); }
+    for (final c in _controllers.values) {
+      c.dispose();
+    }
     super.dispose();
   }
 
@@ -1307,39 +1674,79 @@ class _AddMeasurementSheetState extends State<_AddMeasurementSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 20, right: 20, top: 16,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(child: Container(width: 40, height: 4,
-                decoration: BoxDecoration(color: TraumColors.onBackgroundSubtle, borderRadius: BorderRadius.circular(2)))),
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: TraumColors.onBackgroundSubtle,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
             const SizedBox(height: 16),
-            Text(AppLocalizations.of(context)!.logBodyMeasurements, style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans',
-                fontWeight: FontWeight.w700, fontSize: 18)),
+            Text(
+              AppLocalizations.of(context)!.logBodyMeasurements,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
+              ),
+            ),
             const SizedBox(height: 16),
             for (final entry in () {
               final l10n = AppLocalizations.of(context)!;
               return [
-                ('${l10n.chest} (cm)', 'chest'), ('${l10n.waist} (cm)', 'waist'), ('${l10n.hips} (cm)', 'hips'),
-                ('${l10n.thigh} (cm)', 'thigh'), ('${l10n.bicep} (cm)', 'bicep'), ('${l10n.shoulders} (cm)', 'shoulder'),
-                ('${l10n.calf} (cm)', 'calf'), ('${l10n.neck} (cm)', 'neck'), ('${l10n.bodyFat} (%)', 'bodyfat'),
+                ('${l10n.chest} (cm)', 'chest'),
+                ('${l10n.waist} (cm)', 'waist'),
+                ('${l10n.hips} (cm)', 'hips'),
+                ('${l10n.thigh} (cm)', 'thigh'),
+                ('${l10n.bicep} (cm)', 'bicep'),
+                ('${l10n.shoulders} (cm)', 'shoulder'),
+                ('${l10n.calf} (cm)', 'calf'),
+                ('${l10n.neck} (cm)', 'neck'),
+                ('${l10n.bodyFat} (%)', 'bodyfat'),
               ];
             }())
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: TextField(
                   controller: _controllers[entry.$2],
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  style: const TextStyle(color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  style: const TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                  ),
                   decoration: InputDecoration(
                     labelText: entry.$1,
-                    labelStyle: const TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans'),
-                    filled: true, fillColor: TraumColors.surface,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(TraumRadius.card), borderSide: BorderSide.none),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    labelStyle: const TextStyle(
+                      color: TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                    ),
+                    filled: true,
+                    fillColor: TraumColors.surface,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(TraumRadius.card),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                   ),
                 ),
               ),
@@ -1347,18 +1754,20 @@ class _AddMeasurementSheetState extends State<_AddMeasurementSheet> {
             GradientButton(
               label: AppLocalizations.of(context)!.save,
               onPressed: () async {
-                await widget.onSave(BodyMeasurementsCompanion.insert(
-                  logDate: DateTime.now(),
-                  chestCm: Value(_parse('chest')),
-                  waistCm: Value(_parse('waist')),
-                  hipsCm: Value(_parse('hips')),
-                  thighCm: Value(_parse('thigh')),
-                  bicepCm: Value(_parse('bicep')),
-                  shoulderCm: Value(_parse('shoulder')),
-                  calfCm: Value(_parse('calf')),
-                  neckCm: Value(_parse('neck')),
-                  bodyFatPct: Value(_parse('bodyfat')),
-                ));
+                await widget.onSave(
+                  BodyMeasurementsCompanion.insert(
+                    logDate: DateTime.now(),
+                    chestCm: Value(_parse('chest')),
+                    waistCm: Value(_parse('waist')),
+                    hipsCm: Value(_parse('hips')),
+                    thighCm: Value(_parse('thigh')),
+                    bicepCm: Value(_parse('bicep')),
+                    shoulderCm: Value(_parse('shoulder')),
+                    calfCm: Value(_parse('calf')),
+                    neckCm: Value(_parse('neck')),
+                    bodyFatPct: Value(_parse('bodyfat')),
+                  ),
+                );
                 if (context.mounted) Navigator.pop(context);
               },
             ),
@@ -1382,12 +1791,26 @@ class _EmptyCardContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 24),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon, size: 48, color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5)),
-        const SizedBox(height: 12),
-        Text(label, style: const TextStyle(color: TraumColors.onBackgroundMuted,
-            fontFamily: 'DMSans', fontSize: 14), textAlign: TextAlign.center),
-      ]),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 48,
+            color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.5),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            label,
+            style: const TextStyle(
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontSize: 14,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 }

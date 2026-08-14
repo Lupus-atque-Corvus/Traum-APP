@@ -8,8 +8,7 @@ class SupplementDao extends DatabaseAccessor<TraumDatabase>
     with _$SupplementDaoMixin {
   SupplementDao(super.db);
 
-  Stream<List<Supplement>> watchAllSupplements() =>
-      select(supplements).watch();
+  Stream<List<Supplement>> watchAllSupplements() => select(supplements).watch();
 
   Stream<List<Supplement>> watchActiveSupplements() =>
       (select(supplements)..where((t) => t.isActive.equals(true))).watch();
@@ -30,10 +29,11 @@ class SupplementDao extends DatabaseAccessor<TraumDatabase>
   Stream<List<SupplementLog>> watchLogsForDate(DateTime date) {
     final start = DateTime(date.year, date.month, date.day);
     final end = start.add(const Duration(days: 1));
-    return (select(supplementLogs)
-          ..where((t) =>
+    return (select(supplementLogs)..where(
+          (t) =>
               t.takenAt.isBiggerOrEqualValue(start) &
-              t.takenAt.isSmallerThanValue(end)))
+              t.takenAt.isSmallerThanValue(end),
+        ))
         .watch();
   }
 
@@ -49,9 +49,9 @@ class SupplementDao extends DatabaseAccessor<TraumDatabase>
   }
 
   Future<int> getActiveCount() async {
-    final result = await (select(supplements)
-          ..where((t) => t.isActive.equals(true)))
-        .get();
+    final result = await (select(
+      supplements,
+    )..where((t) => t.isActive.equals(true))).get();
     return result.length;
   }
 
@@ -59,11 +59,13 @@ class SupplementDao extends DatabaseAccessor<TraumDatabase>
     final todayStart = DateTime.now();
     final start = DateTime(todayStart.year, todayStart.month, todayStart.day);
     final end = start.add(const Duration(days: 1));
-    final result = await (select(supplementLogs)
-          ..where((t) =>
-              t.takenAt.isBiggerOrEqualValue(start) &
-              t.takenAt.isSmallerThanValue(end)))
-        .get();
+    final result =
+        await (select(supplementLogs)..where(
+              (t) =>
+                  t.takenAt.isBiggerOrEqualValue(start) &
+                  t.takenAt.isSmallerThanValue(end),
+            ))
+            .get();
     return result.length;
   }
 }

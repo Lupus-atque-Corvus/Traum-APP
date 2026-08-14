@@ -52,19 +52,18 @@ void main() {
       required double spent,
       required double limit,
       String? emoji = '🍔',
-    }) =>
-        BudgetCategoryWithSpending(
-          category: BudgetCategory(
-            id: 1,
-            name: 'Essen',
-            emoji: emoji,
-            monthlyLimit: limit,
-            color: null,
-            isExpense: true,
-          ),
-          spent: spent,
-          budgetLimit: limit,
-        );
+    }) => BudgetCategoryWithSpending(
+      category: BudgetCategory(
+        id: 1,
+        name: 'Essen',
+        emoji: emoji,
+        monthlyLimit: limit,
+        color: null,
+        isExpense: true,
+      ),
+      spent: spent,
+      budgetLimit: limit,
+    );
 
     test('ratio is spent/limit within [0,1]', () {
       expect(make(spent: 50, limit: 100).ratio, 0.5);
@@ -101,14 +100,15 @@ void main() {
       required DateTime date,
       String type = 'expense',
       int? categoryId,
-    }) =>
-        db.budgetDao.insertTransaction(TransactionsCompanion.insert(
-          amount: amount,
-          description: 'tx',
-          date: date,
-          type: Value(type),
-          categoryId: Value(categoryId),
-        ));
+    }) => db.budgetDao.insertTransaction(
+      TransactionsCompanion.insert(
+        amount: amount,
+        description: 'tx',
+        date: date,
+        type: Value(type),
+        categoryId: Value(categoryId),
+      ),
+    );
 
     test('getNetForMonth = income - expenses for that month only', () async {
       await addTx(amount: 1000, date: DateTime(2026, 6, 5), type: 'income');
@@ -129,13 +129,19 @@ void main() {
       expect(txs.map((t) => t.amount), [1]);
     });
 
-    test('getTransactionsForMonth handles December → January rollover', () async {
-      await addTx(amount: 10, date: DateTime(2025, 12, 15));
-      await addTx(amount: 20, date: DateTime(2026, 1, 1)); // next year, excluded
+    test(
+      'getTransactionsForMonth handles December → January rollover',
+      () async {
+        await addTx(amount: 10, date: DateTime(2025, 12, 15));
+        await addTx(
+          amount: 20,
+          date: DateTime(2026, 1, 1),
+        ); // next year, excluded
 
-      final dec = await db.budgetDao.getTransactionsForMonth(2025, 12);
-      expect(dec.map((t) => t.amount), [10]);
-    });
+        final dec = await db.budgetDao.getTransactionsForMonth(2025, 12);
+        expect(dec.map((t) => t.amount), [10]);
+      },
+    );
 
     test('getTransactionsForMonth is ordered newest first', () async {
       await addTx(amount: 1, date: DateTime(2026, 6, 1));
@@ -157,7 +163,10 @@ void main() {
     test('incrementTemplateUsage bumps count and stores last amount', () async {
       final id = await db.budgetDao.insertTemplate(
         QuickTemplatesCompanion.insert(
-            name: 'Kaffee', type: 'expense', useCount: const Value(2)),
+          name: 'Kaffee',
+          type: 'expense',
+          useCount: const Value(2),
+        ),
       );
       await db.budgetDao.incrementTemplateUsage(id, 3.50);
 
@@ -174,12 +183,27 @@ void main() {
     });
 
     test('getTopTemplates orders by useCount desc and limits', () async {
-      await db.budgetDao.insertTemplate(QuickTemplatesCompanion.insert(
-          name: 'A', type: 'expense', useCount: const Value(1)));
-      await db.budgetDao.insertTemplate(QuickTemplatesCompanion.insert(
-          name: 'B', type: 'expense', useCount: const Value(9)));
-      await db.budgetDao.insertTemplate(QuickTemplatesCompanion.insert(
-          name: 'C', type: 'expense', useCount: const Value(5)));
+      await db.budgetDao.insertTemplate(
+        QuickTemplatesCompanion.insert(
+          name: 'A',
+          type: 'expense',
+          useCount: const Value(1),
+        ),
+      );
+      await db.budgetDao.insertTemplate(
+        QuickTemplatesCompanion.insert(
+          name: 'B',
+          type: 'expense',
+          useCount: const Value(9),
+        ),
+      );
+      await db.budgetDao.insertTemplate(
+        QuickTemplatesCompanion.insert(
+          name: 'C',
+          type: 'expense',
+          useCount: const Value(5),
+        ),
+      );
 
       final top = await db.budgetDao.getTopTemplates(limit: 2);
       expect(top.map((t) => t.name), ['B', 'C']);
@@ -193,12 +217,14 @@ void main() {
     tearDown(() => db.close());
 
     Future<void> addAccount(String type, double balance) =>
-        db.accountsDao.upsertAccount(AccountsCompanion.insert(
-          name: type,
-          type: type,
-          balance: balance,
-          updatedAt: DateTime(2026, 6, 1),
-        ));
+        db.accountsDao.upsertAccount(
+          AccountsCompanion.insert(
+            name: type,
+            type: type,
+            balance: balance,
+            updatedAt: DateTime(2026, 6, 1),
+          ),
+        );
 
     test('sums every account\'s real balance regardless of type', () async {
       await addAccount('checking', 1000);
@@ -241,14 +267,15 @@ void main() {
       String type = 'expense',
       int? categoryId,
       int day = 5,
-    }) =>
-        db.budgetDao.insertTransaction(TransactionsCompanion.insert(
-          amount: amount,
-          description: 'tx',
-          date: DateTime(2026, 6, day),
-          type: Value(type),
-          categoryId: Value(categoryId),
-        ));
+    }) => db.budgetDao.insertTransaction(
+      TransactionsCompanion.insert(
+        amount: amount,
+        description: 'tx',
+        date: DateTime(2026, 6, day),
+        type: Value(type),
+        categoryId: Value(categoryId),
+      ),
+    );
 
     test('budgetSummaryProvider sums income, expenses and balance', () async {
       await addTx(amount: 2000, type: 'income');
@@ -263,58 +290,77 @@ void main() {
       expect(s.balance, 1500);
     });
 
-    test('categoryExpensesProvider groups, sorts desc and maps null → Sonstiges',
-        () async {
-      final foodId = await db.budgetDao.insertCategory(
-          BudgetCategoriesCompanion.insert(name: 'Essen'));
-      await addTx(amount: 30, categoryId: foodId);
-      await addTx(amount: 20, categoryId: foodId);
-      await addTx(amount: 100, categoryId: null); // uncategorized
+    test(
+      'categoryExpensesProvider groups, sorts desc and maps null → Sonstiges',
+      () async {
+        final foodId = await db.budgetDao.insertCategory(
+          BudgetCategoriesCompanion.insert(name: 'Essen'),
+        );
+        await addTx(amount: 30, categoryId: foodId);
+        await addTx(amount: 20, categoryId: foodId);
+        await addTx(amount: 100, categoryId: null); // uncategorized
 
-      container.listen(categoryExpensesProvider((2026, 6)), (_, _) {});
-      final list =
-          await container.read(categoryExpensesProvider((2026, 6)).future);
-      expect(list.first.category.name, 'Sonstiges');
-      expect(list.first.amount, 100);
-      expect(list[1].category.name, 'Essen');
-      expect(list[1].amount, 50);
-    });
+        container.listen(categoryExpensesProvider((2026, 6)), (_, _) {});
+        final list = await container.read(
+          categoryExpensesProvider((2026, 6)).future,
+        );
+        expect(list.first.category.name, 'Sonstiges');
+        expect(list.first.amount, 100);
+        expect(list[1].category.name, 'Essen');
+        expect(list[1].amount, 50);
+      },
+    );
 
     test(
-        'budgetCategoriesWithSpendingProvider filters to expense categories with a limit',
-        () async {
-      final withLimit = await db.budgetDao.insertCategory(
+      'budgetCategoriesWithSpendingProvider filters to expense categories with a limit',
+      () async {
+        final withLimit = await db.budgetDao.insertCategory(
           BudgetCategoriesCompanion.insert(
-              name: 'Essen', monthlyLimit: const Value(100)));
-      // No limit → excluded.
-      await db.budgetDao.insertCategory(
-          BudgetCategoriesCompanion.insert(name: 'Freizeit'));
-      // Income category with a limit → excluded.
-      await db.budgetDao.insertCategory(BudgetCategoriesCompanion.insert(
-          name: 'Gehalt',
-          monthlyLimit: const Value(100),
-          isExpense: const Value(false)));
+            name: 'Essen',
+            monthlyLimit: const Value(100),
+          ),
+        );
+        // No limit → excluded.
+        await db.budgetDao.insertCategory(
+          BudgetCategoriesCompanion.insert(name: 'Freizeit'),
+        );
+        // Income category with a limit → excluded.
+        await db.budgetDao.insertCategory(
+          BudgetCategoriesCompanion.insert(
+            name: 'Gehalt',
+            monthlyLimit: const Value(100),
+            isExpense: const Value(false),
+          ),
+        );
 
-      await addTx(amount: 80, categoryId: withLimit);
+        await addTx(amount: 80, categoryId: withLimit);
 
-      container.listen(budgetCategoriesWithSpendingProvider((2026, 6)), (_, _) {});
-      final list = await container
-          .read(budgetCategoriesWithSpendingProvider((2026, 6)).future);
-      expect(list.length, 1);
-      expect(list.single.name, 'Essen');
-      expect(list.single.spent, 80);
-      expect(list.single.ratio, closeTo(0.8, 1e-9));
-    });
+        container.listen(
+          budgetCategoriesWithSpendingProvider((2026, 6)),
+          (_, _) {},
+        );
+        final list = await container.read(
+          budgetCategoriesWithSpendingProvider((2026, 6)).future,
+        );
+        expect(list.length, 1);
+        expect(list.single.name, 'Essen');
+        expect(list.single.spent, 80);
+        expect(list.single.ratio, closeTo(0.8, 1e-9));
+      },
+    );
 
-    test('recentTransactionItemsProvider defaults missing category to Sonstiges',
-        () async {
-      await addTx(amount: 12, categoryId: null);
+    test(
+      'recentTransactionItemsProvider defaults missing category to Sonstiges',
+      () async {
+        await addTx(amount: 12, categoryId: null);
 
-      container.listen(recentTransactionItemsProvider(5), (_, _) {});
-      final items =
-          await container.read(recentTransactionItemsProvider(5).future);
-      expect(items.single.categoryName, 'Sonstiges');
-      expect(items.single.amount, 12);
-    });
+        container.listen(recentTransactionItemsProvider(5), (_, _) {});
+        final items = await container.read(
+          recentTransactionItemsProvider(5).future,
+        );
+        expect(items.single.categoryName, 'Sonstiges');
+        expect(items.single.amount, 12);
+      },
+    );
   });
 }

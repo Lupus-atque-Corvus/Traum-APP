@@ -14,8 +14,9 @@ const _group = HomeWidgetGroup.diary;
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
-  testWidgets('all diary widgets registered and build for each size',
-      (tester) async {
+  testWidgets('all diary widgets registered and build for each size', (
+    tester,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     final db = TraumDatabase.forTesting(NativeDatabase.memory());
     addTearDown(db.close);
@@ -26,20 +27,25 @@ void main() {
     for (final t in types) {
       final d = homeWidgetRegistry[t]!;
       for (final size in d.sizes) {
-        await tester.pumpWidget(ProviderScope(
-          overrides: [
-            sharedPreferencesProvider.overrideWithValue(prefs),
-            databaseProvider.overrideWithValue(db),
-          ],
-          child: MaterialApp(
-            home: Scaffold(
-              body: Consumer(
-                builder: (ctx, ref, _) => SizedBox(
-                    width: 180, height: 180, child: d.builder(ctx, ref, size)),
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              sharedPreferencesProvider.overrideWithValue(prefs),
+              databaseProvider.overrideWithValue(db),
+            ],
+            child: MaterialApp(
+              home: Scaffold(
+                body: Consumer(
+                  builder: (ctx, ref, _) => SizedBox(
+                    width: 180,
+                    height: 180,
+                    child: d.builder(ctx, ref, size),
+                  ),
+                ),
               ),
             ),
           ),
-        ));
+        );
         await tester.pump();
         expect(tester.takeException(), isNull, reason: '$t @ $size threw');
       }

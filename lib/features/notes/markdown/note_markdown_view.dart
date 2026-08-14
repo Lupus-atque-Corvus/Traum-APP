@@ -78,13 +78,15 @@ class NoteMarkdownView extends ConsumerWidget {
       checkboxBuilder: onContentChanged == null
           ? null
           : (checked) => _TaskCheckbox(
-                checked: checked,
-                index: taskCounter.next(),
-                onToggle: _toggleTask,
-              ),
+              checked: checked,
+              index: taskCounter.next(),
+              onToggle: _toggleTask,
+            ),
       builders: {
-        'wikilink':
-            WikiLinkBuilder(onTap: onTapWikilink, isResolved: isResolved),
+        'wikilink': WikiLinkBuilder(
+          onTap: onTapWikilink,
+          isResolved: isResolved,
+        ),
         'mark': HighlightBuilder(),
         'tag': TagBuilder(onTap: onTapTag),
         'callout': CalloutBuilder(),
@@ -127,31 +129,27 @@ class NoteMarkdownView extends ConsumerWidget {
   /// Inhalt der Zielnotiz (Tiefe 1; verschachtelte Embeds werden im
   /// eingebetteten Inhalt entfernt, um Schleifen zu vermeiden).
   String _expandEmbeds(String input, Map<String, Note> byTitle) {
-    return input.replaceAllMapped(
-      RegExp(r'!\[\[([^\]\[]+?)\]\]'),
-      (m) {
-        var inner = m.group(1)!.trim();
-        String? section;
-        final hash = inner.indexOf('#');
-        if (hash >= 0) {
-          section = inner.substring(hash + 1).trim();
-          inner = inner.substring(0, hash).trim();
-        }
-        final target = byTitle[inner.toLowerCase()];
-        if (target == null) {
-          // Bild oder unaufgelöst → unverändert (Builder zeigt Platzhalter).
-          return m.group(0)!;
-        }
-        var embedded =
-            NotesMarkdownParser.stripFrontmatter(target.content);
-        if (section != null) {
-          embedded = _extractSection(embedded, section);
-        }
-        // Verschachtelte Embeds im eingebetteten Inhalt neutralisieren.
-        embedded = embedded.replaceAll(RegExp(r'!\[\[([^\]\[]+?)\]\]'), '');
-        return '\n\n> [!quote] $inner\n${embedded.split('\n').map((l) => '> $l').join('\n')}\n\n';
-      },
-    );
+    return input.replaceAllMapped(RegExp(r'!\[\[([^\]\[]+?)\]\]'), (m) {
+      var inner = m.group(1)!.trim();
+      String? section;
+      final hash = inner.indexOf('#');
+      if (hash >= 0) {
+        section = inner.substring(hash + 1).trim();
+        inner = inner.substring(0, hash).trim();
+      }
+      final target = byTitle[inner.toLowerCase()];
+      if (target == null) {
+        // Bild oder unaufgelöst → unverändert (Builder zeigt Platzhalter).
+        return m.group(0)!;
+      }
+      var embedded = NotesMarkdownParser.stripFrontmatter(target.content);
+      if (section != null) {
+        embedded = _extractSection(embedded, section);
+      }
+      // Verschachtelte Embeds im eingebetteten Inhalt neutralisieren.
+      embedded = embedded.replaceAll(RegExp(r'!\[\[([^\]\[]+?)\]\]'), '');
+      return '\n\n> [!quote] $inner\n${embedded.split('\n').map((l) => '> $l').join('\n')}\n\n';
+    });
   }
 
   /// Extrahiert den Abschnitt ab einer Überschrift bis zur nächsten gleich-
@@ -195,13 +193,17 @@ class NoteMarkdownView extends ConsumerWidget {
       h4: base.copyWith(fontSize: 17, fontWeight: FontWeight.w600),
       h5: base.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
       h6: base.copyWith(
-          fontSize: 15, fontWeight: FontWeight.w600,
-          color: TraumColors.onBackgroundMuted),
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        color: TraumColors.onBackgroundMuted,
+      ),
       listBullet: base,
       blockquote: base.copyWith(color: TraumColors.onBackgroundMuted),
       a: const TextStyle(
-          fontFamily: 'DMSans', color: kNotesLinkColor,
-          decoration: TextDecoration.underline),
+        fontFamily: 'DMSans',
+        color: kNotesLinkColor,
+        decoration: TextDecoration.underline,
+      ),
       code: const TextStyle(
         fontFamily: 'monospace',
         color: TraumColors.cyanBlue,
@@ -218,12 +220,14 @@ class NoteMarkdownView extends ConsumerWidget {
         color: TraumColors.surface,
         borderRadius: BorderRadius.circular(TraumRadius.input),
         border: const Border(
-            left: BorderSide(color: kNotesLinkColor, width: 3)),
+          left: BorderSide(color: kNotesLinkColor, width: 3),
+        ),
       ),
       blockquotePadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
       horizontalRuleDecoration: const BoxDecoration(
         border: Border(
-            top: BorderSide(color: TraumColors.surfaceVariant, width: 1)),
+          top: BorderSide(color: TraumColors.surfaceVariant, width: 1),
+        ),
       ),
       tableBorder: TableBorder.all(color: TraumColors.surfaceVariant),
       tableHead: base.copyWith(fontWeight: FontWeight.w700),
@@ -262,7 +266,9 @@ class _TaskCheckbox extends StatelessWidget {
                 ? Icons.check_box_rounded
                 : Icons.check_box_outline_blank_rounded,
             size: 20,
-            color: checked ? TraumColors.mintGreen : TraumColors.onBackgroundMuted,
+            color: checked
+                ? TraumColors.mintGreen
+                : TraumColors.onBackgroundMuted,
           ),
         ),
       ),
@@ -315,10 +321,11 @@ class CalloutBuilder extends MarkdownElementBuilder {
               selectable: false,
               styleSheet: MarkdownStyleSheet(
                 p: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.onBackground,
-                    fontSize: 14.5,
-                    height: 1.45),
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                  fontSize: 14.5,
+                  height: 1.45,
+                ),
               ),
             ),
           ],

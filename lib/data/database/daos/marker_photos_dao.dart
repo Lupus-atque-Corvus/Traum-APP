@@ -9,9 +9,9 @@ class MarkerPhotosDao extends DatabaseAccessor<TraumDatabase>
   MarkerPhotosDao(super.db);
 
   /// One-shot read of all photos (most recent first) — used by home widgets.
-  Future<List<MarkerPhoto>> getAll() =>
-      (select(markerPhotos)..orderBy([(t) => OrderingTerm.desc(t.takenAt)]))
-          .get();
+  Future<List<MarkerPhoto>> getAll() => (select(
+    markerPhotos,
+  )..orderBy([(t) => OrderingTerm.desc(t.takenAt)])).get();
 
   Future<List<MarkerPhoto>> getByMarker(int markerId) =>
       (select(markerPhotos)
@@ -23,12 +23,14 @@ class MarkerPhotosDao extends DatabaseAccessor<TraumDatabase>
   /// Marker — verhindert das N+1-Problem beim Zusammenstellen einer
   /// Marker-Liste (z.B. für die Kartenansicht) mit vielen Markern.
   Future<Map<int, List<MarkerPhoto>>> getByMarkerIds(
-      List<int> markerIds) async {
+    List<int> markerIds,
+  ) async {
     if (markerIds.isEmpty) return {};
-    final rows = await (select(markerPhotos)
-          ..where((t) => t.markerId.isIn(markerIds))
-          ..orderBy([(t) => OrderingTerm.asc(t.takenAt)]))
-        .get();
+    final rows =
+        await (select(markerPhotos)
+              ..where((t) => t.markerId.isIn(markerIds))
+              ..orderBy([(t) => OrderingTerm.asc(t.takenAt)]))
+            .get();
     final byMarker = <int, List<MarkerPhoto>>{};
     for (final row in rows) {
       byMarker.putIfAbsent(row.markerId, () => []).add(row);
@@ -48,8 +50,9 @@ class MarkerPhotosDao extends DatabaseAccessor<TraumDatabase>
 
   /// Hängt ein Foto an einen anderen Marker um.
   Future<void> moveToMarker(int photoId, int markerId) =>
-      (update(markerPhotos)..where((t) => t.id.equals(photoId)))
-          .write(MarkerPhotosCompanion(markerId: Value(markerId)));
+      (update(markerPhotos)..where((t) => t.id.equals(photoId))).write(
+        MarkerPhotosCompanion(markerId: Value(markerId)),
+      );
 
   Future<void> deletePhoto(int id) =>
       (delete(markerPhotos)..where((t) => t.id.equals(id))).go();

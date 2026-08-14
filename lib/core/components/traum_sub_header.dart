@@ -44,37 +44,39 @@ class TraumSubHeader extends StatelessWidget {
     double s(num v) => v * scale;
     return Padding(
       padding: EdgeInsets.fromLTRB(s(12), s(4), s(12), s(9)),
-      child: Row(children: [
-        Semantics(
-          button: true,
-          label: AppLocalizations.of(context)!.back,
-          child: GestureDetector(
-            onTap: onBack ?? () => Navigator.of(context).maybePop(),
-            child: Container(
-              width: s(24),
-              height: s(24),
-              decoration: BoxDecoration(
-                color: iconBackgroundColor,
-                borderRadius: BorderRadius.circular(s(12)),
+      child: Row(
+        children: [
+          Semantics(
+            button: true,
+            label: AppLocalizations.of(context)!.back,
+            child: GestureDetector(
+              onTap: onBack ?? () => Navigator.of(context).maybePop(),
+              child: Container(
+                width: s(24),
+                height: s(24),
+                decoration: BoxDecoration(
+                  color: iconBackgroundColor,
+                  borderRadius: BorderRadius.circular(s(12)),
+                ),
+                child: Icon(Icons.chevron_left, size: s(16), color: iconColor),
               ),
-              child: Icon(Icons.chevron_left, size: s(16), color: iconColor),
             ),
           ),
-        ),
-        SizedBox(width: s(8)),
-        Expanded(
-          child: Text(
-            title,
-            style: TextStyle(
-              fontFamily: 'DMSans',
-              fontWeight: FontWeight.w700,
-              fontSize: 15,
-              color: textColor,
+          SizedBox(width: s(8)),
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w700,
+                fontSize: 15,
+                color: textColor,
+              ),
             ),
           ),
-        ),
-        ...actions,
-      ]),
+          ...actions,
+        ],
+      ),
     );
   }
 }

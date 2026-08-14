@@ -10,15 +10,14 @@ import '../budget_scale.dart';
 class BudgetSubHeader extends StatelessWidget {
   final String title;
   final List<Widget> actions;
-  const BudgetSubHeader(
-      {super.key, required this.title, this.actions = const []});
+  const BudgetSubHeader({
+    super.key,
+    required this.title,
+    this.actions = const [],
+  });
 
   @override
   Widget build(BuildContext context) {
-    return TraumSubHeader(
-      title: title,
-      actions: actions,
-      scale: kBudgetScale,
-    );
+    return TraumSubHeader(title: title, actions: actions, scale: kBudgetScale);
   }
 }

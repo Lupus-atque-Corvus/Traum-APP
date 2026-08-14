@@ -40,8 +40,12 @@ void main() {
     test('never returns a raw emoji character', () {
       for (final emoji in kLegacyEmojiToIconKey.keys) {
         final resolved = resolveIconKey(emoji);
-        expect(kProgressIcons.contains(resolved), isTrue,
-            reason: '$emoji resolved to "$resolved", which is not a known icon key');
+        expect(
+          kProgressIcons.contains(resolved),
+          isTrue,
+          reason:
+              '$emoji resolved to "$resolved", which is not a known icon key',
+        );
       }
     });
   });
@@ -50,8 +54,11 @@ void main() {
     test('every icon key has a matching SVG asset file', () {
       for (final key in kProgressIcons) {
         final file = File('assets/icons/progress/$key.svg');
-        expect(file.existsSync(), isTrue,
-            reason: 'Missing asset for icon key "$key": ${file.path}');
+        expect(
+          file.existsSync(),
+          isTrue,
+          reason: 'Missing asset for icon key "$key": ${file.path}',
+        );
       }
     });
 

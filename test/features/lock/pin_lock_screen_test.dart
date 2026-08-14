@@ -6,17 +6,16 @@ import 'package:traum/features/lock/pin_lock_screen.dart';
 import 'package:traum/l10n/app_localizations.dart';
 
 Widget _wrap() => MaterialApp(
-      locale: const Locale('de'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const PinLockScreen(),
-    );
+  locale: const Locale('de'),
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
+  home: const PinLockScreen(),
+);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  const channel =
-      MethodChannel('plugins.it_nomads.com/flutter_secure_storage');
+  const channel = MethodChannel('plugins.it_nomads.com/flutter_secure_storage');
   final messenger =
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
   late Map<String, String> store;
@@ -26,8 +25,10 @@ void main() {
     // real phone in portrait — this screen's centered Column overflows at
     // that height even though it fits comfortably on a real device.
     final binding = TestWidgetsFlutterBinding.instance;
-    binding.platformDispatcher.views.first.physicalSize =
-        const Size(1080, 2340);
+    binding.platformDispatcher.views.first.physicalSize = const Size(
+      1080,
+      2340,
+    );
     binding.platformDispatcher.views.first.devicePixelRatio = 1.0;
     addTearDown(binding.platformDispatcher.views.first.resetPhysicalSize);
     addTearDown(binding.platformDispatcher.views.first.resetDevicePixelRatio);
@@ -68,8 +69,9 @@ void main() {
     }
   }
 
-  testWidgets('entering the wrong PIN shows an error and clears the input',
-      (tester) async {
+  testWidgets('entering the wrong PIN shows an error and clears the input', (
+    tester,
+  ) async {
     await PinService.save('1234');
 
     await tester.pumpWidget(_wrap());

@@ -59,19 +59,22 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
   Future<void> _save() async {
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)));
+        SnackBar(content: Text(AppLocalizations.of(context)!.nameRequired)),
+      );
       return;
     }
     setState(() => _saving = true);
     final price = parseLocaleAmount(_priceCtrl.text);
     try {
-      await ref.read(nutritionDaoProvider).insertShoppingItem(
+      await ref
+          .read(nutritionDaoProvider)
+          .insertShoppingItem(
             ShoppingListItemsCompanion.insert(
               name: _nameCtrl.text.trim(),
               quantity: Value(parseLocaleAmount(_quantityCtrl.text)),
-              unit: Value(_unitCtrl.text.trim().isEmpty
-                  ? null
-                  : _unitCtrl.text.trim()),
+              unit: Value(
+                _unitCtrl.text.trim().isEmpty ? null : _unitCtrl.text.trim(),
+              ),
               priceEstimated: Value(price),
               isUrgent: Value(_isUrgent),
             ),
@@ -80,7 +83,8 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(AppLocalizations.of(context)!.saveFailed)));
+          SnackBar(content: Text(AppLocalizations.of(context)!.saveFailed)),
+        );
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -88,17 +92,19 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
   }
 
   InputDecoration _dec(String hint) => InputDecoration(
-        hintText: hint,
-        hintStyle: const TextStyle(
-            color: TraumColors.onBackgroundSubtle, fontFamily: 'DMSans'),
-        filled: true,
-        fillColor: TraumColors.surface,
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(TraumRadius.card),
-            borderSide: BorderSide.none),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      );
+    hintText: hint,
+    hintStyle: const TextStyle(
+      color: TraumColors.onBackgroundSubtle,
+      fontFamily: 'DMSans',
+    ),
+    filled: true,
+    fillColor: TraumColors.surface,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(TraumRadius.card),
+      borderSide: BorderSide.none,
+    ),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -118,19 +124,24 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
         children: [
           Center(
             child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                    color: TraumColors.onBackgroundSubtle,
-                    borderRadius: BorderRadius.circular(2))),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: TraumColors.onBackgroundSubtle,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
           ),
           const SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.addProduct,
-              style: TextStyle(
-                  color: TraumColors.onBackground,
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18)),
+          Text(
+            AppLocalizations.of(context)!.addProduct,
+            style: TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w700,
+              fontSize: 18,
+            ),
+          ),
           const SizedBox(height: 16),
           TextField(
             key: const Key('add_item_name'),
@@ -138,40 +149,52 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
             autofocus: true,
             onChanged: _onNameChanged,
             style: const TextStyle(
-                color: TraumColors.onBackground, fontFamily: 'DMSans'),
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+            ),
             decoration: _dec('Was brauchst du?'),
           ),
           if (_suggestionLabel != null)
             Padding(
               padding: const EdgeInsets.only(top: 6, left: 4),
-              child: Text(_suggestionLabel!,
-                  style: const TextStyle(
-                      color: TraumColors.mintGreen,
-                      fontFamily: 'DMSans',
-                      fontSize: 12)),
+              child: Text(
+                _suggestionLabel!,
+                style: const TextStyle(
+                  color: TraumColors.mintGreen,
+                  fontFamily: 'DMSans',
+                  fontSize: 12,
+                ),
+              ),
             ),
           const SizedBox(height: 12),
-          Row(children: [
-            Expanded(
-              child: TextField(
-                controller: _quantityCtrl,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
-                style: const TextStyle(
-                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
-                decoration: _dec('Menge'),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _quantityCtrl,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  style: const TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                  ),
+                  decoration: _dec('Menge'),
+                ),
               ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: TextField(
-                controller: _unitCtrl,
-                style: const TextStyle(
-                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
-                decoration: _dec('Einheit'),
+              const SizedBox(width: 10),
+              Expanded(
+                child: TextField(
+                  controller: _unitCtrl,
+                  style: const TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                  ),
+                  decoration: _dec('Einheit'),
+                ),
               ),
-            ),
-          ]),
+            ],
+          ),
           const SizedBox(height: 12),
           TextField(
             key: const Key('add_item_price'),
@@ -179,7 +202,9 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             onChanged: (v) => _priceEditedManually = v.isNotEmpty,
             style: const TextStyle(
-                color: TraumColors.onBackground, fontFamily: 'DMSans'),
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+            ),
             decoration: _dec('Preis (€) — geschätzt'),
           ),
           const SizedBox(height: 8),
@@ -188,11 +213,14 @@ class _AddShoppingItemSheetState extends ConsumerState<AddShoppingItemSheet> {
             value: _isUrgent,
             onChanged: (v) => setState(() => _isUrgent = v),
             activeThumbColor: TraumColors.roseRed,
-            title: Text(AppLocalizations.of(context)!.urgent,
-                style: TextStyle(
-                    color: TraumColors.onBackground,
-                    fontFamily: 'DMSans',
-                    fontSize: 14)),
+            title: Text(
+              AppLocalizations.of(context)!.urgent,
+              style: TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                fontSize: 14,
+              ),
+            ),
           ),
           const SizedBox(height: 12),
           GradientButton(

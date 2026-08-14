@@ -18,11 +18,11 @@ class MapTemplate {
   });
 
   String buildFieldConfig() => jsonEncode({
-        'rating': hasRating,
-        'multiPhoto': multiPhoto,
-        'groupRadius': groupRadius,
-        'fields': fields.map((f) => f.toJson()).toList(),
-      });
+    'rating': hasRating,
+    'multiPhoto': multiPhoto,
+    'groupRadius': groupRadius,
+    'fields': fields.map((f) => f.toJson()).toList(),
+  });
 }
 
 class MapTemplates {

@@ -34,19 +34,19 @@ enum _Range { m1, m3, m6, y1, all }
 
 extension _RangeExt on _Range {
   String get label => switch (this) {
-    _Range.m1  => '1M',
-    _Range.m3  => '3M',
-    _Range.m6  => '6M',
-    _Range.y1  => '1Y',
+    _Range.m1 => '1M',
+    _Range.m3 => '3M',
+    _Range.m6 => '6M',
+    _Range.y1 => '1Y',
     _Range.all => 'ALL',
   };
   DateTime? get cutoff {
     final now = DateTime.now();
     return switch (this) {
-      _Range.m1  => now.subtract(const Duration(days: 30)),
-      _Range.m3  => now.subtract(const Duration(days: 90)),
-      _Range.m6  => now.subtract(const Duration(days: 180)),
-      _Range.y1  => now.subtract(const Duration(days: 365)),
+      _Range.m1 => now.subtract(const Duration(days: 30)),
+      _Range.m3 => now.subtract(const Duration(days: 90)),
+      _Range.m6 => now.subtract(const Duration(days: 180)),
+      _Range.y1 => now.subtract(const Duration(days: 365)),
       _Range.all => null,
     };
   }
@@ -62,8 +62,7 @@ class ExerciseProgressScreen extends ConsumerStatefulWidget {
       _ExerciseProgressScreenState();
 }
 
-class _ExerciseProgressScreenState
-    extends ConsumerState<ExerciseProgressScreen>
+class _ExerciseProgressScreenState extends ConsumerState<ExerciseProgressScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabs;
   _Range _range = _Range.m1;
@@ -88,45 +87,56 @@ class _ExerciseProgressScreenState
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (_) => SafeArea(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          if (ex != null)
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (ex != null)
+              ListTile(
+                leading: Icon(
+                  ex.isBookmarked
+                      ? Icons.bookmark_rounded
+                      : Icons.bookmark_border_rounded,
+                  color: TraumColors.amberGold,
+                ),
+                title: Text(
+                  ex.isBookmarked
+                      ? AppLocalizations.of(context)!.removeBookmarkAction
+                      : AppLocalizations.of(context)!.addBookmarkAction,
+                  style: const TextStyle(
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                  ),
+                ),
+                onTap: () {
+                  ref
+                      .read(trainingDaoProvider)
+                      .setBookmarked(ex.id, !ex.isBookmarked);
+                  Navigator.pop(context);
+                },
+              ),
             ListTile(
-              leading: Icon(
-                ex.isBookmarked
-                    ? Icons.bookmark_rounded
-                    : Icons.bookmark_border_rounded,
-                color: TraumColors.amberGold,
+              leading: const Icon(
+                Icons.feedback_outlined,
+                color: TraumColors.cyanBlue,
               ),
               title: Text(
-                ex.isBookmarked
-                    ? AppLocalizations.of(context)!.removeBookmarkAction
-                    : AppLocalizations.of(context)!.addBookmarkAction,
-                style: const TextStyle(
-                    color: TraumColors.onBackground, fontFamily: 'DMSans'),
+                AppLocalizations.of(context)!.exerciseFeedbackTitle,
+                style: TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                ),
               ),
               onTap: () {
-                ref
-                    .read(trainingDaoProvider)
-                    .setBookmarked(ex.id, !ex.isBookmarked);
                 Navigator.pop(context);
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (_) => const FeedbackBottomSheet(),
+                );
               },
             ),
-          ListTile(
-            leading:
-                const Icon(Icons.feedback_outlined, color: TraumColors.cyanBlue),
-            title: Text(AppLocalizations.of(context)!.exerciseFeedbackTitle,
-                style: TextStyle(
-                    color: TraumColors.onBackground, fontFamily: 'DMSans')),
-            onTap: () {
-              Navigator.pop(context);
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (_) => const FeedbackBottomSheet(),
-              );
-            },
-          ),
-        ]),
+          ],
+        ),
       ),
     );
   }
@@ -134,12 +144,16 @@ class _ExerciseProgressScreenState
   @override
   Widget build(BuildContext context) {
     final exercisesAsync = ref.watch(allExercisesStreamProvider);
-    final historyAsync = ref.watch(exerciseSessionHistoryProvider(widget.exerciseId));
+    final historyAsync = ref.watch(
+      exerciseSessionHistoryProvider(widget.exerciseId),
+    );
 
     return exercisesAsync.when(
       data: (exercises) {
-        final ex = exercises.cast<Exercise?>()
-            .firstWhere((e) => e?.id == widget.exerciseId, orElse: () => null);
+        final ex = exercises.cast<Exercise?>().firstWhere(
+          (e) => e?.id == widget.exerciseId,
+          orElse: () => null,
+        );
 
         return Scaffold(
           backgroundColor: TraumColors.background,
@@ -158,7 +172,10 @@ class _ExerciseProgressScreenState
             actions: [
               IconButton(
                 tooltip: AppLocalizations.of(context)!.more,
-                icon: const Icon(Icons.more_vert_rounded, color: TraumColors.onBackground),
+                icon: const Icon(
+                  Icons.more_vert_rounded,
+                  color: TraumColors.onBackground,
+                ),
                 onPressed: () => _showExerciseOptions(context, ex),
               ),
             ],
@@ -168,11 +185,24 @@ class _ExerciseProgressScreenState
               unselectedLabelColor: TraumColors.onBackgroundSubtle,
               indicatorColor: TraumColors.onBackground,
               indicatorSize: TabBarIndicatorSize.tab,
-              labelStyle: const TextStyle(fontFamily: 'DMSans', fontWeight: FontWeight.w600, fontSize: 13),
+              labelStyle: const TextStyle(
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+              ),
               tabs: const [
-                Tab(icon: Icon(Icons.info_outline_rounded, size: 18), text: 'Info'),
-                Tab(icon: Icon(Icons.bar_chart_rounded, size: 18), text: 'Statistics'),
-                Tab(icon: Icon(Icons.history_rounded, size: 18), text: 'History'),
+                Tab(
+                  icon: Icon(Icons.info_outline_rounded, size: 18),
+                  text: 'Info',
+                ),
+                Tab(
+                  icon: Icon(Icons.bar_chart_rounded, size: 18),
+                  text: 'Statistics',
+                ),
+                Tab(
+                  icon: Icon(Icons.history_rounded, size: 18),
+                  text: 'History',
+                ),
               ],
             ),
           ),
@@ -191,7 +221,10 @@ class _ExerciseProgressScreenState
                   onRangeChanged: (r) => setState(() => _range = r),
                 ),
                 loading: () => const Center(
-                    child: CircularProgressIndicator(color: TraumColors.coralOrange)),
+                  child: CircularProgressIndicator(
+                    color: TraumColors.coralOrange,
+                  ),
+                ),
                 error: (e, _) => Center(child: Text('$e')),
               ),
 
@@ -199,7 +232,10 @@ class _ExerciseProgressScreenState
               historyAsync.when(
                 data: (history) => _HistoryTab(exercise: ex, history: history),
                 loading: () => const Center(
-                    child: CircularProgressIndicator(color: TraumColors.coralOrange)),
+                  child: CircularProgressIndicator(
+                    color: TraumColors.coralOrange,
+                  ),
+                ),
                 error: (e, _) => Center(child: Text('$e')),
               ),
             ],
@@ -208,7 +244,9 @@ class _ExerciseProgressScreenState
       },
       loading: () => const Scaffold(
         backgroundColor: TraumColors.background,
-        body: Center(child: CircularProgressIndicator(color: TraumColors.coralOrange)),
+        body: Center(
+          child: CircularProgressIndicator(color: TraumColors.coralOrange),
+        ),
       ),
       error: (e, _) => Scaffold(
         backgroundColor: TraumColors.background,
@@ -230,8 +268,13 @@ class _InfoTab extends StatelessWidget {
   Widget build(BuildContext context) {
     if (exercise == null) {
       return Center(
-        child: Text(AppLocalizations.of(context)!.exerciseNotFound,
-            style: TextStyle(color: TraumColors.onBackgroundMuted, fontFamily: 'DMSans')),
+        child: Text(
+          AppLocalizations.of(context)!.exerciseNotFound,
+          style: TextStyle(
+            color: TraumColors.onBackgroundMuted,
+            fontFamily: 'DMSans',
+          ),
+        ),
       );
     }
     final ex = exercise!;
@@ -268,39 +311,54 @@ class _InfoTab extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Title + category badge
-              Text(ex.name,
-                  style: const TextStyle(
-                    color: TraumColors.onBackground,
-                    fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                  )),
+              Text(
+                ex.name,
+                style: const TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                ),
+              ),
               const SizedBox(height: 8),
-              Row(children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: TraumColors.surfaceVariant,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    muscleGroupLabel(
-                        ex.muscleGroup, AppLocalizations.of(context)!),
-                    style: const TextStyle(
-                      color: TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: TraumColors.surfaceVariant,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      muscleGroupLabel(
+                        ex.muscleGroup,
+                        AppLocalizations.of(context)!,
+                      ),
+                      style: const TextStyle(
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                const Icon(Icons.access_time_rounded,
-                    color: TraumColors.onBackgroundSubtle, size: 16),
-                const SizedBox(width: 8),
-                const Icon(Icons.person_outline_rounded,
-                    color: TraumColors.onBackgroundSubtle, size: 16),
-              ]),
+                  const SizedBox(width: 8),
+                  const Icon(
+                    Icons.access_time_rounded,
+                    color: TraumColors.onBackgroundSubtle,
+                    size: 16,
+                  ),
+                  const SizedBox(width: 8),
+                  const Icon(
+                    Icons.person_outline_rounded,
+                    color: TraumColors.onBackgroundSubtle,
+                    size: 16,
+                  ),
+                ],
+              ),
               const SizedBox(height: 16),
               // Front + Back body map side by side
               Row(
@@ -429,47 +487,59 @@ class _InfoTab extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          ...similar.map((s) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Row(children: [
-              Container(
-                width: 44, height: 44,
-                decoration: BoxDecoration(
-                  color: TraumColors.surfaceVariant,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Center(
-                  child: Icon(Icons.fitness_center_rounded,
-                      color: TraumColors.onBackgroundMuted, size: 20),
-                ),
+          ...similar.map(
+            (s) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: TraumColors.surfaceVariant,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Center(
+                      child: Icon(
+                        Icons.fitness_center_rounded,
+                        color: TraumColors.onBackgroundMuted,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          s.name,
+                          style: const TextStyle(
+                            color: TraumColors.onBackground,
+                            fontFamily: 'DMSans',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          muscleGroupLabel(
+                            s.muscleGroup,
+                            AppLocalizations.of(context)!,
+                          ).toUpperCase(),
+                          style: const TextStyle(
+                            color: TraumColors.coralOrange,
+                            fontFamily: 'DMSans',
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(s.name,
-                        style: const TextStyle(
-                          color: TraumColors.onBackground,
-                          fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w600,
-                        )),
-                    Text(
-                        muscleGroupLabel(
-                                s.muscleGroup, AppLocalizations.of(context)!)
-                            .toUpperCase(),
-                        style: const TextStyle(
-                          color: TraumColors.coralOrange,
-                          fontFamily: 'DMSans',
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.4,
-                        )),
-                  ],
-                ),
-              ),
-            ]),
-          )),
+            ),
+          ),
         ],
       ],
     );
@@ -550,20 +620,24 @@ class _StatisticsTab extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(AppLocalizations.of(context)!.trainingVolume,
-                  style: TextStyle(
-                    color: TraumColors.onBackground,
-                    fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                  )),
+              Text(
+                AppLocalizations.of(context)!.trainingVolume,
+                style: TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
+              ),
               const SizedBox(height: 12),
               _StatRow(
-                  label: AppLocalizations.of(context)!.timesPerformed,
-                  value: '$totalSets'),
+                label: AppLocalizations.of(context)!.timesPerformed,
+                value: '$totalSets',
+              ),
               _StatRow(
                 label: AppLocalizations.of(context)!.totalDurationLabel,
-                value: '${totalDuration.inHours > 0 ? '${totalDuration.inHours} h ' : ''}${totalDuration.inMinutes % 60} min',
+                value:
+                    '${totalDuration.inHours > 0 ? '${totalDuration.inHours} h ' : ''}${totalDuration.inMinutes % 60} min',
               ),
               if (!cardio)
                 _StatRow(
@@ -592,14 +666,18 @@ class _StatisticsTab extends StatelessWidget {
                     duration: const Duration(milliseconds: 160),
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     decoration: BoxDecoration(
-                      color: active ? TraumColors.surfaceVariant : Colors.transparent,
+                      color: active
+                          ? TraumColors.surfaceVariant
+                          : Colors.transparent,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       r.label,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: active ? TraumColors.onBackground : TraumColors.onBackgroundSubtle,
+                        color: active
+                            ? TraumColors.onBackground
+                            : TraumColors.onBackgroundSubtle,
                         fontFamily: 'DMSans',
                         fontWeight: active ? FontWeight.w700 : FontWeight.w400,
                         fontSize: 13,
@@ -636,16 +714,23 @@ class _StatisticsTab extends StatelessWidget {
                         fontSize: 14,
                       ),
                     ),
-                    const Icon(Icons.ios_share_rounded,
-                        color: TraumColors.onBackgroundSubtle, size: 16),
+                    const Icon(
+                      Icons.ios_share_rounded,
+                      color: TraumColors.onBackgroundSubtle,
+                      size: 16,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 4),
                 if (filtered.isNotEmpty) ...[
                   _ChartStats(
                     mostRecent: chartPoints.last.y,
-                    maximum: chartPoints.map((p) => p.y).reduce((a, b) => a > b ? a : b),
-                    average: chartPoints.map((p) => p.y).fold(0.0, (a, b) => a + b) / chartPoints.length,
+                    maximum: chartPoints
+                        .map((p) => p.y)
+                        .reduce((a, b) => a > b ? a : b),
+                    average:
+                        chartPoints.map((p) => p.y).fold(0.0, (a, b) => a + b) /
+                        chartPoints.length,
                     unit: cardio ? 'km' : 'kg',
                   ),
                 ],
@@ -663,7 +748,9 @@ class _StatisticsTab extends StatelessWidget {
                         ),
                       ),
                       titlesData: FlTitlesData(
-                        leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        leftTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
                         rightTitles: AxisTitles(
                           sideTitles: SideTitles(
                             showTitles: true,
@@ -684,7 +771,9 @@ class _StatisticsTab extends StatelessWidget {
                             reservedSize: 20,
                             getTitlesWidget: (v, _) {
                               final i = v.toInt();
-                              if (i >= filtered.length) return const SizedBox.shrink();
+                              if (i >= filtered.length) {
+                                return const SizedBox.shrink();
+                              }
                               final d = filtered[i].$1.startedAt;
                               return Text(
                                 '${_monthAbbr(d.month)}${d.day}',
@@ -697,7 +786,9 @@ class _StatisticsTab extends StatelessWidget {
                             },
                           ),
                         ),
-                        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        topTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
                       ),
                       borderData: FlBorderData(show: false),
                       lineBarsData: [
@@ -709,7 +800,9 @@ class _StatisticsTab extends StatelessWidget {
                           dotData: const FlDotData(show: false),
                           belowBarData: BarAreaData(
                             show: true,
-                            color: TraumColors.coralOrange.withValues(alpha: 0.12),
+                            color: TraumColors.coralOrange.withValues(
+                              alpha: 0.12,
+                            ),
                           ),
                         ),
                       ],
@@ -726,30 +819,54 @@ class _StatisticsTab extends StatelessWidget {
 
   Widget _emptyState(BuildContext context) {
     return Center(
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.show_chart_rounded, size: 48, color: TraumColors.onBackgroundSubtle),
-        SizedBox(height: 12),
-        Text(AppLocalizations.of(context)!.noDataYet,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.show_chart_rounded,
+            size: 48,
+            color: TraumColors.onBackgroundSubtle,
+          ),
+          SizedBox(height: 12),
+          Text(
+            AppLocalizations.of(context)!.noDataYet,
             style: TextStyle(
               color: TraumColors.onBackgroundMuted,
               fontFamily: 'DMSans',
               fontWeight: FontWeight.w600,
-            )),
-        SizedBox(height: 4),
-        Text(AppLocalizations.of(context)!.exerciseTrainToSeeProgress,
+            ),
+          ),
+          SizedBox(height: 4),
+          Text(
+            AppLocalizations.of(context)!.exerciseTrainToSeeProgress,
             style: TextStyle(
               color: TraumColors.onBackgroundSubtle,
               fontFamily: 'DMSans',
               fontSize: 12,
-            )),
-      ]),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 String _monthAbbr(int month) {
-  const abbrs = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const abbrs = [
+    '',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
   return abbrs[month];
 }
 
@@ -765,19 +882,23 @@ class _StatRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: const TextStyle(
-                color: TraumColors.onBackgroundMuted,
-                fontFamily: 'DMSans',
-                fontSize: 13,
-              )),
-          Text(value,
-              style: const TextStyle(
-                color: TraumColors.onBackground,
-                fontFamily: 'DMSans',
-                fontWeight: FontWeight.w600,
-                fontSize: 13,
-              )),
+          Text(
+            label,
+            style: const TextStyle(
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontSize: 13,
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+            ),
+          ),
         ],
       ),
     );
@@ -801,12 +922,21 @@ class _ChartStats extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _MiniStat(label: AppLocalizations.of(context)!.mostRecent, value: '${mostRecent.toStringAsFixed(1).replaceAll('.', ',')} $unit',
-            icon: Icons.access_time_rounded),
-        _MiniStat(label: AppLocalizations.of(context)!.maximum, value: '${maximum.toStringAsFixed(1).replaceAll('.', ',')} $unit',
-            icon: Icons.trending_up_rounded),
-        _MiniStat(label: AppLocalizations.of(context)!.average, value: '${average.toStringAsFixed(1).replaceAll('.', ',')} $unit',
-            icon: Icons.bar_chart_rounded),
+        _MiniStat(
+          label: AppLocalizations.of(context)!.mostRecent,
+          value: '${mostRecent.toStringAsFixed(1).replaceAll('.', ',')} $unit',
+          icon: Icons.access_time_rounded,
+        ),
+        _MiniStat(
+          label: AppLocalizations.of(context)!.maximum,
+          value: '${maximum.toStringAsFixed(1).replaceAll('.', ',')} $unit',
+          icon: Icons.trending_up_rounded,
+        ),
+        _MiniStat(
+          label: AppLocalizations.of(context)!.average,
+          value: '${average.toStringAsFixed(1).replaceAll('.', ',')} $unit',
+          icon: Icons.bar_chart_rounded,
+        ),
       ],
     );
   }
@@ -816,29 +946,42 @@ class _MiniStat extends StatelessWidget {
   final String label;
   final String value;
   final IconData icon;
-  const _MiniStat({required this.label, required this.value, required this.icon});
+  const _MiniStat({
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
           style: const TextStyle(
             color: TraumColors.onBackgroundSubtle,
             fontFamily: 'DMSans',
             fontSize: 11,
-          )),
-      Row(children: [
-        Text(value,
-            style: const TextStyle(
-              color: TraumColors.onBackground,
-              fontFamily: 'DMSans',
-              fontWeight: FontWeight.w600,
-              fontSize: 13,
-            )),
-        const SizedBox(width: 4),
-        Icon(icon, color: TraumColors.onBackgroundSubtle, size: 12),
-      ]),
-    ]);
+          ),
+        ),
+        Row(
+          children: [
+            Text(
+              value,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Icon(icon, color: TraumColors.onBackgroundSubtle, size: 12),
+          ],
+        ),
+      ],
+    );
   }
 }
 
@@ -854,16 +997,25 @@ class _HistoryTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (history.isEmpty) {
       return Center(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Icons.history_rounded, size: 48, color: TraumColors.onBackgroundSubtle),
-          SizedBox(height: 12),
-          Text(AppLocalizations.of(context)!.noHistoryYet,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.history_rounded,
+              size: 48,
+              color: TraumColors.onBackgroundSubtle,
+            ),
+            SizedBox(height: 12),
+            Text(
+              AppLocalizations.of(context)!.noHistoryYet,
               style: TextStyle(
                 color: TraumColors.onBackgroundMuted,
                 fontFamily: 'DMSans',
                 fontWeight: FontWeight.w600,
-              )),
-        ]),
+              ),
+            ),
+          ],
+        ),
       );
     }
 
@@ -883,8 +1035,14 @@ class _HistoryTab extends ConsumerWidget {
 
         // Compute totals for Σ row
         final totalReps = sets.fold(0, (s, set) => s + (set.reps ?? 0));
-        final totalVol = sets.fold(0.0, (s, set) => s + (set.weightKg ?? 0) * (set.reps ?? 0));
-        final prevVol = prevSets?.fold(0.0, (s, set) => s + (set.weightKg ?? 0) * (set.reps ?? 0));
+        final totalVol = sets.fold(
+          0.0,
+          (s, set) => s + (set.weightKg ?? 0) * (set.reps ?? 0),
+        );
+        final prevVol = prevSets?.fold(
+          0.0,
+          (s, set) => s + (set.weightKg ?? 0) * (set.reps ?? 0),
+        );
 
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
@@ -905,118 +1063,132 @@ class _HistoryTab extends ConsumerWidget {
                 ),
               ),
               // Set rows
-              ...sets.map((s) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Row(children: [
-                  SizedBox(
-                    width: 24,
-                    child: Text(
-                      '${s.setNumber}',
-                      style: const TextStyle(
-                        color: TraumColors.onBackgroundSubtle,
-                        fontFamily: 'DMSans',
-                        fontSize: 13,
+              ...sets.map(
+                (s) => Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 24,
+                        child: Text(
+                          '${s.setNumber}',
+                          style: const TextStyle(
+                            color: TraumColors.onBackgroundSubtle,
+                            fontFamily: 'DMSans',
+                            fontSize: 13,
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 8),
+                      if (!cardio) ...[
+                        Expanded(
+                          child: Text(
+                            s.reps != null ? '${s.reps} reps' : '-',
+                            style: const TextStyle(
+                              color: TraumColors.onBackground,
+                              fontFamily: 'DMSans',
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            s.weightKg != null
+                                ? '${s.weightKg!.toDisplayUnit(useLbs).toStringAsFixed(1).replaceAll('.', ',')} ${s.weightKg!.unitLabel(useLbs)}'
+                                : '-',
+                            style: const TextStyle(
+                              color: TraumColors.onBackground,
+                              fontFamily: 'DMSans',
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ] else ...[
+                        Expanded(
+                          child: Text(
+                            s.durationSeconds != null
+                                ? _fmtDuration(s.durationSeconds!)
+                                : '-',
+                            style: const TextStyle(
+                              color: TraumColors.onBackground,
+                              fontFamily: 'DMSans',
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            s.weightKg != null
+                                ? '${s.weightKg!.toStringAsFixed(1).replaceAll('.', ',')} km'
+                                : '-',
+                            style: const TextStyle(
+                              color: TraumColors.onBackground,
+                              fontFamily: 'DMSans',
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  if (!cardio) ...[
-                    Expanded(
-                      child: Text(
-                        s.reps != null ? '${s.reps} reps' : '-',
-                        style: const TextStyle(
-                          color: TraumColors.onBackground,
-                          fontFamily: 'DMSans',
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        s.weightKg != null
-                            ? '${s.weightKg!.toDisplayUnit(useLbs).toStringAsFixed(1).replaceAll('.', ',')} ${s.weightKg!.unitLabel(useLbs)}'
-                            : '-',
-                        style: const TextStyle(
-                          color: TraumColors.onBackground,
-                          fontFamily: 'DMSans',
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  ] else ...[
-                    Expanded(
-                      child: Text(
-                        s.durationSeconds != null
-                            ? _fmtDuration(s.durationSeconds!)
-                            : '-',
-                        style: const TextStyle(
-                          color: TraumColors.onBackground,
-                          fontFamily: 'DMSans',
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        s.weightKg != null ? '${s.weightKg!.toStringAsFixed(1).replaceAll('.', ',')} km' : '-',
-                        style: const TextStyle(
-                          color: TraumColors.onBackground,
-                          fontFamily: 'DMSans',
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  ],
-                ]),
-              )),
+                ),
+              ),
               // Σ summary row with trend
               Container(
                 margin: const EdgeInsets.only(top: 4),
                 padding: const EdgeInsets.symmetric(vertical: 6),
                 decoration: const BoxDecoration(
-                  border: Border(top: BorderSide(color: TraumColors.surfaceVariant)),
+                  border: Border(
+                    top: BorderSide(color: TraumColors.surfaceVariant),
+                  ),
                 ),
-                child: Row(children: [
-                  const SizedBox(
-                    width: 24,
-                    child: Text('Σ',
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 24,
+                      child: Text(
+                        'Σ',
                         style: TextStyle(
                           color: TraumColors.onBackgroundSubtle,
                           fontFamily: 'DMSans',
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
-                        )),
-                  ),
-                  const SizedBox(width: 8),
-                  if (!cardio) ...[
-                    Expanded(
-                      child: Text(
-                        '$totalReps reps',
-                        style: const TextStyle(
-                          color: TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans',
-                          fontSize: 12,
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: Row(children: [
-                        Text(
-                          '${totalVol.toStringAsFixed(0)} kg',
+                    const SizedBox(width: 8),
+                    if (!cardio) ...[
+                      Expanded(
+                        child: Text(
+                          '$totalReps reps',
                           style: const TextStyle(
                             color: TraumColors.onBackgroundMuted,
                             fontFamily: 'DMSans',
                             fontSize: 12,
                           ),
                         ),
-                        if (prevVol != null) ...[
-                          const SizedBox(width: 4),
-                          _TrendArrow(current: totalVol, previous: prevVol),
-                        ],
-                      ]),
-                    ),
+                      ),
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Text(
+                              '${totalVol.toStringAsFixed(0)} kg',
+                              style: const TextStyle(
+                                color: TraumColors.onBackgroundMuted,
+                                fontFamily: 'DMSans',
+                                fontSize: 12,
+                              ),
+                            ),
+                            if (prevVol != null) ...[
+                              const SizedBox(width: 4),
+                              _TrendArrow(current: totalVol, previous: prevVol),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
-                ]),
+                ),
               ),
             ],
           ),

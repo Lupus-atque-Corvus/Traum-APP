@@ -21,8 +21,7 @@ Future<double> finalizeShopping(
   // Read items BEFORE opening the transaction (avoids running a stream query
   // inside a transaction).
   final items = await db.nutritionDao.watchAllShoppingItems().first;
-  final cart =
-      items.where((i) => i.checked && i.priceActual != null).toList();
+  final cart = items.where((i) => i.checked && i.priceActual != null).toList();
   final total = cart.fold(0.0, (s, i) => s + (i.priceActual ?? 0));
   if (cart.isEmpty) return 0.0; // nothing to book → no ghost €0.00 expense
 
@@ -37,14 +36,16 @@ Future<double> finalizeShopping(
         actual: i.priceActual!,
       );
     }
-    await db.budgetDao.insertTransaction(TransactionsCompanion.insert(
-      amount: total,
-      description: description.isEmpty ? 'Lebensmittel' : description,
-      type: const Value('expense'),
-      date: date,
-      categoryId: Value(categoryId),
-      receiptImagePath: Value(receiptImagePath),
-    ));
+    await db.budgetDao.insertTransaction(
+      TransactionsCompanion.insert(
+        amount: total,
+        description: description.isEmpty ? 'Lebensmittel' : description,
+        type: const Value('expense'),
+        date: date,
+        categoryId: Value(categoryId),
+        receiptImagePath: Value(receiptImagePath),
+      ),
+    );
   });
 
   return total;
@@ -106,24 +107,24 @@ class _ShoppingCheckoutSheetState extends ConsumerState<ShoppingCheckoutSheet> {
       if (!mounted) return;
       Navigator.of(context).pop(); // close checkout
       Navigator.of(context).pop(); // leave shopping mode
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context)!.bookedAsExpense)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.bookedAsExpense)),
+      );
     } catch (e, st) {
       debugPrint('finalizeShopping failed: $e\n$st');
       if (mounted) {
         setState(() => _saving = false);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(AppLocalizations.of(context)!.bookingFailed)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.bookingFailed)),
+        );
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final items =
-        ref.watch(allShoppingItemsStreamProvider).value ?? [];
-    final cats =
-        ref.watch(allBudgetCategoriesStreamProvider).value ?? [];
+    final items = ref.watch(allShoppingItemsStreamProvider).value ?? [];
+    final cats = ref.watch(allBudgetCategoriesStreamProvider).value ?? [];
     final expenseCats = cats.where((c) => c.isExpense).toList();
 
     // Auto-select a "Lebensmittel" category on first build, fall back to first
@@ -154,12 +155,14 @@ class _ShoppingCheckoutSheetState extends ConsumerState<ShoppingCheckoutSheet> {
           children: [
             Center(
               child: Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                      color: TraumColors.surfaceVariant,
-                      borderRadius: BorderRadius.circular(2))),
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: TraumColors.surfaceVariant,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
             ),
             Container(
               padding: const EdgeInsets.all(18),
@@ -170,28 +173,36 @@ class _ShoppingCheckoutSheetState extends ConsumerState<ShoppingCheckoutSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(AppLocalizations.of(context)!.totalPaidUpper,
-                      style: TextStyle(
-                          color: Color(0xB30D0D1A),
-                          fontFamily: 'DMSans',
-                          fontSize: 11,
-                          fontWeight: FontWeight.w800)),
-                  Text('${total.toStringAsFixed(2).replaceAll('.', ',')} €',
-                      style: const TextStyle(
-                          color: Color(0xFF0D0D1A),
-                          fontFamily: 'DMSans',
-                          fontSize: 30,
-                          fontWeight: FontWeight.w800)),
+                  Text(
+                    AppLocalizations.of(context)!.totalPaidUpper,
+                    style: TextStyle(
+                      color: Color(0xB30D0D1A),
+                      fontFamily: 'DMSans',
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  Text(
+                    '${total.toStringAsFixed(2).replaceAll('.', ',')} €',
+                    style: const TextStyle(
+                      color: Color(0xFF0D0D1A),
+                      fontFamily: 'DMSans',
+                      fontSize: 30,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
                   if (diff.abs() >= 0.01)
                     Text(
-                        diff > 0
-                            ? '${diff.toStringAsFixed(2).replaceAll('.', ',')} € unter Schätzung 🎉'
-                            : '${(-diff).toStringAsFixed(2).replaceAll('.', ',')} € über Schätzung',
-                        style: const TextStyle(
-                            color: Color(0xCC0D0D1A),
-                            fontFamily: 'DMSans',
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700)),
+                      diff > 0
+                          ? '${diff.toStringAsFixed(2).replaceAll('.', ',')} € unter Schätzung 🎉'
+                          : '${(-diff).toStringAsFixed(2).replaceAll('.', ',')} € über Schätzung',
+                      style: const TextStyle(
+                        color: Color(0xCC0D0D1A),
+                        fontFamily: 'DMSans',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -200,13 +211,13 @@ class _ShoppingCheckoutSheetState extends ConsumerState<ShoppingCheckoutSheet> {
               icon: _scanning
                   ? Icons.hourglass_top_rounded
                   : (_receiptPath != null
-                      ? Icons.check_circle_rounded
-                      : Icons.receipt_long_rounded),
+                        ? Icons.check_circle_rounded
+                        : Icons.receipt_long_rounded),
               label: _scanning
                   ? 'Kassenzettel wird analysiert…'
                   : (_receiptPath != null
-                      ? 'Kassenzettel angehängt'
-                      : 'Kassenzettel scannen'),
+                        ? 'Kassenzettel angehängt'
+                        : 'Kassenzettel scannen'),
               onTap: _scanning ? null : _scan,
             ),
             const SizedBox(height: 8),
@@ -225,12 +236,15 @@ class _ShoppingCheckoutSheetState extends ConsumerState<ShoppingCheckoutSheet> {
                   borderRadius: BorderRadius.circular(TraumRadius.card),
                 ),
                 child: Center(
-                  child: Text(_saving ? 'Buchen…' : '→ Als Ausgabe buchen',
-                      style: const TextStyle(
-                          color: Color(0xFF0D0D1A),
-                          fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w800,
-                          fontSize: 15)),
+                  child: Text(
+                    _saving ? 'Buchen…' : '→ Als Ausgabe buchen',
+                    style: const TextStyle(
+                      color: Color(0xFF0D0D1A),
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w800,
+                      fontSize: 15,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -257,19 +271,26 @@ class _Tile extends StatelessWidget {
           color: TraumColors.surface,
           borderRadius: BorderRadius.circular(TraumRadius.card),
         ),
-        child: Row(children: [
-          Icon(icon, color: TraumColors.mintGreen, size: 20),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(label,
+        child: Row(
+          children: [
+            Icon(icon, color: TraumColors.mintGreen, size: 20),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                label,
                 style: const TextStyle(
-                    color: TraumColors.onBackground,
-                    fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w600)),
-          ),
-          const Icon(Icons.chevron_right_rounded,
-              color: TraumColors.onBackgroundMuted),
-        ]),
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: TraumColors.onBackgroundMuted,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -279,17 +300,19 @@ class _CategoryPicker extends StatelessWidget {
   final List<BudgetCategory> categories;
   final int? selectedId;
   final ValueChanged<int> onSelected;
-  const _CategoryPicker(
-      {required this.categories,
-      required this.selectedId,
-      required this.onSelected});
+  const _CategoryPicker({
+    required this.categories,
+    required this.selectedId,
+    required this.onSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
     if (categories.isEmpty) {
       return const _Tile(
-          icon: Icons.shopping_basket_rounded,
-          label: 'Keine Budget-Kategorie vorhanden');
+        icon: Icons.shopping_basket_rounded,
+        label: 'Keine Budget-Kategorie vorhanden',
+      );
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -305,25 +328,25 @@ class _CategoryPicker extends StatelessWidget {
           return GestureDetector(
             onTap: () => onSelected(c.id),
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: sel
                     ? TraumColors.mintGreenDim
                     : TraumColors.surfaceVariant,
                 borderRadius: BorderRadius.circular(20),
-                border: sel
-                    ? Border.all(color: TraumColors.mintGreen)
-                    : null,
+                border: sel ? Border.all(color: TraumColors.mintGreen) : null,
               ),
-              child: Text('${c.emoji ?? '🛒'} ${c.name}',
-                  style: TextStyle(
-                      color: sel
-                          ? TraumColors.mintGreen
-                          : TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13)),
+              child: Text(
+                '${c.emoji ?? '🛒'} ${c.name}',
+                style: TextStyle(
+                  color: sel
+                      ? TraumColors.mintGreen
+                      : TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+              ),
             ),
           );
         }).toList(),

@@ -8,20 +8,23 @@ import 'package:traum/features/period_tracking/period_screen.dart';
 import 'package:traum/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('PeriodScreen renders empty state without throwing',
-      (tester) async {
+  testWidgets('PeriodScreen renders empty state without throwing', (
+    tester,
+  ) async {
     final db = TraumDatabase.forTesting(NativeDatabase.memory());
     addTearDown(db.close);
 
-    await tester.pumpWidget(ProviderScope(
-      overrides: [databaseProvider.overrideWithValue(db)],
-      child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('de'),
-        home: const PeriodScreen(),
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [databaseProvider.overrideWithValue(db)],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('de'),
+          home: const PeriodScreen(),
+        ),
       ),
-    ));
+    );
 
     // Let streams emit initial values
     await tester.pump();

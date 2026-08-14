@@ -6,8 +6,16 @@ import '../database/traum_database.dart';
 
 class ExerciseSeeder {
   static const _muscleGroups = [
-    'chest', 'back', 'shoulders', 'biceps', 'triceps',
-    'legs', 'core', 'cardio', 'full_body', 'stretching',
+    'chest',
+    'back',
+    'shoulders',
+    'biceps',
+    'triceps',
+    'legs',
+    'core',
+    'cardio',
+    'full_body',
+    'stretching',
   ];
 
   /// Legacy guard: once true, the very first (full) seed already ran.
@@ -43,8 +51,9 @@ class ExerciseSeeder {
 
     // Existing install: only add exercises that aren't present yet (by
     // name), so custom-edited rows are never clobbered.
-    final existingNames =
-        (await db.select(db.exercises).get()).map((e) => e.name).toSet();
+    final existingNames = (await db.select(db.exercises).get())
+        .map((e) => e.name)
+        .toSet();
     await _seedGroups(
       db,
       insertOnConflictUpdate: false,
@@ -60,7 +69,9 @@ class ExerciseSeeder {
   }) async {
     for (final group in _muscleGroups) {
       try {
-        final data = await rootBundle.loadString('assets/exercises/$group.json');
+        final data = await rootBundle.loadString(
+          'assets/exercises/$group.json',
+        );
         final List<dynamic> exercises = jsonDecode(data) as List<dynamic>;
         for (final ex in exercises) {
           final name = ex['name'] as String;

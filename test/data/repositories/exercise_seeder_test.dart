@@ -8,29 +8,31 @@ import 'package:traum/data/repositories/exercise_seeder.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  test('fresh install seeds every exercise incl. stretching, sets both flags',
-      () async {
-    SharedPreferences.setMockInitialValues({});
-    final prefs = await SharedPreferences.getInstance();
-    final db = TraumDatabase.forTesting(NativeDatabase.memory());
-    addTearDown(db.close);
-
-    await ExerciseSeeder.seedIfNeeded(db, prefs);
-
-    final all = await db.select(db.exercises).get();
-    expect(all, isNotEmpty);
-    final names = all.map((e) => e.name).toSet();
-    expect(names, contains('Nacken-Seitdehnung'));
-    final stretching =
-        all.where((e) => e.name == 'Nacken-Seitdehnung').single;
-    expect(stretching.muscleGroup, 'shoulders');
-
-    expect(prefs.getBool('exercises_seeded'), isTrue);
-    expect(prefs.getBool('exercises_seeded_v2'), isTrue);
-  });
-
   test(
-      'existing install (v1 seeded, v2 missing) only adds stretching, '
+    'fresh install seeds every exercise incl. stretching, sets both flags',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final db = TraumDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(db.close);
+
+      await ExerciseSeeder.seedIfNeeded(db, prefs);
+
+      final all = await db.select(db.exercises).get();
+      expect(all, isNotEmpty);
+      final names = all.map((e) => e.name).toSet();
+      expect(names, contains('Nacken-Seitdehnung'));
+      final stretching = all
+          .where((e) => e.name == 'Nacken-Seitdehnung')
+          .single;
+      expect(stretching.muscleGroup, 'shoulders');
+
+      expect(prefs.getBool('exercises_seeded'), isTrue);
+      expect(prefs.getBool('exercises_seeded_v2'), isTrue);
+    },
+  );
+
+  test('existing install (v1 seeded, v2 missing) only adds stretching, '
       'never touches a user-customized existing row', () async {
     SharedPreferences.setMockInitialValues({'exercises_seeded': true});
     final prefs = await SharedPreferences.getInstance();
@@ -39,7 +41,9 @@ void main() {
 
     // Simulate a pre-v2 install: "Plank" already exists (from core.json)
     // but the user customized its instructions. No stretching rows yet.
-    await db.into(db.exercises).insert(
+    await db
+        .into(db.exercises)
+        .insert(
           ExercisesCompanion.insert(
             name: 'Plank',
             muscleGroup: 'core',
@@ -58,8 +62,9 @@ void main() {
     expect(plank.instructions, 'Meine eigene Notiz');
 
     // Stretching exercises got added, with their real muscle group.
-    final stretching =
-        all.where((e) => e.name == 'Nacken-Seitdehnung').toList();
+    final stretching = all
+        .where((e) => e.name == 'Nacken-Seitdehnung')
+        .toList();
     expect(stretching, hasLength(1));
     expect(stretching.single.muscleGroup, 'shoulders');
     expect(all.where((e) => e.name == 'Armkreisen'), hasLength(1));

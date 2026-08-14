@@ -8,18 +8,31 @@ void main() {
   tearDown(() => db.close());
 
   test('findGroceryPriceByNormalized returns the seeded entry', () async {
-    await db.into(db.groceryPrices).insert(GroceryPricesCompanion.insert(
-        name: 'Milch', nameNormalized: 'milch', avgPrice: 1.19));
+    await db
+        .into(db.groceryPrices)
+        .insert(
+          GroceryPricesCompanion.insert(
+            name: 'Milch',
+            nameNormalized: 'milch',
+            avgPrice: 1.19,
+          ),
+        );
     final hit = await db.nutritionDao.findGroceryPriceByNormalized('milch');
     expect(hit, isNotNull);
     expect(hit!.avgPrice, 1.19);
   });
 
   test('upsertActualGroceryPrice updates moving average and flags', () async {
-    await db.into(db.groceryPrices).insert(GroceryPricesCompanion.insert(
-        name: 'Milch', nameNormalized: 'milch', avgPrice: 1.00));
-    await db.nutritionDao
-        .upsertActualGroceryPrice(name: 'Milch', actual: 2.00);
+    await db
+        .into(db.groceryPrices)
+        .insert(
+          GroceryPricesCompanion.insert(
+            name: 'Milch',
+            nameNormalized: 'milch',
+            avgPrice: 1.00,
+          ),
+        );
+    await db.nutritionDao.upsertActualGroceryPrice(name: 'Milch', actual: 2.00);
     final hit = await db.nutritionDao.findGroceryPriceByNormalized('milch');
     expect(hit!.avgPrice, closeTo(1.50, 0.001)); // (1.00*1 + 2.00)/2
     expect(hit.sampleCount, 2);
@@ -28,7 +41,10 @@ void main() {
 
   test('upsertActualGroceryPrice inserts when missing', () async {
     await db.nutritionDao.upsertActualGroceryPrice(
-        name: 'Neuware', category: 'Vorrat', actual: 3.50);
+      name: 'Neuware',
+      category: 'Vorrat',
+      actual: 3.50,
+    );
     final hit = await db.nutritionDao.findGroceryPriceByNormalized('neuware');
     expect(hit, isNotNull);
     expect(hit!.avgPrice, 3.50);
@@ -58,8 +74,15 @@ void main() {
   });
 
   test('upsertActualGroceryPrice accumulates multiple samples', () async {
-    await db.into(db.groceryPrices).insert(GroceryPricesCompanion.insert(
-        name: 'Milch', nameNormalized: 'milch', avgPrice: 1.00));
+    await db
+        .into(db.groceryPrices)
+        .insert(
+          GroceryPricesCompanion.insert(
+            name: 'Milch',
+            nameNormalized: 'milch',
+            avgPrice: 1.00,
+          ),
+        );
     await db.nutritionDao.upsertActualGroceryPrice(name: 'Milch', actual: 2.00);
     await db.nutritionDao.upsertActualGroceryPrice(name: 'Milch', actual: 3.00);
     final hit = await db.nutritionDao.findGroceryPriceByNormalized('milch');

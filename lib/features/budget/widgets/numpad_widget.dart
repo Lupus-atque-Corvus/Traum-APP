@@ -73,7 +73,9 @@ class NumpadWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(bs(10)),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(bs(10)),
-                      highlightColor: isDelete ? null : TraumColors.surfaceHover,
+                      highlightColor: isDelete
+                          ? null
+                          : TraumColors.surfaceHover,
                       hoverColor: isDelete ? null : TraumColors.surfaceHover,
                       onTap: () => _handleKey(key),
                       child: Container(
@@ -92,7 +94,9 @@ class NumpadWidget extends StatelessWidget {
                                       ? TraumColors.textBright
                                       : TraumColors.onBackground,
                                   fontFamily: 'DMSans',
-                                  fontWeight: isComma ? FontWeight.w300 : FontWeight.w600,
+                                  fontWeight: isComma
+                                      ? FontWeight.w300
+                                      : FontWeight.w600,
                                   fontSize: isComma ? 22 : 20,
                                 ),
                               ),

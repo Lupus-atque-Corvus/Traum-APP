@@ -39,8 +39,10 @@ const List<Color> _kDonutColors = [
 ];
 
 List<DonutSlice> buildDonutSlices(
-    Map<int, double> spendingByCategory, List<BudgetCategory> cats,
-    {required String otherLabel}) {
+  Map<int, double> spendingByCategory,
+  List<BudgetCategory> cats, {
+  required String otherLabel,
+}) {
   if (spendingByCategory.isEmpty) return [];
 
   final total = spendingByCategory.values.fold(0.0, (s, v) => s + v);
@@ -54,9 +56,9 @@ List<DonutSlice> buildDonutSlices(
     final i = entry.key;
     final e = entry.value;
     final cat = cats.cast<BudgetCategory?>().firstWhere(
-          (c) => c?.id == e.key,
-          orElse: () => null,
-        );
+      (c) => c?.id == e.key,
+      orElse: () => null,
+    );
     final name = cat?.name ?? otherLabel;
     return DonutSlice(
       color: _kDonutColors[i % _kDonutColors.length],
@@ -96,18 +98,23 @@ class BudgetStatsScreen extends ConsumerWidget {
                     currency: currency,
                   ),
                   loading: () => const Center(
-                      child: CircularProgressIndicator(
-                          color: TraumColors.amberGold)),
+                    child: CircularProgressIndicator(
+                      color: TraumColors.amberGold,
+                    ),
+                  ),
                   error: (e, _) => Center(child: Text('$e')),
                 ),
                 loading: () => const Center(
-                    child: CircularProgressIndicator(
-                        color: TraumColors.amberGold)),
+                  child: CircularProgressIndicator(
+                    color: TraumColors.amberGold,
+                  ),
+                ),
                 error: (e, _) => Center(
-                    child: Text(
-                        '${AppLocalizations.of(context)!.error}: $e',
-                        style:
-                            const TextStyle(color: TraumColors.roseRed))),
+                  child: Text(
+                    '${AppLocalizations.of(context)!.error}: $e',
+                    style: const TextStyle(color: TraumColors.roseRed),
+                  ),
+                ),
               ),
             ),
           ],
@@ -141,8 +148,9 @@ class _StatsBody extends StatelessWidget {
     });
 
     final monthlyData = months.map((m) {
-      final monthTx = transactions
-          .where((t) => t.date.year == m.year && t.date.month == m.month);
+      final monthTx = transactions.where(
+        (t) => t.date.year == m.year && t.date.month == m.month,
+      );
       final income = monthTx
           .where((t) => t.type == 'income')
           .fold(0.0, (s, t) => s + t.amount);
@@ -173,55 +181,72 @@ class _StatsBody extends StatelessWidget {
     // Current month label for donut title
     final l10nMonths = AppLocalizations.of(context)!;
     final monthNames = [
-      l10nMonths.monthShortJan, l10nMonths.monthShortFeb, l10nMonths.monthShortMar,
-      l10nMonths.monthShortApr, l10nMonths.monthShortMay, l10nMonths.monthShortJun,
-      l10nMonths.monthShortJul, l10nMonths.monthShortAug, l10nMonths.monthShortSep,
-      l10nMonths.monthShortOct, l10nMonths.monthShortNov, l10nMonths.monthShortDec,
+      l10nMonths.monthShortJan,
+      l10nMonths.monthShortFeb,
+      l10nMonths.monthShortMar,
+      l10nMonths.monthShortApr,
+      l10nMonths.monthShortMay,
+      l10nMonths.monthShortJun,
+      l10nMonths.monthShortJul,
+      l10nMonths.monthShortAug,
+      l10nMonths.monthShortSep,
+      l10nMonths.monthShortOct,
+      l10nMonths.monthShortNov,
+      l10nMonths.monthShortDec,
     ];
     final currentMonthLabel = monthNames[now.month - 1];
 
     // §5.3 Donut data scoped to current month only
     final donutSpendingByCategory = <int, double>{};
-    for (final t in transactions.where((t) =>
-        t.type == 'expense' &&
-        t.date.year == now.year &&
-        t.date.month == now.month)) {
+    for (final t in transactions.where(
+      (t) =>
+          t.type == 'expense' &&
+          t.date.year == now.year &&
+          t.date.month == now.month,
+    )) {
       if (t.categoryId != null) {
         donutSpendingByCategory[t.categoryId!] =
             (donutSpendingByCategory[t.categoryId!] ?? 0) + t.amount;
       }
     }
 
-    final donutSlices = buildDonutSlices(donutSpendingByCategory, categories,
-        otherLabel: AppLocalizations.of(context)!.budgetOtherCategory);
-    final donutMonthTotal =
-        donutSpendingByCategory.values.fold(0.0, (a, b) => a + b);
+    final donutSlices = buildDonutSlices(
+      donutSpendingByCategory,
+      categories,
+      otherLabel: AppLocalizations.of(context)!.budgetOtherCategory,
+    );
+    final donutMonthTotal = donutSpendingByCategory.values.fold(
+      0.0,
+      (a, b) => a + b,
+    );
 
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: bs(12), vertical: bs(8)),
       children: [
         // §5.1 Summary cards
-        Row(children: [
-          Expanded(
-            child: _SummaryCard(
-              label: AppLocalizations.of(context)!.totalIncome,
-              value: totalIncome,
-              currency: currency,
-              color: TraumColors.mintGreen,
-              icon: Icons.trending_up_rounded,
+        Row(
+          children: [
+            Expanded(
+              child: _SummaryCard(
+                label: AppLocalizations.of(context)!.totalIncome,
+                value: totalIncome,
+                currency: currency,
+                color: TraumColors.mintGreen,
+                icon: Icons.trending_up_rounded,
+              ),
             ),
-          ),
-          SizedBox(width: bs(10)),
-          Expanded(
-            child: _SummaryCard(
-              label: AppLocalizations.of(context)!.totalExpense,
-              value: totalExpense,
-              currency: currency,
-              color: TraumColors.roseRed,
-              icon: Icons.trending_down_rounded,
+            SizedBox(width: bs(10)),
+            Expanded(
+              child: _SummaryCard(
+                label: AppLocalizations.of(context)!.totalExpense,
+                value: totalExpense,
+                currency: currency,
+                color: TraumColors.roseRed,
+                icon: Icons.trending_down_rounded,
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
         SizedBox(height: bs(12)),
 
         // §5.2 Monthly bar chart
@@ -237,10 +262,11 @@ class _StatsBody extends StatelessWidget {
               Text(
                 AppLocalizations.of(context)!.last6Months,
                 style: const TextStyle(
-                    color: TraumColors.onBackground,
-                    fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12),
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
               ),
               SizedBox(height: bs(12)),
               _MonthlyBarChart(monthlyData: monthlyData, currency: currency),
@@ -261,19 +287,22 @@ class _StatsBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  AppLocalizations.of(context)!
-                      .expensesByCategoryLabel(currentMonthLabel),
+                  AppLocalizations.of(
+                    context,
+                  )!.expensesByCategoryLabel(currentMonthLabel),
                   style: const TextStyle(
-                      color: TraumColors.onBackground,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12),
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
                 ),
                 SizedBox(height: bs(12)),
                 _CategoryDonut(
-                    slices: donutSlices,
-                    totalExpense: donutMonthTotal,
-                    currency: currency),
+                  slices: donutSlices,
+                  totalExpense: donutMonthTotal,
+                  currency: currency,
+                ),
               ],
             ),
           ),
@@ -294,22 +323,26 @@ class _StatsBody extends StatelessWidget {
                 Text(
                   AppLocalizations.of(context)!.topExpenseCategories,
                   style: const TextStyle(
-                      color: TraumColors.onBackground,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12),
+                    color: TraumColors.onBackground,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
                 ),
                 SizedBox(height: bs(10)),
                 ...sortedCats.take(5).map((entry) {
                   final cat = categories.cast<BudgetCategory?>().firstWhere(
-                      (c) => c?.id == entry.key,
-                      orElse: () => null);
-                  final name = cat?.name ??
-                      AppLocalizations.of(context)!.categoryOther;
-                  final ratio =
-                      totalExpense > 0 ? entry.value / totalExpense : 0.0;
-                  final color = _kDonutColors[
-                      sortedCats.indexOf(entry) % _kDonutColors.length];
+                    (c) => c?.id == entry.key,
+                    orElse: () => null,
+                  );
+                  final name =
+                      cat?.name ?? AppLocalizations.of(context)!.categoryOther;
+                  final ratio = totalExpense > 0
+                      ? entry.value / totalExpense
+                      : 0.0;
+                  final color =
+                      _kDonutColors[sortedCats.indexOf(entry) %
+                          _kDonutColors.length];
                   return Padding(
                     padding: EdgeInsets.only(bottom: bs(8)),
                     child: Row(
@@ -322,8 +355,11 @@ class _StatsBody extends StatelessWidget {
                             borderRadius: BorderRadius.circular(bs(8)),
                           ),
                           child: Center(
-                            child: budgetCategoryGlyph(cat?.emoji,
-                                color: color, size: bs(12)),
+                            child: budgetCategoryGlyph(
+                              cat?.emoji,
+                              color: color,
+                              size: bs(12),
+                            ),
                           ),
                         ),
                         SizedBox(width: bs(8)),
@@ -331,35 +367,46 @@ class _StatsBody extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(name,
-                                  style: const TextStyle(
-                                      color: TraumColors.onBackground,
-                                      fontFamily: 'DMSans',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 10),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis),
+                              Text(
+                                name,
+                                style: const TextStyle(
+                                  color: TraumColors.onBackground,
+                                  fontFamily: 'DMSans',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 10,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                               SizedBox(height: bs(3)),
-                              LayoutBuilder(builder: (ctx, constraints) {
-                                return Stack(children: [
-                                  Container(
-                                    height: bs(3),
-                                    width: constraints.maxWidth,
-                                    decoration: BoxDecoration(
-                                      color: TraumColors.surfaceVariant,
-                                      borderRadius: BorderRadius.circular(bs(2)),
-                                    ),
-                                  ),
-                                  Container(
-                                    height: bs(3),
-                                    width: constraints.maxWidth * ratio,
-                                    decoration: BoxDecoration(
-                                      color: color,
-                                      borderRadius: BorderRadius.circular(bs(2)),
-                                    ),
-                                  ),
-                                ]);
-                              }),
+                              LayoutBuilder(
+                                builder: (ctx, constraints) {
+                                  return Stack(
+                                    children: [
+                                      Container(
+                                        height: bs(3),
+                                        width: constraints.maxWidth,
+                                        decoration: BoxDecoration(
+                                          color: TraumColors.surfaceVariant,
+                                          borderRadius: BorderRadius.circular(
+                                            bs(2),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: bs(3),
+                                        width: constraints.maxWidth * ratio,
+                                        decoration: BoxDecoration(
+                                          color: color,
+                                          borderRadius: BorderRadius.circular(
+                                            bs(2),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
                             ],
                           ),
                         ),
@@ -370,10 +417,11 @@ class _StatsBody extends StatelessWidget {
                             '${entry.value.toStringAsFixed(0)} $currency',
                             textAlign: TextAlign.right,
                             style: const TextStyle(
-                                color: TraumColors.onBackground,
-                                fontFamily: 'DMSans',
-                                fontWeight: FontWeight.w700,
-                                fontSize: 10),
+                              color: TraumColors.onBackground,
+                              fontFamily: 'DMSans',
+                              fontWeight: FontWeight.w700,
+                              fontSize: 10,
+                            ),
                           ),
                         ),
                       ],
@@ -434,18 +482,20 @@ class _CategoryDonut extends StatelessWidget {
                     Text(
                       fmtAmount(totalExpense),
                       style: const TextStyle(
-                          color: TraumColors.onBackground,
-                          fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 12),
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     Text(
                       AppLocalizations.of(context)!.total,
                       style: const TextStyle(
-                          color: TraumColors.onBackgroundMuted,
-                          fontFamily: 'DMSans',
-                          fontSize: 8),
+                        color: TraumColors.onBackgroundMuted,
+                        fontFamily: 'DMSans',
+                        fontSize: 8,
+                      ),
                     ),
                   ],
                 ),
@@ -477,9 +527,10 @@ class _CategoryDonut extends StatelessWidget {
                       child: Text(
                         s.name,
                         style: const TextStyle(
-                            color: TraumColors.onBackground,
-                            fontFamily: 'DMSans',
-                            fontSize: 10),
+                          color: TraumColors.onBackground,
+                          fontFamily: 'DMSans',
+                          fontSize: 10,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -488,10 +539,11 @@ class _CategoryDonut extends StatelessWidget {
                     Text(
                       fmtAmount(s.amount),
                       style: const TextStyle(
-                          color: TraumColors.onBackground,
-                          fontFamily: 'DMSans',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 10),
+                        color: TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 10,
+                      ),
                     ),
                     SizedBox(width: bs(4)),
                     SizedBox(
@@ -500,9 +552,10 @@ class _CategoryDonut extends StatelessWidget {
                         '$pct%',
                         textAlign: TextAlign.right,
                         style: const TextStyle(
-                            color: TraumColors.onBackgroundMuted,
-                            fontFamily: 'DMSans',
-                            fontSize: 9),
+                          color: TraumColors.onBackgroundMuted,
+                          fontFamily: 'DMSans',
+                          fontSize: 9,
+                        ),
                       ),
                     ),
                   ],
@@ -547,8 +600,7 @@ class _DonutPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_DonutPainter oldDelegate) =>
-      oldDelegate.slices != slices;
+  bool shouldRepaint(_DonutPainter oldDelegate) => oldDelegate.slices != slices;
 }
 
 // ---------------------------------------------------------------------------
@@ -587,17 +639,19 @@ class _SummaryCard extends StatelessWidget {
           Text(
             '${value.toStringAsFixed(2)} $currency',
             style: TextStyle(
-                color: color,
-                fontFamily: 'DMSans',
-                fontWeight: FontWeight.w700,
-                fontSize: 14),
+              color: color,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w700,
+              fontSize: 14,
+            ),
           ),
           Text(
             label,
             style: const TextStyle(
-                color: TraumColors.onBackgroundMuted,
-                fontFamily: 'DMSans',
-                fontSize: 8),
+              color: TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontSize: 8,
+            ),
           ),
         ],
       ),
@@ -613,8 +667,7 @@ class _MonthlyBarChart extends StatelessWidget {
   final List<_MonthData> monthlyData;
   final String currency;
 
-  const _MonthlyBarChart(
-      {required this.monthlyData, required this.currency});
+  const _MonthlyBarChart({required this.monthlyData, required this.currency});
 
   @override
   Widget build(BuildContext context) {
@@ -624,10 +677,18 @@ class _MonthlyBarChart extends StatelessWidget {
 
     final l10n = AppLocalizations.of(context)!;
     final monthShort = [
-      l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
-      l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
-      l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
-      l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
+      l10n.monthShortJan,
+      l10n.monthShortFeb,
+      l10n.monthShortMar,
+      l10n.monthShortApr,
+      l10n.monthShortMay,
+      l10n.monthShortJun,
+      l10n.monthShortJul,
+      l10n.monthShortAug,
+      l10n.monthShortSep,
+      l10n.monthShortOct,
+      l10n.monthShortNov,
+      l10n.monthShortDec,
     ];
 
     final bandHeight = bs(58.0);
@@ -635,10 +696,10 @@ class _MonthlyBarChart extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: monthlyData.map((m) {
-        final incomeH =
-            maxVal > 0 ? (m.income / maxVal) * bandHeight : bs(2.0);
-        final expenseH =
-            maxVal > 0 ? (m.expense / maxVal) * bandHeight : bs(2.0);
+        final incomeH = maxVal > 0 ? (m.income / maxVal) * bandHeight : bs(2.0);
+        final expenseH = maxVal > 0
+            ? (m.expense / maxVal) * bandHeight
+            : bs(2.0);
         return Expanded(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: bs(2)),
@@ -672,9 +733,10 @@ class _MonthlyBarChart extends StatelessWidget {
                 Text(
                   monthShort[m.month.month - 1],
                   style: const TextStyle(
-                      color: TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontSize: 7),
+                    color: TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                    fontSize: 7,
+                  ),
                 ),
               ],
             ),
@@ -693,18 +755,25 @@ class _MonthlyTableCard extends StatelessWidget {
   final List<_MonthData> monthlyData;
   final String currency;
 
-  const _MonthlyTableCard(
-      {required this.monthlyData, required this.currency});
+  const _MonthlyTableCard({required this.monthlyData, required this.currency});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final now = DateTime.now();
     final monthShort = [
-      l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
-      l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
-      l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
-      l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
+      l10n.monthShortJan,
+      l10n.monthShortFeb,
+      l10n.monthShortMar,
+      l10n.monthShortApr,
+      l10n.monthShortMay,
+      l10n.monthShortJun,
+      l10n.monthShortJul,
+      l10n.monthShortAug,
+      l10n.monthShortSep,
+      l10n.monthShortOct,
+      l10n.monthShortNov,
+      l10n.monthShortDec,
     ];
 
     return Container(
@@ -719,10 +788,11 @@ class _MonthlyTableCard extends StatelessWidget {
           Text(
             l10n.monthlyOverview,
             style: const TextStyle(
-                color: TraumColors.onBackground,
-                fontFamily: 'DMSans',
-                fontWeight: FontWeight.w600,
-                fontSize: 12),
+              color: TraumColors.onBackground,
+              fontFamily: 'DMSans',
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
           ),
           SizedBox(height: bs(8)),
           // Header row
@@ -742,8 +812,7 @@ class _MonthlyTableCard extends StatelessWidget {
               balance:
                   '${m.income - m.expense < 0 ? '−' : ''}${fmtAmount((m.income - m.expense).abs())}',
               isPositive: m.income >= m.expense,
-              isCurrent:
-                  m.month.year == now.year && m.month.month == now.month,
+              isCurrent: m.month.year == now.year && m.month.month == now.month,
             ),
         ],
       ),
@@ -775,62 +844,66 @@ class _TableRow extends StatelessWidget {
     final textColor = isHeader
         ? TraumColors.onBackgroundMuted
         : isCurrent
-            ? TraumColors.onBackground
-            : TraumColors.onBackgroundMuted;
+        ? TraumColors.onBackground
+        : TraumColors.onBackgroundMuted;
 
     TextStyle cell(Color color) => TextStyle(
-          fontFamily: 'DMSans',
-          fontSize: isHeader ? 8 : 9,
-          fontWeight: isHeader ? FontWeight.w400 : FontWeight.w400,
-          color: color,
-        );
+      fontFamily: 'DMSans',
+      fontSize: isHeader ? 8 : 9,
+      fontWeight: isHeader ? FontWeight.w400 : FontWeight.w400,
+      color: color,
+    );
 
     return Container(
       decoration: isHeader
           ? null
           : BoxDecoration(
               border: Border(
-                top: BorderSide(
-                  color: Colors.white.withValues(alpha: 0.05),
-                ),
+                top: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
               ),
             ),
       padding: EdgeInsets.symmetric(vertical: bs(5)),
-      child: Row(children: [
-        SizedBox(
-          width: bs(48),
-          child: Text(month, style: cell(textColor)),
-        ),
-        Expanded(
-          child: Text(
-            income,
-            textAlign: TextAlign.right,
-            style: cell(isHeader
-                ? TraumColors.onBackgroundMuted
-                : TraumColors.mintGreen),
+      child: Row(
+        children: [
+          SizedBox(
+            width: bs(48),
+            child: Text(month, style: cell(textColor)),
           ),
-        ),
-        Expanded(
-          child: Text(
-            expense,
-            textAlign: TextAlign.right,
-            style: cell(isHeader
-                ? TraumColors.onBackgroundMuted
-                : TraumColors.roseRed),
+          Expanded(
+            child: Text(
+              income,
+              textAlign: TextAlign.right,
+              style: cell(
+                isHeader
+                    ? TraumColors.onBackgroundMuted
+                    : TraumColors.mintGreen,
+              ),
+            ),
           ),
-        ),
-        Expanded(
-          child: Text(
-            balance,
-            textAlign: TextAlign.right,
-            style: cell(isHeader
-                ? TraumColors.onBackgroundMuted
-                : isPositive
+          Expanded(
+            child: Text(
+              expense,
+              textAlign: TextAlign.right,
+              style: cell(
+                isHeader ? TraumColors.onBackgroundMuted : TraumColors.roseRed,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              balance,
+              textAlign: TextAlign.right,
+              style: cell(
+                isHeader
+                    ? TraumColors.onBackgroundMuted
+                    : isPositive
                     ? TraumColors.mintGreen
-                    : TraumColors.roseRed),
+                    : TraumColors.roseRed,
+              ),
+            ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }
@@ -844,6 +917,9 @@ class _MonthData {
   final double income;
   final double expense;
 
-  const _MonthData(
-      {required this.month, required this.income, required this.expense});
+  const _MonthData({
+    required this.month,
+    required this.income,
+    required this.expense,
+  });
 }

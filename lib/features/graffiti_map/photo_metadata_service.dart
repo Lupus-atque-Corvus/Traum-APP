@@ -22,9 +22,13 @@ class PhotoCaptureResult {
 
 class PhotoMetadataService {
   static Future<PhotoCaptureResult?> captureWithMetadata(
-      ImageSource source) async {
-    final picked = await ImagePicker()
-        .pickImage(source: source, maxWidth: 2400, imageQuality: 88);
+    ImageSource source,
+  ) async {
+    final picked = await ImagePicker().pickImage(
+      source: source,
+      maxWidth: 2400,
+      imageQuality: 88,
+    );
     if (picked == null) return null;
 
     final savedPath = await _saveToAppStorage(picked.path);
@@ -37,13 +41,18 @@ class PhotoMetadataService {
       final tags = await readExifFromBytes(bytes);
       if (tags.containsKey('GPS GPSLatitude') &&
           tags.containsKey('GPS GPSLongitude')) {
-        lat = _parseGps(tags['GPS GPSLatitude']!,
-            tags['GPS GPSLatitudeRef']?.printable ?? 'N');
-        lon = _parseGps(tags['GPS GPSLongitude']!,
-            tags['GPS GPSLongitudeRef']?.printable ?? 'E');
+        lat = _parseGps(
+          tags['GPS GPSLatitude']!,
+          tags['GPS GPSLatitudeRef']?.printable ?? 'N',
+        );
+        lon = _parseGps(
+          tags['GPS GPSLongitude']!,
+          tags['GPS GPSLongitudeRef']?.printable ?? 'E',
+        );
       }
       if (tags.containsKey('EXIF DateTimeOriginal')) {
-        takenAt = _parseExifDate(tags['EXIF DateTimeOriginal']!.printable) ??
+        takenAt =
+            _parseExifDate(tags['EXIF DateTimeOriginal']!.printable) ??
             DateTime.now();
       }
     } catch (e) {
@@ -79,9 +88,10 @@ class PhotoMetadataService {
       try {
         final p = await placemarkFromCoordinates(lat, lon);
         if (p.isNotEmpty) {
-          locationName = [p.first.locality, p.first.country]
-              .where((s) => s != null && s.isNotEmpty)
-              .join(', ');
+          locationName = [
+            p.first.locality,
+            p.first.country,
+          ].where((s) => s != null && s.isNotEmpty).join(', ');
         }
       } catch (e) {
         debugPrint('Geocoding: $e');
@@ -101,8 +111,7 @@ class PhotoMetadataService {
     final dir = await getApplicationSupportDirectory();
     final d = Directory('${dir.path}/graffitimap');
     await d.create(recursive: true);
-    final dest =
-        '${d.path}/photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final dest = '${d.path}/photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
     await File(src).copy(dest);
     return dest;
   }
@@ -111,8 +120,7 @@ class PhotoMetadataService {
     try {
       final v = tag.values.toList();
       if (v.length < 3) return null;
-      double conv(dynamic r) =>
-          (r as Ratio).numerator / r.denominator;
+      double conv(dynamic r) => (r as Ratio).numerator / r.denominator;
       double dec = conv(v[0]) + conv(v[1]) / 60 + conv(v[2]) / 3600;
       if (ref == 'S' || ref == 'W') dec = -dec;
       return dec;
@@ -126,8 +134,14 @@ class PhotoMetadataService {
       final p = s.split(' ');
       final d = p[0].split(':');
       final t = p[1].split(':');
-      return DateTime(int.parse(d[0]), int.parse(d[1]), int.parse(d[2]),
-          int.parse(t[0]), int.parse(t[1]), int.parse(t[2]));
+      return DateTime(
+        int.parse(d[0]),
+        int.parse(d[1]),
+        int.parse(d[2]),
+        int.parse(t[0]),
+        int.parse(t[1]),
+        int.parse(t[2]),
+      );
     } catch (_) {
       return null;
     }

@@ -122,8 +122,11 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
                     gradient: TraumColors.gradientCool,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.lock_rounded,
-                      color: Colors.white, size: 40),
+                  child: const Icon(
+                    Icons.lock_rounded,
+                    color: Colors.white,
+                    size: 40,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 const Text(
@@ -146,8 +149,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
                 ),
                 const SizedBox(height: 48),
                 if (_authenticating)
-                  const CircularProgressIndicator(
-                      color: TraumColors.indigoBlue)
+                  const CircularProgressIndicator(color: TraumColors.indigoBlue)
                 else ...[
                   if (_errorMessage != null)
                     Padding(
@@ -168,15 +170,20 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen> {
                       backgroundColor: TraumColors.indigoBlue,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 32, vertical: 14),
+                        horizontal: 32,
+                        vertical: 14,
+                      ),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                     icon: Icon(_icon),
                     label: Text(
                       l10n.unlock,
                       style: const TextStyle(
-                          fontFamily: 'DMSans', fontWeight: FontWeight.w600),
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                   // PIN fallback if PIN is also configured

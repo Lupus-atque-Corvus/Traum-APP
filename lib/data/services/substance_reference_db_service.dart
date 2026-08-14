@@ -34,7 +34,11 @@ class SubstanceReferenceDbService {
     final params = <Object?>[];
     if (klasseFilter != null) {
       where.add('s.klasse = ?');
-      params.add(klasseFilter == SubstanceKlasse.supplement ? 'Supplemente' : 'Medikamente');
+      params.add(
+        klasseFilter == SubstanceKlasse.supplement
+            ? 'Supplemente'
+            : 'Medikamente',
+      );
     }
     if (kategorieFilter != null) {
       where.add('s.kategorie = ?');

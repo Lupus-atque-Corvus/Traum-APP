@@ -20,14 +20,16 @@ import '../home_widget_registry.dart';
 
 /// All exercises, one-shot (mirrors `allExercisesStreamProvider` without the
 /// stream timer). Used to map sets → muscle groups.
-final _exercisesSnapshotProvider =
-    FutureProvider.autoDispose<List<Exercise>>((ref) async {
+final _exercisesSnapshotProvider = FutureProvider.autoDispose<List<Exercise>>((
+  ref,
+) async {
   return ref.watch(trainingDaoProvider).getAllExercisesOnce();
 });
 
 /// Days of the currently active plan, one-shot.
-final _activePlanDaysProvider =
-    FutureProvider.autoDispose<List<WorkoutDay>>((ref) async {
+final _activePlanDaysProvider = FutureProvider.autoDispose<List<WorkoutDay>>((
+  ref,
+) async {
   final plan = await ref.watch(activePlanProvider.future);
   if (plan == null) return const [];
   return ref.watch(trainingDaoProvider).getDaysForPlan(plan.id);
@@ -36,12 +38,13 @@ final _activePlanDaysProvider =
 /// Recent workout sessions (last ~365 days), one-shot, ordered desc.
 final _recentSessionsProvider =
     FutureProvider.autoDispose<List<WorkoutSession>>((ref) async {
-  final cutoff = DateTime.now().subtract(const Duration(days: 365));
-  final sessions =
-      await ref.watch(trainingDaoProvider).getSessionsAfter(cutoff);
-  sessions.sort((a, b) => b.startedAt.compareTo(a.startedAt));
-  return sessions;
-});
+      final cutoff = DateTime.now().subtract(const Duration(days: 365));
+      final sessions = await ref
+          .watch(trainingDaoProvider)
+          .getSessionsAfter(cutoff);
+      sessions.sort((a, b) => b.startedAt.compareTo(a.startedAt));
+      return sessions;
+    });
 
 final Map<HomeWidgetType, HomeWidgetDescriptor> trainingHomeWidgets = {
   HomeWidgetType.nextWorkout: HomeWidgetDescriptor(
@@ -244,7 +247,8 @@ class _NextWorkoutContent extends ConsumerWidget {
 
     // Prefer the day matching today's weekday, else the first day by sortOrder.
     final today = DateTime.now().weekday; // 1=Mon..7=Sun
-    final ordered = [...days]..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+    final ordered = [...days]
+      ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
     final WorkoutDay day = ordered.firstWhere(
       (d) => d.dayOfWeek == today,
       orElse: () => ordered.first,
@@ -504,10 +508,11 @@ class _LastWorkoutContent extends ConsumerWidget {
 
   static String _relativeLabel(DateTime d) {
     final now = DateTime.now();
-    final days =
-        DateTime(now.year, now.month, now.day).difference(
-          DateTime(d.year, d.month, d.day),
-        ).inDays;
+    final days = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).difference(DateTime(d.year, d.month, d.day)).inDays;
     if (days <= 0) return 'Heute';
     if (days == 1) return 'Gestern';
     return 'vor $days Tagen';
@@ -604,7 +609,9 @@ class _PersonalRecordsContent extends ConsumerWidget {
     }
 
     final entries = best.entries.toList()
-      ..sort((a, b) => (b.value.weightKg ?? 0).compareTo(a.value.weightKg ?? 0));
+      ..sort(
+        (a, b) => (b.value.weightKg ?? 0).compareTo(a.value.weightKg ?? 0),
+      );
     final top = entries.take(3).toList();
 
     return Column(

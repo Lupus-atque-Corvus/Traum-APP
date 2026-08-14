@@ -30,26 +30,26 @@ class ExerciseIcon extends StatelessWidget {
   static const String _bespokeDir = 'assets/exercises/icons_exercise_vec';
 
   static const Map<String, String> _assetMap = {
-    'chest':     'assets/exercises/icons/chest.svg',
-    'back':      'assets/exercises/icons/back.svg',
+    'chest': 'assets/exercises/icons/chest.svg',
+    'back': 'assets/exercises/icons/back.svg',
     'shoulders': 'assets/exercises/icons/shoulders.svg',
-    'biceps':    'assets/exercises/icons/biceps.svg',
-    'triceps':   'assets/exercises/icons/triceps.svg',
-    'legs':      'assets/exercises/icons/legs.svg',
-    'core':      'assets/exercises/icons/core.svg',
-    'cardio':    'assets/exercises/icons/cardio.svg',
+    'biceps': 'assets/exercises/icons/biceps.svg',
+    'triceps': 'assets/exercises/icons/triceps.svg',
+    'legs': 'assets/exercises/icons/legs.svg',
+    'core': 'assets/exercises/icons/core.svg',
+    'cardio': 'assets/exercises/icons/cardio.svg',
     'full_body': 'assets/exercises/icons/full_body.svg',
   };
 
   static const Map<String, Color> _colorMap = {
-    'chest':     Color(0xFFFF6B6B),
-    'back':      Color(0xFF4ECDC4),
+    'chest': Color(0xFFFF6B6B),
+    'back': Color(0xFF4ECDC4),
     'shoulders': Color(0xFFA78BFA),
-    'biceps':    Color(0xFFF59E0B),
-    'triceps':   Color(0xFFFB923C),
-    'legs':      Color(0xFF60A5FA),
-    'core':      Color(0xFF34D399),
-    'cardio':    Color(0xFFF472B6),
+    'biceps': Color(0xFFF59E0B),
+    'triceps': Color(0xFFFB923C),
+    'legs': Color(0xFF60A5FA),
+    'core': Color(0xFF34D399),
+    'cardio': Color(0xFFF472B6),
     'full_body': Color(0xFF94A3B8),
   };
 
@@ -85,7 +85,8 @@ class ExerciseIcon extends StatelessWidget {
         child: bespokeAsset != null
             ? VectorGraphic(loader: AssetBytesLoader(bespokeAsset))
             : SvgPicture.asset(
-                _assetMap[muscleGroup] ?? _assetMap['full_body']!),
+                _assetMap[muscleGroup] ?? _assetMap['full_body']!,
+              ),
       ),
     );
   }
