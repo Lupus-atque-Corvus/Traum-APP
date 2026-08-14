@@ -17,7 +17,7 @@ class AppointmentChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final chip = GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -54,6 +54,12 @@ class AppointmentChip extends StatelessWidget {
           ],
         ),
       ),
+    );
+    if (onTap == null) return chip;
+    return Semantics(
+      button: true,
+      label: '$title, $time',
+      child: ExcludeSemantics(child: chip),
     );
   }
 }

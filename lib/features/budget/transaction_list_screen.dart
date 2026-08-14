@@ -386,28 +386,35 @@ class _FilterChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selected = value == current;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: bs(12), vertical: bs(5)),
-        decoration: BoxDecoration(
-          color: selected
-              ? TraumColors.amberGold.withValues(alpha: 0.2)
-              : TraumColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(bs(16)),
-          border: Border.all(
-            color: TraumColors.amberGold.withValues(alpha: 0.3),
-          ),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: selected
-                ? TraumColors.amberGold
-                : TraumColors.onBackgroundMuted,
-            fontFamily: 'DMSans',
-            fontWeight: FontWeight.w600,
-            fontSize: 10,
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: label,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: bs(12), vertical: bs(5)),
+            decoration: BoxDecoration(
+              color: selected
+                  ? TraumColors.amberGold.withValues(alpha: 0.2)
+                  : TraumColors.surfaceVariant,
+              borderRadius: BorderRadius.circular(bs(16)),
+              border: Border.all(
+                color: TraumColors.amberGold.withValues(alpha: 0.3),
+              ),
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                color: selected
+                    ? TraumColors.amberGold
+                    : TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontWeight: FontWeight.w600,
+                fontSize: 10,
+              ),
+            ),
           ),
         ),
       ),
@@ -463,100 +470,113 @@ class _TxTile extends StatelessWidget {
         child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
       ),
       onDismissed: (_) => onDelete(),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: bs(10), vertical: bs(11)),
-          child: Row(
-            children: [
-              // Icon container: 32×32, radius 9, accent@15%
-              Container(
-                width: bs(32),
-                height: bs(32),
-                decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(bs(9)),
-                ),
-                child: Center(
-                  child: isTransfer
-                      ? Icon(
-                          Icons.swap_horiz_rounded,
-                          color: iconColor,
-                          size: bs(13),
-                        )
-                      : (cat?.emoji != null
-                            ? budgetCategoryGlyph(
-                                cat!.emoji,
-                                color: iconColor,
-                                size: bs(13),
-                              )
-                            : Icon(
-                                isIncome
-                                    ? Icons.add_rounded
-                                    : Icons.remove_rounded,
-                                color: iconColor,
-                                size: bs(13),
-                              )),
-                ),
+      child: Semantics(
+        button: true,
+        label:
+            '${transaction.description}, '
+            '${isTransfer ? 'Umbuchung' : (cat != null ? cat.name : '')}, '
+            '${isTransfer ? '' : (isIncome ? '+' : '-')}'
+            '${fmtAmount(transaction.amount)} $currency',
+        child: ExcludeSemantics(
+          child: GestureDetector(
+            onTap: onTap,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: bs(10),
+                vertical: bs(11),
               ),
-              SizedBox(width: bs(10)),
-              // Name + subtitle
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      transaction.description,
-                      style: const TextStyle(
-                        color: TraumColors.onBackground,
-                        fontFamily: 'DMSans',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 11,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+              child: Row(
+                children: [
+                  // Icon container: 32×32, radius 9, accent@15%
+                  Container(
+                    width: bs(32),
+                    height: bs(32),
+                    decoration: BoxDecoration(
+                      color: accentColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(bs(9)),
                     ),
-                    SizedBox(height: bs(2)),
-                    Text(
-                      isTransfer
-                          ? '$dateStr  •  Umbuchung'
-                          : '$dateStr${cat != null ? '  •  ${cat.name}' : ''}',
-                      style: const TextStyle(
-                        color: TraumColors.onBackgroundMuted,
-                        fontFamily: 'DMSans',
-                        fontSize: 9,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    child: Center(
+                      child: isTransfer
+                          ? Icon(
+                              Icons.swap_horiz_rounded,
+                              color: iconColor,
+                              size: bs(13),
+                            )
+                          : (cat?.emoji != null
+                                ? budgetCategoryGlyph(
+                                    cat!.emoji,
+                                    color: iconColor,
+                                    size: bs(13),
+                                  )
+                                : Icon(
+                                    isIncome
+                                        ? Icons.add_rounded
+                                        : Icons.remove_rounded,
+                                    color: iconColor,
+                                    size: bs(13),
+                                  )),
                     ),
-                  ],
-                ),
+                  ),
+                  SizedBox(width: bs(10)),
+                  // Name + subtitle
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          transaction.description,
+                          style: const TextStyle(
+                            color: TraumColors.onBackground,
+                            fontFamily: 'DMSans',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: bs(2)),
+                        Text(
+                          isTransfer
+                              ? '$dateStr  •  Umbuchung'
+                              : '$dateStr${cat != null ? '  •  ${cat.name}' : ''}',
+                          style: const TextStyle(
+                            color: TraumColors.onBackgroundMuted,
+                            fontFamily: 'DMSans',
+                            fontSize: 9,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: bs(8)),
+                  // Amount + chevron
+                  Text(
+                    isTransfer
+                        ? '${fmtAmount(transaction.amount)} $currency'
+                        : '${isIncome ? '+' : '-'}${fmtAmount(transaction.amount)} $currency',
+                    style: TextStyle(
+                      color: isTransfer
+                          ? TraumColors.onBackgroundMuted
+                          : isIncome
+                          ? TraumColors.mintGreen
+                          : TraumColors.roseRed,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 11,
+                    ),
+                  ),
+                  SizedBox(width: bs(2)),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    size: bs(10),
+                    color: TraumColors.onBackgroundSubtle,
+                  ),
+                ],
               ),
-              SizedBox(width: bs(8)),
-              // Amount + chevron
-              Text(
-                isTransfer
-                    ? '${fmtAmount(transaction.amount)} $currency'
-                    : '${isIncome ? '+' : '-'}${fmtAmount(transaction.amount)} $currency',
-                style: TextStyle(
-                  color: isTransfer
-                      ? TraumColors.onBackgroundMuted
-                      : isIncome
-                      ? TraumColors.mintGreen
-                      : TraumColors.roseRed,
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 11,
-                ),
-              ),
-              SizedBox(width: bs(2)),
-              Icon(
-                Icons.chevron_right_rounded,
-                size: bs(10),
-                color: TraumColors.onBackgroundSubtle,
-              ),
-            ],
+            ),
           ),
         ),
       ),

@@ -50,6 +50,54 @@
     }
   },
   "a11yDiaryDayHasEntry": "Eintrag vorhanden",
+  "a11yMedicationDoseTaken": "{name}, {time}, eingenommen",
+  "@a11yMedicationDoseTaken": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yMedicationDoseNotTaken": "{name}, {time}, nicht eingenommen",
+  "@a11yMedicationDoseNotTaken": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yHabitDoneToday": "{name}, heute erledigt",
+  "@a11yHabitDoneToday": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yHabitNotDoneToday": "{name}, heute noch nicht erledigt",
+  "@a11yHabitNotDoneToday": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yAddCategory": "Kategorie hinzufügen",
+  "a11yColorOption": "Farbe {index}",
+  "a11yVideoEntry": "Video",
+  "@a11yColorOption": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
   "confirm": "Bestätigen",
   "camera": "Kamera",
   "gallery": "Galerie",

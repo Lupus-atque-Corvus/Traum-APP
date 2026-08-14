@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 
 class MedicationDotRow extends StatelessWidget {
   final String name;
@@ -19,6 +20,7 @@ class MedicationDotRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       children: [
         Expanded(
@@ -37,9 +39,9 @@ class MedicationDotRow extends StatelessWidget {
         const SizedBox(width: 8),
         Wrap(
           spacing: 4,
-          children: List.generate(
-            times.length,
-            (i) => Tooltip(
+          children: List.generate(times.length, (i) {
+            final isTaken = i < taken.length && taken[i];
+            final dot = Tooltip(
               message: times[i],
               child: GestureDetector(
                 onTap: onTapDot == null ? null : () => onTapDot!(i),
@@ -51,15 +53,22 @@ class MedicationDotRow extends StatelessWidget {
                     height: 12,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: (i < taken.length && taken[i])
+                      color: isTaken
                           ? TraumColors.mintGreen
                           : TraumColors.roseRed,
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
+            );
+            return Semantics(
+              button: onTapDot != null,
+              label: isTaken
+                  ? l10n.a11yMedicationDoseTaken(name, times[i])
+                  : l10n.a11yMedicationDoseNotTaken(name, times[i]),
+              child: ExcludeSemantics(child: dot),
+            );
+          }),
         ),
       ],
     );

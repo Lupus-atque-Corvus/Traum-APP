@@ -1,12 +1,63 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.5+115** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.7+117** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-14 — v1.1.5, Hotfix: stiller Absturz des In-App-Updaters)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-14 — v1.1.7, Barrierefreiheit: fragmentierte TalkBack-Ansagen)
+
+**Fortsetzung der "alles andere"-Liste nach dem v1.1.5-Hotfix, jetzt mit fester Vorgabe: jede
+Aufgabe einzeln vorher kurz planen, dann Release. v1.1.6 (dazwischen) war ein reiner
+Test-Coverage-Release ohne Verhaltensänderung, siehe Git-Tag, hier nicht extra dokumentiert.**
+
+1. **Vor dem eigentlichen Fix: die "48 Fundstellen" aus einer früheren Audit-Runde per
+   claude-mem recherchiert statt blind draufloszuarbeiten.** Beobachtung #10315/#10340 vom
+   10.08. zeigt: diese 48 `GestureDetector`/`InkWell`-um-`Container`-Treffer wurden damals
+   bereits identifiziert und **bewusst zurückgestellt** — es sind keine echten "silent
+   buttons" (die 4 Bild-Tap-Targets + Icon-Only-Buttons wurden schon in v1.0.5–v1.0.7
+   gefixt), sondern Container mit sichtbarem Text, den TalkBack als mehrere separate Knoten
+   statt einer kombinierten "Button, Name"-Ansage vorliest. Echt, aber niedrigprior — und
+   naives Draufwrappen hätte das Risiko von Doppel-Ansagen (genau das Problem, das das
+   `ExcludeSemantics`-Muster aus v1.0.7 vermeidet).
+2. **39 von 48 Fundstellen über 14 Dateien gefixt**, jede mit individuell hergeleitetem Label
+   aus dem tatsächlich sichtbaren Inhalt (Kategorie-/Konto-/Eintragsname etc.), nach dem
+   etablierten Muster `Semantics(button: true, label: ...) + ExcludeSemantics(child: ...)`:
+   `appointment_chip.dart`, `gradient_button.dart`, `medication_dot_row.dart`,
+   `traum_card.dart` (nur `button`-Trait, kein Label-Override — `child` ist pro Aufrufstelle
+   unterschiedlich, ein Override hätte reichhaltigere Semantik verschluckt),
+   `traum_scaffold.dart` (3 von 5 Kandidaten — der bei Zeile ~805 ist ein bestätigter
+   False Positive aus der Vorrunde, bewusst unangetastet), `abstinence_screen.dart` (4),
+   `budget_categories_screen.dart` (5), `quick_entry_bottom_sheet.dart` (9),
+   `transaction_list_screen.dart` (2), `widgets/accounts_card.dart` (4, dabei nebenbei einen
+   hartcodierten String `'+ Konto hinzufügen'` auf den bestehenden `addAccount`-l10n-Key
+   umgestellt), `diary_edit_sheet.dart` (2), `diary_screen.dart` (2, dekoratives Avatar-Bild
+   bewusst per `ExcludeSemantics` von der Ansage ausgenommen, um keine Dopplung mit dem
+   danebenliegenden Namens-Button zu erzeugen), `widgets/diary_entry_card.dart` (1),
+   `health_screen.dart` (3). `diary_calendar_grid.dart` komplett übersprungen — alle 3
+   dortigen Kandidaten waren schon in v1.0.6/v1.0.7 gefixt.
+3. **Neue ARB-Keys (DE+EN):** `a11yMedicationDoseTaken`/`a11yMedicationDoseNotTaken`
+   (parametrisiert mit Name+Uhrzeit), `a11yHabitDoneToday`/`a11yHabitNotDoneToday`
+   (parametrisiert mit Name), `a11yAddCategory`, `a11yColorOption` (parametrisiert mit Index),
+   `a11yVideoEntry`.
+4. **Noch offen (bewusst zeitlich begrenzt, nicht alle 48 an einem Stück):**
+   `graffiti_map/{create_collection_screen,dynamic_marker_sheet,graffiti_map_screen,
+   marker_detail_screen}.dart`, `home/{home_edit_overlay,home_widget_frame}.dart`,
+   `lock/pin_lock_screen.dart`, `notes/{notes_search_screen,widgets/notes_common}.dart`,
+   `nutrition/{amount_entry_sheet,shopping/*}.dart`,
+   `onboarding/{onboarding_screen,widgets/training_setup_page}.dart`,
+   `period_tracking/daily_log_sheet.dart`, `settings_screen.dart`,
+   `substances/database_tab.dart`,
+   `training/{exercise_picker_screen,muscle_heatmap_screen,routines_screen}.dart`. Gleiches
+   Muster anwendbar, wenn wieder Zeit dafür ist — kein Blocker, reine Politur.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **586/586 grün**. Rein additive
+Semantics-Änderungen, kein Layout-/Verhaltens-Risiko.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-14 — v1.1.5, Hotfix: stiller Absturz des In-App-Updaters)
 
 **Nutzer-Meldung nach der Live-Diagnose-Session:** "beim Installieren wird immer noch 1.1.3
 angezeigt und man wird immer zum Updaten gezwungen." Root-Cause-Suche, keine Vermutung.

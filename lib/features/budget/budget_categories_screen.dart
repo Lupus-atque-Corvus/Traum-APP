@@ -33,16 +33,22 @@ class BudgetCategoriesScreen extends ConsumerWidget {
     final catsAsync = ref.watch(allBudgetCategoriesStreamProvider);
     final currency = ref.watch(currencySymbolProvider);
 
-    final plusButton = GestureDetector(
-      onTap: () => _openSheet(context),
-      child: Container(
-        width: bs(28),
-        height: bs(28),
-        decoration: BoxDecoration(
-          color: TraumColors.amberGold.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(bs(14)),
+    final plusButton = Semantics(
+      button: true,
+      label: l10n.a11yAddCategory,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: () => _openSheet(context),
+          child: Container(
+            width: bs(28),
+            height: bs(28),
+            decoration: BoxDecoration(
+              color: TraumColors.amberGold.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(bs(14)),
+            ),
+            child: Icon(Icons.add, size: bs(14), color: TraumColors.amberGold),
+          ),
         ),
-        child: Icon(Icons.add, size: bs(14), color: TraumColors.amberGold),
       ),
     );
 
@@ -231,98 +237,111 @@ class _CategoryRow extends StatelessWidget {
       ),
       confirmDismiss: (_) => onConfirmDelete(),
       onDismissed: (_) => onDelete(),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          color: Colors.transparent,
-          padding: EdgeInsets.symmetric(horizontal: bs(12), vertical: bs(11)),
-          child: Row(
-            children: [
-              // Icon container 38×38 radius 10
-              Container(
-                width: bs(38),
-                height: bs(38),
-                decoration: BoxDecoration(
-                  color: catColor.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(bs(10)),
-                ),
-                child: Center(
-                  child: budgetCategoryGlyph(
-                    cat.emoji,
-                    color: catColor,
-                    size: bs(16),
-                  ),
-                ),
+      child: Semantics(
+        button: true,
+        label: cat.monthlyLimit != null
+            ? '${cat.name}, ${cat.isExpense ? l10n.budgetTypeExpense : l10n.budgetTypeIncome}, ${l10n.budgetCategoryLimitLabel('${cat.monthlyLimit!.toStringAsFixed(0)} $currency')}'
+            : '${cat.name}, ${cat.isExpense ? l10n.budgetTypeExpense : l10n.budgetTypeIncome}',
+        child: ExcludeSemantics(
+          child: GestureDetector(
+            onTap: onTap,
+            child: Container(
+              color: Colors.transparent,
+              padding: EdgeInsets.symmetric(
+                horizontal: bs(12),
+                vertical: bs(11),
               ),
-              SizedBox(width: bs(10)),
-              // Name + sub row
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      cat.name,
-                      style: const TextStyle(
-                        fontFamily: 'DMSans',
-                        color: TraumColors.onBackground,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12,
+              child: Row(
+                children: [
+                  // Icon container 38×38 radius 10
+                  Container(
+                    width: bs(38),
+                    height: bs(38),
+                    decoration: BoxDecoration(
+                      color: catColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(bs(10)),
+                    ),
+                    child: Center(
+                      child: budgetCategoryGlyph(
+                        cat.emoji,
+                        color: catColor,
+                        size: bs(16),
                       ),
                     ),
-                    SizedBox(height: bs(2)),
-                    Row(
+                  ),
+                  SizedBox(width: bs(10)),
+                  // Name + sub row
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Type badge
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: bs(5),
-                            vertical: bs(1),
-                          ),
-                          decoration: BoxDecoration(
-                            color: cat.isExpense
-                                ? TraumColors.surfaceVariant
-                                : TraumColors.mintGreen.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(bs(4)),
-                          ),
-                          child: Text(
-                            cat.isExpense
-                                ? l10n.budgetTypeExpense
-                                : l10n.budgetTypeIncome,
-                            style: TextStyle(
-                              fontFamily: 'DMSans',
-                              fontSize: 9,
-                              color: cat.isExpense
-                                  ? TraumColors.onBackgroundMuted
-                                  : TraumColors.mintGreen,
-                            ),
+                        Text(
+                          cat.name,
+                          style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            color: TraumColors.onBackground,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
                           ),
                         ),
-                        if (cat.monthlyLimit != null) ...[
-                          SizedBox(width: bs(5)),
-                          Text(
-                            l10n.budgetCategoryLimitLabel(
-                              '${cat.monthlyLimit!.toStringAsFixed(0)} $currency',
+                        SizedBox(height: bs(2)),
+                        Row(
+                          children: [
+                            // Type badge
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: bs(5),
+                                vertical: bs(1),
+                              ),
+                              decoration: BoxDecoration(
+                                color: cat.isExpense
+                                    ? TraumColors.surfaceVariant
+                                    : TraumColors.mintGreen.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                borderRadius: BorderRadius.circular(bs(4)),
+                              ),
+                              child: Text(
+                                cat.isExpense
+                                    ? l10n.budgetTypeExpense
+                                    : l10n.budgetTypeIncome,
+                                style: TextStyle(
+                                  fontFamily: 'DMSans',
+                                  fontSize: 9,
+                                  color: cat.isExpense
+                                      ? TraumColors.onBackgroundMuted
+                                      : TraumColors.mintGreen,
+                                ),
+                              ),
                             ),
-                            style: const TextStyle(
-                              fontFamily: 'DMSans',
-                              fontSize: 9,
-                              color: TraumColors.onBackgroundMuted,
-                            ),
-                          ),
-                        ],
+                            if (cat.monthlyLimit != null) ...[
+                              SizedBox(width: bs(5)),
+                              Text(
+                                l10n.budgetCategoryLimitLabel(
+                                  '${cat.monthlyLimit!.toStringAsFixed(0)} $currency',
+                                ),
+                                style: const TextStyle(
+                                  fontFamily: 'DMSans',
+                                  fontSize: 9,
+                                  color: TraumColors.onBackgroundMuted,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                  SizedBox(width: bs(8)),
+                  // Chevron
+                  Icon(
+                    Icons.chevron_right,
+                    size: bs(11),
+                    color: TraumColors.onBackgroundSubtle,
+                  ),
+                ],
               ),
-              SizedBox(width: bs(8)),
-              // Chevron
-              Icon(
-                Icons.chevron_right,
-                size: bs(11),
-                color: TraumColors.onBackgroundSubtle,
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -337,26 +356,33 @@ class _NewCategoryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: bs(12), vertical: bs(11)),
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(bs(13)),
-          border: Border.all(
-            color: TraumColors.amberGold.withValues(alpha: 0.2),
-          ),
-        ),
-        child: Center(
-          child: Text(
-            AppLocalizations.of(context)!.budgetNewCategoryButton,
-            style: const TextStyle(
-              fontFamily: 'DMSans',
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: TraumColors.amberGold,
+    final label = AppLocalizations.of(context)!.budgetNewCategoryButton;
+    return Semantics(
+      button: true,
+      label: label,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: bs(12), vertical: bs(11)),
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              borderRadius: BorderRadius.circular(bs(13)),
+              border: Border.all(
+                color: TraumColors.amberGold.withValues(alpha: 0.2),
+              ),
+            ),
+            child: Center(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: TraumColors.amberGold,
+                ),
+              ),
             ),
           ),
         ),
@@ -527,18 +553,25 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
             Wrap(
               spacing: 8,
               children: [
-                for (final col in kBudgetCategoryColors)
-                  GestureDetector(
-                    onTap: () => setState(() => _color = col.toARGB32()),
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: col,
-                        shape: BoxShape.circle,
-                        border: _color == col.toARGB32()
-                            ? Border.all(color: Colors.white, width: 2)
-                            : null,
+                for (final (i, col) in kBudgetCategoryColors.indexed)
+                  Semantics(
+                    button: true,
+                    selected: _color == col.toARGB32(),
+                    label: l10n.a11yColorOption(i + 1),
+                    child: ExcludeSemantics(
+                      child: GestureDetector(
+                        onTap: () => setState(() => _color = col.toARGB32()),
+                        child: Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: col,
+                            shape: BoxShape.circle,
+                            border: _color == col.toARGB32()
+                                ? Border.all(color: Colors.white, width: 2)
+                                : null,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -622,8 +655,12 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
     );
   }
 
-  Widget _chip(String label, bool selected, VoidCallback onTap) =>
-      GestureDetector(
+  Widget _chip(String label, bool selected, VoidCallback onTap) => Semantics(
+    button: true,
+    selected: selected,
+    label: label,
+    child: ExcludeSemantics(
+      child: GestureDetector(
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -646,5 +683,7 @@ class _CategorySheetState extends ConsumerState<_CategorySheet> {
             ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 }

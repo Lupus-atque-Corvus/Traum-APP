@@ -296,6 +296,48 @@ abstract class AppLocalizations {
   /// **'Eintrag vorhanden'**
   String get a11yDiaryDayHasEntry;
 
+  /// No description provided for @a11yMedicationDoseTaken.
+  ///
+  /// In de, this message translates to:
+  /// **'{name}, {time}, eingenommen'**
+  String a11yMedicationDoseTaken(String name, String time);
+
+  /// No description provided for @a11yMedicationDoseNotTaken.
+  ///
+  /// In de, this message translates to:
+  /// **'{name}, {time}, nicht eingenommen'**
+  String a11yMedicationDoseNotTaken(String name, String time);
+
+  /// No description provided for @a11yHabitDoneToday.
+  ///
+  /// In de, this message translates to:
+  /// **'{name}, heute erledigt'**
+  String a11yHabitDoneToday(String name);
+
+  /// No description provided for @a11yHabitNotDoneToday.
+  ///
+  /// In de, this message translates to:
+  /// **'{name}, heute noch nicht erledigt'**
+  String a11yHabitNotDoneToday(String name);
+
+  /// No description provided for @a11yAddCategory.
+  ///
+  /// In de, this message translates to:
+  /// **'Kategorie hinzufügen'**
+  String get a11yAddCategory;
+
+  /// No description provided for @a11yColorOption.
+  ///
+  /// In de, this message translates to:
+  /// **'Farbe {index}'**
+  String a11yColorOption(int index);
+
+  /// No description provided for @a11yVideoEntry.
+  ///
+  /// In de, this message translates to:
+  /// **'Video'**
+  String get a11yVideoEntry;
+
   /// No description provided for @confirm.
   ///
   /// In de, this message translates to:

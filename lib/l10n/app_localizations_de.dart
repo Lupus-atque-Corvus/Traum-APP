@@ -112,6 +112,37 @@ class AppLocalizationsDe extends AppLocalizations {
   String get a11yDiaryDayHasEntry => 'Eintrag vorhanden';
 
   @override
+  String a11yMedicationDoseTaken(String name, String time) {
+    return '$name, $time, eingenommen';
+  }
+
+  @override
+  String a11yMedicationDoseNotTaken(String name, String time) {
+    return '$name, $time, nicht eingenommen';
+  }
+
+  @override
+  String a11yHabitDoneToday(String name) {
+    return '$name, heute erledigt';
+  }
+
+  @override
+  String a11yHabitNotDoneToday(String name) {
+    return '$name, heute noch nicht erledigt';
+  }
+
+  @override
+  String get a11yAddCategory => 'Kategorie hinzufügen';
+
+  @override
+  String a11yColorOption(int index) {
+    return 'Farbe $index';
+  }
+
+  @override
+  String get a11yVideoEntry => 'Video';
+
+  @override
   String get confirm => 'Bestätigen';
 
   @override

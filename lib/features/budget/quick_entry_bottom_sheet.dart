@@ -388,20 +388,26 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                         ),
                       ),
                       const Spacer(),
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Container(
-                          width: bs(26),
-                          height: bs(26),
-                          decoration: BoxDecoration(
-                            color: TraumColors.surfaceVariant,
-                            borderRadius: BorderRadius.circular(bs(13)),
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.close,
-                              size: bs(12),
-                              color: TraumColors.onBackgroundMuted,
+                      Semantics(
+                        button: true,
+                        label: l10n.close,
+                        child: ExcludeSemantics(
+                          child: GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: Container(
+                              width: bs(26),
+                              height: bs(26),
+                              decoration: BoxDecoration(
+                                color: TraumColors.surfaceVariant,
+                                borderRadius: BorderRadius.circular(bs(13)),
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.close,
+                                  size: bs(12),
+                                  color: TraumColors.onBackgroundMuted,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -505,55 +511,69 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                   child: Row(
                                     children: [
                                       for (final t in tpls) ...[
-                                        GestureDetector(
-                                          onTap: () => setState(() {
-                                            _appliedTemplate = t;
-                                            _type = t.type;
-                                            _categoryId = t.categoryId;
-                                            if (t.defaultAmount != null) {
-                                              _numpadValue = t.defaultAmount!
-                                                  .toStringAsFixed(2)
-                                                  .replaceAll('.', ',');
-                                            }
-                                          }),
-                                          onLongPress: () => ref
-                                              .read(budgetDaoProvider)
-                                              .deleteTemplate(t.id),
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: bs(10),
-                                              vertical: bs(5),
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: TraumColors.amberGold
-                                                  .withValues(alpha: 0.1),
-                                              borderRadius:
-                                                  BorderRadius.circular(bs(18)),
-                                              border: Border.all(
-                                                color: TraumColors.amberGold
-                                                    .withValues(alpha: 0.35),
-                                              ),
-                                            ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Icon(
-                                                  Icons.bolt_rounded,
-                                                  size: bs(11),
-                                                  color: TraumColors.amberGold,
+                                        Semantics(
+                                          button: true,
+                                          label: t.name,
+                                          child: ExcludeSemantics(
+                                            child: GestureDetector(
+                                              onTap: () => setState(() {
+                                                _appliedTemplate = t;
+                                                _type = t.type;
+                                                _categoryId = t.categoryId;
+                                                if (t.defaultAmount != null) {
+                                                  _numpadValue = t
+                                                      .defaultAmount!
+                                                      .toStringAsFixed(2)
+                                                      .replaceAll('.', ',');
+                                                }
+                                              }),
+                                              onLongPress: () => ref
+                                                  .read(budgetDaoProvider)
+                                                  .deleteTemplate(t.id),
+                                              child: Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: bs(10),
+                                                  vertical: bs(5),
                                                 ),
-                                                SizedBox(width: bs(4)),
-                                                Text(
-                                                  t.name,
-                                                  style: const TextStyle(
-                                                    fontFamily: 'DMSans',
-                                                    color:
-                                                        TraumColors.amberGold,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 10,
+                                                decoration: BoxDecoration(
+                                                  color: TraumColors.amberGold
+                                                      .withValues(alpha: 0.1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                        bs(18),
+                                                      ),
+                                                  border: Border.all(
+                                                    color: TraumColors.amberGold
+                                                        .withValues(
+                                                          alpha: 0.35,
+                                                        ),
                                                   ),
                                                 ),
-                                              ],
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.bolt_rounded,
+                                                      size: bs(11),
+                                                      color:
+                                                          TraumColors.amberGold,
+                                                    ),
+                                                    SizedBox(width: bs(4)),
+                                                    Text(
+                                                      t.name,
+                                                      style: const TextStyle(
+                                                        fontFamily: 'DMSans',
+                                                        color: TraumColors
+                                                            .amberGold,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 10,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -607,50 +627,63 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                         SizedBox(width: bs(6)),
                                       ],
                                       // "+ Neu" tile
-                                      GestureDetector(
-                                        onTap: () {
-                                          final router = GoRouter.of(context);
-                                          Navigator.of(context).pop();
-                                          router.push('/budget/categories');
-                                        },
-                                        child: Container(
-                                          width: bs(50),
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: bs(3),
-                                            vertical: bs(7),
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: TraumColors.background,
-                                            borderRadius: BorderRadius.circular(
-                                              bs(10),
-                                            ),
-                                            border: Border.all(
-                                              color: TraumColors.amberGold
-                                                  .withValues(alpha: 0.5),
-                                            ),
-                                          ),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(
-                                                Icons.add_rounded,
-                                                color: TraumColors.amberGold,
-                                                size: bs(18),
+                                      Semantics(
+                                        button: true,
+                                        label: l10n.budgetNewCategoryTile,
+                                        child: ExcludeSemantics(
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              final router = GoRouter.of(
+                                                context,
+                                              );
+                                              Navigator.of(context).pop();
+                                              router.push('/budget/categories');
+                                            },
+                                            child: Container(
+                                              width: bs(50),
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: bs(3),
+                                                vertical: bs(7),
                                               ),
-                                              SizedBox(height: bs(2)),
-                                              Text(
-                                                l10n.budgetNewCategoryTile,
-                                                style: const TextStyle(
-                                                  color: TraumColors.amberGold,
-                                                  fontFamily: 'DMSans',
-                                                  fontSize: 8,
-                                                  fontWeight: FontWeight.w600,
+                                              decoration: BoxDecoration(
+                                                color: TraumColors.background,
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                      bs(10),
+                                                    ),
+                                                border: Border.all(
+                                                  color: TraumColors.amberGold
+                                                      .withValues(alpha: 0.5),
                                                 ),
-                                                textAlign: TextAlign.center,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
                                               ),
-                                            ],
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Icon(
+                                                    Icons.add_rounded,
+                                                    color:
+                                                        TraumColors.amberGold,
+                                                    size: bs(18),
+                                                  ),
+                                                  SizedBox(height: bs(2)),
+                                                  Text(
+                                                    l10n.budgetNewCategoryTile,
+                                                    style: const TextStyle(
+                                                      color:
+                                                          TraumColors.amberGold,
+                                                      fontFamily: 'DMSans',
+                                                      fontSize: 8,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -1044,24 +1077,33 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                   child: Builder(
                     builder: (ctx) {
                       final l10n = AppLocalizations.of(ctx)!;
-                      return GestureDetector(
-                        onTap: _saving ? null : _save,
-                        child: Container(
-                          height: bs(44),
-                          decoration: BoxDecoration(
-                            color: _saving
-                                ? TraumColors.amberGold.withValues(alpha: 0.5)
-                                : TraumColors.amberGold,
-                            borderRadius: BorderRadius.circular(bs(12)),
-                          ),
-                          child: Center(
-                            child: Text(
-                              _saving ? l10n.saving : l10n.save,
-                              style: const TextStyle(
-                                fontFamily: 'DMSans',
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                color: TraumColors.background,
+                      final label = _saving ? l10n.saving : l10n.save;
+                      return Semantics(
+                        button: true,
+                        label: label,
+                        child: ExcludeSemantics(
+                          child: GestureDetector(
+                            onTap: _saving ? null : _save,
+                            child: Container(
+                              height: bs(44),
+                              decoration: BoxDecoration(
+                                color: _saving
+                                    ? TraumColors.amberGold.withValues(
+                                        alpha: 0.5,
+                                      )
+                                    : TraumColors.amberGold,
+                                borderRadius: BorderRadius.circular(bs(12)),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  label,
+                                  style: const TextStyle(
+                                    fontFamily: 'DMSans',
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: TraumColors.background,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -1148,24 +1190,31 @@ class _Segment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: bs(7)),
-          decoration: BoxDecoration(
-            color: isSelected ? activeColor : Colors.transparent,
-            borderRadius: BorderRadius.circular(bs(7)),
-          ),
-          child: Center(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontFamily: 'DMSans',
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: isSelected
-                    ? activeTextColor
-                    : TraumColors.onBackgroundMuted,
+      child: Semantics(
+        button: true,
+        selected: isSelected,
+        label: label,
+        child: ExcludeSemantics(
+          child: GestureDetector(
+            onTap: onTap,
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: bs(7)),
+              decoration: BoxDecoration(
+                color: isSelected ? activeColor : Colors.transparent,
+                borderRadius: BorderRadius.circular(bs(7)),
+              ),
+              child: Center(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontFamily: 'DMSans',
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: isSelected
+                        ? activeTextColor
+                        : TraumColors.onBackgroundMuted,
+                  ),
+                ),
               ),
             ),
           ),
@@ -1189,48 +1238,55 @@ class _CategoryColumnChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: bs(50),
-        padding: EdgeInsets.symmetric(horizontal: bs(3), vertical: bs(7)),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? TraumColors.amberGold.withValues(alpha: 0.16)
-              : TraumColors.background,
-          borderRadius: BorderRadius.circular(bs(10)),
-          border: Border.all(
-            color: isSelected
-                ? TraumColors.amberGold
-                : TraumColors.onBackground.withValues(alpha: 0.06),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            budgetCategoryGlyph(
-              cat.emoji,
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: cat.name as String,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: bs(50),
+            padding: EdgeInsets.symmetric(horizontal: bs(3), vertical: bs(7)),
+            decoration: BoxDecoration(
               color: isSelected
-                  ? TraumColors.amberGold
-                  : TraumColors.onBackgroundSubtle,
-              size: bs(18),
-            ),
-            SizedBox(height: bs(2)),
-            Text(
-              cat.name,
-              style: TextStyle(
+                  ? TraumColors.amberGold.withValues(alpha: 0.16)
+                  : TraumColors.background,
+              borderRadius: BorderRadius.circular(bs(10)),
+              border: Border.all(
                 color: isSelected
-                    ? TraumColors.onBackground
-                    : TraumColors.onBackgroundMuted,
-                fontFamily: 'DMSans',
-                fontSize: 8,
-                fontWeight: FontWeight.w600,
+                    ? TraumColors.amberGold
+                    : TraumColors.onBackground.withValues(alpha: 0.06),
               ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
-          ],
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                budgetCategoryGlyph(
+                  cat.emoji,
+                  color: isSelected
+                      ? TraumColors.amberGold
+                      : TraumColors.onBackgroundSubtle,
+                  size: bs(18),
+                ),
+                SizedBox(height: bs(2)),
+                Text(
+                  cat.name,
+                  style: TextStyle(
+                    color: isSelected
+                        ? TraumColors.onBackground
+                        : TraumColors.onBackgroundMuted,
+                    fontFamily: 'DMSans',
+                    fontSize: 8,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -1253,33 +1309,39 @@ class _ToggleRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => onChanged(!value),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: bs(10), vertical: bs(9)),
-        decoration: BoxDecoration(
-          color: TraumColors.background,
-          borderRadius: BorderRadius.circular(bs(10)),
-          border: Border.all(
-            color: TraumColors.onBackground.withValues(alpha: 0.06),
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: bs(14), color: TraumColors.onBackgroundMuted),
-            SizedBox(width: bs(8)),
-            Expanded(
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  fontSize: 11,
-                  color: TraumColors.onBackground,
-                ),
+    return Semantics(
+      toggled: value,
+      label: label,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: () => onChanged(!value),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: bs(10), vertical: bs(9)),
+            decoration: BoxDecoration(
+              color: TraumColors.background,
+              borderRadius: BorderRadius.circular(bs(10)),
+              border: Border.all(
+                color: TraumColors.onBackground.withValues(alpha: 0.06),
               ),
             ),
-            _MiniSwitch(value: value, onChanged: onChanged),
-          ],
+            child: Row(
+              children: [
+                Icon(icon, size: bs(14), color: TraumColors.onBackgroundMuted),
+                SizedBox(width: bs(8)),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      fontSize: 11,
+                      color: TraumColors.onBackground,
+                    ),
+                  ),
+                ),
+                _MiniSwitch(value: value, onChanged: onChanged),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -1336,29 +1398,36 @@ class _DateChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(bs(6)),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? TraumColors.amberGold
-              : TraumColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(bs(9)),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: label,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            padding: EdgeInsets.all(bs(6)),
+            decoration: BoxDecoration(
               color: isSelected
-                  ? TraumColors.background
-                  : TraumColors.onBackgroundMuted,
-              fontFamily: 'DMSans',
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
+                  ? TraumColors.amberGold
+                  : TraumColors.surfaceVariant,
+              borderRadius: BorderRadius.circular(bs(9)),
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+            child: Center(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: isSelected
+                      ? TraumColors.background
+                      : TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ),
         ),
       ),
@@ -1495,24 +1564,31 @@ class _AccountChip extends StatelessWidget {
     required this.onTap,
   });
   @override
-  Widget build(BuildContext context) => GestureDetector(
-    onTap: onTap,
-    child: Container(
-      padding: EdgeInsets.symmetric(horizontal: bs(14), vertical: bs(8)),
-      decoration: BoxDecoration(
-        color: selected ? TraumColors.amberGoldDim : TraumColors.surface,
-        borderRadius: BorderRadius.circular(bs(20)),
-        border: selected ? Border.all(color: TraumColors.amberGold) : null,
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: selected
-              ? TraumColors.amberGold
-              : TraumColors.onBackgroundMuted,
-          fontFamily: 'DMSans',
-          fontSize: 13,
-          fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    selected: selected,
+    label: label,
+    child: ExcludeSemantics(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: bs(14), vertical: bs(8)),
+          decoration: BoxDecoration(
+            color: selected ? TraumColors.amberGoldDim : TraumColors.surface,
+            borderRadius: BorderRadius.circular(bs(20)),
+            border: selected ? Border.all(color: TraumColors.amberGold) : null,
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: selected
+                  ? TraumColors.amberGold
+                  : TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontSize: 13,
+              fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+            ),
+          ),
         ),
       ),
     ),

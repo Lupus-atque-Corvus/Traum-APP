@@ -530,38 +530,44 @@ class _MoreMenuSheet extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onCustomize,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: TraumColors.surface,
-                      borderRadius: BorderRadius.circular(TraumRadius.chip),
-                      border: Border.all(color: TraumColors.surfaceVariant),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.tune_rounded,
-                          color: TraumColors.onBackgroundMuted,
-                          size: 15,
+                Semantics(
+                  button: true,
+                  label: l10n.customize,
+                  child: ExcludeSemantics(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: onCustomize,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
                         ),
-                        const SizedBox(width: 6),
-                        Text(
-                          l10n.customize,
-                          style: const TextStyle(
-                            color: TraumColors.onBackgroundMuted,
-                            fontFamily: 'DMSans',
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        decoration: BoxDecoration(
+                          color: TraumColors.surface,
+                          borderRadius: BorderRadius.circular(TraumRadius.chip),
+                          border: Border.all(color: TraumColors.surfaceVariant),
                         ),
-                      ],
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.tune_rounded,
+                              color: TraumColors.onBackgroundMuted,
+                              size: 15,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              l10n.customize,
+                              style: const TextStyle(
+                                color: TraumColors.onBackgroundMuted,
+                                fontFamily: 'DMSans',
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -602,33 +608,43 @@ class _MoreMenuSheet extends StatelessWidget {
                       final module = moreModules[i];
                       final color = TraumColors.moduleColor(module);
                       final label = Routes.labelFor(module, l10n);
-                      return GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => onNavigate(module),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: TraumColors.surface,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: color.withValues(alpha: 0.3),
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(moduleIcon(module), color: color, size: 28),
-                              const SizedBox(height: 8),
-                              Text(
-                                label,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: TraumColors.onBackground,
-                                  fontFamily: 'DMSans',
+                      return Semantics(
+                        button: true,
+                        label: label,
+                        child: ExcludeSemantics(
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => onNavigate(module),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: TraumColors.surface,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: color.withValues(alpha: 0.3),
                                 ),
-                                textAlign: TextAlign.center,
                               ),
-                            ],
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    moduleIcon(module),
+                                    color: color,
+                                    size: 28,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    label,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: TraumColors.onBackground,
+                                      fontFamily: 'DMSans',
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       );
@@ -863,41 +879,49 @@ class _AddAppTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: TraumColors.surface,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: TraumColors.onBackgroundSubtle.withValues(alpha: 0.4),
+    return Semantics(
+      button: true,
+      label: l10n.addApp,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: TraumColors.surface,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: TraumColors.onBackgroundSubtle.withValues(
+                      alpha: 0.4,
+                    ),
+                  ),
+                ),
+                child: const Icon(
+                  Icons.add_rounded,
+                  color: TraumColors.onBackgroundMuted,
+                  size: 24,
+                ),
               ),
-            ),
-            child: const Icon(
-              Icons.add_rounded,
-              color: TraumColors.onBackgroundMuted,
-              size: 24,
-            ),
+              const SizedBox(height: 6),
+              Text(
+                l10n.addApp,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: TraumColors.onBackgroundSubtle,
+                  fontFamily: 'DMSans',
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 6),
-          Text(
-            l10n.addApp,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 11,
-              color: TraumColors.onBackgroundSubtle,
-              fontFamily: 'DMSans',
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

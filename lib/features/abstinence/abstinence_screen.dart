@@ -1002,23 +1002,35 @@ class _HabitTile extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () => onToggle(!isCheckedToday),
-                    child: Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: isCheckedToday
-                            ? TraumColors.mintGreen
-                            : TraumColors.surfaceVariant,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        isCheckedToday
-                            ? Icons.check_rounded
-                            : Icons.add_rounded,
-                        color: Colors.white,
-                        size: 18,
+                  Semantics(
+                    button: true,
+                    label: isCheckedToday
+                        ? AppLocalizations.of(
+                            context,
+                          )!.a11yHabitDoneToday(habit.name)
+                        : AppLocalizations.of(
+                            context,
+                          )!.a11yHabitNotDoneToday(habit.name),
+                    child: ExcludeSemantics(
+                      child: GestureDetector(
+                        onTap: () => onToggle(!isCheckedToday),
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: isCheckedToday
+                                ? TraumColors.mintGreen
+                                : TraumColors.surfaceVariant,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            isCheckedToday
+                                ? Icons.check_rounded
+                                : Icons.add_rounded,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -1137,37 +1149,43 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
               ),
             ),
             const SizedBox(height: 6),
-            GestureDetector(
-              onTap: () async {
-                final picked = await showIconPickerSheet(
-                  context,
-                  selected: _iconKey,
-                  accentColor: TraumColors.lavender,
-                );
-                if (picked != null) setState(() => _iconKey = picked);
-              },
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: TraumColors.lavenderDim,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: TraumColors.lavender),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ProgressIcon(
-                      _iconKey,
-                      size: 22,
-                      color: TraumColors.lavender,
+            Semantics(
+              button: true,
+              label: l10n.iconLabel,
+              child: ExcludeSemantics(
+                child: GestureDetector(
+                  onTap: () async {
+                    final picked = await showIconPickerSheet(
+                      context,
+                      selected: _iconKey,
+                      accentColor: TraumColors.lavender,
+                    );
+                    if (picked != null) setState(() => _iconKey = picked);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: TraumColors.lavenderDim,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: TraumColors.lavender),
                     ),
-                    const SizedBox(width: 8),
-                    const Icon(
-                      Icons.edit_rounded,
-                      size: 14,
-                      color: TraumColors.onBackgroundMuted,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ProgressIcon(
+                          _iconKey,
+                          size: 22,
+                          color: TraumColors.lavender,
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(
+                          Icons.edit_rounded,
+                          size: 14,
+                          color: TraumColors.onBackgroundMuted,
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -1240,27 +1258,34 @@ class _FreqChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-        decoration: BoxDecoration(
-          color: selected
-              ? TraumColors.lavenderDim
-              : TraumColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(TraumRadius.chip),
-          border: Border.all(
-            color: selected ? TraumColors.lavender : Colors.transparent,
-          ),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: selected
-                ? TraumColors.lavender
-                : TraumColors.onBackgroundMuted,
-            fontFamily: 'DMSans',
-            fontSize: 13,
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: label,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            decoration: BoxDecoration(
+              color: selected
+                  ? TraumColors.lavenderDim
+                  : TraumColors.surfaceVariant,
+              borderRadius: BorderRadius.circular(TraumRadius.chip),
+              border: Border.all(
+                color: selected ? TraumColors.lavender : Colors.transparent,
+              ),
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                color: selected
+                    ? TraumColors.lavender
+                    : TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 13,
+              ),
+            ),
           ),
         ),
       ),
@@ -1663,37 +1688,43 @@ class _AddTrackerSheetState extends State<_AddTrackerSheet> {
               ),
             ),
             const SizedBox(height: 6),
-            GestureDetector(
-              onTap: () async {
-                final picked = await showIconPickerSheet(
-                  context,
-                  selected: _iconKey,
-                  accentColor: TraumColors.roseRed,
-                );
-                if (picked != null) setState(() => _iconKey = picked);
-              },
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: TraumColors.roseRedDim,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: TraumColors.roseRed),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ProgressIcon(
-                      _iconKey,
-                      size: 22,
-                      color: TraumColors.roseRed,
+            Semantics(
+              button: true,
+              label: AppLocalizations.of(context)!.iconLabel,
+              child: ExcludeSemantics(
+                child: GestureDetector(
+                  onTap: () async {
+                    final picked = await showIconPickerSheet(
+                      context,
+                      selected: _iconKey,
+                      accentColor: TraumColors.roseRed,
+                    );
+                    if (picked != null) setState(() => _iconKey = picked);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: TraumColors.roseRedDim,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: TraumColors.roseRed),
                     ),
-                    const SizedBox(width: 8),
-                    const Icon(
-                      Icons.edit_rounded,
-                      size: 14,
-                      color: TraumColors.onBackgroundMuted,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ProgressIcon(
+                          _iconKey,
+                          size: 22,
+                          color: TraumColors.roseRed,
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(
+                          Icons.edit_rounded,
+                          size: 14,
+                          color: TraumColors.onBackgroundMuted,
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),

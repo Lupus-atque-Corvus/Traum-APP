@@ -47,67 +47,81 @@ class DiaryScreen extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(20, 8, 16, 0),
               child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: () => _showDiarySwitcher(context, ref),
-                    child: _DiarySwitchAvatar(diaryAsync: activeDiaryAsync),
+                  // Purely decorative alongside the adjacent name button below,
+                  // which performs the identical action — excluded from
+                  // semantics rather than duplicating the same announcement.
+                  ExcludeSemantics(
+                    child: GestureDetector(
+                      onTap: () => _showDiarySwitcher(context, ref),
+                      child: _DiarySwitchAvatar(diaryAsync: activeDiaryAsync),
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () => _showDiarySwitcher(context, ref),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            activeDiaryAsync.maybeWhen(
-                              data: (d) => d?.name ?? l10n.diaryTitle,
-                              orElse: () => l10n.diaryTitle,
-                            ),
-                            style: const TextStyle(
-                              fontFamily: 'DMSans',
-                              fontWeight: FontWeight.w700,
-                              color: TraumColors.onBackground,
-                              fontSize: 24,
-                            ),
-                          ),
-                          Row(
+                    child: Semantics(
+                      button: true,
+                      label: activeDiaryAsync.maybeWhen(
+                        data: (d) => d?.name ?? l10n.diaryTitle,
+                        orElse: () => l10n.diaryTitle,
+                      ),
+                      child: ExcludeSemantics(
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => _showDiarySwitcher(context, ref),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              totalAsync.when(
-                                data: (t) => Text(
-                                  l10n.diaryTotalEntries(t),
-                                  style: const TextStyle(
-                                    fontFamily: 'DMSans',
-                                    color: TraumColors.onBackgroundMuted,
-                                    fontSize: 13,
-                                  ),
+                              Text(
+                                activeDiaryAsync.maybeWhen(
+                                  data: (d) => d?.name ?? l10n.diaryTitle,
+                                  orElse: () => l10n.diaryTitle,
                                 ),
-                                loading: () => const SizedBox.shrink(),
-                                error: (e, _) => InlineError(e),
-                              ),
-                              const Text(
-                                ' · ',
-                                style: TextStyle(
-                                  color: TraumColors.onBackgroundSubtle,
-                                  fontSize: 13,
+                                style: const TextStyle(
+                                  fontFamily: 'DMSans',
+                                  fontWeight: FontWeight.w700,
+                                  color: TraumColors.onBackground,
+                                  fontSize: 24,
                                 ),
                               ),
-                              streakAsync.when(
-                                data: (s) => Text(
-                                  l10n.diaryStreakDays(s),
-                                  style: const TextStyle(
-                                    fontFamily: 'DMSans',
-                                    color: TraumColors.lavender,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w500,
+                              Row(
+                                children: [
+                                  totalAsync.when(
+                                    data: (t) => Text(
+                                      l10n.diaryTotalEntries(t),
+                                      style: const TextStyle(
+                                        fontFamily: 'DMSans',
+                                        color: TraumColors.onBackgroundMuted,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                    loading: () => const SizedBox.shrink(),
+                                    error: (e, _) => InlineError(e),
                                   ),
-                                ),
-                                loading: () => const SizedBox.shrink(),
-                                error: (e, _) => InlineError(e),
+                                  const Text(
+                                    ' · ',
+                                    style: TextStyle(
+                                      color: TraumColors.onBackgroundSubtle,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  streakAsync.when(
+                                    data: (s) => Text(
+                                      l10n.diaryStreakDays(s),
+                                      style: const TextStyle(
+                                        fontFamily: 'DMSans',
+                                        color: TraumColors.lavender,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    loading: () => const SizedBox.shrink(),
+                                    error: (e, _) => InlineError(e),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -639,74 +653,82 @@ class _TodayFilledCard extends StatelessWidget {
         : entry.mediaPath;
     final hasThumb = thumbPath != null && File(thumbPath).existsSync();
 
-    return GestureDetector(
-      onTap: () => context.go('/diary/entry/${entry.date}'),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (hasThumb)
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(20),
-                ),
-                child: Image.file(
-                  File(thumbPath),
-                  width: double.infinity,
-                  height: 220,
-                  cacheWidth: decodePxFor(
-                    context,
-                    MediaQuery.sizeOf(context).width - 32,
-                  ),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            Padding(
-              padding: const EdgeInsets.all(14),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (entry.note.isNotEmpty)
-                          Text(
-                            entry.note,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontFamily: 'DMSans',
-                              color: TraumColors.onBackground,
-                              fontSize: 14,
-                            ),
-                          ),
-                        const SizedBox(height: 4),
-                        Text(
-                          _formatDate(entry.date, l10n),
-                          style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            color: TraumColors.onBackgroundMuted,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
+    return Semantics(
+      button: true,
+      label: entry.note.isNotEmpty
+          ? '${entry.note}, ${_formatDate(entry.date, l10n)}'
+          : _formatDate(entry.date, l10n),
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: () => context.go('/diary/entry/${entry.date}'),
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (hasThumb)
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
+                    child: Image.file(
+                      File(thumbPath),
+                      width: double.infinity,
+                      height: 220,
+                      cacheWidth: decodePxFor(
+                        context,
+                        MediaQuery.sizeOf(context).width - 32,
+                      ),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  const Icon(
-                    Icons.edit_outlined,
-                    color: TraumColors.onBackgroundMuted,
-                    size: 18,
+                Padding(
+                  padding: const EdgeInsets.all(14),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (entry.note.isNotEmpty)
+                              Text(
+                                entry.note,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontFamily: 'DMSans',
+                                  color: TraumColors.onBackground,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            const SizedBox(height: 4),
+                            Text(
+                              _formatDate(entry.date, l10n),
+                              style: const TextStyle(
+                                fontFamily: 'DMSans',
+                                color: TraumColors.onBackgroundMuted,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Icon(
+                        Icons.edit_outlined,
+                        color: TraumColors.onBackgroundMuted,
+                        size: 18,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

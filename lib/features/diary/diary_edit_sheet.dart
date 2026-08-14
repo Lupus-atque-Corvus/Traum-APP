@@ -247,25 +247,32 @@ class _DiaryEditSheetState extends ConsumerState<DiaryEditSheet> {
               runSpacing: 10,
               children: kSelectableDiaryIcons.map((ic) {
                 final sel = _selectedIcon == ic;
-                return GestureDetector(
-                  onTap: () => setState(() => _selectedIcon = ic),
-                  child: Container(
-                    width: 46,
-                    height: 46,
-                    decoration: BoxDecoration(
-                      color: sel
-                          ? accent.withValues(alpha: 0.18)
-                          : TraumColors.surfaceVariant,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: sel ? accent : Colors.transparent,
-                        width: 1.5,
+                return Semantics(
+                  button: true,
+                  selected: sel,
+                  label: ic,
+                  child: ExcludeSemantics(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _selectedIcon = ic),
+                      child: Container(
+                        width: 46,
+                        height: 46,
+                        decoration: BoxDecoration(
+                          color: sel
+                              ? accent.withValues(alpha: 0.18)
+                              : TraumColors.surfaceVariant,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: sel ? accent : Colors.transparent,
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Icon(
+                          diaryIcon(ic),
+                          color: sel ? accent : TraumColors.onBackgroundMuted,
+                          size: 21,
+                        ),
                       ),
-                    ),
-                    child: Icon(
-                      diaryIcon(ic),
-                      color: sel ? accent : TraumColors.onBackgroundMuted,
-                      size: 21,
                     ),
                   ),
                 );
@@ -277,25 +284,37 @@ class _DiaryEditSheetState extends ConsumerState<DiaryEditSheet> {
             Wrap(
               spacing: 12,
               runSpacing: 12,
-              children: kSelectableDiaryColors.map((hex) {
+              children: kSelectableDiaryColors.indexed.map((entry) {
+                final (i, hex) = entry;
                 final c = Color(int.parse('0xFF$hex'));
                 final sel = _selectedColor == hex;
-                return GestureDetector(
-                  onTap: () => setState(() => _selectedColor = hex),
-                  child: Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: c,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: sel ? Colors.white : Colors.transparent,
-                        width: 2.5,
+                return Semantics(
+                  button: true,
+                  selected: sel,
+                  label: l10n.a11yColorOption(i + 1),
+                  child: ExcludeSemantics(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _selectedColor = hex),
+                      child: Container(
+                        width: 38,
+                        height: 38,
+                        decoration: BoxDecoration(
+                          color: c,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: sel ? Colors.white : Colors.transparent,
+                            width: 2.5,
+                          ),
+                        ),
+                        child: sel
+                            ? const Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: 18,
+                              )
+                            : null,
                       ),
                     ),
-                    child: sel
-                        ? const Icon(Icons.check, color: Colors.white, size: 18)
-                        : null,
                   ),
                 );
               }).toList(),

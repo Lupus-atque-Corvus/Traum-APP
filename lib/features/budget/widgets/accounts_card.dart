@@ -43,14 +43,20 @@ class AccountsCard extends ConsumerWidget {
                 ),
               ),
               const Spacer(),
-              GestureDetector(
-                onTap: () => context.push(Routes.transactionList),
-                child: Text(
-                  l10n.budgetMoreLink,
-                  style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    color: TraumColors.amberGold,
-                    fontSize: 11,
+              Semantics(
+                button: true,
+                label: l10n.budgetMoreLink,
+                child: ExcludeSemantics(
+                  child: GestureDetector(
+                    onTap: () => context.push(Routes.transactionList),
+                    child: Text(
+                      l10n.budgetMoreLink,
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        color: TraumColors.amberGold,
+                        fontSize: 11,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -63,14 +69,22 @@ class AccountsCard extends ConsumerWidget {
                 : Column(
                     children: [
                       for (int i = 0; i < list.length; i++) ...[
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () =>
-                              _showAccountSheet(context, account: list[i]),
-                          child: _AccountRow(
-                            account: list[i],
-                            balance: derived[list[i].id] ?? list[i].balance,
-                            currency: currency,
+                        Semantics(
+                          button: true,
+                          label:
+                              '${list[i].name}, '
+                              '${fmtAmount(derived[list[i].id] ?? list[i].balance)} $currency',
+                          child: ExcludeSemantics(
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () =>
+                                  _showAccountSheet(context, account: list[i]),
+                              child: _AccountRow(
+                                account: list[i],
+                                balance: derived[list[i].id] ?? list[i].balance,
+                                currency: currency,
+                              ),
+                            ),
                           ),
                         ),
                         if (i < list.length - 1)
@@ -90,23 +104,29 @@ class AccountsCard extends ConsumerWidget {
             error: (e, _) => InlineError(e),
           ),
           SizedBox(height: bs(8)),
-          GestureDetector(
-            onTap: () => _showAccountSheet(context),
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: bs(8)),
-              decoration: BoxDecoration(
-                color: TraumColors.surfaceVariant,
-                borderRadius: BorderRadius.circular(bs(10)),
-              ),
-              child: const Text(
-                '+ Konto hinzufügen',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'DMSans',
-                  color: TraumColors.onBackgroundMuted,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
+          Semantics(
+            button: true,
+            label: l10n.addAccount,
+            child: ExcludeSemantics(
+              child: GestureDetector(
+                onTap: () => _showAccountSheet(context),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: bs(8)),
+                  decoration: BoxDecoration(
+                    color: TraumColors.surfaceVariant,
+                    borderRadius: BorderRadius.circular(bs(10)),
+                  ),
+                  child: Text(
+                    '+ ${l10n.addAccount}',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      color: TraumColors.onBackgroundMuted,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -580,28 +600,35 @@ class _TypeChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isSelected = value == selected;
-    return GestureDetector(
-      onTap: () => onTap(value),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: bs(12), vertical: bs(8)),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? TraumColors.amberGold.withValues(alpha: 0.2)
-              : TraumColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(bs(20)),
-          border: isSelected
-              ? Border.all(color: TraumColors.amberGold, width: bs(1))
-              : null,
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontFamily: 'DMSans',
-            color: isSelected
-                ? TraumColors.amberGold
-                : TraumColors.onBackgroundMuted,
-            fontSize: 13,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: label,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: () => onTap(value),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: bs(12), vertical: bs(8)),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? TraumColors.amberGold.withValues(alpha: 0.2)
+                  : TraumColors.surfaceVariant,
+              borderRadius: BorderRadius.circular(bs(20)),
+              border: isSelected
+                  ? Border.all(color: TraumColors.amberGold, width: bs(1))
+                  : null,
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                color: isSelected
+                    ? TraumColors.amberGold
+                    : TraumColors.onBackgroundMuted,
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
           ),
         ),
       ),

@@ -310,15 +310,21 @@ class _ScoreTabState extends ConsumerState<_ScoreTab> {
                                   fontSize: 14,
                                 ),
                               ),
-                              GestureDetector(
-                                onTap: () =>
-                                    context.push('/health/score-detail'),
-                                child: Text(
-                                  '${l10n.moreLabel} ›',
-                                  style: const TextStyle(
-                                    color: TraumColors.coralOrange,
-                                    fontFamily: 'DMSans',
-                                    fontSize: 13,
+                              Semantics(
+                                button: true,
+                                label: l10n.moreLabel,
+                                child: ExcludeSemantics(
+                                  child: GestureDetector(
+                                    onTap: () =>
+                                        context.push('/health/score-detail'),
+                                    child: Text(
+                                      '${l10n.moreLabel} ›',
+                                      style: const TextStyle(
+                                        color: TraumColors.coralOrange,
+                                        fontFamily: 'DMSans',
+                                        fontSize: 13,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -566,46 +572,53 @@ class _DaySelector extends StatelessWidget {
           final isSelected = selectedOffset == offset;
           final isToday = offset == 0;
 
-          return GestureDetector(
-            onTap: () => onSelect(offset),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 44,
-              margin: const EdgeInsets.only(right: 8),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? TraumColors.coralOrange
-                    : TraumColors.surfaceVariant,
-                shape: BoxShape.circle,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    weekdays[day.weekday - 1],
-                    style: TextStyle(
-                      color: isSelected
-                          ? Colors.white
-                          : TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                    ),
+          return Semantics(
+            button: true,
+            selected: isSelected,
+            label: '${weekdays[day.weekday - 1]} ${day.day}',
+            child: ExcludeSemantics(
+              child: GestureDetector(
+                onTap: () => onSelect(offset),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: 44,
+                  margin: const EdgeInsets.only(right: 8),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? TraumColors.coralOrange
+                        : TraumColors.surfaceVariant,
+                    shape: BoxShape.circle,
                   ),
-                  Text(
-                    '${day.day}',
-                    style: TextStyle(
-                      color: isSelected
-                          ? Colors.white
-                          : isToday
-                          ? TraumColors.coralOrange
-                          : TraumColors.onBackground,
-                      fontFamily: 'DMSans',
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        weekdays[day.weekday - 1],
+                        style: TextStyle(
+                          color: isSelected
+                              ? Colors.white
+                              : TraumColors.onBackgroundMuted,
+                          fontFamily: 'DMSans',
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        '${day.day}',
+                        style: TextStyle(
+                          color: isSelected
+                              ? Colors.white
+                              : isToday
+                              ? TraumColors.coralOrange
+                              : TraumColors.onBackground,
+                          fontFamily: 'DMSans',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           );
@@ -1245,6 +1258,8 @@ class _TimePickerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final timeStr =
+        '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
     return ListTile(
       contentPadding: EdgeInsets.zero,
       title: Text(
@@ -1255,37 +1270,43 @@ class _TimePickerTile extends StatelessWidget {
           fontSize: 13,
         ),
       ),
-      trailing: GestureDetector(
-        onTap: () async {
-          final picked = await showTimePicker(
-            context: context,
-            initialTime: time,
-            builder: (ctx, child) => Theme(
-              data: ThemeData.dark().copyWith(
-                colorScheme: const ColorScheme.dark(
-                  primary: TraumColors.cyanBlue,
+      trailing: Semantics(
+        button: true,
+        label: '$label, $timeStr',
+        child: ExcludeSemantics(
+          child: GestureDetector(
+            onTap: () async {
+              final picked = await showTimePicker(
+                context: context,
+                initialTime: time,
+                builder: (ctx, child) => Theme(
+                  data: ThemeData.dark().copyWith(
+                    colorScheme: const ColorScheme.dark(
+                      primary: TraumColors.cyanBlue,
+                    ),
+                  ),
+                  child: child!,
+                ),
+              );
+              if (picked != null) onChanged(picked);
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: TraumColors.surface,
+                borderRadius: BorderRadius.circular(TraumRadius.chip),
+                border: Border.all(
+                  color: TraumColors.cyanBlue.withValues(alpha: 0.3),
                 ),
               ),
-              child: child!,
-            ),
-          );
-          if (picked != null) onChanged(picked);
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: TraumColors.surface,
-            borderRadius: BorderRadius.circular(TraumRadius.chip),
-            border: Border.all(
-              color: TraumColors.cyanBlue.withValues(alpha: 0.3),
-            ),
-          ),
-          child: Text(
-            '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
-            style: const TextStyle(
-              color: TraumColors.cyanBlue,
-              fontFamily: 'DMSans',
-              fontWeight: FontWeight.w600,
+              child: Text(
+                timeStr,
+                style: const TextStyle(
+                  color: TraumColors.cyanBlue,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ),
         ),

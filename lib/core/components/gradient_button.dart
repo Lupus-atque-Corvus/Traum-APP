@@ -22,7 +22,7 @@ class GradientButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final button = GestureDetector(
       onTap: onPressed,
       child: Container(
         width: width ?? double.infinity,
@@ -50,6 +50,12 @@ class GradientButton extends StatelessWidget {
           ],
         ),
       ),
+    );
+    return Semantics(
+      button: true,
+      enabled: onPressed != null,
+      label: label,
+      child: ExcludeSemantics(child: button),
     );
   }
 }

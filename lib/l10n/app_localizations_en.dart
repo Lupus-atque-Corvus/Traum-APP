@@ -112,6 +112,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get a11yDiaryDayHasEntry => 'Has entry';
 
   @override
+  String a11yMedicationDoseTaken(String name, String time) {
+    return '$name, $time, taken';
+  }
+
+  @override
+  String a11yMedicationDoseNotTaken(String name, String time) {
+    return '$name, $time, not taken';
+  }
+
+  @override
+  String a11yHabitDoneToday(String name) {
+    return '$name, done today';
+  }
+
+  @override
+  String a11yHabitNotDoneToday(String name) {
+    return '$name, not done today yet';
+  }
+
+  @override
+  String get a11yAddCategory => 'Add category';
+
+  @override
+  String a11yColorOption(int index) {
+    return 'Color $index';
+  }
+
+  @override
+  String get a11yVideoEntry => 'Video';
+
+  @override
   String get confirm => 'Confirm';
 
   @override
