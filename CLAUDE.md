@@ -1,12 +1,12 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.10+120** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.2.0+120** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-15 — v1.1.10, Barrierefreiheit: die restlichen 9 Fundstellen)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-15 — v1.2.0, Barrierefreiheit: die restlichen 9 Fundstellen)
 
 **Abschluss der 48-Fundstellen-Liste aus dem 10.08.-Audit: v1.1.7 hatte 39 gefixt, hier die
 restlichen 9 gelisteten Dateien (tatsächlich mehr Einzelfundstellen, da mehrere Dateien
