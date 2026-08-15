@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../core/theme/colors.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Hüllt eine Home-Kachel im Edit-Modus ein: Wackel-Animation,
 /// Entfernen-/Resize-Buttons und Drag-&-Drop zum Umsortieren.
@@ -73,6 +74,7 @@ class _HomeEditTileState extends State<HomeEditTile> {
           child: _CircleButton(
             color: TraumColors.roseRed,
             icon: Icons.close_rounded,
+            label: AppLocalizations.of(context)!.homeA11yRemoveWidget,
             onTap: widget.onRemove,
           ),
         ),
@@ -83,6 +85,7 @@ class _HomeEditTileState extends State<HomeEditTile> {
           child: _CircleButton(
             color: TraumColors.cyanBlue,
             icon: Icons.aspect_ratio,
+            label: AppLocalizations.of(context)!.homeA11yResizeWidget,
             onTap: widget.onResize,
           ),
         ),
@@ -137,32 +140,40 @@ class _CircleButton extends StatelessWidget {
   const _CircleButton({
     required this.color,
     required this.icon,
+    required this.label,
     required this.onTap,
   });
 
   final Color color;
   final IconData icon;
+  final String label;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 26,
-        height: 26,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x66000000),
-              blurRadius: 4,
-              offset: Offset(0, 2),
+    return Semantics(
+      button: true,
+      label: label,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 26,
+            height: 26,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x66000000),
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
             ),
-          ],
+            child: Icon(icon, size: 16, color: Colors.white),
+          ),
         ),
-        child: Icon(icon, size: 16, color: Colors.white),
       ),
     );
   }

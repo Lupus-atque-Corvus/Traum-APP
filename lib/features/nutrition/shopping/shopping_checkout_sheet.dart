@@ -227,22 +227,36 @@ class _ShoppingCheckoutSheetState extends ConsumerState<ShoppingCheckoutSheet> {
               onSelected: (id) => setState(() => _categoryId = id),
             ),
             const SizedBox(height: 16),
-            GestureDetector(
-              onTap: (_saving || total <= 0) ? null : () => _book(items),
-              child: Container(
-                height: 54,
-                decoration: BoxDecoration(
-                  gradient: TraumColors.gradientNutrition,
-                  borderRadius: BorderRadius.circular(TraumRadius.card),
-                ),
-                child: Center(
-                  child: Text(
-                    _saving ? 'Buchen…' : '→ Als Ausgabe buchen',
-                    style: const TextStyle(
-                      color: Color(0xFF0D0D1A),
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w800,
-                      fontSize: 15,
+            Semantics(
+              button: true,
+              label: _saving
+                  ? AppLocalizations.of(context)!.shoppingBookingInProgress
+                  : AppLocalizations.of(context)!.shoppingBookAsExpense,
+              child: ExcludeSemantics(
+                child: GestureDetector(
+                  onTap: (_saving || total <= 0) ? null : () => _book(items),
+                  child: Container(
+                    height: 54,
+                    decoration: BoxDecoration(
+                      gradient: TraumColors.gradientNutrition,
+                      borderRadius: BorderRadius.circular(TraumRadius.card),
+                    ),
+                    child: Center(
+                      child: Text(
+                        _saving
+                            ? AppLocalizations.of(
+                                context,
+                              )!.shoppingBookingInProgress
+                            : AppLocalizations.of(
+                                context,
+                              )!.shoppingBookAsExpense,
+                        style: const TextStyle(
+                          color: Color(0xFF0D0D1A),
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w800,
+                          fontSize: 15,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -263,33 +277,39 @@ class _Tile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(TraumRadius.card),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: TraumColors.mintGreen, size: 20),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                label,
-                style: const TextStyle(
-                  color: TraumColors.onBackground,
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w600,
+    return Semantics(
+      button: onTap != null,
+      label: label,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              borderRadius: BorderRadius.circular(TraumRadius.card),
+            ),
+            child: Row(
+              children: [
+                Icon(icon, color: TraumColors.mintGreen, size: 20),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                      color: TraumColors.onBackground,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
-              ),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: TraumColors.onBackgroundMuted,
+                ),
+              ],
             ),
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: TraumColors.onBackgroundMuted,
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -325,26 +345,38 @@ class _CategoryPicker extends StatelessWidget {
         runSpacing: 8,
         children: categories.map((c) {
           final sel = c.id == selectedId;
-          return GestureDetector(
-            onTap: () => onSelected(c.id),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: sel
-                    ? TraumColors.mintGreenDim
-                    : TraumColors.surfaceVariant,
-                borderRadius: BorderRadius.circular(20),
-                border: sel ? Border.all(color: TraumColors.mintGreen) : null,
-              ),
-              child: Text(
-                '${c.emoji ?? '🛒'} ${c.name}',
-                style: TextStyle(
-                  color: sel
-                      ? TraumColors.mintGreen
-                      : TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 13,
+          return Semantics(
+            button: true,
+            selected: sel,
+            label: '${c.emoji ?? '🛒'} ${c.name}',
+            child: ExcludeSemantics(
+              child: GestureDetector(
+                onTap: () => onSelected(c.id),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: sel
+                        ? TraumColors.mintGreenDim
+                        : TraumColors.surfaceVariant,
+                    borderRadius: BorderRadius.circular(20),
+                    border: sel
+                        ? Border.all(color: TraumColors.mintGreen)
+                        : null,
+                  ),
+                  child: Text(
+                    '${c.emoji ?? '🛒'} ${c.name}',
+                    style: TextStyle(
+                      color: sel
+                          ? TraumColors.mintGreen
+                          : TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
+                  ),
                 ),
               ),
             ),

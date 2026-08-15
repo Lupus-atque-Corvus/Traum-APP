@@ -110,43 +110,52 @@ class ShoppingModeScreen extends ConsumerWidget {
                         top: false,
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                          child: GestureDetector(
-                            onTap: inCart == 0
-                                ? null
-                                : () => showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: TraumColors.background,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(24),
+                          child: Semantics(
+                            button: inCart != 0,
+                            label: AppLocalizations.of(
+                              context,
+                            )!.completeShoppingLabel,
+                            child: ExcludeSemantics(
+                              child: GestureDetector(
+                                onTap: inCart == 0
+                                    ? null
+                                    : () => showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        backgroundColor:
+                                            TraumColors.background,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(24),
+                                          ),
+                                        ),
+                                        builder: (_) =>
+                                            const ShoppingCheckoutSheet(),
+                                      ),
+                                child: Container(
+                                  height: 54,
+                                  decoration: BoxDecoration(
+                                    color: inCart == 0
+                                        ? TraumColors.surfaceVariant
+                                        : TraumColors.amberGold,
+                                    borderRadius: BorderRadius.circular(
+                                      TraumRadius.card,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.completeShoppingLabel,
+                                      style: TextStyle(
+                                        color: inCart == 0
+                                            ? TraumColors.onBackgroundMuted
+                                            : const Color(0xFF0D0D1A),
+                                        fontFamily: 'DMSans',
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 15,
                                       ),
                                     ),
-                                    builder: (_) =>
-                                        const ShoppingCheckoutSheet(),
-                                  ),
-                            child: Container(
-                              height: 54,
-                              decoration: BoxDecoration(
-                                color: inCart == 0
-                                    ? TraumColors.surfaceVariant
-                                    : TraumColors.amberGold,
-                                borderRadius: BorderRadius.circular(
-                                  TraumRadius.card,
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!.completeShoppingLabel,
-                                  style: TextStyle(
-                                    color: inCart == 0
-                                        ? TraumColors.onBackgroundMuted
-                                        : const Color(0xFF0D0D1A),
-                                    fontFamily: 'DMSans',
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 15,
                                   ),
                                 ),
                               ),
@@ -185,31 +194,48 @@ class _CartRow extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: () => dao.updateShoppingItem(
-              ShoppingListItemsCompanion(
-                id: Value(item.id),
-                checked: Value(!item.checked),
-              ),
-            ),
-            child: Container(
-              width: 26,
-              height: 26,
-              decoration: BoxDecoration(
-                color: item.checked
-                    ? TraumColors.mintGreen
-                    : Colors.transparent,
-                border: Border.all(
-                  color: item.checked
-                      ? TraumColors.mintGreen
-                      : TraumColors.onBackgroundSubtle,
-                  width: 2,
+          Semantics(
+            button: true,
+            toggled: item.checked,
+            label: item.checked
+                ? AppLocalizations.of(
+                    context,
+                  )!.a11yShoppingItemChecked(item.name)
+                : AppLocalizations.of(
+                    context,
+                  )!.a11yShoppingItemUnchecked(item.name),
+            child: ExcludeSemantics(
+              child: GestureDetector(
+                onTap: () => dao.updateShoppingItem(
+                  ShoppingListItemsCompanion(
+                    id: Value(item.id),
+                    checked: Value(!item.checked),
+                  ),
                 ),
-                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  width: 26,
+                  height: 26,
+                  decoration: BoxDecoration(
+                    color: item.checked
+                        ? TraumColors.mintGreen
+                        : Colors.transparent,
+                    border: Border.all(
+                      color: item.checked
+                          ? TraumColors.mintGreen
+                          : TraumColors.onBackgroundSubtle,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: item.checked
+                      ? const Icon(
+                          Icons.check,
+                          size: 18,
+                          color: Color(0xFF0D0D1A),
+                        )
+                      : null,
+                ),
               ),
-              child: item.checked
-                  ? const Icon(Icons.check, size: 18, color: Color(0xFF0D0D1A))
-                  : null,
             ),
           ),
           const SizedBox(width: 12),

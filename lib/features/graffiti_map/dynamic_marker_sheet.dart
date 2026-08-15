@@ -436,30 +436,40 @@ class _DynamicMarkerSheetState extends ConsumerState<DynamicMarkerSheet> {
                 final color = opt.colorHex != null
                     ? Color(int.parse('0xFF${opt.colorHex}'))
                     : TraumColors.cyanBlue;
-                return GestureDetector(
-                  onTap: () => setState(() => _values[field.key] = opt.value),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: sel
-                          ? color.withValues(alpha: 0.2)
-                          : TraumColors.surfaceVariant,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: sel ? color : Colors.transparent,
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Text(
-                      localizedOptionValue(context, opt.value),
-                      style: TextStyle(
-                        fontFamily: 'DMSans',
-                        color: sel ? color : TraumColors.onBackgroundMuted,
-                        fontSize: 13,
-                        fontWeight: sel ? FontWeight.w600 : FontWeight.w400,
+                return Semantics(
+                  button: true,
+                  selected: sel,
+                  label: localizedOptionValue(context, opt.value),
+                  child: ExcludeSemantics(
+                    child: GestureDetector(
+                      onTap: () =>
+                          setState(() => _values[field.key] = opt.value),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: sel
+                              ? color.withValues(alpha: 0.2)
+                              : TraumColors.surfaceVariant,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: sel ? color : Colors.transparent,
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Text(
+                          localizedOptionValue(context, opt.value),
+                          style: TextStyle(
+                            fontFamily: 'DMSans',
+                            color: sel ? color : TraumColors.onBackgroundMuted,
+                            fontSize: 13,
+                            fontWeight: sel
+                                ? FontWeight.w600
+                                : FontWeight.w400,
+                          ),
+                        ),
                       ),
                     ),
                   ),

@@ -162,26 +162,32 @@ class _AmountEntrySheetState extends ConsumerState<AmountEntrySheet> {
                     spacing: 6,
                     children: [
                       for (final label in ['100', '150', '200'])
-                        GestureDetector(
-                          onTap: () {
-                            _ctrl.text = label;
-                            _onAmountChanged(label);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: TraumColors.surfaceVariant,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              '${label}g',
-                              style: const TextStyle(
-                                fontFamily: 'DMSans',
-                                fontSize: 12,
-                                color: TraumColors.onBackgroundMuted,
+                        Semantics(
+                          button: true,
+                          label: '${label}g',
+                          child: ExcludeSemantics(
+                            child: GestureDetector(
+                              onTap: () {
+                                _ctrl.text = label;
+                                _onAmountChanged(label);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: TraumColors.surfaceVariant,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  '${label}g',
+                                  style: const TextStyle(
+                                    fontFamily: 'DMSans',
+                                    fontSize: 12,
+                                    color: TraumColors.onBackgroundMuted,
+                                  ),
+                                ),
                               ),
                             ),
                           ),

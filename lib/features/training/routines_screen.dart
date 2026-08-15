@@ -183,124 +183,132 @@ class _PlanCard extends ConsumerWidget {
         child: const Icon(Icons.delete_rounded, color: TraumColors.roseRed),
       ),
       onDismissed: (_) => onDelete(),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          margin: const EdgeInsets.only(bottom: 12),
-          decoration: BoxDecoration(
-            color: TraumColors.surface,
-            borderRadius: BorderRadius.circular(TraumRadius.card),
-            border: Border.all(
-              color: plan.isActive
-                  ? TraumColors.coralOrange.withValues(alpha: 0.4)
-                  : TraumColors.surfaceVariant,
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header row
-              Padding(
-                padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            plan.name,
-                            style: const TextStyle(
-                              color: TraumColors.onBackground,
-                              fontFamily: 'DMSans',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 15,
-                            ),
-                          ),
-                          if (plan.description != null)
-                            Text(
-                              plan.description!,
-                              style: const TextStyle(
-                                color: TraumColors.onBackgroundMuted,
-                                fontFamily: 'DMSans',
-                                fontSize: 12,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                        ],
-                      ),
-                    ),
-                    if (!plan.isActive)
-                      TextButton(
-                        onPressed: onSetActive,
-                        style: TextButton.styleFrom(
-                          foregroundColor: TraumColors.coralOrange,
-                        ),
-                        child: Text(
-                          l10n.activate,
-                          style: const TextStyle(
-                            fontFamily: 'DMSans',
-                            fontSize: 12,
-                          ),
-                        ),
-                      )
-                    else
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: TraumColors.coralDim,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          l10n.active,
-                          style: const TextStyle(
-                            color: TraumColors.coralOrange,
-                            fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
+      // Deliberately no ExcludeSemantics here (unlike the other fixes in this
+      // sweep): the card contains its own nested, independently tappable
+      // TextButton ("set active"), which ExcludeSemantics would silently
+      // swallow into this outer label — the same reasoning as
+      // TraumCard's Semantics wrap (button trait only, no label override).
+      child: Semantics(
+        button: true,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              borderRadius: BorderRadius.circular(TraumRadius.card),
+              border: Border.all(
+                color: plan.isActive
+                    ? TraumColors.coralOrange.withValues(alpha: 0.4)
+                    : TraumColors.surfaceVariant,
               ),
-
-              // Body map preview (only show if there are muscles to display)
-              if (primaryMuscles.isNotEmpty)
-                Container(
-                  decoration: BoxDecoration(
-                    color: TraumColors.background.withValues(alpha: 0.5),
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(TraumRadius.card - 1),
-                      bottomRight: Radius.circular(TraumRadius.card - 1),
-                    ),
-                  ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header row
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
                   child: Row(
                     children: [
                       Expanded(
-                        child: BodyMapWidget(
-                          primaryMuscles: primaryMuscles.toList(),
-                          secondaryMuscles: const [],
-                          showBack: false,
-                          height: 120,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              plan.name,
+                              style: const TextStyle(
+                                color: TraumColors.onBackground,
+                                fontFamily: 'DMSans',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 15,
+                              ),
+                            ),
+                            if (plan.description != null)
+                              Text(
+                                plan.description!,
+                                style: const TextStyle(
+                                  color: TraumColors.onBackgroundMuted,
+                                  fontFamily: 'DMSans',
+                                  fontSize: 12,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                          ],
                         ),
                       ),
-                      Expanded(
-                        child: BodyMapWidget(
-                          primaryMuscles: primaryMuscles.toList(),
-                          secondaryMuscles: const [],
-                          showBack: true,
-                          height: 120,
+                      if (!plan.isActive)
+                        TextButton(
+                          onPressed: onSetActive,
+                          style: TextButton.styleFrom(
+                            foregroundColor: TraumColors.coralOrange,
+                          ),
+                          child: Text(
+                            l10n.activate,
+                            style: const TextStyle(
+                              fontFamily: 'DMSans',
+                              fontSize: 12,
+                            ),
+                          ),
+                        )
+                      else
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: TraumColors.coralDim,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            l10n.active,
+                            style: const TextStyle(
+                              color: TraumColors.coralOrange,
+                              fontFamily: 'DMSans',
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11,
+                            ),
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
-            ],
+
+                // Body map preview (only show if there are muscles to display)
+                if (primaryMuscles.isNotEmpty)
+                  Container(
+                    decoration: BoxDecoration(
+                      color: TraumColors.background.withValues(alpha: 0.5),
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(TraumRadius.card - 1),
+                        bottomRight: Radius.circular(TraumRadius.card - 1),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: BodyMapWidget(
+                            primaryMuscles: primaryMuscles.toList(),
+                            secondaryMuscles: const [],
+                            showBack: false,
+                            height: 120,
+                          ),
+                        ),
+                        Expanded(
+                          child: BodyMapWidget(
+                            primaryMuscles: primaryMuscles.toList(),
+                            secondaryMuscles: const [],
+                            showBack: true,
+                            height: 120,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

@@ -132,6 +132,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String a11yShoppingItemChecked(String name) {
+    return '$name, in cart';
+  }
+
+  @override
+  String a11yShoppingItemUnchecked(String name) {
+    return '$name, not in cart';
+  }
+
+  @override
   String get a11yAddCategory => 'Add category';
 
   @override
@@ -141,6 +151,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get a11yVideoEntry => 'Video';
+
+  @override
+  String get homeA11yRemoveWidget => 'Remove widget';
+
+  @override
+  String get homeA11yResizeWidget => 'Resize widget';
 
   @override
   String get confirm => 'Confirm';
@@ -520,6 +536,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteCompleted => 'Delete completed';
 
   @override
+  String get startShoppingLabel => '🛒  Start shopping';
+
+  @override
+  String get shoppingA11yTemplates => 'Templates';
+
+  @override
+  String get shoppingA11yAddItem => 'Add item';
+
+  @override
   String get estimatedUpper => 'ESTIMATED';
 
   @override
@@ -532,6 +557,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get completeShoppingLabel => '✓  Complete shopping';
+
+  @override
+  String get shoppingBookAsExpense => '→ Book as expense';
+
+  @override
+  String get shoppingBookingInProgress => 'Booking…';
 
   @override
   String estimatedBudgetLabel(String amount) {
@@ -3950,6 +3981,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapTemplateCustom => 'Custom map';
+
+  @override
+  String get mapIconBuilding => 'Building';
+
+  @override
+  String get mapIconNature => 'Nature';
+
+  @override
+  String get mapIconFood => 'Food';
+
+  @override
+  String get mapIconGeneric => 'Map';
+
+  @override
+  String get mapA11ySwitchMap => 'Switch map';
+
+  @override
+  String get mapA11yToggleViewMode => 'Toggle map view';
+
+  @override
+  String get mapA11yResetRotation => 'Reset orientation';
+
+  @override
+  String get mapA11yMyLocation => 'Go to my location';
 
   @override
   String get mapFunctions => 'Functions';

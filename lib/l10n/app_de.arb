@@ -88,9 +88,27 @@
       }
     }
   },
+  "a11yShoppingItemChecked": "{name}, im Einkaufswagen",
+  "@a11yShoppingItemChecked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yShoppingItemUnchecked": "{name}, nicht im Einkaufswagen",
+  "@a11yShoppingItemUnchecked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "a11yAddCategory": "Kategorie hinzufügen",
   "a11yColorOption": "Farbe {index}",
   "a11yVideoEntry": "Video",
+  "homeA11yRemoveWidget": "Widget entfernen",
+  "homeA11yResizeWidget": "Widget-Größe ändern",
   "@a11yColorOption": {
     "placeholders": {
       "index": {
@@ -242,6 +260,9 @@
   "shoppingListEmpty": "Einkaufsliste leer",
   "doneUpper": "ERLEDIGT",
   "deleteCompleted": "Erledigte löschen",
+  "startShoppingLabel": "🛒  Einkaufen starten",
+  "shoppingA11yTemplates": "Vorlagen",
+  "shoppingA11yAddItem": "Artikel hinzufügen",
   "estimatedUpper": "VORAUSSICHTLICH",
   "inStore": "Im Laden 🛒",
   "inCartStatus": "IM KORB · ECHT · {inCart}/{total}",
@@ -256,6 +277,8 @@
     }
   },
   "completeShoppingLabel": "✓  Einkauf abschließen",
+  "shoppingBookAsExpense": "→ Als Ausgabe buchen",
+  "shoppingBookingInProgress": "Buchen…",
   "estimatedBudgetLabel": "Budget (geschätzt): {amount}",
   "@estimatedBudgetLabel": {
     "placeholders": {
@@ -1871,6 +1894,14 @@
   "mapTemplateTowers": "Türme",
   "mapTemplateLostPlaces": "Lost Places",
   "mapTemplateCustom": "Eigene Karte",
+  "mapIconBuilding": "Gebäude",
+  "mapIconNature": "Natur",
+  "mapIconFood": "Essen",
+  "mapIconGeneric": "Karte",
+  "mapA11ySwitchMap": "Karte wechseln",
+  "mapA11yToggleViewMode": "Kartenansicht wechseln",
+  "mapA11yResetRotation": "Ausrichtung zurücksetzen",
+  "mapA11yMyLocation": "Zu meinem Standort",
   "mapFunctions": "Funktionen",
   "mapFields": "Felder",
   "mapFieldCondition": "Zustand",

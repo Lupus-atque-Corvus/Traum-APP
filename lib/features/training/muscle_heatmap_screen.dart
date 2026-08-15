@@ -184,62 +184,72 @@ class _MuscleHeatmapScreenState extends ConsumerState<MuscleHeatmapScreen> {
             ),
             child: Column(
               children: [
-                InkWell(
-                  borderRadius: BorderRadius.circular(TraumRadius.card),
-                  onTap: () =>
-                      setState(() => _expandedGroup = expanded ? null : g),
-                  child: Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Row(
-                      children: [
-                        ExerciseIcon(muscleGroup: g, size: 40),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                muscleGroupLabel(g, l10n),
-                                style: const TextStyle(
-                                  color: TraumColors.onBackground,
-                                  fontFamily: 'DMSans',
-                                  fontWeight: FontWeight.w600,
-                                ),
+                Semantics(
+                  button: true,
+                  label:
+                      '${muscleGroupLabel(g, l10n)}, '
+                      '${count == 0 ? l10n.notTrained : l10n.setCount(count)}',
+                  child: ExcludeSemantics(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(TraumRadius.card),
+                      onTap: () =>
+                          setState(() => _expandedGroup = expanded ? null : g),
+                      child: Padding(
+                        padding: const EdgeInsets.all(14),
+                        child: Row(
+                          children: [
+                            ExerciseIcon(muscleGroup: g, size: 40),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    muscleGroupLabel(g, l10n),
+                                    style: const TextStyle(
+                                      color: TraumColors.onBackground,
+                                      fontFamily: 'DMSans',
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    count == 0
+                                        ? l10n.notTrained
+                                        : l10n.setCount(count),
+                                    style: TextStyle(
+                                      color: count > 0
+                                          ? color
+                                          : TraumColors.onBackgroundSubtle,
+                                      fontFamily: 'DMSans',
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                count == 0
-                                    ? l10n.notTrained
-                                    : l10n.setCount(count),
-                                style: TextStyle(
-                                  color: count > 0
-                                      ? color
-                                      : TraumColors.onBackgroundSubtle,
-                                  fontFamily: 'DMSans',
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (count > 0)
-                          SizedBox(
-                            width: 90,
-                            child: LinearProgressIndicator(
-                              value: ratio,
-                              backgroundColor: TraumColors.surfaceVariant,
-                              valueColor: AlwaysStoppedAnimation<Color>(color),
-                              borderRadius: BorderRadius.circular(4),
-                              minHeight: 6,
                             ),
-                          ),
-                        const SizedBox(width: 6),
-                        Icon(
-                          expanded
-                              ? Icons.expand_less_rounded
-                              : Icons.expand_more_rounded,
-                          color: TraumColors.onBackgroundMuted,
+                            if (count > 0)
+                              SizedBox(
+                                width: 90,
+                                child: LinearProgressIndicator(
+                                  value: ratio,
+                                  backgroundColor: TraumColors.surfaceVariant,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    color,
+                                  ),
+                                  borderRadius: BorderRadius.circular(4),
+                                  minHeight: 6,
+                                ),
+                              ),
+                            const SizedBox(width: 6),
+                            Icon(
+                              expanded
+                                  ? Icons.expand_less_rounded
+                                  : Icons.expand_more_rounded,
+                              color: TraumColors.onBackgroundMuted,
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -408,27 +418,36 @@ class _PeriodChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: selected ? TraumColors.coralOrange : TraumColors.surface,
-            borderRadius: BorderRadius.circular(TraumRadius.card),
-            border: Border.all(
-              color: selected
-                  ? TraumColors.coralOrange
-                  : TraumColors.surfaceVariant,
-            ),
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: selected ? Colors.white : TraumColors.onBackgroundMuted,
-              fontFamily: 'DMSans',
-              fontWeight: FontWeight.w600,
-              fontSize: 13,
+      child: Semantics(
+        button: true,
+        selected: selected,
+        label: label,
+        child: ExcludeSemantics(
+          child: GestureDetector(
+            onTap: onTap,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: selected ? TraumColors.coralOrange : TraumColors.surface,
+                borderRadius: BorderRadius.circular(TraumRadius.card),
+                border: Border.all(
+                  color: selected
+                      ? TraumColors.coralOrange
+                      : TraumColors.surfaceVariant,
+                ),
+              ),
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: selected
+                      ? Colors.white
+                      : TraumColors.onBackgroundMuted,
+                  fontFamily: 'DMSans',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+              ),
             ),
           ),
         ),

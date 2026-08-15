@@ -146,62 +146,81 @@ class _NotesSearchScreenState extends ConsumerState<NotesSearchScreen> {
     if (q.isEmpty) return const SizedBox.shrink();
     final exact = titles.any((t) => t.title.toLowerCase() == q.toLowerCase());
     if (exact) return const SizedBox.shrink();
-    return InkWell(
-      onTap: () => _createNamed(q),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: kNotesAccent.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(TraumRadius.card),
-          border: Border.all(color: kNotesAccent.withValues(alpha: 0.4)),
-        ),
-        child: Row(
-          children: [
-            const Icon(Icons.add_rounded, color: kNotesAccent, size: 20),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                l10n.notes_create_note_named(q),
-                style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  color: kNotesAccent,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+    return Semantics(
+      button: true,
+      label: l10n.notes_create_note_named(q),
+      child: ExcludeSemantics(
+        child: InkWell(
+          onTap: () => _createNamed(q),
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
             ),
-          ],
+            decoration: BoxDecoration(
+              color: kNotesAccent.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(TraumRadius.card),
+              border: Border.all(color: kNotesAccent.withValues(alpha: 0.4)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.add_rounded, color: kNotesAccent, size: 20),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    l10n.notes_create_note_named(q),
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      color: kNotesAccent,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
   Widget _snippetTile(NoteSearchHit hit) {
-    return InkWell(
-      onTap: () => context.pushReplacement(Routes.noteDetailPath(hit.note.id)),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(TraumRadius.card),
-          border: Border.all(color: TraumColors.surfaceVariant),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              hit.note.title,
-              style: const TextStyle(
-                fontFamily: 'DMSans',
-                color: TraumColors.onBackground,
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-              ),
+    return Semantics(
+      button: true,
+      label: hit.note.title,
+      child: ExcludeSemantics(
+        child: InkWell(
+          onTap: () =>
+              context.pushReplacement(Routes.noteDetailPath(hit.note.id)),
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
             ),
-            const SizedBox(height: 4),
-            _HighlightedSnippet(snippet: hit.snippet),
-          ],
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              borderRadius: BorderRadius.circular(TraumRadius.card),
+              border: Border.all(color: TraumColors.surfaceVariant),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  hit.note.title,
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    color: TraumColors.onBackground,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                _HighlightedSnippet(snippet: hit.snippet),
+              ],
+            ),
+          ),
         ),
       ),
     );

@@ -174,23 +174,32 @@ class _FilterChip extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-    onTap: onTap,
-    child: AnimatedContainer(
-      duration: const Duration(milliseconds: 150),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-      decoration: BoxDecoration(
-        color: active ? color.withValues(alpha: 0.2) : TraumColors.surface,
-        borderRadius: BorderRadius.circular(TraumRadius.chip),
-        border: Border.all(color: active ? color : TraumColors.surfaceVariant),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: active ? color : TraumColors.onBackgroundMuted,
-          fontFamily: 'DMSans',
-          fontSize: 13,
-          fontWeight: active ? FontWeight.w600 : FontWeight.normal,
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    selected: active,
+    label: label,
+    child: ExcludeSemantics(
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+          decoration: BoxDecoration(
+            color: active ? color.withValues(alpha: 0.2) : TraumColors.surface,
+            borderRadius: BorderRadius.circular(TraumRadius.chip),
+            border: Border.all(
+              color: active ? color : TraumColors.surfaceVariant,
+            ),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: active ? color : TraumColors.onBackgroundMuted,
+              fontFamily: 'DMSans',
+              fontSize: 13,
+              fontWeight: active ? FontWeight.w600 : FontWeight.normal,
+            ),
+          ),
         ),
       ),
     ),
@@ -245,39 +254,45 @@ class _CategoryGrid extends ConsumerWidget {
         childAspectRatio: 2.6,
         children: cats
             .map(
-              (c) => GestureDetector(
-                onTap: () => onCategoryTap(c),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: TraumColors.surface,
-                    borderRadius: BorderRadius.circular(TraumRadius.card),
-                    border: Border.all(
-                      color: TraumColors.lavender.withValues(alpha: 0.25),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      const SizedBox(width: 14),
-                      Icon(
-                        _categoryIcon(c),
-                        color: TraumColors.lavender,
-                        size: 18,
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          c,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: TraumColors.onBackground,
-                            fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 13,
-                          ),
+              (c) => Semantics(
+                button: true,
+                label: c,
+                child: ExcludeSemantics(
+                  child: GestureDetector(
+                    onTap: () => onCategoryTap(c),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: TraumColors.surface,
+                        borderRadius: BorderRadius.circular(TraumRadius.card),
+                        border: Border.all(
+                          color: TraumColors.lavender.withValues(alpha: 0.25),
                         ),
                       ),
-                    ],
+                      child: Row(
+                        children: [
+                          const SizedBox(width: 14),
+                          Icon(
+                            _categoryIcon(c),
+                            color: TraumColors.lavender,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              c,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: TraumColors.onBackground,
+                                fontFamily: 'DMSans',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -395,113 +410,125 @@ class _ResultCard extends ConsumerWidget {
     final snippet = record.beschreibung(lang) ?? record.effekt(lang);
     final statusColor = _statusColor(record.datenStatus);
 
-    return GestureDetector(
-      onTap: () => showSubstanceDetailSheet(context, ref, record),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(TraumRadius.card),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    return Semantics(
+      button: true,
+      label: record.substance,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: () => showSubstanceDetailSheet(context, ref, record),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              borderRadius: BorderRadius.circular(TraumRadius.card),
+              border: Border.all(color: color.withValues(alpha: 0.2)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: dimColor,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    isMed ? l10n.substanceKlasseMed : l10n.substanceKlasseSupp,
-                    style: TextStyle(
-                      color: color,
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: dimColor,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        isMed
+                            ? l10n.substanceKlasseMed
+                            : l10n.substanceKlasseSupp,
+                        style: TextStyle(
+                          color: color,
+                          fontFamily: 'DMSans',
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        record.substance,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: TraumColors.onBackground,
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: statusColor.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        _statusLabel(l10n, record.datenStatus),
+                        style: TextStyle(
+                          color: statusColor,
+                          fontFamily: 'DMSans',
+                          fontSize: 9,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                if (record.kategorie != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    record.kategorie!,
+                    style: const TextStyle(
+                      color: TraumColors.onBackgroundMuted,
                       fontFamily: 'DMSans',
-                      fontSize: 9,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 12,
                     ),
                   ),
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    record.substance,
-                    maxLines: 1,
+                ],
+                if (snippet != null) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    snippet,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      color: TraumColors.onBackground,
+                      color: TraumColors.onBackgroundSubtle,
                       fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      height: 1.4,
                     ),
                   ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
+                ],
+                if (record.pflanzlich ||
+                    record.quellenTags.any(
+                      (t) => t.startsWith('wikipedia'),
+                    )) ...[
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 6,
+                    children: [
+                      if (record.pflanzlich)
+                        _SourceChip(label: '🌿 ${l10n.substancePflanzlich}'),
+                      if (record.quellenTags.any(
+                        (t) => t.startsWith('wikipedia'),
+                      ))
+                        _SourceChip(label: '📖 Wikipedia'),
+                    ],
                   ),
-                  decoration: BoxDecoration(
-                    color: statusColor.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    _statusLabel(l10n, record.datenStatus),
-                    style: TextStyle(
-                      color: statusColor,
-                      fontFamily: 'DMSans',
-                      fontSize: 9,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+                ],
               ],
             ),
-            if (record.kategorie != null) ...[
-              const SizedBox(height: 4),
-              Text(
-                record.kategorie!,
-                style: const TextStyle(
-                  color: TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans',
-                  fontSize: 12,
-                ),
-              ),
-            ],
-            if (snippet != null) ...[
-              const SizedBox(height: 6),
-              Text(
-                snippet,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: TraumColors.onBackgroundSubtle,
-                  fontFamily: 'DMSans',
-                  fontSize: 12,
-                  height: 1.4,
-                ),
-              ),
-            ],
-            if (record.pflanzlich ||
-                record.quellenTags.any((t) => t.startsWith('wikipedia'))) ...[
-              const SizedBox(height: 6),
-              Wrap(
-                spacing: 6,
-                children: [
-                  if (record.pflanzlich)
-                    _SourceChip(label: '🌿 ${l10n.substancePflanzlich}'),
-                  if (record.quellenTags.any((t) => t.startsWith('wikipedia')))
-                    _SourceChip(label: '📖 Wikipedia'),
-                ],
-              ),
-            ],
-          ],
+          ),
         ),
       ),
     );

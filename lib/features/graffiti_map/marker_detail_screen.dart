@@ -335,33 +335,39 @@ class _MarkerDetailBodyState extends ConsumerState<_MarkerDetailBody> {
               children: [
                 // Foto-Galerie
                 if (photos.isEmpty)
-                  GestureDetector(
-                    onTap: _addPhoto,
-                    child: Container(
-                      height: 200,
-                      decoration: BoxDecoration(
-                        color: TraumColors.surfaceVariant,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.add_a_photo_outlined,
-                              color: TraumColors.cyanBlue,
-                              size: 40,
+                  Semantics(
+                    button: true,
+                    label: AppLocalizations.of(context)!.mapAddPhoto,
+                    child: ExcludeSemantics(
+                      child: GestureDetector(
+                        onTap: _addPhoto,
+                        child: Container(
+                          height: 200,
+                          decoration: BoxDecoration(
+                            color: TraumColors.surfaceVariant,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.add_a_photo_outlined,
+                                  color: TraumColors.cyanBlue,
+                                  size: 40,
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  AppLocalizations.of(context)!.mapAddPhoto,
+                                  style: TextStyle(
+                                    fontFamily: 'DMSans',
+                                    color: TraumColors.cyanBlue,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 8),
-                            Text(
-                              AppLocalizations.of(context)!.mapAddPhoto,
-                              style: TextStyle(
-                                fontFamily: 'DMSans',
-                                color: TraumColors.cyanBlue,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ),

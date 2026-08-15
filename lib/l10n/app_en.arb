@@ -88,9 +88,27 @@
       }
     }
   },
+  "a11yShoppingItemChecked": "{name}, in cart",
+  "@a11yShoppingItemChecked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yShoppingItemUnchecked": "{name}, not in cart",
+  "@a11yShoppingItemUnchecked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "a11yAddCategory": "Add category",
   "a11yColorOption": "Color {index}",
   "a11yVideoEntry": "Video",
+  "homeA11yRemoveWidget": "Remove widget",
+  "homeA11yResizeWidget": "Resize widget",
   "@a11yColorOption": {
     "placeholders": {
       "index": {
@@ -242,6 +260,9 @@
   "shoppingListEmpty": "Shopping list empty",
   "doneUpper": "DONE",
   "deleteCompleted": "Delete completed",
+  "startShoppingLabel": "🛒  Start shopping",
+  "shoppingA11yTemplates": "Templates",
+  "shoppingA11yAddItem": "Add item",
   "estimatedUpper": "ESTIMATED",
   "inStore": "In store 🛒",
   "inCartStatus": "IN CART · REAL · {inCart}/{total}",
@@ -256,6 +277,8 @@
     }
   },
   "completeShoppingLabel": "✓  Complete shopping",
+  "shoppingBookAsExpense": "→ Book as expense",
+  "shoppingBookingInProgress": "Booking…",
   "estimatedBudgetLabel": "Budget (estimated): {amount}",
   "@estimatedBudgetLabel": {
     "placeholders": {
@@ -1837,6 +1860,14 @@
   "mapTemplateTowers": "Towers",
   "mapTemplateLostPlaces": "Lost Places",
   "mapTemplateCustom": "Custom map",
+  "mapIconBuilding": "Building",
+  "mapIconNature": "Nature",
+  "mapIconFood": "Food",
+  "mapIconGeneric": "Map",
+  "mapA11ySwitchMap": "Switch map",
+  "mapA11yToggleViewMode": "Toggle map view",
+  "mapA11yResetRotation": "Reset orientation",
+  "mapA11yMyLocation": "Go to my location",
   "mapFunctions": "Functions",
   "mapFields": "Fields",
   "mapFieldCondition": "Condition",

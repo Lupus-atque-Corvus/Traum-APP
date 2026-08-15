@@ -233,46 +233,52 @@ class _CreateCollectionScreenState
               childAspectRatio: 2.4,
               children: MapTemplates.all.map((t) {
                 final c = colorFromHex(t.colorHex);
-                return GestureDetector(
-                  onTap: () => _applyTemplate(t),
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: TraumColors.surface,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: c.withValues(alpha: 0.4),
-                        width: 1,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 38,
-                          height: 38,
-                          decoration: BoxDecoration(
-                            color: c.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(
-                            mapCollectionIcon(t.iconName),
-                            color: c,
-                            size: 20,
+                return Semantics(
+                  button: true,
+                  label: localizedTemplateDisplayName(context, t),
+                  child: ExcludeSemantics(
+                    child: GestureDetector(
+                      onTap: () => _applyTemplate(t),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: TraumColors.surface,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: c.withValues(alpha: 0.4),
+                            width: 1,
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            localizedTemplateDisplayName(context, t),
-                            style: const TextStyle(
-                              fontFamily: 'DMSans',
-                              color: TraumColors.onBackground,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 38,
+                              height: 38,
+                              decoration: BoxDecoration(
+                                color: c.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Icon(
+                                mapCollectionIcon(t.iconName),
+                                color: c,
+                                size: 20,
+                              ),
                             ),
-                          ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                localizedTemplateDisplayName(context, t),
+                                style: const TextStyle(
+                                  fontFamily: 'DMSans',
+                                  color: TraumColors.onBackground,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 );
@@ -302,25 +308,32 @@ class _CreateCollectionScreenState
             runSpacing: 10,
             children: kSelectableMapIcons.map((ic) {
               final sel = _selectedIcon == ic;
-              return GestureDetector(
-                onTap: () => setState(() => _selectedIcon = ic),
-                child: Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: sel
-                        ? accent.withValues(alpha: 0.18)
-                        : TraumColors.surface,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: sel ? accent : Colors.transparent,
-                      width: 1.5,
+              return Semantics(
+                button: true,
+                selected: sel,
+                label: mapIconAccessibilityLabel(context, ic),
+                child: ExcludeSemantics(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedIcon = ic),
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: sel
+                            ? accent.withValues(alpha: 0.18)
+                            : TraumColors.surface,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: sel ? accent : Colors.transparent,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Icon(
+                        mapCollectionIcon(ic),
+                        color: sel ? accent : TraumColors.onBackgroundMuted,
+                        size: 22,
+                      ),
                     ),
-                  ),
-                  child: Icon(
-                    mapCollectionIcon(ic),
-                    color: sel ? accent : TraumColors.onBackgroundMuted,
-                    size: 22,
                   ),
                 ),
               );
@@ -333,25 +346,39 @@ class _CreateCollectionScreenState
           Wrap(
             spacing: 12,
             runSpacing: 12,
-            children: kSelectableMapColors.map((hex) {
+            children: kSelectableMapColors.asMap().entries.map((entry) {
+              final hex = entry.value;
               final c = colorFromHex(hex);
               final sel = _selectedColor == hex;
-              return GestureDetector(
-                onTap: () => setState(() => _selectedColor = hex),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: c,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: sel ? Colors.white : Colors.transparent,
-                      width: 2.5,
+              return Semantics(
+                button: true,
+                selected: sel,
+                label: AppLocalizations.of(
+                  context,
+                )!.a11yColorOption(entry.key + 1),
+                child: ExcludeSemantics(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedColor = hex),
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: c,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: sel ? Colors.white : Colors.transparent,
+                          width: 2.5,
+                        ),
+                      ),
+                      child: sel
+                          ? const Icon(
+                              Icons.check,
+                              color: Colors.white,
+                              size: 18,
+                            )
+                          : null,
                     ),
                   ),
-                  child: sel
-                      ? const Icon(Icons.check, color: Colors.white, size: 18)
-                      : null,
                 ),
               );
             }).toList(),

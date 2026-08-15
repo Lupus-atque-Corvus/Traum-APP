@@ -297,26 +297,34 @@ class _NumpadKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 72,
-        height: 72,
-        decoration: BoxDecoration(
-          color: onTap != null ? TraumColors.surface : TraumColors.background,
-          shape: BoxShape.circle,
-          border: Border.all(color: TraumColors.surfaceVariant),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
+    return Semantics(
+      button: onTap != null,
+      label: label,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
               color: onTap != null
-                  ? TraumColors.onBackground
-                  : TraumColors.onBackgroundSubtle,
-              fontFamily: 'DMSans',
-              fontSize: 24,
-              fontWeight: FontWeight.w500,
+                  ? TraumColors.surface
+                  : TraumColors.background,
+              shape: BoxShape.circle,
+              border: Border.all(color: TraumColors.surfaceVariant),
+            ),
+            child: Center(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: onTap != null
+                      ? TraumColors.onBackground
+                      : TraumColors.onBackgroundSubtle,
+                  fontFamily: 'DMSans',
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
           ),
         ),
@@ -332,21 +340,27 @@ class _NumpadDeleteKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 72,
-        height: 72,
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          shape: BoxShape.circle,
-          border: Border.all(color: TraumColors.surfaceVariant),
-        ),
-        child: const Center(
-          child: Icon(
-            Icons.backspace_outlined,
-            color: TraumColors.onBackgroundMuted,
-            size: 24,
+    return Semantics(
+      button: onTap != null,
+      label: AppLocalizations.of(context)!.delete,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              shape: BoxShape.circle,
+              border: Border.all(color: TraumColors.surfaceVariant),
+            ),
+            child: const Center(
+              child: Icon(
+                Icons.backspace_outlined,
+                color: TraumColors.onBackgroundMuted,
+                size: 24,
+              ),
+            ),
           ),
         ),
       ),

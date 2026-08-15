@@ -109,17 +109,27 @@ class ShoppingListView extends ConsumerWidget {
                             letterSpacing: 0.8,
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () => ref
-                              .read(nutritionDaoProvider)
-                              .deleteCheckedShoppingItems(),
-                          child: Text(
-                            AppLocalizations.of(context)!.deleteCompleted,
-                            style: TextStyle(
-                              color: TraumColors.roseRed,
-                              fontFamily: 'DMSans',
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
+                        Semantics(
+                          button: true,
+                          label: AppLocalizations.of(
+                            context,
+                          )!.deleteCompleted,
+                          child: ExcludeSemantics(
+                            child: GestureDetector(
+                              onTap: () => ref
+                                  .read(nutritionDaoProvider)
+                                  .deleteCheckedShoppingItems(),
+                              child: Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.deleteCompleted,
+                                style: TextStyle(
+                                  color: TraumColors.roseRed,
+                                  fontFamily: 'DMSans',
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -138,6 +148,7 @@ class ShoppingListView extends ConsumerWidget {
                 children: [
                   _CircleAction(
                     icon: Icons.bookmark_border_rounded,
+                    label: AppLocalizations.of(context)!.shoppingA11yTemplates,
                     onTap: () => showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
@@ -153,6 +164,7 @@ class ShoppingListView extends ConsumerWidget {
                   const SizedBox(width: 10),
                   _CircleAction(
                     icon: Icons.add_rounded,
+                    label: AppLocalizations.of(context)!.shoppingA11yAddItem,
                     onTap: () => showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
@@ -167,32 +179,41 @@ class ShoppingListView extends ConsumerWidget {
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: GestureDetector(
-                      onTap: items.isEmpty
-                          ? null
-                          : () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => const ShoppingModeScreen(),
+                    child: Semantics(
+                      button: items.isNotEmpty,
+                      label: AppLocalizations.of(context)!.startShoppingLabel,
+                      child: ExcludeSemantics(
+                        child: GestureDetector(
+                          onTap: items.isEmpty
+                              ? null
+                              : () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        const ShoppingModeScreen(),
+                                  ),
+                                ),
+                          child: Opacity(
+                            opacity: items.isEmpty ? 0.45 : 1.0,
+                            child: Container(
+                              height: 52,
+                              decoration: BoxDecoration(
+                                gradient: TraumColors.gradientNutrition,
+                                borderRadius: BorderRadius.circular(
+                                  TraumRadius.card,
+                                ),
                               ),
-                            ),
-                      child: Opacity(
-                        opacity: items.isEmpty ? 0.45 : 1.0,
-                        child: Container(
-                          height: 52,
-                          decoration: BoxDecoration(
-                            gradient: TraumColors.gradientNutrition,
-                            borderRadius: BorderRadius.circular(
-                              TraumRadius.card,
-                            ),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              '🛒  Einkaufen starten',
-                              style: TextStyle(
-                                color: Color(0xFF0D0D1A),
-                                fontFamily: 'DMSans',
-                                fontWeight: FontWeight.w800,
-                                fontSize: 14,
+                              child: Center(
+                                child: Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.startShoppingLabel,
+                                  style: const TextStyle(
+                                    color: Color(0xFF0D0D1A),
+                                    fontFamily: 'DMSans',
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 14,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -387,21 +408,32 @@ class _ItemRow extends ConsumerWidget {
 
 class _CircleAction extends StatelessWidget {
   final IconData icon;
+  final String label;
   final VoidCallback onTap;
-  const _CircleAction({required this.icon, required this.onTap});
+  const _CircleAction({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 52,
-        height: 52,
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(TraumRadius.card),
+    return Semantics(
+      button: true,
+      label: label,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              borderRadius: BorderRadius.circular(TraumRadius.card),
+            ),
+            child: Icon(icon, color: TraumColors.mintGreen),
+          ),
         ),
-        child: Icon(icon, color: TraumColors.mintGreen),
       ),
     );
   }

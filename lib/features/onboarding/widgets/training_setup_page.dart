@@ -160,26 +160,36 @@ class _ChipRow extends StatelessWidget {
       runSpacing: 8,
       children: options.map((o) {
         final isSel = o.$1 == selected;
-        return GestureDetector(
-          onTap: () => onSelect(o.$1),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: isSel
-                  ? color.withValues(alpha: 0.15)
-                  : TraumColors.surface,
-              borderRadius: BorderRadius.circular(TraumRadius.chip),
-              border: Border.all(
-                color: isSel ? color : TraumColors.surfaceVariant,
-              ),
-            ),
-            child: Text(
-              o.$2,
-              style: TextStyle(
-                fontSize: 13,
-                fontFamily: 'DMSans',
-                fontWeight: isSel ? FontWeight.w600 : FontWeight.normal,
-                color: isSel ? color : TraumColors.onBackgroundMuted,
+        return Semantics(
+          button: true,
+          selected: isSel,
+          label: o.$2,
+          child: ExcludeSemantics(
+            child: GestureDetector(
+              onTap: () => onSelect(o.$1),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: isSel
+                      ? color.withValues(alpha: 0.15)
+                      : TraumColors.surface,
+                  borderRadius: BorderRadius.circular(TraumRadius.chip),
+                  border: Border.all(
+                    color: isSel ? color : TraumColors.surfaceVariant,
+                  ),
+                ),
+                child: Text(
+                  o.$2,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontFamily: 'DMSans',
+                    fontWeight: isSel ? FontWeight.w600 : FontWeight.normal,
+                    color: isSel ? color : TraumColors.onBackgroundMuted,
+                  ),
+                ),
               ),
             ),
           ),

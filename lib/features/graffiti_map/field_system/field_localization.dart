@@ -73,3 +73,20 @@ String localizedTemplateDisplayName(BuildContext context, MapTemplate t) {
     _ => l10n.mapTemplateCustom,
   };
 }
+
+/// Sprechender Name eines der 7 in [kSelectableMapIcons] wählbaren Symbole,
+/// für die Barrierefreiheits-Beschriftung des Icon-Pickers in
+/// create_collection_screen.dart — unabhängig davon, ob das Icon zufällig
+/// auch einem der 3 Vorlagen entspricht.
+String mapIconAccessibilityLabel(BuildContext context, String iconName) {
+  final l10n = AppLocalizations.of(context)!;
+  return switch (iconName) {
+    'spray' => l10n.mapTemplateGraffiti,
+    'tower' => l10n.mapTemplateTowers,
+    'home_broken' => l10n.mapTemplateLostPlaces,
+    'building' => l10n.mapIconBuilding,
+    'nature' => l10n.mapIconNature,
+    'food' => l10n.mapIconFood,
+    _ => l10n.mapIconGeneric,
+  };
+}

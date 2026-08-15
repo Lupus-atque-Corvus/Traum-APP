@@ -129,55 +129,62 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
               itemBuilder: (_, i) {
                 final cat = _kPickerCats[i];
                 final active = _selectedCats.contains(i);
-                return GestureDetector(
-                  onTap: () => setState(() {
-                    if (active) {
-                      _selectedCats.remove(i);
-                    } else {
-                      _selectedCats.add(i);
-                    }
-                  }),
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 160),
-                          width: 52,
-                          height: 52,
-                          decoration: BoxDecoration(
-                            color: active
-                                ? TraumColors.coralOrange
-                                : TraumColors.surfaceVariant,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          padding: const EdgeInsets.all(10),
-                          child: SvgPicture.asset(
-                            cat.svg,
-                            colorFilter: ColorFilter.mode(
-                              active
-                                  ? Colors.white
-                                  : TraumColors.onBackgroundMuted,
-                              BlendMode.srcIn,
+                return Semantics(
+                  button: true,
+                  selected: active,
+                  label: cat.label,
+                  child: ExcludeSemantics(
+                    child: GestureDetector(
+                      onTap: () => setState(() {
+                        if (active) {
+                          _selectedCats.remove(i);
+                        } else {
+                          _selectedCats.add(i);
+                        }
+                      }),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 160),
+                              width: 52,
+                              height: 52,
+                              decoration: BoxDecoration(
+                                color: active
+                                    ? TraumColors.coralOrange
+                                    : TraumColors.surfaceVariant,
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              padding: const EdgeInsets.all(10),
+                              child: SvgPicture.asset(
+                                cat.svg,
+                                colorFilter: ColorFilter.mode(
+                                  active
+                                      ? Colors.white
+                                      : TraumColors.onBackgroundMuted,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
                             ),
-                          ),
+                            const SizedBox(height: 4),
+                            Text(
+                              cat.label,
+                              style: TextStyle(
+                                color: active
+                                    ? TraumColors.coralOrange
+                                    : TraumColors.onBackgroundMuted,
+                                fontFamily: 'DMSans',
+                                fontSize: 9,
+                                fontWeight: active
+                                    ? FontWeight.w600
+                                    : FontWeight.w400,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          cat.label,
-                          style: TextStyle(
-                            color: active
-                                ? TraumColors.coralOrange
-                                : TraumColors.onBackgroundMuted,
-                            fontFamily: 'DMSans',
-                            fontSize: 9,
-                            fontWeight: active
-                                ? FontWeight.w600
-                                : FontWeight.w400,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 );
@@ -511,84 +518,96 @@ class _PickerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        color: selected
-            ? TraumColors.coralOrange.withValues(alpha: 0.08)
-            : Colors.transparent,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        child: Row(
-          children: [
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: const Color(0xFF1E2235),
-                borderRadius: BorderRadius.circular(10),
-                border: selected
-                    ? Border.all(color: TraumColors.coralOrange, width: 1.5)
-                    : null,
-              ),
-              child: Center(
-                child: ExerciseIcon(
-                  muscleGroup: canonicalMuscleGroup(exercise.muscleGroup),
-                  exerciseName: exercise.name,
-                  size: 38,
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    exercise.name,
-                    style: TextStyle(
-                      color: selected
-                          ? TraumColors.coralOrange
-                          : TraumColors.onBackground,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
+    return Semantics(
+      button: true,
+      selected: selected,
+      label:
+          '${exercise.name}, '
+          '${muscleGroupLabel(exercise.muscleGroup, AppLocalizations.of(context)!)}',
+      child: ExcludeSemantics(
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            color: selected
+                ? TraumColors.coralOrange.withValues(alpha: 0.08)
+                : Colors.transparent,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: Row(
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1E2235),
+                    borderRadius: BorderRadius.circular(10),
+                    border: selected
+                        ? Border.all(color: TraumColors.coralOrange, width: 1.5)
+                        : null,
+                  ),
+                  child: Center(
+                    child: ExerciseIcon(
+                      muscleGroup: canonicalMuscleGroup(exercise.muscleGroup),
+                      exerciseName: exercise.name,
+                      size: 38,
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    muscleGroupLabel(
-                      exercise.muscleGroup,
-                      AppLocalizations.of(context)!,
-                    ).toUpperCase(),
-                    style: const TextStyle(
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        exercise.name,
+                        style: TextStyle(
+                          color: selected
+                              ? TraumColors.coralOrange
+                              : TraumColors.onBackground,
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        muscleGroupLabel(
+                          exercise.muscleGroup,
+                          AppLocalizations.of(context)!,
+                        ).toUpperCase(),
+                        style: const TextStyle(
+                          color: TraumColors.coralOrange,
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 11,
+                          letterSpacing: 0.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (usageCount > 0)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
                       color: TraumColors.coralOrange,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 11,
-                      letterSpacing: 0.4,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      '$usageCount',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 11,
+                      ),
                     ),
                   ),
-                ],
-              ),
+              ],
             ),
-            if (usageCount > 0)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                decoration: BoxDecoration(
-                  color: TraumColors.coralOrange,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  '$usageCount',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 11,
-                  ),
-                ),
-              ),
-          ],
+          ),
         ),
       ),
     );

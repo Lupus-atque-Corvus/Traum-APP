@@ -132,6 +132,16 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String a11yShoppingItemChecked(String name) {
+    return '$name, im Einkaufswagen';
+  }
+
+  @override
+  String a11yShoppingItemUnchecked(String name) {
+    return '$name, nicht im Einkaufswagen';
+  }
+
+  @override
   String get a11yAddCategory => 'Kategorie hinzufügen';
 
   @override
@@ -141,6 +151,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get a11yVideoEntry => 'Video';
+
+  @override
+  String get homeA11yRemoveWidget => 'Widget entfernen';
+
+  @override
+  String get homeA11yResizeWidget => 'Widget-Größe ändern';
 
   @override
   String get confirm => 'Bestätigen';
@@ -521,6 +537,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deleteCompleted => 'Erledigte löschen';
 
   @override
+  String get startShoppingLabel => '🛒  Einkaufen starten';
+
+  @override
+  String get shoppingA11yTemplates => 'Vorlagen';
+
+  @override
+  String get shoppingA11yAddItem => 'Artikel hinzufügen';
+
+  @override
   String get estimatedUpper => 'VORAUSSICHTLICH';
 
   @override
@@ -533,6 +558,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get completeShoppingLabel => '✓  Einkauf abschließen';
+
+  @override
+  String get shoppingBookAsExpense => '→ Als Ausgabe buchen';
+
+  @override
+  String get shoppingBookingInProgress => 'Buchen…';
 
   @override
   String estimatedBudgetLabel(String amount) {
@@ -3968,6 +3999,30 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get mapTemplateCustom => 'Eigene Karte';
+
+  @override
+  String get mapIconBuilding => 'Gebäude';
+
+  @override
+  String get mapIconNature => 'Natur';
+
+  @override
+  String get mapIconFood => 'Essen';
+
+  @override
+  String get mapIconGeneric => 'Karte';
+
+  @override
+  String get mapA11ySwitchMap => 'Karte wechseln';
+
+  @override
+  String get mapA11yToggleViewMode => 'Kartenansicht wechseln';
+
+  @override
+  String get mapA11yResetRotation => 'Ausrichtung zurücksetzen';
+
+  @override
+  String get mapA11yMyLocation => 'Zu meinem Standort';
 
   @override
   String get mapFunctions => 'Funktionen';

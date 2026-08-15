@@ -840,52 +840,64 @@ class _ProfilePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          InkWell(
-            onTap: () async {
-              final now = DateTime.now();
-              final picked = await showDatePicker(
-                context: context,
-                initialDate:
-                    birthDate ?? DateTime(now.year - 25, now.month, now.day),
-                firstDate: DateTime(1920),
-                lastDate: now,
-                builder: (ctx, child) => Theme(
-                  data: ThemeData.dark().copyWith(
-                    colorScheme: const ColorScheme.dark(
-                      primary: TraumColors.coralOrange,
+          Semantics(
+            button: true,
+            label: birthDate == null
+                ? l10n.obBirthDatePick
+                : '${birthDate!.day.toString().padLeft(2, '0')}.${birthDate!.month.toString().padLeft(2, '0')}.${birthDate!.year}',
+            child: ExcludeSemantics(
+              child: InkWell(
+                onTap: () async {
+                  final now = DateTime.now();
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate:
+                        birthDate ??
+                        DateTime(now.year - 25, now.month, now.day),
+                    firstDate: DateTime(1920),
+                    lastDate: now,
+                    builder: (ctx, child) => Theme(
+                      data: ThemeData.dark().copyWith(
+                        colorScheme: const ColorScheme.dark(
+                          primary: TraumColors.coralOrange,
+                        ),
+                      ),
+                      child: child!,
                     ),
+                  );
+                  if (picked != null) onBirthDateChanged(picked);
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
                   ),
-                  child: child!,
+                  decoration: BoxDecoration(
+                    color: TraumColors.surface,
+                    borderRadius: BorderRadius.circular(TraumRadius.card),
+                    border: Border.all(color: TraumColors.surfaceVariant),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.cake_rounded,
+                        color: TraumColors.coralOrange,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        birthDate == null
+                            ? l10n.obBirthDatePick
+                            : '${birthDate!.day.toString().padLeft(2, '0')}.${birthDate!.month.toString().padLeft(2, '0')}.${birthDate!.year}',
+                        style: const TextStyle(
+                          color: TraumColors.onBackground,
+                          fontFamily: 'DMSans',
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              );
-              if (picked != null) onBirthDateChanged(picked);
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              decoration: BoxDecoration(
-                color: TraumColors.surface,
-                borderRadius: BorderRadius.circular(TraumRadius.card),
-                border: Border.all(color: TraumColors.surfaceVariant),
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.cake_rounded,
-                    color: TraumColors.coralOrange,
-                    size: 18,
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    birthDate == null
-                        ? l10n.obBirthDatePick
-                        : '${birthDate!.day.toString().padLeft(2, '0')}.${birthDate!.month.toString().padLeft(2, '0')}.${birthDate!.year}',
-                    style: const TextStyle(
-                      color: TraumColors.onBackground,
-                      fontFamily: 'DMSans',
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
               ),
             ),
           ),
@@ -1824,70 +1836,76 @@ class _SecurityOptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(TraumRadius.card),
-          border: Border.all(color: color.withValues(alpha: 0.4)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: loading
-                  ? Center(
-                      child: SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: color,
+    return Semantics(
+      button: onTap != null,
+      label: '$title, $subtitle',
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              borderRadius: BorderRadius.circular(TraumRadius.card),
+              border: Border.all(color: color.withValues(alpha: 0.4)),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: loading
+                      ? Center(
+                          child: SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: color,
+                            ),
+                          ),
+                        )
+                      : Icon(icon, color: color, size: 26),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          color: onTap != null
+                              ? TraumColors.onBackground
+                              : TraumColors.onBackgroundSubtle,
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
                         ),
                       ),
-                    )
-                  : Icon(icon, color: color, size: 26),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: onTap != null
-                          ? TraumColors.onBackground
-                          : TraumColors.onBackgroundSubtle,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15,
-                    ),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: const TextStyle(
+                          color: TraumColors.onBackgroundMuted,
+                          fontFamily: 'DMSans',
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      color: TraumColors.onBackgroundMuted,
-                      fontFamily: 'DMSans',
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: color.withValues(alpha: 0.7),
+                ),
+              ],
             ),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: color.withValues(alpha: 0.7),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -1945,24 +1963,30 @@ class _NumKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 64,
-        height: 64,
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          shape: BoxShape.circle,
-          border: Border.all(color: TraumColors.surfaceVariant),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: const TextStyle(
-              color: TraumColors.onBackground,
-              fontFamily: 'DMSans',
-              fontSize: 22,
-              fontWeight: FontWeight.w500,
+    return Semantics(
+      button: true,
+      label: label,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              shape: BoxShape.circle,
+              border: Border.all(color: TraumColors.surfaceVariant),
+            ),
+            child: Center(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  color: TraumColors.onBackground,
+                  fontFamily: 'DMSans',
+                  fontSize: 22,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
           ),
         ),
@@ -1978,21 +2002,27 @@ class _DelKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 64,
-        height: 64,
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          shape: BoxShape.circle,
-          border: Border.all(color: TraumColors.surfaceVariant),
-        ),
-        child: const Center(
-          child: Icon(
-            Icons.backspace_outlined,
-            color: TraumColors.onBackgroundMuted,
-            size: 22,
+    return Semantics(
+      button: true,
+      label: AppLocalizations.of(context)!.delete,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              shape: BoxShape.circle,
+              border: Border.all(color: TraumColors.surfaceVariant),
+            ),
+            child: const Center(
+              child: Icon(
+                Icons.backspace_outlined,
+                color: TraumColors.onBackgroundMuted,
+                size: 22,
+              ),
+            ),
           ),
         ),
       ),

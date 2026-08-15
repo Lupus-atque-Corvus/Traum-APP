@@ -138,41 +138,49 @@ class _DailyLogSheetState extends State<DailyLogSheet> {
                   spacing: 8,
                   runSpacing: 8,
                   children: _symptoms.map((s) {
-                    return GestureDetector(
-                      onTap: () async {
-                        await widget.onRemoveSymptom?.call(s.id);
-                        setState(
-                          () => _symptoms.removeWhere((x) => x.id == s.id),
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: TraumColors.periodRose.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: TraumColors.periodRose),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              s.symptom,
-                              style: const TextStyle(
-                                color: TraumColors.periodRose,
-                                fontFamily: 'DMSans',
-                                fontSize: 12,
+                    return Semantics(
+                      button: true,
+                      label: s.symptom,
+                      child: ExcludeSemantics(
+                        child: GestureDetector(
+                          onTap: () async {
+                            await widget.onRemoveSymptom?.call(s.id);
+                            setState(
+                              () => _symptoms.removeWhere((x) => x.id == s.id),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: TraumColors.periodRose.withValues(
+                                alpha: 0.15,
                               ),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: TraumColors.periodRose),
                             ),
-                            const SizedBox(width: 4),
-                            const Icon(
-                              Icons.close_rounded,
-                              color: TraumColors.periodRose,
-                              size: 14,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  s.symptom,
+                                  style: const TextStyle(
+                                    color: TraumColors.periodRose,
+                                    fontFamily: 'DMSans',
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                const Icon(
+                                  Icons.close_rounded,
+                                  color: TraumColors.periodRose,
+                                  size: 14,
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     );
@@ -433,31 +441,40 @@ class _DotRow extends StatelessWidget {
       children: List.generate(count, (index) {
         final i = index + 1;
         final isSelected = selected == i;
-        return GestureDetector(
-          key: ValueKey('${keyPrefix}_$i'),
-          onTap: () => onTap(i),
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isSelected
-                  ? TraumColors.periodRose.withValues(alpha: 0.3)
-                  : TraumColors.surfaceVariant,
-              border: Border.all(
-                color: isSelected ? TraumColors.periodRose : Colors.transparent,
-              ),
-            ),
-            child: Center(
-              child: Text(
-                '$i',
-                style: TextStyle(
+        return Semantics(
+          button: true,
+          selected: isSelected,
+          label: '$i',
+          child: ExcludeSemantics(
+            child: GestureDetector(
+              key: ValueKey('${keyPrefix}_$i'),
+              onTap: () => onTap(i),
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
                   color: isSelected
-                      ? TraumColors.periodRose
-                      : TraumColors.onBackgroundMuted,
-                  fontFamily: 'DMSans',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
+                      ? TraumColors.periodRose.withValues(alpha: 0.3)
+                      : TraumColors.surfaceVariant,
+                  border: Border.all(
+                    color: isSelected
+                        ? TraumColors.periodRose
+                        : Colors.transparent,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    '$i',
+                    style: TextStyle(
+                      color: isSelected
+                          ? TraumColors.periodRose
+                          : TraumColors.onBackgroundMuted,
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -481,27 +498,34 @@ class _Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: selected
-              ? TraumColors.periodRose.withValues(alpha: 0.2)
-              : TraumColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: selected ? TraumColors.periodRose : Colors.transparent,
-          ),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: selected
-                ? TraumColors.periodRose
-                : TraumColors.onBackgroundMuted,
-            fontFamily: 'DMSans',
-            fontSize: 12,
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: label,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+            decoration: BoxDecoration(
+              color: selected
+                  ? TraumColors.periodRose.withValues(alpha: 0.2)
+                  : TraumColors.surfaceVariant,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: selected ? TraumColors.periodRose : Colors.transparent,
+              ),
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                color: selected
+                    ? TraumColors.periodRose
+                    : TraumColors.onBackgroundMuted,
+                fontFamily: 'DMSans',
+                fontSize: 12,
+              ),
+            ),
           ),
         ),
       ),

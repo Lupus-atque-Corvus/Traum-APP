@@ -244,6 +244,7 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                     const SizedBox(width: 8),
                     _circleButton(
                       icon: Icons.layers_outlined,
+                      label: AppLocalizations.of(context)!.mapA11ySwitchMap,
                       onTap: () => _showMapSwitcher(context),
                     ),
                     const SizedBox(width: 8),
@@ -253,6 +254,9 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                         MapViewMode.satellite => Icons.satellite_alt_outlined,
                         MapViewMode.hybrid => Icons.public,
                       },
+                      label: AppLocalizations.of(
+                        context,
+                      )!.mapA11yToggleViewMode,
                       onTap: _cycleViewMode,
                     ),
                   ],
@@ -324,11 +328,18 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
                 if (_rotation != 0) ...[
                   _circleButton(
                     icon: Icons.explore_outlined,
+                    label: AppLocalizations.of(
+                      context,
+                    )!.mapA11yResetRotation,
                     onTap: () => _mapController.rotate(0),
                   ),
                   const SizedBox(height: 10),
                 ],
-                _circleButton(icon: Icons.my_location, onTap: _goToMyLocation),
+                _circleButton(
+                  icon: Icons.my_location,
+                  label: AppLocalizations.of(context)!.mapA11yMyLocation,
+                  onTap: _goToMyLocation,
+                ),
               ],
             ),
           ),
@@ -449,23 +460,33 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     );
   }
 
-  Widget _circleButton({required IconData icon, required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 48,
-        height: 48,
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.3),
-              blurRadius: 8,
+  Widget _circleButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Semantics(
+      button: true,
+      label: label,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                ),
+              ],
             ),
-          ],
+            child: Icon(icon, color: TraumColors.cyanBlue, size: 22),
+          ),
         ),
-        child: Icon(icon, color: TraumColors.cyanBlue, size: 22),
       ),
     );
   }
@@ -476,42 +497,48 @@ class _GraffitiMapScreenState extends ConsumerState<GraffitiMapScreen> {
     required VoidCallback onTap,
     bool primary = false,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              gradient: primary ? TraumColors.gradientCool : null,
-              color: primary ? null : TraumColors.surface,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  blurRadius: 8,
+    return Semantics(
+      button: true,
+      label: label,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  gradient: primary ? TraumColors.gradientCool : null,
+                  color: primary ? null : TraumColors.surface,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: Icon(
-              icon,
-              color: primary ? Colors.white : TraumColors.cyanBlue,
-              size: 24,
-            ),
+                child: Icon(
+                  icon,
+                  color: primary ? Colors.white : TraumColors.cyanBlue,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontFamily: 'DMSans',
+                  color: TraumColors.onBackground,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: const TextStyle(
-              fontFamily: 'DMSans',
-              color: TraumColors.onBackground,
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

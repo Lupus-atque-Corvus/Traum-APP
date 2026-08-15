@@ -320,6 +320,18 @@ abstract class AppLocalizations {
   /// **'{name}, heute noch nicht erledigt'**
   String a11yHabitNotDoneToday(String name);
 
+  /// No description provided for @a11yShoppingItemChecked.
+  ///
+  /// In de, this message translates to:
+  /// **'{name}, im Einkaufswagen'**
+  String a11yShoppingItemChecked(String name);
+
+  /// No description provided for @a11yShoppingItemUnchecked.
+  ///
+  /// In de, this message translates to:
+  /// **'{name}, nicht im Einkaufswagen'**
+  String a11yShoppingItemUnchecked(String name);
+
   /// No description provided for @a11yAddCategory.
   ///
   /// In de, this message translates to:
@@ -337,6 +349,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Video'**
   String get a11yVideoEntry;
+
+  /// No description provided for @homeA11yRemoveWidget.
+  ///
+  /// In de, this message translates to:
+  /// **'Widget entfernen'**
+  String get homeA11yRemoveWidget;
+
+  /// No description provided for @homeA11yResizeWidget.
+  ///
+  /// In de, this message translates to:
+  /// **'Widget-Größe ändern'**
+  String get homeA11yResizeWidget;
 
   /// No description provided for @confirm.
   ///
@@ -1076,6 +1100,24 @@ abstract class AppLocalizations {
   /// **'Erledigte löschen'**
   String get deleteCompleted;
 
+  /// No description provided for @startShoppingLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'🛒  Einkaufen starten'**
+  String get startShoppingLabel;
+
+  /// No description provided for @shoppingA11yTemplates.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlagen'**
+  String get shoppingA11yTemplates;
+
+  /// No description provided for @shoppingA11yAddItem.
+  ///
+  /// In de, this message translates to:
+  /// **'Artikel hinzufügen'**
+  String get shoppingA11yAddItem;
+
   /// No description provided for @estimatedUpper.
   ///
   /// In de, this message translates to:
@@ -1099,6 +1141,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'✓  Einkauf abschließen'**
   String get completeShoppingLabel;
+
+  /// No description provided for @shoppingBookAsExpense.
+  ///
+  /// In de, this message translates to:
+  /// **'→ Als Ausgabe buchen'**
+  String get shoppingBookAsExpense;
+
+  /// No description provided for @shoppingBookingInProgress.
+  ///
+  /// In de, this message translates to:
+  /// **'Buchen…'**
+  String get shoppingBookingInProgress;
 
   /// No description provided for @estimatedBudgetLabel.
   ///
@@ -7597,6 +7651,54 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Eigene Karte'**
   String get mapTemplateCustom;
+
+  /// No description provided for @mapIconBuilding.
+  ///
+  /// In de, this message translates to:
+  /// **'Gebäude'**
+  String get mapIconBuilding;
+
+  /// No description provided for @mapIconNature.
+  ///
+  /// In de, this message translates to:
+  /// **'Natur'**
+  String get mapIconNature;
+
+  /// No description provided for @mapIconFood.
+  ///
+  /// In de, this message translates to:
+  /// **'Essen'**
+  String get mapIconFood;
+
+  /// No description provided for @mapIconGeneric.
+  ///
+  /// In de, this message translates to:
+  /// **'Karte'**
+  String get mapIconGeneric;
+
+  /// No description provided for @mapA11ySwitchMap.
+  ///
+  /// In de, this message translates to:
+  /// **'Karte wechseln'**
+  String get mapA11ySwitchMap;
+
+  /// No description provided for @mapA11yToggleViewMode.
+  ///
+  /// In de, this message translates to:
+  /// **'Kartenansicht wechseln'**
+  String get mapA11yToggleViewMode;
+
+  /// No description provided for @mapA11yResetRotation.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausrichtung zurücksetzen'**
+  String get mapA11yResetRotation;
+
+  /// No description provided for @mapA11yMyLocation.
+  ///
+  /// In de, this message translates to:
+  /// **'Zu meinem Standort'**
+  String get mapA11yMyLocation;
 
   /// No description provided for @mapFunctions.
   ///

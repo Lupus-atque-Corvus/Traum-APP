@@ -105,77 +105,89 @@ class NoteListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      onLongPress: onLongPress,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: TraumColors.surface,
-          borderRadius: BorderRadius.circular(TraumRadius.card),
-          border: Border.all(color: TraumColors.surfaceVariant),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              note.isDaily ? Icons.today_rounded : Icons.description_outlined,
-              color: kNotesAccent.withValues(alpha: 0.9),
-              size: 20,
+    final title = note.title.isEmpty ? '—' : note.title;
+    return Semantics(
+      button: true,
+      label: title,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
+          onLongPress: onLongPress,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    note.title.isEmpty ? '—' : note.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      color: TraumColors.onBackground,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  if (snippet != null && snippet!.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Text(
-                        snippet!,
-                        maxLines: 2,
+            decoration: BoxDecoration(
+              color: TraumColors.surface,
+              borderRadius: BorderRadius.circular(TraumRadius.card),
+              border: Border.all(color: TraumColors.surfaceVariant),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  note.isDaily
+                      ? Icons.today_rounded
+                      : Icons.description_outlined,
+                  color: kNotesAccent.withValues(alpha: 0.9),
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontFamily: 'DMSans',
-                          color: TraumColors.onBackgroundMuted,
-                          fontSize: 12.5,
+                          color: TraumColors.onBackground,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
+                      if (snippet != null && snippet!.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            snippet!,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontFamily: 'DMSans',
+                              color: TraumColors.onBackgroundMuted,
+                              fontSize: 12.5,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                if (note.isPinned)
+                  const Padding(
+                    padding: EdgeInsets.only(left: 8),
+                    child: Icon(
+                      Icons.push_pin_rounded,
+                      size: 15,
+                      color: TraumColors.onBackgroundMuted,
                     ),
-                ],
-              ),
+                  ),
+                if (note.isBookmarked)
+                  const Padding(
+                    padding: EdgeInsets.only(left: 8),
+                    child: Icon(
+                      Icons.bookmark_rounded,
+                      size: 15,
+                      color: kNotesAccent,
+                    ),
+                  ),
+              ],
             ),
-            if (note.isPinned)
-              const Padding(
-                padding: EdgeInsets.only(left: 8),
-                child: Icon(
-                  Icons.push_pin_rounded,
-                  size: 15,
-                  color: TraumColors.onBackgroundMuted,
-                ),
-              ),
-            if (note.isBookmarked)
-              const Padding(
-                padding: EdgeInsets.only(left: 8),
-                child: Icon(
-                  Icons.bookmark_rounded,
-                  size: 15,
-                  color: kNotesAccent,
-                ),
-              ),
-          ],
+          ),
         ),
       ),
     );
@@ -199,41 +211,51 @@ class NotesPillButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-        decoration: BoxDecoration(
-          color: filled
-              ? kNotesAccent.withValues(alpha: 0.18)
-              : TraumColors.surface,
-          borderRadius: BorderRadius.circular(TraumRadius.chip),
-          border: Border.all(
-            color: filled
-                ? kNotesAccent.withValues(alpha: 0.4)
-                : TraumColors.surfaceVariant,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 16,
-              color: filled ? kNotesAccent : TraumColors.onBackgroundMuted,
-            ),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(
-                fontFamily: 'DMSans',
-                color: filled ? kNotesAccent : TraumColors.onBackgroundMuted,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
+    return Semantics(
+      button: true,
+      label: label,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+            decoration: BoxDecoration(
+              color: filled
+                  ? kNotesAccent.withValues(alpha: 0.18)
+                  : TraumColors.surface,
+              borderRadius: BorderRadius.circular(TraumRadius.chip),
+              border: Border.all(
+                color: filled
+                    ? kNotesAccent.withValues(alpha: 0.4)
+                    : TraumColors.surfaceVariant,
               ),
             ),
-          ],
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  size: 16,
+                  color: filled
+                      ? kNotesAccent
+                      : TraumColors.onBackgroundMuted,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontFamily: 'DMSans',
+                    color: filled
+                        ? kNotesAccent
+                        : TraumColors.onBackgroundMuted,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

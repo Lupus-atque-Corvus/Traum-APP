@@ -1,12 +1,57 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.9+119** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.1.10+120** · schemaVersion **28**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-15 — v1.1.9, sichere Paket-Updates — Rest bewusst zurückgestellt)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-15 — v1.1.10, Barrierefreiheit: die restlichen 9 Fundstellen)
+
+**Abschluss der 48-Fundstellen-Liste aus dem 10.08.-Audit: v1.1.7 hatte 39 gefixt, hier die
+restlichen 9 gelisteten Dateien (tatsächlich mehr Einzelfundstellen, da mehrere Dateien
+2+ Treffer hatten) — die komplette Liste ist damit durchgearbeitet.**
+
+1. **Gleiches etabliertes Muster wie v1.1.7**, konsequent angewendet: `Semantics(button:,
+   label:) + ExcludeSemantics(child:)` außen um Container-wrappende GestureDetector/InkWell,
+   Label individuell aus dem sichtbaren Inhalt hergeleitet. Über alle 20 gelisteten Dateien:
+   `graffiti_map/{create_collection_screen (3), dynamic_marker_sheet, graffiti_map_screen (2:
+   _circleButton + _actionButton, je an mehreren Aufrufstellen genutzt), marker_detail_screen}.dart`,
+   `home/{home_edit_overlay (2: Entfernen-/Resize-Handles), home_widget_frame}.dart`,
+   `lock/pin_lock_screen.dart` (PIN-Numpad), `notes/{notes_search_screen (2),
+   widgets/notes_common (2)}.dart`, `nutrition/{amount_entry_sheet, shopping/
+   {checkout_sheet (3), list_view (3), mode_screen (2)}}.dart`, `onboarding/{onboarding_screen
+   (3: PIN-Numpad + Security-Options-Karte + Geburtsdatum-Picker), widgets/training_setup_page}.dart`,
+   `period_tracking/daily_log_sheet.dart` (3), `settings_screen.dart` (4: Uhrzeit-Chip,
+   Währungs-Picker, PIN-Numpad ×2), `substances/database_tab.dart` (3), `training/
+   {exercise_picker_screen (2), muscle_heatmap_screen (2), routines_screen}.dart`.
+2. **🔴 Wichtigster Einzelfund: `home_widget_frame.dart` hatte schon eine äußere
+   `Semantics(button:, label: title)`-Hülle aus einer früheren Runde — aber ohne
+   `ExcludeSemantics`.** Das betrifft JEDE der 68 gerade erst in v1.1.8 lokalisierten
+   Home-Kacheln: TalkBack merged bisher den inneren Titel-Text (und was die Kachel selbst an
+   Semantik mitbringt) als zusätzliche Knoten neben der äußeren Beschriftung — der Titel wurde
+   doppelt vorgelesen. Jetzt mit `ExcludeSemantics` behoben.
+3. **Eine bewusste Ausnahme vom Standardmuster:** `routines_screen.dart`s `_PlanCard` bekommt
+   NUR das `button`-Trait ohne `ExcludeSemantics`/Label-Override (wie `TraumCard`) — die Karte
+   enthält einen eigenen, unabhängig antippbaren `TextButton` ("Aktivieren"); `ExcludeSemantics`
+   hätte dessen eigene Ansage stillschweigend verschluckt.
+4. **Nebenbei 3 weitere hartcodierte deutsche Strings gefixt** (aufgefallen, weil der exakte
+   Text ohnehin fürs Semantics-Label gebraucht wurde): `shopping_checkout_sheet.dart`s
+   Buchen-Button, `shopping_list_view.dart`s „Einkaufen starten"-Button, sowie die beiden neuen
+   `_CircleAction`-Label in `shopping_list_view.dart`. Neue ARB-Keys entsprechend ergänzt.
+5. **Jede Datei einzeln mit `dart format` auf Syntaxfehler geprüft**, bevor zur nächsten
+   gewechselt wurde — mehrere Klammer-Ungleichgewichte durch die zusätzliche Verschachtelung
+   dabei sofort gefunden und korrigiert (nicht erst bei der finalen Analyse).
+
+`flutter analyze` → **0 Issues**. `flutter test` → **586/586 grün**. Release-Build erfolgreich.
+Rein additive Semantics-Änderungen (bis auf die 3 Text-Fixes), kein Layout-/Verhaltens-Risiko.
+
+**Damit ist die komplette 48-Fundstellen-Liste aus dem 10.08.-Audit abgearbeitet** (39 in
+v1.1.7 + 9 gelistete Dateien hier, tatsächlich ~48 Einzelfundstellen insgesamt).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-15 — v1.1.9, sichere Paket-Updates — Rest bewusst zurückgestellt)
 
 **Letzter Punkt der "alles andere"-Liste: 105 veraltete Pakete. Bewusst NICHT komplett
 abgearbeitet — siehe Begründung unten.**

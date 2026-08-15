@@ -717,14 +717,20 @@ class _NotifTile extends StatelessWidget {
         ),
       ),
       subtitle: time != null && value
-          ? GestureDetector(
-              onTap: onTimeTap,
-              child: Text(
-                l10n.notifDailyAt(time!),
-                style: const TextStyle(
-                  color: TraumColors.coralOrange,
-                  fontFamily: 'DMSans',
-                  fontSize: 12,
+          ? Semantics(
+              button: true,
+              label: l10n.notifDailyAt(time!),
+              child: ExcludeSemantics(
+                child: GestureDetector(
+                  onTap: onTimeTap,
+                  child: Text(
+                    l10n.notifDailyAt(time!),
+                    style: const TextStyle(
+                      color: TraumColors.coralOrange,
+                      fontFamily: 'DMSans',
+                      fontSize: 12,
+                    ),
+                  ),
                 ),
               ),
             )
@@ -1065,35 +1071,42 @@ class _CurrencySection extends ConsumerWidget {
           runSpacing: 8,
           children: _currencies.map((c) {
             final selected = c == current;
-            return GestureDetector(
-              onTap: () {
-                ref.read(currencySymbolProvider.notifier).set(c);
-                Navigator.pop(ctx);
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: selected
-                      ? TraumColors.amberGold.withValues(alpha: 0.2)
-                      : TraumColors.surface,
-                  borderRadius: BorderRadius.circular(TraumRadius.chip),
-                  border: Border.all(
-                    color: selected
-                        ? TraumColors.amberGold
-                        : TraumColors.surfaceVariant,
-                  ),
-                ),
-                child: Text(
-                  c,
-                  style: TextStyle(
-                    color: selected
-                        ? TraumColors.amberGold
-                        : TraumColors.onBackground,
-                    fontFamily: 'DMSans',
-                    fontWeight: FontWeight.w600,
+            return Semantics(
+              button: true,
+              selected: selected,
+              label: c,
+              child: ExcludeSemantics(
+                child: GestureDetector(
+                  onTap: () {
+                    ref.read(currencySymbolProvider.notifier).set(c);
+                    Navigator.pop(ctx);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? TraumColors.amberGold.withValues(alpha: 0.2)
+                          : TraumColors.surface,
+                      borderRadius: BorderRadius.circular(TraumRadius.chip),
+                      border: Border.all(
+                        color: selected
+                            ? TraumColors.amberGold
+                            : TraumColors.surfaceVariant,
+                      ),
+                    ),
+                    child: Text(
+                      c,
+                      style: TextStyle(
+                        color: selected
+                            ? TraumColors.amberGold
+                            : TraumColors.onBackground,
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -2820,21 +2833,27 @@ class _PinSetupSheetState extends State<_PinSetupSheet> {
             const SizedBox(width: 10),
             _key('0'),
             const SizedBox(width: 10),
-            GestureDetector(
-              onTap: _removeDigit,
-              child: Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: TraumColors.surface,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: TraumColors.surfaceVariant),
-                ),
-                child: const Center(
-                  child: Icon(
-                    Icons.backspace_outlined,
-                    color: TraumColors.onBackgroundMuted,
-                    size: 20,
+            Semantics(
+              button: true,
+              label: AppLocalizations.of(context)!.delete,
+              child: ExcludeSemantics(
+                child: GestureDetector(
+                  onTap: _removeDigit,
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: TraumColors.surface,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: TraumColors.surfaceVariant),
+                    ),
+                    child: const Center(
+                      child: Icon(
+                        Icons.backspace_outlined,
+                        color: TraumColors.onBackgroundMuted,
+                        size: 20,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -2859,24 +2878,30 @@ class _PinSetupSheetState extends State<_PinSetupSheet> {
         .toList(),
   );
 
-  Widget _key(String d) => GestureDetector(
-    onTap: () => _addDigit(d),
-    child: Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        color: TraumColors.surface,
-        shape: BoxShape.circle,
-        border: Border.all(color: TraumColors.surfaceVariant),
-      ),
-      child: Center(
-        child: Text(
-          d,
-          style: const TextStyle(
-            color: TraumColors.onBackground,
-            fontFamily: 'DMSans',
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
+  Widget _key(String d) => Semantics(
+    button: true,
+    label: d,
+    child: ExcludeSemantics(
+      child: GestureDetector(
+        onTap: () => _addDigit(d),
+        child: Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: TraumColors.surface,
+            shape: BoxShape.circle,
+            border: Border.all(color: TraumColors.surfaceVariant),
+          ),
+          child: Center(
+            child: Text(
+              d,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
         ),
       ),
