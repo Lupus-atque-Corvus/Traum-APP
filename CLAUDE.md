@@ -6,6 +6,56 @@
 
 ---
 
+## 📋 OFFENE PUNKTE (Stand 2026-08-17 — hier in der nächsten Session weitermachen)
+
+**Braucht dein Handy (adb-Verbindung):**
+- [ ] **105-Pakete-Update, Rest.** 59 von 105 sind in v1.1.9 bereits sicher aktualisiert
+  (nur Versionen innerhalb bestehender `^x.y.z`-Constraints). Offen: ~46 Pakete mit
+  Major-Versionssprüngen — u. a. `flutter_local_notifications` (18.0.1→22.3.0, **das
+  Paket, das gerade erst den ProGuard/Gson-Bug in v1.1.4 verursacht hat** — hier besonders
+  vorsichtig testen), `health`, `permission_handler`, `camera`, `google_mlkit_text_recognition`,
+  `connectivity_plus`, `share_plus`, `geocoding`, `device_info_plus`, `sqlite3`,
+  `flutter_secure_storage`, `flutter_timezone`, `open_file`, `package_info_plus`. Eigener
+  Nachmittag, gruppenweise (ein Paket/eine kleine Gruppe nach der anderen), nach jeder Gruppe
+  `flutter analyze` + `flutter test` + Release-Build + **echter Gerätetest**, bevor die
+  nächste Gruppe angefasst wird.
+- [ ] **Zweiter, nie bestätigter Fehler aus der Live-Diagnose (v1.1.4):**
+  `PlatformException(500, ...Integer.intValue()... null...)`, kein Stacktrace. Verdacht
+  (nicht bestätigt): Alt-/Restdaten von `flutter_local_notifications` aus den monatelangen
+  fehlgeschlagenen Reschedule-Läufen vor dem ProGuard-Fix. `run-as` funktioniert auf dem
+  signierten Release-Build nicht (nicht debuggable) — kann nicht direkt inspiziert werden.
+  **Falls dir eine konkrete Erinnerung/Benachrichtigung mal nicht kommt: bitte melden**, dann
+  gezielt mit `adb logcat` nachgehen.
+- [ ] **Kamera-Referenz-Overlay live durchspielen** (Berechtigung, Aufnahme, App-Wechsel
+  während offener Kamera) — nur am echten Gerät testbar.
+
+**Braucht einen Mac:**
+- [ ] **iOS-Homescreen-Widgets** — kein Build/Test ohne Mac möglich.
+
+**Reine Entscheidung/Setup, kein Code-Risiko:**
+- [ ] **Play-Store-Signing.** `android/key.properties` existiert nicht, `traum-release-key.jks`
+  liegt bereit aber unverdrahtet — alle bisherigen Releases sind debug-signiert (siehe
+  Kommentar in `android/app/build.gradle.kts`). Für privaten Sideload-Gebrauch unkritisch,
+  nur relevant falls je ein echter Play-Store-Release geplant ist.
+- [ ] **Äußeres Workspace-Repo** (`C:\Users\Lupus\Desktop\Traum\`, NICHT `traum_app`) hat noch
+  uncommittete Änderungen aus der Icon-Pipeline-Arbeit (`exercise_icons_workspace/`
+  batch-Umbenennungen, `remaining_pool.txt`, `README.md`). Bewusst nicht automatisch
+  committet — nur `traum_app` bekommt die "immer Release"-Behandlung. Falls gewünscht, im
+  äußeren Repo selbst committen (kurz absprechen, was rein soll).
+
+**Niedrigprior, rein optional:**
+- [ ] **App-weites Tap-Target-Audit (<44dp).** Aus einer frühen Audit-Runde, nie
+  systematisch abgearbeitet — separate Aufgabe von den jetzt abgeschlossenen 48
+  Semantics-Fundstellen.
+
+**Bereits erledigt in dieser Session** (zur Einordnung, nicht mehr offen): Update-Dialog-
+Hotfix (v1.1.5), `dart format` (in v1.1.6er-Commit), SettingsScreen-Testabdeckung (v1.1.6),
+alle 48 Barrierefreiheits-Fundstellen (v1.1.7 + v1.2.0), Home-Widget-Katalog vollständig
+lokalisiert (v1.1.8), 59 sichere Paket-Updates (v1.1.9), Diary-Header-Vereinheitlichung
+geprüft (kein sicherer Kandidat gefunden, keine Änderung nötig).
+
+---
+
 ## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-15 — v1.2.0, Barrierefreiheit: die restlichen 9 Fundstellen)
 
 **Abschluss der 48-Fundstellen-Liste aus dem 10.08.-Audit: v1.1.7 hatte 39 gefixt, hier die
