@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite3;
@@ -154,7 +155,7 @@ void main() {
     // Touch the DB to force Drift to run the full migration/beforeOpen chain.
     await db.customSelect('SELECT 1').get();
 
-    expect(db.schemaVersion, 28);
+    expect(db.schemaVersion, 29);
 
     // Pre-existing rows survived, with later-added columns at their default.
     final exercise = await (db.select(
@@ -198,6 +199,23 @@ void main() {
         )
         .get();
     expect(indexes, hasLength(2));
+
+    // v29: the diary_entries unique index is no longer partial — the real
+    // upsertEntry() flow (as used by DiaryCaptureSheet._save()) must work
+    // end-to-end after a full v1->latest migration chain, not just in
+    // isolation (see diary_upsert_migration_v29_test.dart for the focused
+    // regression test of the underlying bug).
+    await db.diaryDao.upsertEntry(
+      DiaryEntriesCompanion(
+        diaryId: Value(diaries.single.id),
+        date: const Value('2026-08-18'),
+        mediaPath: const Value('/tmp/legacy-chain.jpg'),
+        mediaType: const Value('photo'),
+        note: const Value('voller Migrationspfad'),
+        createdAt: Value(DateTime(2026, 8, 18)),
+        updatedAt: Value(DateTime(2026, 8, 18)),
+      ),
+    );
 
     await db.close();
   });

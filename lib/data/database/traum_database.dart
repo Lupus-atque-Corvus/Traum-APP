@@ -209,7 +209,7 @@ class TraumDatabase extends _$TraumDatabase {
   MarkerPhotosDao get markerPhotosDao => MarkerPhotosDao(this);
 
   @override
-  int get schemaVersion => 28;
+  int get schemaVersion => 29;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -683,6 +683,9 @@ class TraumDatabase extends _$TraumDatabase {
       if (from < 28) {
         await _fixDiaryEntryDuplicates();
       }
+      if (from < 29) {
+        await _fixDiaryEntryUpsertConflictTarget();
+      }
     },
   );
 
@@ -730,6 +733,10 @@ class TraumDatabase extends _$TraumDatabase {
   /// Wird an zwei Stellen aufgerufen: hier in der v27→v28-Migration
   /// (Bestandsinstallationen) und bei Neuinstallationen **nach** dem
   /// Diary-Seeder (`main.dart`) — dort läuft keine Migration.
+  ///
+  /// Der Unique-Index war bis v28 fälschlich PARTIAL (`WHERE diary_id IS NOT
+  /// NULL`) — siehe die v28→v29-Migration weiter unten, die genau das für
+  /// Bestandsinstallationen nachträglich repariert.
   Future<void> ensureDiaryEntryIndexes() => _fixDiaryEntryDuplicates();
 
   Future<void> _fixDiaryEntryDuplicates() async {
@@ -740,14 +747,47 @@ class TraumDatabase extends _$TraumDatabase {
       '  WHERE diary_id IS NOT NULL GROUP BY diary_id, date'
       ')',
     );
+    // NICHT partial (kein `WHERE diary_id IS NOT NULL`) — siehe
+    // v28→v29-Migration für den Grund. `NULL` gilt in SQLite-Unique-Indizes
+    // ohnehin als von jedem anderen `NULL` verschieden, ein Legacy-Eintrag
+    // ohne `diary_id` kollidiert also auch ohne die Partial-Klausel nicht.
     await customStatement(
       'CREATE UNIQUE INDEX IF NOT EXISTS idx_diary_entries_diary_date '
-      'ON diary_entries (diary_id, date) WHERE diary_id IS NOT NULL',
+      'ON diary_entries (diary_id, date)',
     );
     await customStatement(
       'CREATE INDEX IF NOT EXISTS idx_diary_entries_diary_created '
       'ON diary_entries (diary_id, created_at)',
     );
+  }
+
+  /// Behebt einen Bug, der JEDES Speichern eines Tagebuch-Eintrags auf jeder
+  /// Bestandsinstallation (jede DB, die je durch die v27→v28-Migration lief)
+  /// scheitern ließ: `DiaryDao.upsertEntry()` gibt SQLite einen
+  /// `ON CONFLICT(diary_id, date)`-Zielindex ohne `WHERE`-Klausel vor, aber
+  /// der oben in v28 erzeugte Unique-Index war PARTIAL
+  /// (`WHERE diary_id IS NOT NULL`). SQLite muss den Ziel-Index beim
+  /// Vorbereiten des Statements exakt auflösen (Spalten UND `WHERE`-Klausel);
+  /// ohne Übereinstimmung wirft es sofort
+  /// `"ON CONFLICT clause does not match any PRIMARY KEY or UNIQUE
+  /// constraint"` — unabhängig davon, ob überhaupt ein echter Konflikt
+  /// vorliegt. Betraf damit ausnahmslos den ALLERERSTEN Speichern-Versuch
+  /// nach einem Foto/Video, nicht nur einen zweiten Eintrag für denselben
+  /// Tag — reproduziert und verifiziert in
+  /// `test/data/database/diary_upsert_migration_v29_test.dart`.
+  ///
+  /// Fix: den alten partiellen Index droppen und über die jetzt
+  /// nicht-partielle `_fixDiaryEntryDuplicates()` neu anlegen — damit stimmen
+  /// Bestandsinstallationen und `createAll()`-Neuinstallationen (die über
+  /// `uniqueKeys` in `DiaryEntries` ohnehin schon einen nicht-partiellen
+  /// `UNIQUE`-Constraint hatten) exakt überein, und `DiaryDao.upsertEntry()`s
+  /// `target: [diaryId, date]` (ohne `targetCondition`) löst auf beiden
+  /// Pfaden korrekt auf.
+  Future<void> _fixDiaryEntryUpsertConflictTarget() async {
+    await customStatement(
+      'DROP INDEX IF EXISTS idx_diary_entries_diary_date',
+    );
+    await _fixDiaryEntryDuplicates();
   }
 
   /// Führt von einem einzelnen impliziten Tagebuch zu mehreren benannten

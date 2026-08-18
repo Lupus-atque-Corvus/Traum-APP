@@ -1,7 +1,7 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.2.0+120** · schemaVersion **28**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.2.1+121** · schemaVersion **29**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
@@ -56,7 +56,55 @@ geprüft (kein sicherer Kandidat gefunden, keine Änderung nötig).
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-15 — v1.2.0, Barrierefreiheit: die restlichen 9 Fundstellen)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-18 — v1.2.1, Tagebuch-Speichern-Bug auf jedem Bestandsgerät)
+
+**Erste echte Live-Nutzung des Tagebuch-Kamera-Flows (seit Phase 1 als offener, nie am echten
+Gerät getesteter Punkt geführt) fand einen kritischen Bug: nach Foto/Video-Aufnahme passierte
+beim Antippen von "Speichern" im "Speichern und Notizen"-Sheet nichts — kein Fehler, keine
+Navigation, kein gespeicherter Eintrag.**
+
+1. **🔴 Root Cause per `systematic-debugging` gefunden, nicht geraten — betraf JEDES
+   Bestandsgerät, nicht nur einen Sonderfall.** `DiaryDao.upsertEntry()`
+   (`diary_dao.dart`) gibt SQLite ein `ON CONFLICT(diary_id, date)`-Ziel ohne `WHERE`-Klausel
+   vor. Der reale Unique-Index, den die v27→v28-Migration (v0.9.4) auf jedem je aktualisierten
+   Gerät angelegt hatte, war aber fälschlich PARTIAL (`WHERE diary_id IS NOT NULL`) — nur
+   `createAll()`-Neuinstallationen bekamen über `uniqueKeys` in `DiaryEntries` einen
+   nicht-partiellen Constraint und blieben verschont. SQLite muss den `ON CONFLICT`-Zielindex
+   beim Vorbereiten des Statements exakt auflösen (Spalten UND `WHERE`-Klausel) — bei einer
+   Abweichung wirft es sofort `"ON CONFLICT clause does not match any PRIMARY KEY or UNIQUE
+   constraint"`, unabhängig davon, ob überhaupt ein echter Konflikt vorliegt. Traf damit
+   ausnahmslos den ALLERERSTEN Speichern-Versuch nach einem Foto/Video auf jedem Gerät, das je
+   durch die v28-Migration gelaufen ist — nicht erst beim zweiten Eintrag für denselben Tag.
+   Die Exception blieb unsichtbar: `DiaryCaptureSheet._save()` hat ein `try {…} finally {…}` ohne
+   `catch`, und da `ElevatedButton.onPressed`-Callbacks nicht awaited werden, wird der
+   abgelehnte Future zu einem unbehandelten Async-Fehler — kein Dialog, keine Snackbar, der
+   Spinner setzt sich einfach zurück.
+2. **Fix: beide Schema-Erzeugungspfade auf denselben, nicht-partiellen Unique-Index
+   vereinheitlicht**, statt einseitig eine `targetCondition` zu ergänzen (Drifts `DoUpdate`
+   böte das an, hätte aber die beiden Pfade dauerhaft auseinanderlaufen lassen).
+   `_fixDiaryEntryDuplicates()` erzeugt den Index jetzt ohne die Partial-Klausel (SQLite behandelt
+   `NULL` in Unique-Indizes ohnehin als von jedem anderen `NULL` verschieden — die Klausel war
+   unnötige Vorsicht, keine Notwendigkeit). **schemaVersion 28→29:** neuer Migrationsschritt
+   droppt den alten partiellen Index auf Bestandsgeräten und legt ihn nicht-partiell neu an
+   (`_fixDiaryEntryUpsertConflictTarget()`). `DiaryDao.upsertEntry()` selbst blieb unverändert —
+   sobald beide Pfade übereinstimmen, löst das bestehende `target: [diaryId, date]` korrekt auf.
+3. **TDD, wie vom Projekt vorgeschrieben:** neuer
+   `test/data/database/diary_upsert_migration_v29_test.dart` seedet eine reale v28-Datenbank
+   (inkl. des alten partiellen Index) und reproduziert den exakten `SqliteException`-Fehler des
+   Nutzers 1:1 — schlug vor dem Fix fehl, ist jetzt grün. Zusätzlich
+   `legacy_v1_migration_test.dart` (kompletter v1→aktuell-Kettentest) um einen echten
+   `upsertEntry()`-Aufruf am Ende erweitert, damit auch der volle Migrationspfad end-to-end
+   geprüft ist, nicht nur der isolierte v28→v29-Schritt.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **588/588 grün** (586 vorher + 2 neu).
+**Nicht mehr live am Emulator nachvollzogen** (Emulator lief unter starker Ressourcen-Konkurrenz
+auf dieser Maschine in eine wiederkehrende "System UI isn't responding"-ANR-Schleife) — die
+automatisierten Migrationstests reproduzieren aber die exakte, real gemeldete SQLite-Exception
+und beweisen den Fix direkt, nicht nur indirekt.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-15 — v1.2.0, Barrierefreiheit: die restlichen 9 Fundstellen)
 
 **Abschluss der 48-Fundstellen-Liste aus dem 10.08.-Audit: v1.1.7 hatte 39 gefixt, hier die
 restlichen 9 gelisteten Dateien (tatsächlich mehr Einzelfundstellen, da mehrere Dateien
