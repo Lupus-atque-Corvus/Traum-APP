@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:home_widget/home_widget.dart';
 
 import 'core/navigation/router.dart';
+import 'core/platform/desktop.dart';
 import 'core/navigation/routes.dart';
 import 'core/providers/preferences_provider.dart';
 import 'core/theme/traum_theme.dart';
@@ -65,11 +66,16 @@ class _TraumAppState extends ConsumerState<TraumApp> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkStartupLock());
     // Navigate to the route that triggered the widget tap (cold start).
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkWidgetDeepLink());
-    // iOS: handle widgetURL launches + taps via home_widget.
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _checkWidgetUriLaunch(),
-    );
-    _widgetClickSub = HomeWidget.widgetClicked.listen(_onWidgetUri);
+    // iOS: handle widgetURL launches + taps via home_widget. No desktop
+    // equivalent exists (no home-screen widgets on Windows/Linux) — the
+    // `home_widget` package has no desktop platform implementation at all,
+    // so `widgetClicked` throws MissingPluginException on first listen.
+    if (!isDesktop) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _checkWidgetUriLaunch(),
+      );
+      _widgetClickSub = HomeWidget.widgetClicked.listen(_onWidgetUri);
+    }
   }
 
   @override

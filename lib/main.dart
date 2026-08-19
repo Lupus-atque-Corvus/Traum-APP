@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'core/notifications/notification_scheduler.dart';
 import 'core/notifications/notification_service.dart';
+import 'core/platform/desktop.dart';
 import 'core/providers/database_provider.dart';
 import 'core/providers/preferences_provider.dart';
 import 'core/services/crash_log_service.dart';
@@ -77,7 +78,14 @@ Future<void> _runApp() async {
   // launch except the very first this was pure overhead before the first
   // frame could even be drawn.
   WidgetsBinding.instance.addPostFrameCallback((_) async {
-    await Future.wait([WidgetDataService.init(), NotificationService.init()]);
+    // Home-screen widgets and their WorkManager-driven background refresh
+    // have no desktop equivalent (Android/iOS home screens don't exist on
+    // Windows/Linux) — skipped entirely there rather than attempting
+    // platform-channel calls with no desktop implementation.
+    if (!isDesktop) {
+      await WidgetDataService.init();
+    }
+    await NotificationService.init();
     // Rebuild every scheduled notification from current DB/prefs state on
     // every cold start — not just when a Settings toggle or medication is
     // touched. Without this, reminders configured in a previous app version
@@ -86,8 +94,10 @@ Future<void> _runApp() async {
     // whatever they were (or weren't) until the user happened to touch a
     // notification setting again, which for most users is never.
     await rescheduleAllNotifications(container);
-    // Register the periodic background widget refresh (internally guarded).
-    await registerWidgetPeriodicRefresh();
+    if (!isDesktop) {
+      // Register the periodic background widget refresh (internally guarded).
+      await registerWidgetPeriodicRefresh();
+    }
 
     // ExerciseSeeder must finish before ExerciseLibrarySeeder runs: the latter
     // looks up existing exercises by name to avoid inserting duplicates, so it
