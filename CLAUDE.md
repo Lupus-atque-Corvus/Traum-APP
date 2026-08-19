@@ -1,7 +1,7 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.2.3+123** · schemaVersion **29**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.3.0+124** · schemaVersion **29**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
@@ -56,7 +56,79 @@ geprüft (kein sicherer Kandidat gefunden, keine Änderung nötig).
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-19 — v1.2.3, echtes App-Icon auf allen 4 Plattformen)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-19 — v1.3.0, Geräte-zu-Geräte-Backup-Übertragung im LAN)
+
+**Auf Nutzerwunsch: Backups lassen sich jetzt direkt zwischen zwei TRAUM-Geräten im selben WLAN
+übertragen — ohne Cloud, Kabel oder manuelles Datei-Teilen, in jede Richtung (Handy↔Handy,
+Handy↔Desktop, Desktop↔Desktop), für Android/iOS/Windows/Linux. Architektur an LocalSend
+angelehnt (Flutter-App, reines LAN-REST-Protokoll, kein Signaling-Server), NICHT an PairDrop
+(Node.js+WebRTC, vom Nutzer als Ausgangsinspiration genannt, aber nicht direkt einbettbar).**
+
+1. **Protokoll:** Empfänger startet einen lokalen `HttpServer` (nur während der Empfangs-Screen
+   offen ist), zeigt QR-Code + Klartext-Pairing-Code (`XXXX-XXXX`, Crockford Base32, 5 zufällige
+   Bytes, 2 Min. Ablauf, 5-Versuche-Sperre). Sender scannt (oder gibt auf Desktop manuell IP/Port/
+   Code ein) → `POST /pair` → **Bestätigung #1** auf dem Empfänger ("Gerät X möchte senden —
+   Annehmen/Ablehnen") → verschlüsselter Upload → Empfänger dekodiert + zeigt Vorschau
+   (Tabellen/Zeilen/Medien-Anzahl) → **Bestätigung #2** ("Wirklich importieren?") → erst danach
+   läuft `BackupService.restoreFromBytes()` — das ist der EINZIGE Aufrufpfad, nie automatisch.
+   Sender pollt `GET /status/{sessionId}` alle ~750ms für Live-Fortschritt (kein Push-Kanal nötig).
+2. **Sicherheit:** Anwendungsschicht-Verschlüsselung statt TLS — bewusste Entscheidung, da echtes
+   Selbstsigniert-TLS + Zertifikat-Pinning deutlich mehr neue, sicherheitskritische Fläche gebraucht
+   hätte (On-Device-X.509-Erzeugung) für denselben Vertrauensanker (Kenntnis des Pairing-Codes).
+   `HKDF-SHA256(pairingCode) → AES-256-GCM`, Session-ID fließt als HKDF-Info ein. Gleiches Muster
+   wie Magic Wormhole/croc. LAN-only, keine automatische Geräte-Erkennung (kein mDNS/Broadcast).
+3. **Neue Dateien:** `lib/core/services/backup_transfer/` (`backup_transfer_models.dart` —
+   `PairingCode`/`PairingSession`/`PairingInfo`/`TransferStatus`/`BackupPreview`;
+   `backup_transfer_crypto.dart` — HKDF+AES-GCM; `backup_receive_server.dart` —
+   `BackupReceiveServer`, 3-Endpunkt-Dispatch über rohes `dart:io HttpServer`, kein `shelf`;
+   `backup_send_client.dart` — `BackupSendClient`, treibt Pairing→Poll→Upload→Poll;
+   `device_name.dart`/`local_ip.dart` — Anzeige-Helfer). Additiv-only-Erweiterung von
+   `backup_service.dart`: neue `previewBackup()`-Methode, teilt sich die Decode-Logik mit
+   `restoreFromBytes()` über eine extrahierte private `_decodeBackupJson()` (verhaltensgleich,
+   verifiziert vor der Änderung).
+4. **Neue UI:** `lib/features/backup_transfer/` (`receive_backup_screen.dart` — QR/Code-Anzeige,
+   treibt beide Bestätigungsdialoge; `send_backup_screen.dart` — baut Backup, dann QR-Scan
+   (`mobile_scanner`, per `!isDesktop` ausgeblendet auf Desktop) oder manuelle Eingabe;
+   `pairing_manual_entry_sheet.dart` — Desktop-/Kein-Kamera-Fallback). **Zwei neue
+   Einstellungen-Buttons** wie vom Nutzer gefordert: `_SecuritySection` in `settings_screen.dart`,
+   direkt neben Export/Import — „An anderes Gerät senden" / „Von anderem Gerät empfangen".
+   Volle Screens (`Navigator.push`), keine neuen `go_router`-Routen (nicht Widget-Deep-Link-fähig,
+   analog zum Barcode-Scanner-Muster).
+5. **TDD durchgehend** (Rot→Grün für jede neue Logikdatei, wie im Projekt vorgeschrieben): 19
+   Pairing-Tests (Crockford-Rundreise, Ablauf via `fake_async`, Sperre), 12 Krypto-Tests
+   (Determinismus, Rundreise, Manipulationserkennung), 5 Ende-zu-Ende-Roundtrip-Tests mit echtem
+   `HttpServer`+`http.Client` auf `127.0.0.1` (Happy Path, falscher Code, Ablehnung #1, Ablehnung
+   #2 — beweist bytes-empfangen-aber-nicht-angewendet —, Sender sieht Geräte-Namen), 6
+   Screen-Widget-Tests gegen Fakes (`test/features/backup_transfer/fakes.dart` —
+   `FakeBackupReceiveServer`/`FakeBackupSendClient`, da `TestWidgetsFlutterBinding` echte Sockets/
+   Plattformkanäle nie zuverlässig auflöst, auch nicht mit `runAsync`).
+6. **Echte Builds + Läufe auf allen 3 hier baubaren Plattformen verifiziert, nicht nur
+   angenommen:** Windows-Release-Build gestartet und beide neuen Screens per Screenshot-Automation
+   durchgeklickt — echtes `HttpServer.bind`, echte `NetworkInterface.list()`-IP-Erkennung, echte
+   QR-Anzeige, echter `buildBackupZip()`-Lauf (84.334 Zeilen in ~6,5s). Linux via WSL-Klon
+   neu gebaut, headless gestartet, Log auf Exceptions geprüft — sauber. Android-Emulator: APK
+   installiert, beide Screens durchgeklickt (Receive zeigt echten QR+Code; Send fragt echte
+   Kamera-Berechtigung ab und öffnet den `MobileScanner`-Viewport ohne Absturz), `adb logcat` auf
+   FATAL/Exception geprüft — keine gefunden.
+7. **iOS:** `NSLocalNetworkUsageDescription` zu `Info.plist` ergänzt (Pflicht, sobald die App im
+   lokalen Subnetz kommuniziert — betrifft sowohl den eingehenden Bind des Empfängers als auch die
+   ausgehende Verbindung des Senders). Kein `NSBonjourServices` nötig — Pairing verbindet über eine
+   direkte IP:Port aus QR/PIN, nie über Bonjour/mDNS. **Nicht gebaut/getestet** — mangels Mac wie
+   der Rest des Projekts.
+8. **Bewusst nicht verifizierbar in dieser Umgebung — für dich zu bestätigen:** eine echte
+   Zwei-Geräte-Übertragung übers eigene Heim-WLAN (z. B. Handy → Windows-PC). Falls ein Router/
+   öffentliches WLAN AP-Isolation nutzt, sehen sich die Geräte gegenseitig nicht — das ist eine
+   Router-Einstellung außerhalb der App-Kontrolle, kein Bug, aber gut zu wissen, falls die
+   Übertragung in einem bestimmten Netz partout nicht anläuft.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **631/631 grün** (588 vorher + 43 neu).
+Release: https://github.com/Lupus-atque-Corvus/Traum-APP/releases/tag/v1.3.0 (Android arm64 +
+Windows x64 lokal gebaut und angehängt, Linux x64 automatisch per CI-Workflow beim Veröffentlichen
+angehängt).
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-19 — v1.2.3, echtes App-Icon auf allen 4 Plattformen)
 
 **Auf Nutzerwunsch: das vom Nutzer gelieferte Logo (stilisiertes blaues "T" mit
 Stadt-/Globus-Motiv) als tatsächliches App-Icon auf Android, iOS, Windows und Linux
