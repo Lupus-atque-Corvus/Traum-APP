@@ -42,6 +42,16 @@ endif()
 function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_features(${TARGET} PUBLIC cxx_std_14)
   target_compile_options(${TARGET} PRIVATE -Wall -Werror)
+  # flutter_secure_storage_linux vendors an older nlohmann/json (json.hpp)
+  # that declares user-defined literals with a space before the suffix
+  # (e.g. `operator"" _json`) — valid C++14/17 but flagged as a deprecated
+  # extension by newer Clang, which -Werror then turns into a hard build
+  # failure. This is third-party vendored code, not ours to fix; downgrade
+  # just this one diagnostic back to a warning rather than disabling -Werror
+  # entirely. GCC has no matching flag, so only applied under Clang.
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    target_compile_options(${TARGET} PRIVATE -Wno-error=deprecated-literal-operator)
+  endif()
   target_compile_options(${TARGET} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:-O3>")
   target_compile_definitions(${TARGET} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:NDEBUG>")
 endfunction()

@@ -129,6 +129,10 @@ class _TraumAppState extends ConsumerState<TraumApp> {
   /// would otherwise re-run the full widget snapshot collection (HealthConnect
   /// IPC calls + DB queries) back-to-back, visibly janking the UI mid-flow.
   void _refreshWidgetsDebounced() {
+    // No home-screen widgets exist on desktop — skip the snapshot collection
+    // (DB queries + platform-channel write) entirely instead of doing the
+    // work only to have it fail with MissingPluginException.
+    if (isDesktop) return;
     final now = DateTime.now();
     if (_lastWidgetRefresh != null &&
         now.difference(_lastWidgetRefresh!) < const Duration(seconds: 3)) {

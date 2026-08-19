@@ -14,6 +14,13 @@ analyzer:
     # Standalone package (own pubspec.yaml, not a dev_dependency of this app —
     # see tool/traum_lints/pubspec.yaml for why), not part of the app's own lint set.
     - tool/traum_lints/**
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
 
 linter:
   # The lint rules applied to this project can be customized in the
