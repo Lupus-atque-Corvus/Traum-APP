@@ -1,7 +1,7 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.2.2+122** · schemaVersion **29**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.2.3+123** · schemaVersion **29**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
@@ -56,7 +56,42 @@ geprüft (kein sicherer Kandidat gefunden, keine Änderung nötig).
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-19 — v1.2.2, erster Windows/Linux-Desktop-Release)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-19 — v1.2.3, echtes App-Icon auf allen 4 Plattformen)
+
+**Auf Nutzerwunsch: das vom Nutzer gelieferte Logo (stilisiertes blaues "T" mit
+Stadt-/Globus-Motiv) als tatsächliches App-Icon auf Android, iOS, Windows und Linux
+eingebunden.**
+
+1. **🔴 Echter, bislang unbemerkter Bestandsbug gefunden, kein reines Kosmetik-Update:**
+   `assets/icon/icon.png` war buchstäblich ein **1×1-Pixel-Platzhalter** (69 Bytes) — trotz
+   seit Projektbeginn konfiguriertem `flutter_launcher_icons` in `pubspec.yaml` wurde der
+   Generator offenbar nie mit einem echten Quellbild ausgeführt. **Jeder bisherige Release
+   ist mit dem simplen Standard-Flutter-Logo als App-Icon ausgeliefert worden** — direkt am
+   bestehenden `android/.../mipmap-xxxhdpi/ic_launcher.png` verifiziert (zeigte das blaue
+   Flutter-"F", nicht TRAUM), nicht nur vermutet.
+2. Logo (1254×1254, bereits quadratisch) nach `assets/icon/icon.png` kopiert,
+   `dart run flutter_launcher_icons` neu ausgeführt (Android + iOS + neu aktiviertes
+   `windows:`) — alle Icon-Größen für alle drei Plattformen neu generiert.
+3. **Linux hat kein äquivalentes Tool** — manuell verdrahtet: 256×256-Kopie des Logos unter
+   `linux/resources/icon.png`, von `linux/CMakeLists.txt` mit ins Bundle (`data/icon.png`)
+   installiert, zur Laufzeit in `my_application.cc` per `gtk_window_set_icon_from_file()`
+   geladen (Pfad relativ zur laufenden Programmdatei über `/proc/self/exe` aufgelöst — läuft
+   sowohl aus dem Build-Ordner als auch aus dem installierten Bundle, fehlt die Datei mal,
+   gibt's einfach kein Icon statt eines Absturzes). Zusätzlich `linux/traum.desktop` als
+   Vorlage für einen Anwendungsmenü-Eintrag ergänzt.
+4. **Auf jeder tatsächlich hier baubaren Plattform visuell verifiziert, nicht nur
+   angenommen:** Android-Mipmap-PNG zeigt jetzt das echte Logo (direkt gegen die alte
+   Flutter-Standard-Icon-Datei verglichen), die aus der gebauten Windows-`.exe` extrahierte
+   Icon-Ressource zeigt das Logo noch bei 32×32 erkennbar, das über den WSL-Klon neu gebaute
+   Linux-Bundle hat `data/icon.png` tatsächlich im Bundle und startet weiterhin sauber ohne
+   neue Exceptions. iOS-Icon-Set wurde mit erzeugt, konnte mangels Mac aber nicht gebaut/
+   getestet werden — gleiche Einschränkung wie beim Rest des Projekts.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **588/588 grün**.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-19 — v1.2.2, erster Windows/Linux-Desktop-Release)
 
 **Auf Nutzerwunsch: nach dem README-Update (siehe VORHERIGER STAND direkt unten) Windows- und
 Linux-Desktop-Support aufgebaut — "Companion-Modus" wie zuvor abgestimmt: Kernmodule laufen,
