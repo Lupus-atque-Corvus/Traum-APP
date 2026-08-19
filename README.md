@@ -11,6 +11,11 @@ built entirely for Android, running 100% on your own device.
 
 [![Latest release](https://img.shields.io/github/v/release/Lupus-atque-Corvus/Traum-APP?label=latest%20release&color=FF6B3D)](https://github.com/Lupus-atque-Corvus/Traum-APP/releases)
 [![Platform](https://img.shields.io/badge/platform-Android-3DDC84)](https://github.com/Lupus-atque-Corvus/Traum-APP/releases)
+![Platform](https://img.shields.io/badge/Platform-informational?style=flat-square)
+![Apple](https://img.shields.io/badge/Apple-red?style=flat-square&logo=apple&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-brightgreen?style=flat-square&logo=linux&logoColor=white)
+![Windows](https://img.shields.io/badge/Windows-brightgreen?style=flat-square&logo=windows&logoColor=white)
+![Web](https://img.shields.io/badge/Web-red?style=flat-square&logo=googlechrome&logoColor=white)
 [![Flutter](https://img.shields.io/badge/built%20with-Flutter-02569B)](https://flutter.dev)
 [![License](https://img.shields.io/badge/license-private-lightgrey)](#license)
 
