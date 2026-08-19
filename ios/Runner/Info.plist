@@ -62,6 +62,10 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>TRAUM greift auf deine Fotos zu.</string>
 
+	<!-- LAN-Backup-Übertragung: verbindet sich mit anderen Geräten im selben WLAN -->
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>TRAUM nutzt das lokale Netzwerk, um Backups direkt mit deinen anderen Geräten im selben WLAN auszutauschen.</string>
+
 	<!-- HealthKit -->
 	<key>NSHealthShareUsageDescription</key>
 	<string>TRAUM reads health data (steps, heart rate, sleep) to display your statistics.</string>
