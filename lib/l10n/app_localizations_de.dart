@@ -4521,4 +4521,117 @@ class AppLocalizationsDe extends AppLocalizations {
   String diaryHeatmapStats(int count, String percent) {
     return '$count Einträge · $percent% Tage';
   }
+
+  @override
+  String get transferSendToDevice => 'An anderes Gerät senden';
+
+  @override
+  String get transferReceiveFromDevice => 'Von anderem Gerät empfangen';
+
+  @override
+  String get transferSendTitle => 'Backup senden';
+
+  @override
+  String get transferReceiveTitle => 'Backup empfangen';
+
+  @override
+  String get transferPreparingBackup => 'Backup wird vorbereitet…';
+
+  @override
+  String get transferShowCodeHint =>
+      'Lass das andere Gerät diesen Code scannen oder manuell eingeben';
+
+  @override
+  String get transferManualEntryButton => 'Code manuell eingeben';
+
+  @override
+  String get transferScanQrButton => 'QR-Code scannen';
+
+  @override
+  String get transferWaitingForSender => 'Warte auf ein Gerät im selben WLAN…';
+
+  @override
+  String get transferIncomingRequestTitle => 'Eingehende Übertragung';
+
+  @override
+  String transferIncomingRequestBody(String device) {
+    return '$device möchte ein Backup an dieses Gerät senden.';
+  }
+
+  @override
+  String get transferAccept => 'Annehmen';
+
+  @override
+  String get transferDecline => 'Ablehnen';
+
+  @override
+  String get transferReceivingData => 'Daten werden empfangen…';
+
+  @override
+  String get transferConfirmImportTitle => 'Backup importieren?';
+
+  @override
+  String transferConfirmImportBody(int tables, int rows, int media) {
+    return '$tables Tabellen, $rows Zeilen, $media Medien. Jetzt wirklich importieren?';
+  }
+
+  @override
+  String get transferImportSuccess => 'Backup erfolgreich importiert';
+
+  @override
+  String get transferDeclinedByUser => 'Übertragung abgelehnt';
+
+  @override
+  String get transferErrorGeneric =>
+      'Bei der Übertragung ist ein Fehler aufgetreten';
+
+  @override
+  String get transferWaitingFirstConfirmation =>
+      'Warte auf Bestätigung des Empfängers…';
+
+  @override
+  String get transferUploading => 'Wird hochgeladen…';
+
+  @override
+  String get transferWaitingSecondConfirmation =>
+      'Warte auf Bestätigung durch das andere Gerät…';
+
+  @override
+  String get transferDone => 'Übertragung abgeschlossen';
+
+  @override
+  String get transferConnectManually => 'Verbindung manuell herstellen';
+
+  @override
+  String get transferHostLabel => 'IP-Adresse';
+
+  @override
+  String get transferPortLabel => 'Port';
+
+  @override
+  String get transferCodeLabel => 'Code';
+
+  @override
+  String get transferInvalidInput => 'Bitte IP-Adresse, Port und Code prüfen';
+
+  @override
+  String get transferConnect => 'Verbinden';
+
+  @override
+  String transferSendFailed(String error) {
+    return 'Senden fehlgeschlagen: $error';
+  }
+
+  @override
+  String get transferLocalIpUnavailable =>
+      'Keine WLAN-Adresse gefunden. Ist dieses Gerät mit einem WLAN verbunden?';
+
+  @override
+  String get transferNoCameraFallback =>
+      'Keine Kamera verfügbar — Code manuell eingeben';
+
+  @override
+  String transferPreviewSummary(int tables, int rows, int media) {
+    return '$tables Tabellen · $rows Zeilen · $media Medien';
+  }
 }

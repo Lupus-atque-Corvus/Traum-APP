@@ -34,6 +34,8 @@ import '../../core/theme/radius.dart';
 import '../../core/utils/validators.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/components/inline_error.dart';
+import '../backup_transfer/receive_backup_screen.dart';
+import '../backup_transfer/send_backup_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -1688,6 +1690,48 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
               color: TraumColors.onBackgroundMuted,
             ),
             onTap: () => _importBackup(context),
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.wifi_tethering_rounded,
+              color: TraumColors.cyanBlue,
+            ),
+            title: Text(
+              l10n.transferSendToDevice,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
+            ),
+            trailing: const Icon(
+              Icons.chevron_right,
+              color: TraumColors.onBackgroundMuted,
+            ),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SendBackupScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.qr_code_scanner_rounded,
+              color: TraumColors.cyanBlue,
+            ),
+            title: Text(
+              l10n.transferReceiveFromDevice,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
+            ),
+            trailing: const Icon(
+              Icons.chevron_right,
+              color: TraumColors.onBackgroundMuted,
+            ),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ReceiveBackupScreen()),
+            ),
           ),
           ListTile(
             leading: const Icon(

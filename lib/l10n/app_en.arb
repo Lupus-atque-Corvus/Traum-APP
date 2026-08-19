@@ -2115,5 +2115,78 @@
         "type": "String"
       }
     }
+  },
+  "transferSendToDevice": "Send to another device",
+  "transferReceiveFromDevice": "Receive from another device",
+  "transferSendTitle": "Send backup",
+  "transferReceiveTitle": "Receive backup",
+  "transferPreparingBackup": "Preparing backup…",
+  "transferShowCodeHint": "Have the other device scan this code, or enter it manually",
+  "transferManualEntryButton": "Enter code manually",
+  "transferScanQrButton": "Scan QR code",
+  "transferWaitingForSender": "Waiting for a device on the same WiFi…",
+  "transferIncomingRequestTitle": "Incoming transfer",
+  "transferIncomingRequestBody": "{device} wants to send a backup to this device.",
+  "@transferIncomingRequestBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "transferAccept": "Accept",
+  "transferDecline": "Decline",
+  "transferReceivingData": "Receiving data…",
+  "transferConfirmImportTitle": "Import this backup?",
+  "transferConfirmImportBody": "{tables} tables, {rows} rows, {media} media files. Really import now?",
+  "@transferConfirmImportBody": {
+    "placeholders": {
+      "tables": {
+        "type": "int"
+      },
+      "rows": {
+        "type": "int"
+      },
+      "media": {
+        "type": "int"
+      }
+    }
+  },
+  "transferImportSuccess": "Backup imported successfully",
+  "transferDeclinedByUser": "Transfer declined",
+  "transferErrorGeneric": "An error occurred during the transfer",
+  "transferWaitingFirstConfirmation": "Waiting for the receiver to confirm…",
+  "transferUploading": "Uploading…",
+  "transferWaitingSecondConfirmation": "Waiting for the other device to confirm…",
+  "transferDone": "Transfer complete",
+  "transferConnectManually": "Connect manually",
+  "transferHostLabel": "IP address",
+  "transferPortLabel": "Port",
+  "transferCodeLabel": "Code",
+  "transferInvalidInput": "Please check the IP address, port and code",
+  "transferConnect": "Connect",
+  "transferSendFailed": "Send failed: {error}",
+  "@transferSendFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "transferLocalIpUnavailable": "No WiFi address found. Is this device connected to a WiFi network?",
+  "transferNoCameraFallback": "No camera available — enter the code manually",
+  "transferPreviewSummary": "{tables} tables · {rows} rows · {media} media files",
+  "@transferPreviewSummary": {
+    "placeholders": {
+      "tables": {
+        "type": "int"
+      },
+      "rows": {
+        "type": "int"
+      },
+      "media": {
+        "type": "int"
+      }
+    }
   }
 }

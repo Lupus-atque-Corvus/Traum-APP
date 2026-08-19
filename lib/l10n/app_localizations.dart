@@ -8611,6 +8611,204 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'{count} Einträge · {percent}% Tage'**
   String diaryHeatmapStats(int count, String percent);
+
+  /// No description provided for @transferSendToDevice.
+  ///
+  /// In de, this message translates to:
+  /// **'An anderes Gerät senden'**
+  String get transferSendToDevice;
+
+  /// No description provided for @transferReceiveFromDevice.
+  ///
+  /// In de, this message translates to:
+  /// **'Von anderem Gerät empfangen'**
+  String get transferReceiveFromDevice;
+
+  /// No description provided for @transferSendTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Backup senden'**
+  String get transferSendTitle;
+
+  /// No description provided for @transferReceiveTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Backup empfangen'**
+  String get transferReceiveTitle;
+
+  /// No description provided for @transferPreparingBackup.
+  ///
+  /// In de, this message translates to:
+  /// **'Backup wird vorbereitet…'**
+  String get transferPreparingBackup;
+
+  /// No description provided for @transferShowCodeHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Lass das andere Gerät diesen Code scannen oder manuell eingeben'**
+  String get transferShowCodeHint;
+
+  /// No description provided for @transferManualEntryButton.
+  ///
+  /// In de, this message translates to:
+  /// **'Code manuell eingeben'**
+  String get transferManualEntryButton;
+
+  /// No description provided for @transferScanQrButton.
+  ///
+  /// In de, this message translates to:
+  /// **'QR-Code scannen'**
+  String get transferScanQrButton;
+
+  /// No description provided for @transferWaitingForSender.
+  ///
+  /// In de, this message translates to:
+  /// **'Warte auf ein Gerät im selben WLAN…'**
+  String get transferWaitingForSender;
+
+  /// No description provided for @transferIncomingRequestTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Eingehende Übertragung'**
+  String get transferIncomingRequestTitle;
+
+  /// No description provided for @transferIncomingRequestBody.
+  ///
+  /// In de, this message translates to:
+  /// **'{device} möchte ein Backup an dieses Gerät senden.'**
+  String transferIncomingRequestBody(String device);
+
+  /// No description provided for @transferAccept.
+  ///
+  /// In de, this message translates to:
+  /// **'Annehmen'**
+  String get transferAccept;
+
+  /// No description provided for @transferDecline.
+  ///
+  /// In de, this message translates to:
+  /// **'Ablehnen'**
+  String get transferDecline;
+
+  /// No description provided for @transferReceivingData.
+  ///
+  /// In de, this message translates to:
+  /// **'Daten werden empfangen…'**
+  String get transferReceivingData;
+
+  /// No description provided for @transferConfirmImportTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Backup importieren?'**
+  String get transferConfirmImportTitle;
+
+  /// No description provided for @transferConfirmImportBody.
+  ///
+  /// In de, this message translates to:
+  /// **'{tables} Tabellen, {rows} Zeilen, {media} Medien. Jetzt wirklich importieren?'**
+  String transferConfirmImportBody(int tables, int rows, int media);
+
+  /// No description provided for @transferImportSuccess.
+  ///
+  /// In de, this message translates to:
+  /// **'Backup erfolgreich importiert'**
+  String get transferImportSuccess;
+
+  /// No description provided for @transferDeclinedByUser.
+  ///
+  /// In de, this message translates to:
+  /// **'Übertragung abgelehnt'**
+  String get transferDeclinedByUser;
+
+  /// No description provided for @transferErrorGeneric.
+  ///
+  /// In de, this message translates to:
+  /// **'Bei der Übertragung ist ein Fehler aufgetreten'**
+  String get transferErrorGeneric;
+
+  /// No description provided for @transferWaitingFirstConfirmation.
+  ///
+  /// In de, this message translates to:
+  /// **'Warte auf Bestätigung des Empfängers…'**
+  String get transferWaitingFirstConfirmation;
+
+  /// No description provided for @transferUploading.
+  ///
+  /// In de, this message translates to:
+  /// **'Wird hochgeladen…'**
+  String get transferUploading;
+
+  /// No description provided for @transferWaitingSecondConfirmation.
+  ///
+  /// In de, this message translates to:
+  /// **'Warte auf Bestätigung durch das andere Gerät…'**
+  String get transferWaitingSecondConfirmation;
+
+  /// No description provided for @transferDone.
+  ///
+  /// In de, this message translates to:
+  /// **'Übertragung abgeschlossen'**
+  String get transferDone;
+
+  /// No description provided for @transferConnectManually.
+  ///
+  /// In de, this message translates to:
+  /// **'Verbindung manuell herstellen'**
+  String get transferConnectManually;
+
+  /// No description provided for @transferHostLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'IP-Adresse'**
+  String get transferHostLabel;
+
+  /// No description provided for @transferPortLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Port'**
+  String get transferPortLabel;
+
+  /// No description provided for @transferCodeLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Code'**
+  String get transferCodeLabel;
+
+  /// No description provided for @transferInvalidInput.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte IP-Adresse, Port und Code prüfen'**
+  String get transferInvalidInput;
+
+  /// No description provided for @transferConnect.
+  ///
+  /// In de, this message translates to:
+  /// **'Verbinden'**
+  String get transferConnect;
+
+  /// No description provided for @transferSendFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Senden fehlgeschlagen: {error}'**
+  String transferSendFailed(String error);
+
+  /// No description provided for @transferLocalIpUnavailable.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine WLAN-Adresse gefunden. Ist dieses Gerät mit einem WLAN verbunden?'**
+  String get transferLocalIpUnavailable;
+
+  /// No description provided for @transferNoCameraFallback.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Kamera verfügbar — Code manuell eingeben'**
+  String get transferNoCameraFallback;
+
+  /// No description provided for @transferPreviewSummary.
+  ///
+  /// In de, this message translates to:
+  /// **'{tables} Tabellen · {rows} Zeilen · {media} Medien'**
+  String transferPreviewSummary(int tables, int rows, int media);
 }
 
 class _AppLocalizationsDelegate

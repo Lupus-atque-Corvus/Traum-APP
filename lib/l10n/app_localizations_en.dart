@@ -4499,4 +4499,118 @@ class AppLocalizationsEn extends AppLocalizations {
   String diaryHeatmapStats(int count, String percent) {
     return '$count entries · $percent% of days';
   }
+
+  @override
+  String get transferSendToDevice => 'Send to another device';
+
+  @override
+  String get transferReceiveFromDevice => 'Receive from another device';
+
+  @override
+  String get transferSendTitle => 'Send backup';
+
+  @override
+  String get transferReceiveTitle => 'Receive backup';
+
+  @override
+  String get transferPreparingBackup => 'Preparing backup…';
+
+  @override
+  String get transferShowCodeHint =>
+      'Have the other device scan this code, or enter it manually';
+
+  @override
+  String get transferManualEntryButton => 'Enter code manually';
+
+  @override
+  String get transferScanQrButton => 'Scan QR code';
+
+  @override
+  String get transferWaitingForSender =>
+      'Waiting for a device on the same WiFi…';
+
+  @override
+  String get transferIncomingRequestTitle => 'Incoming transfer';
+
+  @override
+  String transferIncomingRequestBody(String device) {
+    return '$device wants to send a backup to this device.';
+  }
+
+  @override
+  String get transferAccept => 'Accept';
+
+  @override
+  String get transferDecline => 'Decline';
+
+  @override
+  String get transferReceivingData => 'Receiving data…';
+
+  @override
+  String get transferConfirmImportTitle => 'Import this backup?';
+
+  @override
+  String transferConfirmImportBody(int tables, int rows, int media) {
+    return '$tables tables, $rows rows, $media media files. Really import now?';
+  }
+
+  @override
+  String get transferImportSuccess => 'Backup imported successfully';
+
+  @override
+  String get transferDeclinedByUser => 'Transfer declined';
+
+  @override
+  String get transferErrorGeneric => 'An error occurred during the transfer';
+
+  @override
+  String get transferWaitingFirstConfirmation =>
+      'Waiting for the receiver to confirm…';
+
+  @override
+  String get transferUploading => 'Uploading…';
+
+  @override
+  String get transferWaitingSecondConfirmation =>
+      'Waiting for the other device to confirm…';
+
+  @override
+  String get transferDone => 'Transfer complete';
+
+  @override
+  String get transferConnectManually => 'Connect manually';
+
+  @override
+  String get transferHostLabel => 'IP address';
+
+  @override
+  String get transferPortLabel => 'Port';
+
+  @override
+  String get transferCodeLabel => 'Code';
+
+  @override
+  String get transferInvalidInput =>
+      'Please check the IP address, port and code';
+
+  @override
+  String get transferConnect => 'Connect';
+
+  @override
+  String transferSendFailed(String error) {
+    return 'Send failed: $error';
+  }
+
+  @override
+  String get transferLocalIpUnavailable =>
+      'No WiFi address found. Is this device connected to a WiFi network?';
+
+  @override
+  String get transferNoCameraFallback =>
+      'No camera available — enter the code manually';
+
+  @override
+  String transferPreviewSummary(int tables, int rows, int media) {
+    return '$tables tables · $rows rows · $media media files';
+  }
 }

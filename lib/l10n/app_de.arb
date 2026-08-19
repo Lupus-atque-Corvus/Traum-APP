@@ -2149,5 +2149,78 @@
         "type": "String"
       }
     }
+  },
+  "transferSendToDevice": "An anderes Gerät senden",
+  "transferReceiveFromDevice": "Von anderem Gerät empfangen",
+  "transferSendTitle": "Backup senden",
+  "transferReceiveTitle": "Backup empfangen",
+  "transferPreparingBackup": "Backup wird vorbereitet…",
+  "transferShowCodeHint": "Lass das andere Gerät diesen Code scannen oder manuell eingeben",
+  "transferManualEntryButton": "Code manuell eingeben",
+  "transferScanQrButton": "QR-Code scannen",
+  "transferWaitingForSender": "Warte auf ein Gerät im selben WLAN…",
+  "transferIncomingRequestTitle": "Eingehende Übertragung",
+  "transferIncomingRequestBody": "{device} möchte ein Backup an dieses Gerät senden.",
+  "@transferIncomingRequestBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "transferAccept": "Annehmen",
+  "transferDecline": "Ablehnen",
+  "transferReceivingData": "Daten werden empfangen…",
+  "transferConfirmImportTitle": "Backup importieren?",
+  "transferConfirmImportBody": "{tables} Tabellen, {rows} Zeilen, {media} Medien. Jetzt wirklich importieren?",
+  "@transferConfirmImportBody": {
+    "placeholders": {
+      "tables": {
+        "type": "int"
+      },
+      "rows": {
+        "type": "int"
+      },
+      "media": {
+        "type": "int"
+      }
+    }
+  },
+  "transferImportSuccess": "Backup erfolgreich importiert",
+  "transferDeclinedByUser": "Übertragung abgelehnt",
+  "transferErrorGeneric": "Bei der Übertragung ist ein Fehler aufgetreten",
+  "transferWaitingFirstConfirmation": "Warte auf Bestätigung des Empfängers…",
+  "transferUploading": "Wird hochgeladen…",
+  "transferWaitingSecondConfirmation": "Warte auf Bestätigung durch das andere Gerät…",
+  "transferDone": "Übertragung abgeschlossen",
+  "transferConnectManually": "Verbindung manuell herstellen",
+  "transferHostLabel": "IP-Adresse",
+  "transferPortLabel": "Port",
+  "transferCodeLabel": "Code",
+  "transferInvalidInput": "Bitte IP-Adresse, Port und Code prüfen",
+  "transferConnect": "Verbinden",
+  "transferSendFailed": "Senden fehlgeschlagen: {error}",
+  "@transferSendFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "transferLocalIpUnavailable": "Keine WLAN-Adresse gefunden. Ist dieses Gerät mit einem WLAN verbunden?",
+  "transferNoCameraFallback": "Keine Kamera verfügbar — Code manuell eingeben",
+  "transferPreviewSummary": "{tables} Tabellen · {rows} Zeilen · {media} Medien",
+  "@transferPreviewSummary": {
+    "placeholders": {
+      "tables": {
+        "type": "int"
+      },
+      "rows": {
+        "type": "int"
+      },
+      "media": {
+        "type": "int"
+      }
+    }
   }
 }
