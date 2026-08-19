@@ -4477,6 +4477,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diaryVideoLabel => 'Video';
 
   @override
+  String get diaryDesktopCameraUnavailable =>
+      'Camera capture isn\'t available on desktop yet. Add photos from a phone entry, or write a note instead.';
+
+  @override
   String get weekdaysFull =>
       'Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday';
 

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/platform/desktop.dart';
 import '../../core/theme/colors.dart';
 import '../../core/utils/image_decode.dart';
 import '../../data/database/traum_database.dart';
@@ -566,53 +567,67 @@ class _TodayEmptyCardState extends State<_TodayEmptyCard> {
             ),
           ),
           const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: _busy ? null : () => _capture(video: false),
-                  icon: const Icon(Icons.photo_camera_outlined, size: 18),
-                  label: Text(
-                    l10n.diaryPhotoLabel,
-                    style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600,
+          // No camera hardware access on desktop (no official Linux backend,
+          // partial/unverified Windows support) — show an explanatory note
+          // instead of buttons that would just fail when tapped.
+          if (isDesktop)
+            Text(
+              l10n.diaryDesktopCameraUnavailable,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                color: TraumColors.onBackgroundSubtle,
+                fontSize: 12,
+              ),
+            )
+          else
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: _busy ? null : () => _capture(video: false),
+                    icon: const Icon(Icons.photo_camera_outlined, size: 18),
+                    label: Text(
+                      l10n.diaryPhotoLabel,
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: TraumColors.lavender,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: TraumColors.lavender,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: _busy ? null : () => _capture(video: true),
-                  icon: const Icon(Icons.videocam_outlined, size: 18),
-                  label: Text(
-                    l10n.diaryVideoLabel,
-                    style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.w600,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: _busy ? null : () => _capture(video: true),
+                    icon: const Icon(Icons.videocam_outlined, size: 18),
+                    label: Text(
+                      l10n.diaryVideoLabel,
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: TraumColors.indigoBlue,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: TraumColors.indigoBlue,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
         ],
       ),
     );

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../../core/platform/desktop.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
@@ -947,27 +948,31 @@ class _QuickEntryBottomSheetState extends ConsumerState<QuickEntryBottomSheet> {
                                   ),
                                 ),
                               ),
-                              Semantics(
-                                button: true,
-                                label: l10n.a11yReceiptPhoto,
-                                child: GestureDetector(
-                                  onTap: _showReceiptSourceDialog,
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: bs(10),
-                                    ),
-                                    child: Icon(
-                                      _receiptImagePath != null
-                                          ? Icons.receipt_long_rounded
-                                          : Icons.camera_alt_outlined,
-                                      size: bs(13),
-                                      color: _receiptImagePath != null
-                                          ? TraumColors.amberGold
-                                          : TraumColors.onBackgroundSubtle,
+                              // Receipt OCR needs both a camera/gallery
+                              // picker and on-device text recognition —
+                              // neither has a desktop implementation.
+                              if (!isDesktop)
+                                Semantics(
+                                  button: true,
+                                  label: l10n.a11yReceiptPhoto,
+                                  child: GestureDetector(
+                                    onTap: _showReceiptSourceDialog,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: bs(10),
+                                      ),
+                                      child: Icon(
+                                        _receiptImagePath != null
+                                            ? Icons.receipt_long_rounded
+                                            : Icons.camera_alt_outlined,
+                                        size: bs(13),
+                                        color: _receiptImagePath != null
+                                            ? TraumColors.amberGold
+                                            : TraumColors.onBackgroundSubtle,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
                             ],
                           ),
                         ),

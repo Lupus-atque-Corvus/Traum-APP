@@ -26,8 +26,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
 
   FlutterWindow window(project);
   Win32Window::Point origin(10, 10);
-  Win32Window::Size size(1280, 720);
-  if (!window.Create(L"traum", origin, size)) {
+  // The UI is built for a phone-width single-column layout — the
+  // flutter-create default of 1280x720 (a landscape desktop-app size)
+  // stretches it awkwardly wide. A portrait-ish window fits the existing
+  // screens without requiring any responsive-layout changes.
+  Win32Window::Size size(480, 900);
+  if (!window.Create(L"TRAUM", origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);

@@ -2,6 +2,7 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import '../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/platform/desktop.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/radius.dart';
@@ -207,20 +208,24 @@ class _ShoppingCheckoutSheetState extends ConsumerState<ShoppingCheckoutSheet> {
               ),
             ),
             const SizedBox(height: 14),
-            _Tile(
-              icon: _scanning
-                  ? Icons.hourglass_top_rounded
-                  : (_receiptPath != null
-                        ? Icons.check_circle_rounded
-                        : Icons.receipt_long_rounded),
-              label: _scanning
-                  ? 'Kassenzettel wird analysiert…'
-                  : (_receiptPath != null
-                        ? 'Kassenzettel angehängt'
-                        : 'Kassenzettel scannen'),
-              onTap: _scanning ? null : _scan,
-            ),
-            const SizedBox(height: 8),
+            // Receipt OCR needs a camera/gallery picker + on-device text
+            // recognition — neither has a desktop implementation.
+            if (!isDesktop) ...[
+              _Tile(
+                icon: _scanning
+                    ? Icons.hourglass_top_rounded
+                    : (_receiptPath != null
+                          ? Icons.check_circle_rounded
+                          : Icons.receipt_long_rounded),
+                label: _scanning
+                    ? 'Kassenzettel wird analysiert…'
+                    : (_receiptPath != null
+                          ? 'Kassenzettel angehängt'
+                          : 'Kassenzettel scannen'),
+                onTap: _scanning ? null : _scan,
+              ),
+              const SizedBox(height: 8),
+            ],
             _CategoryPicker(
               categories: expenseCats,
               selectedId: _categoryId,

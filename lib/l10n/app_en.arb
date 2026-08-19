@@ -2093,6 +2093,7 @@
   "diaryCaptureMomentHint": "Capture this moment.",
   "diaryPhotoLabel": "Photo",
   "diaryVideoLabel": "Video",
+  "diaryDesktopCameraUnavailable": "Camera capture isn't available on desktop yet. Add photos from a phone entry, or write a note instead.",
   "weekdaysFull": "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
   "diaryEntryNotFound": "Entry not found",
   "diaryShareLabel": "Share",

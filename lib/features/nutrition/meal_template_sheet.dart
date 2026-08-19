@@ -4,6 +4,7 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../l10n/app_localizations.dart';
+import '../../core/platform/desktop.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/theme/colors.dart';
 import '../../data/database/traum_database.dart';
@@ -184,14 +185,15 @@ class _MealTemplateSheetState extends ConsumerState<MealTemplateSheet> {
                     ),
                   ),
                 ),
-                IconButton(
-                  tooltip: AppLocalizations.of(context)!.a11yScanBarcode,
-                  onPressed: () => _openScanner(context),
-                  icon: const Icon(
-                    Icons.qr_code_scanner,
-                    color: TraumColors.mintGreen,
+                if (!isDesktop)
+                  IconButton(
+                    tooltip: AppLocalizations.of(context)!.a11yScanBarcode,
+                    onPressed: () => _openScanner(context),
+                    icon: const Icon(
+                      Icons.qr_code_scanner,
+                      color: TraumColors.mintGreen,
+                    ),
                   ),
-                ),
               ],
             ),
           ),

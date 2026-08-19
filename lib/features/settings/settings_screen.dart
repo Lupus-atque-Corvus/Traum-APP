@@ -13,6 +13,7 @@ import 'package:permission_handler/permission_handler.dart'
     show openAppSettings;
 import 'package:share_plus/share_plus.dart';
 import '../../core/navigation/nav_customization_sheet.dart';
+import '../../core/platform/desktop.dart';
 import '../../core/providers/database_provider.dart';
 import '../../data/services/nutrition_report_service.dart';
 import '../graffiti_map/field_system/field_localization.dart';
@@ -60,7 +61,8 @@ class SettingsScreen extends ConsumerWidget {
         children: [
           _LanguageSection(),
           _NavSection(),
-          _CalendarSyncSection(),
+          // device_calendar has no desktop backend at all.
+          if (!isDesktop) _CalendarSyncSection(),
           _UnitsSection(),
           _NotificationsSection(),
           _GoalsSection(),

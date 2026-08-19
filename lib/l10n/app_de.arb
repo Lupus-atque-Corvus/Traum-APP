@@ -2127,6 +2127,7 @@
   "diaryCaptureMomentHint": "Halte diesen Moment fest.",
   "diaryPhotoLabel": "Foto",
   "diaryVideoLabel": "Video",
+  "diaryDesktopCameraUnavailable": "Kameraaufnahme ist am Desktop noch nicht verfügbar. Füge Fotos über einen Handy-Eintrag hinzu oder schreib stattdessen eine Notiz.",
   "weekdaysFull": "Montag,Dienstag,Mittwoch,Donnerstag,Freitag,Samstag,Sonntag",
   "diaryEntryNotFound": "Eintrag nicht gefunden",
   "diaryShareLabel": "Teilen",

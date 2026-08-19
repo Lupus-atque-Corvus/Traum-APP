@@ -8576,6 +8576,12 @@ abstract class AppLocalizations {
   /// **'Video'**
   String get diaryVideoLabel;
 
+  /// No description provided for @diaryDesktopCameraUnavailable.
+  ///
+  /// In de, this message translates to:
+  /// **'Kameraaufnahme ist am Desktop noch nicht verfügbar. Füge Fotos über einen Handy-Eintrag hinzu oder schreib stattdessen eine Notiz.'**
+  String get diaryDesktopCameraUnavailable;
+
   /// No description provided for @weekdaysFull.
   ///
   /// In de, this message translates to:

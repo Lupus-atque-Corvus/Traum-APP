@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/platform/desktop.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
@@ -603,23 +604,25 @@ class _ProductsTabState extends ConsumerState<_ProductsTab>
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
-              IconButton(
-                tooltip: AppLocalizations.of(context)!.a11yScanBarcode,
-                icon: const Icon(
-                  Icons.qr_code_scanner,
-                  color: TraumColors.mintGreen,
+              if (!isDesktop) ...[
+                const SizedBox(width: 8),
+                IconButton(
+                  tooltip: AppLocalizations.of(context)!.a11yScanBarcode,
+                  icon: const Icon(
+                    Icons.qr_code_scanner,
+                    color: TraumColors.mintGreen,
+                  ),
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const BarcodeScannerScreen(),
+                      ),
+                    );
+                    ref.invalidate(productSearchProvider);
+                  },
                 ),
-                onPressed: () async {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const BarcodeScannerScreen(),
-                    ),
-                  );
-                  ref.invalidate(productSearchProvider);
-                },
-              ),
+              ],
             ],
           ),
         ),

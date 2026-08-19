@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../core/components/components.dart';
+import '../../core/platform/desktop.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/preferences_provider.dart';
 import '../../core/theme/colors.dart';
@@ -29,7 +30,11 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _runSync());
+    // device_calendar has no desktop backend — requestPermissions() would
+    // throw MissingPluginException unguarded on every mount otherwise.
+    if (!isDesktop) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _runSync());
+    }
   }
 
   Future<void> _runSync({int depth = 0, bool showResult = false}) async {
@@ -115,20 +120,21 @@ class _PlanningScreenState extends ConsumerState<PlanningScreen>
         iconTheme: const IconThemeData(color: TraumColors.onBackground),
         elevation: 0,
         actions: [
-          IconButton(
-            tooltip: AppLocalizations.of(context)!.calendarSyncTitle,
-            icon: _isSyncing
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: TraumColors.lavender,
-                    ),
-                  )
-                : const Icon(Icons.sync_rounded),
-            onPressed: _isSyncing ? null : () => _runSync(showResult: true),
-          ),
+          if (!isDesktop)
+            IconButton(
+              tooltip: AppLocalizations.of(context)!.calendarSyncTitle,
+              icon: _isSyncing
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: TraumColors.lavender,
+                      ),
+                    )
+                  : const Icon(Icons.sync_rounded),
+              onPressed: _isSyncing ? null : () => _runSync(showResult: true),
+            ),
         ],
         bottom: TabBar(
           controller: _tabController,

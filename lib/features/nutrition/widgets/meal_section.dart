@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/platform/desktop.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../data/database/traum_database.dart';
@@ -72,19 +73,23 @@ class MealSection extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
-              Semantics(
-                button: true,
-                label: AppLocalizations.of(context)!.a11yScanBarcode,
-                child: GestureDetector(
-                  onTap: () => _openScanner(context, ref),
-                  child: const Icon(
-                    Icons.qr_code_scanner,
-                    color: TraumColors.onBackgroundMuted,
-                    size: 20,
+              // No camera hardware access on desktop — manual entry (the
+              // add button above) remains the only path there.
+              if (!isDesktop) ...[
+                const SizedBox(width: 8),
+                Semantics(
+                  button: true,
+                  label: AppLocalizations.of(context)!.a11yScanBarcode,
+                  child: GestureDetector(
+                    onTap: () => _openScanner(context, ref),
+                    child: const Icon(
+                      Icons.qr_code_scanner,
+                      color: TraumColors.onBackgroundMuted,
+                      size: 20,
+                    ),
                   ),
                 ),
-              ),
+              ],
             ],
           ),
           if (entries.isEmpty)
