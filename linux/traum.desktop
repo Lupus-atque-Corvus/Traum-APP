@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=TRAUM
+Comment=Your life. Your data.
+Exec=traum
+Icon=icon
+Categories=Utility;
+Terminal=false

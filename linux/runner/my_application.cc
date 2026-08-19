@@ -25,6 +25,24 @@ static void my_application_activate(GApplication* application) {
   GtkWindow* window =
       GTK_WINDOW(gtk_application_window_new(GTK_APPLICATION(application)));
 
+  // Window/taskbar icon. Resolved relative to the running executable (via
+  // /proc/self/exe, Linux-specific but fine — this file only ever builds for
+  // Linux) rather than a build-time path, so it works both from the
+  // installed bundle (icon.png sits next to the binary under data/, copied
+  // there by linux/CMakeLists.txt) and a local `flutter build linux` output.
+  // Missing file just means no icon — gtk_window_set_icon_from_file fails
+  // soft, no crash.
+  {
+    g_autofree gchar* exe_link = g_file_read_link("/proc/self/exe", nullptr);
+    if (exe_link != nullptr) {
+      g_autofree gchar* exe_dir = g_path_get_dirname(exe_link);
+      g_autofree gchar* icon_path =
+          g_build_filename(exe_dir, "data", "icon.png", nullptr);
+      g_autoptr(GError) icon_error = nullptr;
+      gtk_window_set_icon_from_file(window, icon_path, &icon_error);
+    }
+  }
+
   // Use a header bar when running in GNOME as this is the common style used
   // by applications and is the setup most users will be using (e.g. Ubuntu
   // desktop).
