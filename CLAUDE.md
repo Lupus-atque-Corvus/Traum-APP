@@ -1,7 +1,7 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.2.1+121** · schemaVersion **29**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.2.2+122** · schemaVersion **29**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
@@ -56,7 +56,83 @@ geprüft (kein sicherer Kandidat gefunden, keine Änderung nötig).
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-18 — v1.2.1, Tagebuch-Speichern-Bug auf jedem Bestandsgerät)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-19 — v1.2.2, erster Windows/Linux-Desktop-Release)
+
+**Auf Nutzerwunsch: nach dem README-Update (siehe VORHERIGER STAND direkt unten) Windows- und
+Linux-Desktop-Support aufgebaut — "Companion-Modus" wie zuvor abgestimmt: Kernmodule laufen,
+mobile-exklusive Features werden sauber ausgeblendet statt abzustürzen. Kein Daten-Sync
+zwischen Geräten (bewusst, eigene Entscheidung).**
+
+1. **`flutter create --platforms=windows,linux .`** — neue Plattformordner, **keine einzige
+   Dart-Änderung nötig, damit die App überhaupt kompiliert**: Drifts `NativeDatabase` +
+   `path_provider` funktionieren bereits unverändert cross-platform.
+2. **Zwei echte, durch tatsächliches Bauen+Ausführen verifizierte Bugs gefunden und behoben**
+   (nicht nur "sollte gehen" angenommen):
+   - `home_widget` hat gar keine Desktop-Implementierung — `app.dart`s
+     `HomeWidget.widgetClicked`-Listener warf beim ersten Frame eine
+     `MissingPluginException`. Neuer zentraler Gate `lib/core/platform/desktop.dart`
+     (`isDesktop`), verdrahtet in `main.dart` (Widget-/WorkManager-Init übersprungen) und
+     `app.dart` (Listener + periodischer Refresh übersprungen).
+   - Linux-Build scheiterte hart an einem Compiler-Fehler: `flutter_secure_storage_linux`
+     bringt eine ältere `nlohmann/json` mit, die einen inzwischen von neuerem Clang als
+     Fehler behandelten Literal-Operator-Syntax verwendet — fremder, nicht selbst
+     kontrollierter Code. Gezielt nur diese eine Diagnose in `linux/CMakeLists.txt` von
+     Error zurück auf Warning gestuft (`-Wno-error=deprecated-literal-operator`,
+     Clang-only), statt `-Werror` projektweit zu deaktivieren.
+3. **Systematisch nach dem exakt gleichen Fehlerbild wie beim v1.2.1-Tagebuch-Bug gesucht**
+   ("nichts passiert beim Antippen") — `try { … } finally { … }` ohne `catch`, das eine
+   Plattform-Exception einfach verschluckt statt sie zu zeigen. Gefunden und per UI-Ausblenden
+   behoben (nicht per Try/Catch — die Funktion selbst ist auf Desktop grundsätzlich nicht
+   nutzbar):
+   - Tagebuch-Kamera-Aufnahme (kein Kamera-Backend unter Linux, ungeprüft unter Windows) —
+     Foto/Video-Buttons durch Hinweistext ersetzt, Ansicht/Notizen/Kalender bleiben nutzbar.
+   - Barcode-Scanner an allen 3 Stellen (Hauptscreen, Mahlzeit-Schnelleintrag,
+     Vorlagen-Suche) — manuelle Eingabe bleibt überall erhalten.
+   - Kassenzettel-OCR (Budget-Schnelleingabe **und** Einkaufsmodus-Checkout) — weder
+     `image_picker` noch `google_mlkit_text_recognition` haben ein Desktop-Backend.
+   - **Wichtigster Einzelfund:** `PlanningScreen.initState()` löst bei **jedem** Öffnen des
+     Planung-Tabs einen automatischen Kalender-Sync aus (`addPostFrameCallback`) —
+     `CalendarSyncService.requestPermissions()` ruft `device_calendar` direkt auf, **komplett
+     ungeschützt**. Hätte auf Desktop bei jedem einzelnen Tab-Besuch geworfen. Auto-Sync +
+     manueller Sync-Button im AppBar jetzt auf Desktop übersprungen; Settings-Sektion
+     ebenfalls ausgeblendet.
+4. **Health-Modul und Biometrie-Sperre brauchten dagegen KEINE Änderung** — beide kapseln
+   bereits jeden Plugin-Aufruf in Try/Catch mit sauberem Fallback (`HealthService` liefert
+   überall `0`/leere Liste, `_checkBiometric()` deaktiviert den Schalter bei
+   `!_biometricAvailable`). Direkt im Quellcode verifiziert, nicht nur vermutet.
+5. **Fenstergröße auf beiden Plattformen von 1280×720 (Querformat) auf 480×900 (Hochformat)
+   geändert** + Fenstertitel auf "TRAUM" vereinheitlicht — die UI ist ein
+   Einspalten-Layout für Telefonbreite, bei 1280px unschön in die Breite gezogen.
+6. **Neuer `.github/workflows/linux-release.yml`**: baut das Linux-Bundle automatisch bei
+   jedem veröffentlichten Release und hängt es an — notwendig, weil die eigene Maschine
+   Windows-only ist und Linux nur via WSL2 gebaut werden kann (siehe unten).
+7. **WSL2 Ubuntu als echte lokale Linux-Build-Umgebung eingerichtet** (nicht nur für CI
+   verlassen): eigenes natives Linux-Flutter-SDK unter `~/flutter-linux` (die Windows-seitige
+   Installation unter `/mnt/c/dev/flutter` scheitert an CRLF-Zeilenenden in ihren
+   Shell-Skripten, wenn man sie aus WSL heraus aufruft), kompletter Build-Toolchain
+   (`clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-13-dev
+   libsecret-1-dev`) per `apt`. **Wichtige Falle:** Bauen direkt auf `/mnt/c/...` (DrvFs)
+   schlägt mit "Operation not permitted" in CMakes `configure_file()` fehl — Workaround: Repo
+   zusätzlich in einen echten Linux-Pfad klonen (`~/traum_app_linux`) und dort bauen.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **588/588 grün**. Beide Plattformen
+tatsächlich gebaut UND laufen lassen, nicht nur kompiliert — Windows-`.exe` per PowerShell-
+Screenshot visuell bestätigt, Linux-Bundle per `timeout`-Lauf mit Log-Prüfung: **keine einzige
+`MissingPluginException` mehr**, vorher zwei verschiedene.
+
+**Bewusst noch offen — als eigener, künftiger Durchgang, kein Blocker:**
+`installed_apps`-basierter App-Launcher (bereits Android-only markiert, im Onboarding gar
+nicht als wählbares Modul auswählbar — auf Desktop strukturell unerreichbar, kein Fix nötig).
+`video_player`s Windows/Linux-Unterstützung für Tagebuch-Video-Wiedergabe noch nicht geprüft
+(betrifft nur das Abspielen bereits vorhandener Video-Einträge, die auf Desktop mangels
+Kamera ohnehin nie neu entstehen). `flutter_local_notifications` hat auf der gepinnten Version
+keinen funktionierenden Windows-Pfad — bereits vorher exception-sicher (aus einer früheren
+Runde), degradiert also nur still, kein neuer Fix nötig. Kein echter Windows-/Linux-Rechner mit
+Play-Store-ähnlicher Distribution getestet — nur der lokale Build+Lauf.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-18 — v1.2.1, Tagebuch-Speichern-Bug auf jedem Bestandsgerät)
 
 **Erste echte Live-Nutzung des Tagebuch-Kamera-Flows (seit Phase 1 als offener, nie am echten
 Gerät getesteter Punkt geführt) fand einen kritischen Bug: nach Foto/Video-Aufnahme passierte
