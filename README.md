@@ -7,7 +7,7 @@
 **Your life. Your data.**
 
 One dashboard for training, nutrition, health, money, memories, and more —
-built entirely for Android, running 100% on your own device.
+built for Android, with a companion app for Windows & Linux, running 100% on your own device.
 
 [![Latest release](https://img.shields.io/github/v/release/Lupus-atque-Corvus/Traum-APP?label=latest%20release&color=FF6B3D)](https://github.com/Lupus-atque-Corvus/Traum-APP/releases)
 
@@ -128,10 +128,11 @@ Checks GitHub Releases on launch and offers a one-tap in-app update — no Play 
 TRAUM is actively developed, mostly through iterative real-device testing. Being upfront about
 what's not finished yet:
 
-- **Windows & Linux desktop builds** — in progress. Core modules (budget, notes, diary, training
-  log, planning, manual nutrition entry) will run as a "companion" app; features with no desktop
-  equivalent (Health Connect, Android home-screen widgets, calendar OS sync, the camera overlay,
-  barcode/OCR scanning) are cleanly hidden rather than crashing.
+- **Windows & Linux are "companion" builds, not full parity.** Core modules (budget, notes,
+  diary, training log, planning, manual nutrition entry) work fully. Features with no desktop
+  equivalent — Health Connect, Android home-screen widgets, calendar OS sync, the camera
+  overlay, barcode/OCR scanning — are cleanly hidden rather than crashing. No sync between
+  your phone and desktop installs yet; each has its own local database.
 - **~46 dependencies** are still pinned below their latest major version (deliberately — several
   touch sensitive areas like notifications and are only bumped with a full device test afterward).
 - **iOS home-screen widgets** exist in code but have never been built/tested (no Mac available).
@@ -148,7 +149,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the detailed release history.
 
 | | |
 |---|---|
-| Platform | Android (Windows & Linux desktop in progress) |
+| Platform | Android, Windows, Linux (desktop builds are "companion" mode — see above) |
 | Min. Android version | Android 8.0 (API 26) |
 | Framework | Flutter |
 | Database | SQLite (Drift ORM), fully local |
@@ -159,13 +160,22 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the detailed release history.
 
 ## Installation
 
-1. Go to [Releases](https://github.com/Lupus-atque-Corvus/Traum-APP/releases)
-2. Download the APK for your device:
-   - `traum-vX.Y.Z-arm64.apk` — for virtually every modern Android phone (64-bit ARM)
-   - `app-armeabi-v7a-release.apk` — for older 32-bit ARM devices
-   - `app-x86_64-release.apk` — for emulators / x86 devices
-3. Allow installation from unknown sources in your Android settings
-4. Open the downloaded APK and install it
+Go to [Releases](https://github.com/Lupus-atque-Corvus/Traum-APP/releases) and download the
+build for your platform:
+
+### Android
+- `traum-vX.Y.Z-arm64.apk` — for virtually every modern Android phone (64-bit ARM)
+- `app-armeabi-v7a-release.apk` — for older 32-bit ARM devices
+- `app-x86_64-release.apk` — for emulators / x86 devices
+
+Allow installation from unknown sources in your Android settings, then open the downloaded APK.
+
+### Windows
+Download `traum-vX.Y.Z-windows-x64.zip`, unzip it anywhere, and run `traum.exe`.
+
+### Linux
+Download `traum-linux-x64.tar.gz`, extract it, and run the `traum` binary inside the `bundle`
+folder. Requires GTK 3 (`libgtk-3-0`), present on virtually every desktop Linux distribution.
 
 ---
 
@@ -174,7 +184,10 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the detailed release history.
 ### Requirements
 
 - Flutter SDK (>= 3.9.2)
-- Android Studio / Android SDK 26+
+- Android: Android Studio / Android SDK 26+
+- Windows: Visual Studio 2022 with the "Desktop development with C++" workload
+- Linux: `clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-13-dev
+  libsecret-1-dev`
 
 ### Steps
 
@@ -182,12 +195,16 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the detailed release history.
 git clone https://github.com/Lupus-atque-Corvus/Traum-APP.git
 cd Traum-APP
 flutter pub get
-flutter build apk --release --split-per-abi
+
+# Android
+flutter build apk --release --split-per-abi   # → build/app/outputs/flutter-apk/
+
+# Windows
+flutter build windows                         # → build/windows/x64/runner/Release/
+
+# Linux
+flutter build linux                           # → build/linux/x64/release/bundle/
 ```
-
-The finished APKs land in `build/app/outputs/flutter-apk/`.
-
-*(Windows/Linux build steps will be added here once the desktop port lands.)*
 
 ---
 
