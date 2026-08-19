@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../data/database/traum_database.dart';
+import 'backup_transfer/backup_transfer_models.dart' show BackupPreview;
 import 'crash_log_service.dart';
 
 /// Builds the ZIP archive from already-collected entry bytes. Top-level (not
@@ -581,29 +582,67 @@ class BackupService {
         (file.path != null ? await File(file.path!).readAsBytes() : null);
   }
 
+  /// Decodes the raw backup bytes into the `backup.json` map (plus the
+  /// decoded [Archive], for ZIP backups) without touching the database —
+  /// shared by [restoreFromBytes] (which then writes it) and [previewBackup]
+  /// (which only summarizes it). A non-null [error] means decoding failed;
+  /// callers surface it in whatever shape fits their own return type.
+  Future<({Map<String, dynamic>? backup, Archive? archive, String? error})>
+  _decodeBackupJson(List<int> bytes) async {
+    // A ZIP starts with the local file header magic "PK"\x03\x04; anything
+    // else is treated as a plain JSON backup (selective JSON export).
+    final isZip = bytes.length >= 2 && bytes[0] == 0x50 && bytes[1] == 0x4B;
+    if (isZip) {
+      // Same reasoning as the export side: decoding a large archive is
+      // synchronous, CPU-bound work — off the UI isolate so a big import
+      // doesn't look like a frozen app either.
+      final archive = await compute(_decodeZipArchive, Uint8List.fromList(bytes));
+      final jsonFile = archive.findFile(_jsonEntryName);
+      if (jsonFile == null) {
+        return (backup: null, archive: null, error: 'No backup.json in archive');
+      }
+      final backup =
+          jsonDecode(utf8.decode(jsonFile.content as List<int>))
+              as Map<String, dynamic>;
+      return (backup: backup, archive: archive, error: null);
+    }
+    final backup = jsonDecode(utf8.decode(bytes)) as Map<String, dynamic>;
+    return (backup: backup, archive: null, error: null);
+  }
+
+  /// Summarizes a backup (date, table/row/media counts) without applying it
+  /// — used to show the user what they're about to import before they
+  /// confirm, over LAN transfer or otherwise. Never writes to the database.
+  Future<BackupPreview> previewBackup(List<int> bytes) async {
+    final decoded = await _decodeBackupJson(bytes);
+    if (decoded.error != null) {
+      throw FormatException(decoded.error!);
+    }
+    final backup = decoded.backup!;
+    final tablesJson = (backup['tables'] as Map?)?.cast<String, dynamic>() ?? {};
+    var rowCount = 0;
+    for (final rows in tablesJson.values) {
+      rowCount += (rows as List).length;
+    }
+    final mediaList = backup['media'] as List?;
+    final exportedAtStr = backup['exportedAt'] as String?;
+    return BackupPreview(
+      exportedAt: exportedAtStr != null ? DateTime.tryParse(exportedAtStr) : null,
+      tableCount: tablesJson.length,
+      rowCount: rowCount,
+      mediaCount: mediaList?.length ?? 0,
+    );
+  }
+
   /// Restores a backup from raw ZIP bytes. Public so it can be unit-tested.
   Future<ImportResult> restoreFromBytes(List<int> bytes) async {
     try {
-      // A ZIP starts with the local file header magic "PK"\x03\x04; anything
-      // else is treated as a plain JSON backup (selective JSON export).
-      final isZip = bytes.length >= 2 && bytes[0] == 0x50 && bytes[1] == 0x4B;
-      Archive? archive;
-      Map<String, dynamic> backup;
-      if (isZip) {
-        // Same reasoning as the export side: decoding a large archive is
-        // synchronous, CPU-bound work — off the UI isolate so a big import
-        // doesn't look like a frozen app either.
-        archive = await compute(_decodeZipArchive, Uint8List.fromList(bytes));
-        final jsonFile = archive!.findFile(_jsonEntryName);
-        if (jsonFile == null) {
-          return const ImportResult(error: 'No backup.json in archive');
-        }
-        backup =
-            jsonDecode(utf8.decode(jsonFile.content as List<int>))
-                as Map<String, dynamic>;
-      } else {
-        backup = jsonDecode(utf8.decode(bytes)) as Map<String, dynamic>;
+      final decoded = await _decodeBackupJson(bytes);
+      if (decoded.error != null) {
+        return ImportResult(error: decoded.error);
       }
+      final backup = decoded.backup!;
+      final archive = decoded.archive;
 
       final format = backup['formatVersion'] as int? ?? 0;
       if (format > backupFormatVersion) {

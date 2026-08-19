@@ -72,6 +72,67 @@ void main() {
     },
   );
 
+  test(
+    'previewBackup summarizes a zip backup without writing anything',
+    () async {
+      final source = TraumDatabase.forTesting(NativeDatabase.memory());
+      await source.foodProductsDao.insertProduct(
+        FoodProductsCompanion.insert(
+          name: 'Apfel',
+          caloriesPer100g: 52,
+          proteinPer100g: 0.3,
+          carbsPer100g: 14,
+          fatPer100g: 0.2,
+          createdAt: DateTime.now(),
+        ),
+      );
+      final built = await BackupService(source).buildBackupZip();
+      await source.close();
+
+      final target = TraumDatabase.forTesting(NativeDatabase.memory());
+      final preview = await BackupService(target).previewBackup(built.zipBytes);
+
+      expect(preview.rowCount, built.rowCount);
+      expect(preview.tableCount, built.tableCount);
+      expect(preview.mediaCount, built.mediaCount);
+      expect(preview.exportedAt, isNotNull);
+
+      // The whole point: nothing was written to the target database.
+      final products = await target.foodProductsDao.getAll();
+      expect(products, isEmpty);
+      await target.close();
+    },
+  );
+
+  test(
+    'previewBackup summarizes a plain-JSON (selective) backup too',
+    () async {
+      final source = TraumDatabase.forTesting(NativeDatabase.memory());
+      await source.foodProductsDao.insertProduct(
+        FoodProductsCompanion.insert(
+          name: 'Banane',
+          caloriesPer100g: 89,
+          proteinPer100g: 1.1,
+          carbsPer100g: 23,
+          fatPer100g: 0.3,
+          createdAt: DateTime.now(),
+        ),
+      );
+      final jsonBytes = await BackupService(
+        source,
+      ).buildModulesJson(['nutrition']);
+      await source.close();
+
+      final target = TraumDatabase.forTesting(NativeDatabase.memory());
+      final preview = await BackupService(target).previewBackup(jsonBytes);
+
+      expect(preview.rowCount, greaterThanOrEqualTo(1));
+      final products = await target.foodProductsDao.getAll();
+      expect(products, isEmpty);
+      await target.close();
+    },
+  );
+
   test('import merges by primary key (insert-or-replace)', () async {
     final source = TraumDatabase.forTesting(NativeDatabase.memory());
     final pid = await source.foodProductsDao.insertProduct(

@@ -57,6 +57,14 @@ dependencies:
   # HTTP
   http: ^1.2.2
 
+  # Geräte-zu-Geräte-Backup-Übertragung im lokalen WLAN
+  cryptography: ^2.9.0
+  qr_flutter: ^4.1.0
+  # Macht DateTime.now()-Aufrufe testbar (fake_async braucht das für Code,
+  # der die Zeit direkt abfragt statt nur Timer zu nutzen) — bislang nur
+  # transitiv über test/fake_async vorhanden, hier erstmals in lib/ genutzt.
+  clock: ^1.1.1
+
   # GPS
   geolocator: ^14.0.0
 
