@@ -15,6 +15,7 @@ import '../../core/components/components.dart';
 import '../../core/utils/water_calculator.dart';
 import '../../data/services/health_service.dart';
 import '../../l10n/app_localizations.dart';
+import '../legal/legal_asset_paths.dart';
 import '../legal/legal_document_screen.dart';
 import '../home/home_layout_provider.dart';
 import 'onboarding_models.dart';
@@ -566,7 +567,7 @@ class _ConsentPage extends StatelessWidget {
             trailing: l10n.consentReadTrailing,
             onLinkTap: () => _openLegal(
               context,
-              'assets/legal/privacy_policy_de.md',
+              legalAssetPath(context, 'privacy_policy'),
               l10n.privacy_policy,
             ),
           ),
@@ -595,7 +596,7 @@ class _ConsentPage extends StatelessWidget {
             trailing: l10n.consentDot,
             onLinkTap: () => _openLegal(
               context,
-              'assets/legal/terms_de.md',
+              legalAssetPath(context, 'terms'),
               l10n.terms_of_service,
             ),
           ),
@@ -613,7 +614,7 @@ class _ConsentPage extends StatelessWidget {
             trailing: l10n.consentDot,
             onLinkTap: () => _openLegal(
               context,
-              'assets/legal/medical_disclaimer_de.md',
+              legalAssetPath(context, 'medical_disclaimer'),
               l10n.medical_disclaimer,
             ),
           ),

@@ -36,6 +36,7 @@ import '../../l10n/app_localizations.dart';
 import '../../core/components/inline_error.dart';
 import '../backup_transfer/receive_backup_screen.dart';
 import '../backup_transfer/send_backup_screen.dart';
+import '../legal/legal_asset_paths.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -2437,22 +2438,42 @@ class _LegalSection extends StatelessWidget {
         children: [
           _LegalTile(
             title: l10n.privacy_policy,
-            asset: 'assets/legal/privacy.md',
+            asset: legalAssetPath(context, 'privacy_policy'),
           ),
           _LegalTile(
             title: l10n.terms_of_service,
-            asset: 'assets/legal/terms.md',
+            asset: legalAssetPath(context, 'terms'),
           ),
           _LegalTile(
             title: l10n.medical_disclaimer,
-            asset: 'assets/legal/disclaimer.md',
+            asset: legalAssetPath(context, 'medical_disclaimer'),
           ),
-          _LegalTile(
-            title: l10n.open_source_licenses,
-            asset: 'assets/legal/licenses.md',
+          ListTile(
+            title: Text(
+              l10n.open_source_licenses,
+              style: const TextStyle(
+                color: TraumColors.onBackground,
+                fontFamily: 'DMSans',
+              ),
+            ),
+            trailing: const Icon(
+              Icons.chevron_right,
+              color: TraumColors.onBackgroundMuted,
+            ),
+            onTap: () => _showOpenSourceLicenses(context),
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _showOpenSourceLicenses(BuildContext context) async {
+    final info = await PackageInfo.fromPlatform();
+    if (!context.mounted) return;
+    showLicensePage(
+      context: context,
+      applicationName: 'TRAUM',
+      applicationVersion: '${info.version} (${info.buildNumber})',
     );
   }
 }
