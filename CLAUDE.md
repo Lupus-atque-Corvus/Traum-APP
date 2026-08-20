@@ -1,7 +1,7 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.3.0+124** · schemaVersion **29**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.2.4+124** · schemaVersion **29**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
@@ -56,7 +56,7 @@ geprüft (kein sicherer Kandidat gefunden, keine Änderung nötig).
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-19 — v1.3.0, Geräte-zu-Geräte-Backup-Übertragung im LAN)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-19 — v1.2.4, Geräte-zu-Geräte-Backup-Übertragung im LAN)
 
 **Auf Nutzerwunsch: Backups lassen sich jetzt direkt zwischen zwei TRAUM-Geräten im selben WLAN
 übertragen — ohne Cloud, Kabel oder manuelles Datei-Teilen, in jede Richtung (Handy↔Handy,
@@ -121,8 +121,17 @@ angelehnt (Flutter-App, reines LAN-REST-Protokoll, kein Signaling-Server), NICHT
    Router-Einstellung außerhalb der App-Kontrolle, kein Bug, aber gut zu wissen, falls die
    Übertragung in einem bestimmten Netz partout nicht anläuft.
 
+**Versionshinweis:** Wurde zunächst versehentlich als `v1.3.0` getaggt/veröffentlicht (Minor-Bump
+für "echtes neues Feature" — das war ein Fehler, siehe Regel #17: die Ziffern-Rollover-Regel ist
+rein mechanisch, kein SemVer-Feature/Fix-Unterschied). Da 0 Downloads registriert waren, wurde der
+`v1.3.0`-Tag/-Release noch komplett gelöscht und sauber als `v1.2.4` neu veröffentlicht — anders
+als beim historischen `0.9.9`→`v0.10.0`-Vorfall (dort blieb der bereits publizierte Tag stehen,
+weil er nicht mehr rückstandsfrei entfernbar war/schon Downloads hatte). Für künftige Releases
+gilt unverändert: Patch-Ziffer läuft einfach +1 pro Release, Minor-Bump nur beim Ziffern-Überlauf
+über 9 — unabhängig davon, ob es sich inhaltlich um ein Feature oder einen Fix handelt.
+
 `flutter analyze` → **0 Issues**. `flutter test` → **631/631 grün** (588 vorher + 43 neu).
-Release: https://github.com/Lupus-atque-Corvus/Traum-APP/releases/tag/v1.3.0 (Android arm64 +
+Release: https://github.com/Lupus-atque-Corvus/Traum-APP/releases/tag/v1.2.4 (Android arm64 +
 Windows x64 lokal gebaut und angehängt, Linux x64 automatisch per CI-Workflow beim Veröffentlichen
 angehängt).
 
