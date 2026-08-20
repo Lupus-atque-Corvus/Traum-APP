@@ -1,7 +1,7 @@
 # CLAUDE.md — TRAUM Flutter App
 
 > Einstiegspunkt für Claude Code in diesem Projekt.
-> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.2.4+124** · schemaVersion **29**.
+> Repo: **Lupus-atque-Corvus/Traum-APP** · Version **1.2.5+125** · schemaVersion **29**.
 > Alle Angaben unten sind direkt aus dem Quellcode dieses Repos verifiziert.
 
 ---
@@ -56,7 +56,51 @@ geprüft (kein sicherer Kandidat gefunden, keine Änderung nötig).
 
 ---
 
-## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-19 — v1.2.4, Geräte-zu-Geräte-Backup-Übertragung im LAN)
+## ⏩ AKTUELLER STAND / HANDOFF  (2026-08-20 — v1.2.5, Rechtstexte vereinheitlicht + korrigiert)
+
+**Auf Nutzerwunsch geprüft: zeigen Onboarding und Einstellungen dieselbe Datei für Datenschutz/
+AGB/Medizin-Disclaimer, und stimmt der Inhalt noch?** Beide Fragen mit Nein beantwortet, beides
+behoben.
+
+1. **🔴 Echter Bestandsbug gefunden, kein reines Politur-Thema:** Onboarding und Einstellungen
+   luden seit jeher **zwei komplett getrennte Datensätze**. Onboarding zeigte echten, ausformulierten
+   Text (`privacy_policy_de.md` etc.) — aber fest verdrahtet auf `_de`, unabhängig von der
+   App-Sprache. Einstellungen zeigte stattdessen `privacy.md`/`terms.md`/`disclaimer.md`/
+   `licenses.md` — **Ein-Zeilen-Platzhalter aus dem allerersten Commit (v0.0.1), seit
+   16.05.2026 nie angefasst.** `licenses.md` war nur eine leere Überschrift ohne jede Lizenz.
+   Git-Historie bestätigt: nie synchron gedacht, zwei unabhängig entstandene Stände.
+2. **Fix:** neue `lib/features/legal/legal_asset_paths.dart` (`legalAssetPath(context,
+   baseName)`) — einzige Quelle für die Sprachauflösung, von Onboarding UND Einstellungen
+   genutzt (gleiches de/en-Fallback-Muster wie bereits im Mittel-Tab-Disclaimer-Gate). Die 4
+   Platzhalter-Dateien gelöscht. „Open source licenses" ruft jetzt Flutters eingebaute
+   `showLicensePage()` statt einer handgepflegten Datei auf — zeigt die echte, vollständige
+   Lizenzliste aus `pubspec.lock` (z. B. 58 Lizenzen allein für `angle`), wartet sich künftig
+   von selbst mit.
+3. **Inhalt gegen den tatsächlichen Code geprüft** (Grep über alle `https://`-Vorkommen in
+   `lib/`), nicht nur „sieht plausibel aus": Die Datenschutzerklärung nannte nur OpenMeteo/
+   Health Connect/GitHub als externe Dienste — tatsächlich fehlten Kartenkacheln
+   (OpenStreetMap/CARTO/Esri), Geokodierung, OpenFoodFacts, USDA FoodData Central und die neue
+   LAN-Backup-Übertragung (v1.2.4) komplett. Auch die Datenkategorien-Liste war unvollständig
+   (Fotos/Videos, Standortdaten, Notizen, Kalenderdaten fehlten). Alles ergänzt, dazu der nicht
+   existierende Platzhalter-Kontakt `support@traum-app.de` durch einen GitHub-Repo-Verweis
+   ersetzt (Nutzerentscheidung). `medical_disclaimer_{de,en}.md` brauchte inhaltlich keine
+   Änderung — nur die neue Umverdrahtung sorgt dafür, dass Einstellungen denselben (bereits
+   korrekten) Text zeigt wie Onboarding.
+4. **TDD:** neuer `test/features/legal/legal_asset_paths_test.dart` (3 Tests: de→`_de`,
+   en→`_en`, unbekannte Locale→`_en`-Fallback). Per Windows-Debug-Build visuell verifiziert,
+   nicht nur angenommen — Einstellungen → Datenschutz zeigt jetzt den vollständigen Text inkl.
+   neuem LAN-Übertragungs-Abschnitt, Lizenzen-Kachel zeigt echte Paketnamen.
+
+`flutter analyze` → **0 Issues**. `flutter test` → **634/634 grün** (631 vorher + 3 neu).
+Release: https://github.com/Lupus-atque-Corvus/Traum-APP/releases/tag/v1.2.5.
+
+**Bewusst außerhalb dieser Runde:** keine rechtliche Prüfung der Formulierungen selbst
+(DSGVO-Detailkonformität, Gerichtsstand, Impressumspflicht) — nur die technische Richtigkeit
+(welche Dienste/Daten die App tatsächlich anfasst) wurde geprüft und korrigiert.
+
+---
+
+## ⏩ VORHERIGER STAND (2026-08-19 — v1.2.4, Geräte-zu-Geräte-Backup-Übertragung im LAN)
 
 **Auf Nutzerwunsch: Backups lassen sich jetzt direkt zwischen zwei TRAUM-Geräten im selben WLAN
 übertragen — ohne Cloud, Kabel oder manuelles Datei-Teilen, in jede Richtung (Handy↔Handy,
